@@ -2,7 +2,8 @@
  * [tdta] Add-on màn hình Theo dõi vụ việc tại Tòa án (mockup).
  * - Khối "Thông tin vụ việc liên kết": hiển thị khi Trường hợp khởi kiện = "Đã yêu cầu cơ quan giải quyết trước khi khởi kiện..."
  *   hoặc Nguồn phát sinh bản án = "Khởi kiện theo thủ tục tố tụng dân sự sau khi giải quyết tại cơ quan trực tiếp quản lý...";
- *   Tìm kiếm theo Mã vụ việc / Tìm kiếm nâng cao (popup), chỉ trả vụ việc có trạng thái khác "Hoàn thành".
+ *   Tìm kiếm theo Mã vụ việc / Tìm kiếm nâng cao (popup) trên toàn bộ vụ việc của toàn hệ thống, mọi trạng thái (BTNN_CASE.sys);
+ *   quyền bấm Chọn theo tdtaCanChoose (TDTA_CHOOSE_STATUSES).
  * - Khối Người yêu cầu bồi thường tách Cá nhân / Tổ chức giống form tạo mới Giải quyết YCBT.
  * - Lưới: STT | Mã vụ việc | Mã hồ sơ | Tên cá nhân/Tổ chức yêu cầu | Tên cá nhân/Tổ chức bị thiệt hại | Lĩnh vực phát sinh thiệt hại |
  *   Nguồn phát sinh bản án | Ngày thụ lý | Trạng thái | Cơ quan giải quyết | Thao tác; bộ lọc theo các cột.
@@ -152,7 +153,7 @@
         document.getElementsByName('claimVictimAlive').forEach(r => { r.checked = r.value === (n.victimAlive || 'yes'); });
         setValue('claimNYCPhone', n.phone || '');
         setValue('claimNYCEmail', n.email || '');
-        setValue('claimNYCCardType', n.cardType || 'CMND/CCCD/Chứng minh quân đội');
+        setValue('claimNYCCardType', normDocType(n.cardType) || 'CMND/CCCD/Chứng minh quân đội');
         setValue('claimNYCCardNo', n.cardNo || '');
         setValue('claimNYCCardDate', n.cardDate || '');
         setValue('claimNYCCardPlace', n.cardPlace || '');
@@ -174,15 +175,41 @@
         return {
             name: getValue('claimNbthName'), dob: getValue('claimNbthBirth'), phone: getValue('claimNbthPhone'), email: getValue('claimNbthEmail'),
             docType: getValue('claimNbthCardType'), docNo: getValue('claimNbthCardNo'), docDate: getValue('claimNbthCardDate'), docPlace: getValue('claimNbthCardPlace'),
-            country: getValue('claimNbthCountry'), city: getValue('claimNbthCity'), ward: getValue('claimNbthWard'), address: getValue('claimNbthAddress')
+            country: getValue('claimNbthCountry'), city: getValue('claimNbthCountry') === 'Việt Nam' ? getValue('claimNbthCity') : getValue('claimNbthCityText'),
+            ward: getValue('claimNbthWard'), address: getValue('claimNbthAddress')
         };
     };
     global.fillNbth = function (d) {
         d = d || {};
         setValue('claimNbthOrgName', d.orgName || ''); setValue('claimNbthOrgCode', d.orgCode || '');
         setValue('claimNbthName', d.name || ''); setValue('claimNbthBirth', d.dob || ''); setValue('claimNbthPhone', d.phone || ''); setValue('claimNbthEmail', d.email || '');
-        setValue('claimNbthCardType', d.docType || ''); setValue('claimNbthCardNo', d.docNo || ''); setValue('claimNbthCardDate', d.docDate || ''); setValue('claimNbthCardPlace', d.docPlace || '');
-        setCountry('claimNbthCountry', d.country); setValue('claimNbthCity', d.city || ''); setValue('claimNbthWard', strip(d.ward || '')); setValue('claimNbthAddress', d.address || '');
+        setValue('claimNbthCardType', normDocType(d.docType)); setValue('claimNbthCardNo', d.docNo || ''); setValue('claimNbthCardDate', d.docDate || ''); setValue('claimNbthCardPlace', d.docPlace || '');
+        setCountry('claimNbthCountry', d.country);
+        const vn = getValue('claimNbthCountry') === 'Việt Nam';
+        global.tdtaNbthCountryChange(getValue('claimNbthCountry'));
+        const citySel = $('claimNbthCity');
+        if (vn && d.city && !Array.from(citySel.options).some(o => o.value === d.city)) citySel.add(new Option(d.city, d.city));
+        setValue('claimNbthCity', vn ? (d.city || '') : '');
+        setValue('claimNbthCityText', vn ? '' : (d.city || ''));
+        global.tdtaUpdateNbthWardOptions(false);
+        setValue('claimNbthWard', strip(d.ward || '')); setValue('claimNbthAddress', d.address || '');
+    };
+    // [ux] Địa chỉ người bị thiệt hại: cùng control với người yêu cầu (Việt Nam: Combobox Tỉnh/Thành phố, Phường/Xã gợi ý theo Tỉnh; nước khác: nhập tự do)
+    global.tdtaNbthCountryChange = function (val) {
+        const vn = (val || getValue('claimNbthCountry')) === 'Việt Nam';
+        $('claimNbthCityDropdownWrapper').style.display = vn ? 'block' : 'none';
+        $('claimNbthCityInputWrapper').style.display = vn ? 'none' : 'block';
+        global.tdtaUpdateNbthWardOptions(false);
+    };
+    global.tdtaUpdateNbthWardOptions = function (clearIfMismatch) {
+        const inp = $('claimNbthWard'), list = $('claimNbthWardList');
+        if (!inp || !list) return;
+        if (getValue('claimNbthCountry') !== 'Việt Nam') { inp.removeAttribute('list'); list.innerHTML = ''; inp.placeholder = 'Nhập phường/xã/khu vực nước ngoài...'; return; }
+        inp.setAttribute('list', 'claimNbthWardList');
+        const wards = WARDS[getValue('claimNbthCity')] || [];
+        list.innerHTML = wards.map(w => `<option value="${escapeAttr(w)}"></option>`).join('');
+        inp.placeholder = wards.length ? 'Gõ Mã hoặc Tên Phường/Xã...' : 'Nhập phường/xã...';
+        if (clearIfMismatch && inp.value && !wards.some(w => strip(w) === strip(inp.value))) inp.value = '';
     };
     // Trường bắt buộc khối Người yêu cầu / Người bị thiệt hại (giống Giải quyết YCBT), theo thứ tự hiển thị
     global.tdtaRequiredIds = function () {
@@ -204,15 +231,20 @@
     let link = null; // { code, hoSoCode, agencyId, agency, status, requester, victim }
     const fold = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().trim();
     function linkCondition() { return getValue('caseLawsuitCase') === LINK_LAWSUIT || getValue('caseVerdictSource') === LINK_SOURCE; }
-    function linkedElsewhere(code) {
-        return cases.some(c => c && !c.deleted && c.id !== editingId && (c.linkedVuViec === code || c.code === code));
-    }
-    // Vụ việc được phép liên kết: thuộc phạm vi dữ liệu người dùng, trạng thái khác Hoàn thành, chưa liên kết với vụ việc tại Tòa án khác
+    // Kết quả tìm kiếm: toàn bộ vụ việc của toàn hệ thống, mọi trạng thái (cùng dữ liệu Tra cứu vụ việc);
+    // gồm cả vụ việc đã liên kết với vụ việc tại Tòa án khác (01 vụ việc được liên kết với nhiều vụ việc tại Tòa án)
     function eligible() {
         const C = global.BTNN_CASE;
-        if (!C) return [];
-        return C.casesInScope().filter(r => r.status !== STATUS_DONE && !linkedElsewhere(r.code))
-            .map(r => Object.assign({}, r, { agency: unitName(r.agencyId) }));
+        if (!C || !C.sys) return [];
+        return C.sys.rows();
+    }
+    // Quyền bấm Chọn vụ việc liên kết (V1 đã chốt: mọi trạng thái): null = mọi trạng thái; mảng = chỉ các trạng thái trong mảng
+    const TDTA_CHOOSE_STATUSES = null;
+    function tdtaCanChoose(r) {
+        if (!r) return { ok: false, reason: '' };
+        if (Array.isArray(TDTA_CHOOSE_STATUSES) && !TDTA_CHOOSE_STATUSES.includes(r.status))
+            return { ok: false, reason: `Chỉ chọn được vụ việc có trạng thái ${TDTA_CHOOSE_STATUSES.map(s => `"${s}"`).join(', ')}` };
+        return { ok: true, reason: '' };
     }
     function showLinkError(msg) {
         const inp = $('tdtaLinkCode'), err = $('tdtaLinkCodeError');
@@ -220,20 +252,21 @@
         err.textContent = msg || 'Đây là trường bắt buộc';
         err.style.display = msg ? 'block' : 'none';
     }
+    // [ux] Trước khi Chọn: ô nhập + Tìm kiếm / Tìm kiếm nâng cao; sau khi Chọn: ẩn ô nhập và 02 nút, hiện các trường chỉ đọc
+    // Mã vụ việc | Mã hồ sơ GQBT | Trạng thái vụ việc | Cơ quan giải quyết (02 trường sau chỉ hiện khi có dữ liệu) + Bỏ chọn
     function renderLink() {
-        const has = !!link;
-        setValue('tdtaLinkCode', has ? link.code : getValue('tdtaLinkCode'));
-        setValue('tdtaLinkHoSo', has ? link.hoSoCode : '');
+        const has = !!link, ro = isFormReadOnly;
+        setValue('tdtaLinkVv', has ? link.code : '');
+        setValue('tdtaLinkHoSo', has ? (link.hoSoCode || '-') : '');
         setValue('tdtaLinkStatus', has ? link.status : '');
         setValue('tdtaLinkAgency', has ? link.agency : '');
-        $('tdtaLinkSelected').style.display = has ? 'flex' : 'none';
-        $('tdtaLinkSelectedText').textContent = has ? `Đã chọn: ${link.code} - ${link.requester || '-'}` : '';
-        const ro = isFormReadOnly;
-        $('tdtaLinkCode').disabled = ro || has;
+        $('tdtaLinkStatusGroup').style.display = has && link.status ? '' : 'none';
+        $('tdtaLinkAgencyGroup').style.display = has && link.agency ? '' : 'none';
+        $('tdtaLinkPick').style.display = has ? 'none' : '';
+        $('tdtaLinkInfo').style.display = has ? '' : 'none';
+        $('tdtaLinkCode').disabled = ro;
         $('tdtaBtnSearch').style.display = ro ? 'none' : '';
         $('tdtaBtnAdv').style.display = ro ? 'none' : '';
-        $('tdtaBtnSearch').disabled = has;
-        $('tdtaBtnAdv').disabled = has;
         $('tdtaBtnUnlink').style.display = ro ? 'none' : '';
     }
     global.tdtaClearLink = function (focus) {
@@ -256,11 +289,18 @@
         try { list = JSON.parse(localStorage.getItem('claimsList') || '[]') || []; } catch (e) { list = []; }
         return Array.isArray(list) ? list.find(c => c && c.code === hoSoCode) : null;
     }
+    // Loại giấy tờ giá trị cũ (VD 'CCCD', 'Căn cước công dân') hoặc ghi nhầm Loại người yêu cầu: quy đổi theo danh mục giấy tờ tùy thân trước khi điền
+    function normDocType(v) {
+        if (W && typeof W.normalizePersonalDocType === 'function') return W.normalizePersonalDocType(v);
+        const s = String(v || '').trim();
+        if (!s || s === T_CN || s === T_TC) return '';
+        return /^(CCCD|CMND|Căn cước công dân|Chứng minh nhân dân)/i.test(s) ? 'CMND/CCCD/Chứng minh quân đội' : s;
+    }
     function nycFromClaim(c) {
         return {
             type: c.nycType, role: c.nycRole || c.role, name: typeof c.nyc === 'string' ? c.nyc : (c.nyc && c.nyc.name) || '',
             birth: c.nycBirth || c.nycDob || '', victimAlive: c.victimAlive || 'yes', phone: c.nycPhone || c.phone || '', email: c.nycEmail || '',
-            cardType: c.nycCardType || c.cardType || '', cardNo: c.nycCardNo || c.cardNo || '', cardDate: c.nycCardDate || '', cardPlace: c.nycCardPlace || '',
+            cardType: normDocType(c.nycCardType || c.cardType), cardNo: c.nycCardNo || c.cardNo || '', cardDate: c.nycCardDate || '', cardPlace: c.nycCardPlace || '',
             orgCode: c.nycOrgCode || '', orgDocNo: c.nycOrgDocNo || '', orgDocDate: c.nycOrgDocDate || '', orgDocPlace: c.nycOrgDocPlace || '',
             repName: c.nycRepName || '', repPosition: c.nycRepPosition || '',
             country: c.nycCountry || 'Việt Nam', city: c.nycTinhThanh || '', ward: c.nycPhuongXa || '', address: c.nycAddressDetail || c.address || ''
@@ -286,15 +326,27 @@
         showLinkError('');
         renderLink();
         prefillFrom(r);
+        if (typeof global.tdtaRefreshCounters === 'function') global.tdtaRefreshCounters();
     }
+    // [ux] Khối người yêu cầu đã có dữ liệu nhập: hỏi xác nhận trước khi ghi đè; form trống: chọn và điền luôn. Hủy bỏ: không chọn vụ việc
+    function requesterHasData() {
+        return ['claimNYCName', 'claimNYCBirth', 'claimNYCPhone', 'claimNYCEmail', 'claimNYCCardNo', 'claimNYCOrgCode', 'claimNYCRepName', 'claimNYCAddress', 'claimNYCWard']
+            .some(id => !!getValue(id));
+    }
+    global.tdtaRequestChoose = function (r) {
+        if (!r) return;
+        if (!requesterHasData()) { choose(r); return; }
+        showConfirm(`Thông tin người yêu cầu đã nhập sẽ được thay bằng dữ liệu của vụ việc ${r.code}. Tiếp tục?`, () => choose(r),
+            'Xác nhận thay thông tin người yêu cầu', { yes: 'Tiếp tục', no: 'Hủy bỏ', yesClass: 'btn-primary' });
+    };
     // Tìm kiếm nhanh theo Mã vụ việc (nhận cả Mã hồ sơ)
     global.tdtaQuickSearch = function () {
         const v = getValue('tdtaLinkCode');
         if (!v) { showLinkError('Đây là trường bắt buộc'); $('tdtaLinkCode').focus(); return; }
-        const f = fold(v);
-        const hit = eligible().find(r => fold(r.code) === f || fold(r.hoSoCode) === f);
-        if (hit) { choose(hit); showToast(`Đã chọn vụ việc ${hit.code}.`, 'success'); }
-        else { showLinkError('Không tìm thấy vụ việc phù hợp hoặc vụ việc đã Hoàn thành'); $('tdtaLinkCode').focus(); }
+        const hit = global.BTNN_CASE && global.BTNN_CASE.sys ? global.BTNN_CASE.sys.findRow(eligible(), v) : null;
+        const chk = tdtaCanChoose(hit);
+        if (hit && chk.ok) { global.tdtaRequestChoose(hit); }
+        else { showLinkError(hit ? chk.reason : 'Không tìm thấy vụ việc phù hợp'); $('tdtaLinkCode').focus(); }
     };
     // Dữ liệu ghi khi Lưu (khối ẩn: không lưu liên kết)
     global.tdtaLinkData = function () {
@@ -325,10 +377,11 @@
         st.textContent = [
             '.tdta-bd{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:flex-start;justify-content:center;z-index:5000;padding:20px;overflow:auto;}',
             '.tdta-bd.visible{display:flex;}',
-            '.tdta-modal{background:#fff;border-radius:12px;width:min(1180px,100%);box-shadow:0 20px 50px rgba(15,23,42,.3);display:flex;flex-direction:column;max-height:calc(100vh - 40px);}',
+            '.tdta-modal{background:#fff;border-radius:12px;width:min(1360px,100%);box-shadow:0 20px 50px rgba(15,23,42,.3);display:flex;flex-direction:column;max-height:calc(100vh - 40px);}',
             '.tdta-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #e2e8f0;font-size:15px;color:#0f172a;}',
             '.tdta-body{padding:16px 18px;overflow:auto;}',
-            '.tdta-note{margin-bottom:12px;padding:8px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;font-size:13px;color:#1e3a8a;}',
+            '.tdta-note:has(> span:empty){display:none;}',
+                '.tdta-note{margin-bottom:12px;padding:8px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;font-size:13px;color:#1e3a8a;}',
             '.tdta-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px;}',
             '.tdta-grid label{display:block;font-size:13px;font-weight:600;color:#334155;margin-bottom:4px;}',
             '.tdta-grid input,.tdta-grid select{width:100%;box-sizing:border-box;height:36px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 10px;font:inherit;font-size:13px;}',
@@ -336,7 +389,9 @@
             '.tdta-table{width:100%;border-collapse:collapse;font-size:13px;}',
             '.tdta-table th{background:#f1f5f9;text-align:left;padding:9px 10px;color:#334155;border-bottom:1px solid #e2e8f0;white-space:nowrap;}',
             '.tdta-table td{padding:9px 10px;border-bottom:1px solid #f1f5f9;vertical-align:middle;}',
-            '.tdta-table tbody tr{cursor:pointer;}',
+            '.tdta-table-wrap{overflow-x:auto;}',
+            '.tdta-table tbody tr.tdta-pick{cursor:pointer;}',
+            '.tdta-table button:disabled{opacity:.5;cursor:not-allowed;}',
             '.tdta-table tbody tr:hover td{background:#f8fafc;}',
             '.tdta-table a{color:#1d4ed8;text-decoration:underline;cursor:pointer;}',
             '.tdta-badge{display:inline-block;padding:3px 9px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:600;white-space:nowrap;}',
@@ -353,23 +408,24 @@
                 <div class="tdta-head"><strong><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm vụ việc liên kết</strong>
                     <button type="button" class="btn btn-secondary" onclick="tdtaCloseLookup()" title="Đóng"><i class="fa-solid fa-xmark"></i></button></div>
                 <div class="tdta-body">
-                    <div class="tdta-note"><i class="fa-solid fa-shield-halved"></i> Phạm vi dữ liệu: <b id="tdtaPopScope"></b>. Chỉ hiển thị vụ việc có trạng thái khác "Hoàn thành".</div>
+                    <div class="tdta-note"><span id="tdtaPopRule"></span></div>
                     <div class="tdta-grid">
                         ${inp('tdtaPopCode', 'Mã vụ việc', 'Nhập mã vụ việc...')}
-                        ${inp('tdtaPopHoSo', 'Mã hồ sơ', 'Nhập mã hồ sơ...')}
+                        ${inp('tdtaPopHoSo', 'Mã hồ sơ GQBT', 'Nhập mã hồ sơ GQBT...')}
                         ${inp('tdtaPopReq', 'Tên cá nhân/Tổ chức yêu cầu', 'Nhập tên cá nhân/tổ chức yêu cầu...')}
                         ${inp('tdtaPopVictim', 'Tên cá nhân/Tổ chức bị thiệt hại', 'Nhập tên cá nhân/tổ chức bị thiệt hại...')}
                         ${inp('tdtaPopAgency', 'Cơ quan giải quyết', 'Nhập cơ quan giải quyết...')}
+                        ${global.BTNN_CASE && global.BTNN_CASE.sys && global.BTNN_CASE.sys.addrFilterHtml ? global.BTNN_CASE.sys.addrFilterHtml('tdtaPop') : ''}
                         <div><label for="tdtaPopStatus">Trạng thái</label><select id="tdtaPopStatus"></select></div>
                     </div>
                     <div class="tdta-actions">
                         <button type="button" class="btn btn-secondary" onclick="tdtaLookupClear()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
                         <button type="button" class="btn btn-primary" onclick="tdtaLookupSearch()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                     </div>
-                    <table class="tdta-table" id="tdtaPopTable">
-                        <thead><tr><th style="width:50px;text-align:center;">STT</th><th>Mã vụ việc</th><th>Mã hồ sơ</th><th>Tên cá nhân/Tổ chức yêu cầu</th><th>Tên cá nhân/Tổ chức bị thiệt hại</th><th>Cơ quan giải quyết</th><th>Trạng thái</th><th style="text-align:center;">Thao tác</th></tr></thead>
+                    <div class="tdta-table-wrap"><table class="tdta-table" id="tdtaPopTable">
+                        <thead><tr>${global.BTNN_CASE && global.BTNN_CASE.sys ? global.BTNN_CASE.sys.HEAD_HTML : ''}</tr></thead>
                         <tbody id="tdtaPopBody"></tbody>
-                    </table>
+                    </table></div>
                 </div>
                 <div class="tdta-foot"><button type="button" class="btn btn-secondary" onclick="tdtaCloseLookup()">Hủy bỏ</button></div>
             </div>`;
@@ -380,42 +436,48 @@
     global.tdtaOpenLookup = function () {
         ensureModal();
         const C = global.BTNN_CASE;
-        $('tdtaPopScope').textContent = C ? C.scope().label : '';
-        const statuses = (C ? C.STATUS_OPTIONS : []).filter(s => s !== STATUS_DONE);
+        $('tdtaPopRule').textContent = Array.isArray(TDTA_CHOOSE_STATUSES) ? `${tdtaCanChoose({ status: '' }).reason}.` : '';
+        const statuses = C && C.sys ? C.sys.STATUSES : [];
         $('tdtaPopStatus').innerHTML = '<option value="">Tất cả</option>' + statuses.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join('');
         POP_FIELDS.forEach(id => setValue(id, ''));
         setValue('tdtaPopCode', getValue('tdtaLinkCode'));
+        if (C && C.sys && C.sys.addrInit) { C.sys.addrClear('tdtaPop'); C.sys.addrInit('tdtaPop', eligible()); }
         global.tdtaLookupSearch();
         $('tdtaLookup').classList.add('visible');
     };
     global.tdtaCloseLookup = function () { const m = $('tdtaLookup'); if (m) m.classList.remove('visible'); };
-    global.tdtaLookupClear = function () { POP_FIELDS.forEach(id => setValue(id, '')); global.tdtaLookupSearch(); };
+    global.tdtaLookupClear = function () { POP_FIELDS.forEach(id => setValue(id, '')); const S = global.BTNN_CASE && global.BTNN_CASE.sys; if (S && S.addrClear) S.addrClear('tdtaPop'); global.tdtaLookupSearch(); };
     global.tdtaLookupSearch = function () {
         const f = { code: fold(getValue('tdtaPopCode')), hoSo: fold(getValue('tdtaPopHoSo')), req: fold(getValue('tdtaPopReq')), victim: fold(getValue('tdtaPopVictim')), agency: fold(getValue('tdtaPopAgency')) };
         const status = getValue('tdtaPopStatus');
         popRows = eligible().filter(r => {
             if (f.code && !fold(r.code).includes(f.code)) return false;
-            if (f.hoSo && !fold(r.hoSoCode).includes(f.hoSo)) return false;
+            if (f.hoSo && !(r.hoSoCodes || [r.hoSoCode]).some(h => fold(h).includes(f.hoSo))) return false;
             if (f.req && !fold(r.requester).includes(f.req)) return false;
             if (f.victim && !fold(r.victim).includes(f.victim)) return false;
             if (f.agency && !fold(r.agency).includes(f.agency)) return false;
             if (status && r.status !== status) return false;
+            const SA = global.BTNN_CASE && global.BTNN_CASE.sys;
+            if (SA && SA.addrMatch && !SA.addrMatch(r, 'tdtaPop')) return false;
             return true;
         });
-        $('tdtaPopBody').innerHTML = popRows.length ? popRows.map((r, i) => `<tr onclick="tdtaLookupChoose(${i})">
+        const S = global.BTNN_CASE && global.BTNN_CASE.sys;
+        $('tdtaPopBody').innerHTML = popRows.length && S ? popRows.map((r, i) => {
+            const chk = tdtaCanChoose(r);
+            return `<tr class="${chk.ok ? 'tdta-pick' : ''}" ${chk.ok ? `onclick="tdtaLookupChoose(${i})"` : ''}>
                 <td style="text-align:center;">${i + 1}</td>
-                <td style="white-space:nowrap;font-weight:600;">${escapeHtml(r.code)}</td>
-                <td style="white-space:nowrap;"><a title="Mở xem chi tiết hồ sơ tại tab mới" onclick="event.stopPropagation(); BTNN_CASE.openDetail('${escapeAttr(r.hoSoCode)}')">${escapeHtml(r.hoSoCode)}</a></td>
-                <td>${escapeHtml(r.requester || '-')}</td><td>${escapeHtml(r.victim || '-')}</td><td>${escapeHtml(r.agency || '-')}</td>
-                <td><span class="tdta-badge">${escapeHtml(r.status)}</span></td>
-                <td style="text-align:center;"><button type="button" class="btn btn-primary btn-sm" onclick="event.stopPropagation(); tdtaLookupChoose(${i})"><i class="fa-solid fa-check"></i> Chọn</button></td>
-            </tr>`).join('') : '<tr><td colspan="8" class="tdta-empty">Không tìm thấy dữ liệu phù hợp. [MSG-INF-SYS-001]</td></tr>';
+                ${S.cellsHtml(r, i, 'tdtaLookupOpenDetail', 'tdta-badge')}
+                <td style="text-align:center;"><button type="button" class="btn btn-primary btn-sm" ${chk.ok ? '' : `disabled title="${escapeAttr(chk.reason)}"`} onclick="event.stopPropagation(); tdtaLookupChoose(${i})"><i class="fa-solid fa-check"></i> Chọn</button></td>
+            </tr>`;
+        }).join('') : `<tr><td colspan="${S ? S.COLS : 11}" class="tdta-empty">Không tìm thấy dữ liệu phù hợp. [MSG-INF-SYS-001]</td></tr>`;
     };
+    // Mã hồ sơ GQBT (HyperLink): xem chi tiết hồ sơ Giải quyết YCBT tại tab mới, không chọn vụ việc
+    global.tdtaLookupOpenDetail = function (i) { const r = popRows[i]; if (r && global.BTNN_CASE) global.BTNN_CASE.sys.openRowDetail(r); };
     global.tdtaLookupChoose = function (i) {
         const r = popRows[i];
-        if (!r) return;
+        if (!r || !tdtaCanChoose(r).ok) return;
         global.tdtaCloseLookup();
-        choose(r);
+        global.tdtaRequestChoose(r);
     };
 
     // ===================== Mở form: nạp trạng thái khối liên kết =====================
@@ -547,8 +609,19 @@
                 linkedRequester: src ? src.requester : '', linkedVictim: src ? src.victim : ''
             });
         };
+        // Dữ liệu mẫu chưa có Phường/Xã (bắt buộc khi Cập nhật): lấy Phường/Xã thuộc Tỉnh/Thành phố có tên nằm trong Địa chỉ chi tiết, không có thì Phường/Xã đầu tiên của Tỉnh/Thành phố
+        const seedWard = p => {
+            if (!p || p.ward || (p.country && p.country !== 'Việt Nam')) return;
+            const ws = WARDS[p.city] || [];
+            if (!ws.length) return;
+            const addr = String(p.address || '').toLowerCase();
+            const hit = ws.find(w => addr.indexOf(strip(w).replace(/^(Phường|Xã)\s+/i, '').split(' - ')[0].toLowerCase()) >= 0);
+            p.ward = hit || ws[0];
+        };
         list.forEach(r => {
             r.nyc = Object.assign({ type: T_CN, ward: '' }, r.nyc);
+            seedWard(r.nyc);
+            if (r.nbth) seedWard(r.nbth);
             if (r.nyc.cardType === 'CCCD') r.nyc.cardType = 'CMND/CCCD/Chứng minh quân đội';
             if (r.nbth && r.nbth.docType === 'CCCD') r.nbth.docType = 'CMND/CCCD/Chứng minh quân đội';
             if (!r.hoSoCode) r.hoSoCode = '';
@@ -564,7 +637,7 @@
         if (r308) {
             linkTo(r308, 'BT-2026-052');
             // Đồng bộ hồ sơ GQ YCBT BT-2026-052 (Người yêu cầu, Hành vi gây thiệt hại)
-            Object.assign(r308.nyc, { name: 'Trần Đình Trọng', gender: 'Nam', cardNo: '001094005678', city: 'Hà Nội', ward: 'Phường Dịch Vọng Hậu', address: 'Cầu Giấy' });
+            Object.assign(r308.nyc, { name: 'Trần Đình Trọng', gender: 'Nam', cardNo: '001094005678', city: 'Hà Nội', ward: '00007 - Phường Cầu Giấy', address: 'Cầu Giấy' });
             r308.hanhVi = 'Thu hồi giấy phép kinh doanh ăn uống không đúng trình tự, gây đình trệ chuỗi nhà hàng.';
         }
         // Người yêu cầu là Tổ chức (minh họa khối Tổ chức): vụ việc không liên kết BT-2026-306
@@ -581,6 +654,258 @@
         list.forEach(r => { if (W && !W.isVuViecCode(r.code)) r.code = W.vuViecOf(r.id); });
         return list;
     };
+
+    // ===================== [ux] Cải tiến UX form Thêm mới / Cập nhật (MH02), MH03, popup =====================
+    const esc = s => escapeHtml(s == null ? '' : String(s));
+    const formOpen = () => { const f = $('formView'); return !!f && f.style.display === 'flex'; };
+    // ---- Thông báo trực tiếp (thay toast): trong form -> khung đầu form; ngoài form -> khung đầu danh sách ----
+    const NOTICE_ICON = { success: 'fa-circle-check', error: 'fa-circle-xmark', info: 'fa-circle-info', warning: 'fa-triangle-exclamation' };
+    function renderNotice(box, msg, type) {
+        if (!box) return;
+        clearTimeout(box._t);
+        if (!msg) { box.style.display = 'none'; box.innerHTML = ''; return; }
+        const t = NOTICE_ICON[type] ? type : 'success';
+        box.className = 'tdta-notice ' + t;
+        box.innerHTML = `<i class="fa-solid ${NOTICE_ICON[t]}"></i><span>${esc(msg)}</span><button type="button" class="tdta-notice-x" aria-label="Đóng thông báo" onclick="this.parentNode.style.display='none'"><i class="fa-solid fa-xmark"></i></button>`;
+        box.style.display = 'flex';
+    }
+    global.formNotice = function (msg, type) {
+        const box = $('formNotice');
+        renderNotice(box, msg, type);
+        if (msg && box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+    global.listNotice = function (msg, type) {
+        const box = $('listNotice');
+        renderNotice(box, msg, type);
+        if (msg && box) { box.scrollIntoView({ block: 'nearest' }); box._t = setTimeout(() => { box.style.display = 'none'; }, 15000); }
+    };
+    global.notify = function (msg, type) { (formOpen() ? global.formNotice : global.listNotice)(msg, type); };
+
+    // ---- Khung báo lỗi đầu form: "Còn [n] trường chưa hợp lệ" + danh sách nhãn trường; bấm nhãn: nhảy tới trường ----
+    let errItems = [];
+    function labelOf(el) {
+        if (/^dmgName_/.test(el.id || '')) return 'Thiệt hại khác - Tên / nội dung thiệt hại';
+        const g = el.closest('.form-group');
+        const lb = g && g.querySelector('.form-label');
+        let t = lb ? lb.textContent : (el.getAttribute('aria-label') || el.placeholder || el.id);
+        t = String(t).replace(/\*/g, '').replace(/\s+/g, ' ').trim();
+        const err = g && g.querySelector('.error-message');
+        const m = err && err.style.display !== 'none' ? err.textContent.trim() : '';
+        return m && m !== 'Đây là trường bắt buộc' ? `${t} - ${m}` : t;
+    }
+    function collectErrors() {
+        const body = document.querySelector('#formView .inline-form-body');
+        if (!body) return [];
+        const out = [];
+        body.querySelectorAll('.is-invalid').forEach(el => out.push({ el, label: labelOf(el) }));
+        const docsErr = $('docsError');
+        if (docsErr && docsErr.style.display === 'block') out.push({ el: $('docsTableWrap') || docsErr, label: 'Tài liệu đính kèm - Vui lòng đính kèm ít nhất 01 tài liệu' });
+        body.querySelectorAll('.tdta-row-err').forEach(e => {
+            const tb = e.closest('tbody');
+            out.push({ el: e.closest('tr') || e, label: (tb && tb.id === 'basisTableBody' ? 'Văn bản làm căn cứ yêu cầu bồi thường' : 'Tài liệu đính kèm') + ' - ' + e.textContent.trim() });
+        });
+        return out.sort((a, b) => (a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1);
+    }
+    global.tdtaErrSummary = function (show) {
+        const box = $('formErrSummary');
+        if (!box) return null;
+        if (!show) { errItems = []; box.style.display = 'none'; box.innerHTML = ''; return null; }
+        errItems = collectErrors();
+        if (!errItems.length) { box.style.display = 'none'; box.innerHTML = ''; return null; }
+        box.innerHTML = `<div class="tdta-err-head"><i class="fa-solid fa-circle-exclamation"></i> Còn ${errItems.length} trường chưa hợp lệ</div>`
+            + `<ul>${errItems.map((it, i) => `<li><a href="javascript:void(0)" onclick="tdtaGoErr(${i})">${esc(it.label)}</a></li>`).join('')}</ul>`;
+        box.style.display = 'block';
+        return errItems[0].el;
+    };
+    global.tdtaGoErr = function (i) {
+        const it = errItems[i];
+        if (!it) return;
+        it.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (typeof it.el.focus === 'function' && /^(INPUT|SELECT|TEXTAREA)$/.test(it.el.tagName)) it.el.focus({ preventScroll: true });
+    };
+    // Sửa trường đang lỗi: xóa lỗi của trường ngay, cập nhật khung báo lỗi
+    function clearFieldError(t) {
+        if (!t || !t.classList || !t.classList.contains('is-invalid')) return;
+        if (t.type === 'radio' || t.type === 'checkbox') return;
+        if (!String(t.value || '').trim()) return;
+        t.classList.remove('is-invalid');
+        t.removeAttribute('aria-invalid');
+        const g = t.closest('.form-group');
+        const err = g && g.querySelector('.error-message');
+        if (err && !err.classList.contains('tdta-row-err')) err.style.display = 'none';
+        const box = $('formErrSummary');
+        if (box && box.style.display !== 'none') global.tdtaErrSummary(true);
+    }
+
+    // ---- Hủy bỏ: form có thay đổi chưa lưu thì hỏi xác nhận (cùng popup Cảnh báo thay đổi chưa lưu của Giải quyết YCBT) ----
+    let snapAtOpen = '';
+    function snapshot() {
+        const body = document.querySelector('#formView .inline-form-body');
+        if (!body) return '';
+        const vals = [];
+        body.querySelectorAll('input, select, textarea').forEach(el => {
+            if (el.type === 'file') return;
+            vals.push((el.id || el.name) + '=' + (el.type === 'radio' || el.type === 'checkbox' ? el.checked : el.value));
+        });
+        const rows = l => JSON.stringify((l || []).map(d => [d.name || '', d.file || '']));
+        return vals.join('|') + '#' + rows(typeof basisRows !== 'undefined' ? basisRows : []) + rows(typeof docRows !== 'undefined' ? docRows : []) + '#' + (link ? link.code : '');
+    }
+    global.tdtaIsDirty = function () { return formOpen() && !isFormReadOnly && snapshot() !== snapAtOpen; };
+    global.tdtaCancelForm = function () {
+        if (!global.tdtaIsDirty()) { closeCaseForm(); return; }
+        showConfirm('Thay đổi của bạn chưa được lưu. Bạn có chắc chắn muốn Đóng không?', () => closeCaseForm(), 'Cảnh báo thay đổi chưa lưu',
+            { yes: 'Có (Đóng)', no: 'Không (Quay lại)', yesClass: 'btn-danger' });
+    };
+
+    // ---- Combobox nội dung dài (Nguồn phát sinh bản án, Trường hợp khởi kiện): tooltip đủ nội dung giá trị đang chọn ----
+    global.tdtaSelectHint = function (sel) {
+        if (!sel) return;
+        const o = sel.options[sel.selectedIndex];
+        sel.title = o && o.value ? o.text : '';
+    };
+
+    // ---- Giới hạn độ dài theo kiểu dữ liệu, bộ đếm ký tự, ô điện thoại chỉ nhận số ----
+    const MAXLEN = {
+        caseVerdictNo: 100, claimNYCName: 255, claimNYCOrgCode: 50, claimNYCRepName: 100, claimNYCRepPosition: 100, claimNYCPhone: 20, claimNYCEmail: 255,
+        claimNYCOrgDocNo: 50, claimNYCOrgDocPlace: 255, claimNYCCardNo: 20, claimNYCCardPlace: 255, claimNYCCityText: 100, claimNYCWard: 100, claimNYCAddress: 1000,
+        claimNbthOrgName: 255, claimNbthOrgCode: 50, claimNbthName: 100, claimNbthPhone: 20, claimNbthEmail: 255, claimNbthCardNo: 20, claimNbthCardPlace: 255,
+        claimNbthCityText: 100, claimNbthWard: 100, claimNbthAddress: 1000, claimHanhVi: 2000, claimNhanQua: 4000
+    };
+    const COUNTERS = ['claimHanhVi', 'claimNhanQua', 'claimNYCAddress', 'claimNbthAddress'];
+    function updateCounter(id) {
+        const el = $(id), c = $('cnt_' + id);
+        if (el && c) c.textContent = `${el.value.length}/${el.maxLength}`;
+    }
+    global.tdtaRefreshCounters = function () { COUNTERS.forEach(updateCounter); };
+    function setupFields() {
+        Object.keys(MAXLEN).forEach(id => { const el = $(id); if (el) el.maxLength = MAXLEN[id]; });
+        COUNTERS.forEach(id => {
+            const el = $(id);
+            if (!el || $('cnt_' + id)) return;
+            const c = document.createElement('div');
+            c.id = 'cnt_' + id;
+            c.className = 'tdta-counter tdta-edit-only';
+            c.setAttribute('aria-live', 'polite');
+            el.insertAdjacentElement('afterend', c);
+            el.addEventListener('input', () => updateCounter(id));
+        });
+        ['claimNYCPhone', 'claimNbthPhone'].forEach(id => {
+            const el = $(id);
+            if (!el) return;
+            el.setAttribute('inputmode', 'numeric');
+            el.addEventListener('input', () => { const v = el.value.replace(/\D/g, ''); if (v !== el.value) el.value = v; });
+        });
+        // Nhãn gắn với trường (label for): đổi nhãn dạng span còn lại trong form
+        document.querySelectorAll('#formView .inline-form-body .form-group > span.form-label').forEach(sp => {
+            const g = sp.parentNode;
+            const ctl = g.querySelector('input:not([type=radio]):not([type=checkbox]):not([type=file]), select, textarea');
+            if (!ctl || !ctl.id) return;
+            const lb = document.createElement('label');
+            lb.className = sp.className;
+            lb.htmlFor = ctl.id;
+            lb.innerHTML = sp.innerHTML;
+            g.replaceChild(lb, sp);
+        });
+        // Datepicker mở khi focus vào ô (kể cả dùng phím Tab)
+        document.querySelectorAll('#formView .inline-form-body input').forEach(el => {
+            if (!el._flatpickr || el._tdtaFp) return;
+            el._tdtaFp = true;
+            el.addEventListener('focus', () => { if (!el.disabled && el._flatpickr) el._flatpickr.open(); });
+        });
+        const fv = $('formView');
+        ['input', 'change'].forEach(ev => fv.addEventListener(ev, e => clearFieldError(e.target), true));
+    }
+    // Tên tài liệu, văn bản trong bảng: tối đa 255 ký tự
+    ['renderBasisRows', 'renderDocRows'].forEach(fn => {
+        const base = global[fn];
+        if (typeof base !== 'function') return;
+        global[fn] = function () {
+            const res = base.apply(this, arguments);
+            document.querySelectorAll(`#${fn === 'renderBasisRows' ? 'basisTableBody' : 'docsTableBody'} input.form-control`).forEach(el => { el.maxLength = 255; });
+            const box = $('formErrSummary');
+            if (box && box.style.display !== 'none') global.tdtaErrSummary(true);
+            return res;
+        };
+    });
+
+    // ---- Mở form: lưu ảnh chụp dữ liệu (kiểm tra thay đổi chưa lưu), tooltip combobox, bộ đếm ----
+    const uxBaseOpen = global.openCaseForm;
+    global.openCaseForm = function () {
+        renderNotice($('formNotice'), '');
+        uxBaseOpen.apply(this, arguments);
+        if (!formOpen()) return;
+        ['caseVerdictSource', 'caseLawsuitCase'].forEach(id => global.tdtaSelectHint($(id)));
+        global.tdtaNbthCountryChange(getValue('claimNbthCountry'));
+        global.tdtaRefreshCounters();
+        global.tdtaErrSummary(null);
+        snapAtOpen = snapshot();
+    };
+
+    // ---- Popup Tìm kiếm vụ việc liên kết: rộng ~95vw, cố định cột Thao tác, cột tên dài rút gọn + tooltip, focus ô đầu, Esc để đóng ----
+    const uxBaseOpenLookup = global.tdtaOpenLookup;
+    global.tdtaOpenLookup = function () {
+        uxBaseOpenLookup.apply(this, arguments);
+        const f = $('tdtaPopCode');
+        if (f) setTimeout(() => f.focus(), 0);
+    };
+    const uxBaseSearch = global.tdtaLookupSearch;
+    global.tdtaLookupSearch = function () {
+        uxBaseSearch.apply(this, arguments);
+        document.querySelectorAll('#tdtaPopBody tr').forEach(tr => {
+            if (tr.children[6] && tr.children.length >= 11) tr.children[6].classList.add('tdta-lv');
+            [3, 4, 5, 8, 9, 10].forEach(i => {
+                const td = tr.children[i];
+                if (!td || tr.children.length < 11) return;
+                td.classList.add('tdta-ell');
+                const inner = td.querySelector('[title]');
+                td.title = inner ? inner.title : td.textContent.trim();
+            });
+        });
+    };
+    document.addEventListener('keydown', e => {
+        if (e.key !== 'Escape') return;
+        const m = $('tdtaLookup'), cf = $('confirmOverlay');
+        if (cf && cf.style.display === 'flex') return;
+        if (m && m.classList.contains('visible')) { e.preventDefault(); global.tdtaCloseLookup(); const b = $('tdtaBtnAdv'); if (b) b.focus(); }
+    });
+
+    (function uxStyles() {
+        const st = document.createElement('style');
+        st.textContent = [
+            '#formView .inline-form-body .form-label, #formView .inline-form-body .form-control, #formView .inline-form-body .radio-line, #formView .inline-form-body label { font-size:14px; }',
+            '#formView .tdta-sec { background:#f8fafc; padding:16px; border:1px solid var(--border-color); border-radius:var(--border-radius-md); margin-bottom:20px; }',
+            '#formView .tdta-sec .form-group { margin-bottom:14px; }',
+            '#formView .form-hint { font-size:13px; color:#475569; margin-top:4px; }',
+            '#formView .tdta-counter { font-size:12.5px; color:#475569; text-align:right; margin-top:2px; }',
+            '#formView .error-message { color:#b91c1c; font-size:13px; }',
+            '#formView .error-message:not(.tdta-row-err)::before { content:"\\f06a"; font-family:"Font Awesome 6 Free"; font-weight:900; margin-right:5px; }',
+            '#formView.readonly-mode .tdta-edit-only, #formView.readonly-mode .form-hint { display:none !important; }',
+            '.tdta-notice { display:flex; align-items:flex-start; gap:10px; padding:10px 14px; border-radius:8px; margin-bottom:14px; font-size:14px; border:1px solid; }',
+            '.tdta-notice > span { flex:1; }',
+            '.tdta-notice.success { background:#f0fdf4; border-color:#86efac; color:#14532d; }',
+            '.tdta-notice.error { background:#fef2f2; border-color:#fca5a5; color:#7f1d1d; }',
+            '.tdta-notice.info, .tdta-notice.warning { background:#eff6ff; border-color:#93c5fd; color:#1e3a8a; }',
+            '.tdta-notice-x { background:none; border:0; cursor:pointer; color:inherit; padding:0 2px; }',
+            '.tdta-err-summary { background:#fef2f2; border:1px solid #fca5a5; border-left:4px solid #dc2626; border-radius:8px; padding:12px 16px; margin-bottom:16px; color:#7f1d1d; font-size:14px; }',
+            '.tdta-err-head { font-weight:700; margin-bottom:6px; }',
+            '.tdta-err-summary ul { margin:0; padding-left:20px; columns:3 260px; column-gap:24px; }',
+            '.tdta-err-summary a { color:#991b1b; text-decoration:underline; }',
+            '#tdtaLinkedBlock input[readonly] { background:#f1f5f9; color:#334155; cursor:default; }',
+            '#formView.readonly-mode .inline-form-footer > div { align-items:center; }',
+            '#formView.readonly-mode #btnFormDelete { order:-1; margin-right:auto; background-color:#fff !important; color:#DC2626 !important; border:1px solid #FCA5A5 !important; }',
+            '#formView.readonly-mode #btnFormDelete:hover { background-color:#FEF2F2 !important; border-color:#F87171 !important; }',
+            '#formView.readonly-mode #btnFormBack { order:1; }',
+            '#formView.readonly-mode #btnFormEdit { order:2; }',
+            '.tdta-modal { width:95vw !important; max-width:none !important; }',
+            '.tdta-table th:last-child, .tdta-table td:last-child { position:sticky; right:0; z-index:1; box-shadow:-6px 0 8px -6px rgba(15,23,42,.2); }',
+            '.tdta-table th:last-child { background:#f1f5f9; }',
+            '.tdta-table td:last-child { background:#fff; }',
+            '.tdta-table tbody tr.tdta-pick:hover td { background:#eff6ff; }',
+            '.tdta-table td.tdta-ell { max-width:160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }',
+            '.tdta-table td.tdta-lv { min-width:150px; }'
+        ].join('\n');
+        document.head.appendChild(st);
+    })();
 
     // ===================== Khởi tạo =====================
     (function () {
@@ -601,4 +926,7 @@
         ['#claimNYCOrgDocDate'].forEach(sel => { if (document.querySelector(sel)) flatpickr(sel, { dateFormat: 'd/m/Y', allowInput: true, locale: fp }); });
     }
     ['caseVerdictSource', 'caseLawsuitCase'].forEach(id => { const el = $(id); if (el) el.addEventListener('change', applyLinkVisibility); });
+    // [ux] Sau khi trang khởi tạo datepicker: giới hạn độ dài, bộ đếm, nhãn, datepicker mở khi focus
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(setupFields, 0));
+    else setupFields();
 })(window);

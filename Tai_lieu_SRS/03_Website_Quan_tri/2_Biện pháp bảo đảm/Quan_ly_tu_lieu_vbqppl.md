@@ -80,7 +80,7 @@
 | Ngày có hiệu lực | Date | Không | Lấy từ hệ thống | Control UI: Hiển thị/Read-only.<br>- Ngày bắt đầu có hiệu lực (nếu có). |
 | Tóm tắt nội dung | Text(2000) | Không | Lấy từ hệ thống | Control UI: Hiển thị/Read-only.<br>- Mô tả tóm tắt nội dung chính của văn bản. |
 | Tình trạng | Enum(String(50)) | Có | Lấy từ hệ thống | Control UI: Badge (Read-only).<br>- Hiển thị Tình trạng hiệu lực dạng badge màu theo quy tắc tại MH01.<br>Gồm:<br>+ Còn hiệu lực<br>+ Hết hiệu lực<br>+ Bị sửa đổi bổ sung |
-| **II. Danh sách file đính kèm** | | | | |
+| **II. Tài liệu đính kèm** | | | | |
 | Văn bản QPPL | File | Có | Lấy từ hệ thống | Control UI: Hiển thị/Read-only.<br>- Danh sách tệp Văn bản QPPL (PDF) đã đính kèm. Có liên kết "Xem file" để xem trước/tải về. |
 
 ##### 4.3.2.13.2.3. Chức năng trên màn hình

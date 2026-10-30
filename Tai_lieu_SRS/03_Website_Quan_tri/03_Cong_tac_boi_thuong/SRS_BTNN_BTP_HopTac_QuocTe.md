@@ -2,7 +2,7 @@
 
 ##### 4.3.3.16.1. Mục đích
 
-\- Cho phép cán bộ Bộ Tư pháp (Cục Bồi thường nhà nước) ghi nhận, quản lý và tra cứu thông tin các hoạt động hợp tác quốc tế trong công tác bồi thường nhà nước (BTNN) theo khoản 8 Điều 44 dự thảo Nghị định quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước.
+\- Cho phép cán bộ Bộ Tư pháp (Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước) ghi nhận, quản lý và tra cứu thông tin các hoạt động hợp tác quốc tế trong công tác bồi thường nhà nước (BTNN) theo khoản 8 Điều 44 dự thảo Nghị định quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước.
 
 \- Nội dung chỉ phục vụ nội bộ cán bộ quản lý, không công khai ra Website khách hàng.
 
@@ -59,6 +59,7 @@ flowchart TD
 | Quốc gia đối tác | Enum(String(100)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Hình thức hợp tác | Enum(String(50)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Thời gian thực hiện | String(50) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi.<br>- Hiển thị dạng `Từ ngày - Đến ngày`, định dạng `dd/mm/yyyy`. |
+| Cán bộ xử lý | String(100) | Không | Theo dữ liệu hệ thống | Control UI: Text (Read-only).<br>- Họ và tên cán bộ đã nhập bản ghi (người tạo). |
 | Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | Phân trang | - | - | 20 bản ghi/trang | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
@@ -72,7 +73,7 @@ flowchart TD
 |  |  |  | **TH3 - Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí tìm kiếm đã nhập/chọn, thiết lập các ô lọc về giá trị mặc định. |
 | 3 | Thêm mới | Button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa hoạt động hợp tác quốc tế BTNN](#433165-mh03---màn-hình-thêm-mớisửa-hoạt-động-hợp-tác-quốc-tế-btnn) ở chế độ Thêm mới với form thông tin để trống. |
-| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Tên hoạt động hợp tác quốc tế, Đối tác/Tổ chức quốc tế, Quốc gia đối tác, Hình thức hợp tác, Thời gian thực hiện.<br>- Tên tệp: `yyyyMMdd_Danh_sach_hop_tac_quoc_te_BTNN.xlsx`. |
+| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-chuan-ket-xuat-excel):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Tên hoạt động hợp tác quốc tế, Đối tác/Tổ chức quốc tế, Quốc gia đối tác, Hình thức hợp tác, Thời gian thực hiện.<br>- Tên tệp: `yyyyMMdd_Danh_sach_hop_tac_quoc_te_BTNN.xlsx`. |
 |  |  |  | **TH1 - Không có dữ liệu**: Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải tệp. |
 |  |  |  | **TH2 - Có dữ liệu**: Hệ thống tải tệp Excel về máy người dùng. |
 | 5 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Tên hoạt động hợp tác quốc tế<br>+ Đối tác/Tổ chức quốc tế<br>+ Quốc gia đối tác |
@@ -97,7 +98,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề màn hình | - | - | - | Control UI: Label<br>Hiển thị "Xem chi tiết hợp tác quốc tế". |
 | **I. Thông tin chung** |  |  |  |  |
-| Người tạo/Cán bộ phụ trách | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Cán bộ xử lý | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Ngày tạo/cập nhật | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Chế độ | - | - | - | Control UI: Label<br>Hiển thị "Chỉ xem". |
 | **II. Thông tin hoạt động hợp tác quốc tế** |  |  |  |  |
@@ -135,7 +136,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề màn hình | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới hợp tác quốc tế" hoặc "Sửa hợp tác quốc tế". |
 | **I. Thông tin chung** |  |  |  |  |
-| Người tạo/Cán bộ phụ trách | - | - | Theo tài khoản đăng nhập | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Cán bộ xử lý | - | - | Theo tài khoản đăng nhập | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Ngày tạo/cập nhật | - | - | Theo dữ liệu hệ thống | Control UI: Label<br>Định dạng `dd/mm/yyyy`. |
 | Chế độ | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới" hoặc "Sửa". |
 | **II. Thông tin hoạt động hợp tác quốc tế** |  |  |  |  |

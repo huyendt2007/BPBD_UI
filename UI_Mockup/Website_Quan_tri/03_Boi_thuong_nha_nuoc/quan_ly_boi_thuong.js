@@ -180,7 +180,7 @@
                 address: "Số 15 đường Trần Hưng Đạo, Hoàn Kiếm, Hà Nội",
                 phone: "0912345678",
                 role: "Người bị thiệt hại",
-                docBase: "Quyết định xử phạt trái luật số 12/QD-XPVHC ngày 10/02/2026 của UBND quận Cầu Giấy",
+                docBase: "Quyết định xử phạt trái luật số 12/QD-XPVHC ngày 10/02/2026 của UBND phường Cầu Giấy",
                 hanhVi: "Cưỡng chế tháo dỡ nhà ở khi chưa có quyết định hành chính có hiệu lực pháp luật.",
                 nhanQua: "Việc đập phá công trình gây sụp đổ căn nhà và hư hỏng toàn bộ tài sản bên trong.",
                 status: "Đang thương lượng",
@@ -332,15 +332,15 @@
                 phddStep3Type: "Trực tiếp xin lỗi",
                 phddStep3DateExp: "25/01/2023",
                 phddStep3DirectVenue: "Trụ sở Công ty Hải Phát, Khu đô thị An Hưng, Hà Đông, Hà Nội",
-                phddStep3DirectMembers: "Đại diện Sở Tư pháp Hà Nội, đại diện UBND quận Hà Đông, đại diện Công ty Hải Phát.",
+                phddStep3DirectMembers: "Đại diện Sở Tư pháp Hà Nội, đại diện UBND phường Láng Hạ, đại diện Công ty Hải Phát.",
                 phddStep3DirectContent: "Tổ chức buổi xin lỗi trực tiếp và cải chính công khai tại trụ sở Công ty Hải Phát.",
                 phddStep3File: "Quyet_dinh_to_chuc_PHDD.pdf",
                 phddStep4DateAct: "25/01/2023",
                 phddStep4VenueAct: "Trụ sở Công ty Hải Phát, Khu đô thị An Hưng, Hà Đông, Hà Nội",
-                phddStep4MembersAct: "Đại diện Sở Tư pháp Hà Nội, đại diện UBND quận Hà Đông, đại diện Công ty Hải Phát.",
+                phddStep4MembersAct: "Đại diện Sở Tư pháp Hà Nội, đại diện UBND phường Láng Hạ, đại diện Công ty Hải Phát.",
                 phddStep4ResultDesc: "Đã tổ chức thành công buổi xin lỗi trực tiếp và cải chính công khai, ghi nhận sự chứng kiến của các cơ quan hữu quan và công bố công khai tại trụ sở doanh nghiệp.",
                 phddStep4File: "Bien_ban_ket_qua_PHDD.pdf",
-                agency: "UBND Quận Cầu Giấy",
+                agency: "UBND phường Cầu Giấy",
                 deadline: "10/05/2023",
                 files: [{ name: "Hồ sơ tháo dỡ công trình Hải Phát.pdf", url: "#" }],
                 timeline: [
@@ -624,7 +624,7 @@
                 slaStatus: "danger",
                 slaText: "Hồ sơ bị từ chối do hết thời hiệu",
                 restoreHonor: false,
-                agency: "UBND Quận Đống Đa",
+                agency: "UBND phường Văn Miếu - Quốc Tử Giám",
                 deadline: "10/08/2026",
                 files: [{ name: "Quyet dinh tu choi thu ly.pdf", url: "#" }],
                 timeline: [
@@ -1392,11 +1392,6 @@
                 });
                 claimsList = loadedList;
             }
-            // Phân hệ BTNN không còn trạng thái nháp: chuyển dữ liệu cũ đã lưu sang trạng thái mà thao tác lưu chính tạo ra.
-            claimsList.forEach(c => {
-                if (c.status === 'Lưu nháp') c.status = 'Chờ tiếp nhận';
-                if (c.decStatus === 'Lưu nháp' || c.decStatus === 'Nháp') c.decStatus = 'Chờ ký';
-            });
 
             // Dynamically assign mock dates in current month so they bypass the default date filters on load
             claimsList.forEach((claim, idx) => {

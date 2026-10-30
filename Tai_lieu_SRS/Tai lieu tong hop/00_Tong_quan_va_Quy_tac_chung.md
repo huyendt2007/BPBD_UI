@@ -108,7 +108,8 @@ Toàn bộ các quy tắc xử lý kỹ thuật và nghiệp vụ dùng chung tr
 \- Quy chuẩn Nhận file/Import Excel,
 \- Quy chuẩn Phân trang,
 \- [Quy chuẩn hiển thị lưới danh sách - Danh mục và Phụ lục - Tài liệu tổng hợp](04_Danh_muc_va_Phu_luc.md#quy-chuan-hien-thi-luoi-danh-sach),
-\- và [Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo - Danh mục và Phụ lục - Tài liệu tổng hợp](04_Danh_muc_va_Phu_luc.md#quy-tac-tai-lieu-ban-hanh-kem-theo)
+\- [Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo - Danh mục và Phụ lục - Tài liệu tổng hợp](04_Danh_muc_va_Phu_luc.md#quy-tac-tai-lieu-ban-hanh-kem-theo),
+\- và [Quy tắc phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp - Danh mục và Phụ lục - Tài liệu tổng hợp](04_Danh_muc_va_Phu_luc.md#quy-tac-pham-vi-du-lieu-btp-stp)
 
 # 4. ĐẶC TẢ CHI TIẾT YÊU CẦU CHỨC NĂNG
 

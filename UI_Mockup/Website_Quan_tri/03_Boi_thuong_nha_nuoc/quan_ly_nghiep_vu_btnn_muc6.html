@@ -690,7 +690,7 @@
         <div class="section-head">
             <div class="section-title"><i class="fa-solid fa-table-list"></i> Bảng kết quả tìm kiếm</div>
             <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
-                <button class="btn btn-primary" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
+                <button class="btn btn-primary" id="btnAddNew" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
                 <button class="btn btn-secondary" id="btnExportExcel" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
             </div>
         </div>
@@ -729,7 +729,7 @@
                 <div class="info-value" id="formStatus">Đang nhập</div>
             </div>
             <div>
-                <div class="info-label">Người tạo/Cán bộ phụ trách</div>
+                <div class="info-label">Cán bộ xử lý</div>
                 <div class="info-value" id="formOfficer">Nguyễn Văn Cán Bộ</div>
             </div>
             <div>
@@ -902,12 +902,14 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
+    <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script>
+        const PV = window.BTNN_PHAMVI;
         const statusOptions = ['Tất cả', 'Đã gửi - Chờ phản hồi', 'Đã có phản hồi', 'Đã thực hiện', 'Không thực hiện'];
         // Căn cứ phát sinh kiến nghị xử lý vi phạm (khoản 1 Điều 47 dự thảo Nghị định hướng dẫn)
         const violationBasisOptions = ['Theo yêu cầu của người yêu cầu bồi thường hoặc cá nhân, tổ chức có liên quan', 'Theo đề nghị của cơ quan nhà nước', 'Phát hiện vi phạm trong quá trình thực hiện việc quản lý nhà nước về công tác bồi thường'];
-        const agencies = ['Sở Tư pháp Hà Nội', 'Sở Tư pháp Lâm Đồng', 'UBND Quận Cầu Giấy', 'Tòa án nhân dân cấp cao tại Hà Nội', 'Viện kiểm sát nhân dân tối cao', 'Tòa án nhân dân tối cao', 'Bộ Tư pháp', 'Cục Bồi thường nhà nước'];
+        const agencies = ['Sở Tư pháp Hà Nội', 'Sở Tư pháp Lâm Đồng', 'UBND phường Cầu Giấy', 'Tòa án nhân dân cấp cao tại Hà Nội', 'Viện kiểm sát nhân dân tối cao', 'Tòa án nhân dân tối cao', 'Bộ Tư pháp', 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước'];
         const qpplTypes = ['Luật', 'Nghị định', 'Thông tư', 'Quyết định', 'Văn bản khác'];
         const countries = ['Nhật Bản', 'Hàn Quốc', 'Pháp', 'Đức', 'Úc', 'Hoa Kỳ'];
         const provinces = ['Thành phố Hà Nội', 'Thành phố Hồ Chí Minh', 'Thành phố Đà Nẵng', 'Tỉnh Lâm Đồng', 'Thành phố Hải Phòng'];
@@ -948,7 +950,7 @@
                     ['fromDate', 'Từ ngày hỗ trợ', 'date'],
                     ['toDate', 'Đến ngày hỗ trợ', 'date']
                 ],
-                columns: ['Họ và tên người được hỗ trợ', 'Số điện thoại', 'Hình thức hỗ trợ', 'Vụ việc liên quan', 'Ngày hỗ trợ', 'Cán bộ hỗ trợ', 'Kết quả hỗ trợ', 'Thao tác'],
+                columns: ['Họ và tên người được hỗ trợ', 'Số điện thoại', 'Hình thức hỗ trợ', 'Vụ việc liên quan', 'Ngày hỗ trợ', 'Cán bộ xử lý', 'Kết quả hỗ trợ', 'Thao tác'],
                 fields: [
                     ['name', 'Họ và tên người được hỗ trợ', 'text', true],
                     ['phone', 'Số điện thoại liên hệ', 'text', true],
@@ -956,7 +958,7 @@
                     ['idNo', 'Số giấy tờ thân nhân', 'text', false],
                     ['method', 'Hình thức hỗ trợ', ['Trực tiếp tại trụ sở', 'Qua điện thoại', 'Qua văn bản/email', 'Khác'], true],
                     ['supportDate', 'Ngày hỗ trợ', 'date', true],
-                    ['officer', 'Cán bộ hỗ trợ', 'readonly', false],
+                    ['officer', 'Cán bộ xử lý', 'readonly', false],
                     ['caseCode', 'Vụ việc yêu cầu bồi thường liên quan', 'text', false],
                     ['result', 'Kết quả hỗ trợ', ['Đang hỗ trợ', 'Đã hướng dẫn xong', 'Người dân đã nộp YCBT', 'Không liên hệ được'], true]
                 ],
@@ -971,20 +973,20 @@
                     0: { address: 'Số 12 phố Huế, Hai Bà Trưng, Hà Nội', idNo: '001085012345', requestContent: 'Hướng dẫn chuẩn bị hồ sơ yêu cầu bồi thường do bị tạm giữ trái pháp luật.', supportContent: 'Hướng dẫn thành phần hồ sơ, cơ quan giải quyết bồi thường và thời hiệu yêu cầu bồi thường.' }
                 },
                 rows: [
-                    ['Nguyễn Văn D', '0901234567', 'Trực tiếp tại trụ sở', 'BT-2026-021 - Nguyễn Văn D', '05/08/2026', 'Nguyễn Văn Cán Bộ', 'Người dân đã nộp YCBT'],
-                    ['Lê Thị H', '0912345678', 'Qua điện thoại', '-', '03/08/2026', 'Trần Thị Minh', 'Đã hướng dẫn xong'],
-                    ['Công ty ABC', '02433334444', 'Qua văn bản/email', 'BT-2026-003 - Công ty ABC', '01/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang hỗ trợ'],
-                    ['Trần Văn Hưng', '0988112233', 'Trực tiếp tại trụ sở', 'BT-2026-005 - Trần Văn Hưng', '28/07/2026', 'Lê Văn Nam', 'Người dân đã nộp YCBT'],
-                    ['Phạm Thị Lan', '0977223344', 'Qua điện thoại', '-', '25/07/2026', 'Trần Thị Minh', 'Đã hướng dẫn xong'],
-                    ['Hoàng Đình Trọng', '0966334455', 'Qua văn bản/email', 'BT-2026-012 - Hoàng Đình Trọng', '22/07/2026', 'Nguyễn Văn Cán Bộ', 'Đang hỗ trợ'],
-                    ['Vũ Minh Tuấn', '0944556677', 'Trực tiếp tại trụ sở', '-', '18/07/2026', 'Lê Văn Nam', 'Không liên hệ được'],
-                    ['Bà Đỗ Thị Mai', '0933667788', 'Qua điện thoại', 'BT-2026-015 - Đỗ Thị Mai', '15/07/2026', 'Trần Thị Minh', 'Đã hướng dẫn xong'],
-                    ['Ông Bùi Văn Hải', '0922778899', 'Trực tiếp tại trụ sở', 'BT-2026-018 - Bùi Văn Hải', '10/07/2026', 'Nguyễn Văn Cán Bộ', 'Người dân đã nộp YCBT'],
-                    ['Công ty TNHH Vĩnh Phát', '02838889999', 'Qua văn bản/email', 'BT-2026-022 - Công ty TNHH Vĩnh Phát', '05/07/2026', 'Lê Văn Nam', 'Đang hỗ trợ'],
-                    ['Nguyễn Thị Cúc', '0911889900', 'Qua điện thoại', '-', '28/06/2026', 'Trần Thị Minh', 'Đã hướng dẫn xong'],
-                    ['Phan Quốc Dũng', '0909001122', 'Trực tiếp tại trụ sở', 'BT-2026-025 - Phan Quốc Dũng', '20/06/2026', 'Nguyễn Văn Cán Bộ', 'Người dân đã nộp YCBT'],
-                    ['Lương Văn Thịnh', '0989113355', 'Qua điện thoại', '-', '15/06/2026', 'Lê Văn Nam', 'Không liên hệ được'],
-                    ['Dương Thị Quyên', '0978224466', 'Trực tiếp tại trụ sở', 'BT-2026-028 - Dương Thị Quyên', '08/06/2026', 'Trần Thị Minh', 'Đã hướng dẫn xong']
+                    ['Nguyễn Văn D', '0901234567', 'Trực tiếp tại trụ sở', 'BT-2026-021 - Nguyễn Văn D', '05/08/2026', 'Đỗ Văn Chung', 'Người dân đã nộp YCBT'],
+                    ['Lê Thị H', '0912345678', 'Qua điện thoại', '-', '03/08/2026', 'Ngô Thị Lan', 'Đã hướng dẫn xong'],
+                    ['Công ty ABC', '02433334444', 'Qua văn bản/email', 'BT-2026-003 - Công ty ABC', '01/08/2026', 'Đỗ Văn Chung', 'Đang hỗ trợ'],
+                    ['Trần Văn Hưng', '0988112233', 'Trực tiếp tại trụ sở', 'BT-2026-005 - Trần Văn Hưng', '28/07/2026', 'Ngô Thị Lan', 'Người dân đã nộp YCBT'],
+                    ['Phạm Thị Lan', '0977223344', 'Qua điện thoại', '-', '25/07/2026', 'Đỗ Văn Chung', 'Đã hướng dẫn xong'],
+                    ['Hoàng Đình Trọng', '0966334455', 'Qua văn bản/email', 'BT-2026-012 - Hoàng Đình Trọng', '22/07/2026', 'Ngô Thị Lan', 'Đang hỗ trợ'],
+                    ['Vũ Minh Tuấn', '0944556677', 'Trực tiếp tại trụ sở', '-', '18/07/2026', 'Châu Ngọc Ánh', 'Không liên hệ được'],
+                    ['Bà Đỗ Thị Mai', '0933667788', 'Qua điện thoại', 'BT-2026-015 - Đỗ Thị Mai', '15/07/2026', 'Châu Ngọc Ánh', 'Đã hướng dẫn xong'],
+                    ['Ông Bùi Văn Hải', '0922778899', 'Trực tiếp tại trụ sở', 'BT-2026-018 - Bùi Văn Hải', '10/07/2026', 'Châu Ngọc Ánh', 'Người dân đã nộp YCBT'],
+                    ['Công ty TNHH Vĩnh Phát', '02838889999', 'Qua văn bản/email', 'BT-2026-022 - Công ty TNHH Vĩnh Phát', '05/07/2026', 'Châu Ngọc Ánh', 'Đang hỗ trợ'],
+                    ['Nguyễn Thị Cúc', '0911889900', 'Qua điện thoại', '-', '28/06/2026', 'Tăng Thị Diệu', 'Đã hướng dẫn xong'],
+                    ['Phan Quốc Dũng', '0909001122', 'Trực tiếp tại trụ sở', 'BT-2026-025 - Phan Quốc Dũng', '20/06/2026', 'Quách Minh Tuấn', 'Người dân đã nộp YCBT'],
+                    ['Lương Văn Thịnh', '0989113355', 'Qua điện thoại', '-', '15/06/2026', 'Tăng Thị Diệu', 'Không liên hệ được'],
+                    ['Dương Thị Quyên', '0978224466', 'Trực tiếp tại trụ sở', 'BT-2026-028 - Dương Thị Quyên', '08/06/2026', 'Quách Minh Tuấn', 'Đã hướng dẫn xong']
                 ]
             },
             kien_nghi_xu_ly_vi_pham: {
@@ -1019,20 +1021,20 @@
                     0: { basisDate: '31/07/2026', signer: 'Nguyễn Văn Hùng', position: 'Phó Giám đốc Sở', violationContent: 'Quá thời hạn thụ lý hồ sơ yêu cầu bồi thường theo quy định.', recommendationContent: 'Đề nghị xem xét, xử lý trách nhiệm của người giải quyết bồi thường.' }
                 },
                 rows: [
-                    ['12/KN-STP', 'UBND Quận Cầu Giấy', 'BT-2026-003', 'Theo yêu cầu của người yêu cầu bồi thường hoặc cá nhân, tổ chức có liên quan', '02/08/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['12/KN-STP', 'UBND phường Cầu Giấy', 'BT-2026-003', 'Theo yêu cầu của người yêu cầu bồi thường hoặc cá nhân, tổ chức có liên quan', '02/08/2026', 'Đã gửi - Chờ phản hồi'],
                     ['24/KN-STP', 'Sở Tài nguyên và Môi trường Hà Nội', 'QĐ 22/QĐ-GQBT', 'Theo đề nghị của cơ quan nhà nước', '01/08/2026', 'Đã gửi - Chờ phản hồi'],
                     ['08/KN-STP', 'Cục Thi hành án dân sự Hà Nội', 'HT-2026-001', 'Phát hiện vi phạm trong quá trình thực hiện việc quản lý nhà nước về công tác bồi thường', '20/07/2026', 'Đã thực hiện'],
-                    ['14/KN-STP', 'UBND huyện Đan Phượng', 'BT-2026-008', 'Theo yêu cầu của người yêu cầu bồi thường hoặc cá nhân, tổ chức có liên quan', '25/07/2026', 'Đã có phản hồi'],
+                    ['14/KN-STP', 'UBND phường Liễu Giai', 'BT-2026-008', 'Theo yêu cầu của người yêu cầu bồi thường hoặc cá nhân, tổ chức có liên quan', '25/07/2026', 'Đã có phản hồi'],
                     ['15/KN-STP', 'Sở Kế hoạch và Đầu tư Hà Nội', 'BT-2026-011', 'Theo đề nghị của cơ quan nhà nước', '18/07/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['16/KN-STP', 'UBND Quận Ba Đình', 'QĐ 15/QĐ-GQBT', 'Phát hiện vi phạm trong quá trình thực hiện việc quản lý nhà nước về công tác bồi thường', '12/07/2026', 'Đã thực hiện'],
-                    ['21/KN-STP', 'UBND huyện Thạch Thất', 'BT-2026-014', 'Theo yêu cầu của người yêu cầu bồi thường hoặc cá nhân, tổ chức có liên quan', '08/07/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['17/KN-STP', 'Chi cục THADS Quận Nam Từ Liêm', 'HT-2026-004', 'Theo đề nghị của cơ quan nhà nước', '05/07/2026', 'Không thực hiện'],
-                    ['18/KN-STP', 'Sở Xây dựng TP. Hà Nội', 'BT-2026-016', 'Phát hiện vi phạm trong quá trình thực hiện việc quản lý nhà nước về công tác bồi thường', '28/06/2026', 'Đã có phản hồi'],
-                    ['19/KN-STP', 'UBND Quận Hoàng Mai', 'BT-2026-019', 'Theo yêu cầu của người yêu cầu bồi thường hoặc cá nhân, tổ chức có liên quan', '20/06/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['20/KN-STP', 'Sở Giao thông Vận tải', 'QĐ 30/QĐ-GQBT', 'Theo đề nghị của cơ quan nhà nước', '15/06/2026', 'Đã thực hiện'],
-                    ['25/KN-STP', 'UBND huyện Gia Lâm', 'BT-2026-023', 'Phát hiện vi phạm trong quá trình thực hiện việc quản lý nhà nước về công tác bồi thường', '10/06/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['22/KN-STP', 'Chi cục THADS huyện Đông Anh', 'HT-2026-006', 'Theo yêu cầu của người yêu cầu bồi thường hoặc cá nhân, tổ chức có liên quan', '08/06/2026', 'Đã có phản hồi'],
-                    ['23/KN-STP', 'UBND Quận Tây Hồ', 'BT-2026-027', 'Theo đề nghị của cơ quan nhà nước', '01/06/2026', 'Đã gửi - Chờ phản hồi']
+                    ['16/KN-STP', 'UBND phường Ba Đình', 'QĐ 15/QĐ-GQBT', 'Phát hiện vi phạm trong quá trình thực hiện việc quản lý nhà nước về công tác bồi thường', '12/07/2026', 'Đã thực hiện'],
+                    ['21/KN-STP', 'UBND Quận 1, Thành phố Hồ Chí Minh', 'BT-2026-014', 'Theo yêu cầu của người yêu cầu bồi thường hoặc cá nhân, tổ chức có liên quan', '08/07/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['17/KN-STP', 'Chi cục THADS quận Bình Tân', 'HT-2026-004', 'Theo đề nghị của cơ quan nhà nước', '05/07/2026', 'Không thực hiện'],
+                    ['18/KN-STP', 'Sở Xây dựng TP. Hồ Chí Minh', 'BT-2026-016', 'Phát hiện vi phạm trong quá trình thực hiện việc quản lý nhà nước về công tác bồi thường', '28/06/2026', 'Đã có phản hồi'],
+                    ['19/KN-STP', 'UBND Quận 3, Thành phố Hồ Chí Minh', 'BT-2026-019', 'Theo yêu cầu của người yêu cầu bồi thường hoặc cá nhân, tổ chức có liên quan', '20/06/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['20/KN-STP', 'Sở Giao thông vận tải TP. Hải Phòng', 'QĐ 30/QĐ-GQBT', 'Theo đề nghị của cơ quan nhà nước', '15/06/2026', 'Đã thực hiện'],
+                    ['25/KN-STP', 'UBND phường Lê Chân, Thành phố Hải Phòng', 'BT-2026-023', 'Phát hiện vi phạm trong quá trình thực hiện việc quản lý nhà nước về công tác bồi thường', '10/06/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['22/KN-STP', 'Chi cục THADS huyện Thủy Nguyên', 'HT-2026-006', 'Theo yêu cầu của người yêu cầu bồi thường hoặc cá nhân, tổ chức có liên quan', '08/06/2026', 'Đã có phản hồi'],
+                    ['23/KN-STP', 'UBND phường Ngô Quyền, Thành phố Hải Phòng', 'BT-2026-027', 'Theo đề nghị của cơ quan nhà nước', '01/06/2026', 'Đã gửi - Chờ phản hồi']
                 ]
             },
             kien_nghi_khang_nghi_ban_an: {
@@ -1076,8 +1078,8 @@
                     ['17/KN-STP', '22/2026/DS-ST', 'Viện trưởng VKSND cấp cao tại Hà Nội', '10/07/2026', 'Đã có phản hồi'],
                     ['18/KN-STP', '05/2026/HC-PT', 'Chánh án Tòa án nhân dân tối cao', '02/07/2026', 'Đã thực hiện'],
                     ['23/KN-STP', '14/2026/HS-PT', 'Viện kiểm sát nhân dân tối cao', '29/06/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['19/KN-STP', '27/2026/HC-ST', 'Tòa án nhân dân cấp cao tại Đà Nẵng', '25/06/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['20/KN-STP', '31/2026/DS-PT', 'Viện trưởng VKSND cấp cao tại Đà Nẵng', '18/06/2026', 'Đã có phản hồi'],
+                    ['19/KN-STP', '27/2026/HC-ST', 'TAND cấp cao tại TP. Hồ Chí Minh', '25/06/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['20/KN-STP', '31/2026/DS-PT', 'Viện trưởng VKSND cấp cao tại TP. Hồ Chí Minh', '18/06/2026', 'Đã có phản hồi'],
                     ['21/KN-STP', '08/2026/HC-ST', 'Tòa án nhân dân tối cao', '12/06/2026', 'Đã thực hiện'],
                     ['22/KN-STP', '19/2026/DS-ST', 'Chánh án TAND cấp cao tại Hà Nội', '05/06/2026', 'Không thực hiện'],
                     ['27/KN-STP', '25/2026/HC-PT', 'Viện kiểm sát nhân dân tối cao', '01/06/2026', 'Đã gửi - Chờ phản hồi'],
@@ -1118,19 +1120,19 @@
                 },
                 rows: [
                     ['18/YC-STP', '22/QĐ-GQBT', 'Sở Tư pháp Hà Nội', '05/08/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['29/YC-STP', '15/QĐ-GQBT', 'UBND Quận Cầu Giấy', '28/07/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['29/YC-STP', '15/QĐ-GQBT', 'UBND phường Cầu Giấy', '28/07/2026', 'Đã gửi - Chờ phản hồi'],
                     ['11/YC-STP', '08/QĐ-GQBT', 'Cục Thi hành án dân sự Hà Nội', '18/07/2026', 'Đã thực hiện'],
-                    ['19/YC-STP', '31/QĐ-GQBT', 'UBND Quận Đống Đa', '12/07/2026', 'Đã có phản hồi'],
+                    ['19/YC-STP', '31/QĐ-GQBT', 'UBND phường Văn Miếu - Quốc Tử Giám', '12/07/2026', 'Đã có phản hồi'],
                     ['20/YC-STP', '19/QĐ-GQBT', 'Sở Tài nguyên và Môi trường', '08/07/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['21/YC-STP', '05/QĐ-GQBT', 'UBND huyện Thanh Trì', '01/07/2026', 'Đã thực hiện'],
-                    ['26/YC-STP', '42/QĐ-GQBT', 'Cục Hải quan TP. Hà Nội', '27/06/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['22/YC-STP', '14/QĐ-GQBT', 'UBND Quận Long Biên', '24/06/2026', 'Không thực hiện'],
-                    ['23/YC-STP', '27/QĐ-GQBT', 'Chi cục THADS huyện Hoài Đức', '16/06/2026', 'Đã có phản hồi'],
-                    ['24/YC-STP', '33/QĐ-GQBT', 'UBND Quận Hà Đông', '10/06/2026', 'Đã thực hiện'],
-                    ['25/YC-STP', '17/QĐ-GQBT', 'Sở Xây dựng TP. Hà Nội', '02/06/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['30/YC-STP', '50/QĐ-GQBT', 'UBND huyện Sóc Sơn', '29/05/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['27/YC-STP', '09/QĐ-GQBT', 'UBND Quận Nam Từ Liêm', '26/05/2026', 'Đã có phản hồi'],
-                    ['28/YC-STP', '12/QĐ-GQBT', 'Chi cục THADS Quận Hai Bà Trưng', '18/05/2026', 'Đã thực hiện']
+                    ['21/YC-STP', '05/QĐ-GQBT', 'UBND phường Kim Mã', '01/07/2026', 'Đã thực hiện'],
+                    ['26/YC-STP', '42/QĐ-GQBT', 'Cục Hải quan TP. Hồ Chí Minh', '27/06/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['22/YC-STP', '14/QĐ-GQBT', 'UBND Quận 1, Thành phố Hồ Chí Minh', '24/06/2026', 'Không thực hiện'],
+                    ['23/YC-STP', '27/QĐ-GQBT', 'Chi cục THADS quận Bình Tân', '16/06/2026', 'Đã có phản hồi'],
+                    ['24/YC-STP', '33/QĐ-GQBT', 'UBND Quận 3, Thành phố Hồ Chí Minh', '10/06/2026', 'Đã thực hiện'],
+                    ['25/YC-STP', '17/QĐ-GQBT', 'Sở Xây dựng TP. Hải Phòng', '02/06/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['30/YC-STP', '50/QĐ-GQBT', 'UBND phường Hải An, Thành phố Hải Phòng', '29/05/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['27/YC-STP', '09/QĐ-GQBT', 'UBND phường Lê Chân, Thành phố Hải Phòng', '26/05/2026', 'Đã có phản hồi'],
+                    ['28/YC-STP', '12/QĐ-GQBT', 'Chi cục THADS quận Ngô Quyền', '18/05/2026', 'Đã thực hiện']
                 ]
             },
             kien_nghi_xem_xet_qd_hoan_tra: {
@@ -1175,19 +1177,19 @@
                 },
                 rows: [
                     ['21/KN-STP', 'Quyết định hoàn trả', '89/QĐ-HT', 'Sở Tư pháp Hà Nội', '06/08/2026', '17/08/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['32/KN-STP', 'Quyết định giảm mức hoàn trả', '12/QĐ-GMHT', 'UBND Quận Cầu Giấy', '30/07/2026', '10/08/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['32/KN-STP', 'Quyết định giảm mức hoàn trả', '12/QĐ-GMHT', 'UBND phường Cầu Giấy', '30/07/2026', '10/08/2026', 'Đã gửi - Chờ phản hồi'],
                     ['16/KN-STP', 'Quyết định hoàn trả', '45/QĐ-HT', 'Cục Thi hành án dân sự Hà Nội', '22/07/2026', '31/07/2026', 'Đã có phản hồi'],
-                    ['22/KN-STP', 'Quyết định hoàn trả', '52/QĐ-HT', 'UBND Quận Ba Đình', '17/07/2026', '28/07/2026', 'Đã thực hiện'],
+                    ['22/KN-STP', 'Quyết định hoàn trả', '52/QĐ-HT', 'UBND phường Ba Đình', '17/07/2026', '28/07/2026', 'Đã thực hiện'],
                     ['23/KN-STP', 'Quyết định giảm mức hoàn trả', '08/QĐ-GMHT', 'Sở Nông nghiệp và PTNT', '11/07/2026', '21/07/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['24/KN-STP', 'Quyết định hoàn trả', '60/QĐ-HT', 'UBND huyện Gia Lâm', '04/07/2026', '14/07/2026', 'Không thực hiện'],
-                    ['29/KN-STP', 'Quyết định hoàn trả', '71/QĐ-HT', 'Sở Giao thông Vận tải', '30/06/2026', '09/07/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['25/KN-STP', 'Quyết định giảm mức hoàn trả', '15/QĐ-GMHT', 'UBND Quận Hoàng Mai', '26/06/2026', '07/07/2026', 'Đã có phản hồi'],
-                    ['26/KN-STP', 'Quyết định hoàn trả', '82/QĐ-HT', 'Chi cục THADS huyện Mê Linh', '20/06/2026', '30/06/2026', 'Đã thực hiện'],
-                    ['27/KN-STP', 'Quyết định hoàn trả', '39/QĐ-HT', 'UBND Quận Bắc Từ Liêm', '14/06/2026', '23/06/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['28/KN-STP', 'Quyết định giảm mức hoàn trả', '20/QĐ-GMHT', 'Sở Y tế TP. Hà Nội', '07/06/2026', '16/06/2026', 'Đã có phản hồi'],
-                    ['33/KN-STP', 'Quyết định hoàn trả', '95/QĐ-HT', 'UBND huyện Chương Mỹ', '03/06/2026', '12/06/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['30/KN-STP', 'Quyết định hoàn trả', '104/QĐ-HT', 'UBND Quận Thanh Xuân', '29/05/2026', '09/06/2026', 'Đã thực hiện'],
-                    ['31/KN-STP', 'Quyết định miễn hoàn trả', '03/QĐ-MHT', 'Cục Thuế TP. Hà Nội', '21/05/2026', '01/06/2026', 'Đã gửi - Chờ phản hồi']
+                    ['24/KN-STP', 'Quyết định hoàn trả', '60/QĐ-HT', 'UBND phường Ngọc Khánh', '04/07/2026', '14/07/2026', 'Không thực hiện'],
+                    ['29/KN-STP', 'Quyết định hoàn trả', '71/QĐ-HT', 'Sở Giao thông vận tải TP. Hồ Chí Minh', '30/06/2026', '09/07/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['25/KN-STP', 'Quyết định giảm mức hoàn trả', '15/QĐ-GMHT', 'UBND Quận 1, Thành phố Hồ Chí Minh', '26/06/2026', '07/07/2026', 'Đã có phản hồi'],
+                    ['26/KN-STP', 'Quyết định hoàn trả', '82/QĐ-HT', 'Chi cục THADS quận Bình Tân', '20/06/2026', '30/06/2026', 'Đã thực hiện'],
+                    ['27/KN-STP', 'Quyết định hoàn trả', '39/QĐ-HT', 'UBND Quận 3, Thành phố Hồ Chí Minh', '14/06/2026', '23/06/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['28/KN-STP', 'Quyết định giảm mức hoàn trả', '20/QĐ-GMHT', 'Sở Y tế TP. Hải Phòng', '07/06/2026', '16/06/2026', 'Đã có phản hồi'],
+                    ['33/KN-STP', 'Quyết định hoàn trả', '95/QĐ-HT', 'UBND phường Hải An, Thành phố Hải Phòng', '03/06/2026', '12/06/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['30/KN-STP', 'Quyết định hoàn trả', '104/QĐ-HT', 'UBND phường Lê Chân, Thành phố Hải Phòng', '29/05/2026', '09/06/2026', 'Đã thực hiện'],
+                    ['31/KN-STP', 'Quyết định miễn hoàn trả', '03/QĐ-MHT', 'Cục Thuế TP. Hải Phòng', '21/05/2026', '01/06/2026', 'Đã gửi - Chờ phản hồi']
                 ]
             },
             chien_luoc_chinh_sach: {
@@ -1230,18 +1232,18 @@
                     3: { docNo: '2105/QĐ-BTP', summary: 'Chiến lược định hướng phát triển hệ thống quản lý bồi thường nhà nước giai đoạn 2025-2035.' }
                 },
                 rows: [
-                    ['Đề án nâng cao hiệu quả công tác BTNN giai đoạn 2026-2030', 'Đề án', '2026-2030', 'Cục Bồi thường nhà nước', '01/08/2026', 'Đang triển khai'],
+                    ['Đề án nâng cao hiệu quả công tác BTNN giai đoạn 2026-2030', 'Đề án', '2026-2030', 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', '01/08/2026', 'Đang triển khai'],
                     ['Kế hoạch rà soát pháp luật về trách nhiệm bồi thường', 'Kế hoạch', '2026', 'Bộ Tư pháp', '20/07/2026', 'Đã ban hành'],
-                    ['Chương trình tuyên truyền chính sách BTNN', 'Chương trình', '2026-2027', 'Cục Bồi thường nhà nước', '-', 'Đang xây dựng'],
+                    ['Chương trình tuyên truyền chính sách BTNN', 'Chương trình', '2026-2027', 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', '-', 'Đang xây dựng'],
                     ['Chiến lược phát triển hệ thống quản lý bồi thường nhà nước', 'Chiến lược', '2025-2035', 'Bộ Tư pháp', '15/05/2025', 'Đang triển khai'],
-                    ['Đề án chuyển đổi số toàn diện công tác BTNN', 'Đề án', '2026-2028', 'Cục Bồi thường nhà nước', '10/06/2026', 'Đang triển khai'],
+                    ['Đề án chuyển đổi số toàn diện công tác BTNN', 'Đề án', '2026-2028', 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', '10/06/2026', 'Đang triển khai'],
                     ['Kế hoạch kiểm tra liên ngành tình hình thực hiện pháp luật BTNN', 'Kế hoạch', '2026', 'Bộ Tư pháp', '05/03/2026', 'Đã hoàn thành'],
                     ['Chính sách hỗ trợ tư vấn pháp lý miễn phí cho người bị thiệt hại', 'Chính sách', '2026-2030', 'Bộ Tư pháp', '12/04/2026', 'Đã ban hành'],
-                    ['Chương trình bồi dưỡng chuyên sâu kỹ năng thẩm tra hồ sơ BTNN', 'Chương trình', '2026', 'Cục Bồi thường nhà nước', '25/02/2026', 'Đang triển khai'],
+                    ['Chương trình bồi dưỡng chuyên sâu kỹ năng thẩm tra hồ sơ BTNN', 'Chương trình', '2026', 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', '25/02/2026', 'Đang triển khai'],
                     ['Đề án xây dựng cơ sở dữ liệu quốc gia về bồi thường nhà nước', 'Đề án', '2024-2026', 'Bộ Tư pháp', '18/11/2024', 'Đang triển khai'],
                     ['Kế hoạch sơ kết 5 năm thi hành Luật TNBTCNN 2017', 'Kế hoạch', '2025', 'Bộ Tư pháp', '15/12/2024', 'Đã hoàn thành'],
                     ['Chiến lược nâng cao chỉ số tiếp cận công lý trong bồi thường công', 'Chiến lược', '2026-2030', 'Bộ Tư pháp', '-', 'Đang xây dựng'],
-                    ['Chương trình hợp tác nghiên cứu kinh nghiệm quốc tế về BTNN', 'Chương trình', '2026-2027', 'Cục Bồi thường nhà nước', '28/05/2026', 'Đang triển khai']
+                    ['Chương trình hợp tác nghiên cứu kinh nghiệm quốc tế về BTNN', 'Chương trình', '2026-2027', 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', '28/05/2026', 'Đang triển khai']
                 ]
             },
             van_ban_bieu_mau_so_sach: {
@@ -1287,16 +1289,16 @@
                 rows: [
                     ['Nghị định quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước', 'Văn bản', 'Trình cơ quan có thẩm quyền ban hành', '28/2026/NĐ-CP', 'Chính phủ', '15/02/2026'],
                     ['Sổ theo dõi vụ việc yêu cầu bồi thường', 'Sổ sách', 'Ban hành theo thẩm quyền', 'SS-01/BTNN', 'Bộ Tư pháp', '02/08/2026'],
-                    ['Biểu mẫu thống kê kết quả giải quyết YCBT', 'Biểu mẫu', 'Ban hành theo thẩm quyền', 'BM-03/BTNN', 'Cục Bồi thường nhà nước', '25/07/2026'],
+                    ['Biểu mẫu thống kê kết quả giải quyết YCBT', 'Biểu mẫu', 'Ban hành theo thẩm quyền', 'BM-03/BTNN', 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', '25/07/2026'],
                     ['Hướng dẫn lập hồ sơ quản lý BTNN', 'Văn bản', 'Ban hành theo thẩm quyền', '45/HD-BTP', 'Bộ Tư pháp', '12/07/2026'],
                     ['Sổ theo dõi thực hiện trách nhiệm hoàn trả', 'Sổ sách', 'Ban hành theo thẩm quyền', 'SS-02/BTNN', 'Bộ Tư pháp', '15/06/2026'],
                     ['Biểu mẫu đơn yêu cầu bồi thường nhà nước', 'Biểu mẫu', 'Ban hành theo thẩm quyền', 'BM-01/BTNN', 'Bộ Tư pháp', '10/05/2026'],
                     ['Quy chế phối hợp trao đổi thông tin về công tác BTNN', 'Văn bản', 'Ban hành theo thẩm quyền', '88/QC-BTP', 'Bộ Tư pháp', '22/04/2026'],
                     ['Sổ theo dõi kinh phí chi trả bồi thường', 'Sổ sách', 'Ban hành theo thẩm quyền', 'SS-03/BTNN', 'Bộ Tư pháp', '18/03/2026'],
-                    ['Biểu mẫu biên bản thương lượng bồi thường', 'Biểu mẫu', 'Ban hành theo thẩm quyền', 'BM-05/BTNN', 'Cục Bồi thường nhà nước', '05/03/2026'],
+                    ['Biểu mẫu biên bản thương lượng bồi thường', 'Biểu mẫu', 'Ban hành theo thẩm quyền', 'BM-05/BTNN', 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', '05/03/2026'],
                     ['Thông tư hướng dẫn nghiệp vụ công tác BTNN', 'Văn bản', 'Ban hành theo thẩm quyền', '08/2019/TT-BTP', 'Bộ Tư pháp', '10/12/2019'],
                     ['Biểu mẫu quyết định giải quyết bồi thường', 'Biểu mẫu', 'Ban hành theo thẩm quyền', 'BM-08/BTNN', 'Bộ Tư pháp', '14/02/2026'],
-                    ['Sổ lưu trữ hồ sơ giải quyết bồi thường', 'Sổ sách', 'Ban hành theo thẩm quyền', 'SS-04/BTNN', 'Cục Bồi thường nhà nước', '19/01/2026'],
+                    ['Sổ lưu trữ hồ sơ giải quyết bồi thường', 'Sổ sách', 'Ban hành theo thẩm quyền', 'SS-04/BTNN', 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', '19/01/2026'],
                     ['Biểu mẫu báo cáo công tác BTNN định kỳ', 'Biểu mẫu', 'Ban hành theo thẩm quyền', 'BM-12/BTNN', 'Bộ Tư pháp', '08/01/2026']
                 ]
             },
@@ -1328,7 +1330,7 @@
                 duplicateKey: ['title', 'partner', 'fromDate'],
                 duplicateMessage: 'Hoạt động hợp tác quốc tế đã tồn tại trong hệ thống (trùng Tên hoạt động hợp tác quốc tế, Đối tác/Tổ chức quốc tế và Từ ngày thực hiện)',
                 rowExtras: {
-                    0: { leadAgency: 'Cục Bồi thường nhà nước', result: 'Trao đổi kinh nghiệm quản lý nhà nước về công tác bồi thường; thống nhất kế hoạch hợp tác giai đoạn tiếp theo.' }
+                    0: { leadAgency: 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', result: 'Trao đổi kinh nghiệm quản lý nhà nước về công tác bồi thường; thống nhất kế hoạch hợp tác giai đoạn tiếp theo.' }
                 },
                 rows: [
                     ['Tọa đàm kinh nghiệm quản lý BTNN', 'JICA', 'Nhật Bản', 'Hội thảo/Tọa đàm', '01/08/2026 - 02/08/2026'],
@@ -1549,9 +1551,36 @@
         const moduleKey = params.get('module') || 'ho_tro_nguoi_bi_thiet_hai';
         const currentFeature = moduleKey;
         const config = configs[moduleKey] || configs.ho_tro_nguoi_bi_thiet_hai;
+        // Phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp: áp dụng cho 05 chức năng nhóm "Nghiệp vụ dùng cho STP"
+        // Người dùng thuộc Bộ Tư pháp/Cục: xem bản ghi của mọi Sở Tư pháp, chỉ xem; người dùng thuộc Sở Tư pháp: bản ghi của Sở mình; đơn vị khác: không xem được
+        const STP_SCOPE_MODULES = ['ho_tro_nguoi_bi_thiet_hai', 'kien_nghi_xu_ly_vi_pham', 'kien_nghi_khang_nghi_ban_an', 'yeu_cau_huy_qd_gqbt', 'kien_nghi_xem_xet_qd_hoan_tra'];
+        const stpScope = STP_SCOPE_MODULES.includes(moduleKey);
+        const showUnitCol = () => stpScope && PV.isBtp();
+        // Dữ liệu mẫu: dòng 1-6 của Sở Tư pháp Thành phố Hà Nội, dòng 7-10 của Sở Tư pháp Thành phố Hồ Chí Minh, dòng 11-14 của Sở Tư pháp Thành phố Hải Phòng
+        const seedUnitOf = i => i < 6 ? 'STP-HN' : i < 10 ? 'STP-HCM' : 'STP-HP';
+        const isOwnRow = row => !stpScope || PV.canEdit(PV.ownerOf(row));
+        // Cán bộ xử lý: cán bộ đã nhập bản ghi (người tạo). Module có sẵn cột Cán bộ xử lý trong dữ liệu (Hỗ trợ người bị thiệt hại) lấy theo cột đó;
+        // module khác hiển thị thêm cột Cán bộ xử lý trước cột trạng thái (không có trạng thái: trước cột Thao tác)
+        const OFFICER_COL = 'Cán bộ xử lý';
+        const officerInData = config.columns.indexOf(OFFICER_COL);
+        const insAfter = () => {
+            if (officerInData >= 0) return officerInData;
+            const st = config.columns.findIndex(c => isStatusColumn(c));
+            return (st >= 0 ? st : config.columns.length - 1) - 1;
+        };
+        const extraCols = () => [...(officerInData >= 0 ? [] : [OFFICER_COL]), ...(showUnitCol() ? ['Đơn vị thực hiện'] : [])];
+        const creatorOfRow = row => officerInData >= 0 ? row[officerInData] : PV.creatorOf(row);
+        const extraCells = row => [...(officerInData >= 0 ? [] : [PV.creatorOf(row)]), ...(showUnitCol() ? [PV.unitName(PV.ownerOf(row))] : [])];
+        // Sửa bản ghi: giữ đơn vị thực hiện và người tạo của bản ghi gốc
+        const keepMeta = (oldRow, newRow) => { if (oldRow && newRow) { if (oldRow.unit && !newRow.unit) newRow.unit = oldRow.unit; if (oldRow.creator && !newRow.creator) newRow.creator = oldRow.creator; } return newRow; };
+        // Dữ liệu mẫu người tạo: cán bộ của đơn vị thực hiện (Cơ cấu tổ chức - BTNN_WF.USERS)
+        const SEED_OFFICERS = { 'STP-HN': ['Đỗ Văn Chung', 'Ngô Thị Lan'], 'STP-HCM': ['Châu Ngọc Ánh'], 'STP-HP': ['Tăng Thị Diệu', 'Quách Minh Tuấn'], 'BTP-01': ['Nguyễn Văn Cán Bộ', 'Trần Thị Thu Hà', 'Phạm Minh Đức'] };
         let rows = config.rows.map((row, i) => {
             const r = [...row];
             if (config.rowExtras && config.rowExtras[i]) r.extra = { ...config.rowExtras[i] };
+            if (stpScope) r.unit = seedUnitOf(i);
+            const pool = SEED_OFFICERS[r.unit || 'BTP-01'];
+            r.creator = officerInData >= 0 ? r[officerInData] : pool[i % pool.length];
             return r;
         });
         // Giải đáp vướng mắc: 04 dòng mẫu đầu lấy ngày theo ngày hiện tại (trong tháng hiện tại, không quá hôm nay)
@@ -1584,32 +1613,32 @@
             decisionNo: decisionNo || '-', decisionDate: decisionDate || '-', status, detailType, receivedBy
         });
         const relatedClaimMockRows = [
-            caseRow('BT-2026-012', 'Lê Văn H', '', 'UBND-CG', '22/QĐ-GQBT', '05/08/2026', 'Hoàn thành'),
-            caseRow('BT-2026-021', 'Hoàng Văn R', '', 'CCTHADS-BT', '', '', 'Xác minh thiệt hại'),
-            caseRow('BT-2026-003-A', 'Công ty ABC', '', 'UBND-HK', '', '', 'Thương lượng'),
-            caseRow('BT-2026-010-TDC', 'Đặng Thị Thu', 'Đặng Văn T', 'THADS-LD', '', '', 'Cử người giải quyết bồi thường', 'claim', 'STP-HN')
+            caseRow('BT-2026-012', 'Lê Văn H', '', 'THADS-HN', '56/QĐ-BT', '05/07/2026', 'Hoàn thành'),
+            caseRow('BT-2026-021', 'Hoàng Văn R', '', 'TAND-NT', '', '', 'Bị trả lại'),
+            caseRow('BT-2026-003-A', 'Công ty ABC', '', 'UBND-CG', '46/QĐ-BT', '11/03/2023', 'Chờ chi trả'),
+            caseRow('BT-2026-010-TDC', 'Đặng Văn T', '', 'STP-HN', '', '', 'Hoãn giải quyết', 'claim', 'STP-HN')
         ];
         const relatedRefundMockRows = [
-            caseRow('HT-2026-001', 'Lê Văn H', '', 'UBND-CG', '89/QĐ-HT', '06/08/2026', 'Đang thu hồi', 'refund'),
-            caseRow('HT-2026-004', 'Công ty ABC', '', 'UBND-HK', '12/QĐ-GMHT', '02/08/2026', 'Đã giảm mức hoàn trả', 'refund'),
-            caseRow('HT-2026-007', 'Hoàng Văn R', '', 'CCTHADS-BT', '', '', 'Chờ ban hành quyết định', 'refund')
+            caseRow('HT-2026-001', 'Nguyễn Văn A', '', 'STP-HN', '89/QĐ-HT', '06/08/2026', 'Thu tiền hoàn trả', 'refund'),
+            caseRow('HT-2026-004', 'Công ty Hải Phát', '', 'STP-HN', '12/QĐ-GMHT', '02/08/2026', 'Hoàn thành', 'refund'),
+            caseRow('HT-2026-007', 'Lê Minh Đức', '', 'STP-HN', '', '', 'Bị trả lại thành lập HĐ', 'refund')
         ];
         const relatedMixedMockRows = [
             ...relatedClaimMockRows,
             ...relatedRefundMockRows,
-            caseRow('QĐ 22/QĐ-GQBT', 'Lê Văn H', '', 'UBND-CG', '22/QĐ-GQBT', '05/08/2026', 'Đã ban hành')
+            caseRow('QĐ 56/QĐ-BT', 'Lê Văn H', '', 'THADS-HN', '56/QĐ-BT', '05/07/2026', 'Đã ban hành')
         ];
         // Vụ việc yêu cầu bồi thường toàn quốc (dữ liệu mẫu cho Nguồn 6 - module Thông tin từ các CSDL liên quan)
         const btnnCaseMockRows = [
-            caseRow('BT-2026-045', 'Nguyễn Văn Bình', '', 'TAND-HN', 'Bản án số 12/2026/HSST', '10/06/2026', 'Hoàn thành'),
-            caseRow('BT-2026-030', 'Trần Thị Mai', '', 'UBND-DD', '', '', 'Thương lượng'),
-            caseRow('BT-2026-052', 'Công ty TNHH Minh Phát', '', 'TAND-LD', 'Bản án số 45/2026/HCST', '15/07/2026', 'Xác minh thiệt hại'),
-            caseRow('BT-2026-018', 'Lê Văn Hùng', '', 'THADS-HP', '', '', 'Không thụ lý'),
-            caseRow('BT-2026-038', 'Phạm Thị Hoa', '', 'CA-TX', '', '', 'Cử người giải quyết bồi thường'),
-            caseRow('BT-2026-022', 'Đỗ Thị Hằng', 'Đỗ Văn Nam', 'VKS-Q1', 'Bản án số 08/2026/DSPT', '05/06/2026', 'Đình chỉ giải quyết'),
-            caseRow('BT-2026-014', 'Vũ Thị Lan', '', 'UBND-CG', '', '', 'Chờ ban hành QĐ'),
-            caseRow('BT-2026-061', 'Hoàng Văn Đức', '', 'TAND-NT', 'Bản án số 33/2026/HCPT', '18/03/2026', 'Đang phục hồi danh dự'),
-            caseRow('BT-2026-009', 'Bùi Thị Thu', '', 'CCTHADS-TT', '05/QĐ-GQBT', '10/01/2026', 'Hoàn thành')
+            caseRow('BT-2026-067', 'Kiều Văn Đông', '', 'TAND-HN', '22/QĐ-BT', '20/05/2026', 'Hoàn thành'),
+            caseRow('BT-2026-030', 'Bùi Văn Khánh', '', 'CA-HM', '', '', 'Bị trả lại'),
+            caseRow('BT-2026-052', 'Trần Đình Trọng', '', 'UBND-CG', '', '', 'Cử người giải quyết bồi thường'),
+            caseRow('BT-2026-018', 'Trần Thu O', '', 'CCTS-BD', '', '', 'Chờ duyệt'),
+            caseRow('BT-2026-054', 'Vũ Quang Vinh', '', 'CA-TX', '', '', 'Cử người giải quyết bồi thường'),
+            caseRow('BT-2026-022', 'Trần Văn Phú', '', 'STP-HN', '', '', 'Chờ ban hành QĐ'),
+            caseRow('BT-2026-014', 'Phạm Văn K', '', 'UBND-HN', '', '', 'Không thụ lý'),
+            caseRow('BT-2026-061', 'Lương Văn Thành', '', 'Công an tỉnh Nam Định', '', '', 'Đang phục hồi danh dự'),
+            caseRow('BT-2026-009', 'Nguyễn Văn E', '', 'UBND-DD', '', '', 'Không thụ lý')
         ];
         // Tỉnh/Thành phố của đơn vị, lấy theo tên đơn vị trên cây Cơ cấu tổ chức (đơn vị trung ương: rỗng)
         function provinceOfUnit(unitId) {
@@ -1624,7 +1653,7 @@
             const rootId = user ? W.getRootId(user.unitId) : 'BTP-01';
             const rootName = W ? W.unitName(rootId) : 'Bộ Tư pháp';
             if (rootId === 'BTP-01') return { label: 'Toàn quốc (người dùng thuộc Bộ Tư pháp)', allow: () => true };
-            if (rootId.startsWith('STP-')) {
+            if (W && W.isStpUnit ? W.isStpUnit(rootId) : rootId.startsWith('STP-')) {
                 const prov = provinceOfUnit(rootId);
                 return {
                     label: `Vụ việc do cơ quan trên địa bàn ${prov ? prov.label : ''} giải quyết và vụ việc do ${rootName} tiếp nhận`,
@@ -1695,7 +1724,7 @@
                 return `<div class="form-group"><span class="form-label">${label}${req}</span><input class="form-control" id="field_${id}" placeholder="dd/mm/yyyy"></div>`;
             }
             if (type === 'readonly') {
-                return `<div class="form-group"><span class="form-label">${label}${req}</span><input class="form-control" id="field_${id}" value="Nguyễn Văn Cán Bộ" readonly></div>`;
+                return `<div class="form-group"><span class="form-label">${label}${req}</span><input class="form-control" id="field_${id}" value="${PV.creatorOf(null)}" readonly></div>`;
             }
             // Chọn 01 đơn vị trên cây Cơ cấu tổ chức; field_<id> lưu Tên đơn vị
             if (type === 'unitTree') {
@@ -1930,6 +1959,18 @@
         }
 
         function actionButtons(row, index) {
+            // Bản ghi của đơn vị khác (Bộ Tư pháp/Cục xem bản ghi của Sở Tư pháp): mọi nút mờ, chỉ xem chi tiết bằng click dòng
+            if (!isOwnRow(row)) {
+                const off = (cls, icon, title) => `<button data-admin-icon-normalized="1" class="icon-btn ${cls}" title="${title}" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid ${icon}"></i></button>`;
+                return `
+                    <div style="display:flex; gap:6px; justify-content:center;">
+                        ${config.simple ? `<button data-admin-icon-normalized="1" class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); openForm('view', ${index})"><i class="fa-solid fa-eye"></i></button>` : ''}
+                        ${off('edit', 'fa-pen-to-square', 'Bản ghi của đơn vị khác, không được sửa')}
+                        ${off('delete', 'fa-trash', 'Bản ghi của đơn vị khác, không được xóa')}
+                        ${config.simple ? '' : off('sign', 'fa-reply', 'Bản ghi của đơn vị khác, không được cập nhật phản hồi')}
+                    </div>
+                `;
+            }
             if (config.simple) {
                 return `
                     <div style="display:flex; gap:6px; justify-content:center;">
@@ -2075,7 +2116,7 @@
                     return `<th style="cursor:pointer;" onclick="toggleSort(${index})" title="Click để sắp xếp">${col} <i class="fa-solid ${iconClass}" style="margin-left:4px; font-size:11px;"></i></th>`;
                 }
                 return `<th>${col}</th>`;
-            }).join('')}</tr>`;
+            }).map((th, index) => index === insAfter() ? `${th}${extraCols().map(c => `<th>${c}</th>`).join('')}` : th).join('')}</tr>`;
 
             const textFilters = config.filters.filter(f => typeof f[2] === 'string' && f[2] !== 'date' && f[3] !== undefined)
                 .map(f => ({ col: f[3], value: normalizeSearchText(document.getElementById(`filter_${f[0]}`)?.value) }))
@@ -2083,6 +2124,7 @@
             const statusFilter = document.getElementById('filter_status')?.value || '';
 
             const filtered = rows.filter(row => {
+                if (stpScope && (!PV.canSee(PV.ownerOf(row)) || !PV.matchFilter(PV.ownerOf(row), creatorOfRow(row)))) return false;
                 if (currentFeature === 'giai_dap_vuong_mac') {
                     const qDocNo = normalizeSearchText(document.getElementById('filter_q_docNo')?.value);
                     const qReq = normalizeSearchText(document.getElementById('filter_q_requester')?.value);
@@ -2137,7 +2179,8 @@
             const currentRangeEl = document.getElementById('currentRange');
 
             if (total === 0) {
-                body.innerHTML = `<tr><td colspan="${config.columns.length + 1}" style="text-align:center; color:var(--text-muted); font-style:italic; padding:26px;">Không tìm thấy kết quả phù hợp với điều kiện tìm kiếm. [MSG-INF-SYS-001]</td></tr>`;
+                const colspan = config.columns.length + 1 + extraCols().length;
+                body.innerHTML = stpScope && PV.level() === 'OTHER' ? PV.denyRow(colspan) : `<tr><td colspan="${colspan}" style="text-align:center; color:var(--text-muted); font-style:italic; padding:26px;">Không tìm thấy kết quả phù hợp với điều kiện tìm kiếm. [MSG-INF-SYS-001]</td></tr>`;
                 if (totalCountEl) totalCountEl.innerText = '0';
                 if (currentRangeEl) currentRangeEl.innerText = '0-0';
                 renderPaginationPages(1);
@@ -2166,7 +2209,8 @@
                                 value = `<a href="javascript:void(0)" onclick="event.stopPropagation(); viewDocumentFileDirect('${cell}')" style="color:var(--primary-color); font-weight:600; text-decoration:underline;"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:4px;"></i>${cell}</a>`;
                             }
                             const alignCenter = (cellIndex === 0 || cellIndex === 1 || cellIndex === 5);
-                            return `<td style="${alignCenter ? 'text-align:center;' : ''}" title="${String(cell).replace(/"/g, '&quot;')}">${value}</td>`;
+                            const unitCell = cellIndex === insAfter() ? extraCells(row).map(v => `<td>${v}</td>`).join('') : '';
+                            return `<td style="${alignCenter ? 'text-align:center;' : ''}" title="${String(cell).replace(/"/g, '&quot;')}">${value}</td>${unitCell}`;
                         }).join('')}
                         <td style="text-align:center;">${actionButtons(row, realIndex)}</td>
                     </tr>
@@ -2268,6 +2312,8 @@
             document.getElementById('detailPanel').classList.add('visible');
             document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${mode === 'new' ? 'Thêm mới' : mode === 'edit' ? 'Sửa' : 'Xem chi tiết'} ${config.title.charAt(0).toLowerCase() + config.title.slice(1)}`;
             document.getElementById('formMode').innerText = mode === 'new' ? 'Thêm mới' : mode === 'edit' ? 'Sửa' : 'Chỉ xem';
+            // Cán bộ xử lý: người tạo bản ghi; thêm mới: người dùng đang đăng nhập
+            document.getElementById('formOfficer').innerText = row ? creatorOfRow(row) : PV.creatorOf(null);
             // Ô Trạng thái: lấy theo cột trạng thái của module; module không có trạng thái thì ẩn ô này
             const statusIdx = config.columns.findIndex(c => isStatusColumn(c));
             const statusBox = document.getElementById('formStatus').parentElement;
@@ -2387,13 +2433,17 @@
         function renderFormActions(status, mode) {
             const actions = document.getElementById('formActions');
             if (mode === 'view') {
-                // Module kiến nghị/yêu cầu: chỉ cho Sửa, Xóa khi bản ghi chưa có phản hồi
+                // Module kiến nghị/yêu cầu: chỉ cho Sửa, Xóa khi bản ghi chưa có phản hồi; bản ghi của đơn vị khác: chỉ có nút Đóng
+                if (stpScope && !isOwnRow(rows[selectedRowIndex])) {
+                    actions.innerHTML = `<button class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>`;
+                    return;
+                }
+                // Màn hình Xem chi tiết chỉ hiển thị nút được phép
                 const canEdit = config.simple || status === 'Đã gửi - Chờ phản hồi';
-                const lock = canEdit ? '' : ' style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Bản ghi đã có phản hồi, không được sửa, xóa"';
                 actions.innerHTML = `
                     <button class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>
-                    <button class="btn btn-danger"${lock} onclick="deleteFromDetail()"><i class="fa-solid fa-trash-can"></i> Xóa</button>
-                    <button class="btn btn-primary"${lock} onclick="openForm('edit', selectedRowIndex)"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
+                    ${canEdit ? `<button class="btn btn-danger" onclick="deleteFromDetail()"><i class="fa-solid fa-trash-can"></i> Xóa</button>
+                    <button class="btn btn-primary" onclick="openForm('edit', selectedRowIndex)"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>` : ''}
                 `;
                 return;
             }
@@ -2746,7 +2796,7 @@
 
                 const newRow = [docNo, ansDate, reqName, recMethod, sendMethod, recDate, attachFile, reqType, address];
                 if (selectedRowIndex !== null) {
-                    rows[selectedRowIndex] = newRow;
+                    rows[selectedRowIndex] = keepMeta(rows[selectedRowIndex], newRow);
                     showToast('Cập nhật thông tin giải đáp vướng mắc thành công. [MSG-SUC-SYS-002]');
                 } else {
                     rows.unshift(newRow);
@@ -2757,7 +2807,7 @@
                 const isEdit = selectedRowIndex !== null;
                 const persist = () => {
                     const newRow = buildRow(isEdit ? rows[selectedRowIndex] : null);
-                    if (isEdit) rows[selectedRowIndex] = newRow;
+                    if (isEdit) rows[selectedRowIndex] = keepMeta(rows[selectedRowIndex], newRow);
                     else rows.unshift(newRow);
                     showToast(isEdit ? 'Cập nhật thông tin thành công.' : 'Thêm mới thông tin thành công.');
                     closeForm();
@@ -2770,7 +2820,7 @@
                     config.textareas.forEach(([id]) => values.push(document.getElementById(`field_${id}`)?.value || ''));
                 }
                 if (selectedRowIndex !== null) {
-                    rows[selectedRowIndex] = values;
+                    rows[selectedRowIndex] = keepMeta(rows[selectedRowIndex], values);
                 } else {
                     rows.unshift(values);
                 }
@@ -2784,7 +2834,7 @@
             if (!validateForm()) return;
             if (config.rowFieldMap) {
                 if (blockIfDuplicate()) return;
-                rows[selectedRowIndex] = buildRow(rows[selectedRowIndex]);
+                rows[selectedRowIndex] = keepMeta(rows[selectedRowIndex], buildRow(rows[selectedRowIndex]));
             }
             showToast('Cập nhật thông tin thành công.');
             closeForm();
@@ -2863,7 +2913,7 @@
 
         // Quyết định GQBT đã bị hủy (thao tác Hủy QĐ) tại Module Quyết định giải quyết bồi thường
         const cancelledDecisions = [
-            { decNo: '18/QĐ-UBND', issueDate: '20/07/2026', agency: 'UBND Quận Hoàng Mai', cancelDate: '15/08/2026', claim: 'BT-2026-006 - Lý Thị K' }
+            { decNo: '18/QĐ-UBND', issueDate: '20/07/2026', agency: 'UBND phường Bạch Mai', cancelDate: '15/08/2026', claim: 'BT-2026-006 - Lý Thị K' }
         ];
         let selectedCancelDecision = null;
         function setResponseError(el, msg) {
@@ -2937,12 +2987,16 @@
         };
         function exportExcel() {
             const gridCols = config.columns.slice(0, -1);
-            const cells = row => (currentFeature === 'giai_dap_vuong_mac') ? row.slice(0, 6) : row.slice(0, gridCols.length);
+            const baseCells = row => (currentFeature === 'giai_dap_vuong_mac') ? row.slice(0, 6) : row.slice(0, gridCols.length);
+            // Cột Cán bộ xử lý, Đơn vị thực hiện (người dùng thuộc Bộ Tư pháp/Cục): đúng vị trí cột trên lưới
+            const k = insAfter() + 1;
+            const cells = row => { const c = baseCells(row); return [...c.slice(0, k), ...extraCells(row), ...c.slice(k)]; };
             return BTNN_XLSX.exportGrid({
                 title: config.title,
                 name: XLSX_FILE_NAMES[moduleKey] || 'Danh_sach_nghiep_vu_BTNN',
-                headers: gridCols,
-                rows: lastFilteredRows.map(cells)
+                headers: [...gridCols.slice(0, k), ...extraCols(), ...gridCols.slice(k)],
+                rows: lastFilteredRows.map(cells),
+                note: stpScope ? PV.filterNote() : ''
             });
         }
 
@@ -2957,6 +3011,8 @@
                 if (fromEl) fromEl.value = formatDateVi(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
                 if (toEl) toEl.value = formatDateVi(new Date());
             }
+            const unitFilter = document.getElementById('filter_unit');
+            if (unitFilter) { unitFilter.value = ''; document.getElementById('filter_unit_text').value = 'Tất cả'; }
             currentPage = 1;
             renderTable();
             showToast('Đã xóa bộ lọc và đưa về giá trị mặc định.');
@@ -2973,13 +3029,18 @@
         function init() {
             document.title = config.title;
             document.getElementById('pageTitle').innerHTML = `<i class="fa-solid ${config.icon}"></i> ${config.title}`;
-            document.getElementById('filterGrid').innerHTML = config.filters.map(renderFilterControl).join('');
+            const filterHtml = config.filters.map(renderFilterControl);
+            // Bộ lọc Đơn vị thực hiện (chỉ người dùng thuộc Bộ Tư pháp/Cục) đặt sau 02 ô tìm kiếm đầu
+            if (stpScope) filterHtml.splice(2, 0, PV.filterHtml({ label: 'Đơn vị thực hiện', includeBtp: false }));
+            document.getElementById('filterGrid').innerHTML = filterHtml.join('');
             if (currentFeature === 'giai_dap_vuong_mac') {
                 const fromEl = document.getElementById('filter_fromDate');
                 const toEl = document.getElementById('filter_toDate');
                 if (fromEl) fromEl.value = formatDateVi(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
                 if (toEl) toEl.value = formatDateVi(new Date());
             }
+            // Nhóm "Nghiệp vụ dùng cho STP": chỉ người dùng thuộc Sở Tư pháp được thêm mới
+            if (stpScope) document.getElementById('btnAddNew').style.display = PV.canCreate(true) ? '' : 'none';
             currentPage = 1;
             renderTable();
         }
@@ -2990,14 +3051,14 @@
     </script>
     <!-- Kết xuất Excel dùng chung BTNN (SheetJS như dashboard_btnn.html) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="btnn_ket_xuat_excel.js?v=20261029xlsx"></script>
+    <script src="btnn_ket_xuat_excel.js?v=20261030dvth1"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_form_page.js?v=20261026fp"></script>
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 
 </html>

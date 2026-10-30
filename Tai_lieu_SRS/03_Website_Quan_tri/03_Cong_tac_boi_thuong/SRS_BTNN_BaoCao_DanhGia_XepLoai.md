@@ -107,14 +107,14 @@ flowchart TD
 | **VI. Phân trang và trạng thái kết xuất** | | | | |
 | Số dòng hiển thị | Enum(String(10)) | Không | 20 bản ghi/trang | Control UI: Dropdown.<br>- Cho phép chọn số bản ghi hiển thị trên mỗi trang.<br>- Giá trị gồm:<br>+ `10`<br>+ `20`<br>+ `50`<br>+ `100`. |
 | Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
-| Trạng thái kỳ tổng hợp | Enum(String(50)) | Không | Nháp | - Giá trị gồm:<br>+ Nháp<br>+ Đã kết xuất |
+| Trạng thái kỳ tổng hợp | Enum(String(50)) | Không | Đang nhập liệu | - Giá trị gồm:<br>+ Đang nhập liệu<br>+ Đã kết xuất |
 
 ###### 4.3.3.25.3.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Tổng hợp số liệu | Button | TH1 (Không có dữ liệu phù hợp): Hệ thống hiển thị [MSG-INF-BTNN-CD-023] tại vùng kết quả tổng hợp, đặt các chỉ tiêu tổng quan bằng 0, không hiển thị phân trang và làm mờ nút `Kết xuất`. |
-|  |  |  | TH Hợp lệ: Hệ thống tổng hợp dữ liệu theo điều kiện lọc hiện hành; hiển thị khối tổng quan kết quả, bảng kết quả tổng hợp theo đơn vị, bảng phân bố xếp loại, bảng tổng hợp theo nhóm tiêu chí và đặt `Trạng thái kỳ tổng hợp` là "Nháp". |
+|  |  |  | TH Hợp lệ: Hệ thống tổng hợp dữ liệu theo điều kiện lọc hiện hành; hiển thị khối tổng quan kết quả, bảng kết quả tổng hợp theo đơn vị, bảng phân bố xếp loại, bảng tổng hợp theo nhóm tiêu chí và đặt `Trạng thái kỳ tổng hợp` là "Đang nhập liệu". |
 | 2 | Xóa bộ lọc | Button | Hệ thống đưa các tiêu chí lọc về giá trị mặc định, tải lại dữ liệu theo phạm vi tài khoản đăng nhập, đưa trang hiện tại về trang 1 và hiển thị [MSG-SUC-BTNN-CD-001]. |
 | 3 | Kết xuất | Button/Menu | TH1 (Không có dữ liệu để kết xuất): Hệ thống kiểm tra theo [BR-EXP-041], hiển thị [MSG-WRN-SYS-002] và không sinh file. |
 |  |  |  | TH Hợp lệ: Hệ thống mở menu chọn định dạng gồm `Excel`, `DOC`, `PDF`. |

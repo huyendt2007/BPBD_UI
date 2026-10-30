@@ -22,7 +22,7 @@
 
 \- Phân loại nguồn thụ lý của từng vụ việc (tại cơ quan trực tiếp quản lý người thi hành công vụ/tại Tòa án theo điểm a khoản 1 Điều 52/theo điểm b khoản 1 và khoản 2 Điều 52/trong quá trình tố tụng hình sự-hành chính theo Điều 55) được suy ra từ các trường `Tình trạng pháp lý hồ sơ`, `Nguồn phát sinh bản án`, `Trường hợp khởi kiện` đã đặc tả tại SRS Giải quyết yêu cầu bồi thường; không yêu cầu nhập liệu bổ sung. Đối với vụ việc khai báo tại [Theo dõi vụ việc tại Tòa án - Theo dõi vụ việc tại Tòa án - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_TheoDoiVuViecToaAn.md), nguồn thụ lý tại Tòa án được suy ra từ các trường `Nguồn phát sinh bản án`, `Trường hợp khởi kiện` của vụ việc đó.
 \- Với vụ việc lấy từ Theo dõi vụ việc tại Tòa án: trạng thái `Đã có bản án/QĐ` được tính vào nhóm "Đã có văn bản giải quyết bồi thường có hiệu lực pháp luật - Tại Tòa án"; trạng thái `Đã thụ lý`, `Đang giải quyết` được tính vào nhóm "Đang giải quyết - Tại Tòa án"; trạng thái `Trả lại đơn khởi kiện` không được tính ở bất kỳ chỉ tiêu nào.
-\- Với vụ việc lấy từ Giải quyết yêu cầu bồi thường: đếm theo Mã vụ việc và Trạng thái vụ việc theo quy tắc [Vụ việc gồm 02 nhánh giải quyết - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-vu-viec-hai-nhanh); vụ việc `Yêu cầu cả hai` tính 01 vụ việc; vụ việc có Trạng thái vụ việc `Đang phục hồi danh dự` chưa tính vào nhóm đã giải quyết xong.
+\- Với vụ việc lấy từ Giải quyết yêu cầu bồi thường: đếm theo Mã vụ việc và Trạng thái vụ việc; vụ việc `Yêu cầu cả hai` tính 01 vụ việc; vụ việc có Trạng thái vụ việc `Đang phục hồi danh dự` chưa tính vào nhóm đã giải quyết xong.
 
 \- Số tiền trên biểu mẫu kết xuất quy đổi theo đơn vị `nghìn đồng`; hệ thống tự động quy đổi từ dữ liệu nghiệp vụ lưu theo đơn vị đồng.
 
@@ -89,12 +89,12 @@ flowchart TD
 | (21) Đang giải quyết (vụ việc) - Tại Tòa án - Trong quá trình tố tụng hình sự, tố tụng hành chính | Integer(10) | - | Hệ thống tính | Chỉ đọc. Đếm vụ việc đang giải quyết bồi thường trong quá trình tố tụng hình sự, tố tụng hành chính. |
 | (22) Đình chỉ (vụ việc) - Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại | Integer(10) | - | Hệ thống tính | Chỉ đọc. Đếm vụ việc thuộc nhóm cơ quan trực tiếp quản lý, `Trạng thái` = "Đình chỉ giải quyết". |
 | (23) Đình chỉ (vụ việc) - Tại Tòa án/theo thủ tục tố tụng tại Tòa án | Integer(10) | - | Hệ thống tính | Chỉ đọc. Đếm vụ việc thuộc nhóm Tòa án hoặc tố tụng, `Trạng thái` = "Đình chỉ giải quyết". |
-| **Chi trả tiền bồi thường** | | | | Nhóm cột thể hiện số vụ việc và số tiền đã chi trả. |
+| **Chi trả tiền bồi thường** | | | | Nhóm cột thể hiện số vụ việc và số tiền đã chi trả.<br>- Số tiền đã chi trả theo Số tiền đã chi thực tế; vụ việc trả lại ngân sách nhà nước một phần vẫn tính là đã chi trả.<br>- Số tiền trả lại ngân sách nhà nước không tính (biểu mẫu không có chỉ tiêu riêng). |
 | (24) Số vụ việc đã chi trả (vụ việc) | Integer(10) | - | Hệ thống tính | Chỉ đọc. Đếm vụ việc có đề nghị cấp kinh phí bồi thường ở trạng thái "Hoàn thành" (đã chi trả xong) theo SRS Quản lý kinh phí bồi thường. |
 | (25) Số tiền đã chi trả theo quyết định có hiệu lực của cơ quan trực tiếp quản lý người thi hành công vụ (nghìn đồng) | Decimal(18,0) | - | Hệ thống tính | Chỉ đọc. Tổng `Số tiền thực tế chi trả` của các vụ việc đã giải quyết tại cơ quan trực tiếp quản lý, quy đổi đơn vị nghìn đồng. |
 | (26) Số tiền đã chi trả theo bản án, quyết định có hiệu lực của Tòa án (nghìn đồng) | Decimal(18,0) | - | Hệ thống tính | Chỉ đọc. Tổng `Số tiền thực tế chi trả` của các vụ việc đã giải quyết tại Tòa án hoặc trong quá trình tố tụng hình sự/hành chính, quy đổi đơn vị nghìn đồng. |
 | Ghi chú nội bộ hệ thống | Text(2000) | Không | Trống | **Không thuộc 26 cột chính thức của Mẫu số 03/BTNN gốc** (không có số chỉ tiêu riêng), hiển thị thành 1 khung ghi chú riêng ngay dưới bảng. Dùng để cán bộ nghiệp vụ BTNN giải trình chênh lệch số liệu hoặc ghi chú nguồn dữ liệu khi cần điều chỉnh thủ công; không in ra khi kết xuất đúng theo Mẫu số 03/BTNN gốc. |
-| Trạng thái kỳ tổng hợp | Enum(String(50)) | - | `Nháp` | \- Giá trị gồm:<br>+ Nháp<br>+ Đã kết xuất |
+| Trạng thái kỳ tổng hợp | Enum(String(50)) | - | `Đang nhập liệu` | \- Giá trị gồm:<br>+ Đang nhập liệu<br>+ Đã kết xuất |
 | Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
 
 ###### 4.3.3.22.3.3. Chức năng trên màn hình
@@ -102,7 +102,7 @@ flowchart TD
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Tổng hợp số liệu | Button | Trường hợp không có vụ việc phù hợp: Hệ thống hiển thị bảng Mẫu số 03/BTNN với toàn bộ số liệu bằng 0 kèm thông báo không có dữ liệu. |
-|  |  |  | Trường hợp có dữ liệu: Hệ thống tính toán số liệu theo từng dòng lĩnh vực và dòng `Tổng cộng`, thực hiện kiểm tra tổng ngang/tổng dọc theo công thức mẫu, hiển thị bảng tổng hợp ở trạng thái kỳ tổng hợp `Nháp`. |
+|  |  |  | Trường hợp có dữ liệu: Hệ thống tính toán số liệu theo từng dòng lĩnh vực và dòng `Tổng cộng`, thực hiện kiểm tra tổng ngang/tổng dọc theo công thức mẫu, hiển thị bảng tổng hợp ở trạng thái kỳ tổng hợp `Đang nhập liệu`. |
 |  |  |  | Trường hợp phát hiện lệch công thức: Hệ thống tô nổi bật các ô bị lệch công thức và hiển thị [MSG-WRN-SYS-001] tại vùng bảng; vẫn cho phép xem nhưng cảnh báo trước khi kết xuất. |
 | 2 | Kết xuất | Button/Menu | Khi chọn nút `Kết xuất`, hệ thống mở menu chọn định dạng gồm `Excel`, `DOC`, `PDF`. |
 |  |  |  | Chọn `Excel`: Hệ thống kết xuất bảng tổng hợp hiện hành ra file Excel theo đúng cấu trúc Mẫu số 03/BTNN, quy đổi số tiền sang nghìn đồng và hiển thị [MSG-SUC-SYS-002]. |
@@ -119,6 +119,6 @@ flowchart TD
 
 \- Vụ việc tại Tòa án ở trạng thái `Trả lại đơn khởi kiện` (theo dõi tại [Theo dõi vụ việc tại Tòa án - Theo dõi vụ việc tại Tòa án - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_TheoDoiVuViecToaAn.md)) không được tính vào bất kỳ cột số liệu nào của Mẫu số 03/BTNN. Sau khi tổng hợp, thông báo tổng hợp thành công phía trên bảng hiển thị kèm nội dung *"Không tính các vụ việc tại Tòa án ở trạng thái "Trả lại đơn khởi kiện"."*
 
-\- Kỳ tổng hợp ở trạng thái `Nháp` cho phép bấm `Tổng hợp số liệu` để tính lại khi dữ liệu nghiệp vụ thay đổi; sau khi chuyển `Đã kết xuất`, lần kết xuất tiếp theo tạo phiên bản file mới, không ghi đè phiên bản đã kết xuất trước đó.
+\- Kỳ tổng hợp ở trạng thái `Đang nhập liệu` cho phép bấm `Tổng hợp số liệu` để tính lại khi dữ liệu nghiệp vụ thay đổi; sau khi chuyển `Đã kết xuất`, lần kết xuất tiếp theo tạo phiên bản file mới, không ghi đè phiên bản đã kết xuất trước đó.
 
 \- Bảng hiển thị và file kết xuất phải tuân thủ đúng bố cục Mẫu số 03/BTNN (26 cột được đánh số `(1)` đến `(26)` tính cả cột `STT`, lồng nhóm nhiều cấp đúng như văn bản gốc); không bổ sung cột nội bộ vào trong bảng 26 cột này. Riêng `Ghi chú nội bộ hệ thống` hiển thị tách riêng thành khung ghi chú ngay dưới bảng, không có số chỉ tiêu và không tính là cột bổ sung vi phạm quy tắc trên.

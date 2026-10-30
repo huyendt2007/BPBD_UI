@@ -30,7 +30,7 @@
     function claimNow() {
         try { return claimsList.find(function (c) { return c.id === selectedClaimId; }) || null; } catch (e) { return null; }
     }
-    function normAll() { try { (claimsList || []).forEach(function (c) { TH.normClaim(c); xmDocsNorm(c); }); } catch (e) { /* mockup */ } }
+    function normAll() { try { (claimsList || []).forEach(function (c) { TH.normClaim(c); xmDocsNorm(c); bbNorm(c); }); } catch (e) { /* mockup */ } }
     function bsMap(claim) {
         var s = {};
         ((claim && claim.thietHaiList) || []).forEach(function (it) { if (it.bs) s[code(it.type)] = it.bsStep || 'xm'; });
@@ -400,13 +400,11 @@
             if (old) old.remove();
             g.insertAdjacentHTML('beforebegin', '<div class="form-group" id="xmReportGroup" style="margin-top:15px;">'
                 + '<span class="form-label">Báo cáo xác minh thiệt hại <span class="required">*</span><div style="font-size:12px; font-weight:400; color:#64748b;">Tài liệu trả cho người yêu cầu bồi thường; bắt buộc khi Hoàn thành xác minh.</div></span>'
-                + '<div id="editXmReportList" style="margin-top:6px;"></div>'
-                + '<div class="error-message" id="xmReportErr" style="color:#dc2626; font-size:12px; display:none;">Đây là trường bắt buộc</div></div>');
-            xmReportDraft = (claim.xmReportFiles || []).map(function (f) { return Object.assign({}, f); });
-            if (typeof ctvvDocsMount === 'function') ctvvDocsMount('xm_bc', 'editXmReportList', ctvvFromLegacy(xmReportDraft), {
-                required: false, title: '',
-                onSync: function (rows) { xmReportDraft = ctvvToLegacy(rows); var e = el('xmReportErr'); if (e && xmReportDraft.length) e.style.display = 'none'; }
-            });
+                + '<div id="editXmReportList" style="margin-top:6px;"></div></div>');
+            // [dvc1] Trường 01 tệp .pdf (không phải bảng nhiều dòng)
+            var rep0 = pdfNorm((claim.xmReportFiles || [])[0]);
+            xmReportDraft = rep0 ? [rep0] : [];
+            pdfMount('xm_bc', 'editXmReportList', rep0, function (f) { xmReportDraft = f ? [f] : []; if (f) pdfErr('xm_bc', ''); });
         }
         var te = el('editXacMinhTimeExtension');
         if (!te) return;
@@ -445,14 +443,8 @@
             set(f, !f.value.trim() ? 'Đây là trường bắt buộc' : (!df ? 'Ngày không đúng định dạng dd/mm/yyyy' : ''));
             set(t, !t.value.trim() ? '' : (!dt ? 'Ngày không đúng định dạng dd/mm/yyyy' : (df && dt < df ? 'Đến ngày phải lớn hơn hoặc bằng Từ ngày' : '')));
         }
-        var rep = el('editXmReportList');
-        if (rep) {
-            var okRows = typeof ctvvDocsValidate === 'function' ? ctvvDocsValidate('xm_bc', false) : true;
-            var miss = complete && !(xmReportDraft || []).some(function (x) { return x && x.name; });
-            var e = el('xmReportErr');
-            if (e) e.style.display = miss ? 'block' : 'none';
-            if ((miss || !okRows) && !first) first = rep;
-        }
+        var bad = pdfValidate('xm_bc', complete);
+        if (bad && !first) first = bad;
         return first;
     }
     function xmBcCheck(complete) { return xmBcValidate(complete); }
@@ -460,7 +452,7 @@
     function xmDocsBlocks(rep, oth, pfx) {
         return vxmTitle('fa-file-contract', 'Báo cáo xác minh thiệt hại')
             + '<div style="font-size:12px; color:#475569; margin:-2px 0 6px;">Tài liệu trả cho người yêu cầu bồi thường</div>'
-            + (rep.length ? vxmDocsTableHtml(rep, pfx + '_report') : '<div style="font-size:12.5px; color:#94a3b8; font-style:italic;">Chưa có Báo cáo xác minh thiệt hại</div>')
+            + pdfViewHtml(rep[0], pfx + '_report', 'Chưa có Báo cáo xác minh thiệt hại')
             + (oth.length ? vxmTitle('fa-paperclip', 'Tài liệu đính kèm khác trong quá trình xác minh') + '<div style="font-size:12px; color:#475569; margin:-2px 0 6px;">Tài liệu nội bộ của đơn vị giải quyết bồi thường; không trả cho người yêu cầu bồi thường</div>' + vxmDocsTableHtml(oth, pfx + '_internal') : '');
     }
     var EXT_FIELD_RE = /<div class="vxm-text-field"[^>]*><div[^>]*>Thỏa thuận việc kéo dài thời gian xác minh<\/div><div[^>]*>[\s\S]*?<\/div><\/div>/;
@@ -501,6 +493,125 @@
         if (last) last.insertAdjacentHTML('afterend', html); else vr.insertAdjacentHTML('beforeend', html);
     }
 
+    // ======================= [dvc1] Trường tệp riêng 01 file PDF =======================
+    // Báo cáo xác minh thiệt hại (key 'xm_bc'), Biên bản kết quả thương lượng việc bồi thường (key 'tl_bb'):
+    // 01 tệp, chỉ .pdf ([MSG-ERR-FILE-001]), tối đa 50MB ([MSG-ERR-FILE-006]); không có nút thêm dòng; lỗi hiển thị tại trường (không toast).
+    // Hồ sơ Nguồn hồ sơ = Dịch vụ công: tên tệp, dung lượng, mã băm của đúng tệp này được gửi về Dịch vụ công quốc gia.
+    var PDF_MAX = 50 * 1024 * 1024;
+    var PDF_REQ = 'Đây là trường bắt buộc';
+    var PDF_TYPE = 'Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .pdf.';
+    var PDF = {};
+    var pdfCss = document.createElement('style');
+    pdfCss.textContent = '.lth-pdf-file{display:flex;align-items:center;gap:10px;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;background:#fff;max-width:640px;}'
+        + '.lth-pdf-file .pdtb-file{flex:1 1 auto;min-width:0;}.lth-pdf-file .tlkt-acts{margin-left:auto;flex:none;}'
+        + '.lth-pdf .lth-pdf-err{color:#dc2626;font-size:12px;margin-top:4px;}.lth-pdf .tlkt-btn.is-invalid{border-color:#dc2626 !important;box-shadow:0 0 0 1px #dc2626;}';
+    document.head.appendChild(pdfCss);
+    function pdfNorm(f) {
+        if (!f) return null;
+        var name = (typeof f === 'string' ? f : (f.name || f.file)) || '';
+        return name ? { name: name, size: f.size || '', fileId: f.fileId || f.tlktId || '', url: f.url || '#', title: f.title || '' } : null;
+    }
+    function pdfMount(key, hostId, file, onChange) {
+        PDF[key] = { hostId: hostId, file: pdfNorm(file), onChange: onChange || null };
+        pdfRender(key);
+    }
+    function pdfCard(f, btns) {
+        return '<div class="lth-pdf-file">' + (typeof pdtbFileHtml === 'function' ? pdtbFileHtml({ file: f.name, size: f.size }) : esc(f.name)) + '<span class="tlkt-acts">' + btns + '</span></div>';
+    }
+    function pdfRender(key) {
+        var s = PDF[key], host = s ? el(s.hostId) : null;
+        if (!host) return;
+        if (typeof ctvvCss === 'function') ctvvCss();
+        var f = s.file, k = '\'' + key + '\'';
+        host.innerHTML = '<div class="ctvv-docs lth-pdf" id="lthPdf_' + key + '">'
+            + '<input type="file" id="lthPdfInput_' + key + '" accept=".pdf" style="display:none;" onchange="lthPdfPick(' + k + ', this)">'
+            + (f ? pdfCard(f, '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib" title="Xem file" aria-label="Xem file" onclick="lthPdfView(' + k + ')"><i class="fa-solid fa-eye"></i></button>'
+                + '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib tlkt-ib-del" id="lthPdfDel_' + key + '" title="Xóa" aria-label="Xóa" onclick="lthPdfRemove(' + k + ')"><i class="fa-solid fa-trash"></i></button>')
+                : '<button type="button" class="tlkt-btn tlkt-btn-pri" id="lthPdfBtn_' + key + '" onclick="document.getElementById(\'lthPdfInput_' + key + '\').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>')
+            + '<div class="error-message lth-pdf-err" id="lthPdfErr_' + key + '" style="display:none;"></div>'
+            + '<div class="tlkt-hint"><i class="fa-solid fa-circle-info"></i> Chỉ chấp nhận 01 tệp .pdf (tối đa 50MB).</div></div>';
+    }
+    function pdfErr(key, msg) {
+        var e = el('lthPdfErr_' + key), b = el('lthPdfBtn_' + key);
+        if (e) { e.textContent = msg || ''; e.style.display = msg ? 'block' : 'none'; }
+        if (b) b.classList.toggle('is-invalid', !!msg);
+        return msg ? (b || el('lthPdf_' + key)) : null;
+    }
+    window.lthPdfPick = function (key, input) {
+        var s = PDF[key], f = input && input.files && input.files[0];
+        if (input) input.value = '';
+        if (!s || !f) return;
+        if (!/\.pdf$/i.test(f.name || '')) { pdfErr(key, PDF_TYPE); return; }
+        if (f.size > PDF_MAX) { pdfErr(key, 'Dung lượng tệp tin ' + f.name + ' vượt quá 50MB. Vui lòng kiểm tra lại.'); return; }
+        s.file = { name: f.name, size: f.size, fileId: typeof tlktKeep === 'function' ? tlktKeep(f) : '', url: '#', title: '' };
+        pdfRender(key);
+        if (s.onChange) s.onChange(pdfGet(key));
+    };
+    window.lthPdfRemove = function (key) {
+        var s = PDF[key];
+        if (!s) return;
+        s.file = null;
+        pdfRender(key);
+        if (s.onChange) s.onChange(null);
+    };
+    window.lthPdfView = function (key) {
+        var f = PDF[key] && PDF[key].file;
+        if (f && typeof ctvvOpenDoc === 'function') ctvvOpenDoc({ file: f.name, fileId: f.fileId });
+    };
+    function pdfGet(key) { var f = PDF[key] && PDF[key].file; return f ? Object.assign({}, f) : null; }
+    // Kiểm tra khi lưu: bắt buộc mà chưa có tệp -> lỗi tại trường; trả về ô lỗi hoặc null
+    function pdfValidate(key, required) {
+        if (!PDF[key] || !el('lthPdf_' + key)) return null;
+        return pdfErr(key, required && !PDF[key].file ? PDF_REQ : '');
+    }
+    // Chế độ xem: 01 tệp (Xem file / Tải file)
+    function pdfViewHtml(f, id, emptyText) {
+        f = pdfNorm(f);
+        if (!f) return '<div' + (id ? ' id="' + id + '"' : '') + ' style="font-size:12.5px; color:#94a3b8; font-style:italic;">' + esc(emptyText || 'Chưa có tệp') + '</div>';
+        var vid = 'lp' + (++pdfViewSeq);
+        if (typeof CTVV_VIEW !== 'undefined') CTVV_VIEW[vid] = [{ title: '', file: f.name, size: f.size, fileId: f.fileId }];
+        var a = ' data-ctvv-vid="' + vid + '" data-ctvv-i="0"';
+        return '<div class="ctvv-docs lth-pdf-view"' + (id ? ' id="' + id + '"' : '') + '>' + pdfCard(f,
+            '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib" title="Xem file" aria-label="Xem file" data-ctvv-act="view"' + a + '><i class="fa-solid fa-eye"></i></button>'
+            + '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib" title="Tải file" aria-label="Tải file" data-ctvv-act="dl"' + a + '><i class="fa-solid fa-download"></i></button>') + '</div>';
+    }
+    var pdfViewSeq = 0;
+    window.LTH_PDF = { mount: pdfMount, get: pdfGet, validate: pdfValidate, viewHtml: pdfViewHtml };
+
+    // ======================= [dvc1] Biên bản kết quả thương lượng việc bồi thường (trường tệp riêng, Đồng ý thương lượng) =======================
+    // negotiation.bienBan = { name, size, fileId, url }; negotiation.docs = Tài liệu đính kèm khác (không bắt buộc).
+    // Dữ liệu cũ: dòng "Biên bản thương lượng" trong negotiation.docs chuyển sang negotiation.bienBan.
+    var TL_BB_LABEL = 'Biên bản kết quả thương lượng việc bồi thường';
+    function bbIs(d) { var t = noAcc(((d && d.name) || '') + ' ' + ((d && d.file) || '')); return /bien ban/.test(t) && /thuong luong/.test(t) && !/giay moi|vang mat|tu choi/.test(t); }
+    function bbNorm(claim) {
+        var neg = claim && claim.negotiation;
+        if (!neg || neg.bienBan) return;
+        var p = typeof tlParticipationOf === 'function' ? tlParticipationOf(neg) : neg.participation;
+        if (p !== 'DONG_Y' || !Array.isArray(neg.docs)) return;
+        var i = neg.docs.findIndex(bbIs);
+        if (i < 0) return;
+        var d = neg.docs.splice(i, 1)[0];
+        neg.bienBan = pdfNorm({ name: d.file || d.name, size: d.size, fileId: d.fileId, url: d.url });
+    }
+    function renderTlBb(claim) {
+        var old = el('tlBbGroup');
+        if (old) old.remove();
+        var wrap = el('tlDocsWrap'), g = wrap ? wrap.closest('.form-group') : null;
+        if (!g) return;
+        var lb = g.querySelector('.form-label');
+        if (lb) lb.textContent = 'Tài liệu đính kèm';
+        var de = el('tlDocsErr');
+        if (de) de.style.display = 'none';
+        var neg = claim.negotiation || {};
+        var dong = (typeof tlParticipationOf === 'function' ? tlParticipationOf(neg) : neg.participation) === 'DONG_Y';
+        g.insertAdjacentHTML('beforebegin', '<div class="form-group" id="tlBbGroup"><span class="form-label" style="margin:0;">' + TL_BB_LABEL + ' <span class="required">*</span></span><div id="tlBbWrap" style="margin-top:8px;"></div></div>');
+        pdfMount('tl_bb', 'tlBbWrap', dong ? neg.bienBan : null);
+    }
+    window.lthTlBbReadHtml = function (neg) {
+        return vxmTitle('fa-file-signature', TL_BB_LABEL) + pdfViewHtml(neg && neg.bienBan, 'tlBbRead', 'Chưa có ' + TL_BB_LABEL);
+    };
+    var tlBbBad = false;
+
     // ======================= Xem chi tiết: bảng 02 cấp (không hiển thị nhãn Theo yêu cầu / Bổ sung) =======================
     window.vxmItemsTableHtml = function (items, pfx) {
         var cl = claimNow(), off = {};
@@ -539,7 +650,7 @@
     }
     var origTRH = window.tlReadHtml;
     if (typeof origTRH === 'function') window.tlReadHtml = function (claim) {
-        if (claim) TH.normClaim(claim);
+        if (claim) { TH.normClaim(claim); bbNorm(claim); }
         var html = String(origTRH.apply(this, arguments));
         var bs = bsMap(claim);
         html = html.replace(/<table class="custom-table" id="tlItemsRead"[\s\S]*?<\/table>/, function () { return tlTreeRead(claim && claim.negotiation, bs) + tlAgreeReadHtml(claim && claim.negotiation); });
@@ -551,7 +662,7 @@
     // ======================= Thương lượng: Kết quả thương lượng theo từng thiệt hại (02 cấp) =======================
     var origTLR = window.tlRenderEditBlock;
     if (typeof origTLR === 'function') window.tlRenderEditBlock = function (claim) {
-        if (claim) TH.normClaim(claim);
+        if (claim) { TH.normClaim(claim); bbNorm(claim); }
         var r = origTLR.apply(this, arguments);
         try { renderTl(claim); } catch (e) { console.warn('lth tl', e); }
         return r;
@@ -561,14 +672,14 @@
         if (!table || typeof tlState === 'undefined') return;
         var items = tlState.items || [];
         var bs = bsMap(claim);
-        // Giá trị form gốc đã điền (bản nháp / mặc định theo Mức xác minh)
+        // Giá trị form gốc đã điền (kết quả đã lưu / mặc định theo Mức xác minh)
         var vals = items.map(function (it, i) { return { agreed: (el('tlAgreed_' + i) || {}).value || '', status: (el('tlStatus_' + i) || {}).value || '', reason: (el('tlReason_' + i) || {}).value || '' }; });
         var inh = {};
         items.forEach(function (it, i) { var c = TH.codeOfAny(it); if (!c) return; it.key = c; if (TH.isKhac(c)) { it.label = it.label || TH.name(c); TH.setName(c, it.label); } else it.label = TH.name(c); if (bs[c]) it.bs = true; inh[c] = { i: i, it: it }; });
         var neg = claim.negotiation || {};
         var draft = (neg.participation === 'DONG_Y' || !neg.participation) ? (neg.items || []) : [];
         var drafted = function (c) { return draft.find(function (x) { return code(x.key) === c && x.bs && x.bsStep === 'tl'; }) || null; };
-        // Mục kế thừa đã bỏ tích ở bản nháp (neg.offKeys); dòng thiệt hại khác kế thừa / bổ sung ở bản nháp
+        // Mục kế thừa đã bỏ tích ở kết quả đã lưu (neg.offKeys); dòng thiệt hại khác kế thừa / bổ sung ở kết quả đã lưu
         var offK = {};
         ((neg.participation === 'DONG_Y' || !neg.participation) ? (neg.offKeys || []) : []).forEach(function (k) { offK[code(k)] = 1; });
         var khacCodes = Object.keys(inh).filter(TH.isKhac).concat(draft.filter(function (x) { return TH.isKhac(code(x.key)) && x.bs && x.bsStep === 'tl' && !inh[code(x.key)]; }).map(function (x) { TH.setName(code(x.key), x.label); return code(x.key); }));
@@ -576,7 +687,7 @@
         var err = '<div class="error-message" style="color:#dc2626; font-size:11px; display:none;">Đây là trường bắt buộc</div>';
         var key = function (c, x) { return x && x.inh ? String(x.inh.i) : 'C' + c; };
         var arg = function (c, x) { return x && x.inh ? x.inh.i : '\'C' + c + '\''; };
-        // [tlst] Trạng thái thương lượng theo bản nháp đã lưu; chưa có: trống (buộc chọn). Mức tiền bồi thường chỉ nhập khi Thành công
+        // [tlst] Trạng thái thương lượng theo kết quả đã lưu; chưa có: trống (buộc chọn). Mức tiền bồi thường chỉ nhập khi Thành công
         var negOf = function (c) { return draft.find(function (y) { return code(y.key) === c; }) || null; };
         var val = function (c, x) {
             var d = x && x.inh ? negOf(c) : (x && x.d);
@@ -625,6 +736,7 @@
         var chk = document.querySelector('input[name="tlDecision"]:checked');
         placeTlPhdd(chk ? chk.value : 'DONG_Y');
         renderTlAgree(claim);
+        renderTlBb(claim);
     }
     // ======================= [tltt] Thông tin thỏa thuận khác (Đồng ý thương lượng), đặt sau các phần về tiền =======================
     // negotiation.extend = { on, from, to }: Thỏa thuận kéo dài thương lượng; negotiation.earlyEffect = { on, text }: Thỏa thuận hiệu lực sớm hơn của QĐ GQBT
@@ -764,10 +876,12 @@
         tlAdded = added; tlOff = offKeys;
         // [tltt] Khối Thông tin thỏa thuận khác: lỗi thì không lưu (xử lý gốc vẫn hiển thị lỗi các trường khác)
         tlAgreeBlock = !!(chk && chk.value === 'DONG_Y' && tlAgreeValidate());
+        // [dvc1] Biên bản kết quả thương lượng việc bồi thường: bắt buộc khi Đồng ý thương lượng; lỗi hiển thị tại trường
+        tlBbBad = !!(chk && chk.value === 'DONG_Y' && pdfValidate('tl_bb', true));
         try {
             res = origTLS.apply(this, arguments);
         } finally {
-            tlAdded = []; tlOff = []; tlAgreeBlock = false;
+            tlAdded = []; tlOff = []; tlAgreeBlock = false; tlBbBad = false;
             if (!(claim.negotiation && claim.negotiation !== prevNeg)) {
                 tlState.items = old;
                 rename(TL_PFX, pairs.map(function (p) { return [p[1], p[0]]; }));
@@ -785,6 +899,8 @@
             var fe = document.querySelector('#lthTlAgree .is-invalid'); if (fe) fe.focus();
             return;
         }
+        if (tlBbBad && neg && neg.participation === 'DONG_Y') { var bbE = el('lthPdfBtn_tl_bb'); if (bbE && bbE.focus) bbE.focus(); return; }
+        if (neg && neg.participation === 'DONG_Y' && PDF.tl_bb && el('lthPdf_tl_bb')) neg.bienBan = pdfGet('tl_bb');
         if (neg && neg.participation === 'DONG_Y' && el('lthTlAgree')) Object.assign(neg, tlAgreeValues());
         if (neg && Array.isArray(neg.items)) {
             var bs = bsMap(claim);
@@ -811,4 +927,155 @@
         }
         return r;
     };
+
+    // ======================= [dvc1] Form Xác minh thiệt hại / Thương lượng: không dùng toast =======================
+    // Bọc các hàm lưu (sau khi mọi tệp đã nạp, gồm lớp bọc của ctvv/tptl): thông báo của toast được chuyển thành
+    // - Lỗi: chỉ hiển thị lỗi tại trường, cuộn tới trường lỗi đầu tiên; không có trường lỗi thì hiển thị dải thông báo đầu khối.
+    // - Thành công: dải thông báo đầu khối (form vẫn mở) hoặc đầu tab Chi tiết giải quyết bồi thường (form đã đóng).
+    var FORM_HOST = { xm: ['accBody_xacminh', 'xacminhEditBlock'], tl: ['accBody_thuongluong', 'tlEditContainer'] };
+    function noticeIn(host, id, msg, type) {
+        if (typeof gqNoticeIn === 'function') return gqNoticeIn(host, id, msg, type);
+        return null;
+    }
+    function formOpen(kind) { var b = el(FORM_HOST[kind][1]); return !!(b && b.offsetParent !== null && (kind !== 'tl' || b.children.length)); }
+    function clearNotices(kind) { ['lthFormNotice_' + kind, 'lthDetailNotice'].forEach(function (id) { var b = el(id); if (b) { b.style.display = 'none'; b.innerHTML = ''; } }); }
+    function firstFieldError(kind) {
+        var blk = el(FORM_HOST[kind][1]);
+        if (!blk) return null;
+        var cands = blk.querySelectorAll('.is-invalid, .error-message, .lth-pdf-err, .tlkt-err');
+        for (var i = 0; i < cands.length; i++) {
+            var c = cands[i];
+            if (c.classList.contains('is-invalid') || (c.style.display === 'block' && c.textContent.trim())) { if (c.offsetParent !== null) return c; }
+        }
+        return null;
+    }
+    function flush(kind, msgs) {
+        if (!msgs.length) return;
+        var ok = msgs.filter(function (x) { return x.t === 'success' || x.t === 'info'; });
+        var bad = msgs.filter(function (x) { return x.t === 'error' || x.t === 'warning'; });
+        if (ok.length && !bad.length) {
+            var msg = ok[ok.length - 1].m;
+            if (formOpen(kind)) noticeIn(el(FORM_HOST[kind][0]), 'lthFormNotice_' + kind, msg, 'success');
+            else noticeIn(el('detailTabXuLy'), 'lthDetailNotice', msg, 'success');
+            return;
+        }
+        var f = firstFieldError(kind);
+        if (f) { if (f.scrollIntoView) f.scrollIntoView({ block: 'center' }); if (f.focus && /INPUT|SELECT|TEXTAREA|BUTTON/.test(f.tagName)) f.focus(); }
+        else noticeIn(el(FORM_HOST[kind][0]), 'lthFormNotice_' + kind, bad.length ? bad[0].m : msgs[0].m, bad.length ? 'error' : 'success');
+    }
+    var noToastDepth = 0;
+    function noToast(kind, name) {
+        var fn = window[name];
+        if (typeof fn !== 'function' || fn.__lthNoToast) return;
+        var w = function () {
+            var orig = window.showToast, msgs = [], r;
+            if (!noToastDepth) clearNotices(kind);
+            noToastDepth++;
+            window.showToast = function (m, t) { msgs.push({ m: m, t: t || 'success' }); };
+            try { r = fn.apply(this, arguments); } finally { window.showToast = orig; noToastDepth--; }
+            if (noToastDepth) { msgs.forEach(function (x) { orig(x.m, x.t); }); } // lớp ngoài thu lại
+            else flush(kind, msgs);
+            return r;
+        };
+        w.__lthNoToast = true;
+        window[name] = w;
+    }
+    function installNoToast() {
+        noToast('xm', 'saveXacMinhRound');
+        noToast('xm', 'submitXacMinhUpdate');
+        noToast('tl', 'tlSave');
+        noToast('tl', 'tlSubmit');
+    }
+    if (document.readyState === 'complete') installNoToast(); else window.addEventListener('load', installNoToast);
+
+    // ======================= [dvc1] Mô phỏng gửi kết quả về Dịch vụ công (bước phát sinh tại trang này) =======================
+    // Hồ sơ Nguồn hồ sơ = Dịch vụ công đổi Trạng thái vụ việc qua bước gửi (Tài liệu API tích hợp DVC BTNN - mục 8.2):
+    // ghi 01 bản tin vào localStorage 'btnn_dvc_sync_log_new'; màn Nhật ký đồng bộ Dịch vụ công (nhat_ky_dong_bo_dvc.js) nạp vào danh sách.
+    // Mockup chỉ suy bước theo đổi trạng thái tại trang Giải quyết YCBT; Quyết định GQBT, Hủy / Sửa chữa QĐ, Thông báo chi trả, Thông báo PHDD phát sinh ở trang khác.
+    var DVC_CASE = { 'Cử người giải quyết bồi thường': 'CU_NGUOI_GIAI_QUYET', 'Xác minh thiệt hại': 'XAC_MINH_THIET_HAI', 'Thương lượng': 'THUONG_LUONG', 'Chờ ban hành QĐ': 'CHO_BAN_HANH_QD',
+        'Chờ chi trả': 'CHO_CHI_TRA', 'Hoàn thành': 'HOAN_THANH', 'Đang phục hồi danh dự': 'DANG_PHUC_HOI_DANH_DU', 'Hoãn phục hồi danh dự': 'HOAN_PHUC_HOI_DANH_DU', 'Từ chối phục hồi danh dự': 'TU_CHOI_PHUC_HOI_DANH_DU',
+        'Hoãn giải quyết': 'HOAN_GIAI_QUYET', 'Tạm đình chỉ': 'TAM_DINH_CHI', 'Đình chỉ giải quyết': 'DINH_CHI_GIAI_QUYET', 'Dừng giải quyết': 'DUNG_GIAI_QUYET',
+        'Đã chuyển CQGQBT': 'DA_CHUYEN_CQGQBT', 'Không thụ lý': 'KHONG_THU_LY', 'Yêu cầu bổ sung': 'YEU_CAU_BO_SUNG' };
+    var dvcSnap = {};
+    function dvcSource(c) { return /dich vu cong/.test(noAcc(c && c.nguonHoSo)); }
+    function dvcStepOf(prev, c) {
+        var cur = c.status, paused = prev === 'Hoãn giải quyết' || prev === 'Tạm đình chỉ';
+        if (cur === 'Hoãn giải quyết') return 'QUYET_DINH_HOAN';
+        if (cur === 'Tạm đình chỉ') return 'QUYET_DINH_TAM_DINH_CHI';
+        if (cur === 'Đình chỉ giải quyết') return 'QUYET_DINH_DINH_CHI';
+        if (cur === 'Dừng giải quyết') return 'THONG_BAO_DUNG_GIAI_QUYET';
+        if (paused) return 'QUYET_DINH_TIEP_TUC';
+        if (cur === 'Cử người giải quyết bồi thường') return 'THONG_BAO_THU_LY';
+        if (cur === 'Yêu cầu bổ sung') return 'YEU_CAU_BO_SUNG';
+        if (cur === 'Không thụ lý') return 'THONG_BAO_KHONG_THU_LY';
+        // Không thụ lý lý do "Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình": hồ sơ chuyển Đã chuyển CQGQBT (không gửi với thao tác Chuyển CQGQBT)
+        if (cur === 'Đã chuyển CQGQBT' && (c.ktlReasonCode === 'KTL_01' || /không thụ lý/i.test(JSON.stringify((c.timeline || []).slice(-2))))) return 'THONG_BAO_KHONG_THU_LY';
+        if (cur === 'Xác minh thiệt hại' || (cur === 'Đang phục hồi danh dự' && /Cử người|Chờ duyệt|Bị trả lại/.test(prev))) return 'QUYET_DINH_CU_NGUOI';
+        if (cur === 'Thương lượng' && prev === 'Xác minh thiệt hại') return 'BAO_CAO_XAC_MINH';
+        if (cur === 'Chờ ban hành QĐ' && prev === 'Thương lượng' && c.negotiation && c.negotiation.participation === 'DONG_Y') return 'BIEN_BAN_THUONG_LUONG';
+        if (cur === 'Chờ chi trả' && prev === 'Chờ ban hành QĐ') return 'QUYET_DINH_GIAI_QUYET';
+        return '';
+    }
+    function dvcRecord(c, step) {
+        var p = function (x) { return String(x).padStart(2, '0'); }, n = new Date();
+        var now = p(n.getDate()) + '/' + p(n.getMonth() + 1) + '/' + n.getFullYear() + ' ' + p(n.getHours()) + ':' + p(n.getMinutes()) + ':' + p(n.getSeconds());
+        var dig = (String(c.code || '').match(/\d+/g) || ['0']).join('').slice(-6).padStart(6, '0');
+        var f = step === 'BAO_CAO_XAC_MINH' ? pdfNorm((c.xmReportFiles || [])[0]) : (step === 'BIEN_BAN_THUONG_LUONG' ? pdfNorm(c.negotiation && c.negotiation.bienBan) : null);
+        var fileName = f ? f.name : step.toLowerCase() + '_' + c.code + '_da_ky.pdf';
+        var size = f && Number(f.size) ? Number(f.size) : 200000 + (Number(dig) % 300000);
+        var entry = {
+            transactionId: 'KQ-' + c.code + '-' + step + '-' + n.getTime().toString(36).toUpperCase(),
+            dvcCode: c.dvcDossierCode || ('H48.12.2026.' + dig), receiptNo: c.dvcReceiptNo || ('API-2026-' + dig),
+            caseCode: c.maVuViec || '', dossierCode: c.code, agency: c.agency || '', stepCode: step,
+            caseStatus: DVC_CASE[c.status] || '', caseStatusName: c.status, eventTime: now,
+            document: (step === 'BAO_CAO_XAC_MINH' || step === 'BIEN_BAN_THUONG_LUONG') ? null : { docNo: '', docDate: now.slice(0, 10), signingMethod: 'KY_SO', signerName: '', signerPosition: '' },
+            fileName: fileName, fileSize: size, result: 'SUCCESS', sentAt: now
+        };
+        try { var l = JSON.parse(localStorage.getItem('btnn_dvc_sync_log_new') || '[]'); l.push(entry); localStorage.setItem('btnn_dvc_sync_log_new', JSON.stringify(l)); } catch (e) { /* mockup */ }
+        return entry;
+    }
+    function dvcSnapAll() { try { (claimsList || []).forEach(function (c) { if (c && c.id) dvcSnap[c.id] = c.status; }); } catch (e) { /* mockup */ } }
+    function installDvcSync() {
+        var orig = window.saveClaimsToLocal;
+        if (typeof orig !== 'function' || orig.__lthDvc) return;
+        dvcSnapAll();
+        var w = function () {
+            var r = orig.apply(this, arguments);
+            try {
+                (claimsList || []).forEach(function (c) {
+                    if (!c || !c.id) return;
+                    var prev = dvcSnap[c.id];
+                    if (prev !== undefined && prev !== c.status && dvcSource(c)) { var st = dvcStepOf(prev, c); if (st) dvcRecord(c, st); }
+                    dvcSnap[c.id] = c.status;
+                });
+            } catch (e) { console.warn('dvc sync', e); }
+            return r;
+        };
+        w.__lthDvc = true;
+        window.saveClaimsToLocal = w;
+        // Thông báo tổ chức thực hiện phục hồi danh dự (Ký duyệt cấp cuối / Ban hành Ký ngoài): trạng thái vụ việc không đổi -> ghi theo thời điểm ban hành
+        var origM26 = window.ctvvmApplyIssued;
+        if (typeof origM26 === 'function' && !origM26.__lthDvc) {
+            var wm = function (claim, m26) {
+                var r = origM26.apply(this, arguments);
+                try {
+                    if (claim && dvcSource(claim)) {
+                        var e = dvcRecord(claim, 'THONG_BAO_PHUC_HOI_DANH_DU');
+                        var l = JSON.parse(localStorage.getItem('btnn_dvc_sync_log_new') || '[]'), last = l[l.length - 1];
+                        if (last && e && last.transactionId === e.transactionId && m26) {
+                            last.fileName = m26.signedFile || last.fileName;
+                            if (Number(m26.signedSize)) last.fileSize = Number(m26.signedSize);
+                            last.document = { docNo: m26.docNumber || '', docDate: m26.docDate || last.document.docDate, signingMethod: m26.method === 'Ký ngoài' ? 'KY_NGOAI' : 'KY_SO', signerName: claim.phddStep1Signer || '', signerPosition: claim.phddStep1Position || '' };
+                            localStorage.setItem('btnn_dvc_sync_log_new', JSON.stringify(l));
+                        }
+                    }
+                } catch (err) { console.warn('dvc m26', err); }
+                return r;
+            };
+            wm.__lthDvc = true;
+            window.ctvvmApplyIssued = wm;
+        }
+    }
+    window.LTH_DVC = { stepOf: dvcStepOf, record: dvcRecord, snap: dvcSnapAll };
+    if (document.readyState === 'complete') installDvcSync(); else window.addEventListener('load', installDvcSync);
 })();

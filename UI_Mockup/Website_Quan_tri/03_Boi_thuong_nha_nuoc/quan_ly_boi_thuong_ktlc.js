@@ -10,8 +10,6 @@
  */
 var KTLC_VERSION = '20261027ktl2';
 var KTLC_LABELS = { BTP: 'Bộ Tư pháp', STP: 'Sở Tư pháp', CQ: 'Cơ quan giải quyết bồi thường khác' };
-// Chuyển cho chính đơn vị (Bộ Tư pháp / Sở Tư pháp Không thụ lý KTL_01): hồ sơ Xác định CQGQBT tạo tại chính đơn vị
-var KTLC_SELF_SUFFIX = ' (bộ phận Xác định CQGQBT)';
 // Thuộc tính "Cấp đơn vị" của đơn vị gốc trên Cơ cấu tổ chức (Quản trị hệ thống): dữ liệu mẫu gán cho cây đơn vị của BTNN_WF
 var KTLC_CAP = { TW: 'Trung ương', DP: 'Địa phương' };
 var KTLC_CAP_MAU = {
@@ -23,6 +21,8 @@ var KTLC_CAP_MAU = {
 var KTLC_TW_IDS = ['BTP-01', 'VKSNDTC', 'TANDTC', 'VPCP', 'TTCP', 'BTC'];
 // Loại cơ quan [DM_57] cấp trung ương (khi đơn vị có thuộc tính loaiCoQuan)
 var KTLC_TW_LDV = ['LDV_01', 'LDV_02', 'LDV_14', 'LDV_15', 'LDV_16', 'LDV_22', 'LDV_25', 'LDV_26', 'LDV_27', 'LDV_28', 'LDV_32'];
+// Tên tương ứng (thuộc tính loaiCoQuan của BTNN_WF.ORG_UNITS lưu tên Loại cơ quan)
+var KTLC_TW_LDV_NAMES = ['Bộ', 'Cơ quan ngang Bộ', 'TAND Tối cao', 'Tòa Phúc thẩm TAND Tối cao', 'Cục / Vụ / Văn phòng thuộc TAND Tối cao', 'Tòa án quân sự Trung ương', 'VKSND Tối cao', 'Viện Công tố và Kiểm sát xét xử phúc thẩm', 'Cơ quan điều tra VKSND Tối cao', 'Vụ / Cục / Văn phòng / Thanh tra thuộc VKSND Tối cao', 'Viện kiểm sát quân sự Trung ương'];
 
 function ktlcW() { return window.BTNN_WF || null; }
 function ktlcE(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -46,7 +46,7 @@ function ktlcCapOf(unitId) {
 function ktlcIsTW(unitId) { return ktlcCapOf(unitId) === KTLC_CAP.TW; }
 // Suy cấp trung ương theo Loại cơ quan (nếu có), danh sách đơn vị gốc trung ương, hoặc tên (Bộ ..., ... tối cao, ... Chính phủ)
 function ktlcIsTWGuess(u, root) {
-    if (u.loaiCoQuan) return KTLC_TW_LDV.indexOf(u.loaiCoQuan) >= 0;
+    if (u.loaiCoQuan) return KTLC_TW_LDV.indexOf(u.loaiCoQuan) >= 0 || KTLC_TW_LDV_NAMES.indexOf(u.loaiCoQuan) >= 0;
     if (KTLC_TW_IDS.indexOf(root) >= 0) return true;
     return /^Bộ\s|tối cao|Chính phủ|^Ngân hàng Nhà nước|^Ủy ban Dân tộc|quân sự Trung ương/i.test(u.name);
 }
@@ -119,32 +119,19 @@ function ktlcRule(claim, rec, unitId) {
     else modes = [tw ? 'BTP' : 'STP', 'CQ'];
     return { applies: info.applies, lan: info.lan, goc: info.goc, quaXd: info.quaXd, tw: tw, unitId: unitId, stpId: stp, modes: modes, forced: info.applies && info.lan >= 1 };
 }
-// Đơn vị nhận theo lựa chọn Bộ Tư pháp / Sở Tư pháp là chính đơn vị gốc đang Không thụ lý
-function ktlcBtpId() { var W = ktlcW(); return W ? ((W.getRootUnits().find(function (x) { return /^BTP/.test(x.id); }) || {}).id || '') : ''; }
-function ktlcIsSelf(mode, unitId) {
-    var W = ktlcW();
-    var root = ktlcRoot(unitId);
-    if (!W || !root) return false;
-    if (mode === 'BTP') return ktlcBtpId() === root;
-    if (mode === 'STP') return W.stpOfUnit(root) === root;
-    return false;
-}
+// Chuyển cho chính đơn vị (Bộ Tư pháp / Sở Tư pháp): nhãn giữ nguyên, hồ sơ Xác định CQGQBT tạo tại chính đơn vị
 function ktlcModeLabel(mode, rule, unitIdForStp) {
     var W = ktlcW();
-    var self = ktlcIsSelf(mode, (rule && rule.unitId) || unitIdForStp) ? KTLC_SELF_SUFFIX : '';
     if (mode === 'STP') {
         var stp = (rule && rule.stpId) || (W && unitIdForStp ? W.stpOfUnit(unitIdForStp) : '');
-        return (stp && W ? W.unitName(stp) : KTLC_LABELS.STP) + self;
+        return stp && W ? W.unitName(stp) : KTLC_LABELS.STP;
     }
-    return (KTLC_LABELS[mode] || mode || '') + (mode === 'BTP' ? self : '');
+    return KTLC_LABELS[mode] || mode || '';
 }
+// Chỉ hiển thị dòng cảnh báo khi hồ sơ đã chuyển ít nhất 01 lần do không thuộc thẩm quyền (bắt buộc Bộ Tư pháp / Sở Tư pháp)
 function ktlcNoteHtml(rule) {
-    if (!rule.applies) return '';
-    var cap = rule.tw ? 'cấp trung ương' : 'địa phương';
-    var txt = rule.forced
-        ? 'Hồ sơ đã được chuyển ' + rule.lan + ' lần do không thuộc thẩm quyền. Bắt buộc chuyển ' + (rule.tw ? 'Bộ Tư pháp' : 'Sở Tư pháp') + ' để xác định cơ quan giải quyết bồi thường; khi ban hành, hệ thống tự tạo hồ sơ Xác định cơ quan giải quyết bồi thường.'
-        : 'Đơn vị ' + cap + ': chuyển ' + (rule.tw ? 'Bộ Tư pháp' : 'Sở Tư pháp cùng tỉnh, thành phố') + ' hoặc cơ quan giải quyết bồi thường khác.';
-    if (ktlcIsSelf(rule.tw ? 'BTP' : 'STP', rule.unitId)) txt += ' Đơn vị là ' + (rule.tw ? 'Bộ Tư pháp' : 'Sở Tư pháp') + ': chuyển cho bộ phận Xác định cơ quan giải quyết bồi thường của đơn vị.';
+    if (!rule.applies || !rule.forced) return '';
+    var txt = 'Hồ sơ đã được chuyển ' + rule.lan + ' lần do không thuộc thẩm quyền. Bắt buộc chuyển ' + (rule.tw ? 'Bộ Tư pháp' : 'Sở Tư pháp') + ' để xác định cơ quan giải quyết bồi thường; khi ban hành, hệ thống tự tạo hồ sơ Xác định cơ quan giải quyết bồi thường.';
     return '<div class="ktlc-note" style="font-size:12.5px; color:#475569; background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:6px 10px; margin:0 0 8px;"><i class="fa-solid fa-circle-info"></i> ' + ktlcE(txt) + '</div>';
 }
 
@@ -303,7 +290,8 @@ function ktlcInherit(nr, claim, rec) {
     // Lịch sử xử lý tại cơ quan chuyển (xem lại tại hồ sơ mới)
     if (rec && Array.isArray(rec.history) && !nr.ktlcHistory) nr.ktlcHistory = rec.history.map(function (h) { return { at: h.at, userName: h.userName, action: h.action, note: h.note, unitId: rec.rootUnitId }; });
 }
-// transfer: { mode, unitId, note, files: [{name}] }; o: { claim, noticeFile, attachments, method }
+// transfer: { mode, unitId, note }; o: { claim, noticeFile, attachments, method }
+// Tài liệu chuyển cho cơ quan nhận: văn bản Thông báo không thụ lý đã ký/ban hành + Tài liệu ban hành kèm theo của popup (không còn tài liệu đính kèm riêng của khối Chuyển hồ sơ cho)
 function ktlcDoTransfer(code, transfer, o) {
     var W = ktlcW();
     o = o || {};
@@ -319,9 +307,8 @@ function ktlcDoTransfer(code, transfer, o) {
     if (!tgt.ok) return { ok: false, message: tgt.message };
     var files = [];
     var addF = function (n) { if (n && !files.some(function (f) { return f.name === n; })) files.push({ name: n }); };
-    (transfer.files || []).forEach(function (f) { addF(f && (f.name || f)); });
     // Chỉ chuyển tài liệu ban hành kèm theo văn bản Không thụ lý
-    (o.attachments || []).forEach(function (a) { addF(a && ((a.file && (a.file.name || a.file)) || a.name)); });
+    (o.attachments || []).filter(function (a) { return a && a.scope === 'issued'; }).forEach(function (a) { addF((a.file && (a.file.name || a.file)) || a.name); });
     var auto = rule.forced;
     var lanMoi = (rule.applies ? rule.lan : 0) + 1;
     var at = W.nowText();
@@ -375,7 +362,7 @@ function ktlcDoTransfer(code, transfer, o) {
         if (res && res.ok && t && t.mode && before.module === 'YCBT' && res.record && res.record.approval && res.record.approval.done && !res.record.transferTo) {
             try {
                 var sd = res.record.approval.signDoc || {};
-                var r = ktlcDoTransfer(code, { mode: t.mode, unitId: t.unitId, note: t.note, files: t.files }, { noticeFile: sd.signedFile || sd.file, attachments: sd.attachments || a.signDoc.attachments });
+                var r = ktlcDoTransfer(code, { mode: t.mode, unitId: t.unitId, note: t.note }, { noticeFile: sd.signedFile || sd.file, attachments: sd.attachments || a.signDoc.attachments });
                 if (r.ok) res.record = r.record;
             } catch (e) { console.warn('ktlc approve', e); }
         }
@@ -435,7 +422,7 @@ function ktlcDoTransfer(code, transfer, o) {
                 rec.gqData = Object.assign({}, rec.gqData || {}, { ktlReasonCode: 'KTL_01', ktlReasonName: sel.options[sel.selectedIndex].text, ktlDetail: claim.ktlDetail || '', rejectType: 'Không thụ lý', rejectReason: claim.rejectReason || '', signedFile: file, signingMethod: 'offline' });
                 W.upsertRecord(rec);
             }
-            var res = ktlcDoTransfer(claim.code, { mode: t.mode, unitId: t.unitId, note: t.note, files: t.files }, { claim: claim, noticeFile: file, attachments: claim.ktlAttachments || [] });
+            var res = ktlcDoTransfer(claim.code, { mode: t.mode, unitId: t.unitId, note: t.note }, { claim: claim, noticeFile: file, attachments: claim.ktlAttachments || [] });
             if (!res.ok) { if (typeof showToast === 'function') showToast(res.message, 'error'); return r; }
             if (typeof saveClaimsToLocal === 'function') saveClaimsToLocal();
             if (typeof renderClaimsTable === 'function') renderClaimsTable();
@@ -461,8 +448,6 @@ function ktlcDoTransfer(code, transfer, o) {
         if (!mode) return h;
         var unitId = t.targetUnitId || tr.targetUnitId || '';
         var val = mode === 'STP' && W.unitName && unitId ? W.unitName(unitId) : (KTLC_LABELS[mode] || mode);
-        var src = W.getRecord ? W.getRecord(claim.code) : null;
-        if (src && unitId && (mode === 'BTP' || mode === 'STP') && ktlcRoot(src.rootUnitId) === ktlcRoot(unitId)) val += KTLC_SELF_SUFFIX;
         var lbl = W.KTL_TRANSFER_LABELS ? W.KTL_TRANSFER_LABELS[mode] : '';
         if (lbl) h = h.replace('<span class="ktlv-l">Chuyển cơ quan tiếp nhận mới</span><span class="ktlv-v">' + ktlvE(lbl) + '</span>', '<span class="ktlv-l">Chuyển hồ sơ cho</span><span class="ktlv-v">' + ktlvE(val) + '</span>');
         var extra = '';
@@ -500,12 +485,12 @@ function ktlcSeedList() {
             hanhVi: 'Phê chuẩn lệnh tạm giam đối với người không thực hiện hành vi phạm tội.', nhanQua: 'Mất thu nhập trong thời gian bị tạm giam.',
             extra: { nguonHoSo: 'Tiếp nhận mới' } }),
         // 2. Đơn vị địa phương, lần 1 (Dịch vụ công): Sở Tư pháp cùng tỉnh / CQGQBT khác
-        base({ id: 'KTLC_DP1', code: 'BT-2026-962', who: 'p10', agency: 'UBND quận Cầu Giấy, Thành phố Hà Nội', officer: 'Kiều Văn Nam', hinhThuc: 'Dịch vụ công',
+        base({ id: 'KTLC_DP1', code: 'BT-2026-962', who: 'p10', agency: 'UBND phường Cầu Giấy, Thành phố Hà Nội', officer: 'Kiều Văn Nam', hinhThuc: 'Dịch vụ công',
             docBase: 'Quyết định hủy Quyết định cưỡng chế thu hồi đất số 115/QĐ-UBND ngày 20/08/2026',
             hanhVi: 'Cưỡng chế thu hồi đất không đúng đối tượng.', nhanQua: 'Thiệt hại tài sản trên đất bị phá dỡ.',
             extra: { nguonHoSo: 'Dịch vụ công' } }),
         // 3. Đơn vị thứ 2 (địa phương), hồ sơ đã chuyển 01 lần do KTL_01: bắt buộc Sở Tư pháp, tự tạo hồ sơ Xác định CQGQBT
-        base({ id: 'KTLC_DP2', code: 'BT-2026-963', who: 'p6', agency: 'UBND quận Hoàn Kiếm, Thành phố Hà Nội', officer: 'Tạ Quang Vinh', hinhThuc: 'Trực tiếp', kd: 1,
+        base({ id: 'KTLC_DP2', code: 'BT-2026-963', who: 'p6', agency: 'UBND phường Hoàn Kiếm, Thành phố Hà Nội', officer: 'Tạ Quang Vinh', hinhThuc: 'Trực tiếp', kd: 1,
             docBase: 'Quyết định hủy Quyết định xử phạt vi phạm hành chính số 32/QĐ-XPHC ngày 05/08/2026',
             hanhVi: 'Xử phạt vi phạm hành chính, tịch thu tang vật không đúng thẩm quyền.', nhanQua: 'Hàng hóa bị tịch thu hư hỏng.',
             extra: { nguonHoSo: 'Chuyển CQGQBT', ktlcLan: 1, ktlcNguonGoc: 'Tiếp nhận mới', transferFromCode: 'BT-2026-960',
@@ -515,7 +500,7 @@ function ktlcSeedList() {
             docBase: 'Bản án hình sự phúc thẩm số 88/2026/HS-PT ngày 15/07/2026 tuyên không phạm tội',
             hanhVi: 'Xét xử sơ thẩm tuyên phạt tù đối với người không phạm tội.', nhanQua: 'Mất thu nhập, tổn thất tinh thần.',
             extra: { nguonHoSo: 'Xác định CQGQBT', xdCode: 'XD-2026-145' } }),
-        // 5. Bộ Tư pháp là đơn vị Không thụ lý, lần 1: Bộ Tư pháp (bộ phận Xác định CQGQBT) / CQGQBT khác
+        // 5. Bộ Tư pháp là đơn vị Không thụ lý, lần 1: Bộ Tư pháp (hồ sơ Xác định CQGQBT tạo tại chính đơn vị) / CQGQBT khác
         base({ id: 'KTLC_BTP1', code: 'BT-2026-965', who: 'p8', agency: 'Bộ Tư pháp', officer: 'Nguyễn Văn Cán Bộ', hinhThuc: 'Trực tiếp',
             docBase: 'Quyết định hủy Quyết định xử phạt vi phạm hành chính số 45/QĐ-XPHC ngày 12/08/2026',
             hanhVi: 'Xử phạt vi phạm hành chính trong lĩnh vực công chứng không đúng thẩm quyền.', nhanQua: 'Thiệt hại do tạm đình chỉ hoạt động văn phòng công chứng.',
@@ -527,7 +512,7 @@ function ktlcSeedList() {
             extra: { nguonHoSo: 'Chuyển CQGQBT', ktlcLan: 1, ktlcNguonGoc: 'Dịch vụ công', transferFromCode: 'BT-2026-959',
                 ktlcFrom: { code: 'BT-2026-959', unitId: 'BTC', mode: 'CQ', lan: 1, reason: 'Không thuộc thẩm quyền (KTL_01)' } } }),
         // 7. Đơn vị địa phương (Công an quận), lần 1 - Tiếp nhận qua dịch vụ bưu chính: Sở Tư pháp cùng tỉnh / CQGQBT khác
-        base({ id: 'KTLC_DP3', code: 'BT-2026-967', who: 'p11', agency: 'Công an quận Hoàng Mai, Thành phố Hà Nội', officer: 'Bế Thị Lụa', hinhThuc: 'Qua dịch vụ bưu chính',
+        base({ id: 'KTLC_DP3', code: 'BT-2026-967', who: 'p11', agency: 'Công an phường Bạch Mai, Thành phố Hà Nội', officer: 'Bế Thị Lụa', hinhThuc: 'Qua dịch vụ bưu chính',
             docBase: 'Quyết định hủy bỏ Quyết định tạm giữ phương tiện số 19/QĐ-TGPT ngày 10/08/2026',
             hanhVi: 'Tạm giữ phương tiện giao thông quá thời hạn luật định.', nhanQua: 'Thiệt hại do không khai thác được phương tiện.',
             extra: { nguonHoSo: 'Tiếp nhận mới' } })

@@ -1819,8 +1819,8 @@
                         <span class="form-label">Đơn vị ban hành <span style="color:red;">*</span></span>
                         <select class="form-control" id="createCouncilIssuingUnit" required>
                             <option value="Sở Tư pháp Hà Nội" selected>Sở Tư pháp Hà Nội</option>
-                            <option value="Cục Bồi thường nhà nước">Cục Bồi thường nhà nước</option>
-                            <option value="UBND Quận Cầu Giấy">UBND Quận Cầu Giấy</option>
+                            <option value="Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước">Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</option>
+                            <option value="UBND phường Cầu Giấy">UBND phường Cầu Giấy</option>
                         </select>
                         <div class="invalid-feedback" id="createCouncilIssuingUnitError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
                     </div>
@@ -2139,7 +2139,7 @@
                             <div style="width: 40%; font-size: 12px; line-height: 1.4;">
                                 <div style="font-weight: bold; font-style: italic;">Nơi nhận:</div>
                                 <div>- Như Điều 3;</div>
-                                <div>- Bộ Tư pháp (Cục Bồi thường nhà nước);</div>
+                                <div>- Bộ Tư pháp (Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước);</div>
                                 <div>- UBND Thành phố Hà Nội (để b/c);</div>
                                 <div>- Giám đốc Sở (để b/c);</div>
                                 <div>- Lưu: VT, TCCB, HSVV.</div>
@@ -2176,16 +2176,16 @@
                             <span class="form-label">Đơn vị ban hành <span class="required" style="color:red;">*</span></span>
                             <select class="form-control" id="issueQdIssuingUnit">
                                 <option>Sở Tư pháp Hà Nội</option>
-                                <option>Cục Bồi thường nhà nước</option>
-                                <option>UBND Quận Cầu Giấy</option>
+                                <option>Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</option>
+                                <option>UBND phường Cầu Giấy</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <span class="form-label">Sổ văn bản áp dụng <span class="required" style="color:red;">*</span></span>
                             <select class="form-control" id="issueQdDocumentBook">
                                 <option>Sổ QĐ HT - Sở Tư pháp Hà Nội - 2026</option>
-                                <option>Sổ QĐ HT - Cục Bồi thường nhà nước - 2026</option>
-                                <option>Sổ QĐ HT - UBND Quận Cầu Giấy - 2026</option>
+                                <option>Sổ QĐ HT - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước - 2026</option>
+                                <option>Sổ QĐ HT - UBND phường Cầu Giấy - 2026</option>
                             </select>
                         </div>
                     </div>
@@ -2713,7 +2713,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
 
-        <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
+        <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
         <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
         <script>
             // Xem xét trách nhiệm hoàn trả: đơn vị người xem theo vai trò giả lập (htMockScope); Lãnh đạo (ký duyệt) xem được mọi khối.
@@ -2721,10 +2721,10 @@
             window.tlktViewerUnit = function () {
                 var s = '';
                 try { s = new URLSearchParams(location.search).get('scope') || sessionStorage.getItem('htMockScope') || ''; } catch (e) { s = ''; }
-                var U = { don_vi_chu: 'UBND Quận Long Biên', don_vi_a: 'UBND Phường Bồ Đề', don_vi_b: 'UBND Huyện An Dương', stp: 'Sở Tư pháp Hà Nội', lanh_dao: '' };
+                var U = { don_vi_chu: 'UBND phường Việt Hưng', don_vi_a: 'UBND Phường Bồ Đề', don_vi_b: 'UBND phường Hải An', stp: 'Sở Tư pháp Hà Nội', lanh_dao: '' };
                 return U[s || 'don_vi_chu'] || '';
             };
-            window.tlktDefaultOwnerUnit = 'UBND Quận Long Biên';
+            window.tlktDefaultOwnerUnit = 'UBND phường Việt Hưng';
         </script>
 
 
@@ -2743,11 +2743,11 @@
         // Họ và tên người yêu cầu theo Mã hồ sơ GQBT (dữ liệu Giải quyết YCBT)
         const CLAIMANT_BY_CODE = {
             'BT-2026-001': 'Nguyễn Văn A', 'BT-2026-002': 'Trần Thị B', 'BT-2026-003': 'Công ty Hải Phát', 'BT-2026-004': 'Trần Minh T',
-            'BT-2026-005': 'Lê Văn D', 'BT-2026-006': 'Phạm Minh K', 'BT-2026-007': 'Vũ Văn L', 'BT-2026-008': 'Hoàng Thị M',
+            'BT-2026-005': 'Lê Văn D', 'BT-2026-006': 'Lý Thị K', 'BT-2026-007': 'Phạm Văn D', 'BT-2026-008': 'Lê Văn D',
             'BT-2026-009': 'Nguyễn Văn E', 'BT-2026-010': 'Nguyễn Văn F', 'BT-2026-011': 'Trần Thị G', 'BT-2026-012': 'Lê Văn H',
             'BT-2026-013': 'Trần Văn T', 'BT-2026-014': 'Phạm Văn K', 'BT-2026-015': 'Vũ Thị L', 'BT-2026-016': 'Trần Văn M',
             'BT-2026-017': 'Phạm Hồng N', 'BT-2026-018': 'Trần Thu O', 'BT-2026-019': 'Phạm Văn P', 'BT-2026-020': 'Trần Văn Q',
-            'BT-2026-021': 'Hoàng Văn R', 'BT-2026-022': 'Trần Văn Phú', 'BT-2026-023': 'Phạm Văn Nam'
+            'BT-2026-021': 'Hoàng Văn R', 'BT-2026-022': 'Trần Văn Phú', 'BT-2026-023': 'Phạm Văn Nam', 'BT-2026-193': 'Lê Minh Đức'
         };
         // Mã vụ việc (VVBT-) của hồ sơ GQBT (BT-): dùng chung BTNN_WF.vuViecOf để khớp với màn Giải quyết YCBT
         function vuViecOfClaim(claimCode) { return (claimCode && window.BTNN_WF) ? BTNN_WF.vuViecOf(claimCode) : ''; }
@@ -2793,7 +2793,7 @@
                 {
                     id: "HT-2026-001",
                     code: "HT-2026-001",
-                    claimCode: "BT-2026-001",
+                    claimCode: "BT-2026-801",
                     claimSummary: "Cưỡng chế tháo dỡ nhà ở khi chưa có quyết định hành chính có hiệu lực pháp luật.",
                     agency: "Sở Tư pháp Hà Nội",
                     claimAmt: 150000000,
@@ -2815,7 +2815,7 @@
                     refundOfficers: [
                         { name: "Nguyễn Văn Đạt", loi: "Vô ý", total: 36000000, paid: 36000000, nextDate: "—", status: "Hoàn tất", refundMethod: "Một lần", progressClass: "success", agency: "Sở Tài nguyên & Môi trường", role: "Chuyên viên phòng Đăng ký", isPostponed: false },
                         { name: "Lê Văn Cường", loi: "Vô ý", total: 20000000, paid: 8000000, nextDate: "02/07", status: "Quá hạn", refundMethod: "Khấu trừ lương", progressClass: "danger", agency: "Sở Tài nguyên & Môi trường", role: "Phó Phòng Quản lý đất đai", isPostponed: false },
-                        { name: "Trần Thị Bình", loi: "Cố ý nhưng không bị truy cứu trách nhiệm hình sự", total: 30000000, paid: 3000000, nextDate: "15/07", status: "Đang thu", refundMethod: "Nhiều lần", progressClass: "primary", agency: "UBND Huyện Cầu Giấy", role: "Trưởng phòng Tư pháp", isPostponed: false },
+                        { name: "Trần Thị Bình", loi: "Cố ý nhưng không bị truy cứu trách nhiệm hình sự", total: 30000000, paid: 3000000, nextDate: "15/07", status: "Đang thu", refundMethod: "Nhiều lần", progressClass: "primary", agency: "UBND phường Cầu Giấy", role: "Trưởng phòng Tư pháp", isPostponed: false },
                         { name: "Hoàng Văn D", loi: "Vô ý", total: 15000000, paid: 0, nextDate: "25/07", status: "Chưa nộp", refundMethod: "Một lần", progressClass: "secondary", agency: "Sở Xây dựng", role: "Thanh tra viên", isPostponed: false }
                     ],
                     payments: [
@@ -2879,7 +2879,7 @@
             addMockDossier({
                 id: "HT-2026-002",
                 code: "HT-2026-002",
-                claimCode: "BT-2026-008",
+                claimCode: "BT-2026-802",
                 claimSummary: "Thu hồi đất nông nghiệp vượt quá hạn mức quy định gây thiệt hại cây trồng.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 180000000,
@@ -2914,7 +2914,7 @@
             addMockDossier({
                 id: "HT-2026-003",
                 code: "HT-2026-003",
-                claimCode: "BT-2026-002",
+                claimCode: "BT-2026-803",
                 claimSummary: "Công chức tư pháp cố ý gây khó dễ, trì hoãn cấp giấy đăng ký kết hôn.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 150000000,
@@ -2947,7 +2947,7 @@
             addMockDossier({
                 id: "HT-2026-004",
                 code: "HT-2026-004",
-                claimCode: "BT-2026-003",
+                claimCode: "BT-2026-804",
                 claimSummary: "Trì hoãn giải quyết thủ tục hành chính làm lỡ hạn nhập học của trẻ.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 150000000,
@@ -2980,7 +2980,7 @@
             addMockDossier({
                 id: "HT-2026-005",
                 code: "HT-2026-005",
-                claimCode: "BT-2026-004",
+                claimCode: "BT-2026-805",
                 claimSummary: "Cưỡng chế kê biên nhà xưởng của bên thứ ba không liên quan vụ án.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 180000000,
@@ -3011,7 +3011,7 @@
             addMockDossier({
                 id: "HT-2026-006",
                 code: "HT-2026-006",
-                claimCode: "BT-2026-005",
+                claimCode: "BT-2026-806",
                 claimSummary: "Tạm giữ phương tiện vận tải quá thời hạn gây thiệt hại kinh tế.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 180000000,
@@ -3044,10 +3044,10 @@
             addMockDossier({
                 id: "HT-2026-007",
                 code: "HT-2026-007",
-                claimCode: "BT-2026-015",
+                claimCode: "BT-2026-193",
                 claimSummary: "Cấp giấy chứng nhận quyền sử dụng đất không đúng hồ sơ địa chính gây thiệt hại ngân sách.",
-                agency: "Sở Tư pháp Hải Phòng",
-                claimAmt: 200000000,
+                agency: "Sở Tư pháp Hà Nội",
+                claimAmt: 120000000,
                 claimDate: "10/07/2026",
                 officerName: "Trần Văn C",
                 officerRole: "Chuyên viên thẩm định",
@@ -3067,7 +3067,7 @@
                 councilRejectTime: "28/08/2026 - 10:00",
                 councilRejectReason: "Cần bổ sung thêm đại diện Sở Tài chính vào thành phần Hội đồng để đảm bảo tính khách quan.",
                 refundOfficers: [
-                    { name: "Trần Văn C", loi: "Chờ cập nhật lại dự thảo", total: 0, paid: 0, nextDate: "—", status: "Bị trả lại thành lập HĐ", progressClass: "danger", agency: "Sở Tư pháp Hải Phòng", role: "Chuyên viên thẩm định", isPostponed: false }
+                    { name: "Trần Văn C", loi: "Chờ cập nhật lại dự thảo", total: 0, paid: 0, nextDate: "—", status: "Bị trả lại thành lập HĐ", progressClass: "danger", agency: "Sở Tư pháp Hà Nội", role: "Chuyên viên thẩm định", isPostponed: false }
                 ],
                 payments: [],
                 timeline: [
@@ -3079,7 +3079,7 @@
             addMockDossier({
                 id: "HT-2026-008",
                 code: "HT-2026-008",
-                claimCode: "BT-2026-006",
+                claimCode: "BT-2026-808",
                 claimSummary: "Thu hồi đất không đúng thẩm quyền của UBND phường.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 120000000,
@@ -3107,7 +3107,7 @@
             addMockDossier({
                 id: "HT-2026-009",
                 code: "HT-2026-009",
-                claimCode: "BT-2026-007",
+                claimCode: "BT-2026-809",
                 claimSummary: "Làm hư hỏng phương tiện khi niêm phong kho vật chứng.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 90000000,
@@ -3136,7 +3136,7 @@
             addMockDossier({
                 id: "HT-2026-010",
                 code: "HT-2026-010",
-                claimCode: "BT-2026-009",
+                claimCode: "BT-2026-810",
                 claimSummary: "Ban hành quyết định xử phạt vi phạm hành chính sai cá nhân gây thiệt hại.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 60000000,
@@ -3163,7 +3163,7 @@
             addMockDossier({
                 id: "HT-2026-011",
                 code: "HT-2026-011",
-                claimCode: "BT-2026-010",
+                claimCode: "BT-2026-811",
                 claimSummary: "Người thi hành công vụ không có lỗi do chấp hành đúng quyết định của cấp trên.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 70000000,
@@ -3190,7 +3190,7 @@
             addMockDossier({
                 id: "HT-2026-012",
                 code: "HT-2026-012",
-                claimCode: "BT-2026-011",
+                claimCode: "BT-2026-812",
                 claimSummary: "Cán bộ thi hành công vụ đã chết trong quá trình xem xét nghĩa vụ hoàn trả.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 100000000,
@@ -3219,7 +3219,7 @@
             addMockDossier({
                 id: "HT-2026-013",
                 code: "HT-2026-013",
-                claimCode: "BT-2026-012",
+                claimCode: "BT-2026-813",
                 claimSummary: "Chậm thực hiện nghĩa vụ theo bản án hành chính đã có hiệu lực pháp luật.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 140000000,
@@ -3243,7 +3243,7 @@
             addMockDossier({
                 id: "HT-2026-014",
                 code: "HT-2026-014",
-                claimCode: "BT-2026-013",
+                claimCode: "BT-2026-814",
                 claimSummary: "Tước quyền sử dụng giấy phép lái xe sai lỗi hành chính gây gián đoạn kinh doanh.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 85000000,
@@ -3268,7 +3268,7 @@
             addMockDossier({
                 id: "HT-2026-015",
                 code: "HT-2026-015",
-                claimCode: "BT-2026-014",
+                claimCode: "BT-2026-815",
                 claimSummary: "Cưỡng chế sai chỉ giới xây dựng cấp phép.",
                 agency: "UBND TP Hải Phòng",
                 claimAmt: 160000000,
@@ -3297,7 +3297,7 @@
             addMockDossier({
                 id: "HT-2026-016",
                 code: "HT-2026-016",
-                claimCode: "BT-2026-016",
+                claimCode: "BT-2026-816",
                 claimSummary: "Giám định tài sản không đúng tiêu chuẩn gây bồi thường chênh lệch.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 220000000,
@@ -3322,7 +3322,7 @@
             addMockDossier({
                 id: "HT-2026-017",
                 code: "HT-2026-017",
-                claimCode: "BT-2026-017",
+                claimCode: "BT-2026-817",
                 claimSummary: "Tịch thu nông sản khi không đủ căn cứ vi phạm.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 110000000,
@@ -3351,7 +3351,7 @@
             addMockDossier({
                 id: "HT-2026-018",
                 code: "HT-2026-018",
-                claimCode: "BT-2026-018",
+                claimCode: "BT-2026-818",
                 claimSummary: "Chậm giải tỏa phong tỏa tài sản sau khi có quyết định hủy bỏ biện pháp khẩn cấp.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 95000000,
@@ -3378,9 +3378,9 @@
             addMockDossier({
                 id: "HT-2026-019",
                 code: "HT-2026-019",
-                claimCode: "BT-2026-019",
+                claimCode: "BT-2026-819",
                 claimSummary: "Thực hiện biện pháp khẩn cấp trong tình thế phòng cháy chữa cháy cấp thiết.",
-                agency: "UBND Quận Ba Đình",
+                agency: "UBND phường Ba Đình",
                 claimAmt: 65000000,
                 claimDate: "10/06/2026",
                 refundTotal: 0,
@@ -3393,7 +3393,7 @@
                 qdStatus: "",
                 dcht: { method: 'offline', prevStatus: 'Họp hội đồng', fileName: 'QD_dinh_chi_HT-2026-019.pdf', offFile: { name: 'QD_dinh_chi_HT-2026-019.pdf' }, issuedAt: '20/07/2026 10:30', attachments: [], levels: [], assignees: [] },
                 refundOfficers: [
-                    { name: "Trịnh Quốc Việt", loi: "Tình thế cấp thiết", total: 0, paid: 0, nextDate: "—", status: "Đình chỉ xem xét hoàn trả", progressClass: "secondary", agency: "UBND Quận Ba Đình", role: "Cán bộ Quản lý Đô thị", isPostponed: false }
+                    { name: "Trịnh Quốc Việt", loi: "Tình thế cấp thiết", total: 0, paid: 0, nextDate: "—", status: "Đình chỉ xem xét hoàn trả", progressClass: "secondary", agency: "UBND phường Ba Đình", role: "Cán bộ Quản lý Đô thị", isPostponed: false }
                 ],
                 payments: [],
                 timeline: [
@@ -3405,7 +3405,7 @@
             addMockDossier({
                 id: "HT-2026-020",
                 code: "HT-2026-020",
-                claimCode: "BT-2026-020",
+                claimCode: "BT-2026-820",
                 claimSummary: "Cán bộ ban hành quyết định đã từ trần, cơ quan ban hành QĐ đình chỉ việc xem xét trách nhiệm hoàn trả theo Luật BTNN.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 80000000,
@@ -3434,7 +3434,7 @@
             addMockDossier({
                 id: "HT-2026-021",
                 code: "HT-2026-021",
-                claimCode: "BT-2026-021",
+                claimCode: "BT-2026-821",
                 claimSummary: "Cán bộ ký ban hành quyết định thu hồi đất không đúng thẩm quyền gây thiệt hại cho người dân.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 200000000,
@@ -3465,8 +3465,8 @@
                 conclusionDate: "15/07/2026",
                 conclusionFile: "Bien_ban_hop_HD_42.pdf",
                 refundOfficers: [
-                    { name: "Phạm Quốc Huy", loi: "Cố ý nhưng không bị truy cứu trách nhiệm hình sự", total: 55000000, paid: 0, nextDate: "—", status: "Chờ duyệt QĐ hoàn trả", refundMethod: "Một lần", progressClass: "warning", agency: "UBND Quận Long Biên", role: "Phó Trưởng phòng TN&MT", isPostponed: false },
-                    { name: "Đặng Thị Lan", loi: "Vô ý", total: 30000000, paid: 0, nextDate: "—", status: "Chờ duyệt QĐ hoàn trả", refundMethod: "Nhiều lần", progressClass: "warning", agency: "UBND Quận Long Biên", role: "Chuyên viên địa chính", isPostponed: false }
+                    { name: "Phạm Quốc Huy", loi: "Cố ý nhưng không bị truy cứu trách nhiệm hình sự", total: 55000000, paid: 0, nextDate: "—", status: "Chờ duyệt QĐ hoàn trả", refundMethod: "Một lần", progressClass: "warning", agency: "UBND phường Việt Hưng", role: "Phó Trưởng phòng TN&MT", isPostponed: false },
+                    { name: "Đặng Thị Lan", loi: "Vô ý", total: 30000000, paid: 0, nextDate: "—", status: "Chờ duyệt QĐ hoàn trả", refundMethod: "Nhiều lần", progressClass: "warning", agency: "UBND phường Việt Hưng", role: "Chuyên viên địa chính", isPostponed: false }
                 ],
                 payments: [],
                 timeline: [
@@ -5762,7 +5762,7 @@
                     activeDossier.refundOfficers = [
                         { name: "Nguyễn Văn Đạt", loi: "Vô ý", total: 36000000, paid: 36000000, nextDate: "—", status: "Hoàn tất", refundMethod: "Một lần", progressClass: "success", agency: "Sở Tài nguyên & Môi trường", role: "Chuyên viên phòng Đăng ký", isPostponed: false },
                         { name: "Lê Văn Cường", loi: "Vô ý", total: 20000000, paid: 8000000, nextDate: "02/07", status: "Quá hạn", refundMethod: "Khấu trừ lương", progressClass: "danger", agency: "Sở Tài nguyên & Môi trường", role: "Phó Phòng Quản lý đất đai", isPostponed: false },
-                        { name: "Trần Thị Bình", loi: "Cố ý nhưng không bị truy cứu trách nhiệm hình sự", total: 30000000, paid: 3000000, nextDate: "15/07", status: "Đang thu", refundMethod: "Nhiều lần", progressClass: "primary", agency: "UBND Huyện Cầu Giấy", role: "Trưởng phòng Tư pháp", isPostponed: false },
+                        { name: "Trần Thị Bình", loi: "Cố ý nhưng không bị truy cứu trách nhiệm hình sự", total: 30000000, paid: 3000000, nextDate: "15/07", status: "Đang thu", refundMethod: "Nhiều lần", progressClass: "primary", agency: "UBND phường Cầu Giấy", role: "Trưởng phòng Tư pháp", isPostponed: false },
                         { name: "Hoàng Văn D", loi: "Vô ý", total: 15000000, paid: 0, nextDate: "25/07", status: "Chưa nộp", refundMethod: "Một lần", progressClass: "secondary", agency: "Sở Xây dựng", role: "Thanh tra viên", isPostponed: false }
                     ];
                 }
@@ -6910,7 +6910,7 @@
                 },
                 {
                     code: "C-BTNN",
-                    name: "Cục Bồi thường nhà nước - Bộ Tư pháp",
+                    name: "Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước - Bộ Tư pháp",
                     children: [
                         { code: "BTNN-NV", name: "Phòng Nghiệp vụ giải quyết bồi thường" },
                         { code: "BTNN-TH", name: "Phòng Tổng hợp và Phổ biến bồi thường" }
@@ -6927,9 +6927,9 @@
                 },
                 {
                     code: "UBND-CG",
-                    name: "UBND Quận Cầu Giấy - TP. Hà Nội",
+                    name: "UBND phường Cầu Giấy - TP. Hà Nội",
                     children: [
-                        { code: "PTP-CG", name: "Phòng Tư pháp Quận Cầu Giấy" },
+                        { code: "PTP-CG", name: "Phòng Tư pháp phường Cầu Giấy" },
                         { code: "PTNMT-CG", name: "Phòng Tài nguyên & Môi trường Q. Cầu Giấy" }
                     ]
                 },
@@ -8026,21 +8026,21 @@
         </script>
     <!-- Popup Thành lập Hội đồng xem xét trách nhiệm hoàn trả (Mẫu 33/BTNN) - bố cục như Popup Không thụ lý hồ sơ -->
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
-    <script src="chi_tiet_ho_so_hoan_tra_tlhd.js?v=20261029htui"></script>
-    <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261029htui2"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_tlhd.js?v=20261030s2"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261030s2"></script>
     <!-- Dữ liệu mẫu bổ sung phủ các trạng thái của Ma trận chuyển trạng thái (dùng chung màn Danh sách) -->
-    <script src="ht_du_lieu_mau.js?v=20261029dvbh"></script>
+    <script src="ht_du_lieu_mau.js?v=20261030xl1"></script>
     <!-- Bước 1 / Bước 2 Ý kiến của Hội đồng, Stepper 04 bước, phạm vi người xem theo đơn vị -->
-    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261029htui"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261030s2"></script>
     <!-- Bước 3: trình ký 02 tầng tại đơn vị (QĐ hoàn trả Mẫu 36; QĐ miễn Mẫu 38 / QĐ giảm Mẫu 37; QĐ đình chỉ Mẫu 39 cấp cán bộ) -->
-    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261029htui2"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261030xl1"></script>
     <!-- Bước 4: thu tiền hoàn trả theo phần đơn vị (nộp tiền nhiều đợt, miễn / giảm bổ sung, trả lại tiền) -->
     <script src="chi_tiet_ho_so_hoan_tra_thu.js?v=20261029dvbh"></script>
     <!-- Thanh giả lập người dùng dùng chung màn Danh sách / Chi tiết, Khôi phục dữ liệu mẫu -->
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
-    <script src="ht_mock_role_bar.js?v=20261029k2"></script>
+    <script src="ht_mock_role_bar.js?v=20261030s2"></script>
     <script src="admin-ui-standardizer.js"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 
 </html>

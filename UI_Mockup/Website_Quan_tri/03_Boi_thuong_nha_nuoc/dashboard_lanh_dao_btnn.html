@@ -4,17 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Lãnh đạo</title>
+    <title>Bàn làm việc Lãnh đạo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="quan_ly_boi_thuong.css?v=20261012">
     <style>
         body { background: var(--bg-body); padding: 20px; }
-        .dash-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; background: #fff; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 16px 20px; margin: 0 0 16px; box-shadow: var(--box-shadow); }
-        .dash-head h2 { margin: 0; font-size: 20px; color: var(--primary-light); display: flex; align-items: center; gap: 10px; }
-        .dash-head p { margin: 4px 0 0; color: var(--text-muted); font-size: 13px; }
+        .dash-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; background: #fff; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 10px 20px; margin: 0 0 16px; box-shadow: var(--box-shadow); }
+        .dash-head h2 { margin: 0; font-size: 18px; color: var(--primary-light); display: flex; align-items: center; gap: 10px; }
         .dash-total { display: flex; align-items: baseline; gap: 8px; color: var(--text-muted); font-size: 13px; font-weight: 600; }
-        .dash-total b { font-size: 28px; color: var(--primary-light); }
+        .dash-total b { font-size: 24px; color: var(--primary-light); }
         .dash-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
         .dash-card { background: #fff; border: 1px solid var(--border-color); border-radius: 10px; box-shadow: var(--box-shadow); display: flex; flex-direction: column; cursor: pointer; transition: border-color .15s, box-shadow .15s, transform .15s; border-top: 4px solid var(--card-color); }
         .dash-card:hover { border-color: var(--card-color); box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12); transform: translateY(-1px); }
@@ -23,14 +22,17 @@
         .dash-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--card-color); background: var(--card-bg); flex-shrink: 0; }
         .dash-title { font-weight: 700; font-size: 14.5px; color: #1e293b; line-height: 1.35; }
         .dash-module { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-        .dash-count { margin-left: auto; font-size: 32px; font-weight: 700; color: var(--card-color); line-height: 1; }
+        /* Số tổng và nút mở danh sách: 01 tông màu đồng nhất cho cả 07 thẻ (màu riêng của thẻ chỉ dùng cho viền trên và icon) */
+        .dash-count { margin-left: auto; font-size: 32px; font-weight: 700; color: var(--primary-light); line-height: 1; }
         .dash-count.zero { color: #cbd5e1; }
         .dash-list { list-style: none; margin: 0; padding: 0 18px; flex: 1; }
         .dash-list li { display: flex; gap: 8px; align-items: baseline; padding: 7px 0; border-top: 1px dashed var(--border-color); font-size: 12.5px; color: #334155; }
         .dash-list li .c { font-weight: 700; color: var(--primary-light); white-space: nowrap; }
         .dash-list li .d { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .dash-empty { padding: 10px 18px 4px; color: var(--text-muted); font-size: 12.5px; font-style: italic; }
-        .dash-foot { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px 14px; margin-top: 6px; border-top: 1px solid var(--border-color); font-size: 12.5px; font-weight: 600; color: var(--card-color); }
+        .dash-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 18px 14px; margin-top: 6px; border-top: 1px solid var(--border-color); font-size: 12.5px; font-weight: 600; }
+        .dash-foot .more { color: var(--text-muted); }
+        .dash-foot .open { color: var(--primary-light); white-space: nowrap; }
         @media (max-width: 1100px) { .dash-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         @media (max-width: 700px) { .dash-grid { grid-template-columns: 1fr; } }
     </style>
@@ -39,18 +41,13 @@
 <body>
     <main>
         <div class="dash-head">
-            <div>
-                <h2><i class="fa-solid fa-gauge-high"></i> Dashboard Lãnh đạo</h2>
-                <p id="dashUser"></p>
-            </div>
-            <div class="dash-total">Tổng công việc chờ xử lý <b id="dashTotal">0</b></div>
+            <h2><i class="fa-solid fa-gauge-high"></i> Bàn làm việc Lãnh đạo</h2>
+            <div class="dash-total">Tổng công việc chờ xử lý: <b id="dashTotal">0</b></div>
         </div>
         <div class="dash-grid" id="dashGrid"></div>
     </main>
 
-    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
-    <!-- Số lượng mỗi khối = badge tab Chờ xử lý của phân hệ (cùng nguồn badge LeftMenu, cache bdg_cho_xu_ly_v1) -->
-    <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
     <script>
         const WF = BTNN_WF;
         const WT = WF.WORK_TYPES;
@@ -81,57 +78,61 @@
         ];
 
         // Công việc của Lãnh đạo đang đăng nhập theo từng khối
+        // Mỗi dòng: Mã hồ sơ + "Nội dung tóm tắt - Mã vụ việc" (Mã hồ sơ trùng Mã vụ việc: không lặp lại Mã vụ việc)
+        const vuViec = code => { try { return WF.vuViecOf(code, { create: false }) || ''; } catch (e) { return ''; } };
+        const row = (code, summary, maVuViec, tip) => ({ code, text: [summary, maVuViec && maVuViec !== code ? maVuViec : ''].filter(Boolean).join(' - '), tip: tip || '' });
+        // Thời điểm trình/giao dạng "hh:mm dd/mm/yyyy" hoặc "dd/mm/yyyy[ hh:mm]" -> số để sắp xếp mới nhất trước
+        function timeOf(s) {
+            const m = String(s || '').match(/(\d{2}):(\d{2})\s+(\d{2})\/(\d{2})\/(\d{4})|(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+            if (!m) return 0;
+            return m[1] ? new Date(+m[5], m[4] - 1, +m[3], +m[1], +m[2]).getTime() : new Date(+m[8], m[7] - 1, +m[6], +(m[9] || 0), +(m[10] || 0)).getTime();
+        }
         function collectItems() {
+            // Công việc luồng xử lý của người dùng đang đăng nhập, đã sắp xếp theo thời điểm trình/giao mới nhất trước
             const work = WF.getLeaderWork().pending;
-            const line = t => ({ code: t.code, text: [t.nycName, t.kind || t.detail].filter(Boolean).join(' - ') });
-            const kpLine = t => ({ code: t.code, text: [t.nycName, t.kind, (Number(t.proposal && t.proposal.amount) || 0).toLocaleString('vi-VN') + ' đ'].filter(Boolean).join(' - ') });
+            const wfRow = (t, summary) => row(t.code, summary, (t.rec && t.rec.maVuViec) || vuViec(t.code), t.nycName);
+            // Kinh phí: đề nghị "Chờ duyệt" của menu con trình người dùng đang đăng nhập ký duyệt (Lãnh đạo được trình ký - kpLeaders), mới nhất trước
+            const me = WF.getCurrentUserId();
+            const kp = adv => WF.loadKinhPhi()
+                .filter(p => p && p.status === 'Chờ duyệt' && WF.kpLeaders(p).includes(me) && !!WF.isAdvanceProposal(p) === adv)
+                .sort((a, b) => timeOf(b.date) - timeOf(a.date))
+                .map(p => row(p.code, `Chờ duyệt ${adv ? 'QĐ tạm ứng kinh phí' : 'Thông báo chi trả'}`, p.maVuViec || vuViec(p.ycbtCode), p.nycName));
             let ht = null;
             try { ht = JSON.parse(localStorage.getItem('btnn_hoantra_summary') || 'null'); } catch (e) { ht = null; }
             return {
-                pc: work.filter(t => t.type === WT.PHAN_CONG).map(line),
-                xd: work.filter(t => t.type === WT.PHE_DUYET && t.rec && t.rec.module === 'XD').map(line),
-                gq: work.filter(t => t.type === WT.THU_LY || (t.type === WT.PHE_DUYET && !(t.rec && t.rec.module === 'XD'))).map(t => ({ code: t.code, text: [t.nycName, t.type === WT.THU_LY ? 'Cử người giải quyết bồi thường' : t.kind].filter(Boolean).join(' - ') })),
-                qd: work.filter(t => t.type === WT.KY_QD).map(line),
-                kpt: work.filter(t => t.type === WT.KY_KP && t.proposal && WF.isAdvanceProposal(t.proposal)).map(kpLine),
-                kpc: work.filter(t => t.type === WT.KY_KP && !(t.proposal && WF.isAdvanceProposal(t.proposal))).map(kpLine),
-                ht: ((ht && ht.pendingApproval) || HT_FALLBACK).map(x => ({ code: x.code, text: x.maVuViec ? `${x.status} - Vụ việc ${x.maVuViec}` : `${x.status} - Hồ sơ ${x.claimCode || '--'}` }))
+                pc: work.filter(t => t.type === WT.PHAN_CONG && !t.phdd).map(t => wfRow(t, 'Chờ phân công xử lý')),
+                xd: work.filter(t => t.type === WT.PHE_DUYET && t.rec && t.rec.module === 'XD').map(t => wfRow(t, `Chờ duyệt ${t.kind}`)),
+                // [cdpd] Cử người phục hồi danh dự (phân công theo luồng của đơn vị) thuộc khối Chờ duyệt Giải quyết YCBT
+                gq: work.filter(t => t.type === WT.THU_LY || t.phdd || (t.type === WT.PHE_DUYET && !(t.rec && t.rec.module === 'XD')))
+                    .map(t => wfRow(t, t.phdd ? 'Chờ cử người phục hồi danh dự' : `Chờ duyệt ${t.type === WT.THU_LY ? 'Cử người giải quyết bồi thường' : t.kind}`)),
+                qd: work.filter(t => t.type === WT.KY_QD).map(t => wfRow(t, `Chờ duyệt ${t.kind}`)),
+                kpt: kp(true),
+                kpc: kp(false),
+                // Hoàn trả: hồ sơ chờ Lãnh đạo duyệt trình người dùng đang đăng nhập (chưa lưu người ký: Lãnh đạo cơ quan giải quyết bồi thường của vụ việc - caseLeaders);
+                // sắp theo mốc thời gian cập nhật gần nhất của hồ sơ (trình ký, ký duyệt/từ chối, quyết định, tạo)
+                ht: ((ht && ht.pendingApproval) || HT_FALLBACK).filter(x => { try { return WF.caseLeaders(x.claimCode, x.agency || '').includes(me); } catch (e) { return false; } }).map((x, i) => ({ x, i, t: Math.max(0, ...(x.times || []).map(timeOf)) })).sort((a, b) => (b.t - a.t) || (a.i - b.i)).map(o => o.x).map(x => row(x.code, x.status, x.maVuViec || vuViec(x.claimCode)))
             };
-        }
-        // Khối -> phân hệ trong tiện ích badge dùng chung (BDG)
-        const BDG_MODULE = { pc: 'tiepNhan', xd: 'xdcq', gq: 'gqYcbt', qd: 'qdGqbt', kpt: 'kpTamUng', kpc: 'kpChiTra', ht: 'hoanTra' };
-        // Số chờ xử lý của khối: lấy số badge tab Chờ xử lý đã lưu của đúng ngữ cảnh hiện tại (khớp badge LeftMenu); chưa có thì đếm danh sách công việc
-        function blockCount(key, list) {
-            const m = BDG_MODULE[key];
-            if (window.BDG && m) {
-                try {
-                    const c = JSON.parse(localStorage.getItem(BDG.CACHE_KEY) || '{}') || {};
-                    const it = c[m];
-                    if (it && it.ctx === BDG.ctxOf(m)) return Math.max(0, Number(it.count) || 0);
-                } catch (e) { /* bỏ qua */ }
-            }
-            return list.length;
         }
 
         function render() {
-            const me = WF.getCurrentUser();
-            document.getElementById('dashUser').textContent = `Công việc chờ xử lý của ${me.name} - ${me.title} (${WF.unitName(me.unitId)}). Chọn từng khối để mở tab Chờ xử lý của phân hệ tương ứng.`;
             const items = collectItems();
             let total = 0;
             document.getElementById('dashGrid').innerHTML = BLOCKS.map((b, i) => {
                 const list = items[b.key] || [];
-                const n = blockCount(b.key, list);
+                const n = list.length; // Số tổng và các dòng cùng 01 danh sách công việc của người dùng đang đăng nhập
                 total += n;
-                const shownList = list.slice(0, Math.min(3, n));
-                const rows = shownList.map(x => `<li><span class="c">${esc(x.code)}</span><span class="d" title="${esc(x.text)}">${esc(x.text)}</span></li>`).join('');
-                const empty = n ? 'Xem chi tiết tại tab Chờ xử lý của phân hệ.' : 'Không có công việc chờ xử lý.';
+                const shownList = list.slice(0, 3);
+                const rows = shownList.map(x => `<li><span class="c">${esc(x.code)}</span><span class="d" title="${esc([x.text, x.tip].filter(Boolean).join(' - '))}">${esc(x.text)}</span></li>`).join('');
+                const more = n - shownList.length;
+                const moreText = more > 0 ? `và ${more} công việc khác` : '';
                 return `<div class="dash-card" role="button" tabindex="0" style="--card-color:${b.color}; --card-bg:${b.bg};" onclick="openBlock(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openBlock(${i});}">
                     <div class="dash-card-top">
                         <div class="dash-icon"><i class="fa-solid ${b.icon}"></i></div>
                         <div><div class="dash-title">${esc(b.title)}</div><div class="dash-module">${esc(b.module)}</div></div>
                         <div class="dash-count${n ? '' : ' zero'}">${n}</div>
                     </div>
-                    ${rows ? `<ul class="dash-list">${rows}</ul>` : `<div class="dash-empty">${empty}</div>`}
-                    <div class="dash-foot"><span>${rows && n > shownList.length ? `và ${n - shownList.length} công việc khác` : ''}</span><span>Mở danh sách Chờ xử lý <i class="fa-solid fa-arrow-right"></i></span></div>
+                    ${rows ? `<ul class="dash-list">${rows}</ul>` : '<div class="dash-empty">Không có công việc chờ xử lý.</div>'}
+                    <div class="dash-foot"><span class="more">${moreText}</span><span class="open">Mở danh sách Chờ xử lý <i class="fa-solid fa-arrow-right"></i></span></div>
                 </div>`;
             }).join('');
             document.getElementById('dashTotal').textContent = total;
@@ -154,7 +155,7 @@
         window.addEventListener('storage', render);
     </script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 
 </html>

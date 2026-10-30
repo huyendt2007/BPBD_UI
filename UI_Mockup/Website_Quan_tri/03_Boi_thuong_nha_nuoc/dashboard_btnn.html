@@ -371,11 +371,33 @@ function tableHtml(head, rows, totalRow) {
     return `<div class="table-wrap"><table class="tbl"><thead><tr>${head.map(h => `<th class="${h.num ? 'num' : ''}">${h.t}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(cell).join('')}</tr>`).join('')}${totalRow ? `<tr class="total">${totalRow.map(cell).join('')}</tr>` : ''}</tbody></table></div>`;
 }
 function exportTable() {
-    if (!window.XLSX || !TABLE.rows.length) { showToast('Không có dữ liệu để kết xuất.'); return; }
-    const strip = v => String(v).replace(/<[^>]+>/g, '').trim();
-    const aoa = [TABLE.head.map(h => h.t)].concat(TABLE.rows.map(r => r.map(strip)));
-    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Du_lieu');
-    XLSX.writeFile(wb, `${MODULE}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    if (!TABLE.rows.length) { showToast('Không có dữ liệu để kết xuất Excel.'); return; }
+    // Theo Quy chuẩn Kết xuất Excel dùng chung (04_Danh_muc_va_Phu_luc.md #quy-chuan-ket-xuat-excel)
+    const strip = v => { const d = document.createElement('div'); d.innerHTML = String(v == null ? '' : v); return (d.textContent || '').replace(/\s+/g, ' ').trim(); };
+    const p2 = x => String(x).padStart(2, '0'), now = new Date();
+    const stamp = `${p2(now.getDate())}/${p2(now.getMonth() + 1)}/${now.getFullYear()} ${p2(now.getHours())}:${p2(now.getMinutes())}`;
+    const ymd = `${now.getFullYear()}${p2(now.getMonth() + 1)}${p2(now.getDate())}`;
+    const screenTitle = SCREENS[MODULE].title;
+    const fileBase = screenTitle.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '');
+    // Dòng 2: điều kiện lọc hiện hành
+    const info = filterDefs().map(([id, label]) => { const s = document.getElementById(id); return s && s.selectedIndex >= 0 ? `${label}: ${s.options[s.selectedIndex].text}` : ''; }).filter(Boolean).join('; ');
+    const u = window.BTNN_WF && BTNN_WF.getCurrentUser ? BTNN_WF.getCurrentUser() : null;
+    const n = TABLE.head.length, font = "font-family:'Times New Roman';";
+    const align = (h, i) => h.num ? 'right' : (i === 0 && h.t === 'STT' ? 'center' : 'left');
+    const html = '<meta charset="UTF-8"><table border="1">'
+        + `<tr><td colspan="${n}" style="${font}font-size:15pt;font-weight:bold;text-align:center;border:none;">${esc(screenTitle.toUpperCase())}</td></tr>`
+        + `<tr><td colspan="${n}" style="${font}font-size:11pt;font-style:italic;text-align:center;border:none;">${esc(info || 'Thời điểm xuất: ' + stamp)}</td></tr>`
+        + '<tr>' + TABLE.head.map(h => `<th style="${font}font-size:12pt;background:#e5e7eb;">${esc(h.t)}</th>`).join('') + '</tr>'
+        + TABLE.rows.map(r => '<tr>' + r.map((v, i) => `<td style="${font}font-size:12pt;mso-number-format:'\\@';text-align:${align(TABLE.head[i] || {}, i)};">${esc(strip(v))}</td>`).join('') + '</tr>').join('')
+        + `<tr><td colspan="${n}" style="${font}font-size:10pt;font-style:italic;text-align:right;border:none;">Xuất ngày ${esc(stamp)} bởi ${esc((u && (u.name || u.fullName || u.username)) || 'Người dùng hiện tại')}</td></tr>`
+        + '</table>';
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['﻿' + html], { type: 'application/vnd.ms-excel;charset=utf-8' }));
+    // Mockup sinh bảng HTML nên dùng đuôi .xls; hệ thống thật xuất .xlsx theo quy chuẩn
+    a.download = `${ymd}_${fileBase}.xls`;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+    showToast('Đã kết xuất Bảng số liệu ra tệp Excel.');
 }
 
 // ===================== Bộ lọc theo màn hình =====================
@@ -617,6 +639,6 @@ function render() {
 </script>
 <script src="admin-ui-standardizer.js"></script>
 <script src="filter_toggle_auto.js"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 </html>

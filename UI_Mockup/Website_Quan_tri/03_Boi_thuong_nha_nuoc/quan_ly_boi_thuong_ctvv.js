@@ -279,7 +279,7 @@ window.tlRenderDocs = function (k) {
     var wrap = ctvvEl(K.wrap); if (!wrap) return;
     var addBtn = ctvvEl(k === 'ev' ? 'tlAddEvDocBtn' : 'tlAddDocBtn'); if (addBtn) addBtn.style.display = 'none';
     ctvvDocsMount('tl_' + k, K.wrap, (tlState[k] || []).map(function (d) { return { title: d.name || '', file: d.file || '', size: d.size || '', fileId: d.fileId || '' }; }), {
-        required: true, title: '', idp: K.p, minRow: true,
+        required: k === 'ev', title: '', idp: K.p, minRow: true,
         onSync: function (rows) { tlState[k] = rows.map(function (r) { return { name: r.title, file: r.file, size: r.size, fileId: r.fileId }; }); }
     });
 };
@@ -290,7 +290,8 @@ window.tlRenderDocs = function (k) {
         var checked = document.querySelector('input[name="tlDecision"]:checked');
         var code = checked ? checked.value : '';
         var k = code === 'DONG_Y' ? 'docs' : (code && TL_NO_NEGOTIATION_CODES.includes(code) ? 'ev' : '');
-        if (k && !ctvvDocsValidate('tl_' + k, true)) { showToast('Vui lòng nhập đầy đủ các trường bắt buộc.', 'error'); return; }
+        // [dvc1] Đồng ý thương lượng: Tài liệu đính kèm không bắt buộc (Biên bản kết quả thương lượng là trường tệp riêng)
+        if (k && !ctvvDocsValidate('tl_' + k, k === 'ev')) { showToast('Vui lòng nhập đầy đủ các trường bắt buộc.', 'error'); return; }
         return orig.apply(this, arguments);
     };
     var origSave = window.tlSave;

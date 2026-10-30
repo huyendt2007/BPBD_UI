@@ -649,11 +649,12 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
-    <script src="btnn_tim_kiem_vu_viec.js?v=20261029sn1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
+    <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
+    <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script>
-        const W = window.BTNN_WF, CASE = window.BTNN_CASE;
-        const STORE_KEY = 'btnn_tddd_records_v3';
+        const W = window.BTNN_WF, CASE = window.BTNN_CASE, PV = window.BTNN_PHAMVI;
+        const STORE_KEY = 'btnn_tddd_records_v4';
         const G = { TD: 'Theo dõi công tác BTNN', YC: 'Yêu cầu báo cáo', DD: 'Đôn đốc công tác BTNN' };
         // ===== Danh sách giá trị theo Thông tư 08/2019/TT-BTP =====
         // Nội dung theo dõi - khoản 2 Điều 8
@@ -726,12 +727,16 @@
                 { code: 'TDDD-BTNN-2026-002', group: G.YC, senderId: 'BTP-01', officer: b, createdAt: '01/10/2026', targetId: 'UBND-HN', content: [YC_CONTENT[0], YC_CONTENT[1]], docNo: '125/BTP-BTNN', docDate: '01/10/2026', deadline: '30/10/2026', mainContent: 'Đề nghị UBND Thành phố Hà Nội báo cáo việc giải quyết yêu cầu bồi thường và thực hiện trách nhiệm hoàn trả 9 tháng đầu năm 2026.', status: ST.SENT, history: [hist('01/10/2026 10:00', b, 'Lưu thông tin yêu cầu báo cáo')] },
                 { code: 'TDDD-BTNN-2026-003', group: G.YC, senderId: 'BTP-01', officer: b, createdAt: '10/09/2026', targetId: 'VKSNDTC', content: [YC_CONTENT[0]], docNo: '110/BTP-BTNN', docDate: '10/09/2026', deadline: '30/09/2026', mainContent: 'Đề nghị báo cáo việc giải quyết yêu cầu bồi thường trong hoạt động tố tụng hình sự.', status: ST.REPLIED, response: { date: '25/09/2026', docNo: '58/VKSTC-V7', content: 'Đã giải quyết 12 vụ việc, đang giải quyết 03 vụ việc.', by: b }, history: [hist('10/09/2026 08:30', b, 'Lưu thông tin yêu cầu báo cáo'), hist('26/09/2026 08:30', b, 'Cập nhật phản hồi')] },
                 { code: 'TDDD-BTNN-2026-004', group: G.DD, senderId: 'BTP-01', officer: b, createdAt: '20/09/2026', form: DD_FORMS[0], targetId: 'UBND-LD', content: [DD_CONTENT[2]], basis: DD_BASIS[0], docNo: '118/BTP-BTNN', docDate: '20/09/2026', deadline: '10/10/2026', legalBasis: 'Khoản 3 Điều 13, Điều 15 Thông tư 08/2019/TT-BTP', mainContent: 'Đôn đốc UBND tỉnh Lâm Đồng chỉ đạo cấp kinh phí và chi trả tiền bồi thường theo quyết định đã có hiệu lực.', status: ST.SENT, history: [hist('20/09/2026 14:00', b, 'Lưu thông tin đôn đốc')] },
-                { code: 'TDDD-BTNN-2026-005', group: G.DD, senderId: 'BTP-01', officer: b, createdAt: '15/09/2026', form: DD_FORMS[1], coopForm: COOP_FORMS[0], proposedId: 'UBND-HN', targetId: 'UBND-CG', content: [DD_CONTENT[0]], basis: DD_BASIS[0], caseCode: 'BT-2026-012', docNo: '112/BTP-BTNN', docDate: '15/09/2026', deadline: '30/09/2026', legalBasis: 'Điểm c khoản 3 Điều 13, khoản 3 Điều 15 Thông tư 08/2019/TT-BTP', mainContent: 'Đề nghị UBND Thành phố Hà Nội đôn đốc UBND quận Cầu Giấy giải quyết yêu cầu bồi thường đúng thời hạn.', status: ST.REPLIED, response: { date: '28/09/2026', docNo: '305/UBND-NC', result: PROPOSAL_RESULTS[0], issuedDocNo: '306/UBND-NC', issuedDocDate: '28/09/2026', content: 'Đã ban hành văn bản đôn đốc UBND quận Cầu Giấy.', by: b }, history: [hist('15/09/2026 09:00', b, 'Lưu thông tin đề nghị đôn đốc'), hist('29/09/2026 09:00', b, 'Cập nhật phản hồi', 'Thống nhất, đã ban hành văn bản đôn đốc')] },
+                { code: 'TDDD-BTNN-2026-005', group: G.DD, senderId: 'BTP-01', officer: b, createdAt: '15/09/2026', form: DD_FORMS[1], coopForm: COOP_FORMS[0], proposedId: 'UBND-HN', targetId: 'UBND-CG', content: [DD_CONTENT[0]], basis: DD_BASIS[0], caseCode: 'BT-2026-012', docNo: '112/BTP-BTNN', docDate: '15/09/2026', deadline: '30/09/2026', legalBasis: 'Điểm c khoản 3 Điều 13, khoản 3 Điều 15 Thông tư 08/2019/TT-BTP', mainContent: 'Đề nghị UBND Thành phố Hà Nội đôn đốc UBND phường Cầu Giấy giải quyết yêu cầu bồi thường đúng thời hạn.', status: ST.REPLIED, response: { date: '28/09/2026', docNo: '305/UBND-NC', result: PROPOSAL_RESULTS[0], issuedDocNo: '306/UBND-NC', issuedDocDate: '28/09/2026', content: 'Đã ban hành văn bản đôn đốc UBND phường Cầu Giấy.', by: b }, history: [hist('15/09/2026 09:00', b, 'Lưu thông tin đề nghị đôn đốc'), hist('29/09/2026 09:00', b, 'Cập nhật phản hồi', 'Thống nhất, đã ban hành văn bản đôn đốc')] },
                 { code: 'TDDD-BTNN-2026-006', group: G.DD, senderId: 'BTP-01', officer: b, createdAt: '02/08/2026', form: DD_FORMS[0], targetId: 'TANDTC', content: [DD_CONTENT[4]], basis: DD_BASIS[5], docNo: '95/BTP-BTNN', docDate: '02/08/2026', deadline: '20/08/2026', legalBasis: 'Điểm a khoản 3 Điều 13 Thông tư 08/2019/TT-BTP', mainContent: 'Đôn đốc gửi báo cáo công tác bồi thường nhà nước 6 tháng đầu năm 2026.', status: ST.DONE, response: { date: '15/08/2026', docNo: '210/TANDTC-KHTC', content: 'Đã gửi báo cáo.', by: b }, history: [hist('02/08/2026 09:00', b, 'Lưu thông tin đôn đốc'), hist('15/08/2026 10:00', b, 'Cập nhật phản hồi'), hist('16/08/2026 08:00', b, 'Hoàn thành')] },
-                { code: 'TDDD-BTNN-2026-007', group: G.DD, senderId: 'STP-HN', officer: s, createdAt: '03/10/2026', form: DD_FORMS[0], targetId: 'UBND-CG', content: [DD_CONTENT[0]], basis: DD_BASIS[0], caseCode: 'BT-2026-014', docNo: '1520/STP-HCTP', docDate: '03/10/2026', deadline: '20/10/2026', legalBasis: 'Khoản 4 Điều 13 Thông tư 08/2019/TT-BTP', mainContent: 'Đôn đốc UBND quận Cầu Giấy ban hành quyết định giải quyết bồi thường vụ việc BT-2026-014.', status: ST.SENT, history: [hist('03/10/2026 10:00', s, 'Lưu thông tin đôn đốc')] },
+                { code: 'TDDD-BTNN-2026-007', group: G.DD, senderId: 'STP-HN', officer: s, createdAt: '03/10/2026', form: DD_FORMS[0], targetId: 'UBND-CG', content: [DD_CONTENT[0]], basis: DD_BASIS[0], caseCode: 'BT-2026-014', docNo: '1520/STP-HCTP', docDate: '03/10/2026', deadline: '20/10/2026', legalBasis: 'Khoản 4 Điều 13 Thông tư 08/2019/TT-BTP', mainContent: 'Đôn đốc UBND phường Cầu Giấy ban hành quyết định giải quyết bồi thường vụ việc BT-2026-014.', status: ST.SENT, history: [hist('03/10/2026 10:00', s, 'Lưu thông tin đôn đốc')] },
                 { code: 'TDDD-BTNN-2026-008', group: G.TD, senderId: 'STP-HN', officer: s, createdAt: '12/09/2026', targetId: 'THADS-HN', content: [TD_CONTENT[3]], basis: TD_BASIS[0], basisDocNo: '45/BC-THADS', basisDocDate: '10/09/2026', mainContent: 'Theo dõi việc xác định trách nhiệm hoàn trả tại Cục Thi hành án dân sự Thành phố Hà Nội.', result: 'Cơ quan đã ban hành quyết định hoàn trả.', status: ST.DONE, history: [hist('12/09/2026 09:00', s, 'Lưu theo dõi'), hist('30/09/2026 16:00', s, 'Hoàn thành')] },
                 { code: 'TDDD-BTNN-2026-009', group: G.YC, senderId: 'STP-HN', officer: s, createdAt: '07/10/2026', targetId: 'CA-TX', content: [YC_CONTENT[0]], docNo: '1534/STP-HCTP', docDate: '07/10/2026', deadline: '21/10/2026', mainContent: 'Đề nghị báo cáo việc giải quyết yêu cầu bồi thường vụ việc BT-2026-038.', caseCode: 'BT-2026-038', status: ST.SENT, history: [hist('07/10/2026 09:30', s, 'Lưu thông tin yêu cầu báo cáo')] },
-                { code: 'TDDD-BTNN-2026-010', group: G.DD, senderId: 'BTP-01', officer: b, createdAt: '08/10/2026', form: DD_FORMS[1], coopForm: COOP_FORMS[1], proposedId: 'VKSNDTC', targetId: 'VKS-Q1', content: [DD_CONTENT[0]], basis: DD_BASIS[1], docNo: '130/BTP-BTNN', docDate: '08/10/2026', deadline: '22/10/2026', legalBasis: 'Điểm b khoản 3 Điều 13, khoản 4 Điều 15 Thông tư 08/2019/TT-BTP', mainContent: 'Đề nghị VKSND tối cao đôn đốc VKSND Quận 1 giải quyết yêu cầu bồi thường.', status: ST.SENT, history: [hist('08/10/2026 11:00', b, 'Lưu thông tin đề nghị đôn đốc')] }
+                { code: 'TDDD-BTNN-2026-010', group: G.DD, senderId: 'BTP-01', officer: b, createdAt: '08/10/2026', form: DD_FORMS[1], coopForm: COOP_FORMS[1], proposedId: 'VKSNDTC', targetId: 'VKS-Q1', content: [DD_CONTENT[0]], basis: DD_BASIS[1], docNo: '130/BTP-BTNN', docDate: '08/10/2026', deadline: '22/10/2026', legalBasis: 'Điểm b khoản 3 Điều 13, khoản 4 Điều 15 Thông tư 08/2019/TT-BTP', mainContent: 'Đề nghị VKSND tối cao đôn đốc VKSND Quận 1 giải quyết yêu cầu bồi thường.', status: ST.SENT, history: [hist('08/10/2026 11:00', b, 'Lưu thông tin đề nghị đôn đốc')] },
+                { code: 'TDDD-BTNN-2026-011', group: G.TD, senderId: 'STP-HCM', officer: 'Châu Ngọc Ánh', createdAt: '14/09/2026', targetId: 'CCTHADS-BT', content: [TD_CONTENT[0]], basis: TD_BASIS[0], basisDocNo: '72/BC-CCTHADS', basisDocDate: '10/09/2026', mainContent: 'Theo dõi việc giải quyết yêu cầu bồi thường tại Chi cục Thi hành án dân sự quận Bình Tân.', result: '', status: ST.TRACKING, history: [hist('14/09/2026 08:45', 'Châu Ngọc Ánh', 'Lưu theo dõi')] },
+                { code: 'TDDD-BTNN-2026-012', group: G.DD, senderId: 'STP-HCM', officer: 'Châu Ngọc Ánh', createdAt: '06/10/2026', form: DD_FORMS[0], targetId: 'VKS-Q1', content: [DD_CONTENT[0]], basis: DD_BASIS[0], docNo: '2210/STP-HCTP', docDate: '06/10/2026', deadline: '27/10/2026', legalBasis: 'Khoản 4 Điều 13 Thông tư 08/2019/TT-BTP', mainContent: 'Đôn đốc Viện kiểm sát nhân dân Quận 1 giải quyết yêu cầu bồi thường đúng thời hạn.', status: ST.SENT, history: [hist('06/10/2026 15:00', 'Châu Ngọc Ánh', 'Lưu thông tin đôn đốc')] },
+                { code: 'TDDD-BTNN-2026-013', group: G.YC, senderId: 'STP-HP', officer: 'Tăng Thị Diệu', createdAt: '22/09/2026', targetId: 'THADS-HP', content: [YC_CONTENT[1]], docNo: '845/STP-HCTP', docDate: '22/09/2026', deadline: '10/10/2026', mainContent: 'Đề nghị báo cáo việc thực hiện trách nhiệm hoàn trả 9 tháng đầu năm 2026.', status: ST.REPLIED, response: { date: '08/10/2026', docNo: '310/BC-THADS', content: 'Đã ban hành 02 quyết định hoàn trả.', by: 'Tăng Thị Diệu' }, history: [hist('22/09/2026 09:00', 'Tăng Thị Diệu', 'Lưu thông tin yêu cầu báo cáo'), hist('09/10/2026 10:00', 'Tăng Thị Diệu', 'Cập nhật phản hồi')] },
+                { code: 'TDDD-BTNN-2026-014', group: G.TD, senderId: 'STP-HP', officer: 'Quách Minh Tuấn', createdAt: '01/08/2026', targetId: 'VKS-HP', content: [TD_CONTENT[0]], basis: TD_BASIS[3], basisDocNo: '05/QĐ-VKS', basisDocDate: '25/07/2026', mainContent: 'Theo dõi việc thực hiện quyết định giải quyết bồi thường của Viện kiểm sát nhân dân Thành phố Hải Phòng.', result: 'Đã chi trả tiền bồi thường cho người bị thiệt hại.', status: ST.DONE, history: [hist('01/08/2026 09:00', 'Quách Minh Tuấn', 'Lưu theo dõi'), hist('29/08/2026 16:00', 'Quách Minh Tuấn', 'Hoàn thành')] }
             ];
         }
         let records = [];
@@ -741,7 +746,9 @@
         function nextCode() { const n = records.reduce((m, r) => Math.max(m, parseInt(r.code.split('-').pop(), 10) || 0), 0) + 1; return `TDDD-BTNN-${new Date().getFullYear()}-${String(n).padStart(3, '0')}`; }
 
         // ===== Danh sách =====
-        const canCreate = () => ['BTP', 'STP'].includes(myScope().level);
+        // Phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp: BTP/Cục xem hồ sơ của BTP và mọi Sở Tư pháp; chỉ thao tác trên hồ sơ của đơn vị mình
+        const canCreate = () => PV.canCreate(false);
+        const isOwn = r => PV.canEdit(r.senderId);
         const tabs = () => [G.TD, G.YC, G.DD];
         let currentTab = '';
         let currentPage = 1, pageSize = 20;
@@ -758,6 +765,7 @@
             document.getElementById('filterGrid').innerHTML = [
                 txt('code', 'Mã hồ sơ', 'Nhập mã hồ sơ...'),
                 txt('agency', agencyLabel, `Nhập ${agencyLabel.toLowerCase()}...`),
+                PV.filterHtml({ label: 'Đơn vị thực hiện', includeBtp: true }),
                 sel('content', currentTab === G.TD ? 'Nội dung theo dõi' : currentTab === G.YC ? 'Nội dung yêu cầu báo cáo' : 'Nội dung đôn đốc', contentOpts),
                 currentTab === G.DD ? sel('form', 'Hình thức đôn đốc', DD_FORMS) : '',
                 sel('status', 'Trạng thái', statusOptionsOf(currentTab)),
@@ -767,8 +775,7 @@
             initDatePickers(document.getElementById('filterGrid'));
         }
         function listOf(tab) {
-            const root = myRoot();
-            return records.filter(r => r.group === tab && r.senderId === root);
+            return records.filter(r => r.group === tab && PV.canSee(r.senderId));
         }
         const isOverdue = r => [ST.SENT].includes(r.status) && parseDate(r.deadline) && parseDate(r.deadline) < parseDate(today());
         const deadlineCell = r => r.deadline ? `${esc(r.deadline)}${isOverdue(r) ? '<div class="overdue">Quá hạn</div>' : ''}` : '-';
@@ -777,13 +784,24 @@
             const status = { h: 'Trạng thái', v: r => `<span class="badge ${statusClass(r.status)}">${esc(r.status)}</span>` };
             const content = { h: 'Nội dung', v: r => esc((r.content || []).join('; ')) };
             const doc = { h: 'Số văn bản', v: r => esc(r.docNo || '-') };
+            const list = baseColumns(code, status, content, doc);
+            // Cán bộ xử lý: cán bộ đã nhập hồ sơ (người tạo), đặt trước cột Trạng thái;
+            // Đơn vị thực hiện: ngay sau Cán bộ xử lý, chỉ hiển thị với người dùng thuộc Bộ Tư pháp/Cục
+            let i = list.findIndex(c => c.h === 'Cán bộ xử lý');
+            if (i < 0) { i = list.findIndex(c => c.h === 'Trạng thái'); list.splice(i, 0, { h: 'Cán bộ xử lý', v: r => esc(r.officer) }); }
+            if (PV.isBtp()) list.splice(i + 1, 0, { h: 'Đơn vị thực hiện', v: r => esc(unitName(r.senderId)) });
+            return list;
+        }
+        function baseColumns(code, status, content, doc) {
             if (currentTab === G.TD) return [code, { h: 'Cơ quan được theo dõi', v: r => esc(unitName(r.targetId)) }, { h: 'Nội dung theo dõi', v: content.v }, { h: 'Căn cứ theo dõi', v: r => esc(r.basis) }, { h: 'Ngày lập', v: r => esc(r.createdAt) }, { h: 'Cán bộ xử lý', v: r => esc(r.officer) }, status];
             if (currentTab === G.YC) return [code, { h: 'Cơ quan được yêu cầu báo cáo', v: r => esc(unitName(r.targetId)) }, { h: 'Nội dung yêu cầu báo cáo', v: content.v }, doc, { h: 'Ngày văn bản', v: r => esc(r.docDate) }, { h: 'Hạn báo cáo', v: deadlineCell }, status];
             if (currentTab === G.DD) return [code, { h: 'Hình thức đôn đốc', v: r => esc(r.form) }, { h: 'Cơ quan nhận văn bản', v: r => esc(unitName(receiverOf(r))) }, { h: 'Cơ quan được đôn đốc', v: r => esc(unitName(r.targetId)) }, { h: 'Nội dung đôn đốc', v: content.v }, { h: 'Hạn phản hồi', v: deadlineCell }, status];
         }
         function statusClass(s) { return s === ST.DONE ? 'done' : s === ST.REPLIED ? 'pending' : 'active'; }
         function actionButtons(r) {
-            const btn = (cls, icon, title, on, call) => `<button class="icon-btn ${cls} ${on ? '' : 'disabled'}" title="${title}" onclick="event.stopPropagation(); ${call}"><i class="fa-solid ${icon}"></i></button>`;
+            // Hồ sơ của đơn vị khác (Bộ Tư pháp/Cục xem hồ sơ của Sở Tư pháp): mọi nút mờ, chỉ xem chi tiết bằng click dòng
+            const own = isOwn(r);
+            const btn = (cls, icon, title, on, call) => `<button class="icon-btn ${cls} ${on && own ? '' : 'disabled'}" title="${title}" onclick="event.stopPropagation(); ${call}"><i class="fa-solid ${icon}"></i></button>`;
             if (r.group === G.TD) return `<div class="row-actions">${btn('edit', 'fa-pen-to-square', 'Sửa', r.status !== ST.DONE, `openForm('edit','${r.code}')`)}${btn('sign', 'fa-circle-check', 'Hoàn thành', r.status !== ST.DONE, `openForm('finish','${r.code}')`)}</div>`;
             return `<div class="row-actions">${btn('edit', 'fa-pen-to-square', 'Sửa', r.status === ST.SENT, `openForm('edit','${r.code}')`)}${btn('submit', 'fa-reply', 'Cập nhật phản hồi', [ST.SENT, ST.REPLIED].includes(r.status), `openForm('respond','${r.code}')`)}${btn('sign', 'fa-circle-check', 'Hoàn thành', r.status === ST.REPLIED, `finishSent('${r.code}')`)}</div>`;
         }
@@ -792,6 +810,7 @@
             const from = parseDate(document.getElementById('filter_from')?.value), to = parseDate(document.getElementById('filter_to')?.value);
             return listOf(currentTab).filter(r => {
                 if (v('code') && !r.code.toLowerCase().includes(v('code'))) return false;
+                if (!PV.matchFilter(r.senderId, r.officer)) return false;
                 const ag = unitName(r.targetId) + ' ' + unitName(r.proposedId);
                 if (v('agency') && !ag.toLowerCase().includes(v('agency'))) return false;
                 if (v('content') && !(r.content || []).some(c => c.toLowerCase() === v('content'))) return false;
@@ -823,7 +842,7 @@
                     <td style="text-align:center;">${start + i + 1}</td>
                     ${cols.map(c => `<td>${c.v(r)}</td>`).join('')}
                     <td style="text-align:center;">${actionButtons(r)}</td>
-                </tr>`).join('') : `<tr><td colspan="${cols.length + 2}" style="text-align:center; color:var(--text-muted); font-style:italic; padding:26px;">Không tìm thấy dữ liệu phù hợp. [MSG-INF-SYS-001]</td></tr>`;
+                </tr>`).join('') : (PV.level() === 'OTHER' ? PV.denyRow(cols.length + 2) : `<tr><td colspan="${cols.length + 2}" style="text-align:center; color:var(--text-muted); font-style:italic; padding:26px;">Không tìm thấy dữ liệu phù hợp. [MSG-INF-SYS-001]</td></tr>`);
             renderPaginationPages(maxPages);
             document.getElementById('btnAddNew').style.display = canCreate() ? '' : 'none';
         }
@@ -846,7 +865,8 @@
                 title: `Danh sách ${currentTab.charAt(0).toLowerCase()}${currentTab.slice(1)}`,
                 name: XLSX_FILE_NAMES[currentTab] || 'Danh_sach_theo_doi_don_doc_BTNN',
                 headers: lastGrid.cols.map(c => c.h),
-                rows: lastGrid.list.map(r => lastGrid.cols.map(c => c.v(r)))
+                rows: lastGrid.list.map(r => lastGrid.cols.map(c => c.v(r))),
+                note: PV.filterNote()
             });
         }
 
@@ -979,7 +999,7 @@
             formMode = mode;
             const rec = code ? findRec(code) : null;
             const user = myUser();
-            formRec = rec ? JSON.parse(JSON.stringify(rec)) : { group: currentTab, status: 'Đang nhập', senderId: myRoot(), officer: user.name, content: [] };
+            formRec = rec ? JSON.parse(JSON.stringify(rec)) : { group: currentTab, status: 'Đang nhập', senderId: PV.root(), officer: user.name, content: [] };
             const titles = { new: 'Thêm mới', edit: 'Sửa', view: 'Xem chi tiết', respond: 'Cập nhật phản hồi', finish: 'Hoàn thành' };
             document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${titles[mode]} hồ sơ theo dõi, đôn đốc công tác BTNN`;
             document.getElementById('formCode').innerText = rec ? rec.code : 'Hệ thống tự sinh';
@@ -1003,6 +1023,8 @@
             if (formMode === 'new' || formMode === 'edit') a.push(r.group === G.TD ? `<button type="button" class="btn btn-primary" onclick="saveTracking()"><i class="fa-solid fa-floppy-disk"></i> Lưu theo dõi</button>` : `<button type="button" class="btn btn-primary" onclick="saveSent()"><i class="fa-solid fa-floppy-disk"></i> Lưu thông tin</button>`);
             if (formMode === 'finish') a.push(`<button type="button" class="btn btn-success" onclick="finishTracking()"><i class="fa-solid fa-circle-check"></i> Hoàn thành</button>`);
             if (formMode === 'respond') a.push(`<button type="button" class="btn btn-primary" onclick="saveResponse()"><i class="fa-solid fa-floppy-disk"></i> Lưu phản hồi</button>`);
+            // Xem chi tiết hồ sơ của đơn vị khác: chỉ có nút Đóng
+            if (formMode === 'view' && !isOwn(r)) { document.getElementById('formActions').innerHTML = a.join(''); return; }
             if (formMode === 'view' && r.group !== G.TD && [ST.SENT, ST.REPLIED].includes(r.status)) a.push(`<button type="button" class="btn btn-primary" onclick="openForm('respond','${r.code}')"><i class="fa-solid fa-reply"></i> Cập nhật phản hồi</button>`);
             if (formMode === 'view' && r.group !== G.TD && r.status === ST.REPLIED) a.push(`<button type="button" class="btn btn-success" onclick="finishSent('${r.code}')"><i class="fa-solid fa-circle-check"></i> Hoàn thành</button>`);
             document.getElementById('formActions').innerHTML = a.join('');
@@ -1140,14 +1162,14 @@
     </script>
     <!-- Kết xuất Excel dùng chung BTNN (SheetJS như dashboard_btnn.html) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="btnn_ket_xuat_excel.js?v=20261029xlsx"></script>
+    <script src="btnn_ket_xuat_excel.js?v=20261030dvth1"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_form_page.js?v=20261026fp"></script>
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 
 </html>

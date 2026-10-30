@@ -250,11 +250,6 @@
                     <input type="text" class="form-control" id="formVvExisting" list="formVvOptions" placeholder="Gõ Mã vụ việc hoặc Họ và tên người yêu cầu..." autocomplete="off">
                     <div class="error-message" id="errFormVvExisting">Đây là trường bắt buộc</div>
                 </div>
-                <div class="form-group" id="formVvLienQuanGroup">
-                    <span class="form-label">Vụ việc liên quan</span>
-                    <input type="text" class="form-control" id="formVvLienQuan" list="formVvOptions" placeholder="Gõ Mã vụ việc hoặc Họ và tên người yêu cầu..." autocomplete="off">
-                    <div class="error-message" id="errFormVvLienQuan">Vụ việc không tồn tại trên hệ thống</div>
-                </div>
                 <datalist id="formVvOptions"></datalist>
             </div>
 
@@ -609,7 +604,7 @@
                 </div>
             </div>
 
-            <div class="sub-section-title">BẢNG TÀI LIỆU ĐÍNH KÈM</div>
+            <div class="sub-section-title">TÀI LIỆU ĐÍNH KÈM</div>
             <div class="table-container">
                 <table class="custom-table" style="min-width: 760px;">
                     <thead>
@@ -628,7 +623,7 @@
             </div>
             <div class="form-footer">
                 <button class="btn btn-secondary" onclick="showListScreen()">Hủy bỏ</button>
-                <button class="btn btn-primary" id="btnFormSubmit" onclick="saveForm(false)"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>
+                <button class="btn btn-primary" id="btnFormSubmit" onclick="saveForm()"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>
             </div>
         </div>
 
@@ -816,11 +811,6 @@
                         <div class="detail-label">Mã vụ việc</div>
                         <div class="detail-value" style="font-weight: 700;" id="dtMaVuViec"></div>
                     </div>
-                    <!-- Vụ việc liên quan: chỉ hiển thị khi có dữ liệu -->
-                    <div class="detail-row" id="dtVuViecLienQuanRow" style="display: none;">
-                        <div class="detail-label">Vụ việc liên quan</div>
-                        <div class="detail-value" id="dtVuViecLienQuan"></div>
-                    </div>
                     <div class="detail-row">
                         <div class="detail-label">Trạng thái xử lý</div>
                         <div class="detail-value" id="dtStatus"></div>
@@ -949,7 +939,7 @@
                     </div>
 
                     <!-- 5. BẢNG TÀI LIỆU ĐÍNH KÈM (STT | Tên tài liệu, văn bản | File đính kèm | Thao tác Xem file / Tải file) -->
-                    <div class="sub-section-title">BẢNG TÀI LIỆU ĐÍNH KÈM</div>
+                    <div class="sub-section-title">TÀI LIỆU ĐÍNH KÈM</div>
                     <div id="dtFileAttachment" style="margin-top: 10px;"></div>
                 </div>
             </div>
@@ -1160,6 +1150,7 @@
                                 <span id="xsRoomSigStatusBadge" style="display:none;"></span>
                             </label>
                             <button type="button" class="btn btn-secondary btn-sm" id="xsBtnPlaceRoom" onclick="xsPlaceLevel('room')" style="font-size:12px;"><i class="fa-solid fa-signature"></i> Đặt chữ ký</button>
+                            <div id="xsPlaceRoomErr" class="error-message">Chưa đặt chữ ký</div>
                             <div id="xsPanelRoomCtrls" style="display:none;">
                             <div style="font-size:11px; color:#94a3b8; margin-bottom:6px;" id="xsPanelRoomCoord">Trang 1</div>
                             <div style="display:flex; gap:4px; align-items:center;">
@@ -1181,6 +1172,7 @@
                                 <div id="xsOfficerAgencyError" class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <button type="button" class="btn btn-secondary btn-sm" id="xsBtnPlaceAgency" onclick="xsPlaceLevel('agency')" style="font-size:12px;"><i class="fa-solid fa-signature"></i> Đặt chữ ký</button>
+                            <div id="xsPlaceAgencyErr" class="error-message">Chưa đặt chữ ký</div>
                             <div id="xsPanelAgencyCtrls" style="display:none;">
                             <div style="font-size:11px; color:#94a3b8; margin-bottom:6px;" id="xsPanelAgencyCoord">Trang 1</div>
                             <div style="display:flex; gap:4px; align-items:center;">
@@ -1230,13 +1222,13 @@
     </div>
 
     <!-- External javascript logic -->
-    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261029tldk"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261030s2"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261029ldxd3"></script>
-    <script src="quan_ly_boi_thuong_ktlc.js?v=20261027ktl2"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261030s2"></script>
+    <script src="quan_ly_boi_thuong_ktlc.js?v=20261030k3"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
     <script>
@@ -1268,6 +1260,6 @@
             if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
         })();
     </script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 </html>

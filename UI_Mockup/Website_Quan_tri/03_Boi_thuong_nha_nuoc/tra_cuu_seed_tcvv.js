@@ -4,7 +4,7 @@
  * - Merge theo Mã hồ sơ GQBT: bản ghi đã có (localStorage claimsList / dữ liệu mẫu của trang) được giữ nguyên, chỉ thêm mã chưa có.
  * - Phủ đủ giá trị bộ lọc: cơ quan giải quyết trên toàn hệ thống, 06 Lĩnh vực, 15 Trạng thái, có / không yêu cầu phục hồi danh dự,
  *   cá nhân / tổ chức, Số giấy tờ người yêu cầu / người bị thiệt hại, 01-03 Văn bản làm căn cứ bồi thường.
- * - UNIT_ROWS: vụ việc của các cơ quan có tài khoản người dùng giả lập (Bộ Tư pháp, Sở Tư pháp TP. Hà Nội, UBND quận Cầu Giấy...) để demo quyền xem chi tiết.
+ * - UNIT_ROWS: vụ việc của các cơ quan có tài khoản người dùng giả lập (Bộ Tư pháp, Sở Tư pháp TP. Hà Nội, UBND phường Cầu Giấy...) để demo quyền xem chi tiết.
  * Nạp sau script nội tuyến của trang: <script src="tra_cuu_seed_tcvv.js?v=20261027tcvv3"></script>
  * - Cũng nạp ở cuối quan_ly_boi_thuong.html: chỉ hoạt động khi ?readonly=1&tcvvPreview=1 (Xem chi tiết hồ sơ bổ sung, chỉ trong bộ nhớ).
  */
@@ -76,22 +76,22 @@
         ['Hà Nội', 'Bộ Tư pháp', 'Phạm Thị Ngọc', 'CN', R_NBTH, '', HC, 'Đang phục hồi danh dự', TN, 'both', 'Phạm Minh Đức', '', 'Công bố quyết định xử lý kỷ luật công chứng viên không đúng sự thật.', 80000000],
         ['Hà Nội', 'Sở Tư pháp Thành phố Hà Nội', 'Đoàn Văn Hưng', 'CN', R_NBTH, '', HC, 'Cử người giải quyết bồi thường', TN, 'money', 'Đỗ Văn Chung', '', 'Xử phạt vi phạm hành chính trong lĩnh vực công chứng không đúng thẩm quyền.', 60000000],
         ['Hà Nội', 'Sở Tư pháp Thành phố Hà Nội', 'Văn phòng Công chứng Hồng Hà', 'TC', R_NBTH, '', HC, 'Chờ ban hành QĐ', DVC, 'money', 'Ngô Thị Lan', '', 'Tạm đình chỉ hoạt động văn phòng công chứng trái quy định.', 310000000],
-        ['Hà Nội', 'UBND quận Cầu Giấy, Thành phố Hà Nội', 'Nguyễn Thị Mận', 'CN', R_NBTH, '', HC, 'Thương lượng', TN, 'money', 'Kiều Văn Nam', '', 'Cưỡng chế phá dỡ công trình khi quyết định cưỡng chế đã bị hủy.', 230000000],
+        ['Hà Nội', 'UBND phường Cầu Giấy, Thành phố Hà Nội', 'Nguyễn Thị Mận', 'CN', R_NBTH, '', HC, 'Thương lượng', TN, 'money', 'Kiều Văn Nam', '', 'Cưỡng chế phá dỡ công trình khi quyết định cưỡng chế đã bị hủy.', 230000000],
         ['Hà Nội', 'Tòa án nhân dân Thành phố Hà Nội', 'Trịnh Văn Khôi', 'CN', R_TK, 'Trịnh Văn Lực', DS, 'Xác minh thiệt hại', CH, 'money', 'Lại Thị Hương Giang', '', 'Áp dụng biện pháp khẩn cấp tạm thời phong tỏa tài sản không đúng quy định.', 520000000],
         ['Lâm Đồng', 'Tòa án nhân dân tỉnh Lâm Đồng', 'Ka Hoa', 'CN', R_NBTH, '', TTHC, 'Chờ chi trả', XD, 'money', 'Hà Minh Tâm', '', 'Bản án hành chính bị hủy do áp dụng sai pháp luật đất đai.', 175000000],
-        ['Hà Nội', 'Công an quận Thanh Xuân, Thành phố Hà Nội', 'Bùi Đức Anh', 'CN', R_NBTH, '', HS, 'Hoàn thành', TN, 'both', 'Nguyễn Hữu Phước', '', 'Tạm giữ hình sự không có căn cứ, sau đó trả tự do.', 140000000]
+        ['Hà Nội', 'Công an phường Thanh Xuân, Thành phố Hà Nội', 'Bùi Đức Anh', 'CN', R_NBTH, '', HS, 'Hoàn thành', TN, 'both', 'Nguyễn Hữu Phước', '', 'Tạm giữ hình sự không có căn cứ, sau đó trả tự do.', 140000000]
     ];
 
     // Vụ việc đầu luồng (Chờ tiếp nhận, Yêu cầu bổ sung, Chờ duyệt / Bị trả lại Thông báo, Không thụ lý, Đã chuyển CQGQBT do Không thụ lý KTL_01)
     // Phần tử 15 (tùy chọn): trường bổ sung của hồ sơ
     const EARLY_ROWS = [
         ['Hà Nội', 'Bộ Tư pháp', 'Hoàng Minh Tuấn', 'CN', R_NBTH, '', HC, 'Chờ tiếp nhận', DVC, 'money', '', '', 'Từ chối cấp phiếu lý lịch tư pháp không đúng quy định.', 40000000],
-        ['Hà Nội', 'UBND quận Cầu Giấy, Thành phố Hà Nội', 'Công ty TNHH Thực phẩm Dịch Vọng', 'TC', R_NBTH, '', HC, 'Chờ tiếp nhận', TN, 'money', '', '', 'Đình chỉ hoạt động cơ sở kinh doanh không có căn cứ.', 260000000],
+        ['Hà Nội', 'UBND phường Cầu Giấy, Thành phố Hà Nội', 'Công ty TNHH Thực phẩm Dịch Vọng', 'TC', R_NBTH, '', HC, 'Chờ tiếp nhận', TN, 'money', '', '', 'Đình chỉ hoạt động cơ sở kinh doanh không có căn cứ.', 260000000],
         ['Lâm Đồng', 'Tòa án nhân dân tỉnh Lâm Đồng', 'K\'Brăng', 'CN', R_NBTH, '', DS, 'Chờ tiếp nhận', DVC, 'both', '', '', 'Kê biên tài sản ngoài phạm vi yêu cầu của đương sự.', 90000000],
         ['Hà Nội', 'Sở Tư pháp Thành phố Hà Nội', 'Lý Thị Hằng', 'CN', R_NBTH, '', HC, 'Yêu cầu bổ sung', TN, 'money', 'Đỗ Văn Chung', '', 'Thu hồi thẻ công chứng viên không đúng thẩm quyền.', 55000000],
         ['Hải Phòng', 'Cục Thi hành án dân sự Thành phố Hải Phòng', 'Công ty Cổ phần Cảng Đình Vũ', 'TC', R_NBTH, '', THADS, 'Yêu cầu bổ sung', CH, 'money', 'Lục Thị Hoa', '', 'Cưỡng chế thi hành án đối với tài sản của bên thứ ba.', 880000000],
         ['Hà Nội', 'Bộ Tư pháp', 'Văn phòng Luật sư Ánh Dương', 'TC', R_NBTH, '', HC, 'Chờ duyệt', TN, 'money', 'Trần Thị Thu Hà', 'Thông báo thụ lý hồ sơ', 'Thu hồi giấy đăng ký hoạt động tổ chức hành nghề luật sư trái quy định.', 150000000],
-        ['Hà Nội', 'Công an quận Thanh Xuân, Thành phố Hà Nội', 'Đặng Quốc Hưng', 'CN', R_NBTH, '', HS, 'Chờ duyệt', DVC, 'both', 'Đào Thị Mỹ Linh', 'Thông báo Không thụ lý', 'Tạm giữ người theo thủ tục hành chính quá thời hạn.', 30000000],
+        ['Hà Nội', 'Công an phường Thanh Xuân, Thành phố Hà Nội', 'Đặng Quốc Hưng', 'CN', R_NBTH, '', HS, 'Chờ duyệt', DVC, 'both', 'Đào Thị Mỹ Linh', 'Thông báo Không thụ lý', 'Tạm giữ người theo thủ tục hành chính quá thời hạn.', 30000000],
         ['Lâm Đồng', 'UBND tỉnh Lâm Đồng', 'Nguyễn Văn Sáu', 'CN', R_NBTH, '', HC, 'Bị trả lại', TN, 'money', 'Ông Thị Thảo', 'Thông báo Yêu cầu bổ sung', 'Thu hồi đất không đúng đối tượng sử dụng đất.', 410000000],
         ['Hà Nội', 'Tòa án nhân dân Thành phố Hà Nội', 'Mai Văn Tiến', 'CN', R_NBTH, '', DS, 'Không thụ lý', CH, 'money', 'Cao Văn Hiếu', '', 'Yêu cầu bồi thường đã được giải quyết bằng bản án có hiệu lực.', 120000000, { ktlReasonCode: 'KTL_08' }],
         ['Hà Nội', 'Bộ Tư pháp', 'Công ty TNHH Đấu giá Thăng Long', 'TC', R_NBTH, '', HC, 'Không thụ lý', TN, 'money', 'Phạm Minh Đức', '', 'Thu hồi chứng chỉ hành nghề đấu giá viên.', 70000000, { ktlReasonCode: 'KTL_03' }],
@@ -155,7 +155,8 @@
             item.phddStarted = true; item.phddStatus = 'Hoàn thành';
         }
         // Năm trước: gắn sẵn Mã vụ việc cùng năm (không ảnh hưởng số thứ tự cấp mới của năm hiện tại)
-        if (year !== new Date().getFullYear()) item.maVuViec = `VVBT-${year}-${700 + serial}`;
+        // Năm hiện tại: Mã vụ việc đề xuất cố định VVBT-yyyy-8xx (sổ đăng ký dùng chung giữ mã đã cấp) để Mã vụ việc không phụ thuộc thứ tự mở trang
+        item.maVuViec = year !== new Date().getFullYear() ? `VVBT-${year}-${700 + serial}` : `VVBT-${year}-${800 + serial}`;
         return item;
     }
 
@@ -184,6 +185,9 @@
         });
         return list;
     }
+
+    // ===== 0. Tìm kiếm vụ việc toàn hệ thống (BTNN_CASE.sys - Theo dõi vụ việc tại Tòa án, Giải quyết YCBT): cùng dữ liệu bổ sung với Tra cứu =====
+    window.tcvvExtraClaims = extraClaims;
 
     // ===== 1. Trang Tra cứu vụ việc: nối dữ liệu bổ sung + đánh dấu link Xem chi tiết của bản ghi bổ sung =====
     if (typeof window.loadClaims === 'function' && typeof window.tcvvBuildDetailUrl === 'function') {

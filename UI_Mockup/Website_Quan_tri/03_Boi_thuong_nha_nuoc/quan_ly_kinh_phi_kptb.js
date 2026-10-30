@@ -149,7 +149,7 @@ function kptbCourtDec(c) {
     const n = c.nyc || {};
     const total = COURT_DAMAGE_KEYS.reduce((s, k) => s + (courtCaseDamageMap(c)[k] || 0), 0);
     return {
-        decId: 'TA-' + c.code, sourceLabel: 'Bản án/Quyết định của Tòa án', claimCode: c.code,
+        decId: c.id || ('TA-' + c.code), sourceLabel: 'Bản án/Quyết định của Tòa án', claimCode: c.code,
         nycName: n.name || '', nycAddress: [n.address, n.city].filter(Boolean).join(', '),
         unitId: c.rootUnitId, unitName: c.agency || courtCaseUnitName(c.rootUnitId),
         decNo: c.verdictNo || '', issueDate: c.effectiveDate || '', total, advance: 0, net: total,
@@ -159,36 +159,51 @@ function kptbCourtDec(c) {
 function kptbBuildCourtRecord(c) {
     const n = c.nyc || {};
     return kptbBuildRecord(kptbCourtDec(c), {
-        id: 'P_TA_' + c.code, courtCaseCode: c.code, origin: 'Theo dõi vụ việc tại Tòa án', nycRole: n.role || 'Người bị thiệt hại',
+        id: 'P_TA_' + c.id, courtCaseCode: c.code, courtCaseId: c.id, origin: 'Theo dõi vụ việc tại Tòa án', nycRole: n.role || 'Người bị thiệt hại',
         date: kptbToday(), verdictSource: c.verdictSource || '', createdAt: kptbNow(),
         files: (c.docs || []).filter(x => x && x.file).map(x => ({ name: x.name, file: x.file }))
     });
 }
 function kptbSeedDecs() {
     return [
-        { decId: 'KPTB-S1', claimCode: 'BT-2026-031', nycName: 'Nguyễn Thị Hồng Nhung', nycAddress: 'Số 12 ngõ 45 Hoàng Quốc Việt, Phường Nghĩa Đô, Thành phố Hà Nội', unitId: 'STP-HN', unitName: 'Sở Tư pháp Thành phố Hà Nội', decNo: '21/QĐ-STP', issueDate: '05/10/2026', total: 165000000, advance: 20000000, net: 145000000,
-            recipient: { name: 'Nguyễn Thị Hồng Nhung', idNo: '001190012345', account: '0011004455667', bank: 'Vietcombank', branch: 'Chi nhánh Thăng Long' },
-            payout: { method: 'Nhận qua chuyển khoản', accHolder: 'Nguyễn Thị Hồng Nhung', account: '0011004455667', bank: 'Vietcombank', branch: 'Chi nhánh Thăng Long' }, at: '09:00 05/10/2026' },
-        { decId: 'KPTB-S2', claimCode: 'BT-2026-032', nycName: 'Đỗ Mạnh Cường', nycAddress: 'Số 8 phố Nguyễn Trãi, Phường Thanh Xuân, Thành phố Hà Nội', unitId: 'STP-HN', unitName: 'Sở Tư pháp Thành phố Hà Nội', decNo: '22/QĐ-STP', issueDate: '08/10/2026', total: 90000000, advance: 0, net: 90000000,
-            recipient: { name: 'Đỗ Mạnh Cường', idNo: '001085009876' },
-            payout: { method: 'Nhận tiền mặt', cashPlace: 'Kho bạc Nhà nước Thành phố Hà Nội', cashNote: 'Chi trả trực tiếp bằng tiền mặt' }, at: '10:15 08/10/2026' },
-        { decId: 'KPTB-S3', claimCode: 'BT-2026-033', nycName: 'Hoàng Thị Lan', nycAddress: 'Số 3 phố Đội Cấn, Phường Ba Đình, Thành phố Hà Nội', unitId: 'STP-HN', unitName: 'Sở Tư pháp Thành phố Hà Nội', decNo: '23/QĐ-STP', issueDate: '12/10/2026', total: 240000000, advance: 0, net: 240000000,
-            recipient: { name: 'Hoàng Thị Lan', idNo: '001188004321', account: '0451000778899', bank: 'Vietinbank', branch: 'Chi nhánh Ba Đình' },
-            payout: { method: 'Nhận qua chuyển khoản', accHolder: 'Hoàng Thị Lan', account: '0451000778899', bank: 'Vietinbank', branch: 'Chi nhánh Ba Đình' }, at: '14:20 12/10/2026' },
-        { decId: 'KPTB-S4', claimCode: 'BT-2026-034', nycName: 'Vũ Đình Khoa', nycAddress: 'Số 21 phố Hàng Bông, Phường Hoàn Kiếm, Thành phố Hà Nội', unitId: 'STP-HN', unitName: 'Sở Tư pháp Thành phố Hà Nội', decNo: '24/QĐ-STP', issueDate: '15/10/2026', total: 120000000, advance: 0, net: 120000000,
-            recipient: { name: 'Vũ Đình Khoa', idNo: '001079006543', account: '1903355667788', bank: 'Techcombank', branch: 'Chi nhánh Hoàn Kiếm' },
-            payout: { method: 'Nhận qua chuyển khoản', accHolder: 'Vũ Đình Khoa', account: '1903355667788', bank: 'Techcombank', branch: 'Chi nhánh Hoàn Kiếm' }, at: '08:40 15/10/2026' },
-        { decId: 'KPTB-S5', claimCode: 'BT-2026-015', nycName: 'Phạm Thanh Sơn', nycAddress: 'Số 45 phố Trần Thái Tông, Phường Cầu Giấy, Thành phố Hà Nội', unitId: 'UBND-CG', unitName: 'UBND quận Cầu Giấy', decNo: '31/QĐ-UBND', issueDate: '16/10/2026', total: 75000000, advance: 15000000, net: 60000000,
-            recipient: { name: 'Phạm Minh Tuấn', idNo: '001095002468' },
-            payout: { method: 'Nhận tiền mặt', cashPlace: 'UBND quận Cầu Giấy, Thành phố Hà Nội', cashNote: 'Nhận tiền mặt tại phòng Kế toán ngân sách' }, at: '15:30 16/10/2026' },
+        // Hồ sơ Giải quyết YCBT "Chờ chi trả" đã ban hành Quyết định GQBT; Người yêu cầu, Cơ quan, Số/Ngày/Số tiền Quyết định đồng bộ theo hồ sơ (kptbSyncSeedDec)
+        { decId: 'KPTB-S1', claimCode: 'BT-2026-506', nycName: 'Lê Quang Huy', nycAddress: 'Số 20 Đội Cấn, Phường Ba Đình, Thành phố Hà Nội', unitId: 'STP-HN', unitName: 'Sở Tư pháp Hà Nội', decNo: '106/QĐ-STP', issueDate: '29/10/2026', total: 160000000, advance: 0, net: 160000000,
+            recipient: { name: 'Lê Quang Huy', idNo: '001081007506', account: '0451000506506', bank: 'Vietcombank', branch: 'Chi nhánh Ba Đình' },
+            payout: { method: 'Nhận qua chuyển khoản', accHolder: 'Lê Quang Huy', account: '0451000506506', bank: 'Vietcombank', branch: 'Chi nhánh Ba Đình' }, at: '09:00 29/10/2026' },
+        { decId: 'KPTB-S2', claimCode: 'BT-2026-507', nycName: 'Hợp tác xã Nông nghiệp Xuân Phương', nycAddress: 'Số 12 Phương Canh, Phường Xuân Phương, Thành phố Hà Nội', unitId: 'STP-HN', unitName: 'Sở Tư pháp Hà Nội', decNo: '107/QĐ-STP', issueDate: '28/10/2026', total: 160000000, advance: 0, net: 160000000,
+            recipient: { name: 'Hợp tác xã Nông nghiệp Xuân Phương', idNo: '0106677507' },
+            payout: { method: 'Nhận tiền mặt', cashPlace: 'Kho bạc Nhà nước Thành phố Hà Nội', cashNote: 'Chi trả trực tiếp bằng tiền mặt' }, at: '10:15 28/10/2026' },
+        { decId: 'KPTB-S3', claimCode: 'BT-2026-606', nycName: 'Nông Thị Bảo Ngân', nycAddress: 'Số 18 Trường Chinh, Phường Phương Liệt, Thành phố Hà Nội', unitId: 'STP-HN', unitName: 'Sở Tư pháp Hà Nội', decNo: '106/QĐ-STP', issueDate: '28/10/2026', total: 160000000, advance: 0, net: 160000000,
+            recipient: { name: 'Nông Thị Bảo Ngân', idNo: '001189003606', account: '0451000778899', bank: 'Vietinbank', branch: 'Chi nhánh Đống Đa' },
+            payout: { method: 'Nhận qua chuyển khoản', accHolder: 'Nông Thị Bảo Ngân', account: '0451000778899', bank: 'Vietinbank', branch: 'Chi nhánh Đống Đa' }, at: '14:20 28/10/2026' },
+        { decId: 'KPTB-S4', claimCode: 'BT-2026-575', nycName: "K'Brơi Ha Nhi", nycAddress: 'Số 9 Trần Phú, Phường Xuân Hương - Đà Lạt, Tỉnh Lâm Đồng', unitId: 'UBND-LD', unitName: 'UBND tỉnh Lâm Đồng', decNo: '175/QĐ-STP', issueDate: '20/10/2026', total: 160000000, advance: 0, net: 160000000,
+            recipient: { name: "K'Brơi Ha Nhi", idNo: '068188001575', account: '1903355667788', bank: 'Techcombank', branch: 'Chi nhánh Lâm Đồng' },
+            payout: { method: 'Nhận qua chuyển khoản', accHolder: "K'Brơi Ha Nhi", account: '1903355667788', bank: 'Techcombank', branch: 'Chi nhánh Lâm Đồng' }, at: '08:40 20/10/2026' },
+        { decId: 'KPTB-S5', claimCode: 'BT-2026-003-A', nycName: 'Công ty ABC', nycAddress: 'Khu đô thị mới An Hưng, Hà Đông, Hà Nội', unitId: 'UBND-CG', unitName: 'UBND phường Cầu Giấy', decNo: '46/QĐ-BT', issueDate: '11/03/2023', total: 2000000000, advance: 0, net: 2000000000,
+            recipient: { name: 'Công ty ABC', idNo: '0102030406' },
+            payout: { method: 'Nhận tiền mặt', cashPlace: 'UBND phường Cầu Giấy, Thành phố Hà Nội', cashNote: 'Nhận tiền mặt tại phòng Kế toán ngân sách' }, at: '15:30 16/10/2026' },
         // Bản ghi Chờ chi trả đã quá hạn 03 năm kể từ ngày Thông báo chi trả (đủ điều kiện Trả lại ngân sách nhà nước)
         { decId: 'KPTB-S6', claimCode: 'BT-2023-041', nycName: 'Lê Thị Hạnh', nycAddress: 'Số 9 phố Tây Sơn, Phường Đống Đa, Thành phố Hà Nội', unitId: 'STP-HN', unitName: 'Sở Tư pháp Thành phố Hà Nội', decNo: '12/QĐ-STP', issueDate: '05/05/2023', total: 85000000, advance: 0, net: 85000000,
             recipient: { name: 'Lê Thị Hạnh', idNo: '001182007788' },
             payout: { method: 'Nhận tiền mặt', cashPlace: 'Sở Tư pháp Thành phố Hà Nội' }, at: '09:00 05/05/2023' }
     ];
 }
+// Dữ liệu mẫu: Người yêu cầu, Cơ quan, Số/Ngày/Số tiền Quyết định lấy theo hồ sơ Giải quyết YCBT (claimsList) nếu đã có
+function kptbSyncSeedDec(dec) {
+    const list = kptbReadJson('claimsList', []);
+    const c = Array.isArray(list) ? list.find(x => x && x.code === dec.claimCode) : null;
+    if (!c) return dec;
+    const W = window.BTNN_WF;
+    if (c.nyc) { dec.nycName = c.nyc; dec.recipient = Object.assign({}, dec.recipient, { name: c.nyc }); }
+    if (c.agency) { dec.unitName = c.agency; const u = W && W.resolveAgencyUnit ? W.resolveAgencyUnit(c.agency) : ''; if (u) dec.unitId = u; }
+    if (c.decNo) dec.decNo = c.decNo;
+    if (c.decDate) dec.issueDate = c.decDate;
+    const total = Number(c.decAmount || 0);
+    if (total) { dec.total = total; dec.advance = Number(c.advanceNum || 0); dec.net = total - dec.advance; }
+    return dec;
+}
 function kptbSeed() {
-    const decs = kptbSeedDecs();
+    const decs = kptbSeedDecs().map(kptbSyncSeedDec);
     decs.forEach(dec => {
         if (proposalsList.some(p => p.decId === dec.decId)) return;
         const it = kptbBuildRecord(dec);
@@ -196,7 +211,7 @@ function kptbSeed() {
         if (dec.decId === 'KPTB-S3') {
             it.status = KPTB_ST.SUPP;
             it.user = 'Nguyễn Văn Cán Bộ';
-            it.kptbSupp = { content: 'Dự toán ngân sách năm 2026 không đủ chi trả; đề nghị cơ quan tài chính cấp bổ sung kinh phí bồi thường.', file: 'De_nghi_cap_bo_sung_kinh_phi_BT-2026-033.pdf', at: '09:10 14/10/2026', by: 'canbonv' };
+            it.kptbSupp = { content: 'Dự toán ngân sách năm 2026 không đủ chi trả; đề nghị cơ quan tài chính cấp bổ sung kinh phí bồi thường.', file: 'De_nghi_cap_bo_sung_kinh_phi_BT-2026-606.pdf', at: '09:10 14/10/2026', by: 'canbonv' };
             it.kptbHistory.push({ at: '09:10 14/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Đề nghị cấp bổ sung kinh phí', note: it.kptbSupp.content });
         }
         if (dec.decId === 'KPTB-S4') {
@@ -215,9 +230,9 @@ function kptbSeed() {
         if (dec.decId === 'KPTB-S5') {
             it.status = KPTB_ST.PAY;
             it.user = 'Nguyễn Văn Cán Bộ';
-            it.kptbNotice = { signMethod: 'Ký ngoài', signedFile: 'Thong_bao_chi_tra_BT-2026-015_da_ky.pdf', issuedAt: '16:00 18/10/2026' };
+            it.kptbNotice = { signMethod: 'Ký ngoài', signedFile: 'Thong_bao_chi_tra_BT-2026-003-A_da_ky.pdf', issuedAt: '16:00 18/10/2026' };
             it.noticeReceivedDate = '18/10/2026';
-            it.kptbHistory.push({ at: '16:00 18/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Ban hành Thông báo chi trả (Ký ngoài)', note: 'Tệp đã ký: Thong_bao_chi_tra_BT-2026-015_da_ky.pdf.' });
+            it.kptbHistory.push({ at: '16:00 18/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Ban hành Thông báo chi trả (Ký ngoài)', note: 'Tệp đã ký: Thong_bao_chi_tra_BT-2026-003-A_da_ky.pdf.' });
         }
         if (dec.decId === 'KPTB-S6') {
             it.status = KPTB_ST.PAY;
@@ -1277,6 +1292,7 @@ function kptbSavePay() {
     item.user = kptbUserName(me);
     kptbHist(item, 'Cập nhật chi trả', `Ngày chi trả ${item.kptbPayment.payDate}; số tiền ${kptbFmt(amount)} đồng; ${kptbMethod(item)}.`);
     saveProposalsToLocal();
+    if (typeof kpPayCompleteClaim === 'function') kpPayCompleteClaim(item, item.payoutDate, amount);
     kptbClosePay();
     showToast(`Đã cập nhật chi trả. Bản ghi chuyển [${KPTB_ST.DONE}].`, 'success');
     kptbAfterChange(item.id);
@@ -1431,7 +1447,7 @@ function kptbSaveForfeit() {
     if (typeof tlktValidate === 'function' && !tlktValidate('kptbFf')) return;
     const ffFiles = typeof tlktGet === 'function' ? tlktGet('kptbFf') : [];
     const no = kptbEl('kptbFfNo').value.trim(), dt = kptbEl('kptbFfDate').value.trim(), reason = kptbEl('kptbFfReason').value.trim();
-    showConfirmModal(`Xác nhận hoàn thành thủ tục nộp toàn bộ số tiền ${info.unpaid.toLocaleString('vi-VN')} VNĐ của đề nghị ${item.code} vào ngân sách nhà nước? Sau khi xác nhận, bản ghi chuyển trạng thái Trả lại ngân sách nhà nước.`, () => {
+    showConfirmModal(`Xác nhận hoàn thành thủ tục nộp ${getPaidAmount(item) > 0 ? 'số tiền còn lại chưa chi trả' : 'toàn bộ số tiền'} ${info.unpaid.toLocaleString('vi-VN')} VNĐ của đề nghị ${item.code} vào ngân sách nhà nước? Sau khi xác nhận, bản ghi chuyển trạng thái Trả lại ngân sách nhà nước.`, () => {
         item.status = 'Trả lại ngân sách nhà nước';
         item.treasuryForfeitDate = dt; item.treasuryVoucherNo = no; item.treasuryAmount = info.unpaid; item.treasuryReason = reason; item.treasuryFile = ffFiles;
         item.payoutAmountReal = Math.max(0, (Number(item.amount) || 0) - info.unpaid);

@@ -62,25 +62,25 @@ var KPDC_KP_SEED = [
     ['P_TB_QD-HL2', 'KP-2026-192', 'BT-2026-192', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
     ['P_TB_QD-HL1', 'KP-2026-191', 'BT-2026-191', 'Chi trả tiền bồi thường', 'Chờ thông báo chi trả', 0],
     ['P_TB_KPTB-S6', 'KP-2026-104', 'BT-2023-041', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
-    ['P_TB_KPTB-S5', 'KP-2026-103', 'BT-2026-015', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
-    ['P_TB_KPTB-S4', 'KP-2026-102', 'BT-2026-034', 'Chi trả tiền bồi thường', 'Chờ duyệt', 0],
-    ['P_TB_KPTB-S3', 'KP-2026-101', 'BT-2026-033', 'Chi trả tiền bồi thường', 'Đề nghị cấp bổ sung kinh phí', 0],
-    ['P_TB_KPTB-S2', 'KP-2026-100', 'BT-2026-032', 'Chi trả tiền bồi thường', 'Chờ thông báo chi trả', 0],
-    ['P_TB_KPTB-S1', 'KP-2026-099', 'BT-2026-031', 'Chi trả tiền bồi thường', 'Chờ thông báo chi trả', 0],
+    ['P_TB_KPTB-S5', 'KP-2026-103', 'BT-2026-003-A', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
+    ['P_TB_KPTB-S4', 'KP-2026-102', 'BT-2026-575', 'Chi trả tiền bồi thường', 'Chờ duyệt', 0],
+    ['P_TB_KPTB-S3', 'KP-2026-101', 'BT-2026-606', 'Chi trả tiền bồi thường', 'Đề nghị cấp bổ sung kinh phí', 0],
+    ['P_TB_KPTB-S2', 'KP-2026-100', 'BT-2026-507', 'Chi trả tiền bồi thường', 'Chờ thông báo chi trả', 0],
+    ['P_TB_KPTB-S1', 'KP-2026-099', 'BT-2026-506', 'Chi trả tiền bồi thường', 'Chờ thông báo chi trả', 0],
     ['P2', 'KP-2026-002', 'BT-2026-002', 'Cấp tạm ứng', 'Chờ chi trả', 0],
     ['P9', 'KP-2026-009', 'BT-2026-005', 'Cấp kinh phí bồi thường', 'Chờ chi trả', 0],
-    ['P13', 'KP-2026-013', 'BT-2026-018', 'Cấp kinh phí bồi thường', 'Chờ chi trả', 0],
-    ['P14', 'KP-2026-014', 'BT-2026-019', 'Cấp tạm ứng', 'Chờ chi trả', 0],
+    ['P13', 'KP-2026-013', 'BT-2026-003-A', 'Cấp kinh phí bồi thường', 'Chờ chi trả', 0],
+    ['P14', 'KP-2026-014', 'BT-2026-053', 'Cấp tạm ứng', 'Chờ chi trả', 0],
     ['P1', 'KP-2026-001', 'BT-2026-005', 'Cấp kinh phí bồi thường', 'Hoàn thành', 250000000],
-    ['P10', 'KP-2026-010', 'BT-2026-015', 'Cấp tạm ứng', 'Hoàn thành', 50000000],
+    ['P10', 'KP-2026-010', 'BT-2026-010', 'Cấp tạm ứng', 'Hoàn thành', 50000000],
     ['P11', 'KP-2026-011', 'BT-2026-002', 'Cấp tạm ứng', 'Hoàn thành', 100000000],
     ['P12', 'KP-2026-012', 'BT-2026-011', 'Cấp kinh phí bồi thường', 'Hoàn thành', 300000000],
-    ['P16', 'KP-2026-016', 'BT-2026-021', 'Cấp kinh phí bồi thường', 'Hoàn thành', 450000000],
+    ['P16', 'KP-2026-016', 'BT-2026-012', 'Cấp kinh phí bồi thường', 'Hoàn thành', 450000000],
     ['P17', 'KP-2026-017', 'BT-2026-022', 'Cấp tạm ứng', 'Hoàn thành', 85000000],
-    ['P18', 'KP-2026-018', 'BT-2026-023', 'Cấp kinh phí bồi thường', 'Hoàn thành', 520000000],
+    ['P18', 'KP-2026-018', 'BT-2026-003-A', 'Cấp kinh phí bồi thường', 'Hoàn thành', 520000000],
     ['P19', 'KP-2026-019', 'BT-2026-024', 'Cấp kinh phí bồi thường', 'Hoàn thành', 175000000],
     ['P20', 'KP-2026-020', 'BT-2026-025', 'Cấp tạm ứng', 'Hoàn thành', 60000000],
-    ['P96', 'KP-2026-096', 'BT-2026-015', 'Cấp tạm ứng', 'Chờ chi trả', 0],
+    ['P96', 'KP-2026-096', 'BT-2026-059', 'Cấp tạm ứng', 'Chờ chi trả', 0],
     ['P97', 'KP-2026-097', 'BT-2026-028', 'Cấp tạm ứng', 'Chờ chi trả', 0],
     ['P_KPUX_1', 'KP-2026-121', 'BT-2026-075', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
     ['P_KPUX_2', 'KP-2026-122', 'BT-2026-076', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
@@ -378,7 +378,8 @@ function kpdcIsDc(item) { return !!item && !!item.statusBasis && !!KPDC_SOURCES[
 function kpdcSubOf(item) { return kpdcCfg(item && item.statusBasis && item.statusBasis.source).sub; }
 function kpdcClaimLink(code, label) {
     if (!code) return '';
-    return '<a href="quan_ly_boi_thuong.html?id=' + encodeURIComponent(code) + '" target="_blank" rel="noopener" style="color:var(--primary-light); text-decoration:underline;">' + kpdcE(label || code) + '</a>';
+    // Mở từ phân hệ khác (Kinh phí): truyền nguồn from=kinh_phi để màn Giải quyết YCBT mở chế độ chỉ đọc, xét quyền theo đơn vị
+    return '<a href="quan_ly_boi_thuong.html?id=' + encodeURIComponent(code) + (/quan_ly_boi_thuong\.html/.test(location.pathname) ? '' : '&from=kinh_phi') + '" target="_blank" rel="noopener" style="color:var(--primary-light); text-decoration:underline;">' + kpdcE(label || code) + '</a>';
 }
 var kpdcCurFile = null;
 function kpdcFileAct(act) {

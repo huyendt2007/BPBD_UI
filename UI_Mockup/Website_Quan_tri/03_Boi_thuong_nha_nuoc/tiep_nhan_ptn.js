@@ -551,6 +551,7 @@ function openFor(id, c, nw) {
     const re = prev && prev.status === ST.REJECT ? prev : null;
     const levels = levelsOf(c);
     S = { id, claim: c, code: c.code, method: 'Ký số', docSrc: 'gen', step: 1, levels, assignees: levels.map((lv, i) => (re && re.assignees && re.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null,
+        enableNhay: re && re.enableRoomSig !== undefined ? re.enableRoomSig !== false : true,
         noTpl: noTpl(c), isNew, wfData: isNew ? nw.wfData : null, onSaved: nw ? nw.onSaved : null };
     el('ptnSgSubCode').innerText = c.maVuViec || c.code || '--';
     el('ptnSgSubNyc').innerText = c.nyc || '--';
@@ -740,10 +741,11 @@ function renderLevels() {
     el('ptnSgLevels').innerHTML = S.levels.map((lv, i) => {
         const last = i === n - 1;
         const opts = lv.leaders.map(id => `<option value="${esc(id)}" ${S.assignees[i] === id ? 'selected' : ''}>${esc(W.userLabel(id))}</option>`).join('');
-        return `<div class="ptn-qs-card${last ? ' last' : ''}"><div class="ptn-qs-card-head"><span>Cấp ${i + 1} - ${esc(W.unitName(lv.unitId))}</span>${W.isKyNhayUnit && W.isKyNhayUnit(lv.unitId) ? '<span class="badge" style="font-size:10.5px;">Ký nháy</span>' : ''}</div>
+        return `<div class="ptn-qs-card${last ? ' last' : ''}"><div class="ptn-qs-card-head"><span>Cấp ${i + 1} - ${esc(W.unitName(lv.unitId))}</span>${kyNhayOf(lv.unitId) ? '<span class="badge" style="font-size:10.5px;">Ký nháy</span>' : ''}</div>
             <select class="form-control" id="ptnSgLeader${i}" style="font-size:13px; height:36px;" onchange="PTN._s().assignees[${i}] = this.value; PTN._mark('ptnSgLeader${i}', false); PTN._syncBox(${i});"><option value="">-- Chọn Lãnh đạo --</option>${opts}</select>
             <div class="ptn-qs-err" id="ptnSgLeader${i}Err">${MSG_REQ}</div>
-            <div style="margin-top:8px;">${S.placed[i]
+            ${i === 0 && n > 1 ? `<label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12.5px; color:#1e40af; margin:8px 0 0 0;"><input type="checkbox" id="ptnSgNhay" ${S.enableNhay ? 'checked' : ''} onchange="PTN._nhay(this.checked)"><span>Áp dụng ký nháy Lãnh đạo cấp 1</span></label>` : ''}
+            <div style="margin-top:8px;${nhayOff(i) ? ' display:none;' : ''}">${S.placed[i]
                 ? `<span style="display:flex; gap:4px; flex-wrap:wrap;"><button type="button" class="btn btn-secondary btn-sm" onclick="PTN._resize(${i},180,75)">Nhỏ</button><button type="button" class="btn btn-secondary btn-sm" onclick="PTN._resize(${i},230,90)">Vừa</button><button type="button" class="btn btn-secondary btn-sm" onclick="PTN._resize(${i},290,115)">Lớn</button><button type="button" class="btn btn-secondary btn-sm" onclick="PTN._resetBox(${i})"><i class="fa-solid fa-rotate-left"></i> Đặt lại</button></span>`
                 : `<button type="button" class="btn btn-secondary btn-sm" onclick="PTN._place(${i})"><i class="fa-solid fa-signature"></i> Đặt chữ ký</button><div class="ptn-qs-err" id="ptnSgPlace${i}Err">Chưa đặt chữ ký</div>`}</div></div>`;
     }).join('');
@@ -767,7 +769,7 @@ function drawBox(i) {
         });
     }
     const c = S.coords[i];
-    Object.assign(b.style, { left: c.x + 'px', top: c.y + 'px', width: c.w + 'px', height: c.h + 'px' });
+    Object.assign(b.style, { left: c.x + 'px', top: c.y + 'px', width: c.w + 'px', height: c.h + 'px', display: nhayOff(i) ? 'none' : '' });
     const who = S.assignees[i] ? W.userName(S.assignees[i]) : '';
     b.innerHTML = `<b>${last ? 'KÝ SỐ &amp; CON DẤU' : 'KÝ NHÁY'}</b><br>Cấp ${i + 1}${who ? ' - ' + esc(who) : ''}`;
 }
@@ -788,12 +790,27 @@ function afterChange(code) {
         }
     } catch (e) { /* bỏ qua */ }
 }
-// Ký số: mỗi cấp chọn Lãnh đạo và đặt chữ ký -> Phiếu tiếp nhận "Chờ duyệt"
+// Nhãn Ký nháy của thẻ cấp: theo cờ Ký nháy tại Cấu hình luồng xử lý
+function kyNhayOf(unitId) {
+    const rl = recLike(S.claim);
+    const ft = W.flowTypeOf ? W.flowTypeOf(rl.loaiYeuCau, rl.rootUnitId) : undefined;
+    return !!(W.isKyNhayUnit && W.isKyNhayUnit(unitId, ft));
+}
+// [r5] Bắt buộc đặt chữ ký: cấp cuối, cấp trung gian; cấp 1 (luồng từ 02 cấp) chỉ bắt buộc khi chọn Áp dụng ký nháy Lãnh đạo cấp 1
+function nhayOff(i) { return i === 0 && S.levels.length > 1 && !S.enableNhay; }
+function needPlace(i) { return !nhayOff(i); }
+function toggleNhay(on) {
+    S.enableNhay = !!on;
+    const pe = el('ptnSgPlace0Err'); if (pe) pe.style.display = 'none';
+    renderLevels();
+    const b = el('ptnSgSig0'); if (b) b.style.display = on ? '' : 'none';
+}
+// Ký số: mỗi cấp chọn Lãnh đạo và đặt chữ ký (cấp 1 theo needPlace) -> Phiếu tiếp nhận "Chờ duyệt"
 function submit() {
     let ok = true; let first = null;
     S.levels.forEach((lv, i) => {
         const bad = !el('ptnSgLeader' + i).value; mark('ptnSgLeader' + i, bad); if (bad) { ok = false; first = first || el('ptnSgLeader' + i); }
-        const pe = el('ptnSgPlace' + i + 'Err'); if (!S.placed[i]) { if (pe) pe.style.display = 'block'; ok = false; }
+        const pe = el('ptnSgPlace' + i + 'Err'); if (!S.placed[i] && needPlace(i)) { if (pe) pe.style.display = 'block'; ok = false; }
     });
     if (!ok) { if (first) first.focus(); return; }
     const c = S.claim;
@@ -806,7 +823,7 @@ function submit() {
     const p = Object.assign(baseRecord(c, prev), {
         status: ST.REVIEW, method: 'Ký số', docSrc: S.docSrc,
         docFile: { name: f.name, generated: !!f.generated, size: f.size || '', note: f.note || '', keepId },
-        docHtml: f.generated ? buildDocHtml(c, metaData()) : '', meta: S.docSrc === 'gen' ? (({ signerId, ...m }) => m)(metaData()) : null, assignees: S.assignees.slice(), sigCoords: JSON.parse(JSON.stringify(S.coords)),
+        docHtml: f.generated ? buildDocHtml(c, metaData()) : '', meta: S.docSrc === 'gen' ? (({ signerId, ...m }) => m)(metaData()) : null, assignees: S.assignees.slice(), enableRoomSig: !nhayOff(0), sigCoords: JSON.parse(JSON.stringify(Object.fromEntries(Object.entries(S.coords).filter(([k]) => S.placed[k] && !nhayOff(Number(k)))))),
         content, attachments, submittedBy: me(), submittedAt: W.nowText(), reason: '',
         approval: { kind: KIND, path, assignees: S.assignees.slice(), level: 0, steps: [] }
     });
@@ -1314,7 +1331,7 @@ function tndClaim(s, d) {
         id: 'TN_TND_' + s.code.slice(-3), code: s.code, maVuViec: s.code, nguonHoSo: W.SOURCES.TIEP_NHAN, requestType: s.xd ? XD_TYPE : W.REQUEST_TYPE_YCBT, requestKind: s.xd ? undefined : 'both',
         nyc: s.nyc, nycName: s.nyc, nycPhone: s.phone, nycRole: 'Người bị thiệt hại', nycType: 'Cá nhân', nycCountry: 'Việt Nam',
         rootUnitId: TND_ROOT, nopKenh: s.method, fieldGroup: 'hành chính', date: day, receivedAt: `${day} 08:30`, receivedBy: W.userName(TND_OFFICER),
-        nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: '00007 - Phường Cầu Giấy', nycAddressDetail: s.addr, address: s.addr, vanBanCanCu: [], vuViecLienQuan: '', hanhVi: s.hanhVi,
+        nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: '00007 - Phường Cầu Giấy', nycAddressDetail: s.addr, address: s.addr, vanBanCanCu: [], hanhVi: s.hanhVi,
         status: st, agency: W.unitName(TND_ROOT), totalNum: 0, advanceNum: 0, restoreHonor: false,
         receptionDocs: [{ name: doc, file: `Van_ban_yeu_cau_boi_thuong_${s.code}.pdf` }], files: [{ name: `Van_ban_yeu_cau_boi_thuong_${s.code}.pdf`, url: '#' }],
         timeline: [{ title: 'Tiếp nhận hồ sơ', date: day, desc: `Đã tiếp nhận thông tin ban đầu. Trạng thái: ${REC_ST.REVIEW}.`, status: 'completed' }]
@@ -1323,7 +1340,7 @@ function tndClaim(s, d) {
 function tndWfData(c) {
     return {
         id: 'WF-' + c.code, code: c.code, loaiYeuCau: c.requestType, requestKind: c.requestKind, module: noTpl(c) ? 'XD' : 'YCBT', source: 'Tiếp nhận', nguonHoSo: W.SOURCES.TIEP_NHAN,
-        maVuViec: c.maVuViec, vuViecLienQuan: '', hinhThucTiepNhan: c.nopKenh, rootUnitId: c.rootUnitId, receivedAt: W.nowText(), date: c.date,
+        maVuViec: c.maVuViec, hinhThucTiepNhan: c.nopKenh, rootUnitId: c.rootUnitId, receivedAt: W.nowText(), date: c.date,
         receivedBy: c.receivedBy, createdBy: TND_OFFICER, nycName: c.nyc, nycPhone: c.nycPhone, nycRole: c.nycRole, nycType: c.nycType, nycCountry: c.nycCountry,
         nycTinhThanh: c.nycTinhThanh, nycPhuongXa: c.nycPhuongXa, nycAddressDetail: c.nycAddressDetail, linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: c.hanhVi,
         hinhThucNhan: 'Phương thức điện tử', attachedDocs: c.receptionDocs.slice(), vanBanCanCu: [], procBasis: '', procTargetAgency: '', procReason: '', procDecisionFile: '', claimCode: '-'
@@ -1529,7 +1546,6 @@ const PTX_CSS = `#ptxModal { position: fixed; inset: 0; background-color: rgba(0
 #ptxLdOverlay .ld-muted { color: #64748b; font-size: 12.5px; }`;
 const PTX_DOC_TITLE = 'PHIẾU TIẾP NHẬN HỒ SƠ YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG';
 const PTX_OFF_MSG = 'Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.';
-const PTX_REQ_TOAST = 'Vui lòng nhập đầy đủ thông tin bắt buộc!';
 const PTX_SIG = () => ({ room: { x: 60, y: 860, w: 220, h: 90 }, agency: { x: 480, y: 860, w: 245, h: 110 } });
 function isXs(p) { return !!p && !!p.xs; }
 let X = null;
@@ -1750,8 +1766,9 @@ function ptxCollect(skipLeaders) {
         first = el('ptxFileBox');
     }
     if (X.method === 'Ký ngoài') {
-        if (first) { toast(X.file ? PTX_REQ_TOAST : PTX_OFF_MSG, 'error'); if (first.scrollIntoView) first.scrollIntoView({ block: 'center' }); return null; }
-        if (typeof global.tlktValidate === 'function' && !global.tlktValidate('ptx')) { toast(PTX_REQ_TOAST, 'error'); return null; }
+        // [r9] Ký ngoài: lỗi hiển thị dưới vùng kéo thả / tại dòng tài liệu, không toast
+        if (first) { if (first.scrollIntoView) first.scrollIntoView({ block: 'center' }); return null; }
+        if (typeof global.tlktValidate === 'function' && !global.tlktValidate('ptx')) return null;
         return { method: 'Ký ngoài' };
     }
     const content = el('ptxContent').value.trim();
@@ -1765,7 +1782,8 @@ function ptxCollect(skipLeaders) {
     // [ptnr1] Bắt buộc đặt chữ ký từng cấp (cấp 1 khi áp dụng ký nháy Lãnh đạo cấp 1)
     if (!skipLeaders) [['room', 'Room', X.path.length > 1 && X.enableRoomSig], ['agency', 'Agency', true]].forEach(([k, K, need]) => { if (need && !X.placed[k]) { el('ptxPlace' + K + 'Err').style.display = 'block'; first = first || el('ptxBtnPlace' + K); } });
     if (typeof global.tlktValidate === 'function' && !global.tlktValidate('ptx') && !first) first = el('ptxTlkt');
-    if (first) { toast(PTX_REQ_TOAST, 'error'); if (first.focus) first.focus(); if (first.scrollIntoView) first.scrollIntoView({ block: 'center' }); return null; }
+    // [r5] Ký số: chỉ báo lỗi tại ô lỗi, không toast
+    if (first) { if (first.focus) first.focus(); if (first.scrollIntoView) first.scrollIntoView({ block: 'center' }); return null; }
     return { method: 'Ký số', content, roomLeader, agencyLeader };
 }
 function ptxStep(step) {
@@ -1808,10 +1826,12 @@ function ptxNext() {
 }
 function ptxRefreshPlaced() {
     [['room', 'Room'], ['agency', 'Agency']].forEach(([k, K]) => {
-        const on = !!X.placed[k] && (k !== 'room' || X.path.length > 1);
+        // [r5] Bỏ chọn Áp dụng ký nháy Lãnh đạo cấp 1: ẩn nút Đặt chữ ký, ô ký Cấp 1
+        const off = k === 'room' && !X.enableRoomSig;
+        const on = !off && !!X.placed[k] && (k !== 'room' || X.path.length > 1);
         el('ptxSigBox' + K).style.display = on ? 'flex' : 'none';
         el('ptxPanel' + K + 'Ctrls').style.display = on ? 'block' : 'none';
-        el('ptxBtnPlace' + K).style.display = on ? 'none' : '';
+        el('ptxBtnPlace' + K).style.display = on || off ? 'none' : '';
     });
 }
 function ptxPlace(k) { X.placed[k] = true; const pe = el('ptxPlace' + (k === 'room' ? 'Room' : 'Agency') + 'Err'); if (pe) pe.style.display = 'none'; ptxRefreshPlaced(); const b = el(k === 'room' ? 'ptxSigBoxRoom' : 'ptxSigBoxAgency'); if (b && b.scrollIntoView) b.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
@@ -1830,7 +1850,7 @@ function ptxApplyCoords() {
         el('ptxPanel' + K + 'Coord').textContent = `Tọa độ: (${c.x}, ${c.y})`;
     });
 }
-function ptxToggleRoom(on) { X.enableRoomSig = !!on; const ph = el('ptxA4RoomSigPlaceholder'); if (ph) ph.style.display = on ? 'block' : 'none'; }
+function ptxToggleRoom(on) { X.enableRoomSig = !!on; const ph = el('ptxA4RoomSigPlaceholder'); if (ph) ph.style.display = on ? 'block' : 'none'; const pe = el('ptxPlaceRoomErr'); if (pe) pe.style.display = 'none'; ptxRefreshPlaced(); }
 let ptxDrag = null;
 function ptxBindDrag() {
     [['ptxSigBoxRoom', 'room'], ['ptxSigBoxAgency', 'agency']].forEach(([id, key]) => {
@@ -2081,7 +2101,7 @@ global.PTN = {
     REC_ST, isFlow, recStatusOf, holds, reconcile, release, leaderActed, canActCode, gridLeaderButtonsHtml, workStatusHtml,
     canResubmit, downloadIssued, _after: () => afterPageAction(),
     _s: () => S, _mark: mark, _renderDoc: () => renderDoc(), _renderOff: () => renderOff(), _openOff: () => openRaw(S.offFile),
-    _place: place, _resize: (i, w, h) => { Object.assign(S.coords[i], { w, h }); drawBox(i); }, _resetBox: i => { S.coords[i] = defaultCoord(i); drawBox(i); }, _syncBox: i => { if (S.placed[i]) drawBox(i); },
+    _place: place, _resize: (i, w, h) => { Object.assign(S.coords[i], { w, h }); drawBox(i); }, _resetBox: i => { S.coords[i] = defaultCoord(i); drawBox(i); }, _syncBox: i => { if (S.placed[i]) drawBox(i); }, _nhay: toggleNhay,
     // [ptnxs] Popup Trình ký / màn Ký duyệt hồ sơ Xác định CQGQBT
     x: { setMethod: ptxSetMethod, upload: ptxUpload, viewFile: ptxViewFile, removeFile: ptxRemoveFile, next: ptxNext, step: ptxStep, submit: ptxSubmit, close: ptxClose,
         place: ptxPlace, syncNames: ptxSyncNames, toggleRoom: ptxToggleRoom, clearSel: e => { e.classList.remove('is-invalid'); const g = e.closest('.form-group'); const r = g && g.querySelector('.error-message'); if (r) r.style.display = 'none'; },

@@ -238,7 +238,8 @@ function ycbsLegendHtml() {
     var oUpVb = window.uploadVanBanCanCuFile;
     if (typeof oUpVb === 'function') window.uploadVanBanCanCuFile = function (idx, input) {
         var r0 = ycbsActive() && vanBanCanCuRows[idx];
-        if (r0 && !r0.file && input && input.files && input.files[0]) r0.ycbsTag = 'bs';
+        // Tệp sai định dạng / vượt 50MB (Văn bản làm căn cứ) không gắn nhãn Bổ sung
+        if (r0 && !r0.file && input && input.files && input.files[0] && (typeof vbccFileOk !== 'function' || vbccFileOk(input.files[0].name, input.files[0].size))) r0.ycbsTag = 'bs';
         return oUpVb.apply(this, arguments);
     };
 

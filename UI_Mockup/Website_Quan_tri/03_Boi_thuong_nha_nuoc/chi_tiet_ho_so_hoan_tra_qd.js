@@ -127,7 +127,7 @@
             // Dữ liệu mẫu nhiều đợt nộp (ht_du_lieu_mau.js: pays [[Ngày nộp, Số tiền], ...]) kèm biên lai
             if (ex && Array.isArray(ex.pays) && !Array.isArray(o.payments)) o.payments = ex.pays.map(p => ({ ngay: p[0], amt: p[1], by: 'Cán bộ ' + payUnitOf(o), unit: payUnitOf(o), at: p[0] + ' 09:00', tlkt: [{ name: 'Biên lai nộp tiền vào ngân sách nhà nước', file: { id: '', name: 'Bien_lai_' + String(p[0]).replace(/\//g, '') + '.pdf', size: 122880, type: 'application/pdf' } }] }));
             // Dữ liệu mẫu: số đã nộp quy về 01 đợt nộp
-            if (!Array.isArray(o.payments)) o.payments = (o.paid || 0) > 0 ? [{ ngay: '15/09/2026', amt: o.paid, by: 'Cán bộ ' + payUnitOf(o), unit: payUnitOf(o), tlkt: [] }] : [];
+            if (!Array.isArray(o.payments)) o.payments = (o.paid || 0) > 0 ? [{ ngay: (window.htShiftDate || String)('15/09/2026'), amt: o.paid, by: 'Cán bộ ' + payUnitOf(o), unit: payUnitOf(o), tlkt: [] }] : [];
             if (o.ct === 'MIEN' && !o.total) o.total = 0;
         });
         if (stored && stored.detail && stored.detail.units) activeDossier.htUnits = stored.detail.units;
@@ -170,9 +170,9 @@
     // Lượt trình mẫu cho dữ liệu có sẵn (đã trình / bị trả lại / đã ban hành)
     function seedRec(kind, u, st) {
         const levels = levelsOf(issuerOf(u));
-        const r = { kind, method: 'online', docSrc: 'gen', soKh: st === 'DONE' ? ({ GIAM: '92/QĐ-UBND', MIEN: '93/QĐ-UBND' }[kind] || '89/QĐ-UBND') : '', ngay: '20/09/2026', fileName: KIND[kind].file + '_' + (activeDossier.maVuViec || activeDossier.code) + '.docx', tlkt: [{ name: 'Văn bản kiến nghị của Hội đồng xem xét trách nhiệm hoàn trả', file: { id: '', name: 'Van_ban_kien_nghi_hoan_tra.pdf', size: 245760, type: 'application/pdf' } }], levels, assignees: levels.map(l => l.leaders[0].id), content: KIND[kind].content, level: 0, hist: [{ type: 'submit', name: 'Cán bộ ' + issuerOf(u), at: '18/09/2026 09:00', msg: KIND[kind].content }] };
-        if (st === 'BTC') { r.reject = { reason: 'Cần rà soát lại số tiền hoàn trả theo kiến nghị của Hội đồng.', by: leaderLabel(r, 0), at: '19/09/2026 10:15' }; r.hist.unshift({ type: 'reject', name: r.reject.by, at: r.reject.at, msg: 'Lý do: ' + r.reject.reason }); }
-        if (st === 'DONE') { r.level = levels.length; r.issuedAt = /^(GIAM|MIEN)$/.test(kind) ? '22/09/2026' : '20/09/2026'; r.hist.unshift({ type: 'approve', name: leaderLabel(r, levels.length - 1), at: '20/09/2026 15:00', msg: 'Ký duyệt' }); }
+        const r = { kind, method: 'online', docSrc: 'gen', soKh: st === 'DONE' ? ({ GIAM: '92/QĐ-UBND', MIEN: '93/QĐ-UBND' }[kind] || '89/QĐ-UBND') : '', ngay: (window.htShiftDate || String)('20/09/2026'), fileName: KIND[kind].file + '_' + (activeDossier.maVuViec || activeDossier.code) + '.docx', tlkt: [{ name: 'Văn bản kiến nghị của Hội đồng xem xét trách nhiệm hoàn trả', file: { id: '', name: 'Van_ban_kien_nghi_hoan_tra.pdf', size: 245760, type: 'application/pdf' } }], levels, assignees: levels.map(l => l.leaders[0].id), content: KIND[kind].content, level: 0, hist: [{ type: 'submit', name: 'Cán bộ ' + issuerOf(u), at: (window.htShiftDate || String)('18/09/2026 09:00'), msg: KIND[kind].content }] };
+        if (st === 'BTC') { r.reject = { reason: 'Cần rà soát lại số tiền hoàn trả theo kiến nghị của Hội đồng.', by: leaderLabel(r, 0), at: (window.htShiftDate || String)('19/09/2026 10:15') }; r.hist.unshift({ type: 'reject', name: r.reject.by, at: r.reject.at, msg: 'Lý do: ' + r.reject.reason }); }
+        if (st === 'DONE') { r.level = levels.length; r.issuedAt = /^(GIAM|MIEN)$/.test(kind) ? (window.htShiftDate || String)('22/09/2026') : (window.htShiftDate || String)('20/09/2026'); r.hist.unshift({ type: 'approve', name: leaderLabel(r, levels.length - 1), at: (window.htShiftDate || String)('20/09/2026 15:00'), msg: 'Ký duyệt' }); }
         return r;
     }
     function syncUnitStatusText() {

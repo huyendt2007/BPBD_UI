@@ -56,9 +56,9 @@
         var title = left.firstElementChild;
         title.insertAdjacentHTML('afterend',
             '<div class="form-group" style="margin-bottom: 0;"><span class="form-label">Loại người bị thiệt hại' + star() + '</span>'
-            + '<div id="claimNbthTypeGroup" style="display: flex; gap: 24px; align-items: center; height: 38px; padding-left: 5px;">'
-            + '<label style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--text-main);"><input type="radio" name="claimNbthType" value="Cá nhân" checked onchange="nbthGqToggleType()"> Cá nhân</label>'
-            + '<label style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--text-main);"><input type="radio" name="claimNbthType" value="Tổ chức" onchange="nbthGqToggleType()"> Tổ chức</label>'
+            + '<div class="nyc-type-group" id="claimNbthTypeGroup">'
+            + '<label class="nyc-type-radio"><input type="radio" name="claimNbthType" value="Cá nhân" checked onchange="nbthGqToggleType()"> <span>Cá nhân</span></label>'
+            + '<label class="nyc-type-radio"><input type="radio" name="claimNbthType" value="Tổ chức" onchange="nbthGqToggleType()"> <span>Tổ chức</span></label>'
             + '</div></div>');
         // Họ và tên / Tên tổ chức
         var nameLb = el('claimNbthName').closest('.form-group').querySelector('.form-label');
@@ -389,7 +389,7 @@
                 // Tiếp nhận hồ sơ chỉ nhập Họ và tên người bị thiệt hại -> bị chặn khi trình Thông báo thụ lý
                 nbth: { type: T_CN, name: 'Trần Văn Lộc', dob: '', docType: '', docNo: '', phone: '', email: '', country: VN, city: '', ward: '', address: '' },
                 hanhVi: 'Tạm giữ trái pháp luật.', nhanQua: 'Người bị thiệt hại bị tạm giữ 10 ngày, mất thu nhập.',
-                totalNum: 60000000, thietHaiList: th(60000000), agency: 'Công an Quận Thanh Xuân',
+                totalNum: 60000000, thietHaiList: th(60000000), agency: 'Công an phường Thanh Xuân',
                 timeline: [{ title: 'Nộp hồ sơ bồi thường', date: '20/10/2026', desc: 'Người thừa kế nộp văn bản yêu cầu bồi thường.', status: 'completed' }]
             })
         ];

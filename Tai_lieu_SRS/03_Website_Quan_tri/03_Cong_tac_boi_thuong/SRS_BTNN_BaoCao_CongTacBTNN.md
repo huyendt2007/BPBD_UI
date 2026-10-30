@@ -148,6 +148,7 @@ flowchart TD
      + Không tính vụ việc chỉ có yêu cầu phục hồi danh dự theo quy tắc 1.
      + Không tính hồ sơ `Chỉ yêu cầu phục hồi danh dự`, hồ sơ cán bộ chủ động phục hồi danh dự; vụ việc có yêu cầu bồi thường thiệt hại bằng tiền tính theo hồ sơ có yêu cầu bồi thường thiệt hại bằng tiền.
      + Vụ việc có nhiều hồ sơ Giải quyết yêu cầu bồi thường có yêu cầu bồi thường thiệt hại bằng tiền (Chuyển CQGQBT): lấy hồ sơ có Ngày thụ lý sau cùng.
+     + Vụ việc có nhiều vụ việc tại Tòa án (cùng liên kết 01 vụ việc): thông tin Tòa án lấy theo vụ việc tại Tòa án có `Ngày thụ lý` mới nhất; `Ngày thụ lý` bằng nhau thì lấy vụ việc tại Tòa án tạo sau cùng; số tiền chi trả theo bản án, quyết định của Tòa án cộng đủ các vụ việc tại Tòa án.
    - Nơi thụ lý cuối cùng tính đến ngày cuối kỳ:
      + Vụ việc có vụ việc tại Tòa án với `Ngày thụ lý` không sau ngày cuối kỳ: chỉ tính tại Tòa án, không tính tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại.
      + Trường hợp còn lại: tính tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại.
@@ -175,10 +176,10 @@ flowchart TD
      + Cột 19, 20, 21: tại Tòa án theo căn cứ của Cột 4 và 8, 5 và 9, 6 và 10; chưa thuộc Cột 13 - 15.
      + Cột 22: tại cơ quan, Trạng thái vụ việc `Đình chỉ giải quyết`.
    - Cột 23, 24: hệ thống không tổng hợp; giữ số liệu đang nhập.
-   - Cột 25 - 27: không phụ thuộc Ngày thụ lý; tính bản ghi Chi trả tiền bồi thường đã chi trả (`Hoàn thành` hoặc đã có `Số tiền thực tế chi trả`), `Ngày thực hiện chi trả` trong kỳ số liệu, không tính `Trả lại ngân sách nhà nước`:
+   - Cột 25 - 27: không phụ thuộc Ngày thụ lý; tính từng lần chi trong Lịch sử chi trả của bản ghi Chi trả tiền bồi thường (gồm bản ghi `Chờ chi trả` đã chi một phần) có Ngày chi trong kỳ số liệu; bản ghi `Trả lại ngân sách nhà nước` chỉ tính khi trả lại một phần, theo Số tiền đã chi thực tế; Số tiền trả lại ngân sách nhà nước không tính (Mẫu 43/BTNN không có cột riêng):
      + Cột 25: số vụ việc có bản ghi chi trả.
-     + Cột 26: tổng `Số tiền thực tế chi trả` của bản ghi chi trả theo Quyết định giải quyết bồi thường; quy đổi nghìn đồng, làm tròn.
-     + Cột 27: tổng `Số tiền thực tế chi trả` của bản ghi chi trả theo bản án, quyết định của Tòa án; quy đổi nghìn đồng, làm tròn.
+     + Cột 26: tổng Số tiền các lần chi của bản ghi chi trả theo Quyết định giải quyết bồi thường; quy đổi nghìn đồng, làm tròn.
+     + Cột 27: tổng Số tiền các lần chi của bản ghi chi trả theo bản án, quyết định của Tòa án; quy đổi nghìn đồng, làm tròn.
    - Kết quả tổng hợp ghi đè Cột 3 - 10, 12 - 16, 18 - 22, 25 - 27 của 06 nhóm; không tự lưu báo cáo.
    - Sau khi tổng hợp: cán bộ được sửa mọi ô số liệu; ô tổng tự tính lại theo quy tắc 6.
 
@@ -369,7 +370,7 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 | :--- | :--- | :--- | :--- | :--- |
 | Ghi chú số liệu | Label | - | - | Control UI: Label.<br>- `Số liệu tính từ [Từ ngày] đến [Đến ngày]` và công thức ô tổng theo [Quy tắc nghiệp vụ - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-quy-tac) quy tắc 6. |
 | Bảng số liệu | Data grid | - | 0 | Control UI: Data grid nhập liệu, cuộn ngang.<br>- Tiêu đề cột nhiều tầng đúng bố cục Mẫu số 04, dòng số thứ tự cột 1 - 15.<br>- Dòng: `Tổng cộng` ngay dưới dòng số thứ tự cột; 06 nhóm I - VI, mỗi nhóm 01 dòng tên nhóm và 01 dòng số liệu.<br>- Ô số liệu căn phải; ô tiền (Cột 2, 5, 10, 12, 13, 14, 15) định dạng theo quy tắc 6. |
-| Số tiền đã chi trả xong cho người yêu cầu bồi thường (Cột 2) | Integer(15) | Không | 0 | Control UI: Input number.<br>- Số nguyên không âm, đơn vị nghìn đồng.<br>- Căn cứ: tổng số tiền thực tế đã chi trả xong cho người yêu cầu bồi thường của các vụ việc làm căn cứ xem xét hoàn trả trong kỳ. |
+| Số tiền đã chi trả xong cho người yêu cầu bồi thường (Cột 2) | Integer(15) | Không | 0 | Control UI: Input number.<br>- Số nguyên không âm, đơn vị nghìn đồng.<br>- Căn cứ: tổng số tiền thực tế đã chi trả xong cho người yêu cầu bồi thường của các vụ việc làm căn cứ xem xét hoàn trả trong kỳ, theo Số tiền đã chi thực tế; không gồm Số tiền trả lại ngân sách nhà nước. |
 | Tổng số vụ việc xem xét (Cột 3) | Integer(10) | - | Hệ thống tự tính | Control UI: Label (Read-only).<br>- Cột 3 = Cột 4 + 6. |
 | Số vụ việc có Quyết định có hiệu lực pháp luật và đã thực hiện hoàn trả (Cột 4) | Integer(10) | Không | 0 | Control UI: Input number.<br>- Số nguyên không âm.<br>- Căn cứ: hồ sơ có Quyết định hoàn trả có hiệu lực pháp luật trong hoặc trước kỳ báo cáo và đã phát sinh thực hiện hoàn trả. |
 | Số tiền phải hoàn trả (Cột 5) | Integer(15) | Không | 0 | Control UI: Input number.<br>- Số nguyên không âm, đơn vị nghìn đồng.<br>- Căn cứ: tổng số tiền phải hoàn trả theo Quyết định hoàn trả của các hồ sơ tính tại Cột 4. |
@@ -450,7 +451,7 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Xem trước PDF | Link | Mở MH06 tại tab biểu mẫu tương ứng. |
-| 2 | Thêm tài liệu / Tải file / Xem file / Xóa | Button / Icon button | Theo bảng tài liệu dùng chung, áp dụng cho từng khối:<br>- Sai định dạng: [MSG-ERR-FILE-001], không tiếp nhận tệp.<br>- Quá 50MB: [MSG-ERR-FILE-002], không tiếp nhận tệp.<br>- `Xóa`: xóa dòng ngay. |
+| 2 | Thêm tài liệu / Tải file / Xem file / Xóa | Button / Icon button | Theo bảng tài liệu dùng chung, áp dụng cho từng khối:<br>- Sai định dạng: [MSG-ERR-FILE-007], không tiếp nhận tệp.<br>- Quá 50MB: [MSG-ERR-FILE-006], không tiếp nhận tệp.<br>- `Xóa`: xóa dòng ngay. |
 | 3 | Tiếp tục | Button | Tại Bước 1.<br>- **TH1 - Dòng `Tài liệu ban hành kèm theo` / `Tài liệu không ban hành kèm theo` thiếu Tên tài liệu, văn bản hoặc tệp**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH Hợp lệ**: sinh văn bản dự thảo 04 biểu mẫu, chuyển Bước 2. |
 | 4 | Chọn Lãnh đạo | Combobox | Cập nhật ô ký trên văn bản đang xem. |
 | 5 | Quay lại | Button | Tại Bước 2: về Bước 1, giữ dữ liệu đã nhập. |

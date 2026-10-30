@@ -362,6 +362,14 @@
                         <select class="form-control" id="tcvvAgency"></select>
                     </div>
                     <div class="form-block">
+                        <label class="form-label" for="tcvvTinh">Tỉnh/Thành phố</label>
+                        <select class="form-control" id="tcvvTinh" onchange="tcvvSyncWards(false)"></select>
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="tcvvPhuong">Phường/Xã</label>
+                        <select class="form-control" id="tcvvPhuong" disabled></select>
+                    </div>
+                    <div class="form-block">
                         <label class="form-label" for="tcvvPhdd">Yêu cầu phục hồi danh dự</label>
                         <select class="form-control" id="tcvvPhdd">
                             <option value="">Tất cả</option>
@@ -402,6 +410,8 @@
                                 <th style="min-width:220px;">Văn bản làm căn cứ bồi thường</th>
                                 <th style="min-width:150px;">Lĩnh vực phát sinh thiệt hại</th>
                                 <th style="min-width:190px;">Cơ quan giải quyết</th>
+                                <th style="min-width:120px;">Tỉnh/Thành phố</th>
+                                <th style="min-width:140px;">Phường/Xã</th>
                                 <th style="width:110px; text-align:center;">Yêu cầu phục hồi danh dự</th>
                                 <th style="width:150px; text-align:center;">Trạng thái</th>
                             </tr>
@@ -430,37 +440,36 @@
         <span id="toastMessage">Thông báo</span>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
     <script src="../../Common/dia_ban_vn.js"></script>
 
     <script>
         // Trạng thái vụ việc Giải quyết YCBT (danh sách gốc GQ_CASE_STATUSES tại quan_ly_boi_thuong.html)
         const allStatuses = [
-            'Chờ tiếp nhận', 'Chờ duyệt', 'Bị trả lại', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng',
+            'Chờ tiếp nhận', 'Chờ duyệt', 'Bị trả lại', 'Cử người giải quyết bồi thường', 'Cử người phục hồi danh dự', 'Xác minh thiệt hại', 'Thương lượng',
             'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành', 'Đang phục hồi danh dự', 'Hoãn phục hồi danh dự', 'Từ chối phục hồi danh dự',
             'Hoãn giải quyết', 'Tạm đình chỉ', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Đã chuyển CQGQBT', 'Không thụ lý', 'Yêu cầu bổ sung'
         ];
         // Phạm vi tra cứu: toàn bộ vụ việc từ "Chờ tiếp nhận" trở đi, mọi Trạng thái vụ việc (thứ tự hiển thị tại bộ lọc Trạng thái).
         const TCVV_STATUSES = [
-            'Chờ tiếp nhận', 'Yêu cầu bổ sung', 'Không thụ lý', 'Cử người giải quyết bồi thường', 'Chờ duyệt', 'Bị trả lại', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả',
+            'Chờ tiếp nhận', 'Yêu cầu bổ sung', 'Không thụ lý', 'Cử người giải quyết bồi thường', 'Cử người phục hồi danh dự', 'Chờ duyệt', 'Bị trả lại', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả',
             'Hoãn giải quyết', 'Tạm đình chỉ', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Đã chuyển CQGQBT', 'Đang phục hồi danh dự', 'Hoãn phục hồi danh dự', 'Từ chối phục hồi danh dự', 'Hoàn thành'
         ];
 
-        // Dữ liệu mẫu riêng của trang (khi chưa có claimsList): đồng bộ theo hồ sơ cùng Mã hồ sơ của Giải quyết YCBT (BT-2026-024 chỉ có tại đây)
+        // Dữ liệu mẫu riêng của trang (khi chưa có claimsList): đồng bộ theo hồ sơ cùng Mã hồ sơ của Giải quyết YCBT
         const fallbackClaims = [
             { id: 'HS_WAIT_INPUT', code: 'BT-2026-020', date: '01/08/2026', updatedDate: '05/08/2026', nyc: 'Trần Văn Q', nycTinhThanh: 'Hà Nội', address: 'Phường Nghĩa Tân, Cầu Giấy, Hà Nội', hanhVi: 'Kê biên tài sản quá thời hạn không giải tỏa gây đình trệ sản xuất.', fieldGroup: 'thi hành án dân sự', agency: 'Chi cục Thi hành án dân sự Cầu Giấy', assignedOfficer: '', status: 'Chờ duyệt', deadline: '30/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 140000000, restoreHonor: false },
             { id: 'HS_SUPPLEMENT', code: 'BT-2026-021', date: '02/08/2026', updatedDate: '06/08/2026', nyc: 'Hoàng Văn R', nycTinhThanh: 'Khánh Hòa', address: 'Phường Lộc Thọ, Nha Trang, Khánh Hòa', hanhVi: 'Khởi tố oan sai hành vi cố ý gây thương tích.', fieldGroup: 'hình sự', agency: 'Tòa án nhân dân Thành phố Nha Trang', assignedOfficer: '', status: 'Bị trả lại', deadline: '25/08/2026', hinhThucTiepNhan: 'Qua dịch vụ bưu chính', totalNum: 65000000, restoreHonor: true },
             { id: 'HS_CHECK', code: 'BT-2026-022', date: '03/08/2026', updatedDate: '06/08/2026', nyc: 'Trần Văn Phú', nycTinhThanh: 'Hà Nội', address: 'Số 120 đường Nguyễn Trãi, Thanh Xuân, Hà Nội', hanhVi: 'Buộc thôi việc trái pháp luật đối với công chức chuyên môn.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Hà Nội', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Chờ ban hành QĐ', deadline: '28/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 180000000, restoreHonor: false },
             { id: 'HS_REJECT', code: 'BT-2026-023', date: '25/07/2026', updatedDate: '02/08/2026', nyc: 'Phạm Văn Nam', nycTinhThanh: 'Hải Phòng', address: 'Số 56 đường Lê Lợi, Ngô Quyền, Hải Phòng', hanhVi: 'Bắt giữ oan sai do sai sót nghiệp vụ công tố.', fieldGroup: 'hình sự', agency: 'Viện kiểm sát nhân dân TP. Hải Phòng', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Chờ duyệt', deadline: '15/08/2026', hinhThucTiepNhan: 'Qua dịch vụ bưu chính', totalNum: 160000000, restoreHonor: false },
             { id: 'HS_THULY', code: 'BT-2026-018', date: '22/07/2026', updatedDate: '03/08/2026', nyc: 'Trần Thu O', nycTinhThanh: 'Bình Định', address: 'Phường Lê Lợi, TP Quy Nhơn, Bình Định', hanhVi: 'Tịch thu phương tiện ghe đánh bắt cá trái phép khi chưa có chứng cứ.', fieldGroup: 'hành chính', agency: 'Chi cục Thủy sản Bình Định', assignedOfficer: '', status: 'Chờ duyệt', deadline: '18/08/2026', hinhThucTiepNhan: 'Dịch vụ công', totalNum: 70000000, restoreHonor: false },
-            { id: 'HS_VERIFY', code: 'BT-2026-007', date: '15/07/2026', updatedDate: '04/08/2026', nyc: 'Phạm Văn D', nycTinhThanh: 'Hà Nội', address: 'Thanh Xuân, Hà Nội', hanhVi: 'Khởi tố và bắt tạm giam 15 ngày trái pháp luật.', fieldGroup: 'hình sự', agency: 'Công an Quận Thanh Xuân', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Bị trả lại', deadline: '26/09/2026', hinhThucTiepNhan: 'Dịch vụ công', totalNum: 50000000, restoreHonor: true },
+            { id: 'HS_VERIFY', code: 'BT-2026-007', date: '15/07/2026', updatedDate: '04/08/2026', nyc: 'Phạm Văn D', nycTinhThanh: 'Hà Nội', address: 'Thanh Xuân, Hà Nội', hanhVi: 'Khởi tố và bắt tạm giam 15 ngày trái pháp luật.', fieldGroup: 'hình sự', agency: 'Công an phường Thanh Xuân', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Bị trả lại', deadline: '26/09/2026', hinhThucTiepNhan: 'Dịch vụ công', totalNum: 50000000, restoreHonor: true },
             { id: 'HS_PAUSE', code: 'BT-2026-001', date: '12/07/2026', updatedDate: '05/08/2026', nyc: 'Nguyễn Văn A', nycTinhThanh: 'Hà Nội', address: 'Số 15 đường Trần Hưng Đạo, Hoàn Kiếm, Hà Nội', hanhVi: 'Cưỡng chế tháo dỡ nhà ở khi chưa có quyết định hành chính có hiệu lực pháp luật.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Hà Nội', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Thương lượng', deadline: '18/09/2026', hinhThucTiepNhan: 'Dịch vụ công', totalNum: 150000000, restoreHonor: true, phddForm: 'Cả hai hình thức' },
             { id: 'HS_STOP', code: 'BT-2026-010', date: '08/07/2026', updatedDate: '04/08/2026', nyc: 'Nguyễn Văn F', nycTinhThanh: 'Hà Nội', address: 'Phường Nghĩa Đô, Cầu Giấy, Hà Nội', hanhVi: 'Giam giữ oan sai 45 ngày do sai sót điều tra.', fieldGroup: 'hình sự', agency: 'Tòa án nhân dân Tỉnh Lâm Đồng', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Chờ ban hành QĐ', deadline: '25/09/2026', hinhThucTiepNhan: 'Dịch vụ công', totalNum: 120000000, restoreHonor: false },
             { id: 'HS_DONE', code: 'BT-2026-008', date: '02/06/2026', updatedDate: '05/08/2026', nyc: 'Lê Văn D', nycTinhThanh: 'Hà Nội', address: 'Số 234 Láng Hạ, Đống Đa, Hà Nội', hanhVi: 'Không cấp giấy phép xây dựng trái luật.', fieldGroup: 'tố tụng hành chính', agency: 'Sở Tư pháp Hải Phòng', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoàn thành', deadline: '15/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 250000000, restoreHonor: true },
             { id: 'HS_PHDD_1', code: 'BT-2026-010-TDC', date: '07/07/2026', updatedDate: '06/08/2026', nyc: 'Đặng Văn T', nycTinhThanh: 'Hà Nội', address: 'Quận Long Biên, Hà Nội', hanhVi: 'Tạm giữ người và tài sản không đúng quy định.', fieldGroup: 'hình sự', agency: 'Sở Tư pháp Hà Nội', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoãn giải quyết', deadline: '22/09/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 260000000, restoreHonor: true, phddForm: 'Cả hai hình thức', phddDateExp: '22/09/2026' },
             { id: 'HS_PHDD_2', code: 'BT-2026-012', date: '14/06/2026', updatedDate: '05/08/2026', nyc: 'Lê Văn H', nycTinhThanh: 'Hà Nội', address: 'Lê Đại Hành, Hai Bà Trưng, Hà Nội', hanhVi: 'Bán đấu giá tài sản kê biên trái quy định.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự Hà Nội', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoàn thành', deadline: '30/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 850000000, restoreHonor: true, phddForm: 'Đăng báo', phddDateExp: '25/08/2026' },
             { id: 'HS_PHDD_3', code: 'BT-2026-013', date: '10/05/2026', updatedDate: '03/08/2026', nyc: 'Trần Văn T', nycTinhThanh: 'Hà Nội', address: 'Phường Nguyễn Du, Hai Bà Trưng, Hà Nội', hanhVi: 'Áp dụng biện pháp cấm đi khỏi nơi cư trú trái pháp luật.', fieldGroup: 'hình sự', agency: 'Viện kiểm sát nhân dân Tối cao', assignedOfficer: '', status: 'Không thụ lý', deadline: '10/07/2026', hinhThucTiepNhan: 'Qua dịch vụ bưu chính', totalNum: 45000000, restoreHonor: false },
-            { id: 'HS_TRANSFER', code: 'BT-2026-024', date: '20/07/2026', nyc: 'Phan Thị M', nycTinhThanh: 'Bắc Ninh', address: 'Phường Kinh Bắc, Bắc Ninh', hanhVi: 'Xử phạt vi phạm hành chính không đúng thẩm quyền.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Bắc Ninh', assignedOfficer: 'Phạm Minh Chuyên Viên', status: 'Đã chuyển CQGQBT', nguonHoSo: 'Tiếp nhận mới', totalNum: 75000000, restoreHonor: false }
         ];
 
         // Số giấy tờ, Văn bản làm căn cứ bồi thường của dữ liệu mẫu riêng của trang (chỉ trong bộ nhớ, không ghi vào claimsList)
@@ -472,13 +481,13 @@
             ['BT-2026-022', '001088002931', '', ['Quyết định buộc thôi việc trái pháp luật số 55/QĐ-CC']],
             ['BT-2026-018', '001095007721', '', ['Quyết định xử phạt vi phạm hành chính sai luật số 08/QD-XP']],
             ['BT-2026-007', '001095445566', '', ['Quyết định đình chỉ điều tra vụ án hình sự']],
-            ['BT-2026-001', '001085002934', '', ['Quyết định xử phạt trái luật số 12/QD-XPVHC ngày 10/02/2026 của UBND quận Cầu Giấy']],
+            ['BT-2026-001', '001085002934', '', ['Quyết định xử phạt trái luật số 12/QD-XPVHC ngày 10/02/2026 của UBND phường Cầu Giấy']],
             ['BT-2026-010', '001092003842', '', ['Quyết định tạm đình chỉ điều tra bị can oan sai']],
             ['BT-2026-008', '001089004823', '', ['Bản án hành chính số 02/2026/HC-ST']],
             ['BT-2026-010-TDC', '001087010010', '', ['Quyết định đình chỉ điều tra do hành vi không cấu thành tội phạm']],
             ['BT-2026-012', '001091002934', '', ['Quyết định xử lý tài sản kê biên sai quy trình số 15/QD-THADS']],
-            ['BT-2026-013', '001095003921', '', ['Quyết định hủy bỏ biện pháp ngăn chặn oan sai']],
-            ['BT-2026-024', '027188009922', '', ['Quyết định hủy quyết định xử phạt số 77/QĐ-UBND']]
+            ['BT-2026-013', '001095003921', '', ['Quyết định hủy bỏ biện pháp ngăn chặn oan sai']]
+
         ].forEach(([code, nycDoc, victimDoc, vb]) => {
             const c = fallbackClaims.find(x => x.code === code);
             if (!c) return;
@@ -494,8 +503,8 @@
         let tcvvPageSize = 20;
 
         // Đổi khoá khi thay đổi bộ tiêu chí, để bộ lọc cũ đã lưu trong phiên không làm danh sách rỗng khi mở lại màn hình.
-        const FILTER_STORAGE_KEY = 'traCuuVuViec_filterState_v4';
-        const tcvvFilterFields = ['tcvvCode', 'tcvvHoSoCode', 'tcvvNyc', 'tcvvNycDoc', 'tcvvVictim', 'tcvvVictimDoc', 'tcvvVbcc', 'tcvvFieldGroup', 'tcvvAgency', 'tcvvPhdd', 'tcvvStatus'];
+        const FILTER_STORAGE_KEY = 'traCuuVuViec_filterState_v5';
+        const tcvvFilterFields = ['tcvvCode', 'tcvvHoSoCode', 'tcvvNyc', 'tcvvNycDoc', 'tcvvVictim', 'tcvvVictimDoc', 'tcvvVbcc', 'tcvvFieldGroup', 'tcvvAgency', 'tcvvTinh', 'tcvvPhuong', 'tcvvPhdd', 'tcvvStatus'];
 
         document.addEventListener('DOMContentLoaded', () => {
             populateStatusSelects();
@@ -503,6 +512,7 @@
             // Toàn hệ thống: vụ việc của mọi cơ quan giải quyết; 01 danh sách chung; chỉ vụ việc từ Cử người giải quyết bồi thường trở đi
             tcvvList = allClaims.map(tcvvBuildRow).filter(tcvvInScope);
             tcvvPopulateAgencies();
+            tcvvPopulateProvinces();
             // Khôi phục bộ lọc đã lưu (nếu có) khi quay lại từ màn Xem chi tiết
             restoreFilterState();
             tcvvSearch();
@@ -535,6 +545,7 @@
             if (!saved || !Object.keys(saved).length) return false;
             tcvvFilterFields.forEach(id => {
                 if (Object.prototype.hasOwnProperty.call(saved, id)) document.getElementById(id).value = saved[id];
+                if (id === 'tcvvTinh') tcvvSyncWards(true);
             });
             return true;
         }
@@ -551,14 +562,18 @@
             try { return (window.BTNN_WF && BTNN_WF.resolveAgencyUnit) ? (BTNN_WF.resolveAgencyUnit(item.agency) || '') : ''; } catch (e) { return ''; }
         }
         function tcvvAgencyKey(item) { return item.agencyUnitId || ('name:' + normalizeText(item.agency)); }
-        // Đơn vị đang đăng nhập: đơn vị gốc của người dùng giả lập
+        // Đơn vị của người dùng: Sở Tư pháp chứa đơn vị công tác (người dùng thuộc Sở Tư pháp, kể cả phòng, ban trực thuộc Sở); trường hợp khác: đơn vị cấp cao nhất chứa đơn vị công tác
         function tcvvCurrentRootUnit() {
             if (!window.BTNN_WF) return '';
             const u = BTNN_WF.getCurrentUser();
-            return u ? (BTNN_WF.getRootId(u.unitId) || u.unitId) : '';
+            if (!u) return '';
+            const chain = BTNN_WF.getAncestors ? BTNN_WF.getAncestors(u.unitId) : [u.unitId];
+            return chain.find(tcvvIsStpUnit) || BTNN_WF.getRootId(u.unitId) || u.unitId;
         }
         // Sở Tư pháp quản lý địa bàn của Cơ quan giải quyết: theo Cơ cấu tổ chức (BTNN_WF.stpOfUnit);
         // cơ quan chưa khai báo trên Cơ cấu tổ chức: theo Tỉnh/Thành phố trong tên cơ quan / Tỉnh/Thành phố của cơ quan trên hồ sơ
+        // Nhận diện Sở Tư pháp (Quy tắc nhận diện Sở Tư pháp - Danh mục và Phụ lục): Loại cơ quan "Sở" [DM_57] + tên bắt đầu "Sở Tư pháp"; dữ liệu mẫu chưa có Loại cơ quan thì chỉ kiểm tra tên
+        function tcvvIsStpUnit(id) { const W = window.BTNN_WF; if (W && W.isStpUnit) return W.isStpUnit(id); const u = W && W.getUnit ? W.getUnit(id) : null; return !!u && /^Sở Tư pháp/i.test(u.name) && (!u.loaiCoQuanName || u.loaiCoQuanName === 'Sở'); }
         function tcvvAgencyStp(item) {
             const W = window.BTNN_WF;
             if (!W) return '';
@@ -566,7 +581,7 @@
             if (item.agencyUnitId) return W.stpOfUnit ? (W.stpOfUnit(item.agencyUnitId) || '') : '';
             const pad = s => ' ' + normalizeText(s).replace(/\btp\./g, 'thanh pho ').replace(/[^a-z0-9]+/g, ' ').trim() + ' ';
             const name = pad(item.agency || ''), prov = pad(item.agencyProvince || item.cqgqTinhThanh || '');
-            const stp = W.getRootUnits().filter(u => /^STP-/.test(u.id)).find(u => {
+            const stp = W.getRootUnits().filter(u => tcvvIsStpUnit(u.id)).find(u => {
                 const p = pad(u.name.replace(/^Sở Tư pháp\s*/i, '').replace(/^(Thành phố|Tỉnh)\s+/i, ''));
                 return p.trim() && (name.includes(p) || prov.includes(p));
             });
@@ -591,11 +606,37 @@
             const root = tcvvCurrentRootUnit();
             if (!item || !item.code || !root) return false;
             if (item.agencyUnitId && item.agencyUnitId === root) return true;
-            if (/^STP-/.test(root) && item.agencyStp === root) return true;
+            if (tcvvIsStpUnit(root) && item.agencyStp === root) return true;
             return tcvvIsBtpOrCuc();
         }
 
         // Combobox Cơ quan giải quyết: toàn bộ cơ quan giải quyết trên toàn hệ thống (theo dữ liệu vụ việc), có giá trị Tất cả
+        // Tỉnh/Thành phố, Phường/Xã của Cơ quan giải quyết: địa chỉ của Cơ quan giải quyết theo Cơ cấu tổ chức (BTNN_WF.agencyAddress); danh mục địa bàn giả lập BTNN_WF.ADDR_WARDS
+        const tcvvWardName = w => String(w || '').replace(/^\d+\s*-\s*/, '');
+        function tcvvAgencyAddr(item) {
+            try { return (window.BTNN_WF && BTNN_WF.agencyAddress) ? BTNN_WF.agencyAddress(item.agencyUnitId || item.agency) : { tinh: '', phuong: '' }; } catch (e) { return { tinh: '', phuong: '' }; }
+        }
+        // Combobox Tỉnh/Thành phố: Tất cả + danh mục địa bàn cấp Tỉnh/Thành phố (gồm tỉnh của các Cơ quan giải quyết trong dữ liệu)
+        function tcvvPopulateProvinces() {
+            const W = window.BTNN_WF;
+            const set = new Set(Object.keys((W && W.ADDR_WARDS) || {}));
+            tcvvList.forEach(r => { if (r.agencyTinh) set.add(r.agencyTinh); });
+            const opts = Array.from(set).sort((a, b) => a.localeCompare(b, 'vi'));
+            document.getElementById('tcvvTinh').innerHTML = '<option value="">Tất cả</option>' + opts.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+            tcvvSyncWards(false);
+        }
+        // Combobox Phường/Xã: lọc theo Tỉnh/Thành phố đã chọn; chưa chọn Tỉnh/Thành phố: khóa
+        function tcvvSyncWards(keep) {
+            const W = window.BTNN_WF;
+            const tinh = document.getElementById('tcvvTinh').value;
+            const sel = document.getElementById('tcvvPhuong');
+            const cur = sel.value;
+            const wards = tinh ? (((W && W.ADDR_WARDS) || {})[tinh] || []).map(tcvvWardName) : [];
+            tcvvList.forEach(r => { const n = tcvvWardName(r.agencyPhuong); if (tinh && r.agencyTinh === tinh && n && !wards.includes(n)) wards.push(n); });
+            sel.innerHTML = '<option value="">Tất cả</option>' + wards.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+            sel.disabled = !tinh;
+            sel.value = keep && wards.includes(cur) ? cur : '';
+        }
         function tcvvPopulateAgencies() {
             const map = new Map();
             tcvvList.forEach(r => { if (r.agencyName && !map.has(tcvvAgencyKey(r))) map.set(tcvvAgencyKey(r), r.agencyName); });
@@ -687,7 +728,7 @@
 
         // Chuẩn hóa khi đọc dữ liệu: giá trị cũ trong localStorage -> 17 Trạng thái vụ việc (bảng đọc dữ liệu cũ, viết không dấu)
         const LEGACY_STATUS = {
-            'luu nhap': 'Chờ tiếp nhận', 'cho nhap lieu': 'Chờ tiếp nhận', 'cho phe duyet': 'Chờ duyệt', 'bi tra lai': 'Bị trả lại',
+            'cho nhap lieu': 'Chờ tiếp nhận', 'cho phe duyet': 'Chờ duyệt', 'bi tra lai': 'Bị trả lại',
             'cho thu ly': 'Cử người giải quyết bồi thường', 'cho kiem tra': 'Cử người giải quyết bồi thường',
             'dang xac minh thiet hai': 'Xác minh thiệt hại', 'dang thuong luong': 'Thương lượng',
             'thuong luong khong thanh cong': 'Chờ ban hành QĐ', 'thuong luong thanh cong': 'Chờ ban hành QĐ',
@@ -738,6 +779,8 @@
                 agencyUnitId,
                 // Cơ quan giải quyết: tên theo Cơ cấu tổ chức khi xác định được đơn vị; còn lại theo tên trên hồ sơ
                 agencyName: agencyUnitId ? BTNN_WF.unitName(agencyUnitId) : (item.agency || ''),
+                agencyTinh: tcvvAgencyAddr({ agencyUnitId, agency: item.agency }).tinh,
+                agencyPhuong: tcvvAgencyAddr({ agencyUnitId, agency: item.agency }).phuong,
                 hasPhdd: claimKind(item) !== 'money'
             };
         }
@@ -852,6 +895,8 @@
             const vbcc = txt('tcvvVbcc');
             const fieldGroup = val('tcvvFieldGroup');
             const agency = val('tcvvAgency');
+            const tinh = val('tcvvTinh');
+            const phuong = val('tcvvPhuong');
             const phdd = val('tcvvPhdd');
             const status = val('tcvvStatus');
             const has = (v, q) => normalizeText(v).includes(q);
@@ -865,6 +910,8 @@
                 if (vbcc && !item.vbccNames.some(n => has(n, vbcc))) return false;
                 if (fieldGroup && item.fieldGroup !== fieldGroup) return false;
                 if (agency && tcvvAgencyKey(item) !== agency) return false;
+                if (tinh && item.agencyTinh !== tinh) return false;
+                if (phuong && tcvvWardName(item.agencyPhuong) !== phuong) return false;
                 if (phdd && (phdd === 'yes') !== !!item.hasPhdd) return false;
                 if (status && item.status !== status) return false;
                 return true;
@@ -881,6 +928,7 @@
 
         function tcvvResetFilters() {
             tcvvFilterFields.forEach(id => { document.getElementById(id).value = ''; });
+            tcvvSyncWards(false);
             tcvvSearch();
             showToast('Đã xóa bộ lọc');
         }
@@ -914,7 +962,7 @@
             const end = Math.min(start + tcvvPageSize, total);
             document.getElementById('tcvvRange').innerText = total ? `${start + 1}-${end}` : '0-0';
             if (!total) {
-                tbody.innerHTML = '<tr><td colspan="12" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc phù hợp</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc phù hợp</td></tr>';
                 renderPages('tcvvPages', tcvvPage, totalPages, page => { tcvvPage = page; tcvvRender(); });
                 return;
             }
@@ -936,6 +984,8 @@
                     <td>${tcvvVbccCell(item.vbccNames)}</td>
                     <td>${escapeHtml(getFieldGroupName(item.fieldGroup))}</td>
                     <td>${escapeHtml(item.agencyName || '-')}</td>
+                    <td>${escapeHtml(item.agencyTinh || '---')}</td>
+                    <td>${escapeHtml(tcvvWardName(item.agencyPhuong) || '---')}</td>
                     <td style="text-align:center;"><input type="checkbox" class="tcvv-check" disabled ${item.hasPhdd ? 'checked' : ''} aria-label="Yêu cầu phục hồi danh dự"></td>
                     <td style="text-align:center;">${statusBadge(item.status || '-')}</td>
                 `;
@@ -1005,7 +1055,7 @@
         function statusBadge(status) {
             let cls = 'badge-info';
             if (status === 'Hoàn thành') cls = 'badge-success';
-            else if (['Chờ tiếp nhận', 'Chờ duyệt', 'Cử người giải quyết bồi thường'].includes(status)) cls = 'badge-pending';
+            else if (['Chờ tiếp nhận', 'Chờ duyệt', 'Cử người giải quyết bồi thường', 'Cử người phục hồi danh dự'].includes(status)) cls = 'badge-pending';
             else if (['Yêu cầu bổ sung', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoãn giải quyết', 'Tạm đình chỉ', 'Hoãn phục hồi danh dự'].includes(status)) cls = 'badge-warning';
             else if (status === 'Bị trả lại') cls = 'badge-tra-lai';
             else if (['Không thụ lý', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Từ chối phục hồi danh dự'].includes(status)) cls = 'badge-danger';
@@ -1017,12 +1067,10 @@
         function tcvvOpenDetail(code) {
             // Chặn mở chi tiết khi không thỏa mãn quyền xem chi tiết (tcvvCanViewDetail)
             if (!tcvvCanViewDetail(tcvvList.find(x => x.code === code))) { showToast(TCVV_NO_DETAIL_MSG); return; }
-            const targetUrl = tcvvBuildDetailUrl(code);
-            if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
-                window.parent.openAdminModule(targetUrl, 'tra_cuu_ho_so_boi_thuong.html?v=1');
-                return;
-            }
-            window.location.href = targetUrl;
+            // Mở chi tiết trên 01 tab mới; màn Tra cứu giữ nguyên ở tab cũ. newtab=1: nút Đóng ở trang chi tiết đóng tab
+            const targetUrl = tcvvBuildDetailUrl(code) + '&newtab=1';
+            const win = window.open(targetUrl, '_blank');
+            if (!win) window.location.href = targetUrl;
         }
 
         function tcvvBuildDetailUrl(code) {
@@ -1039,28 +1087,39 @@
             return `quan_ly_boi_thuong.html?${params.toString()}`;
         }
 
-        // Kết xuất Excel: đúng 12 cột của lưới, theo bộ lọc hiện tại (toàn bộ bản ghi, không theo trang); Văn bản làm căn cứ: liệt kê đủ
-        const TCVV_EXPORT_HEADERS = ['STT', 'Mã vụ việc', 'Mã hồ sơ GQBT', 'Tên cá nhân/Tổ chức yêu cầu', 'Số giấy tờ người yêu cầu', 'Tên cá nhân/Tổ chức bị thiệt hại', 'Số giấy tờ người bị thiệt hại', 'Văn bản làm căn cứ bồi thường', 'Lĩnh vực phát sinh thiệt hại', 'Cơ quan giải quyết', 'Yêu cầu phục hồi danh dự', 'Trạng thái'];
+        // Kết xuất Excel: đúng 14 cột của lưới, theo bộ lọc hiện tại (toàn bộ bản ghi, không theo trang); Văn bản làm căn cứ: liệt kê đủ
+        const TCVV_EXPORT_HEADERS = ['STT', 'Mã vụ việc', 'Mã hồ sơ GQBT', 'Tên cá nhân/Tổ chức yêu cầu', 'Số giấy tờ người yêu cầu', 'Tên cá nhân/Tổ chức bị thiệt hại', 'Số giấy tờ người bị thiệt hại', 'Văn bản làm căn cứ bồi thường', 'Lĩnh vực phát sinh thiệt hại', 'Cơ quan giải quyết', 'Tỉnh/Thành phố', 'Phường/Xã', 'Yêu cầu phục hồi danh dự', 'Trạng thái'];
         function tcvvExportRows() {
             return tcvvFiltered.map((item, idx) => [
                 idx + 1, vuViecOfItem(item), item.code, item.nyc, item.nycDocNo || '-', item.victimName, item.victimDocNo || '-',
-                item.vbccNames.length ? item.vbccNames.join('; ') : '-', getFieldGroupName(item.fieldGroup), item.agencyName,
+                item.vbccNames.length ? item.vbccNames.join('; ') : '-', getFieldGroupName(item.fieldGroup), item.agencyName, item.agencyTinh || '---', tcvvWardName(item.agencyPhuong) || '---',
                 item.hasPhdd ? 'x' : '', item.status
             ]);
         }
         function tcvvExportExcel() {
             const rows = tcvvExportRows();
-            if (!rows.length) { showToast('Không có dữ liệu để kết xuất'); return; }
-            const cell = v => `<td style="mso-number-format:'\\@';">${escapeHtml(v == null ? '' : v)}</td>`;
+            if (!rows.length) { showToast('Không có dữ liệu để kết xuất Excel'); return; }
+            // Theo Quy chuẩn Kết xuất Excel dùng chung (04_Danh_muc_va_Phu_luc.md #quy-chuan-ket-xuat-excel)
+            const now = new Date();
+            const hhmm = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+            const stamp = `${formatDateVi(now)} ${hhmm}`;
+            const u = window.BTNN_WF && BTNN_WF.getCurrentUser ? BTNN_WF.getCurrentUser() : null;
+            const n = TCVV_EXPORT_HEADERS.length;
+            const font = "font-family:'Times New Roman';";
+            const cell = v => `<td style="${font}font-size:12pt;mso-number-format:'\\@';">${escapeHtml(v == null ? '' : v)}</td>`;
             const html = '<meta charset="UTF-8"><table border="1">'
-                + '<tr>' + TCVV_EXPORT_HEADERS.map(h => `<th>${escapeHtml(h)}</th>`).join('') + '</tr>'
+                + `<tr><td colspan="${n}" style="${font}font-size:15pt;font-weight:bold;text-align:center;border:none;">DANH SÁCH TRA CỨU VỤ VIỆC</td></tr>`
+                + `<tr><td colspan="${n}" style="${font}font-size:11pt;font-style:italic;text-align:center;border:none;">Thời điểm xuất: ${escapeHtml(stamp)}</td></tr>`
+                + '<tr>' + TCVV_EXPORT_HEADERS.map(h => `<th style="${font}font-size:12pt;background:#e5e7eb;">${escapeHtml(h)}</th>`).join('') + '</tr>'
                 + rows.map(r => '<tr>' + r.map(cell).join('') + '</tr>').join('')
+                + `<tr><td colspan="${n}" style="${font}font-size:10pt;font-style:italic;text-align:right;border:none;">Xuất ngày ${escapeHtml(stamp)} bởi ${escapeHtml((u && (u.name || u.fullName || u.username)) || '')}</td></tr>`
                 + '</table>';
-            const today = formatDateVi(new Date()).replace(/\//g, '');
+            const ymd = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
             const blob = new Blob(['﻿' + html], { type: 'application/vnd.ms-excel;charset=utf-8' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `Danh_sach_vu_viec_boi_thuong_${today}.xls`;
+            // Mockup sinh bảng HTML nên dùng đuôi .xls; hệ thống thật xuất .xlsx theo quy chuẩn
+            a.download = `${ymd}_Tra_cuu_vu_viec.xls`;
             document.body.appendChild(a);
             a.click();
             setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
@@ -1083,12 +1142,12 @@
                 .replace(/'/g, '&#039;');
         }
     </script>
-    <script src="tra_cuu_seed_tcvv.js?v=20261029sn1"></script>
+    <script src="tra_cuu_seed_tcvv.js?v=20261030s2"></script>
     <script src="btnn_uxu_dong_bo.js?v=20261028tl1"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 
 </html>

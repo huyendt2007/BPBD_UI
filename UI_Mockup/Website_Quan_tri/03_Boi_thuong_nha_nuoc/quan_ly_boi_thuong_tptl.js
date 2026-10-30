@@ -319,7 +319,7 @@
     var CFG = {
         'BT-2026-002': { absent: { VKS: 'Viện kiểm sát nhân dân Thành phố Hà Nội có văn bản đề nghị vắng mặt do trùng lịch xét xử; ý kiến bằng văn bản gửi kèm hồ sơ.' }, khac: [{ unit: 'Công an Thành phố Hà Nội', name: 'Lê Văn Hải', position: 'Phó Trưởng phòng' }], more: [LAWYER] },
         'BT-2026-003-A': { absent: { TP: 'Sở Tư pháp Thành phố Hà Nội có văn bản cử cán bộ nhưng vắng mặt do trùng lịch công tác; có ý kiến bằng văn bản.' } },
-        'BT-2026-022': { khac: [{ unit: 'UBND quận Cầu Giấy, Thành phố Hà Nội', name: 'Bùi Đức Thắng', position: 'Chủ tịch UBND' }] },
+        'BT-2026-022': { khac: [{ unit: 'UBND phường Cầu Giấy, Thành phố Hà Nội', name: 'Bùi Đức Thắng', position: 'Chủ tịch UBND' }] },
         'BT-2026-067': { more: [{ name: 'Trần Thu Trang', idNo: '001190045678', address: 'Công ty Luật TNHH Trang Lê, Đoàn Luật sư Thành phố Hà Nội' }] },
         'BT-2026-571': { absent: { TP: 'Bộ Tư pháp có văn bản tham gia ý kiến, không cử người tham dự do trùng lịch họp Hội đồng.' }, khac: [{ unit: 'Bộ Công an', name: 'Lê Hữu Phước', position: 'Phó Cục trưởng' }], more: [{ name: 'Phan Văn Khải', idNo: '001080067812', address: 'Văn phòng Luật sư Phan Khải, Đoàn Luật sư Thành phố Hà Nội' }] },
         'BT-2026-575': { khac: [{ unit: 'Sở Tài chính tỉnh Lâm Đồng', name: 'Ngô Đình Lộc', position: 'Phó Giám đốc Sở' }] }
@@ -331,7 +331,7 @@
         return NAMES.CQGQ;
     }
     function isSample(claim) { return !!claim && !claim.userCreated; }
-    // Gắn tlParticipants cho hồ sơ mẫu có kết quả Đồng ý thương lượng (gồm bản nháp); không đụng dữ liệu người dùng đã lưu (không có cờ seed)
+    // Gắn tlParticipants cho hồ sơ mẫu có kết quả Đồng ý thương lượng (gồm kết quả đã lưu, chưa hoàn thành); không đụng dữ liệu người dùng đã lưu (không có cờ seed)
     function seedClaim(claim) {
         var neg = claim && claim.negotiation;
         if (!neg || !isSample(claim)) return false;
@@ -415,7 +415,7 @@
         add({ id: 'TPTL_TW_HC_TL', code: 'BT-2026-573', who: 'tp3', stage: 'thuong-luong', k: [10, 8, 4], agency: 'Bộ Tài chính', fieldGroup: 'hành chính',
             docBase: 'Quyết định hủy Quyết định xử phạt vi phạm hành chính số 88/QĐ-BTC ngày 01/08/2026',
             hanhVi: 'Xử phạt vi phạm hành chính, đình chỉ hoạt động kinh doanh không đúng thẩm quyền.', nhanQua: 'Ngừng kinh doanh 30 ngày, mất thu nhập.', th: SXM_TH_A });
-        add({ id: 'TPTL_DP_HS_TL', code: 'BT-2026-574', who: 'tp4', stage: 'thuong-luong', k: [8, 6, 2], agency: 'Công an quận Hoàng Mai', fieldGroup: 'hình sự',
+        add({ id: 'TPTL_DP_HS_TL', code: 'BT-2026-574', who: 'tp4', stage: 'thuong-luong', k: [8, 6, 2], agency: 'Công an phường Bạch Mai', fieldGroup: 'hình sự',
             docBase: 'Quyết định đình chỉ điều tra số 21/QĐ-CSĐT ngày 15/08/2026 (hành vi không cấu thành tội phạm)',
             hanhVi: 'Tạm giữ, tạm giam 02 tháng trái pháp luật.', nhanQua: 'Mất thu nhập trong thời gian bị tạm giam; tài sản bị tạm giữ hư hỏng.', th: SXM_TH_A });
         add({ id: 'TPTL_DP_HC_CT', code: 'BT-2026-575', who: 'tp5', stage: 'cho-thuc-thi', k: [26, 22, 18, 14, 10], agency: 'UBND tỉnh Lâm Đồng', fieldGroup: 'hành chính', bank: ['5101205575575', 'Agribank', 'Chi nhánh Lâm Đồng'],

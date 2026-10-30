@@ -6,7 +6,7 @@ let mockClaims = [
         gender: "Nữ",
         birth: "20/10/1990",
         nycVictimAlive: "yes",
-        cardType: "CCCD",
+        cardType: "CMND/CCCD/Chứng minh quân đội",
         cardNo: "002092003845",
         cardDate: "10/02/2023",
         cardPlace: "Cục Cảnh sát QLHC về TTXH",
@@ -37,14 +37,14 @@ let mockClaims = [
         gender: "Nam",
         birth: "15/04/1985",
         nycVictimAlive: "yes",
-        cardType: "CCCD",
+        cardType: "CMND/CCCD/Chứng minh quân đội",
         cardNo: "001085002934",
         cardDate: "12/12/2020",
         cardPlace: "Cục Cảnh sát QLHC về TTXH",
         phone: "0912345678",
         email: "phamvanc@example.com",
         address: "Số 15 đường Trần Hưng Đạo, Hoàn Kiếm, Hà Nội",
-        agency: "UBND Quận Cầu Giấy",
+        agency: "UBND phường Cầu Giấy",
         field: "Trong hoạt động quản lý hành chính",
         amount: 150000000,
         status: "Xác minh thiệt hại",
@@ -64,7 +64,7 @@ let mockClaims = [
         gender: "Nam",
         birth: "10/02/1988",
         nycVictimAlive: "yes",
-        cardType: "CCCD",
+        cardType: "CMND/CCCD/Chứng minh quân đội",
         cardNo: "001089004823",
         cardDate: "15/08/2021",
         cardPlace: "Cục Cảnh sát QLHC về TTXH",
@@ -96,7 +96,7 @@ let mockClaims = [
         gender: "Nữ",
         birth: "12/06/1992",
         nycVictimAlive: "yes",
-        cardType: "CCCD",
+        cardType: "CMND/CCCD/Chứng minh quân đội",
         cardNo: "001095002934",
         cardDate: "20/05/2022",
         cardPlace: "Cục Cảnh sát QLHC về TTXH",
@@ -122,7 +122,7 @@ let mockClaims = [
         gender: "Nam",
         birth: "18/08/1987",
         nycVictimAlive: "yes",
-        cardType: "CCCD",
+        cardType: "CMND/CCCD/Chứng minh quân đội",
         cardNo: "001087009988",
         cardDate: "12/03/2021",
         cardPlace: "Cục Cảnh sát QLHC về TTXH",
@@ -151,7 +151,7 @@ let mockClaims = [
         gender: "Nữ",
         birth: "05/11/1982",
         nycVictimAlive: "yes",
-        cardType: "CCCD",
+        cardType: "CMND/CCCD/Chứng minh quân đội",
         cardNo: "001082006789",
         cardDate: "15/09/2021",
         cardPlace: "Cục Cảnh sát QLHC về TTXH",
@@ -275,8 +275,8 @@ let proposalsList = [
         id: "P25",
         code: "KP-2026-025",
         type: "Cấp kinh phí bồi thường",
-        ycbtCode: "BT-2026-029",
-        nycName: "Đỗ Thị Ngọc",
+        ycbtCode: "BT-2026-064",
+        nycName: "Đỗ Văn Khải",
         nycRole: "Người bị thiệt hại",
         amount: 90000000,
         user: "Lê Văn Nam",
@@ -288,7 +288,7 @@ let proposalsList = [
         payoutDate: "02/10/2026",
         payoutAmountReal: 90000000,
         payoutMethod: "Nhận qua chuyển khoản",
-        payoutRecName: "ĐỖ THỊ NGỌC",
+        payoutRecName: "ĐỖ VĂN KHẢI",
         recovery: {
             basisDecisionNo: "21/QĐ-SCBSGQBT",
             basisDecisionDate: "08/10/2026",
@@ -426,8 +426,8 @@ let proposalsList = [
         id: "P13",
         code: "KP-2026-013",
         type: "Cấp kinh phí bồi thường",
-        ycbtCode: "BT-2026-018",
-        nycName: "Trần Thu O",
+        ycbtCode: "BT-2026-003-A",
+        nycName: "Công ty ABC",
         nycRole: "Người đại diện theo ủy quyền",
         amount: 200000000,
         user: "Nguyễn Văn Thụ",
@@ -437,7 +437,7 @@ let proposalsList = [
         cqCap: "Sở Tư pháp Hà Nội",
         notes: "Khoản kinh phí bồi thường đã thông báo nhận nhưng quá hạn 3 năm người yêu cầu chưa đến nhận, đủ điều kiện trả lại ngân sách nhà nước.",
         leaderOpinion: "Đồng ý cấp kinh phí bồi thường theo quyết định đã ban hành.",
-        files: [{ name: "Tờ trình kinh phí Trần Thu O", file: "To_trinh_KPBT_H.pdf" }],
+        files: [{ name: "Tờ trình kinh phí Công ty ABC", file: "To_trinh_KPBT_H.pdf" }],
         approvedDamages: {
             taiSan: 50000000,
             thuNhap: 30000000,
@@ -446,7 +446,7 @@ let proposalsList = [
         },
         payoutDate: "",
         payoutAmountReal: 0,
-        payoutRecName: "Trần Thu O",
+        payoutRecName: "Công ty ABC",
         payoutRecAddress: "Phường Minh Khai, Bắc Từ Liêm, Hà Nội",
         noticeReceivedDate: "10/06/2023",
         noticeProofFile: "Thong_bao_nhan_kinh_phi_H.pdf"
@@ -455,8 +455,8 @@ let proposalsList = [
         id: "P14",
         code: "KP-2026-014",
         type: "Cấp tạm ứng",
-        ycbtCode: "BT-2026-019",
-        nycName: "Phạm Văn P",
+        ycbtCode: "BT-2026-053",
+        nycName: "Công ty Cổ phần Vận tải Thăng Long",
         nycRole: "Người bị thiệt hại",
         amount: 250000000,
         user: "Nguyễn Văn Thụ",
@@ -466,10 +466,10 @@ let proposalsList = [
         cqCap: "Sở Tư pháp Hà Nội",
         notes: "Khoản tạm ứng đã phê duyệt, trong hạn 3 năm chờ đương sự đến nhận.",
         leaderOpinion: "Đồng ý cấp tạm ứng theo hồ sơ đủ điều kiện.",
-        files: [{ name: "Tờ trình tạm ứng Phạm Văn P", file: "To_trinh_tam_ung_K.pdf" }],
+        files: [{ name: "Tờ trình tạm ứng Công ty Cổ phần Vận tải Thăng Long", file: "To_trinh_tam_ung_K.pdf" }],
         advApproveTinhThan: 150000000,
         advApproveKhac: 100000000,
-        payoutRecName: "Phạm Văn P",
+        payoutRecName: "Công ty Cổ phần Vận tải Thăng Long",
         payoutRecAddress: "Xã An Khánh, Hoài Đức, Hà Nội",
         noticeReceivedDate: "01/03/2024",
         noticeProofFile: "Thong_bao_nhan_tam_ung_K.pdf",
@@ -481,8 +481,8 @@ let proposalsList = [
         id: "P15",
         code: "KP-2026-015",
         type: "Cấp kinh phí bồi thường",
-        ycbtCode: "BT-2026-020",
-        nycName: "Trần Văn Q",
+        ycbtCode: "BT-2026-003-B",
+        nycName: "Ông Nguyễn Văn D",
         nycRole: "Người thừa kế của người bị thiệt hại",
         amount: 120000000,
         user: "Lê Văn Nam",
@@ -492,7 +492,7 @@ let proposalsList = [
         cqCap: "Sở Tài chính Hà Nội",
         notes: "Khoản kinh phí bồi thường đã hoàn tất trả lại ngân sách nhà nước do người yêu cầu không nhận sau hạn 3 năm.",
         leaderOpinion: "Phê duyệt trả lại ngân sách nhà nước theo đề nghị của cán bộ xử lý.",
-        files: [{ name: "Tờ trình cấp kinh phí Trần Văn Q", file: "To_trinh_KPBT_M.pdf" }],
+        files: [{ name: "Tờ trình cấp kinh phí Ông Nguyễn Văn D", file: "To_trinh_KPBT_M.pdf" }],
         approvedDamages: {
             taiSan: 50000000,
             thuNhap: 20000000,
@@ -500,7 +500,7 @@ let proposalsList = [
             chiPhiKhac: 20000000
         },
         payoutAmountReal: 0,
-        payoutRecName: "Trần Văn Q",
+        payoutRecName: "Ông Nguyễn Văn D",
         payoutRecAddress: "Phường Cầu Diễn, Nam Từ Liêm, Hà Nội",
         noticeReceivedDate: "05/01/2023",
         noticeProofFile: "Thong_bao_nhan_kinh_phi_M.pdf",
@@ -514,8 +514,8 @@ let proposalsList = [
         id: "P24",
         code: "KP-2026-024",
         type: "Cấp tạm ứng",
-        ycbtCode: "BT-2026-015",
-        nycName: "Vũ Thị L",
+        ycbtCode: "BT-2026-058",
+        nycName: "Vũ Thị Lan Anh",
         nycRole: "Người bị thiệt hại",
         amount: 80000000,
         user: "Nguyễn Văn Thụ",
@@ -527,7 +527,7 @@ let proposalsList = [
         leaderOpinion: "Phê duyệt trả lại ngân sách nhà nước theo tờ trình số 12/TTr-KP.",
         files: [{ name: "Tờ trình trả lại ngân sách nhà nước P24", file: "To_trinh_sung_quy_P24.pdf" }],
         payoutAmountReal: 0,
-        payoutRecName: "Vũ Thị L",
+        payoutRecName: "Vũ Thị Lan Anh",
         noticeReceivedDate: "10/02/2023",
         treasuryForfeitDate: "20/09/2026",
         treasuryVoucherNo: "SQ-2026-024",
@@ -576,8 +576,8 @@ let proposalsList = [
         id: "P10",
         code: "KP-2026-010",
         type: "Cấp tạm ứng",
-        ycbtCode: "BT-2026-015",
-        nycName: "Vũ Thị L",
+        ycbtCode: "BT-2026-010",
+        nycName: "Nguyễn Văn F",
         nycRole: "Người bị thiệt hại",
         amount: 50000000,
         user: "Nguyễn Văn Thụ",
@@ -585,15 +585,15 @@ let proposalsList = [
         status: "Hoàn thành",
         source: "Tạm ứng kinh phí Bộ Tài chính",
         cqCap: "Sở Tư pháp Hà Nội",
-        notes: "Đã hoàn thành cấp tạm ứng bồi thường cho bà Vũ Thị L.",
+        notes: "Đã hoàn thành cấp tạm ứng bồi thường cho ông Nguyễn Văn F.",
         leaderOpinion: "Đồng ý tạm ứng 50.000.000 VNĐ.",
-        files: [{ name: "Tờ trình tạm ứng Vũ Thị L", file: "To_trinh_tam_ung_C.pdf" }],
+        files: [{ name: "Tờ trình tạm ứng Nguyễn Văn F", file: "To_trinh_tam_ung_C.pdf" }],
         advApproveTinhThan: 30000000,
         advApproveKhac: 20000000,
         payoutDate: "08/09/2026",
         payoutAmountReal: 50000000,
         payoutMethod: "Tiền mặt",
-        payoutRecName: "Vũ Thị L",
+        payoutRecName: "Nguyễn Văn F",
         payoutRecAddress: "Số 15 đường Trần Hưng Đạo, Hoàn Kiếm, Hà Nội",
         payoutReceiptNo: "BL-2026-088",
         payoutFile: "Bien_lai_chi_tam_ung_C.pdf",
@@ -665,8 +665,8 @@ let proposalsList = [
         id: "P16",
         code: "KP-2026-016",
         type: "Cấp kinh phí bồi thường",
-        ycbtCode: "BT-2026-021",
-        nycName: "Hoàng Văn R",
+        ycbtCode: "BT-2026-012",
+        nycName: "Lê Văn H",
         nycRole: "Người bị thiệt hại",
         amount: 450000000,
         user: "Nguyễn Văn Thụ",
@@ -674,9 +674,9 @@ let proposalsList = [
         status: "Hoàn thành",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
-        notes: "Chi trả kinh phí bồi thường oan sai trong hoạt động tố tụng hình sự cho ông Hoàng Văn R.",
+        notes: "Chi trả kinh phí bồi thường trong hoạt động thi hành án dân sự cho ông Lê Văn H.",
         leaderOpinion: "Đồng ý chi trả kinh phí theo đúng bản án có hiệu lực pháp luật.",
-        files: [{ name: "Tờ trình chi trả Hoàng Văn R", file: "To_trinh_KPBT_DoQuocCuong.pdf" }],
+        files: [{ name: "Tờ trình chi trả Lê Văn H", file: "To_trinh_KPBT_DoQuocCuong.pdf" }],
         approvedDamages: {
             taiSan: 100000000,
             thuNhap: 120000000,
@@ -686,10 +686,10 @@ let proposalsList = [
         payoutDate: "18/09/2026",
         payoutAmountReal: 450000000,
         payoutMethod: "Nhận qua chuyển khoản",
-        payoutRecName: "HOÀNG VĂN R",
+        payoutRecName: "LÊ VĂN H",
         payoutRecAddress: "Số 45 phố Hai Bà Trưng, Hoàn Kiếm, Hà Nội",
         payoutBankAccount: "001100456789",
-        payoutBankUser: "HOÀNG VĂN R",
+        payoutBankUser: "LÊ VĂN H",
         payoutBankName: "Vietcombank",
         payoutBankBranch: "Sở Giao Dịch",
         payoutFile: "Uy_nhiem_chi_DoQuocCuong_VCB.pdf",
@@ -730,8 +730,8 @@ let proposalsList = [
         id: "P18",
         code: "KP-2026-018",
         type: "Cấp kinh phí bồi thường",
-        ycbtCode: "BT-2026-023",
-        nycName: "Phạm Văn Nam",
+        ycbtCode: "BT-2026-003-A",
+        nycName: "Công ty ABC",
         nycRole: "Người bị thiệt hại",
         amount: 520000000,
         user: "Nguyễn Văn Thụ",
@@ -741,7 +741,7 @@ let proposalsList = [
         cqCap: "Sở Tài chính Hà Nội",
         notes: "Chi trả bồi thường tài sản và thu nhập thực tế bị mất do quyết định hành chính trái pháp luật.",
         leaderOpinion: "Đồng ý giải ngân toàn bộ kinh phí theo quyết định giải quyết bồi thường.",
-        files: [{ name: "Tờ trình chi trả Phạm Văn Nam", file: "To_trinh_KPBT_NgoVanHung.pdf" }],
+        files: [{ name: "Tờ trình chi trả Công ty ABC", file: "To_trinh_KPBT_NgoVanHung.pdf" }],
         approvedDamages: {
             taiSan: 250000000,
             thuNhap: 150000000,
@@ -751,10 +751,10 @@ let proposalsList = [
         payoutDate: "21/09/2026",
         payoutAmountReal: 520000000,
         payoutMethod: "Nhận qua chuyển khoản",
-        payoutRecName: "PHẠM VĂN NAM",
+        payoutRecName: "CÔNG TY ABC",
         payoutRecAddress: "Số 78 đường Quang Trung, Hà Đông, Hà Nội",
         payoutBankAccount: "034567891011",
-        payoutBankUser: "PHẠM VĂN NAM",
+        payoutBankUser: "CÔNG TY ABC",
         noticeReceivedDate: "20/09/2026",
         noticeProofFile: "Phieu_bao_phat_NgoVanHung.pdf",
         payoutNote: "Đã hoàn thành chuyển khoản 100% kinh phí bồi thường qua tài khoản ngân hàng BIDV."
@@ -826,7 +826,7 @@ let proposalsList = [
     },
     // ===== HÌNH THỨC KÝ ĐỀ NGHỊ TẠM ỨNG (Quyết định tạm ứng - Mẫu 07/BTNN) & TRẠNG THÁI ĐÃ THU HỒI =====
     {
-        id: "P96", code: "KP-2026-096", type: "Cấp tạm ứng", ycbtCode: "BT-2026-015", nycName: "Vũ Thị L", nycRole: "Người bị thiệt hại",
+        id: "P96", code: "KP-2026-096", type: "Cấp tạm ứng", ycbtCode: "BT-2026-059", nycName: "Lương Văn Khải", nycRole: "Người bị thiệt hại",
         amount: 25000000, user: "Lê Văn Nam", date: "08/10/2026", status: "Chờ chi trả",
         source: "Tạm ứng kinh phí Bộ Tài chính", cqCap: "Sở Tài chính Hà Nội",
         notes: "Đề nghị tạm ứng - Hình thức ký Ký ngoài: Quyết định tạm ứng đã ký ngoài, đã có văn bản đã ký, chờ chi trả.",
@@ -968,29 +968,7 @@ function exportExcelKinhPhi() {
     showToast("Đang kết xuất danh sách đề xuất kinh phí bồi thường ra file Excel...", "success");
 }
 
-const CURRENT_PROPOSALS_VERSION = 'v39_oct2026_sn';
-
-// Migration dữ liệu cũ: phân hệ BTNN đã bỏ trạng thái trung gian (lưu tạm) của đề nghị kinh phí.
-// Bản ghi cũ còn trạng thái này trong localStorage chuyển về "Chờ lập đề nghị" (chưa trình phê duyệt,
-// chuyên viên tiếp tục Lập đề nghị hoặc Xóa). Đây là nơi duy nhất còn giữ giá trị trạng thái cũ.
-const LEGACY_DRAFT_STATUS = 'Lưu nháp';
-const LEGACY_DRAFT_NOTE_PREFIX = 'Tờ trình nháp ';
-function migrateLegacyDraftProposals() {
-    if (!Array.isArray(proposalsList)) return;
-    let changed = false;
-    proposalsList.forEach(p => {
-        if (!p) return;
-        if (p.status === LEGACY_DRAFT_STATUS) {
-            p.status = 'Chờ lập đề nghị';
-            changed = true;
-        }
-        if (typeof p.notes === 'string' && p.notes.startsWith(LEGACY_DRAFT_NOTE_PREFIX)) {
-            p.notes = 'Tờ trình ' + p.notes.slice(LEGACY_DRAFT_NOTE_PREFIX.length);
-            changed = true;
-        }
-    });
-    if (changed) localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
-}
+const CURRENT_PROPOSALS_VERSION = 'v41_20261030s2';
 
 // Sync claimsList and proposalsList from localStorage on DOMContentLoaded
 function syncFromLocalStorage() {
@@ -1032,7 +1010,6 @@ function syncFromLocalStorage() {
         proposalsList.forEach(p => { if (p && TLNS_LEGACY.includes(p.status)) p.status = 'Trả lại ngân sách nhà nước'; });
         localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
     }
-    migrateLegacyDraftProposals();
 
     // 2. Load claimsList and map to mockClaims
     const localClaims = localStorage.getItem('claimsList');
@@ -1056,7 +1033,7 @@ function syncFromLocalStorage() {
                         gender: c.gender || (defaultClaim ? defaultClaim.gender : "Nam"),
                         birth: c.birth || (defaultClaim ? defaultClaim.birth : "01/01/1980"),
                         nycVictimAlive: c.victimAlive || (defaultClaim ? defaultClaim.nycVictimAlive : "yes"),
-                        cardType: c.cardType || (defaultClaim ? defaultClaim.cardType : "CCCD"),
+                        cardType: c.cardType || (defaultClaim ? defaultClaim.cardType : "CMND/CCCD/Chứng minh quân đội"),
                         cardNo: c.cardNo || (defaultClaim ? defaultClaim.cardNo : ""),
                         cardDate: c.cardDate || (defaultClaim ? defaultClaim.cardDate : "01/01/2020"),
                         cardPlace: c.cardPlace || (defaultClaim ? defaultClaim.cardPlace : "Cục Cảnh sát QLHC về TTXH"),
@@ -1104,7 +1081,7 @@ function syncFromLocalStorage() {
 
 // ===================== Liên thông Theo dõi vụ việc tại Tòa án =====================
 // Vụ việc có yêu cầu bồi thường bằng tiền chuyển "Đã có bản án/QĐ" -> 01 bản ghi Chi trả tiền bồi thường
-// ở trạng thái "Chờ thông báo chi trả" (quan_ly_kinh_phi_kptb.js). Khóa chống trùng: courtCaseCode (Mã vụ việc), tạo đúng 01 lần.
+// ở trạng thái "Chờ thông báo chi trả" (quan_ly_kinh_phi_kptb.js). Khóa chống trùng: courtCaseId (id vụ việc tại Tòa án), tạo đúng 01 lần / vụ việc tại Tòa án.
 // Đã bỏ trạng thái "Chờ nhập liệu" và thao tác "Nhập liệu".
 const COURT_CASES_KEY = 'btnn_court_cases_v1';
 const COURT_STATUS_VERDICT = 'Đã có bản án/QĐ';
@@ -1147,7 +1124,7 @@ function mapCourtCaseToClaim(c) {
         gender: n.gender || 'Nam',
         birth: n.birth || '',
         nycVictimAlive: n.victimAlive || 'yes',
-        cardType: n.cardType || 'CCCD',
+        cardType: n.cardType || 'CMND/CCCD/Chứng minh quân đội',
         cardNo: n.cardNo || '',
         cardDate: n.cardDate || '',
         cardPlace: n.cardPlace || '',
@@ -1187,11 +1164,12 @@ function buildCourtFundingRecord(c) {
     const d = new Date();
     const pad = v => String(v).padStart(2, '0');
     return {
-        id: 'P_TA_' + c.code,
+        id: 'P_TA_' + c.id,
         code: nextKinhPhiCode(),
         type: 'Chi trả tiền bồi thường',
         ycbtCode: c.code,
         courtCaseCode: c.code,
+        courtCaseId: c.id,
         origin: 'Theo dõi vụ việc tại Tòa án',
         nycName: claim.nyc,
         nycRole: claim.role,
@@ -1212,6 +1190,16 @@ function buildCourtFundingRecord(c) {
     };
 }
 
+// Bản ghi chi trả thuộc vụ việc tại Tòa án c: khóa courtCaseId (id vụ việc tại Tòa án); bản ghi cũ chưa có courtCaseId (khóa theo Mã vụ việc)
+// thuộc vụ việc tại Tòa án đầu tiên cùng Mã vụ việc (01 Mã vụ việc có thể có nhiều vụ việc tại Tòa án)
+function courtFundingMatches(p, c, courtCases) {
+    if (!p || !c) return false;
+    if (p.courtCaseId) return p.courtCaseId === c.id;
+    if (p.courtCaseCode !== c.code) return false;
+    const first = (courtCases || loadCourtCases()).find(x => x && x.code === c.code);
+    return !first || first.id === c.id;
+}
+
 function syncCourtCaseFundingRecords() {
     const courtCases = loadCourtCases();
     if (!courtCases.length) return;
@@ -1219,7 +1207,8 @@ function syncCourtCaseFundingRecords() {
     let casesChanged = false;
     courtCases.filter(isCourtCaseNeedingFunding).forEach(c => {
         if (!mockClaims.some(m => m.code === c.code)) mockClaims.push(mapCourtCaseToClaim(c));
-        let p = proposalsList.find(x => x && x.courtCaseCode === c.code);
+        let p = proposalsList.find(x => courtFundingMatches(x, c, courtCases));
+        if (p && !p.courtCaseId) { p.courtCaseId = c.id; proposalsChanged = true; }
         if (!p) {
             p = buildCourtFundingRecord(c);
             proposalsList.unshift(p);
@@ -1496,7 +1485,22 @@ function diffDays(fromDate, toDate) {
     return Math.ceil((toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
 }
 
+// Chi trả tiền bồi thường chi nhiều lần: Lịch sử chi trả (payHistory) - mỗi lần { no, payDate, amount, method, recName, ..., files, note, at, by }.
+// Dữ liệu cũ chưa có payHistory: 01 lần chi theo kptbPayment / payoutDate (bỏ qua bản ghi Chờ chi trả - dữ liệu chi cũ đã bị đưa về Chờ chi trả)
+function kpPayHistory(item) {
+    if (!item) return [];
+    if (Array.isArray(item.payHistory)) return item.payHistory;
+    if (item.type !== 'Chi trả tiền bồi thường' || item.status === 'Chờ chi trả') return [];
+    const p = item.kptbPayment;
+    if (p && Number(p.amount) > 0) return [{ no: 1, payDate: p.payDate || item.payoutDate || '', amount: Number(p.amount), method: p.method || item.payoutMethod || '', recName: p.recName || '', files: p.files || [], note: p.note || '', at: p.at || '', by: p.by || '' }];
+    if (item.payoutDate && Number(item.payoutAmountReal) > 0) return [{ no: 1, payDate: item.payoutDate, amount: Number(item.payoutAmountReal), method: item.payoutMethod || '', recName: item.payoutRecName || '', files: item.payoutFiles || [], note: item.payoutNote || '', at: '', by: '' }];
+    return [];
+}
+// Số tiền đã chi (tổng các lần chi)
+function kpPaidTotal(item) { return kpPayHistory(item).reduce((s, x) => s + (Number(x && x.amount) || 0), 0); }
 function getPaidAmount(item) {
+    // Chi trả tiền bồi thường: tổng đã chi các lần (bản ghi Chờ chi trả đã chi một phần vẫn có số đã chi)
+    if (item && item.type === 'Chi trả tiền bồi thường' && Array.isArray(item.payHistory)) return kpPaidTotal(item);
     return item.status === 'Hoàn thành' ? (item.payoutAmountReal || item.amount || 0) : 0;
 }
 
@@ -1717,10 +1721,12 @@ function filterTreasuryEligible() {
     showToast('Đang hiển thị các khoản đủ điều kiện trả lại ngân sách nhà nước.', 'info');
 }
 
-function openLinkedClaimDetail(ycbtCode) {
-    // Vụ việc tại Tòa án: mở chi tiết tại màn hình Theo dõi vụ việc tại Tòa án
-    if (isCourtCaseCode(ycbtCode)) {
-        const courtUrl = `theo_doi_vu_viec_toa_an.html?code=${encodeURIComponent(ycbtCode)}`;
+function openLinkedClaimDetail(ycbtCode, courtCaseId) {
+    // Vụ việc tại Tòa án: mở chi tiết tại màn hình Theo dõi vụ việc tại Tòa án, đúng vụ việc theo id (01 Mã vụ việc có thể có nhiều vụ việc tại Tòa án)
+    if (courtCaseId || isCourtCaseCode(ycbtCode)) {
+        const courtUrl = courtCaseId
+            ? `theo_doi_vu_viec_toa_an.html?id=${encodeURIComponent(courtCaseId)}`
+            : `theo_doi_vu_viec_toa_an.html?code=${encodeURIComponent(ycbtCode)}`;
         if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
             window.parent.openAdminModule(courtUrl, 'theo_doi_vu_viec_toa_an.html');
             return;
@@ -2539,7 +2545,7 @@ function renderProposalsTable() {
         tr.innerHTML = `
             <td style="text-align:center; vertical-align:middle;">${startIdx + idx + 1}</td>
             <td style="text-align:left; vertical-align:middle; font-weight:700; color:var(--primary-light);">${item.code}</td>
-            <td style="text-align:left; vertical-align:middle;"><a href="quan_ly_boi_thuong.html?id=${encodeURIComponent(item.ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html?v=1&menu=' + kpMenu())}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}'); return false;" style="font-weight:700; color:var(--secondary-color); text-decoration:underline;">${item.ycbtCode}</a></td>
+            <td style="text-align:left; vertical-align:middle;"><a href="quan_ly_boi_thuong.html?id=${encodeURIComponent(item.ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html?v=1&menu=' + kpMenu())}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}', '${item.courtCaseId || ''}'); return false;" style="font-weight:700; color:var(--secondary-color); text-decoration:underline;">${item.ycbtCode}</a></td>
             <td style="text-align:left; vertical-align:middle; font-weight:600;">${item.nycName}</td>
             <td style="text-align:right; font-weight:700; vertical-align:middle;">${amtVal.toLocaleString('vi-VN')}</td>
             <td style="text-align:left; vertical-align:middle;">${item.user || '-'}</td>
@@ -2850,7 +2856,7 @@ function clearClaimDetails() {
 
     document.getElementById('formNycPhone').value = '';
     document.getElementById('formNycEmail').value = '';
-    document.getElementById('formNycCardType').value = 'CCCD';
+    document.getElementById('formNycCardType').value = 'CMND/CCCD/Chứng minh quân đội';
     document.getElementById('formNycCardNo').value = '';
     document.getElementById('formNycCardDate').value = '';
     document.getElementById('formNycCardPlace').value = '';
@@ -3074,7 +3080,7 @@ function handleClaimSelected(code) {
 
         document.getElementById('formNycPhone').value = claim.phone;
         document.getElementById('formNycEmail').value = claim.email || "";
-        document.getElementById('formNycCardType').value = claim.cardType || "CCCD";
+        document.getElementById('formNycCardType').value = claim.cardType || "CMND/CCCD/Chứng minh quân đội";
         document.getElementById('formNycCardNo').value = claim.cardNo;
         document.getElementById('formNycCardDate').value = claim.cardDate;
         document.getElementById('formNycCardPlace').value = claim.cardPlace;
@@ -3336,45 +3342,34 @@ function addProposalDocRow() {
     renderProposalAttachedDocs();
 }
 
+// Khối 6 - Tài liệu đính kèm: 02 bảng Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo (btnn_tai_lieu_kem_theo.js, quy tắc 5.9).
+// - Nhập liệu (Lập / Cập nhật đề nghị): 02 bảng nhập, không bắt buộc.
+// - Chế độ xem: bảng không có dòng thì ẩn; cả 02 bảng không có dòng thì ẩn cả khối.
+// - Dữ liệu cũ chưa phân loại (chưa có scope): hiển thị tại Tài liệu không ban hành kèm theo.
+let kpProposalDocsReadOnly = false;
+function kpProposalDocsNorm(list) {
+    return (Array.isArray(list) ? list : []).map(d => {
+        if (!d) return null;
+        if (typeof d === 'string') return { name: d.replace(/\.[^.]+$/, ''), file: { name: d } };
+        const f = d.file ? (typeof d.file === 'string' ? { name: d.file } : d.file) : null;
+        const o = { name: d.name || (f && f.name) || '', file: f };
+        if (d.scope) o.scope = d.scope;
+        if (d.unit) o.unit = d.unit;
+        return o;
+    }).filter(d => d && (d.name || d.file));
+}
 function renderProposalAttachedDocs() {
-    const tbody = document.getElementById('proposalAttachedDocsBody');
-    tbody.innerHTML = '';
-
-    // Check if the add row button is disabled/hidden to determine read-only mode
-    const addRowBtn = document.querySelector('button[onclick="addProposalDocRow()"]');
-    const isReadOnly = addRowBtn ? (addRowBtn.style.display === 'none' || addRowBtn.disabled) : false;
-
-    if (proposalAttachedDocs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:15px;">Chưa có tài liệu đính kèm nào. Vui lòng bấm Thêm tài liệu.</td></tr>`;
+    const host = document.getElementById('kpProposalDocsHost');
+    if (!host) return;
+    const block = document.getElementById('block6_NotesAndDocs');
+    const rows = kpProposalDocsNorm(proposalAttachedDocs);
+    if (kpProposalDocsReadOnly) {
+        host.innerHTML = typeof tlktViewHtml === 'function' ? tlktViewHtml(rows, { boxClass: 'tlkt-view', titleClass: 'tlkt-sec-title' }) : '';
+        if (block) block.style.display = host.innerHTML.trim() ? 'block' : 'none';
         return;
     }
-
-    proposalAttachedDocs.forEach((doc, idx) => {
-        const tr = document.createElement('tr');
-
-        // Bảng tài liệu chuẩn BTNN: File đính kèm = nút Tải file / tên tệp (căn giữa); Thao tác = icon Xem file / Xóa (nhập), Xem file / Tải file (chỉ xem)
-        const fileCell = doc.file
-            ? `<span class="file-name" title="${doc.file}"><i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i><strong>${doc.file}</strong></span>`
-            : (isReadOnly ? '<span style="color:#94A3B8;">--</span>'
-                : `<button type="button" class="tlkt-btn-pri" onclick="this.nextElementSibling.click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button><input type="file" style="display: none;" onchange="uploadProposalAttachedDoc(${idx}, this)">`);
-        const ib = (title, icon, fn, extra) => `<button type="button" class="tlkt-ib${extra || ''}" data-admin-icon-normalized="1" title="${title}" aria-label="${title}" onclick="${fn}"><i class="fa-solid ${icon}"></i></button>`;
-        const actionsCell = '<span class="tlkt-acts">'
-            + ib('Xem file', 'fa-eye', `viewProposalAttachedDoc(${idx})`, doc.file ? '' : ' is-disabled')
-            + (isReadOnly
-                ? ib('Tải file', 'fa-download', `viewProposalAttachedDoc(${idx})`, doc.file ? '' : ' is-disabled')
-                : ib('Xóa', 'fa-trash', doc.file ? `removeProposalAttachedDoc(${idx})` : `deleteProposalDocRow(${idx})`, ' tlkt-ib-del'))
-            + '</span>';
-
-        tr.innerHTML = `
-            <td style="text-align:center;">${idx + 1}</td>
-            <td>
-                <input type="text" class="form-control" id="attachedDocName_${idx}" value="${doc.name}" oninput="updateProposalDocName(${idx}, this.value)" placeholder="Nhập tên tài liệu, văn bản" style="height:34px;" ${isReadOnly ? 'disabled' : ''}>
-            </td>
-            <td class="tlkt-fc">${fileCell}</td>
-            <td style="text-align:center;">${actionsCell}</td>
-        `;
-        tbody.appendChild(tr);
-    });
+    if (block) block.style.display = 'block';
+    if (typeof tlktMount === 'function') tlktMount('kpProposal', 'kpProposalDocsHost', { rows: rows, secClass: '', titleClass: 'form-label' });
 }
 
 function uploadProposalAttachedDoc(idx, input) {
@@ -3467,6 +3462,9 @@ function setProposalFieldsDisabled(disabled) {
         addRowBtn.style.display = disabled ? 'none' : 'inline-flex';
         addRowBtn.disabled = disabled;
     }
+    // Khối 6 - Tài liệu đính kèm: khóa nhập -> chế độ xem (ẩn bảng / khối không có dữ liệu)
+    kpProposalDocsReadOnly = !!disabled;
+    renderProposalAttachedDocs();
 }
 
 // Reset proposal attachments table
@@ -3682,10 +3680,6 @@ function saveProposal() {
         showFieldError('formProposalCqCap', 'Đây là trường bắt buộc');
         return;
     }
-    if (!notes) {
-        showFieldError('formProposalNotes', 'Đây là trường bắt buộc');
-        return;
-    }
 
     let amount = 0;
     let customFields = {};
@@ -3755,12 +3749,10 @@ function saveProposal() {
 
     const nycName = document.getElementById('formNycName').value;
 
-    // Attached files check (need at least 1 document uploaded)
-    const validFiles = proposalAttachedDocs.filter(d => d.file !== null);
-    if (validFiles.length === 0) {
-        showToast("Vui lòng đính kèm ít nhất 1 tài liệu/tờ trình gửi kèm!", "error");
-        return;
-    }
+    // Khối 6 - Tài liệu đính kèm: 02 bảng Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo, không bắt buộc;
+    // dòng đã nhập phải đủ Tên tài liệu, văn bản và tệp
+    if (typeof tlktValidate === 'function' && !tlktValidate('kpProposal')) return;
+    const validFiles = typeof tlktGet === 'function' ? tlktGet('kpProposal') : kpProposalDocsNorm(proposalAttachedDocs);
 
     if (selectedProposalId) {
         // Update
@@ -4086,7 +4078,7 @@ function viewProposalDetail(id) {
 
     document.getElementById('formNycPhone').value = claimDetails.phone;
     document.getElementById('formNycEmail').value = claimDetails.email || "";
-    document.getElementById('formNycCardType').value = claimDetails.cardType || "CCCD";
+    document.getElementById('formNycCardType').value = claimDetails.cardType || "CMND/CCCD/Chứng minh quân đội";
     document.getElementById('formNycCardNo').value = claimDetails.cardNo;
     document.getElementById('formNycCardDate').value = claimDetails.cardDate;
     document.getElementById('formNycCardPlace').value = claimDetails.cardPlace;
@@ -5038,9 +5030,8 @@ function submitPayoutReal() {
                     status: "completed"
                 });
 
-                if (!kpClaimHasPhdd(matchedClaim)) {
-                    matchedClaim.status = 'Hoàn thành';
-                }
+                // Trạng thái Giải quyết YCBT (nhánh bồi thường thiệt hại) chuyển Hoàn thành, không phụ thuộc nhánh Phục hồi danh dự
+                matchedClaim.status = 'Hoàn thành';
                 matchedClaim.moneyPaid = true;
 
                 localStorage.setItem('claimsList', JSON.stringify(localClaims));
@@ -5071,9 +5062,44 @@ function deleteProposal(id) {
     }
 }
 
-// Export Excel mock
+// Kết xuất Excel: theo Quy chuẩn Kết xuất Excel dùng chung (04_Danh_muc_va_Phu_luc.md #quy-chuan-ket-xuat-excel)
+// Toàn bộ bản ghi của menu con + tab theo bộ lọc/sắp xếp hiện tại (không theo trang); cột theo lưới, bỏ cột Thao tác
 function exportExcelKinhPhi() {
-    showToast("Đang kết xuất danh sách " + KP_MENUS[kpMenuState].title + " ra file Excel...", "success");
+    const sz = pageSize, pg = currentPage;
+    pageSize = 1e9; currentPage = 1; renderProposalsTable();
+    const table = document.getElementById('proposalsTable');
+    const ths = Array.from(table.querySelectorAll('thead th'));
+    const keep = ths.map((th, i) => (getComputedStyle(th).display !== 'none' && !/Thao tác/i.test(th.textContent) ? i : -1)).filter(i => i >= 0);
+    const cellText = c => (c.innerText || c.textContent || '').split('\n').map(s => s.trim()).filter(Boolean).join('; ');
+    const rows = Array.from(table.querySelectorAll('tbody tr')).filter(tr => tr.cells.length === ths.length)
+        .map(tr => keep.map(i => ({ v: cellText(tr.cells[i]), al: getComputedStyle(tr.cells[i]).textAlign })));
+    const headers = keep.map(i => ths[i].textContent.replace(/\s+/g, ' ').trim());
+    pageSize = sz; currentPage = pg; renderProposalsTable();
+    if (!rows.length) { showToast('Không có dữ liệu để kết xuất Excel.', 'error'); return; }
+    const p2 = x => String(x).padStart(2, '0'), now = new Date();
+    const stamp = `${p2(now.getDate())}/${p2(now.getMonth() + 1)}/${now.getFullYear()} ${p2(now.getHours())}:${p2(now.getMinutes())}`;
+    const ymd = `${now.getFullYear()}${p2(now.getMonth() + 1)}${p2(now.getDate())}`;
+    const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const fromD = document.getElementById('searchFromDate').value.trim(), toD = document.getElementById('searchToDate').value.trim();
+    const info = (fromD || toD) ? `Từ ngày ${fromD || '...'} đến ngày ${toD || '...'}` : `Thời điểm xuất: ${stamp}`;
+    const menu = KP_MENUS[kpMenuState].title;
+    const fileBase = kpMenuState === 'chi-tra' ? 'Chi_tra_tien_boi_thuong' : 'Tam_ung_kinh_phi';
+    const u = window.BTNN_WF && BTNN_WF.getCurrentUser ? BTNN_WF.getCurrentUser() : null;
+    const n = headers.length, font = "font-family:'Times New Roman';";
+    const html = '<meta charset="UTF-8"><table border="1">'
+        + `<tr><td colspan="${n}" style="${font}font-size:15pt;font-weight:bold;text-align:center;border:none;">${esc('DANH SÁCH ' + menu.toUpperCase())}</td></tr>`
+        + `<tr><td colspan="${n}" style="${font}font-size:11pt;font-style:italic;text-align:center;border:none;">${esc(info)}</td></tr>`
+        + '<tr>' + headers.map(h => `<th style="${font}font-size:12pt;background:#e5e7eb;">${esc(h)}</th>`).join('') + '</tr>'
+        + rows.map(r => '<tr>' + r.map(c => `<td style="${font}font-size:12pt;mso-number-format:'\\@';text-align:${c.al === 'right' || c.al === 'center' ? c.al : 'left'};">${esc(c.v)}</td>`).join('') + '</tr>').join('')
+        + `<tr><td colspan="${n}" style="${font}font-size:10pt;font-style:italic;text-align:right;border:none;">Xuất ngày ${esc(stamp)} bởi ${esc((u && (u.name || u.fullName || u.username)) || 'Người dùng hiện tại')}</td></tr>`
+        + '</table>';
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['﻿' + html], { type: 'application/vnd.ms-excel;charset=utf-8' }));
+    // Mockup sinh bảng HTML nên dùng đuôi .xls; hệ thống thật xuất .xlsx theo quy chuẩn
+    a.download = `${ymd}_${fileBase}.xls`;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+    showToast(`Đã kết xuất ${rows.length} bản ghi ${menu} ra tệp Excel.`, 'success');
 }
 
 // TOAST ENGINE
@@ -5216,7 +5242,7 @@ const FUNDING_DEC_PAGE_SIZE = 10;
 
 // Danh sách Quyết định giải quyết bồi thường Đã ban hành (dữ liệu giả lập)
 const MOCK_ISSUED_DECISIONS = [
-    { decNo: '45/QĐ-GQBT', date: '05/06/2026', claimCode: 'BT-2026-007', requester: 'Phạm Văn D', agency: 'Công an quận Thanh Xuân', status: 'Đã ban hành', amount: 180000000 },
+    { decNo: '45/QĐ-GQBT', date: '05/06/2026', claimCode: 'BT-2026-007', requester: 'Phạm Văn D', agency: 'Công an phường Thanh Xuân', status: 'Đã ban hành', amount: 180000000 },
     { decNo: '52/QĐ-GQBT', date: '28/06/2026', claimCode: 'BT-2026-002', requester: 'Trần Thị B', agency: 'Tòa án nhân dân TP. Hà Nội', status: 'Đã ban hành', amount: 120000000 },
     { decNo: '58/QĐ-GQBT', date: '12/07/2026', claimCode: 'BT-2026-011', requester: 'Trần Thị G', agency: 'Sở Tư pháp Hà Nội', status: 'Đã ban hành', amount: 75000000 },
     { decNo: '61/QĐ-GQBT', date: '20/07/2026', claimCode: 'BT-2026-014', requester: 'Phạm Văn K', agency: 'UBND Thành phố Hà Nội', status: 'Đã ban hành', amount: 210000000 },
@@ -5313,7 +5339,7 @@ function renderFundingDecisionLookupResults() {
     tbody.innerHTML = pageRows.map((d, i) =>
         '<tr>'
         + '<td style="text-align:center;">' + (start + i + 1) + '</td>'
-        + '<td><a href="quan_ly_boi_thuong.html?id=' + encodeURIComponent(d.claimCode) + '" target="_blank" style="font-weight:700; color:#1d4ed8; text-decoration:none;">' + d.claimCode + '</a></td>'
+        + '<td><a href="quan_ly_boi_thuong.html?id=' + encodeURIComponent(d.claimCode) + '&from=kinh_phi" target="_blank" style="font-weight:700; color:#1d4ed8; text-decoration:none;">' + d.claimCode + '</a></td>'
         + '<td><strong>' + d.decNo + '</strong></td>'
         + '<td style="text-align:center;">' + d.date + '</td>'
         + '<td>' + d.requester + '</td>'
@@ -5529,28 +5555,55 @@ function kpOnRoleChange() {
 const KP_SIGN_DIGITAL = 'Ký số';
 const KP_SIGN_OUTSIDE = 'Ký ngoài';
 function kpIsAdv(item) { return !!item && (item.type === 'Cấp tạm ứng' || item.type === 'Đề nghị tạm ứng'); }
-// Hoàn thành Trả lại ngân sách nhà nước của khoản Chi trả tiền bồi thường: vụ việc liên kết chuyển "Hoàn thành" và ghi tiến trình.
-// Khoản tạm ứng không kết thúc vụ việc (vụ việc tiếp tục giải quyết).
-// Như hoàn thành chi trả: vụ việc còn nhánh Phục hồi danh dự chưa hoàn thành (Loại yêu cầu có phục hồi danh dự) thì giữ nguyên trạng thái vụ việc.
+// Hoàn thành chi trả / Hoàn thành Trả lại ngân sách nhà nước của khoản Chi trả tiền bồi thường: hồ sơ Giải quyết YCBT của vụ việc
+// chuyển Trạng thái Giải quyết YCBT "Hoàn thành" (claim.status = nhánh Giải quyết YCBT) và ghi tiến trình.
+// Trạng thái vụ việc do màn Giải quyết YCBT tổng hợp theo 02 nhánh (vụ việc Yêu cầu cả hai, Phục hồi danh dự chưa xong: theo nhánh Phục hồi danh dự).
+// Không áp dụng: khoản tạm ứng (vụ việc tiếp tục giải quyết); bản ghi từ Theo dõi vụ việc tại Tòa án (courtCaseId, không có hồ sơ Giải quyết YCBT).
 // [d1] Vụ việc có nhánh Phục hồi danh dự: theo Loại yêu cầu giải quyết bồi thường (requestType); dữ liệu cũ chưa có requestType suy ra theo restoreHonor
 function kpClaimHasPhdd(c) {
     var k = ['money', 'honor', 'both'].indexOf(c && c.requestType) >= 0 ? c.requestType : (c && c.restoreHonor ? 'both' : 'money');
     return k !== 'money';
 }
-function kpTlnsCompleteClaim(item, dateText, amount) {
-    if (!item || kpIsAdv(item) || !item.ycbtCode) return;
+function kpCompleteClaim(item, fn) {
+    if (!item || kpIsAdv(item) || !item.ycbtCode || item.courtCaseId) return;
     let list;
     try { list = JSON.parse(localStorage.getItem('claimsList') || '[]'); } catch (e) { return; }
     const c = Array.isArray(list) ? list.find(x => x && x.code === item.ycbtCode) : null;
     if (!c) return;
-    const money = (Number(amount) || 0).toLocaleString('vi-VN');
-    const done = !kpClaimHasPhdd(c);
     if (!c.timeline) c.timeline = [];
-    c.timeline.push({ title: 'Trả lại ngân sách nhà nước', date: dateText, desc: `Người yêu cầu không nhận tiền bồi thường trong thời hạn; đã nộp trả ${money} đồng vào ngân sách nhà nước (${item.code}).` + (done ? ' Vụ việc chuyển trạng thái Hoàn thành.' : ''), status: 'completed' });
-    if (done) c.status = 'Hoàn thành';
-    c.thucthiDate = dateText;
-    c.thucthiNote = `Đã trả lại ngân sách nhà nước số tiền ${money} đồng (${item.code}).`;
+    fn(c);
+    c.status = 'Hoàn thành';
     localStorage.setItem('claimsList', JSON.stringify(list));
+}
+function kpTlnsCompleteClaim(item, dateText, amount) {
+    const money = (Number(amount) || 0).toLocaleString('vi-VN');
+    // Trả lại một phần: Số tiền đã chi thực tế = Số tiền theo Quyết định − Số tiền trả lại ngân sách nhà nước (> 0)
+    const paidReal = Math.max(0, (Number(item.amount) || 0) - (Number(amount) || 0));
+    const paidText = paidReal.toLocaleString('vi-VN');
+    kpCompleteClaim(item, c => {
+        c.timeline.push({ title: 'Trả lại ngân sách nhà nước', date: dateText, desc: paidReal > 0
+            ? `Đã chi trả ${paidText} đồng; phần còn lại ${money} đồng người yêu cầu không nhận trong thời hạn, đã nộp trả vào ngân sách nhà nước (${item.code}). Trạng thái Giải quyết YCBT chuyển Hoàn thành.`
+            : `Người yêu cầu không nhận tiền bồi thường trong thời hạn; đã nộp trả ${money} đồng vào ngân sách nhà nước (${item.code}). Trạng thái Giải quyết YCBT chuyển Hoàn thành.`, status: 'completed' });
+        c.sungQuy = true;
+        if (paidReal > 0) {
+            // Trả lại một phần: vụ việc tính là đã chi trả theo Số tiền đã chi thực tế; Ngày hoàn tất chi trả = Ngày trả lại ngân sách nhà nước
+            c.moneyPaid = true;
+            c.thucthiDate = dateText;
+            c.thucthiNote = `Đã chi trả ${paidText} đồng; trả lại ngân sách nhà nước ${money} đồng (${item.code}).`;
+        } else {
+            // Trả lại toàn bộ: không ghi Ngày chi trả (thucthiDate), vụ việc không tính là đã chi trả
+            c.thucthiNote = `Đã trả lại ngân sách nhà nước số tiền ${money} đồng (${item.code}).`;
+        }
+    });
+}
+function kpPayCompleteClaim(item, dateText, amount) {
+    const money = (Number(amount) || 0).toLocaleString('vi-VN');
+    kpCompleteClaim(item, c => {
+        c.timeline.push({ title: 'Hoàn thành chi trả tiền bồi thường', date: dateText, desc: `Đã chi trả ${money} đồng tiền bồi thường (${item.code}). Trạng thái Giải quyết YCBT chuyển Hoàn thành.`, status: 'completed' });
+        c.moneyPaid = true;
+        c.thucthiDate = dateText;
+        c.thucthiNote = `Đã chi trả ${money} đồng tiền bồi thường (${item.code}).`;
+    });
 }
 function kpEsc(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 function kpSignText(m) { return m === KP_SIGN_OUTSIDE ? 'Ký ngoài' : 'Ký số trên hệ thống'; }
@@ -5874,6 +5927,8 @@ function kpSpecialistActions(item, b) {
     const origView = viewProposalDetail;
     viewProposalDetail = function (id) {
         origView.apply(this, arguments);
+        // Khối 6 - Tài liệu đính kèm (chế độ xem): dựng lại sau khi màn chi tiết mở các khối, ẩn khi không có dữ liệu
+        renderProposalAttachedDocs();
         const item = proposalsList.find(p => p.id === id);
         if (!item) return;
         kpRenderSignBlock(item, true);

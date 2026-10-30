@@ -582,7 +582,7 @@
         <div class="section-head">
             <div class="section-title"><i class="fa-solid fa-table-list"></i> Bảng kết quả tìm kiếm</div>
             <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
-                <button class="btn btn-primary" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
+                <button class="btn btn-primary" id="btnAddNew" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
                 <button class="btn btn-secondary" id="btnExportExcel" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
             </div>
         </div>
@@ -667,11 +667,12 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
-    <script src="btnn_tim_kiem_vu_viec.js?v=20261029sn1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
+    <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
+    <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script>
-        const W = window.BTNN_WF, CASE = window.BTNN_CASE;
-        const STORE_KEY = 'btnn_kiem_tra_records_v1';
+        const W = window.BTNN_WF, CASE = window.BTNN_CASE, PV = window.BTNN_PHAMVI;
+        const STORE_KEY = 'btnn_kiem_tra_records_v2';
         // ===== Danh sách giá trị theo Thông tư 08/2019/TT-BTP =====
         // Hình thức kiểm tra - Điều 18
         const KT_FORMS = ['Kiểm tra định kỳ', 'Kiểm tra đột xuất'];
@@ -709,8 +710,12 @@
                 plan({ code: 'KT-BTNN-2026-001', senderId: 'BTP-01', officer: b, createdAt: '20/03/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'UBND-LD', content: 'Kiểm tra việc giải quyết yêu cầu bồi thường và quản lý nhà nước về công tác bồi thường nhà nước tại tỉnh Lâm Đồng.', periodFrom: '01/01/2025', periodTo: '31/12/2025', scopeNote: 'Các vụ việc thụ lý trong năm 2025.', planFrom: '12/08/2026', planTo: '14/08/2026', planPlace: 'Trụ sở UBND tỉnh Lâm Đồng', members: [mem('Trần Văn Bồi Thường', 'Trưởng phòng', 'PLN-02', ROLES[0]), mem('Nguyễn Văn Cán Bộ', 'Chuyên viên', 'PLN-02', ROLES[1]), mem('Kha Văn Sang', 'Chủ tịch UBND', 'UBND-LD', ROLES[1])], status: ST.DONE, result: { from: '12/08/2026', to: '15/08/2026', place: 'Trụ sở UBND tỉnh Lâm Đồng và Cục Thi hành án dân sự tỉnh Lâm Đồng', content: 'Đã kiểm tra 05 vụ việc; 01 vụ việc quá thời hạn giải quyết. Đoàn kiểm tra đã ban hành kết luận kiểm tra.' }, resultDocs: [{ name: 'Biên bản kiểm tra', file: 'bien_ban_kiem_tra.pdf' }, { name: 'Kết luận kiểm tra', file: 'ket_luan_kiem_tra.pdf' }], history: [hist('20/03/2026 09:00', b, 'Lập kế hoạch kiểm tra'), hist('16/08/2026 15:00', b, 'Cập nhật kết quả kiểm tra')] }),
                 plan({ code: 'KT-BTNN-2026-002', senderId: 'BTP-01', officer: b, createdAt: '05/10/2026', form: KT_FORMS[1], basis: KT_BASIS[0], targetId: 'UBND-HN', content: 'Kiểm tra đột xuất việc giải quyết yêu cầu bồi thường có thời hạn kéo dài.', periodFrom: '01/01/2026', periodTo: '30/09/2026', scopeNote: '', planFrom: '20/10/2026', planTo: '21/10/2026', planPlace: 'Trụ sở UBND Thành phố Hà Nội', members: [mem('Phạm Thị Hồng Vân', 'Phó Cục trưởng', 'CĐK-01', ROLES[0]), mem('Trần Thị Thu Hà', 'Chuyên viên', 'PLN-02', ROLES[1])], status: ST.PLANNED, history: [hist('05/10/2026 10:00', b, 'Lập kế hoạch kiểm tra')] }),
                 plan({ code: 'KT-BTNN-2026-003', senderId: 'BTP-01', officer: b, createdAt: '25/03/2026', form: KT_FORMS[0], basis: KT_BASIS[1], targetId: 'VKSNDTC', content: 'Kiểm tra tổ chức thi hành pháp luật về trách nhiệm bồi thường của Nhà nước.', periodFrom: '01/01/2025', periodTo: '31/12/2025', scopeNote: '', planFrom: '10/11/2026', planTo: '12/11/2026', planPlace: 'Trụ sở Viện kiểm sát nhân dân tối cao', members: [mem('Nguyễn Văn Cục Trưởng', 'Cục trưởng', 'CĐK-01', ROLES[0]), mem('Phạm Minh Đức', 'Chuyên viên', 'PLN-02', ROLES[1])], status: ST.PLANNED, history: [hist('25/03/2026 08:30', b, 'Lập kế hoạch kiểm tra')] }),
-                plan({ code: 'KT-BTNN-2026-004', senderId: 'STP-HN', officer: s, createdAt: '15/03/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'UBND-CG', content: 'Kiểm tra việc giải quyết yêu cầu bồi thường và xác định trách nhiệm hoàn trả tại UBND quận Cầu Giấy.', periodFrom: '01/01/2025', periodTo: '31/12/2025', scopeNote: '', planFrom: '15/09/2026', planTo: '16/09/2026', planPlace: 'Trụ sở UBND quận Cầu Giấy', members: [mem('Phạm Quang Huy', 'Giám đốc Sở', 'STP-HN', ROLES[0]), mem('Đỗ Văn Chung', 'Chuyên viên', 'STP-HN-HCTP', ROLES[1])], status: ST.DONE, result: { from: '15/09/2026', to: '16/09/2026', place: 'Trụ sở UBND quận Cầu Giấy', content: 'Đơn vị thực hiện đúng trình tự, thủ tục giải quyết yêu cầu bồi thường.' }, resultDocs: [{ name: 'Kết luận kiểm tra', file: 'ket_luan_kt_cau_giay.pdf' }], history: [hist('15/03/2026 09:00', s, 'Lập kế hoạch kiểm tra'), hist('18/09/2026 10:00', s, 'Cập nhật kết quả kiểm tra')] }),
-                plan({ code: 'KT-BTNN-2026-005', senderId: 'STP-HN', officer: s, createdAt: '01/10/2026', form: KT_FORMS[1], basis: KT_BASIS[0], targetId: 'CA-TX', content: 'Kiểm tra đột xuất việc thụ lý hồ sơ yêu cầu bồi thường.', periodFrom: '01/06/2026', periodTo: '30/09/2026', scopeNote: 'Vụ việc BT-2026-038.', planFrom: '22/10/2026', planTo: '22/10/2026', planPlace: 'Trụ sở Công an quận Thanh Xuân', members: [mem('Vũ Thị Thanh', 'Trưởng phòng', 'STP-HN-HCTP', ROLES[0]), mem('Ngô Thị Lan', 'Chuyên viên', 'STP-HN-HCTP', ROLES[1])], status: ST.PLANNED, history: [hist('01/10/2026 14:00', s, 'Lập kế hoạch kiểm tra')] })
+                plan({ code: 'KT-BTNN-2026-004', senderId: 'STP-HN', officer: s, createdAt: '15/03/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'UBND-CG', content: 'Kiểm tra việc giải quyết yêu cầu bồi thường và xác định trách nhiệm hoàn trả tại UBND phường Cầu Giấy.', periodFrom: '01/01/2025', periodTo: '31/12/2025', scopeNote: '', planFrom: '15/09/2026', planTo: '16/09/2026', planPlace: 'Trụ sở UBND phường Cầu Giấy', members: [mem('Phạm Quang Huy', 'Giám đốc Sở', 'STP-HN', ROLES[0]), mem('Đỗ Văn Chung', 'Chuyên viên', 'STP-HN-HCTP', ROLES[1])], status: ST.DONE, result: { from: '15/09/2026', to: '16/09/2026', place: 'Trụ sở UBND phường Cầu Giấy', content: 'Đơn vị thực hiện đúng trình tự, thủ tục giải quyết yêu cầu bồi thường.' }, resultDocs: [{ name: 'Kết luận kiểm tra', file: 'ket_luan_kt_cau_giay.pdf' }], history: [hist('15/03/2026 09:00', s, 'Lập kế hoạch kiểm tra'), hist('18/09/2026 10:00', s, 'Cập nhật kết quả kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-005', senderId: 'STP-HN', officer: s, createdAt: '01/10/2026', form: KT_FORMS[1], basis: KT_BASIS[0], targetId: 'CA-TX', content: 'Kiểm tra đột xuất việc thụ lý hồ sơ yêu cầu bồi thường.', periodFrom: '01/06/2026', periodTo: '30/09/2026', scopeNote: 'Vụ việc BT-2026-038.', planFrom: '22/10/2026', planTo: '22/10/2026', planPlace: 'Trụ sở Công an phường Thanh Xuân', members: [mem('Vũ Thị Thanh', 'Trưởng phòng', 'STP-HN-HCTP', ROLES[0]), mem('Ngô Thị Lan', 'Chuyên viên', 'STP-HN-HCTP', ROLES[1])], status: ST.PLANNED, history: [hist('01/10/2026 14:00', s, 'Lập kế hoạch kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-006', senderId: 'STP-HCM', officer: 'Châu Ngọc Ánh', createdAt: '10/04/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'CCTHADS-BT', content: 'Kiểm tra việc giải quyết yêu cầu bồi thường tại Chi cục Thi hành án dân sự quận Bình Tân.', periodFrom: '01/01/2025', periodTo: '31/12/2025', scopeNote: '', planFrom: '18/08/2026', planTo: '19/08/2026', planPlace: 'Trụ sở Chi cục Thi hành án dân sự quận Bình Tân', members: [mem('Lý Thanh Sơn', 'Giám đốc Sở', 'STP-HCM', ROLES[0]), mem('Châu Ngọc Ánh', 'Chuyên viên', 'STP-HCM-HCTP', ROLES[1])], status: ST.DONE, result: { from: '18/08/2026', to: '19/08/2026', place: 'Trụ sở Chi cục Thi hành án dân sự quận Bình Tân', content: 'Đơn vị thụ lý, giải quyết đúng thời hạn; đề nghị bổ sung sổ theo dõi vụ việc.' }, resultDocs: [{ name: 'Kết luận kiểm tra', file: 'ket_luan_kt_binh_tan.pdf' }], history: [hist('10/04/2026 09:00', 'Châu Ngọc Ánh', 'Lập kế hoạch kiểm tra'), hist('21/08/2026 10:00', 'Châu Ngọc Ánh', 'Cập nhật kết quả kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-007', senderId: 'STP-HCM', officer: 'Châu Ngọc Ánh', createdAt: '12/10/2026', form: KT_FORMS[1], basis: KT_BASIS[0], targetId: 'VKS-Q1', content: 'Kiểm tra đột xuất việc giải quyết yêu cầu bồi thường theo phản ánh của người yêu cầu bồi thường.', periodFrom: '01/01/2026', periodTo: '30/09/2026', scopeNote: '', planFrom: '05/11/2026', planTo: '05/11/2026', planPlace: 'Trụ sở Viện kiểm sát nhân dân Quận 1', members: [mem('Châu Ngọc Ánh', 'Chuyên viên', 'STP-HCM-HCTP', ROLES[0])], status: ST.PLANNED, history: [hist('12/10/2026 14:00', 'Châu Ngọc Ánh', 'Lập kế hoạch kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-008', senderId: 'STP-HP', officer: 'Tăng Thị Diệu', createdAt: '02/04/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'THADS-HP', content: 'Kiểm tra việc xác định trách nhiệm hoàn trả tại Cục Thi hành án dân sự Thành phố Hải Phòng.', periodFrom: '01/01/2025', periodTo: '31/12/2025', scopeNote: '', planFrom: '24/09/2026', planTo: '25/09/2026', planPlace: 'Trụ sở Cục Thi hành án dân sự Thành phố Hải Phòng', members: [mem('Bạch Văn Hải', 'Giám đốc Sở', 'STP-HP', ROLES[0]), mem('Tăng Thị Diệu', 'Chuyên viên', 'STP-HP-HCTP', ROLES[1]), mem('Quách Minh Tuấn', 'Chuyên viên', 'STP-HP-HCTP', ROLES[1])], status: ST.DONE, result: { from: '24/09/2026', to: '25/09/2026', place: 'Trụ sở Cục Thi hành án dân sự Thành phố Hải Phòng', content: 'Đơn vị đã xác định trách nhiệm hoàn trả đối với 02 vụ việc.' }, resultDocs: [{ name: 'Biên bản kiểm tra', file: 'bien_ban_kt_thads_hp.pdf' }], history: [hist('02/04/2026 08:30', 'Tăng Thị Diệu', 'Lập kế hoạch kiểm tra'), hist('28/09/2026 15:00', 'Tăng Thị Diệu', 'Cập nhật kết quả kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-009', senderId: 'STP-HP', officer: 'Quách Minh Tuấn', createdAt: '15/10/2026', form: KT_FORMS[1], basis: KT_BASIS[1], targetId: 'VKS-HP', content: 'Kiểm tra đột xuất việc thực hiện quyết định giải quyết bồi thường.', periodFrom: '01/01/2026', periodTo: '30/09/2026', scopeNote: '', planFrom: '12/11/2026', planTo: '13/11/2026', planPlace: 'Trụ sở Viện kiểm sát nhân dân Thành phố Hải Phòng', members: [mem('Quách Minh Tuấn', 'Chuyên viên', 'STP-HP-HCTP', ROLES[0]), mem('Tăng Thị Diệu', 'Chuyên viên', 'STP-HP-HCTP', ROLES[1])], status: ST.PLANNED, history: [hist('15/10/2026 10:00', 'Quách Minh Tuấn', 'Lập kế hoạch kiểm tra')] })
             ];
         }
         let records = [];
@@ -728,6 +733,7 @@
             document.getElementById('filterGrid').innerHTML = [
                 txt('code', 'Mã cuộc kiểm tra', 'Nhập mã cuộc kiểm tra...'),
                 txt('agency', 'Cơ quan được kiểm tra', 'Nhập cơ quan được kiểm tra...'),
+                PV.filterHtml({ label: 'Đơn vị thực hiện', includeBtp: true }),
                 sel('form', 'Hình thức kiểm tra', KT_FORMS),
                 sel('status', 'Trạng thái', [ST.PLANNED, ST.DONE]),
                 `<div class="form-group"><span class="form-label">Từ ngày</span><input class="form-control" id="filter_from" placeholder="dd/mm/yyyy"></div>`,
@@ -735,13 +741,16 @@
             ].join('');
             initDatePickers(document.getElementById('filterGrid'));
         }
-        const myList = () => records.filter(r => r.senderId === myRoot());
+        // Phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp: BTP/Cục xem cuộc kiểm tra của BTP và mọi Sở Tư pháp; chỉ thao tác trên cuộc kiểm tra của đơn vị mình
+        const myList = () => records.filter(r => PV.canSee(r.senderId));
+        const isOwn = r => PV.canEdit(r.senderId);
         function filtered() {
             const v = id => (document.getElementById(`filter_${id}`)?.value || '').trim().toLowerCase();
             const from = parseDate(document.getElementById('filter_from')?.value), to = parseDate(document.getElementById('filter_to')?.value);
             return myList().filter(r => {
                 if (v('code') && !r.code.toLowerCase().includes(v('code'))) return false;
                 if (v('agency') && !unitName(r.targetId).toLowerCase().includes(v('agency'))) return false;
+                if (!PV.matchFilter(r.senderId, r.officer)) return false;
                 if (v('form') && r.form.toLowerCase() !== v('form')) return false;
                 if (v('status') && r.status.toLowerCase() !== v('status')) return false;
                 const d = parseDate(r.planFrom);
@@ -766,6 +775,13 @@
                 ['Trưởng đoàn kiểm tra', r => esc(leaderOf(r))],
                 ['Trạng thái', r => `<span class="badge ${statusClass(r.status)}">${esc(r.status)}</span>`]
             ];
+            // Cột Đơn vị thực hiện: chỉ hiển thị với người dùng thuộc Bộ Tư pháp/Cục
+            // Cán bộ xử lý: cán bộ đã nhập cuộc kiểm tra (người tạo), đặt trước cột Trạng thái;
+            // Đơn vị thực hiện: ngay sau Cán bộ xử lý, chỉ hiển thị với người dùng thuộc Bộ Tư pháp/Cục
+            const iSt = cols.findIndex(c => c[0] === 'Trạng thái');
+            cols.splice(iSt, 0, ['Cán bộ xử lý', r => esc(r.officer)]);
+            if (PV.isBtp()) cols.splice(iSt + 1, 0, ['Đơn vị thực hiện', r => esc(unitName(r.senderId))]);
+            document.getElementById('btnAddNew').style.display = PV.canCreate(false) ? '' : 'none';
             document.getElementById('tableHead').innerHTML = `<tr><th style="width:56px; text-align:center;">STT</th>${cols.map(c => `<th>${c[0]}</th>`).join('')}<th style="width:110px; text-align:center;">Thao tác</th></tr>`;
             const list = filtered(), total = list.length, maxPages = Math.ceil(total / pageSize) || 1;
             lastGrid = { cols, list };
@@ -778,8 +794,8 @@
                 <tr onclick="openForm('view','${r.code}')">
                     <td style="text-align:center;">${start + i + 1}</td>
                     ${cols.map(c => `<td>${c[1](r)}</td>`).join('')}
-                    <td style="text-align:center;"><div class="row-actions">${btn('edit', 'fa-pen-to-square', 'Sửa kế hoạch', r.status === ST.PLANNED, `openForm('edit','${r.code}')`)}${btn('submit', 'fa-clipboard-check', 'Cập nhật kết quả', true, `openForm('result','${r.code}')`)}</div></td>
-                </tr>`).join('') : `<tr><td colspan="${cols.length + 2}" style="text-align:center; color:var(--text-muted); font-style:italic; padding:26px;">Không tìm thấy dữ liệu phù hợp. [MSG-INF-SYS-001]</td></tr>`;
+                    <td style="text-align:center;"><div class="row-actions">${btn('edit', 'fa-pen-to-square', 'Sửa kế hoạch', isOwn(r) && r.status === ST.PLANNED, `openForm('edit','${r.code}')`)}${btn('submit', 'fa-clipboard-check', 'Cập nhật kết quả', isOwn(r), `openForm('result','${r.code}')`)}</div></td>
+                </tr>`).join('') : (PV.level() === 'OTHER' ? PV.denyRow(cols.length + 2) : `<tr><td colspan="${cols.length + 2}" style="text-align:center; color:var(--text-muted); font-style:italic; padding:26px;">Không tìm thấy dữ liệu phù hợp. [MSG-INF-SYS-001]</td></tr>`);
             const item = (label, on, call, active) => `<span class="page-item ${active ? 'active' : ''} ${on ? '' : 'disabled'}" onclick="${on ? call : ''}">${label}</span>`;
             let h = item('&verbar;&lt;&lt;', currentPage > 1, 'goPage(1)') + item('&lt;', currentPage > 1, `goPage(${currentPage - 1})`);
             for (let p = 1; p <= maxPages; p++) h += item(p, true, `goPage(${p})`, p === currentPage);
@@ -795,7 +811,8 @@
                 title: 'Danh sách cuộc kiểm tra công tác bồi thường nhà nước',
                 name: 'Danh_sach_kiem_tra_cong_tac_BTNN',
                 headers: lastGrid.cols.map(c => c[0]),
-                rows: lastGrid.list.map(r => lastGrid.cols.map(c => c[1](r)))
+                rows: lastGrid.list.map(r => lastGrid.cols.map(c => c[1](r))),
+                note: PV.filterNote()
             });
         }
 
@@ -900,7 +917,7 @@
         function openForm(mode, code) {
             formMode = mode;
             const rec = code ? findRec(code) : null;
-            formRec = rec ? JSON.parse(JSON.stringify(rec)) : { status: 'Đang nhập', senderId: myRoot(), officer: myUser().name };
+            formRec = rec ? JSON.parse(JSON.stringify(rec)) : { status: 'Đang nhập', senderId: PV.root(), officer: myUser().name };
             const titles = { new: 'Thêm mới kế hoạch kiểm tra', edit: 'Sửa kế hoạch kiểm tra', view: 'Xem chi tiết cuộc kiểm tra', result: 'Cập nhật kết quả kiểm tra' };
             document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${titles[mode]}`;
             document.getElementById('formCode').innerText = rec ? rec.code : 'Hệ thống tự sinh';
@@ -915,7 +932,8 @@
             const a = [`<button type="button" class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> ${mode === 'view' ? 'Đóng' : 'Hủy bỏ'}</button>`];
             if (planEditable()) a.push(`<button type="button" class="btn btn-primary" onclick="savePlan()"><i class="fa-solid fa-floppy-disk"></i> Lưu kế hoạch</button>`);
             if (resultEditable()) a.push(`<button type="button" class="btn btn-primary" onclick="saveResult()"><i class="fa-solid fa-floppy-disk"></i> Lưu kết quả kiểm tra</button>`);
-            if (mode === 'view') {
+            // Xem chi tiết cuộc kiểm tra của đơn vị khác: chỉ có nút Đóng
+            if (mode === 'view' && isOwn(formRec)) {
                 if (formRec.status === ST.PLANNED) a.push(`<button type="button" class="btn btn-secondary" onclick="openForm('edit','${code}')"><i class="fa-solid fa-pen-to-square"></i> Sửa kế hoạch</button>`);
                 a.push(`<button type="button" class="btn btn-primary" onclick="openForm('result','${code}')"><i class="fa-solid fa-clipboard-check"></i> Cập nhật kết quả</button>`);
             }
@@ -990,14 +1008,14 @@
     </script>
     <!-- Kết xuất Excel dùng chung BTNN (SheetJS như dashboard_btnn.html) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="btnn_ket_xuat_excel.js?v=20261029xlsx"></script>
+    <script src="btnn_ket_xuat_excel.js?v=20261030dvth1"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_form_page.js?v=20261026fp"></script>
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 
 </html>

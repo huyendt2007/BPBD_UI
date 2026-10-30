@@ -283,13 +283,13 @@
 
     <div id="toast" class="toast-notif"></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
     <!-- Màn Ký duyệt / Từ chối dùng chung (Xác định CQGQBT): bố cục 2 vùng + khối Tài liệu đính kèm chỉ đọc -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261029tldk"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261030s2"></script>
     <!-- Loại trình "Phiếu tiếp nhận" (Mẫu 02/BTNN) - Tiếp nhận hồ sơ: Ký duyệt / Từ chối -->
-    <script src="tiep_nhan_ptn.js?v=20261029mh03d"></script>
+    <script src="tiep_nhan_ptn.js?v=20261030s2"></script>
     <script>
         const WF = BTNN_WF;
         const WT = WF.WORK_TYPES;
@@ -395,6 +395,8 @@
                 if (activeTab === 'pending') {
                     // Loại trình Phiếu tiếp nhận (tiep_nhan_ptn.js): Ký duyệt / Từ chối
                     if (t.source === 'ptn') acts += window.PTN ? PTN.ldActionsHtml(t) : '';
+                    // [cdpd] Cử người phục hồi danh dự: popup Phân công dùng chung theo luồng của đơn vị (BTNN_WF.PHDD_ASSIGN)
+                    else if (t.phdd && window.BTNN_LD) acts += `<button class="act primary" onclick="event.stopPropagation(); BTNN_LD.openAssign('${c}', renderAll, WF.PHDD_ASSIGN)"><i class="fa-solid fa-user-plus"></i> Cử người phục hồi danh dự</button>`;
                     else if (t.type === WT.PHAN_CONG) acts += `<button class="act primary" onclick="event.stopPropagation(); openAssign('${c}')"><i class="fa-solid fa-diagram-project"></i> Phân công</button>`;
                     else if (t.type === WT.PHE_DUYET || t.type === WT.KY_QD) acts += `<button class="act success" onclick="event.stopPropagation(); openDecision('${c}','approve')"><i class="fa-solid fa-file-signature"></i> ${WF.approveVerb(t.rec)}</button><button class="act danger" onclick="event.stopPropagation(); openDecision('${c}','reject')"><i class="fa-solid fa-ban"></i> Từ chối</button>`;
                     // Hồ sơ Giải quyết YCBT "Cử người giải quyết bồi thường": Thủ trưởng cử người giải quyết (không còn Không thụ lý ở bước này)
@@ -786,7 +788,7 @@
         document.addEventListener('DOMContentLoaded', init);
     </script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 
 </html>

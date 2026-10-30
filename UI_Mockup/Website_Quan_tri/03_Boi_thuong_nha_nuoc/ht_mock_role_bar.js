@@ -7,9 +7,9 @@
  */
 (function () {
     const ROLES = [
-        ['don_vi_chu', 'Đơn vị tạo Hội đồng', 'UBND Quận Long Biên'],
+        ['don_vi_chu', 'Đơn vị tạo Hội đồng', 'UBND phường Việt Hưng'],
         ['don_vi_a', 'Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương A', 'UBND Phường Bồ Đề'],
-        ['don_vi_b', 'Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương B', 'UBND Huyện An Dương'],
+        ['don_vi_b', 'Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương B', 'UBND phường Hải An'],
         ['stp', 'Sở Tư pháp', 'Sở Tư pháp Hà Nội'],
         ['lanh_dao', 'Lãnh đạo', 'Lãnh đạo phê duyệt']
     ];

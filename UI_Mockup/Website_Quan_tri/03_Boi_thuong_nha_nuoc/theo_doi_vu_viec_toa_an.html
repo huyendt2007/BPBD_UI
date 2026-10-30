@@ -10,6 +10,12 @@
     <link rel="stylesheet" href="quan_ly_boi_thuong.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
+        /* Loại người yêu cầu: radio Cá nhân / Tổ chức, không icon (đồng nhất Xác định CQGQBT) */
+        .nyc-type-group { display: flex; gap: 24px; padding-top: 6px; }
+        .nyc-type-radio { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13.5px; font-weight: 500; }
+        .nyc-type-radio input:disabled + span { color: #94a3b8; }
+        #formView .inline-form-body .nyc-type-radio { font-size: 13.5px; }
+
         body {
             background: var(--bg-body);
             padding: 20px;
@@ -310,6 +316,8 @@
                 </div>
             </div>
 
+            <!-- [ux] Thông báo trực tiếp sau khi Lưu / Xóa (thay toast) -->
+            <div id="listNotice" class="tdta-notice" role="status" style="display:none;"></div>
             <div id="noPermissionNotice" class="notice-box" style="display:none;">
                 <i class="fa-solid fa-triangle-exclamation"></i>
                 Đơn vị của bạn chưa được áp dụng Loại hồ sơ "Giải quyết yêu cầu bồi thường" nên không được thêm mới, cập nhật hoặc xóa vụ việc tại Tòa án.
@@ -457,59 +465,55 @@
                     </div>
                 </div>
 
-                <div id="linkedInfoBox" class="linked-box" style="display:none;"></div>
+                <!-- [ux] Thông báo trực tiếp của form (thay toast) + khung tổng hợp lỗi khi Lưu -->
+                <div id="formNotice" class="tdta-notice" role="status" style="display:none;"></div>
+                <div id="formErrSummary" class="tdta-err-summary" role="alert" tabindex="-1" style="display:none;"></div>
                 <div id="fundingInfoBox" class="linked-box" style="display:none; background:#faf5ff; border-color:#e9d5ff;"></div>
 
+                <!-- [ux] THÔNG TIN VỤ VIỆC TẠI TÒA ÁN: 01 khối; Nguồn phát sinh bản án | Trường hợp khởi kiện | Ngày thụ lý + Lĩnh vực | Trạng thái + Số / Ngày Bản án/QĐ -->
                 <div class="info-group-title">Thông tin vụ việc tại Tòa án</div>
-                <div class="court-block">
-                    <!-- Vụ việc tại Tòa án chỉ yêu cầu bồi thường thiệt hại bằng tiền: không có Loại yêu cầu / Phục hồi danh dự -->
-                    <div class="grid-2" style="gap:24px;">
-                        <div>
-                            <div class="form-group">
-                                <span class="form-label">Trạng thái<span class="required">*</span></span>
-                                <select id="caseStatus" class="form-control" onchange="handleStatusChange()"></select>
-                                <div class="error-message">Đây là trường bắt buộc</div>
-                            </div>
-                            <div class="form-group" style="margin-bottom:0;">
-                                <span class="form-label">Lĩnh vực phát sinh thiệt hại</span>
-                                <select class="form-control" id="caseFieldGroup">
-                                    <option value="hành chính">Trong hoạt động quản lý hành chính</option>
-                                    <option value="hình sự">Trong hoạt động tố tụng hình sự</option>
-                                    <option value="dân sự">Trong hoạt động tố tụng dân sự</option>
-                                    <option value="tố tụng hành chính">Trong hoạt động tố tụng hành chính</option>
-                                    <option value="thi hành án hình sự">Trong hoạt động thi hành án hình sự</option>
-                                    <option value="thi hành án dân sự">Trong hoạt động thi hành án dân sự</option>
-                                </select>
-                            </div>
-                        </div>
+                <div class="tdta-sec">
+                    <div class="form-group">
+                        <label class="form-label" for="caseVerdictSource">Nguồn phát sinh bản án<span class="required">*</span></label>
+                        <select class="form-control" id="caseVerdictSource" onchange="tdtaSelectHint(this)"></select>
+                        <div class="error-message">Đây là trường bắt buộc</div>
                     </div>
-                </div>
-
-                <div style="background-color:#f8fafc; padding:16px; border:1px solid var(--border-color); border-radius:var(--border-radius-md); margin-bottom:20px;">
+                    <div class="form-group">
+                        <label class="form-label" for="caseLawsuitCase">Trường hợp khởi kiện<span class="required">*</span></label>
+                        <select class="form-control" id="caseLawsuitCase" onchange="tdtaSelectHint(this)"></select>
+                        <div class="error-message">Đây là trường bắt buộc</div>
+                    </div>
                     <div class="grid-2" style="gap:16px;">
-                        <div class="form-group" style="margin-bottom:0;">
-                            <span class="form-label">Nguồn phát sinh bản án<span class="required">*</span></span>
-                            <select class="form-control" id="caseVerdictSource"></select>
-                            <div class="error-message">Đây là trường bắt buộc</div>
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <span class="form-label">Trường hợp khởi kiện<span class="required">*</span></span>
-                            <select class="form-control" id="caseLawsuitCase"></select>
-                            <div class="error-message">Đây là trường bắt buộc</div>
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <span class="form-label">Ngày thụ lý<span class="required">*</span></span>
+                        <div class="form-group">
+                            <label class="form-label" for="caseAcceptDate">Ngày thụ lý<span class="required">*</span></label>
                             <input type="text" class="form-control" id="caseAcceptDate" placeholder="dd/mm/yyyy" autocomplete="off">
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
-                        <div></div>
+                        <div class="form-group">
+                            <label class="form-label" for="caseFieldGroup">Lĩnh vực phát sinh thiệt hại</label>
+                            <select class="form-control" id="caseFieldGroup">
+                                <option value="hành chính">Trong hoạt động quản lý hành chính</option>
+                                <option value="hình sự">Trong hoạt động tố tụng hình sự</option>
+                                <option value="dân sự">Trong hoạt động tố tụng dân sự</option>
+                                <option value="tố tụng hành chính">Trong hoạt động tố tụng hành chính</option>
+                                <option value="thi hành án hình sự">Trong hoạt động thi hành án hình sự</option>
+                                <option value="thi hành án dân sự">Trong hoạt động thi hành án dân sự</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-3-cols tdta-status-row" style="gap:16px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label" for="caseStatus">Trạng thái<span class="required">*</span></label>
+                            <select id="caseStatus" class="form-control" onchange="handleStatusChange(true)"></select>
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
                         <div class="form-group verdict-field" style="margin-bottom:0;">
-                            <span class="form-label">Số Bản án/Quyết định<span class="required">*</span></span>
+                            <label class="form-label" for="caseVerdictNo">Số Bản án/Quyết định<span class="required">*</span></label>
                             <input type="text" class="form-control" id="caseVerdictNo" placeholder="Nhập số Bản án/Quyết định...">
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                         <div class="form-group verdict-field" style="margin-bottom:0;">
-                            <span class="form-label">Ngày Bản án/Quyết định có hiệu lực<span class="required">*</span></span>
+                            <label class="form-label" for="caseEffectiveDate">Ngày Bản án/Quyết định có hiệu lực<span class="required">*</span></label>
                             <input type="text" class="form-control" id="caseEffectiveDate" placeholder="dd/mm/yyyy" autocomplete="off">
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
@@ -517,54 +521,57 @@
                 </div>
 
                 <!-- [tdta] THÔNG TIN VỤ VIỆC LIÊN KẾT: hiển thị khi Trường hợp khởi kiện = Đã yêu cầu cơ quan giải quyết trước khi khởi kiện
-                     hoặc Nguồn phát sinh bản án = Khởi kiện theo thủ tục tố tụng dân sự sau khi giải quyết tại cơ quan trực tiếp quản lý... -->
+                     hoặc Nguồn phát sinh bản án = Khởi kiện theo thủ tục tố tụng dân sự sau khi giải quyết tại cơ quan trực tiếp quản lý...
+                     [ux] Trước khi Chọn: 01 ô nhập + Tìm kiếm / Tìm kiếm nâng cao; sau khi Chọn: các trường chỉ đọc + Bỏ chọn -->
                 <div id="tdtaLinkedBlock" style="display:none;">
                     <div class="info-group-title">Thông tin vụ việc liên kết</div>
-                    <div style="background-color:#f8fafc; padding:16px; border:1px solid var(--border-color); border-radius:var(--border-radius-md); margin-bottom:20px;">
-                        <div class="grid-2" style="gap:16px;">
-                            <div class="form-group" style="margin-bottom:0; grid-column: span 2;">
-                                <span class="form-label">Mã vụ việc<span class="required">*</span></span>
-                                <div style="display:flex; gap:8px; align-items:center;">
-                                    <input type="text" class="form-control" id="tdtaLinkCode" placeholder="Nhập mã vụ việc..." autocomplete="off" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault(); tdtaQuickSearch();}">
-                                    <button type="button" class="btn btn-primary" id="tdtaBtnSearch" onclick="tdtaQuickSearch()" style="white-space:nowrap;"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
-                                    <button type="button" class="btn btn-secondary" id="tdtaBtnAdv" onclick="tdtaOpenLookup()" style="white-space:nowrap;"><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao</button>
+                    <div class="tdta-sec">
+                        <div class="form-hint" style="margin:0 0 12px;">Chọn vụ việc đã giải quyết tại cơ quan trực tiếp quản lý người thi hành công vụ</div>
+                        <div class="form-group" id="tdtaLinkPick" style="margin-bottom:0;">
+                            <label class="form-label" for="tdtaLinkCode">Mã vụ việc<span class="required">*</span></label>
+                            <div style="display:flex; gap:8px; align-items:center;">
+                                <input type="text" class="form-control" id="tdtaLinkCode" placeholder="Nhập mã vụ việc hoặc mã hồ sơ (VVBT-…, BT-…)" autocomplete="off" maxlength="50" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault(); tdtaQuickSearch();}">
+                                <button type="button" class="btn btn-primary" id="tdtaBtnSearch" onclick="tdtaQuickSearch()" style="white-space:nowrap;"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                                <button type="button" class="btn btn-secondary" id="tdtaBtnAdv" onclick="tdtaOpenLookup()" style="white-space:nowrap;"><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao</button>
+                            </div>
+                            <div class="error-message" id="tdtaLinkCodeError">Đây là trường bắt buộc</div>
+                        </div>
+                        <div id="tdtaLinkInfo" style="display:none;">
+                            <div class="grid-4-cols tdta-link-ro" style="gap:16px; align-items:end;">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label" for="tdtaLinkVv">Mã vụ việc</label>
+                                    <input type="text" class="form-control" id="tdtaLinkVv" readonly tabindex="-1">
                                 </div>
-                                <div class="error-message" id="tdtaLinkCodeError">Đây là trường bắt buộc</div>
-                                <div id="tdtaLinkSelected" style="display:none; margin-top:8px; align-items:center; gap:8px; flex-wrap:wrap;">
-                                    <span class="badge" id="tdtaLinkSelectedText" style="background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; font-size:12.5px; padding:6px 12px; border-radius:6px;"></span>
-                                    <button type="button" class="btn btn-secondary btn-sm" id="tdtaBtnUnlink" onclick="tdtaClearLink(true)"><i class="fa-solid fa-xmark"></i> Bỏ chọn</button>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label" for="tdtaLinkHoSo">Mã hồ sơ GQBT</label>
+                                    <input type="text" class="form-control" id="tdtaLinkHoSo" readonly tabindex="-1">
+                                </div>
+                                <div class="form-group" id="tdtaLinkStatusGroup" style="margin-bottom:0;">
+                                    <label class="form-label" for="tdtaLinkStatus">Trạng thái vụ việc</label>
+                                    <input type="text" class="form-control" id="tdtaLinkStatus" readonly tabindex="-1">
+                                </div>
+                                <div class="form-group" id="tdtaLinkAgencyGroup" style="margin-bottom:0;">
+                                    <label class="form-label" for="tdtaLinkAgency">Cơ quan giải quyết</label>
+                                    <input type="text" class="form-control" id="tdtaLinkAgency" readonly tabindex="-1">
                                 </div>
                             </div>
-                            <div class="form-group" style="margin-bottom:0;">
-                                <span class="form-label">Mã hồ sơ</span>
-                                <input type="text" class="form-control" id="tdtaLinkHoSo" readonly tabindex="-1" placeholder="Tự điền khi chọn vụ việc">
-                            </div>
-                            <div class="form-group" style="margin-bottom:0;">
-                                <span class="form-label">Trạng thái vụ việc</span>
-                                <input type="text" class="form-control" id="tdtaLinkStatus" readonly tabindex="-1" placeholder="Tự điền khi chọn vụ việc">
-                            </div>
-                            <div class="form-group" style="margin-bottom:0; grid-column: span 2;">
-                                <span class="form-label">Cơ quan giải quyết</span>
-                                <input type="text" class="form-control" id="tdtaLinkAgency" readonly tabindex="-1" placeholder="Tự điền khi chọn vụ việc">
+                            <div style="margin-top:12px;">
+                                <button type="button" class="btn btn-secondary btn-sm" id="tdtaBtnUnlink" onclick="tdtaClearLink(true)"><i class="fa-solid fa-xmark"></i> Bỏ chọn</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- THÔNG TIN CHI TIẾT NGƯỜI YÊU CẦU BỒI THƯỜNG: [tdta] tách Cá nhân / Tổ chức, các trường giống form tạo mới Giải quyết yêu cầu bồi thường -->
-                <div class="sub-title">THÔNG TIN CHI TIẾT NGƯỜI YÊU CẦU BỒI THƯỜNG</div>
+                <div class="info-group-title">Thông tin chi tiết người yêu cầu bồi thường</div>
                 <div class="grid-2" style="gap:24px; align-items:stretch; margin-bottom:20px;">
                     <div class="panel-col">
                         <div class="panel-col-title"><i class="fa-solid fa-user"></i> Thông tin cá nhân &amp; Liên hệ</div>
                         <div class="form-group" style="margin-bottom:0;">
                             <span class="form-label">Loại người yêu cầu<span class="required">*</span></span>
-                            <div id="claimNYCTypeGroup" style="display:flex; gap:24px; align-items:center; height:38px; padding-left:5px;">
-                                <label style="cursor:pointer; font-size:13px; display:inline-flex; align-items:center; gap:6px; font-weight:500;">
-                                    <input type="radio" name="claimNYCType" value="Cá nhân" checked onchange="tdtaOnNycTypeChange()"> Cá nhân
-                                </label>
-                                <label style="cursor:pointer; font-size:13px; display:inline-flex; align-items:center; gap:6px; font-weight:500;">
-                                    <input type="radio" name="claimNYCType" value="Tổ chức" onchange="tdtaOnNycTypeChange()"> Tổ chức
-                                </label>
+                            <div class="nyc-type-group" id="claimNYCTypeGroup">
+                                <label class="nyc-type-radio"><input type="radio" name="claimNYCType" value="Cá nhân" checked onchange="tdtaOnNycTypeChange()"> <span>Cá nhân</span></label>
+                                <label class="nyc-type-radio"><input type="radio" name="claimNYCType" value="Tổ chức" onchange="tdtaOnNycTypeChange()"> <span>Tổ chức</span></label>
                             </div>
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
@@ -707,7 +714,7 @@
 
                 <!-- THÔNG TIN NGƯỜI BỊ THIỆT HẠI: hiển thị khi Tư cách người yêu cầu khác "Người bị thiệt hại" (giống Giải quyết yêu cầu bồi thường) -->
                 <div id="claimNbthBlock" style="display:none;">
-                    <div class="sub-title" id="claimNbthBlockTitle">THÔNG TIN NGƯỜI BỊ THIỆT HẠI</div>
+                    <div class="info-group-title" id="claimNbthBlockTitle">Thông tin người bị thiệt hại</div>
                     <div id="claimNbthOrgBlock" class="grid-2" style="gap:12px 24px; margin-bottom:20px; display:none; background:#f8fafc; padding:20px; border-radius:var(--border-radius-md); border:1px solid var(--border-color);">
                         <div class="form-group" style="margin-bottom:0;">
                             <span class="form-label">Tên tổ chức bị thiệt hại<span class="required">*</span></span>
@@ -775,26 +782,33 @@
                             <div class="grid-2" style="gap:12px;">
                                 <div class="form-group" style="margin-bottom:0;">
                                     <span class="form-label">Quốc gia</span>
-                                    <select class="form-control" id="claimNbthCountry">
+                                    <select class="form-control" id="claimNbthCountry" onchange="tdtaNbthCountryChange(this.value)">
                                         <option value="Việt Nam">Việt Nam</option>
                                     </select>
                                 </div>
+                                <!-- [ux] Cùng control với người yêu cầu: Việt Nam -> Combobox Tỉnh/Thành phố, Phường/Xã gợi ý theo Tỉnh; nước khác -> nhập tự do -->
                                 <div class="form-group" style="margin-bottom:0;">
-                                    <span class="form-label">Tỉnh/Thành phố</span>
-                                    <input type="text" class="form-control" id="claimNbthCity" placeholder="Chọn hoặc nhập tỉnh/thành phố..." list="claimNbthCityList">
-                                    <datalist id="claimNbthCityList">
-                                        <option value="Hà Nội"></option>
-                                        <option value="Hải Phòng"></option>
-                                        <option value="Đà Nẵng"></option>
-                                        <option value="TP. Hồ Chí Minh"></option>
-                                        <option value="Thái Bình"></option>
-                                        <option value="Lâm Đồng"></option>
-                                    </datalist>
+                                    <label class="form-label" for="claimNbthCity">Tỉnh/Thành phố</label>
+                                    <div id="claimNbthCityDropdownWrapper">
+                                        <select class="form-control" id="claimNbthCity" onchange="tdtaUpdateNbthWardOptions(true)">
+                                            <option value="">-- Chọn tỉnh/thành phố --</option>
+                                            <option value="Hà Nội">Thành phố Hà Nội</option>
+                                            <option value="Hải Phòng">Thành phố Hải Phòng</option>
+                                            <option value="Đà Nẵng">Thành phố Đà Nẵng</option>
+                                            <option value="TP. Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
+                                            <option value="Thái Bình">Tỉnh Thái Bình</option>
+                                            <option value="Lâm Đồng">Tỉnh Lâm Đồng</option>
+                                        </select>
+                                    </div>
+                                    <div id="claimNbthCityInputWrapper" style="display:none;">
+                                        <input type="text" class="form-control" id="claimNbthCityText" placeholder="Nhập tỉnh/thành ngoại quốc..." maxlength="100">
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:0;">
-                                <span class="form-label">Phường/Xã</span>
-                                <input type="text" class="form-control" id="claimNbthWard" placeholder="Nhập phường/xã...">
+                                <label class="form-label" for="claimNbthWard">Phường/Xã</label>
+                                <input type="text" class="form-control" id="claimNbthWard" list="claimNbthWardList" placeholder="Gõ Mã hoặc Tên Phường/Xã..." maxlength="100" onfocus="tdtaUpdateNbthWardOptions(false)">
+                                <datalist id="claimNbthWardList"></datalist>
                             </div>
                             <div class="form-group" style="margin-bottom:0;">
                                 <span class="form-label">Địa chỉ chi tiết</span>
@@ -804,9 +818,10 @@
                     </div>
                 </div>
 
-                <!-- VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG -->
-                <div class="info-group-title">Văn bản làm căn cứ yêu cầu bồi thường</div>
-                <div class="table-container" style="margin-bottom:10px;">
+                <!-- [ux] NỘI DUNG YÊU CẦU BỒI THƯỜNG: Văn bản làm căn cứ + Hành vi gây thiệt hại + Mối quan hệ nhân quả -->
+                <div class="info-group-title">Nội dung yêu cầu bồi thường</div>
+                <div class="form-label" style="margin-bottom:6px;">Văn bản làm căn cứ yêu cầu bồi thường</div>
+                <div class="table-container" id="basisTableWrap" style="margin-bottom:6px;">
                     <table class="custom-table" style="min-width:760px;">
                         <thead>
                             <tr>
@@ -819,18 +834,19 @@
                         <tbody id="basisTableBody"></tbody>
                     </table>
                 </div>
+                <div class="form-hint tdta-edit-only tdta-file-hint">Định dạng .pdf, .jpg, .jpeg, .png; dung lượng tối đa 50MB/tệp.</div>
                 <div id="addBasisBtnWrapper" style="margin-bottom:20px;">
                     <button type="button" class="tlkt-btn-add" onclick="addBasisRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
                 </div>
 
                 <div class="form-group">
-                    <span class="form-label">Hành vi gây thiệt hại của người thi hành công vụ<span class="required">*</span></span>
-                    <textarea class="form-control" id="claimHanhVi" rows="2" placeholder="Tóm tắt hành vi gây thiệt hại của người thi hành công vụ"></textarea>
+                    <label class="form-label" for="claimHanhVi">Hành vi gây thiệt hại của người thi hành công vụ<span class="required">*</span></label>
+                    <textarea class="form-control" id="claimHanhVi" rows="2" maxlength="2000" placeholder="Tóm tắt hành vi gây thiệt hại của người thi hành công vụ"></textarea>
                     <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
                 <div class="form-group">
-                    <span class="form-label">Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại<span class="required">*</span></span>
-                    <textarea class="form-control" id="claimNhanQua" rows="2" placeholder="Nhập mối quan hệ nhân quả giữa thiệt hại và hành vi gây thiệt hại..."></textarea>
+                    <label class="form-label" for="claimNhanQua">Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại<span class="required">*</span></label>
+                    <textarea class="form-control" id="claimNhanQua" rows="2" maxlength="4000" placeholder="Nhập mối quan hệ nhân quả giữa thiệt hại và hành vi gây thiệt hại..."></textarea>
                     <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
 
@@ -842,7 +858,7 @@
                 </div>
 
                 <div class="info-group-title">Tài liệu đính kèm<span class="required" style="color:var(--danger-color);">*</span></div>
-                <div class="table-container" style="margin-bottom:10px;">
+                <div class="table-container" id="docsTableWrap" style="margin-bottom:6px;">
                     <table class="custom-table" style="min-width:760px;">
                         <thead>
                             <tr>
@@ -855,6 +871,8 @@
                         <tbody id="docsTableBody"></tbody>
                     </table>
                 </div>
+                <div class="form-hint tdta-edit-only tdta-file-hint">Định dạng .pdf, .doc, .docx, .jpg, .jpeg, .png; dung lượng tối đa 50MB/tệp.</div>
+                <div class="form-hint tdta-edit-only" id="docsVerdictHint" style="display:none;">Đính kèm bản án/quyết định của Tòa án.</div>
                 <div id="docsError" class="error-message" style="margin-bottom:10px;">Vui lòng đính kèm ít nhất 01 tài liệu</div>
                 <div id="addDocBtnWrapper" style="margin-bottom:20px;">
                     <button type="button" class="tlkt-btn-add" onclick="addDocRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
@@ -867,7 +885,7 @@
             </div>
             <div class="inline-form-footer">
                 <div style="display:flex; justify-content:flex-end; gap:10px;">
-                    <button class="btn btn-secondary" id="btnFormCancel" onclick="closeCaseForm()">
+                    <button class="btn btn-secondary" id="btnFormCancel" onclick="tdtaCancelForm()">
                         <i class="fa-solid fa-xmark"></i> Hủy bỏ
                     </button>
                     <button class="btn btn-secondary" id="btnFormBack" style="display:none;" onclick="closeCaseForm()">
@@ -876,7 +894,7 @@
                     <button class="btn btn-primary" id="btnFormEdit" style="display:none;" onclick="switchToEditMode()">
                         <i class="fa-solid fa-pen-to-square"></i> Cập nhật
                     </button>
-                    <button class="btn btn-danger" id="btnFormDelete" style="display:none; background-color:#ef4444; color:#fff; border:none;" onclick="confirmDeleteCase(editingId)">
+                    <button class="btn btn-danger" id="btnFormDelete" style="display:none;" onclick="confirmDeleteCase(editingId)">
                         <i class="fa-solid fa-trash-can"></i> Xóa
                     </button>
                     <button class="btn btn-primary" id="btnFormSave" onclick="saveCase()">
@@ -896,13 +914,13 @@
             </div>
             <div class="confirm-modal-body" id="confirmMessage"></div>
             <div class="confirm-modal-footer">
-                <button class="btn btn-secondary btn-sm" onclick="closeConfirm(false)">Hủy bỏ</button>
+                <button class="btn btn-secondary btn-sm" id="confirmNoBtn" onclick="closeConfirm(false)">Hủy bỏ</button>
                 <button class="btn btn-danger btn-sm" id="confirmOkBtn" onclick="closeConfirm(true)">Đồng ý</button>
             </div>
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
     <!-- [th2c] Danh mục / bảng thiệt hại 2 cấp dùng chung (window.BTNN_TH) -->
     <script src="btnn_thiet_hai.js?v=20261028dm27"></script>
     <style>#damageTreeWrap.dmg-ro tr.bth-kadd, #damageTreeWrap.dmg-ro .bth-kdel { display: none !important; }</style>
@@ -910,7 +928,7 @@
         // ===== Cấu hình =====
         const STORE_KEY = "btnn_court_cases_v1";
         const SEED_KEY = "btnn_court_cases_seed";
-        const SEED_VERSION = "v7sn";
+        const SEED_VERSION = "v9s2";
         const FUNDING_KEY = "proposalsList";
         const REQUEST_TYPE_YCBT = BTNN_WF.REQUEST_TYPE_YCBT || "Giải quyết yêu cầu bồi thường";
         const NBTH_ROLE = "Người bị thiệt hại";
@@ -994,9 +1012,10 @@
             applyPermissionUI();
             renderTable();
             const params = new URLSearchParams(location.search);
-            const code = params.get("code");
-            if (code) {
-                const rec = cases.find(c => c.code === code);
+            // Mở từ phân hệ khác: ?id= (id vụ việc tại Tòa án, chính xác); ?code= (Mã vụ việc, đường dẫn cũ: vụ việc tại Tòa án đầu tiên cùng mã)
+            const caseId = params.get("id"), code = params.get("code");
+            if (caseId || code) {
+                const rec = (caseId && cases.find(c => c.id === caseId && !c.deleted)) || (code && cases.find(c => c.code === code && !c.deleted));
                 if (rec) openCaseForm(rec.id, true);
             }
         });
@@ -1117,14 +1136,35 @@
             list.forEach(p => { const m = String(p && p.code || "").match(re); if (m) max = Math.max(max, parseInt(m[1], 10)); });
             return `KP-${year}-${String(max + 1).padStart(3, "0")}`;
         }
+        // Bản ghi chi trả gắn với từng vụ việc tại Tòa án (khóa courtCaseId = id vụ việc tại Tòa án); 01 Mã vụ việc có thể có nhiều vụ việc tại Tòa án.
+        // Bản ghi cũ chưa có courtCaseId (khóa theo Mã vụ việc): thuộc vụ việc tại Tòa án đầu tiên cùng Mã vụ việc, gán courtCaseId khi đọc.
+        function fundingMatches(p, rec) {
+            if (!p || !rec) return false;
+            if (p.courtCaseId) return p.courtCaseId === rec.id;
+            if (p.courtCaseCode !== rec.code) return false;
+            const first = cases.find(c => c && c.code === rec.code);
+            return !first || first.id === rec.id;
+        }
+        function findFunding(list, rec) {
+            const p = (list || []).find(x => fundingMatches(x, rec)) || null;
+            if (p && !p.courtCaseId) p.courtCaseId = rec.id;
+            return p;
+        }
+        // Id vụ việc tại Tòa án: "TA-" + Mã vụ việc; Mã vụ việc đã có vụ việc tại Tòa án khác (cùng vụ việc liên kết): thêm hậu tố -2, -3...
+        function newCaseId(code) {
+            let id = "TA-" + code, n = 1;
+            while (cases.some(c => c && c.id === id)) id = `TA-${code}-${++n}`;
+            return id;
+        }
         function buildFundingRecord(rec, list) {
             return {
-                id: "P_TA_" + rec.code,
+                id: "P_TA_" + rec.id,
                 code: nextFundingCode(list),
                 type: FUNDING_TYPE,
                 ycbtCode: rec.code,
                 courtCaseCode: rec.code,
-                decId: "TA-" + rec.code,
+                courtCaseId: rec.id,
+                decId: rec.id,
                 origin: "Theo dõi vụ việc tại Tòa án",
                 nycName: rec.nyc.name,
                 nycRole: rec.nyc.role || NBTH_ROLE,
@@ -1144,7 +1184,7 @@
                 createdAt: BTNN_WF.nowText(),
                 // Bản án/Quyết định của Tòa án làm căn cứ chi trả (dùng cho Thông báo chi trả Mẫu 32/BTNN); chưa có Phương thức chi trả -> mặc định chuyển khoản
                 kptbDec: {
-                    decId: "TA-" + rec.code, sourceLabel: "Bản án/Quyết định của Tòa án", claimCode: rec.code,
+                    decId: rec.id, sourceLabel: "Bản án/Quyết định của Tòa án", claimCode: rec.code,
                     nycName: rec.nyc.name, nycAddress: [rec.nyc.address, rec.nyc.city].filter(Boolean).join(", "),
                     unitId: rec.rootUnitId, unitName: BTNN_WF.unitName(rec.rootUnitId),
                     decNo: rec.verdictNo || "", issueDate: rec.effectiveDate || "", total: damageTotal(rec), advance: 0, net: damageTotal(rec),
@@ -1153,18 +1193,18 @@
                 kptbHistory: [{ at: BTNN_WF.nowText(), userId: "", userName: "Hệ thống", action: "Tạo bản ghi", note: `Tạo từ Bản án/Quyết định của Tòa án số ${rec.verdictNo || "-"} ngày ${rec.effectiveDate || "-"}; trạng thái ${FUNDING_STATUS_NEW}.` }]
             };
         }
-        // Tạo bản ghi Chờ thông báo chi trả đúng 01 lần cho mỗi vụ việc (khóa theo Mã vụ việc).
+        // Tạo bản ghi Chờ thông báo chi trả đúng 01 lần cho mỗi vụ việc tại Tòa án (khóa theo id vụ việc tại Tòa án).
         // Chỉ ghi khi kho Cấp kinh phí đã được khởi tạo; nếu chưa, màn hình Cấp kinh phí tự tạo khi tải trang.
         function ensureFundingRecord(rec) {
             if (!needsFunding(rec)) return null;
             const list = readJson(FUNDING_KEY, null);
             if (!Array.isArray(list) || !list.length) return null;
-            let p = list.find(x => x && x.courtCaseCode === rec.code);
+            let p = findFunding(list, rec);
             if (!p) {
                 p = buildFundingRecord(rec, list);
                 list.unshift(p);
-                writeJson(FUNDING_KEY, list);
             }
+            writeJson(FUNDING_KEY, list);
             if (rec.fundingCode !== p.code) {
                 rec.fundingCode = p.code;
                 rec.fundingCreatedAt = p.createdAt || BTNN_WF.nowText();
@@ -1182,15 +1222,15 @@
         function syncFundingDraft(rec) {
             const list = readJson(FUNDING_KEY, null);
             if (!Array.isArray(list)) return;
-            const p = list.find(x => x && x.courtCaseCode === rec.code);
+            const p = findFunding(list, rec);
             if (!p || ![FUNDING_STATUS_NEW, "Chờ nhập liệu"].includes(p.status)) return;
             const fresh = buildFundingRecord(rec, list);
-            ["nycName", "nycRole", "amount", "agency", "baseDecisionNo", "baseDecisionDate", "verdictSource", "selectedDamages", "files"].concat(p.type === FUNDING_TYPE ? ["kptbDec"] : []).forEach(k => { p[k] = fresh[k]; });
+            ["ycbtCode", "courtCaseCode", "nycName","nycRole", "amount", "agency", "baseDecisionNo", "baseDecisionDate", "verdictSource", "selectedDamages", "files"].concat(p.type === FUNDING_TYPE ? ["kptbDec"] : []).forEach(k => { p[k] = fresh[k]; });
             writeJson(FUNDING_KEY, list);
         }
         function getFundingOf(rec) {
             const list = readJson(FUNDING_KEY, []) || [];
-            return list.find(p => p && p.courtCaseCode === rec.code) || null;
+            return list.find(p => fundingMatches(p, rec)) || null;
         }
 
         // ===== Quyền =====
@@ -1376,9 +1416,13 @@
         function getKindRadio() { return "money"; }
         function setKindRadio() { /* không còn lựa chọn Loại yêu cầu */ }
         function handleKindChange() { document.getElementById("claimMoneySection").style.display = "block"; }
-        function handleStatusChange() {
+        // Đã có bản án/QĐ: hiện Số / Ngày Bản án/QĐ cạnh Trạng thái, gợi ý đính kèm bản án; người dùng vừa chọn thì focus ô Số Bản án/QĐ
+        function handleStatusChange(byUser) {
             const isVerdict = getValue("caseStatus") === STATUS_BAN_AN;
             document.querySelectorAll(".verdict-field").forEach(el => { el.style.display = isVerdict ? "" : "none"; });
+            const hint = document.getElementById("docsVerdictHint");
+            if (hint) hint.style.display = isVerdict && !isFormReadOnly ? "" : "none";
+            if (isVerdict && byUser === true) { const n = document.getElementById("caseVerdictNo"); if (n) n.focus(); }
         }
         function applyVictimAliveRoleConstraint(role) {
             const r = role || getValue("claimNYCRole") || NBTH_ROLE;
@@ -1441,7 +1485,7 @@
             document.querySelectorAll('input[name="claimVictimAlive"]').forEach(r => { r.checked = r.value === (n.victimAlive || "yes"); });
             setValue("claimNYCPhone", n.phone || "");
             setValue("claimNYCEmail", n.email || "");
-            setValue("claimNYCCardType", n.cardType || "CCCD");
+            setValue("claimNYCCardType", n.cardType || "CMND/CCCD/Chứng minh quân đội");
             setValue("claimNYCCardNo", n.cardNo || "");
             setValue("claimNYCCardDate", n.cardDate || "");
             setValue("claimNYCCardPlace", n.cardPlace || "");
@@ -1463,18 +1507,18 @@
         function fillNbth(d) {
             d = d || {};
             setValue("claimNbthName", d.name || ""); setValue("claimNbthGender", d.gender || "Nam"); setValue("claimNbthBirth", d.dob || "");
-            setValue("claimNbthPhone", d.phone || ""); setValue("claimNbthEmail", d.email || ""); setValue("claimNbthCardType", d.docType || "CCCD");
+            setValue("claimNbthPhone", d.phone || ""); setValue("claimNbthEmail", d.email || ""); setValue("claimNbthCardType", d.docType || "CMND/CCCD/Chứng minh quân đội");
             setValue("claimNbthCardNo", d.docNo || ""); setValue("claimNbthCardDate", d.docDate || ""); setValue("claimNbthCardPlace", d.docPlace || "");
             setValue("claimNbthCountry", d.country === "Khác" ? "Khác" : "Việt Nam"); setValue("claimNbthCity", d.city || ""); setValue("claimNbthAddress", d.address || "");
         }
 
         function openCaseForm(id = null, readOnly = false) {
-            if (!id && !CAN_INPUT) { showToast("Đơn vị chưa được áp dụng Loại hồ sơ \"Giải quyết yêu cầu bồi thường\", không được thêm mới vụ việc!", "error"); return; }
+            if (!id && !CAN_INPUT) { notify("Đơn vị chưa được áp dụng Loại hồ sơ \"Giải quyết yêu cầu bồi thường\", không được thêm mới vụ việc!", "error"); return; }
             reloadCases();
             const rec = id ? cases.find(c => c.id === id) : null;
             if (id && !rec) return;
             if (rec && !readOnly && !canEditCase(rec)) {
-                showToast(rec.status === STATUS_BAN_AN ? "Vụ việc đã có bản án/QĐ, không cho phép cập nhật." : "Bạn không có quyền cập nhật vụ việc này!", "error");
+                notify(rec.status === STATUS_BAN_AN ? "Vụ việc đã có bản án/QĐ, không cho phép cập nhật." : "Bạn không có quyền cập nhật vụ việc này!", "error");
                 readOnly = true;
             }
             editingId = id;
@@ -1494,14 +1538,9 @@
             setText("formAgencyText", BTNN_WF.unitName(rec ? rec.rootUnitId : CURRENT_ROOT_UNIT));
             setText("formCreatedText", rec ? `${rec.createdByName || "--"} - ${rec.createdAt || "--"}` : "--");
             document.getElementById("formStatusBadge").innerHTML = rec ? statusBadge(rec.status) : "--";
-
-            // Vụ việc liên quan (tách từ Yêu cầu cả hai)
-            const linkBox = document.getElementById("linkedInfoBox");
-            const linked = rec && rec.linkedCode ? cases.find(c => c.code === rec.linkedCode && !c.deleted) : null;
-            if (linked) {
-                linkBox.style.display = "block";
-                linkBox.innerHTML = `<i class="fa-solid fa-link" style="color:#16a34a;"></i> Vụ việc được tách từ yêu cầu cả hai (Bồi thường tiền &amp; Phục hồi danh dự). Vụ việc liên quan: <a href="javascript:void(0)" onclick="openCaseForm('${escapeAttr(linked.id)}', true)">${escapeHtml(linked.code)} - ${escapeHtml(linked.nyc.name)}</a> (${escapeHtml(KIND_LABEL[linked.requestKind])}) ${statusBadge(linked.status)}`;
-            } else { linkBox.style.display = "none"; linkBox.innerHTML = ""; }
+            // Chế độ cập nhật: không hiển thị badge Trạng thái trùng với combobox Trạng thái (chỉ giữ ở màn hình Xem chi tiết)
+            const badgeItem = document.getElementById("formStatusBadge").closest(".meta-item");
+            if (badgeItem) badgeItem.style.display = readOnly ? "" : "none";
 
             // Đề nghị cấp kinh phí đã tạo
             const fundBox = document.getElementById("fundingInfoBox");
@@ -1591,9 +1630,14 @@
             const el = document.getElementById(id);
             if (!el) return null;
             el.classList.add("is-invalid");
+            el.setAttribute("aria-invalid", "true");
             const g = el.closest(".form-group");
             const err = g ? g.querySelector(".error-message") : null;
-            if (err) err.style.display = "block";
+            if (err) {
+                err.style.display = "block";
+                if (!err.id) err.id = "err_" + id;
+                el.setAttribute("aria-describedby", err.id);
+            }
             return el;
         }
         function setFieldError(id, message) {
@@ -1605,13 +1649,16 @@
         }
         function clearValidation() {
             document.querySelectorAll("#formView .is-invalid").forEach(el => el.classList.remove("is-invalid"));
+            document.querySelectorAll("#formView [aria-invalid]").forEach(el => el.removeAttribute("aria-invalid"));
             document.querySelectorAll("#formView .error-message").forEach(el => { el.style.display = "none"; if (el.id !== "docsError") el.textContent = "Đây là trường bắt buộc"; });
+            if (typeof tdtaErrSummary === "function") tdtaErrSummary(null);
+            if (typeof formNotice === "function") formNotice("");
         }
 
         function saveCase() {
             clearValidation();
             const rec = editingId ? cases.find(c => c.id === editingId) : null;
-            if ((!rec && !CAN_INPUT) || (rec && !canEditCase(rec))) { showToast("Bạn không có quyền lưu vụ việc này!", "error"); return; }
+            if ((!rec && !CAN_INPUT) || (rec && !canEditCase(rec))) { notify("Bạn không có quyền lưu vụ việc này!", "error"); return; }
             const status = getValue("caseStatus");
             let firstInvalid = null;
             // [tdta] Trường bắt buộc khối Người yêu cầu theo Loại người yêu cầu (Cá nhân/Tổ chức), giống Giải quyết YCBT
@@ -1642,15 +1689,16 @@
                 if (k && !firstInvalid) firstInvalid = k;
             }
 
-            if (firstInvalid || !docsOk) {
-                if (effMissing) showToast("Vui lòng nhập Số Bản án/Quyết định và Ngày Bản án/Quyết định có hiệu lực khi trạng thái là Đã có bản án/QĐ!", "error");
-                else if (!firstInvalid) showToast("Vui lòng đính kèm ít nhất 01 tài liệu!", "error");
-                else showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error");
-                if (firstInvalid) firstInvalid.focus();
+            // Dòng tài liệu có lỗi định dạng / dung lượng tệp: không lưu
+            const fileErr = basisRows.concat(docRows).some(d => d && d.err);
+            if (firstInvalid || !docsOk || fileErr) {
+                // [ux] Không dùng toast: khung báo lỗi đầu form liệt kê các trường chưa hợp lệ, cuộn tới lỗi đầu tiên (theo thứ tự trên màn hình)
+                const first = tdtaErrSummary(true);
+                if (first) { first.scrollIntoView({ behavior: "smooth", block: "center" }); if (first.focus) first.focus({ preventScroll: true }); }
                 return;
             }
 
-            if (rec && isTerminal(rec) && status !== rec.status) { showToast("Vụ việc đã ở trạng thái kết thúc, không được thay đổi trạng thái!", "error"); return; }
+            if (rec && isTerminal(rec) && status !== rec.status) { notify("Vụ việc đã ở trạng thái kết thúc, không được thay đổi trạng thái!", "error"); return; }
             const doSave = () => persistCase(rec, status, cleanDocs);
             if (TERMINAL_STATUSES.includes(status) && !(rec && isTerminal(rec))) {
                 showConfirm(`Trạng thái "${status}" là trạng thái kết thúc. Sau khi lưu, vụ việc không được thay đổi sang trạng thái khác (vẫn được cập nhật thông tin và xóa). Bạn có chắc chắn muốn lưu?`, doSave, "Xác nhận lưu");
@@ -1664,8 +1712,8 @@
             reloadCases();
             if (rec) {
                 const latest = cases.find(c => c.id === rec.id);
-                if (!latest || latest.deleted || !canEditCase(latest)) { showToast("Vụ việc đã bị xóa hoặc bạn không còn quyền cập nhật. Danh sách đã được tải lại.", "error"); closeCaseForm(); return; }
-                if (isTerminal(latest) && status !== latest.status) { showToast("Vụ việc đã chuyển sang trạng thái kết thúc, không được thay đổi trạng thái. Danh sách đã được tải lại.", "error"); closeCaseForm(); return; }
+                if (!latest || latest.deleted || !canEditCase(latest)) { closeCaseForm(); notify("Vụ việc đã bị xóa hoặc bạn không còn quyền cập nhật. Danh sách đã được tải lại.", "error"); return; }
+                if (isTerminal(latest) && status !== latest.status) { closeCaseForm(); notify("Vụ việc đã chuyển sang trạng thái kết thúc, không được thay đổi trạng thái. Danh sách đã được tải lại.", "error"); return; }
                 rec = latest;
             }
             const role = getValue("claimNYCRole");
@@ -1708,7 +1756,7 @@
                 const code = common.linkedVuViec || nextCaseCodes(1)[0];
                 const now = BTNN_WF.nowText();
                 const r = Object.assign({
-                    id: "TA-" + code,
+                    id: newCaseId(code),
                     code,
                     requestKind: kind,
                     originalKind: kind,
@@ -1736,23 +1784,23 @@
             let msg = rec ? `Đã cập nhật vụ việc ${codesText}.` : `Đã lưu vụ việc ${codesText}.`;
             if (funded.length) msg += ` Đã tạo bản ghi Chi trả tiền bồi thường ${funded.map(p => p.code).join(", ")} ở trạng thái ${FUNDING_STATUS_NEW}.`;
             else if (created.some(needsFunding) && created.some(r => !r.fundingCode)) msg += " Bản ghi Chi trả tiền bồi thường sẽ được tạo ở trạng thái Chờ thông báo chi trả tại màn hình Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường.";
-            showToast(msg, "success");
+            notify(msg, "success");
         }
 
         function confirmDeleteCase(id) {
             const rec = cases.find(c => c.id === id);
-            if (rec && rec.status === STATUS_BAN_AN) { showToast("Vụ việc đã có bản án/QĐ, không cho phép xóa.", "error"); return; }
+            if (rec && rec.status === STATUS_BAN_AN) { notify("Vụ việc đã có bản án/QĐ, không cho phép xóa.", "error"); return; }
             if (!rec || !canEditCase(rec)) return;
             const fundOf = getFundingOf(rec);
             const fundNote = fundOf && [FUNDING_STATUS_NEW, "Chờ nhập liệu"].includes(fundOf.status) ? ` Bản ghi kinh phí ${fundOf.code} (${fundOf.status}) cũng bị xóa theo.` : "";
             showConfirm(`Bạn có chắc chắn muốn xóa vụ việc ${rec.code} - ${rec.nyc.name} không?${fundNote}`, () => {
                 reloadCases();
                 const latest = cases.find(c => c.id === id);
-                if (!latest || latest.deleted || !canEditCase(latest)) { showToast("Vụ việc đã bị xóa hoặc bạn không còn quyền xóa. Danh sách đã được tải lại.", "error"); closeCaseForm(); return; }
+                if (!latest || latest.deleted || !canEditCase(latest)) { closeCaseForm(); notify("Vụ việc đã bị xóa hoặc bạn không còn quyền xóa. Danh sách đã được tải lại.", "error"); return; }
                 // Bản ghi kinh phí đã sinh: còn Chờ thông báo chi trả (bản ghi cũ: Chờ nhập liệu) thì xóa theo; đã xử lý tiếp thì không cho xóa vụ việc
                 const fundList = readJson(FUNDING_KEY, null);
-                const fund = Array.isArray(fundList) ? fundList.find(p => p && p.courtCaseCode === latest.code) : null;
-                if (fund && ![FUNDING_STATUS_NEW, "Chờ nhập liệu"].includes(fund.status)) { showToast(`Bản ghi kinh phí ${fund.code} đang ở trạng thái ${fund.status}, không được xóa vụ việc!`, "error"); return; }
+                const fund = Array.isArray(fundList) ? fundList.find(p => fundingMatches(p, latest)) : null;
+                if (fund && ![FUNDING_STATUS_NEW, "Chờ nhập liệu"].includes(fund.status)) { notify(`Bản ghi kinh phí ${fund.code} đang ở trạng thái ${fund.status}, không được xóa vụ việc!`, "error"); return; }
                 if (fund) writeJson(FUNDING_KEY, fundList.filter(p => p !== fund));
                 latest.deleted = true;
                 latest.deletedAt = BTNN_WF.nowText();
@@ -1764,7 +1812,7 @@
                 }
                 saveCases();
                 closeCaseForm();
-                showToast(`Đã xóa vụ việc ${latest.code}!`, "success");
+                notify(`Đã xóa vụ việc ${latest.code}!`, "success");
             }, "Xác nhận xóa");
         }
 
@@ -1795,7 +1843,7 @@
                     <td>${d.file
                         ? `<span class="file-name" style="display:inline-flex; align-items:center; max-width:280px;" title="${escapeAttr(d.file)}"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${escapeHtml(d.file)}</span>`
                         : (isFormReadOnly ? `<span class="muted">--</span>` : `<button type="button" class="tlkt-btn-pri" onclick="document.getElementById('basisFile_${i}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`)}
-                        <input id="basisFile_${i}" type="file" style="display:none;" accept=".pdf,.doc,.docx,.jpg,.png" onchange="uploadBasisFile(${i}, this)">
+                        <input id="basisFile_${i}" type="file" style="display:none;" accept="${TDTA_BASIS_ACCEPT}" onchange="uploadBasisFile(${i}, this)">${tdtaRowErr(d)}
                     </td>
                     <td style="text-align:center;">${tdvvDocActs('basis', i, !!d.file)}</td>
                 </tr>`).join("");
@@ -1811,10 +1859,29 @@
         }
         function tdvvDocFile(kind, i, msg) {
             const d = (kind === 'basis' ? basisRows : docRows)[i];
-            if (d && d.file) showToast(`${msg}: ${d.file}`, 'info');
+            if (d && d.file) notify(`${msg}: ${d.file}`, 'info');
+        }
+        // [ux] Định dạng .pdf .doc .docx .jpg .jpeg .png, tối đa 50MB/tệp (quy tắc 5.9 Danh mục và Phụ lục); sai: lỗi trực tiếp tại dòng, không nhận tệp
+        const TDTA_FILE_EXT = [".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png"];
+        const TDTA_FILE_ACCEPT = TDTA_FILE_EXT.join(",");
+        const TDTA_FILE_MAX = 50 * 1024 * 1024;
+        // Văn bản làm căn cứ: chỉ nhận PDF và ảnh (.pdf, .jpg, .jpeg, .png); sai định dạng: MSG-ERR-FILE-003 tại dòng
+        const TDTA_BASIS_EXT = [".pdf", ".jpg", ".jpeg", ".png"];
+        const TDTA_BASIS_ACCEPT = TDTA_BASIS_EXT.join(",");
+        function tdtaCheckFile(row, f, basis) {
+            const ext = (String(f.name).match(/\.[^.]+$/) || [""])[0].toLowerCase();
+            if (basis && !TDTA_BASIS_EXT.includes(ext)) row.err = `Định dạng tệp tin ${f.name} không hợp lệ. Chỉ chấp nhận các định dạng ${TDTA_BASIS_EXT.join(", ")}.`;
+            else if (!TDTA_FILE_EXT.includes(ext)) row.err = `Định dạng tệp ${f.name} không hợp lệ. Chỉ chấp nhận các định dạng ${TDTA_FILE_EXT.join(", ")}.`;
+            else if (f.size > TDTA_FILE_MAX) row.err = `Dung lượng tệp tin ${f.name} vượt quá 50MB. Vui lòng kiểm tra lại.`; // MSG-ERR-FILE-006
+            else row.err = "";
+            return !row.err;
+        }
+        function tdtaRowErr(d) {
+            return d && d.err ? `<div class="error-message tdta-row-err" style="display:block;"><i class="fa-solid fa-circle-exclamation"></i> ${escapeHtml(d.err)}</div>` : "";
         }
         function uploadBasisFile(i, input) {
             if (!basisRows[i] || !input.files || !input.files.length) return;
+            if (!tdtaCheckFile(basisRows[i], input.files[0], true)) { input.value = ""; renderBasisRows(); return; }
             basisRows[i].file = input.files[0].name;
             if (!basisRows[i].name) basisRows[i].name = input.files[0].name.replace(/\.[^.]+$/, "");
             renderBasisRows();
@@ -1839,13 +1906,14 @@
                     <td>${d.file
                         ? `<span class="file-name" style="display:inline-flex; align-items:center; max-width:280px;" title="${escapeAttr(d.file)}"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${escapeHtml(d.file)}</span>`
                         : (isFormReadOnly ? `<span class="muted">--</span>` : `<button type="button" class="tlkt-btn-pri" onclick="document.getElementById('docFile_${i}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`)}
-                        <input id="docFile_${i}" type="file" style="display:none;" onchange="uploadDocFile(${i}, this)">
+                        <input id="docFile_${i}" type="file" style="display:none;" accept="${TDTA_FILE_ACCEPT}" onchange="uploadDocFile(${i}, this)">${tdtaRowErr(d)}
                     </td>
                     <td style="text-align:center;">${tdvvDocActs('doc', i, !!d.file)}</td>
                 </tr>`).join("");
         }
         function uploadDocFile(i, input) {
             if (!docRows[i] || !input.files || !input.files.length) return;
+            if (!tdtaCheckFile(docRows[i], input.files[0])) { input.value = ""; renderDocRows(); return; }
             docRows[i].file = input.files[0].name;
             if (!docRows[i].name) docRows[i].name = input.files[0].name.replace(/\.[^.]+$/, "");
             document.getElementById("docsError").style.display = "none";
@@ -1869,8 +1937,14 @@
         }
 
         // ===== Xác nhận / Thông báo =====
-        function showConfirm(message, callback, title) {
+        // opts: { yes: nhãn nút đồng ý, no: nhãn nút hủy, yesClass: class nút đồng ý } (mặc định Đồng ý / Hủy bỏ / btn-danger)
+        function showConfirm(message, callback, title, opts) {
+            opts = opts || {};
             pendingConfirmCallback = callback;
+            const okBtn = document.getElementById("confirmOkBtn"), noBtn = document.getElementById("confirmNoBtn");
+            okBtn.textContent = opts.yes || "Đồng ý";
+            okBtn.className = `btn ${opts.yesClass || "btn-danger"} btn-sm`;
+            if (noBtn) noBtn.textContent = opts.no || "Hủy bỏ";
             document.getElementById("confirmTitle").innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${escapeHtml(title || "Xác nhận")}`;
             document.getElementById("confirmMessage").textContent = message;
             const overlay = document.getElementById("confirmOverlay");
@@ -1944,7 +2018,7 @@
         // ===== Dữ liệu giả lập =====
         function buildSeed() {
             const person = (name, gender, birth, cardNo, phone, city, address, role) => ({
-                name, role: role || NBTH_ROLE, gender, birth, victimAlive: "yes", phone, email: "", cardType: "CCCD", cardNo,
+                name, role: role || NBTH_ROLE, gender, birth, victimAlive: "yes", phone, email: "", cardType: "CMND/CCCD/Chứng minh quân đội", cardNo,
                 cardDate: "10/05/2021", cardPlace: "Cục Cảnh sát QLHC về trật tự xã hội", country: "Việt Nam", city, address
             });
             const h = (action, at, userName, note) => ({ at, userName, action, note: note || "" });
@@ -2019,7 +2093,7 @@
                     requestKind: "money", rootUnitId: "BTP-01", status: STATUS_DANG_GQ, fieldGroup: "hình sự",
                     verdictSource: VERDICT_SOURCES[2], lawsuitCase: LAWSUIT_CASES[2], acceptDate: "12/08/2026",
                     nyc: person("Võ Thanh Liêm", "Nam", "30/04/1984", "001084002345", "0917300307", "Hà Nội", "Số 22 Nguyễn Trãi, Thanh Xuân", "Người thừa kế của người bị thiệt hại"),
-                    nbth: { name: "Võ Văn Thắng", gender: "Nam", dob: "", phone: "", email: "", docType: "CCCD", docNo: "", docDate: "", docPlace: "", country: "Việt Nam", city: "Hà Nội", address: "" },
+                    nbth: { name: "Võ Văn Thắng", gender: "Nam", dob: "", phone: "", email: "", docType: "CMND/CCCD/Chứng minh quân đội", docNo: "", docDate: "", docPlace: "", country: "Việt Nam", city: "Hà Nội", address: "" },
                     hanhVi: "Tạm giam quá thời hạn trong quá trình điều tra vụ án hình sự.",
                     damages: [dmg("TH_TT_04", 180000000, "Quy đổi số ngày bị tạm giam"), dmg("TH_TN_02", 40000000, "Thu nhập bị mất trong thời gian tạm giam"), dmg("TH_SK_01", 15000000, "Chi phí khám, chữa bệnh sau thời gian tạm giam"), dmg("TH_CPK_04", 9000000, "Chi phí đi lại thăm gặp của thân nhân 18 lần")],
                     docs: [doc("Thông báo thụ lý yêu cầu bồi thường", "Thong_bao_thu_ly_BT-2026-307.pdf")],
@@ -2046,9 +2120,10 @@
     <!-- Bảng tài liệu chuẩn BTNN: STT | Tên tài liệu, văn bản | File đính kèm | Thao tác; nút Tải file / Thêm tài liệu cùng style -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <!-- [tdta] Vụ việc liên kết (Tìm kiếm / Tìm kiếm nâng cao), khối Người yêu cầu Cá nhân/Tổ chức, lưới + bộ lọc theo cột -->
-    <script src="btnn_tim_kiem_vu_viec.js?v=20261029sn1"></script>
-    <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261029sn1"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
+    <script src="tra_cuu_seed_tcvv.js?v=20261030s2"></script>
+    <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261030s2"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 
 </html>

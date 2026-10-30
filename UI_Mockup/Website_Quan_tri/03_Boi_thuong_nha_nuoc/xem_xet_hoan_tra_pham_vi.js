@@ -6,9 +6,9 @@
  */
 (function () {
     // ===== Đơn vị giả lập =====
-    const U_CHU = 'UBND Quận Long Biên';
+    const U_CHU = 'UBND phường Việt Hưng';
     const U_A = 'UBND Phường Bồ Đề';
-    const U_B = 'UBND Huyện An Dương';
+    const U_B = 'UBND phường Hải An';
     const U_STP = 'Sở Tư pháp Hà Nội';
     // Đơn vị thuộc phạm vi quản lý của Sở Tư pháp giả lập
     const STP_UNITS = [U_A, U_CHU];
@@ -349,7 +349,7 @@
         const up = canUpdate
             ? '<button class="icon-btn edit" title="Cập nhật" onclick="htOpenDetail(event, \'' + d.id + '\', \'edit\')" style="color:#2563eb; border-color:#2563eb;"><i class="fa-solid fa-pen-to-square"></i></button>'
             : '<button class="icon-btn" title="Cập nhật" style="' + off + '"><i class="fa-solid fa-pen-to-square"></i></button>';
-        // Xóa hồ sơ nháp: chỉ Đơn vị tạo Hội đồng; Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại, Sở Tư pháp không có nút Xóa
+        // Xóa hồ sơ chưa thành lập Hội đồng: chỉ Đơn vị tạo Hội đồng; Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại, Sở Tư pháp không có nút Xóa
         if (htScope !== 'don_vi_chu') return wrap(up);
         const del = canDelete
             ? '<button class="icon-btn delete" title="Xóa" onclick="deleteRefundDossier(event, \'' + d.id + '\')" style="color:var(--danger-color); border-color:var(--danger-color);"><i class="fa-solid fa-trash"></i></button>'
@@ -395,6 +395,9 @@
         const fCode = val('filterDossierCode'), fVv = val('filterClaimCode'), fGq = val('filterGqbtCode'), fCb = val('filterOfficerName');
         const fUnit = (document.getElementById('filterAgency') || {}).value || '';
         const fSt = (document.getElementById('filterStatusRefund') || {}).value || '';
+        // Từ ngày / Đến ngày: lọc theo ngày khởi tạo hồ sơ (dateCreated, dd/mm/yyyy)
+        const dayNum = s => { const m = String(s || '').trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); return m ? (+m[3]) * 10000 + (+m[2]) * 100 + (+m[1]) : null; };
+        const fFrom = dayNum(val('filterFromDate')), fTo = dayNum(val('filterToDate'));
         updateRefundTabCounts();
         const rows = dossiersList.filter(d => htInTab(htTab, d)).map(d => {
             const sc = scopeOf(d);
@@ -406,6 +409,12 @@
             if (fCb && !r.off.some(o => o.name.toLowerCase().includes(fCb))) return false;
             if (fUnit && !r.off.some(o => o.unit === fUnit)) return false;
             if (fSt && r.chung !== fSt) return false;
+            if (fFrom !== null || fTo !== null) {
+                const dc = dayNum(r.d.dateCreated);
+                if (dc === null) return false;
+                if (fFrom !== null && dc < fFrom) return false;
+                if (fTo !== null && dc > fTo) return false;
+            }
             return true;
         });
         const key = {
@@ -459,11 +468,17 @@
         });
     };
     window.applyRefundFilters = function () { currentPageRefund = 1; renderRefundTable(); };
+    // Mặc định Từ ngày = ngày đầu tháng hiện tại, Đến ngày = ngày hiện tại (theo ngày hệ thống)
+    function setDefaultDateRange() {
+        const now = new Date(), p2 = n => String(n).padStart(2, '0'), my = p2(now.getMonth() + 1) + '/' + now.getFullYear();
+        const f = document.getElementById('filterFromDate'), t = document.getElementById('filterToDate');
+        if (f) f.value = '01/' + my;
+        if (t) t.value = p2(now.getDate()) + '/' + my;
+    }
+    setDefaultDateRange();
     window.resetRefundFilters = function () {
         ['filterDossierCode', 'filterClaimCode', 'filterGqbtCode', 'filterOfficerName', 'filterAgency', 'filterStatusRefund'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-        const f = document.getElementById('filterFromDate'), t = document.getElementById('filterToDate');
-        if (f) f.value = '01/09/2026';
-        if (t) t.value = '11/09/2026';
+        setDefaultDateRange();
         currentPageRefund = 1;
         renderRefundTable();
     };

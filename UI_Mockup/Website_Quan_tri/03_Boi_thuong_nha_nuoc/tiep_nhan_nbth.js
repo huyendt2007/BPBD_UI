@@ -83,7 +83,7 @@
                     ? '<button type="button" class="tlkt-ib' + (doc.file ? '' : ' is-disabled') + '" data-admin-icon-normalized="1" title="Tải file" aria-label="Tải file" onclick="downloadDocFile(' + idx + ')"><i class="fa-solid fa-download"></i></button>'
                     : delBtn) + '</span>';
             return '<tr' + (fixed ? ' data-nbth-fixed="1"' : '') + '><td style="text-align:center;">' + (idx + 1) + '</td><td>' + nameCell + '</td><td>' + fileCell
-                + '<input id="docFile_' + idx + '" type="file" style="display:none;" onchange="uploadDocFile(' + idx + ', this)"></td><td style="text-align:center;">' + acts + '</td></tr>';
+                + '<input id="docFile_' + idx + '" type="file" style="display:none;" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="uploadDocFile(' + idx + ', this)"></td><td style="text-align:center;">' + acts + '</td></tr>';
         }).join('');
     };
 

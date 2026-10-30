@@ -437,6 +437,10 @@
     var M43_SEED_CASES = [
         { code: 'BT-2026-193', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '20/08/2026', status: 'Hoàn thành', qd: ['16/09/2026', 120000000], pay: ['25/09/2026', 120000000] },
         { code: 'BT-2026-077', unit: 'UBND-CG', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '15/11/2025', status: 'Hoàn thành', qd: ['05/10/2026', 92000000], pay: ['20/10/2026', 92000000] },
+        // Trả lại ngân sách nhà nước một phần (KP-2026-130): Số tiền đã chi thực tế 60.000.000, không tính 30.000.000 trả lại ngân sách nhà nước
+        // Chi trả nhiều lần (KP-2026-131): mỗi lần chi tính theo Ngày chi của lần đó; pay mẫu dùng khi kho Kinh phí chưa có bản ghi
+        { code: 'BT-2026-097', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '10/08/2026', status: 'Chờ chi trả', qd: ['08/10/2026', 100000000], pay: ['20/10/2026', 40000000] },
+        { code: 'BT-2023-063', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '20/03/2023', status: 'Hoàn thành', qd: ['20/06/2023', 90000000], pay: ['15/03/2026', 60000000] },
         { code: 'BT-2026-005', unit: 'STP-HP', lv: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH', thuLy: '12/05/2026', status: 'Chờ duyệt' },
         { code: 'BT-2026-003', unit: 'UBND-CG', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '06/04/2026', status: 'Chờ chi trả', qd: ['02/07/2026', 4800000000] },
         { code: 'BT-2026-047', unit: 'CCTHADS-CG', lv: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ', thuLy: '12/03/2026', status: 'Đình chỉ giải quyết' },
@@ -459,6 +463,12 @@
     function m43Read(key) { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (e) { return null; } }
     // dd/mm/yyyy hoặc HH:mm dd/mm/yyyy -> yyyymmdd (số), không hợp lệ -> 0
     function m43Day(s) { var m = /(\d{2})\/(\d{2})\/(\d{4})/.exec(String(s || '')); return m ? +(m[3] + m[2] + m[1]) : 0; }
+    // Thời điểm "HH:mm dd/mm/yyyy" (hoặc "dd/mm/yyyy HH:mm") -> số yyyymmddHHmm; không có: 0
+    function m43Stamp(s) {
+        var d = m43Day(s); if (!d) return 0;
+        var t = /(\d{1,2}):(\d{2})/.exec(String(s || ''));
+        return d * 10000 + (t ? (+t[1]) * 100 + (+t[2]) : 0);
+    }
     function m43Fold(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase(); }
     // Lĩnh vực phát sinh thiệt hại -> nhóm I - VI
     function m43Group(lv) {
@@ -535,12 +545,19 @@
         // 2. Vụ việc tại Tòa án (không tính Trả lại đơn khởi kiện)
         var court = m43Read(M43_KEY_COURT);
         if (!Array.isArray(court)) court = M43_COURT_FALLBACK;
-        court.forEach(function (c) {
+        // 01 vụ việc có nhiều vụ việc tại Tòa án (cùng liên kết 01 vụ việc): lấy vụ việc tại Tòa án có Ngày thụ lý mới nhất;
+        // Ngày thụ lý bằng nhau: lấy vụ việc tạo sau cùng (Thời điểm tạo; không có thì theo thứ tự lưu, vụ việc mới ở đầu danh sách)
+        court.forEach(function (c, idx) {
             if (!c || c.deleted || c.status === M43_COURT_RETURNED || !m43Day(c.acceptDate)) return;
             var key = (W.isVuViecCode(c.code) && c.code) || vv(c.linkedVuViec) || vv(c.hoSoCode) || vv(c.id) || c.code || c.id, e = find([key, c.hoSoCode]) || get(key);
             var amt = Array.isArray(c.damages) ? c.damages.reduce(function (s, d) { return s + (Number(d && d.amount) || 0); }, 0) : (Number(c.amount) || 0);
-            e.ct = { date: m43Day(c.acceptDate), basis: m43Basis(c), status: c.status, eff: m43Day(c.effectiveDate), amount: amt };
-            if (!e.ag) { e.unit = W.getRootId(c.linkedAgencyId || c.rootUnitId) || c.linkedAgencyId || c.rootUnitId; e.lv = FIELD_LV[c.fieldGroup] || c.fieldGroup || ''; }
+            var d = m43Day(c.acceptDate), stamp = m43Stamp(c.createdAt), order = court.length - idx;
+            var cur = e.ct;
+            var newer = !cur || d > cur.date || (d === cur.date && (stamp > cur.stamp || (stamp === cur.stamp && order > cur.order)));
+            if (newer) {
+                e.ct = { date: d, basis: m43Basis(c), status: c.status, eff: m43Day(c.effectiveDate), amount: amt, stamp: stamp, order: order, id: c.id };
+                if (!e.ag) { e.unit = W.getRootId(c.linkedAgencyId || c.rootUnitId) || c.linkedAgencyId || c.rootUnitId; e.lv = FIELD_LV[c.fieldGroup] || c.fieldGroup || ''; }
+            }
             link(e, [key, c.code, c.id, c.hoSoCode]);
         });
         // 3. Quyết định giải quyết bồi thường có hiệu lực
@@ -551,15 +568,23 @@
             var h = (d.hieuLucHistory || []).filter(function (x) { return x && x.to === 'Có hiệu lực'; }).pop();
             e.qd = { date: m43Day(h && h.at) || m43Day(d.issueDate), amount: Number(d.total) || 0 };
         });
-        // 4. Chi trả tiền bồi thường đã chi trả (Hoàn thành hoặc đã có số tiền chi trả thực tế; không tính Trả lại ngân sách nhà nước)
+        // 4. Chi trả tiền bồi thường đã chi trả (Hoàn thành hoặc đã có số tiền chi trả thực tế).
+        // Trả lại ngân sách nhà nước: chỉ tính khi trả lại một phần, theo Số tiền đã chi thực tế (payoutAmountReal); không tính số tiền trả lại ngân sách nhà nước
         var kp = m43Read(M43_KEY_KP);
         var payKeys = {};
         (Array.isArray(kp) ? kp : []).forEach(function (p) {
-            if (!p || p.type !== 'Chi trả tiền bồi thường' || M43_PAY_RETURNED.indexOf(p.status) >= 0) return;
-            var real = Number(p.payoutAmountReal) || Number(p.kptbPayment && p.kptbPayment.amount) || 0;
-            if (p.status !== 'Hoàn thành' && !(Number(p.payoutAmountReal) > 0)) return;
+            if (!p || p.type !== 'Chi trả tiền bồi thường') return;
+            var ret = M43_PAY_RETURNED.indexOf(p.status) >= 0;
+            var real = Number(p.payoutAmountReal) || (ret ? 0 : Number(p.kptbPayment && p.kptbPayment.amount)) || 0;
+            if (ret ? !(real > 0) : (p.status !== 'Hoàn thành' && !(Number(p.payoutAmountReal) > 0))) return;
             var e = find([vv(p.ycbtCode), p.ycbtCode, p.vvCode, p.courtCaseCode]); if (!e) return;
-            e.pay.push({ date: m43Day(p.payoutDate || (p.kptbPayment && p.kptbPayment.payDate)), amount: real || Number(p.amount) || 0, court: !!(p.courtCaseCode || /^TA-/.test(p.decId || '')) });
+            var court = !!(p.courtCaseCode || /^TA-/.test(p.decId || ''));
+            // Chi trả nhiều lần: mỗi lần chi 01 dòng theo Ngày chi của lần đó (cộng theo tổng đã chi các lần)
+            if (Array.isArray(p.payHistory) && p.payHistory.length) {
+                p.payHistory.forEach(function (h) { if (h && Number(h.amount) > 0) e.pay.push({ date: m43Day(h.payDate), amount: Number(h.amount), court: court }); });
+            } else {
+                e.pay.push({ date: m43Day(p.payoutDate || (p.kptbPayment && p.kptbPayment.payDate)), amount: real || Number(p.amount) || 0, court: court });
+            }
             payKeys[e.key] = 1;
         });
         // Hồ sơ mẫu bổ sung: Quyết định / Chi trả mẫu khi kho của phân hệ chưa có
@@ -1651,7 +1676,7 @@
     }
 
     // API cho kiểm thử / trang khác
-    window.BCTT = { ST: ST, FORMS: FORMS, load: load, db: function () { return DB; }, setRole: function (r) { if ($('bcttRole')) $('bcttRole').value = r; setRole(r); }, showList: showList, showDetail: showDetail, openSubmit: openSubmit, openSign: openSign, showBtp: showBtp, m43Row: m43Row, m43Total: m43Total, reset: function () { DB = seed(); save(); showList(); } };
+    window.BCTT = { ST: ST, FORMS: FORMS, load: load, db: function () { return DB; }, setRole: function (r) { if ($('bcttRole')) $('bcttRole').value = r; setRole(r); }, showList: showList, showDetail: showDetail, openSubmit: openSubmit, openSign: openSign, showBtp: showBtp, m43Row: m43Row, m43Total: m43Total, m43Cases: m43Cases, reset: function () { DB = seed(); save(); showList(); } };
 
     function init() {
         try { role = localStorage.getItem(KEY_ROLE) || 'cb_stp'; } catch (e) { role = 'cb_stp'; }

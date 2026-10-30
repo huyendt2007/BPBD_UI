@@ -140,7 +140,11 @@
         // dc: đã chi trả, vụ việc bị Đình chỉ giải quyết -> Chờ thu hồi (demo Cập nhật thu hồi tại menu Chi trả tiền bồi thường)
         { id: 'P_KPUX_8', code: 'KP-2026-128', ycbt: 'BT-2026-078', vv: 'VVBT-2026-078', nyc: 'Ngô Thị Lan', amount: 66000000, date: '06/10/2026', st: 'Chờ thu hồi', sign: 'Ký số', docNo: '88/TB-STP', notice: '08/10/2026', pay: '10/10/2026', dc: { no: '31/QĐ-STP', date: '21/10/2026', at: '21/10/2026 15:00' } },
         // Dừng giải quyết -> Chờ thu hồi; đã thu hồi đủ qua 02 lần, chờ bấm Hoàn thành thu hồi (dữ liệu lần thu hồi: seedRc3)
-        { id: 'P_KPUX_9', code: 'KP-2026-129', ycbt: 'BT-2026-089', vv: 'VVBT-2026-089', nyc: 'Đỗ Minh Khôi', amount: 48000000, date: '07/10/2026', st: 'Chờ thu hồi', sign: 'Ký ngoài', docNo: '89/TB-STP', notice: '09/10/2026', pay: '11/10/2026', dc: { src: 'dungGiaiQuyet', no: '589/TB-STP', date: '16/10/2026', at: '16/10/2026 10:30' } }
+        { id: 'P_KPUX_9', code: 'KP-2026-129', ycbt: 'BT-2026-089', vv: 'VVBT-2026-089', nyc: 'Đỗ Minh Khôi', amount: 48000000, date: '07/10/2026', st: 'Chờ thu hồi', sign: 'Ký ngoài', docNo: '89/TB-STP', notice: '09/10/2026', pay: '11/10/2026', dc: { src: 'dungGiaiQuyet', no: '589/TB-STP', date: '16/10/2026', at: '16/10/2026 10:30' } },
+        // Trả lại ngân sách nhà nước một phần: đã chi 60.000.000 (payAmt), phần còn lại 30.000.000 trả lại ngân sách nhà nước; Số tiền đã chi thực tế = 60.000.000
+        { id: 'P_KPUX_10', code: 'KP-2026-130', ycbt: 'BT-2023-063', vv: 'VVBT-2023-063', nyc: 'Phùng Thị Xuân', amount: 90000000, date: '02/10/2026', st: 'Trả lại ngân sách nhà nước', sign: 'Ký số', docNo: '63/TB-STP', notice: '05/07/2023', rcv: '12/07/2023', created: '20/06/2023', pay: '15/03/2026', payAmt: 60000000, sq: '22/10/2026' },
+        // Chi trả nhiều lần: đã chi lần 1 40.000.000 / 100.000.000, còn phải chi 60.000.000 -> giữ Chờ chi trả (demo chi tiếp)
+        { id: 'P_KPUX_11', code: 'KP-2026-131', ycbt: 'BT-2026-097', vv: 'VVBT-2026-097', nyc: 'Tạ Thị Hòa', amount: 100000000, date: '12/10/2026', st: 'Chờ chi trả', sign: 'Ký số', docNo: '97/TB-STP', notice: '14/10/2026', pay: '20/10/2026', payAmt: 40000000 }
     ];
     function seedKpux() {
         var tpl = proposalsList.find(function (p) { return p && p.id === 'P_TB_KPTB-S5'; }) || proposalsList.find(function (p) { return isTb(p) && p.kptbDec; });
@@ -166,9 +170,12 @@
             it.kptbHistory = [{ at: '08:00 ' + (s.created || s.date), userId: '', userName: 'Hệ thống', action: 'Tạo bản ghi', note: 'Quyết định giải quyết bồi thường ' + dec.decNo + ' được ban hành.' },
                 { at: signedAt, userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: s.sign === 'Ký số' ? 'Ký duyệt Thông báo chi trả' : 'Ban hành Thông báo chi trả (Ký ngoài)', note: 'Số ' + s.docNo + '.' }];
             if (s.pay) {
-                it.kptbPayment = { method: KPTB_TRANSFER, accHolder: s.nyc.toUpperCase(), account: '0451000' + s.code.slice(-3) + '88', bank: 'Vietcombank', branch: 'Chi nhánh Hà Nội', recName: s.nyc, payDate: s.pay, amount: s.amount, files: [{ name: 'Ủy nhiệm chi', file: { name: 'UNC_' + s.code + '.pdf' } }], at: '10:00 ' + s.pay, by: 'canbonv' };
-                it.payoutDate = s.pay; it.payoutAmountReal = s.amount; it.payoutMethod = KPTB_TRANSFER;
-                it.kptbHistory.push({ at: '10:00 ' + s.pay, userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Cập nhật chi trả', note: 'Ngày chi trả ' + s.pay + '; số tiền ' + fmt(s.amount) + ' đồng.' });
+                var payAmt = s.payAmt || s.amount;
+                it.kptbPayment = { method: KPTB_TRANSFER, accHolder: s.nyc.toUpperCase(), account: '0451000' + s.code.slice(-3) + '88', bank: 'Vietcombank', branch: 'Chi nhánh Hà Nội', recName: s.nyc, payDate: s.pay, amount: payAmt, files: [{ name: 'Ủy nhiệm chi', file: { name: 'UNC_' + s.code + '.pdf' } }], at: '10:00 ' + s.pay, by: 'canbonv' };
+                it.payoutDate = s.pay; it.payoutAmountReal = payAmt; it.payoutMethod = KPTB_TRANSFER;
+                // Lịch sử chi trả (chi nhiều lần): 01 lần chi
+                it.payHistory = [Object.assign({ no: 1 }, it.kptbPayment)];
+                it.kptbHistory.push({ at: '10:00 ' + s.pay, userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Cập nhật chi trả', note: 'Ngày chi trả ' + s.pay + '; số tiền ' + fmt(payAmt) + ' đồng' + (payAmt < s.amount ? ' (chi một phần)' : '') + '.' });
             }
             if (s.dc && typeof kpdcSeedBasis === 'function') {
                 var dgq = s.dc.src === 'dungGiaiQuyet';
@@ -176,10 +183,12 @@
                 it.kptbHistory.push({ at: s.dc.at, userId: '', userName: 'Hệ thống', action: dgq ? 'Chuyển Chờ thu hồi do dừng giải quyết bồi thường' : 'Chuyển Chờ thu hồi do đình chỉ giải quyết', note: 'Căn cứ: ' + (dgq ? 'Thông báo dừng giải quyết yêu cầu bồi thường' : 'Quyết định đình chỉ giải quyết bồi thường') + ' số ' + s.dc.no + ' ngày ' + s.dc.date + ' (Mã vụ việc ' + s.vv + ', Mã hồ sơ GQBT ' + s.ycbt + '). Trạng thái trước: Hoàn thành. Số tiền đã chi: ' + fmt(s.amount) + ' đồng.' });
             }
             if (s.sq) {
-                it.treasuryForfeitDate = s.sq; it.treasuryVoucherNo = 'SQ-' + s.code.slice(-3) + '/2026'; it.treasuryAmount = s.amount; it.payoutAmountReal = 0;
+                // Trả lại một phần: Số tiền trả lại = Số tiền theo Quyết định − số tiền đã chi; Số tiền đã chi thực tế = số tiền đã chi
+                var paidPart = s.pay ? (s.payAmt || s.amount) : 0;
+                it.treasuryForfeitDate = s.sq; it.treasuryVoucherNo = 'SQ-' + s.code.slice(-3) + '/2026'; it.treasuryAmount = s.amount - paidPart; it.payoutAmountReal = paidPart;
                 it.treasuryReason = 'Người yêu cầu bồi thường đã quá thời hạn 03 năm kể từ ngày nhận thông báo chi trả nhưng không đến nhận tiền bồi thường theo quy định của Luật Trách nhiệm bồi thường của Nhà nước.';
                 it.treasuryFile = [{ name: 'Giấy nộp tiền vào ngân sách nhà nước', file: { name: 'Giay_nop_NSNN_' + s.code + '.pdf' } }];
-                it.kptbHistory.push({ at: '15:00 ' + s.sq, userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Trả lại ngân sách nhà nước', note: 'Số chứng từ ' + it.treasuryVoucherNo + '.' });
+                it.kptbHistory.push({ at: '15:00 ' + s.sq, userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Trả lại ngân sách nhà nước', note: 'Số chứng từ ' + it.treasuryVoucherNo + '; số tiền ' + fmt(it.treasuryAmount) + ' đồng.' });
             }
             proposalsList.push(it); n++;
         });
@@ -266,9 +275,32 @@
         });
         return n;
     }
+    // Lịch sử chi trả cho bản ghi mẫu đã lưu trước khi có chi nhiều lần (KP-2026-130: 01 lần chi 60.000.000 rồi trả lại ngân sách nhà nước); chạy 01 lần
+    var PAY_SEED_VER = 'pay1_20261030';
+    function seedPayHist() {
+        var it = proposalsList.find(function (p) { return p && p.code === 'KP-2026-130'; });
+        if (!it || it.paySeedVer === PAY_SEED_VER) return 0;
+        if (!Array.isArray(it.payHistory) && it.kptbPayment) it.payHistory = [Object.assign({ no: 1 }, it.kptbPayment)];
+        it.paySeedVer = PAY_SEED_VER;
+        return 1;
+    }
+    // Bản ghi Chờ chi trả chưa có Địa chỉ người nhận (dữ liệu mẫu): bổ sung để thử Cập nhật chi trả không phải nhập trường bắt buộc
+    function seedRecAddress() {
+        var n = 0;
+        proposalsList.forEach(function (p, k) {
+            if (!p || kpNormStatus(p.status) !== 'Chờ chi trả' || p.payoutRecAddress) return;
+            var r = p.kptbDec && p.kptbDec.recipient;
+            if (r && r.address) return;
+            p.payoutRecAddress = 'Số ' + (10 + k % 80) + ' phố Đội Cấn, phường Ba Đình, Thành phố Hà Nội';
+            n++;
+        });
+        return n;
+    }
     function sanitize() {
         var n = 0;
         n += seedKpux();
+        n += seedPayHist();
+        n += seedRecAddress();
         n += seedRcMulti();
         n += seedRcDates();
         n += seedRcDatesTu();
@@ -424,9 +456,15 @@
         Array.prototype.forEach.call(body.querySelectorAll(':scope > .kpdt-card'), function (c) { if (c.id !== 'kpuxNoticeCard') c.classList.add('collapsed'); });
         var pf = prefill(item);
         var cash = pf.method === 'Nhận tiền mặt';
-        var html = '<div class="kpdt-card kpux-pay" id="kpuxPayCard"><div class="kpdt-card-head"><i class="fa-solid fa-cash-register"></i> Thông tin kết quả chi trả thực tế</div><div class="kpdt-card-body"><div class="kpux-form">'
+        // Chi trả tiền bồi thường: chi nhiều lần; Số tiền chi lần này mặc định = Số tiền còn phải chi
+        var multi = isMultiPay(item), paid = multi ? kpPaidTotal(item) : 0, remain = Math.max(0, (Number(item.amount) || 0) - paid);
+        var sum = multi ? '<div class="kpux-f kpux-full"><span class="form-label">Số tiền theo Quyết định: <strong>' + fmt(item.amount) + '</strong> đồng; Tổng đã chi: <strong>' + fmt(paid) + '</strong> đồng (' + kpPayHistory(item).length + ' lần); Còn phải chi: <strong id="kpuxPayRemain">' + fmt(remain) + '</strong> đồng</span></div>' : '';
+        var html = '<div class="kpdt-card kpux-pay" id="kpuxPayCard"><div class="kpdt-card-head"><i class="fa-solid fa-cash-register"></i> Thông tin kết quả chi trả thực tế' + (multi ? ' - Lần ' + (kpPayHistory(item).length + 1) : '') + '</div><div class="kpdt-card-body"><div class="kpux-form">'
+            + sum
             + fld('kpuxPayDate', 'Ngày thực hiện chi trả', true, todayText(), 'placeholder="dd/mm/yyyy"')
-            + fld('kpuxPayAmount', 'Số tiền thực tế chi trả (VNĐ)', true, fmt(item.amount), 'maxlength="20" style="text-align:right;" oninput="formatNumberInput(this); kpuxClr(this)" placeholder="Nhập số tiền thực tế chi trả..."')
+            + (multi
+                ? fld('kpuxPayAmount', 'Số tiền chi lần này (VNĐ)', true, fmt(remain), 'maxlength="20" style="text-align:right;" oninput="formatNumberInput(this); kpuxClr(this)" onblur="kpuxPayAmtCheck()" placeholder="Nhập số tiền chi lần này..."')
+                : fld('kpuxPayAmount', 'Số tiền thực tế chi trả (VNĐ)', true, fmt(item.amount), 'maxlength="20" style="text-align:right;" oninput="formatNumberInput(this); kpuxClr(this)" placeholder="Nhập số tiền thực tế chi trả..."'))
             + '<div class="kpux-f kpux-span2"><span class="form-label">Phương thức chi trả thực tế<span class="kpux-req">*</span></span><div class="kpux-radios">'
             + '<label><input type="radio" name="kpuxPayMethod" value="Nhận qua chuyển khoản"' + (cash ? '' : ' checked') + ' onchange="kpuxPayMethod(this.value)"> Nhận qua chuyển khoản</label>'
             + '<label><input type="radio" name="kpuxPayMethod" value="Nhận tiền mặt"' + (cash ? ' checked' : '') + ' onchange="kpuxPayMethod(this.value)"> Nhận tiền mặt</label></div></div>'
@@ -450,8 +488,25 @@
         // Tiêu đề, Footer của chế độ Cập nhật chi trả
         el('kpdtTitle').innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> CẬP NHẬT CHI TRẢ: ' + esc(item.code);
         el('kpdtFoot').innerHTML = '<button type="button" class="btn btn-secondary" onclick="kpuxPayCancel()"><i class="fa-solid fa-xmark"></i> Hủy</button>'
-            + '<button type="button" class="btn btn-success" onclick="kpuxPaySave()"><i class="fa-solid fa-circle-check"></i> ' + (kpIsAdv(item) ? 'Hoàn thành tạm ứng' : 'Hoàn thành chi trả') + '</button>';
+            + '<button type="button" class="btn btn-success" onclick="kpuxPaySave()"><i class="fa-solid fa-circle-check"></i> ' + (kpIsAdv(item) ? 'Hoàn thành tạm ứng' : (multi ? 'Lưu kết quả chi trả' : 'Hoàn thành chi trả')) + '</button>';
     }
+    // Loại Chi trả tiền bồi thường: chi trả nhiều lần
+    function isMultiPay(item) { return !!item && item.type === 'Chi trả tiền bồi thường'; }
+    // Kiểm tra Số tiền chi lần này tại trường: > 0 và không vượt quá Số tiền còn phải chi; trả về thông báo lỗi hoặc ''
+    function payAmtError(item, amt) {
+        if (amt <= 0) return isMultiPay(item) ? 'Số tiền chi lần này phải lớn hơn 0' : 'Số tiền thực tế chi trả phải lớn hơn 0';
+        if (isMultiPay(item)) {
+            var remain = Math.max(0, (Number(item.amount) || 0) - kpPaidTotal(item));
+            return amt > remain ? 'Số tiền chi lần này không được vượt quá Số tiền còn phải chi (' + fmt(remain) + ' đồng)' : '';
+        }
+        var approved = Number(item.amount) || 0;
+        return amt > approved ? 'Số tiền thực tế chi trả không được vượt quá số tiền đã duyệt (' + fmt(approved) + ' đồng)' : '';
+    }
+    window.kpuxPayAmtCheck = function () {
+        var item = kpdtFind(payId), i = el('kpuxPayAmount'); if (!item || !i || !i.value.trim()) return;
+        var msg = payAmtError(item, parseFloat(i.value.replace(/\D/g, '')) || 0);
+        if (msg) mark('kpuxPayAmount', msg);
+    };
     function focusPay() {
         var c = el('kpuxPayCard'); if (!c) return;
         c.scrollIntoView({ block: 'start' });
@@ -486,9 +541,9 @@
         req.forEach(function (id) { if (!v(id)) { mark(id); if (!first) first = id; } });
         var d = parseDateViGlobal(v('kpuxPayDate'));
         if (v('kpuxPayDate') && (!d || d > today())) { mark('kpuxPayDate', d ? 'Ngày chi trả không được lớn hơn ngày hiện tại' : 'Ngày không hợp lệ, định dạng dd/mm/yyyy'); if (!first) first = 'kpuxPayDate'; }
-        var approved = Number(item.amount) || 0;
         var amt = parseFloat(v('kpuxPayAmount').replace(/\D/g, '')) || 0;
-        if (v('kpuxPayAmount') && (amt <= 0 || amt > approved)) { mark('kpuxPayAmount', amt <= 0 ? 'Số tiền thực tế chi trả phải lớn hơn 0' : 'Số tiền thực tế chi trả không được vượt quá số tiền đã duyệt (' + fmt(approved) + ' đồng)'); if (!first) first = 'kpuxPayAmount'; }
+        var amtErr = v('kpuxPayAmount') ? payAmtError(item, amt) : '';
+        if (amtErr) { mark('kpuxPayAmount', amtErr); if (!first) first = 'kpuxPayAmount'; }
         var tlOk = typeof tlktValidate === 'function' ? tlktValidate('kpuxPay') : true;
         if (first) { el(first).focus(); return; }
         if (!tlOk) return;
@@ -501,19 +556,36 @@
             + '<div>• <strong>Mã kinh phí:</strong> ' + esc(item.code) + '</div><div>• <strong>Họ và tên người nhận:</strong> ' + esc(data.recName) + '</div>'
             + '<div>• <strong>Phương thức chi trả:</strong> ' + detail + '</div><div>• <strong>Ngày chi trả:</strong> ' + esc(data.payDate) + '</div>'
             + '<div>• <strong>Số tiền thực tế chi trả:</strong> <span style="font-weight:700;">' + fmt(amount) + ' VNĐ</span> (' + esc(docTienBangChu(amount)) + ')</div></div>'
-            + '<p style="margin:0;">Bạn có chắc chắn muốn xác nhận hoàn thành ' + (adv ? 'tạm ứng' : 'chi trả') + ' số tiền <strong>' + fmt(amount) + ' VNĐ</strong> cho người nhận <strong>' + esc(data.recName) + '</strong> không? Sau khi xác nhận, bản ghi chuyển trạng thái <strong>Hoàn thành</strong>.</p></div>';
+            + (isMultiPay(item) ? multiConfirmText(item, amount, data) : '<p style="margin:0;">Bạn có chắc chắn muốn xác nhận hoàn thành ' + (adv ? 'tạm ứng' : 'chi trả') + ' số tiền <strong>' + fmt(amount) + ' VNĐ</strong> cho người nhận <strong>' + esc(data.recName) + '</strong> không? Sau khi xác nhận, bản ghi chuyển trạng thái <strong>Hoàn thành</strong>.</p></div>');
         if (ntEntry) html = html.replace('<p style="margin:0;">Bạn có chắc', '<div style="font-weight:600; margin-bottom:6px;">Thông tin thông báo chi trả tiền bồi thường</div>' + noticeConfirmHtml(ntEntry) + '<p style="margin:0;">Bạn có chắc');
-        showConfirmModal(html, function () { if (ntEntry) applyNotice(item, ntEntry); applyPay(item, data, amount, files); }, adv ? 'Xác nhận hoàn thành tạm ứng kinh phí' : 'Xác nhận hoàn thành chi trả kinh phí bồi thường');
+        showConfirmModal(html, function () { if (ntEntry) applyNotice(item, ntEntry); applyPay(item, data, amount, files); }, adv ? 'Xác nhận hoàn thành tạm ứng kinh phí' : (isMultiPay(item) ? 'Xác nhận lưu kết quả chi trả kinh phí bồi thường' : 'Xác nhận hoàn thành chi trả kinh phí bồi thường'));
     };
+    function multiConfirmText(item, amount, data) {
+        var paidAfter = kpPaidTotal(item) + amount, remainAfter = Math.max(0, (Number(item.amount) || 0) - paidAfter);
+        return '<p style="margin:0;">Bạn có chắc chắn muốn lưu kết quả chi trả lần ' + (kpPayHistory(item).length + 1) + ' số tiền <strong>' + fmt(amount) + ' VNĐ</strong> cho người nhận <strong>' + esc(data.recName) + '</strong> không? Tổng đã chi sau lần này: <strong>' + fmt(paidAfter) + ' VNĐ</strong>; còn phải chi: <strong>' + fmt(remainAfter) + ' VNĐ</strong>. '
+            + (remainAfter > 0 ? 'Bản ghi giữ trạng thái <strong>Chờ chi trả</strong>.' : 'Bản ghi chuyển trạng thái <strong>Hoàn thành</strong>.') + '</p></div>';
+    }
     function applyPay(item, data, amount, files) {
         var cash = data.method === 'Nhận tiền mặt';
-        item.status = 'Hoàn thành';
-        item.payoutDate = data.payDate; item.payoutAmountReal = amount; item.payoutMethod = data.method;
+        // Chi trả tiền bồi thường: cộng dồn Lịch sử chi trả; chi đủ Số tiền theo Quyết định thì Hoàn thành, còn thiếu giữ Chờ chi trả
+        var multi = isMultiPay(item), lanNo = 1, total = amount, done = true;
+        if (multi) {
+            var hist = kpPayHistory(item).slice();
+            lanNo = hist.length + 1;
+            hist.push({ no: lanNo, method: cash ? KPTB_CASH : KPTB_TRANSFER, recName: data.recName, address: data.address, accHolder: data.accHolder, account: data.account, bank: data.bank, branch: data.branch,
+                payDate: data.payDate, amount: amount, files: files, note: data.note, at: typeof kptbNow === 'function' ? kptbNow() : '', by: typeof kptbMe === 'function' ? kptbMe() : '' });
+            item.payHistory = hist;
+            total = kpPaidTotal(item);
+            done = total >= (Number(item.amount) || 0);
+        }
+        item.status = done ? 'Hoàn thành' : 'Chờ chi trả';
+        item.payoutDate = data.payDate; item.payoutAmountReal = total; item.payoutMethod = data.method;
         item.payoutRecName = data.recName; item.payoutRecAddress = data.address; item.payoutNote = data.note;
         item.payoutBankAccount = data.account; item.payoutBankUser = data.accHolder; item.payoutBankName = data.bank; item.payoutBankBranch = data.branch;
         item.payoutReceiptNo = '';
         item.payoutFiles = files; item.payoutFile = files.map(function (f) { return (f.file && f.file.name) || f.name; }).join(', ');
-        var note = 'Ngày chi trả ' + data.payDate + '; số tiền ' + fmt(amount) + ' đồng; ' + data.method + '.';
+        var note = (multi ? 'Chi trả lần ' + lanNo + ': ' : '') + 'Ngày chi trả ' + data.payDate + '; số tiền ' + fmt(amount) + ' đồng; ' + data.method + '.'
+            + (multi ? ' Tổng đã chi ' + fmt(total) + ' đồng; còn phải chi ' + fmt(Math.max(0, (Number(item.amount) || 0) - total)) + ' đồng.' : '');
         if (isTb(item)) {
             var me = kptbMe();
             item.kptbPayment = cash
@@ -525,11 +597,12 @@
             qdtuHist(item, 'Cập nhật chi trả', note);
         }
         saveProposalsToLocal();
+        if (done && typeof kpPayCompleteClaim === 'function') kpPayCompleteClaim(item, data.payDate, total);
         payId = null;
         renderProposalsTable();
         if (typeof updateBudgetStats === 'function') updateBudgetStats();
         window.scrollTo(0, 0);
-        showToast((kpIsAdv(item) ? 'Cập nhật kết quả tạm ứng kinh phí thành công! Bản ghi ' : 'Cập nhật kết quả chi trả kinh phí bồi thường thành công! Bản ghi ') + item.code + ' chuyển Hoàn thành.', 'success');
+        showToast((kpIsAdv(item) ? 'Cập nhật kết quả tạm ứng kinh phí thành công! Bản ghi ' : 'Cập nhật kết quả chi trả kinh phí bồi thường thành công! Bản ghi ') + item.code + (done ? ' chuyển Hoàn thành.' : ' giữ Chờ chi trả, còn phải chi ' + fmt(Math.max(0, (Number(item.amount) || 0) - total)) + ' đồng.'), 'success');
     }
 
     // ================= 5. Nhập thông báo (01 lần) tại khối Thông tin thông báo chi trả ...: màn chi tiết và màn Cập nhật chi trả =================
@@ -644,7 +717,8 @@
         if (!tlOk) return;
         var files = typeof tlktGet === 'function' ? tlktGet('kpuxFf') : [];
         var no = v('kpuxFfNo'), dt = v('kpuxFfDate'), reason = v('kpuxFfReason');
-        showConfirmModal('Xác nhận hoàn thành thủ tục nộp toàn bộ số tiền ' + fmt(info.unpaid) + ' VNĐ của bản ghi ' + esc(item.code) + ' vào ngân sách nhà nước? Sau khi xác nhận, bản ghi chuyển trạng thái Trả lại ngân sách nhà nước.', function () {
+        // Đã chi một phần (Tổng đã chi > 0): nộp số tiền còn lại chưa chi trả; chưa chi lần nào: nộp toàn bộ số tiền
+        showConfirmModal('Xác nhận hoàn thành thủ tục nộp ' + (getPaidAmount(item) > 0 ? 'số tiền còn lại chưa chi trả ' : 'toàn bộ số tiền ') + fmt(info.unpaid) + ' VNĐ của bản ghi ' + esc(item.code) + ' vào ngân sách nhà nước? Sau khi xác nhận, bản ghi chuyển trạng thái Trả lại ngân sách nhà nước.', function () {
             item.status = 'Trả lại ngân sách nhà nước';
             item.treasuryForfeitDate = dt; item.treasuryVoucherNo = no; item.treasuryAmount = info.unpaid; item.treasuryReason = reason; item.treasuryFile = files;
             item.payoutAmountReal = Math.max(0, (Number(item.amount) || 0) - info.unpaid);

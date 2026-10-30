@@ -5,10 +5,10 @@
  *   + don_vi_a / don_vi_b: Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại - Bước 1, Bước 2 chỉ xem, chỉ thấy cán bộ của đơn vị.
  *   + stp: Sở Tư pháp - chỉ xem Bước 1, 2; chỉ thấy cán bộ của đơn vị thuộc phạm vi quản lý.
  *   + lanh_dao: Lãnh đạo phê duyệt (góc nhìn Lãnh đạo của trang).
- * - Nạp sau chi_tiet_ho_so_hoan_tra_tlhd.js / _dcht.js; ghi đè các hàm Bước 2 và bổ sung Lưu nháp, Ký ngoài có thông tin QĐ cho Bước 1.
+ * - Nạp sau chi_tiet_ho_so_hoan_tra_tlhd.js / _dcht.js; ghi đè các hàm Bước 2 và bổ sung Ký ngoài có thông tin QĐ cho Bước 1.
  */
 (function () {
-    const U_CHU = 'UBND Quận Long Biên', U_A = 'UBND Phường Bồ Đề', U_B = 'UBND Huyện An Dương', U_STP = 'Sở Tư pháp Hà Nội';
+    const U_CHU = 'UBND phường Việt Hưng', U_A = 'UBND Phường Bồ Đề', U_B = 'UBND phường Hải An', U_STP = 'Sở Tư pháp Hà Nội';
     const STP_UNITS = [U_A, U_CHU];
     const SCOPE_UNIT = { don_vi_chu: U_CHU, don_vi_a: U_A, don_vi_b: U_B, stp: U_STP, lanh_dao: '' };
     // Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại của dữ liệu mẫu (đồng bộ màn danh sách)
@@ -627,18 +627,12 @@
         showToast(idx >= 0 ? 'Cập nhật cán bộ thành công.' : 'Thêm cán bộ thành công.', 'success');
     };
 
-    // ===== Lưu nháp / Lưu ý kiến hội đồng =====
+    // ===== Lưu ý kiến hội đồng =====
     function collectStep2() {
         activeDossier.conclusionDate = el('s2ConclusionDate').value.trim();
         activeDossier.ht2YKienChung = el('ht2YKienChung').value.trim();
         if (typeof tlktGet === 'function' && el('ht2Tlkt') && el('ht2Tlkt').dataset.ht2Mounted) activeDossier.ht2Tlkt = tlktGet('ht2');
     }
-    window.ht2SaveDraft = function () {
-        if (!canEditStep2()) return;
-        collectStep2();
-        activeDossier.ht2DraftAt = nowShort();
-        showToast('Lưu nháp ý kiến của Hội đồng thành công.', 'success');
-    };
     function confirmBox(title, message, okText, onYes) {
         const modal = el('customConfirmModal');
         const t = modal && modal.querySelector('.modal-title'), b = el('customConfirmBtn');

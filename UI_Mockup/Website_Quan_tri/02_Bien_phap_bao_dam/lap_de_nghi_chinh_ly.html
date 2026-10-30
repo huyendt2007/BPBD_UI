@@ -105,7 +105,7 @@
 
             <!-- TỆP TIN ĐÍNH KÈM -->
             <div class="cl-card">
-                <div class="cl-card-header"><span class="cl-card-title"><i class="fa-solid fa-paperclip"></i> Tệp tin đính kèm <span class="cl-req" style="color:#EF4444;">*</span></span></div>
+                <div class="cl-card-header"><span class="cl-card-title"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm <span class="cl-req" style="color:#EF4444;">*</span></span></div>
                 <div class="cl-card-body">
                     <div class="cl-upload" id="uploadBox" tabindex="0">
                         <i class="fa-solid fa-cloud-arrow-up" style="font-size:28px;color:#3B82F6;"></i>
@@ -461,7 +461,7 @@
         // Tệp tin đính kèm
         const fl = (p.files || []).length ? `<div class="cl-file-list cl-mt-0">${p.files.map(f => `<div class="cl-file-item">${C.fileLinks(f.ten, true)}</div>`).join('')}</div>`
             : `<div class="cl-muted">-</div>`;
-        parts.push(card('Tệp tin đính kèm', 'fa-paperclip', fl));
+        parts.push(card('Tài liệu đính kèm', 'fa-paperclip', fl));
 
         // Khôi phục hủy đăng ký: Khối Thông tin giao dịch hủy đã thực hiện trước đây đặt sau Tệp tin đính kèm (mặc định thu gọn)
         if (huy) parts.push(card('Khối Thông tin giao dịch hủy đã thực hiện trước đây', 'fa-clock-rotate-left', '<div id="viewGdHuyHost"></div>', { id: 'cardGdHuyView', collapsed: true }));
@@ -522,6 +522,6 @@
     }
 })();
 </script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 </html>

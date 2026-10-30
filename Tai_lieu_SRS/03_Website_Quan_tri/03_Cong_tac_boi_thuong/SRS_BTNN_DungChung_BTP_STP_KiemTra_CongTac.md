@@ -17,9 +17,17 @@
 
 *a. Phân quyền*:
 
-\- Cán bộ Bộ Tư pháp, cán bộ Sở Tư pháp: tra cứu, lập và sửa kế hoạch kiểm tra, cập nhật kết quả kiểm tra của cuộc kiểm tra do cơ quan mình lập.
+\- Người dùng thuộc Bộ Tư pháp, Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước hoặc Sở Tư pháp: tra cứu, lập kế hoạch kiểm tra; sửa kế hoạch kiểm tra, cập nhật kết quả kiểm tra của cuộc kiểm tra do đơn vị mình lập.
 
-\- Người dùng chỉ xem được cuộc kiểm tra do cơ quan của mình (đơn vị gốc trên cây Cơ cấu tổ chức) lập.
+\- Người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước: xem chi tiết cuộc kiểm tra của mọi Sở Tư pháp; không thao tác trên cuộc kiểm tra của Sở Tư pháp.
+
+\- Người dùng thuộc Sở Tư pháp: chỉ xem cuộc kiểm tra do Sở mình lập.
+
+\- Người dùng thuộc đơn vị khác: không xem được dữ liệu.
+
+\- Người dùng thuộc UBND cấp tỉnh: chỉ xem chi tiết cuộc kiểm tra của Sở Tư pháp trực thuộc; không thêm mới, không thao tác.
+
+\- Phạm vi dữ liệu theo [Quy tắc phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-tac-pham-vi-du-lieu-btp-stp).
 
 *b. Điều kiện thực hiện*:
 
@@ -60,11 +68,12 @@ flowchart TD
 | **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối. |
 | Mã cuộc kiểm tra | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập mã cuộc kiểm tra...".<br>- Tìm gần đúng. |
 | Cơ quan được kiểm tra | String(255) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập cơ quan được kiểm tra...".<br>- Tìm gần đúng theo tên cơ quan. |
+| Đơn vị thực hiện | List(String(50)) | Không | Tất cả | Control UI: Cây đơn vị chọn nhiều (Tree select) theo Cơ cấu tổ chức, có ô tìm kiếm theo tên.<br>- Chỉ hiển thị khi người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.<br>- Cây gồm Bộ Tư pháp, Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước và đơn vị trực thuộc; các Sở Tư pháp và đơn vị trực thuộc, theo [Quy tắc phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-tac-pham-vi-du-lieu-btp-stp).<br>- Mỗi nút có ô tích; tích nút cha thì tích toàn bộ nút con.<br>- `Tất cả`: không lọc.<br>- Nút `Các Sở Tư pháp`: tích nhanh toàn bộ các Sở Tư pháp trong cây.<br>- Chọn từ 02 đơn vị trở lên: ô hiển thị "Đã chọn [n] đơn vị".<br>- Lọc bản ghi có `Đơn vị thực hiện` hoặc đơn vị công tác của `Cán bộ xử lý` thuộc các đơn vị đã tích. |
 | Hình thức kiểm tra | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Kiểm tra định kỳ<br>+ Kiểm tra đột xuất |
 | Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Chờ kiểm tra<br>+ Đã kiểm tra |
 | Từ ngày | Date | Không | Trống | Control UI: DatePicker.<br>- Placeholder: "dd/mm/yyyy".<br>- So sánh với `Thời gian kiểm tra dự kiến từ ngày`. |
 | Đến ngày | Date | Không | Trống | Control UI: DatePicker.<br>- Placeholder: "dd/mm/yyyy". |
-| **II. Bảng danh sách kết quả** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Chỉ gồm cuộc kiểm tra do cơ quan của người dùng lập.<br>- Sắp xếp mặc định theo Mã cuộc kiểm tra giảm dần.<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]. |
+| **II. Bảng danh sách kết quả** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Phạm vi bản ghi theo [Quy tắc phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-tac-pham-vi-du-lieu-btp-stp):<br>+ Người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước: bản ghi của Bộ Tư pháp và của mọi Sở Tư pháp.<br>+ Người dùng thuộc Sở Tư pháp: bản ghi do Sở mình tạo.<br>+ Người dùng thuộc UBND cấp tỉnh: bản ghi của Sở Tư pháp trực thuộc; các icon thao tác hiển thị mờ.<br>+ Người dùng thuộc đơn vị khác: không hiển thị bản ghi.<br>- Cuộc kiểm tra của đơn vị khác: các icon thao tác hiển thị mờ.<br>- Sắp xếp mặc định theo Mã cuộc kiểm tra giảm dần.<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]. |
 | STT | Integer(10) | - | - | Theo dữ liệu bản ghi. |
 | Mã cuộc kiểm tra | String(50) | - | - | Theo dữ liệu bản ghi. |
 | Cơ quan được kiểm tra | String(255) | - | - | Theo dữ liệu bản ghi. |
@@ -72,6 +81,8 @@ flowchart TD
 | Thời gian kiểm tra theo kế hoạch | String(50) | - | - | Hiển thị `Từ ngày - Đến ngày` dự kiến, định dạng `dd/mm/yyyy`. |
 | Thời gian kiểm tra thực tế | String(50) | - | - | Hiển thị `Từ ngày - Đến ngày` thực tế, định dạng `dd/mm/yyyy`; hiển thị `-` khi chưa cập nhật kết quả. |
 | Trưởng đoàn kiểm tra | String(100) | - | - | Họ và tên thành viên có vai trò `Trưởng đoàn` trong bảng Đoàn kiểm tra. |
+| Cán bộ xử lý | String(100) | - | - | Control UI: Text (Read-only).<br>- Họ và tên cán bộ đã nhập cuộc kiểm tra (người tạo). |
+| Đơn vị thực hiện | String(255) | - | - | Control UI: Text (Read-only).<br>- Chỉ hiển thị khi người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.<br>- Đặt ngay sau cột `Cán bộ xử lý`.<br>- Hiển thị tên đơn vị thực hiện của bản ghi. |
 | Trạng thái | Enum(String(50)) | - | - | Control UI: Badge, theo dữ liệu bản ghi. |
 | Thao tác | - | - | - | Control UI: Icon<br>+ Sửa kế hoạch<br>+ Cập nhật kết quả<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | Phân trang | - | - | 20 bản ghi/trang | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
@@ -84,14 +95,15 @@ flowchart TD
 |  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
 |  |  |  | **TH2 - Hợp lệ**: Hệ thống hiển thị các cuộc kiểm tra thỏa mãn đồng thời các tiêu chí và đưa về Trang 1. |
 |  |  |  | **TH3 - Không có dữ liệu**: Bảng hiển thị 01 dòng [MSG-INF-SYS-001]. |
+|  |  |  | **TH4 - Đơn vị của người dùng không thuộc phạm vi dữ liệu**: Người dùng không thuộc Bộ Tư pháp, Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước, Sở Tư pháp hoặc UBND cấp tỉnh; bảng kết quả hiển thị 01 dòng căn giữa, in nghiêng: "Đơn vị của người dùng không thuộc phạm vi dữ liệu của chức năng này.". |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách. |
-| 3 | Thêm mới | Button | Hệ thống mở [MH02 - Màn hình Thêm mới/Sửa kế hoạch kiểm tra](#43394-mh02---màn-hình-thêm-mớisửa-kế-hoạch-kiểm-tra) ở chế độ Thêm mới. |
-| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Mã cuộc kiểm tra, Cơ quan được kiểm tra, Hình thức kiểm tra, Thời gian kiểm tra theo kế hoạch, Thời gian kiểm tra thực tế, Trưởng đoàn kiểm tra, Trạng thái.<br>- Tên tệp: `yyyyMMdd_Danh_sach_kiem_tra_cong_tac_BTNN.xlsx`. |
+| 3 | Thêm mới | Button | Chỉ hiển thị khi người dùng thuộc Bộ Tư pháp, Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước hoặc Sở Tư pháp.<br>- Hệ thống mở [MH02 - Màn hình Thêm mới/Sửa kế hoạch kiểm tra](#43394-mh02---màn-hình-thêm-mớisửa-kế-hoạch-kiểm-tra) ở chế độ Thêm mới. |
+| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-chuan-ket-xuat-excel):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Mã cuộc kiểm tra, Cơ quan được kiểm tra, Hình thức kiểm tra, Thời gian kiểm tra theo kế hoạch, Thời gian kiểm tra thực tế, Trưởng đoàn kiểm tra, Trạng thái.<br>- Tên tệp: `yyyyMMdd_Danh_sach_kiem_tra_cong_tac_BTNN.xlsx`. |
 |  |  |  | **TH1 - Không có dữ liệu**: Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải tệp. |
 |  |  |  | **TH2 - Có dữ liệu**: Hệ thống tải tệp Excel về máy người dùng. |
-| 5 | Row click | Row click | Hệ thống mở [MH04 - Màn hình Xem chi tiết cuộc kiểm tra](#43396-mh04---màn-hình-xem-chi-tiết-cuộc-kiểm-tra). |
-| 6 | Sửa kế hoạch | Icon button | Chỉ cho phép khi trạng thái `Chờ kiểm tra`. Hệ thống mở [MH02 - Màn hình Thêm mới/Sửa kế hoạch kiểm tra](#43394-mh02---màn-hình-thêm-mớisửa-kế-hoạch-kiểm-tra) ở chế độ Sửa. |
-| 7 | Cập nhật kết quả | Icon button | Hệ thống mở [MH03 - Màn hình Cập nhật kết quả kiểm tra](#43395-mh03---màn-hình-cập-nhật-kết-quả-kiểm-tra); với cuộc kiểm tra đã có kết quả, cho phép sửa kết quả. |
+| 5 | Row click | Row click | Hệ thống mở [MH04 - Màn hình Xem chi tiết cuộc kiểm tra](#43396-mh04---màn-hình-xem-chi-tiết-cuộc-kiểm-tra).<br>- Cuộc kiểm tra của đơn vị khác: chỉ hiển thị nút `Đóng`. |
+| 6 | Sửa kế hoạch | Icon button | Chỉ cho phép với cuộc kiểm tra do đơn vị của người dùng lập, ở trạng thái `Chờ kiểm tra`. Hệ thống mở [MH02 - Màn hình Thêm mới/Sửa kế hoạch kiểm tra](#43394-mh02---màn-hình-thêm-mớisửa-kế-hoạch-kiểm-tra) ở chế độ Sửa. |
+| 7 | Cập nhật kết quả | Icon button | Chỉ cho phép với cuộc kiểm tra do đơn vị của người dùng lập.<br>- Hệ thống mở [MH03 - Màn hình Cập nhật kết quả kiểm tra](#43395-mh03---màn-hình-cập-nhật-kết-quả-kiểm-tra); với cuộc kiểm tra đã có kết quả, cho phép sửa kết quả. |
 | 8 | Phân trang | Pagination | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ---
@@ -198,8 +210,8 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Sửa kế hoạch | Button | Hiển thị khi trạng thái `Chờ kiểm tra`. Hệ thống mở [MH02 - Màn hình Thêm mới/Sửa kế hoạch kiểm tra](#43394-mh02---màn-hình-thêm-mớisửa-kế-hoạch-kiểm-tra) ở chế độ Sửa. |
-| 2 | Cập nhật kết quả | Button | Hệ thống mở [MH03 - Màn hình Cập nhật kết quả kiểm tra](#43395-mh03---màn-hình-cập-nhật-kết-quả-kiểm-tra). |
+| 1 | Sửa kế hoạch | Button | Hiển thị với cuộc kiểm tra do đơn vị của người dùng lập, khi trạng thái `Chờ kiểm tra`. Hệ thống mở [MH02 - Màn hình Thêm mới/Sửa kế hoạch kiểm tra](#43394-mh02---màn-hình-thêm-mớisửa-kế-hoạch-kiểm-tra) ở chế độ Sửa. |
+| 2 | Cập nhật kết quả | Button | Hiển thị với cuộc kiểm tra do đơn vị của người dùng lập.<br>- Hệ thống mở [MH03 - Màn hình Cập nhật kết quả kiểm tra](#43395-mh03---màn-hình-cập-nhật-kết-quả-kiểm-tra). |
 | 3 | Xem file | Link | Hệ thống mở file của dòng tài liệu tại một tab trình duyệt mới. |
 | 4 | Đóng | Button | Hệ thống đóng màn hình và quay lại [MH01 - Màn hình Danh sách kiểm tra công tác BTNN](#43393-mh01---màn-hình-danh-sách-kiểm-tra-công-tác-btnn). |
 

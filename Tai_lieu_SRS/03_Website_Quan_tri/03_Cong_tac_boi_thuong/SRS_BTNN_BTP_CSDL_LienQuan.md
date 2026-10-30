@@ -65,6 +65,7 @@ flowchart TD
 | Cơ quan quản lý CSDL nguồn | String(255) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Ngày trích xuất/nhận thông tin | Date | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Định dạng `dd/mm/yyyy`. |
 | Vụ việc BTNN liên quan | String(50) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi.<br>- Hiển thị Mã vụ việc; hiển thị `-` nếu chưa gắn vụ việc. |
+| Cán bộ xử lý | String(100) | Không | Theo dữ liệu hệ thống | Control UI: Text (Read-only).<br>- Họ và tên cán bộ đã nhập bản ghi (người tạo). |
 | Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | Phân trang | - | - | 20 bản ghi/trang | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
@@ -78,7 +79,7 @@ flowchart TD
 |  |  |  | **TH3 - Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí tìm kiếm đã nhập/chọn, thiết lập các ô lọc về giá trị mặc định. |
 | 3 | Thêm mới | Button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa thông tin CSDL liên quan BTNN](#433205-mh03---màn-hình-thêm-mớisửa-thông-tin-csdl-liên-quan-btnn) ở chế độ Thêm mới với form thông tin để trống. |
-| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Tên/Mã bản ghi tham chiếu, Loại CSDL nguồn, Cơ quan quản lý CSDL nguồn, Ngày trích xuất/nhận thông tin, Vụ việc BTNN liên quan.<br>- Tên tệp: `yyyyMMdd_Danh_sach_thong_tin_CSDL_lien_quan_BTNN.xlsx`. |
+| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-chuan-ket-xuat-excel):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Tên/Mã bản ghi tham chiếu, Loại CSDL nguồn, Cơ quan quản lý CSDL nguồn, Ngày trích xuất/nhận thông tin, Vụ việc BTNN liên quan.<br>- Tên tệp: `yyyyMMdd_Danh_sach_thong_tin_CSDL_lien_quan_BTNN.xlsx`. |
 |  |  |  | **TH1 - Không có dữ liệu**: Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải tệp. |
 |  |  |  | **TH2 - Có dữ liệu**: Hệ thống tải tệp Excel về máy người dùng. |
 | 5 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Tên/Mã bản ghi tham chiếu<br>+ Loại CSDL nguồn<br>+ Cơ quan quản lý CSDL nguồn |
@@ -103,7 +104,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề màn hình | - | - | - | Control UI: Label<br>Hiển thị "Xem chi tiết thông tin từ các CSDL có liên quan đến công tác BTNN". |
 | **I. Thông tin chung** |  |  |  |  |
-| Người tạo/Cán bộ phụ trách | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Cán bộ xử lý | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Ngày tạo/cập nhật | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Chế độ | - | - | - | Control UI: Label<br>Hiển thị "Chỉ xem". |
 | **II. Thông tin trích xuất từ CSDL** |  |  |  |  |
@@ -140,7 +141,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề màn hình | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới thông tin từ các CSDL có liên quan đến công tác BTNN" hoặc "Sửa thông tin từ các CSDL có liên quan đến công tác BTNN". |
 | **I. Thông tin chung** |  |  |  |  |
-| Người tạo/Cán bộ phụ trách | - | - | Theo tài khoản đăng nhập | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Cán bộ xử lý | - | - | Theo tài khoản đăng nhập | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Ngày tạo/cập nhật | - | - | Theo dữ liệu hệ thống | Control UI: Label<br>Định dạng `dd/mm/yyyy`. |
 | Chế độ | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới" hoặc "Sửa". |
 | **II. Thông tin trích xuất từ CSDL** |  |  |  |  |

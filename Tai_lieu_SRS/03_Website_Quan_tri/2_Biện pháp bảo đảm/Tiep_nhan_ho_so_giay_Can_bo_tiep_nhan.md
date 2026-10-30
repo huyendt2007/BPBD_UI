@@ -148,7 +148,7 @@ flowchart TD
 | Tên tài liệu | String(255) | Không | Trống | Control UI: Input text để cán bộ tự nhập tên thành phần hồ sơ. |
 | File đính kèm | File | Không | Trống | Control UI: Nút `Chọn file` / Khung hiển thị tên tệp tin (File pill).<br>- Khi chưa đính kèm tệp: Hiển thị nút `Chọn file`.<br>- Khi đã đính kèm tệp: Hiển thị icon định dạng tệp kèm Tên tệp tin. |
 | Thao tác | - | - | - | Control UI: Nhóm liên kết thao tác trên dòng.<br>- Khi đã có tệp đính kèm: Hiển thị liên kết `Xem file`, liên kết `Gỡ file` và liên kết `Xóa dòng`.<br>- Khi chưa có tệp đính kèm: Hiển thị liên kết `Xóa dòng` để gỡ bỏ dòng thành phần hồ sơ khỏi bảng. |
-| Thêm thành phần hồ sơ mới | - | - | - | Control UI: Nút viền nét đứt đặt dưới bảng danh mục tài liệu.<br>- Cho phép cán bộ tự do bấm bổ sung thêm thành phần hồ sơ mới. |
+| Thêm thành phần hồ sơ mới | - | - | - | Control UI: Nút viền nét đứt đặt dưới bảng `Tài liệu đính kèm`.<br>- Cho phép cán bộ tự do bấm bổ sung thêm thành phần hồ sơ mới. |
 
 ###### 4.3.2.16.4.3. Chức năng trên màn hình
 
@@ -160,7 +160,7 @@ flowchart TD
 | 4 | Tải lên | Nút | Hệ thống mở hộp thoại chọn tệp từ máy người dùng và tải tệp đính kèm vào dòng tài liệu tương ứng.<br>- TH tệp sai định dạng cho phép: Hiển thị thông báo **[MSG-ERR-FILE-001]** và không đính kèm tệp.<br>- TH tệp vượt quá dung lượng cho phép hoặc tổng dung lượng các tệp vượt quá dung lượng tối đa cho phép của hồ sơ: Hiển thị thông báo **[MSG-ERR-FILE-002]** và không đính kèm tệp.<br>- TH hợp lệ: Hệ thống đính kèm tệp, hiển thị icon định dạng tệp kèm Tên tệp tin và kích hoạt các liên kết thao tác trên dòng (`Xem file`, `Xóa`). |
 | 5 | Xem file | Liên kết | Hệ thống mở nội dung tệp tin đính kèm của dòng tài liệu trong một tab mới của trình duyệt. |
 | 6 | Xóa | Liên kết | Hệ thống hiển thị popup xác nhận với `Loại thao tác` = "Xóa". Khi người dùng xác nhận, hệ thống gỡ tệp tin khỏi dòng tài liệu và đưa các liên kết thao tác trên dòng về trạng thái khóa mờ. |
-| 7 | Thêm thành phần hồ sơ mới | Nút | Hệ thống chèn thêm một dòng trống vào bảng danh mục tài liệu gửi kèm để người dùng nhập tên tài liệu và tải lên tệp đính kèm, không giới hạn số lượng dòng. |
+| 7 | Thêm thành phần hồ sơ mới | Nút | Hệ thống chèn thêm một dòng trống vào bảng `Tài liệu đính kèm` để người dùng nhập tên tài liệu và tải lên tệp đính kèm, không giới hạn số lượng dòng. |
 | 8 | Hoàn tất tiếp nhận | Nút | **TH Bỏ trống trường bắt buộc**: Áp dụng quy tắc kiểm tra bắt buộc, hiển thị viền đỏ và thông báo cảnh báo màu đỏ *"Đây là trường bắt buộc"* ngay phía dưới ô trống, tự động đưa con trỏ focus vào ô lỗi đầu tiên và hiển thị thông báo **[MSG-ERR-VAL-001]**. |
 |  |  |  | **TH Dữ liệu không hợp lệ**: Hệ thống kiểm tra tính hợp lệ của dữ liệu:<br>+ Định dạng email: Phải có ký tự `@` và tên miền hợp lệ; nếu sai, hiển thị **[MSG-ERR-VAL-002]**.<br>+ Định dạng số điện thoại: Phải là số hợp lệ từ 10-11 chữ số; nếu sai, hiển thị **[MSG-ERR-VAL-003]**.<br>+ Số lượng bản sao: Phải là số nguyên dương lớn hơn hoặc bằng 1; nếu sai, hiển thị **[MSG-ERR-VAL-012]**.<br>- Hệ thống dừng xử lý khi dữ liệu không hợp lệ. |
 |  |  |  | **TH Không xác định được biểu phí**: Nếu hệ thống không tìm thấy biểu phí đang có hiệu lực tương ứng với Loại đăng ký, hiển thị thông báo lỗi **[MSG-ERR-UCPS-003]** và không tạo hồ sơ. |

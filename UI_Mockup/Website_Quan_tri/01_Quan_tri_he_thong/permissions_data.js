@@ -3034,11 +3034,11 @@ const systemPermissions = [
                                               },
                                               {
  "id":  "WebAdmin-10-03",
- "name":  "Dashboard Lãnh đạo",
+ "name":  "Bàn làm việc Lãnh đạo",
  "children":  [
 {
  "id":  "WebAdmin-10-03-01",
- "name":  "Xem Dashboard Lãnh đạo",
+ "name":  "Xem Bàn làm việc Lãnh đạo",
  "children":  [
 
  ]
@@ -3096,6 +3096,28 @@ const systemPermissions = [
  "name":  "Xóa vụ việc tại Tòa án",
  "children":  [
 
+ ]
+ }
+ ]
+ },
+{
+ "id":  "WebAdmin-10-05",
+ "name":  "Tra cứu vụ việc",
+ "children":  [
+{
+ "id":  "WebAdmin-10-05-01",
+ "name":  "Xem Tra cứu vụ việc",
+ "children":  [
+
+ ]
+ },
+{
+ "id":  "WebAdmin-10-05-02",
+ "name":  "Kết xuất Excel Tra cứu vụ việc",
+ "children":  [
+
+ ]
+ }
  ]
  }
  ]
@@ -4797,6 +4819,33 @@ const systemPermissions = [
 {
  "id":  "WebAdmin-29-13-02",
  "name":  "Cập nhật cấu hình luồng xử lý",
+ "children":  [
+
+ ]
+ }
+ ]
+ },
+{
+ "id":  "WebAdmin-29-14",
+ "name":  "Nhật ký đồng bộ Dịch vụ công",
+ "children":  [
+{
+ "id":  "WebAdmin-29-14-01",
+ "name":  "Xem Nhật ký đồng bộ Dịch vụ công",
+ "children":  [
+
+ ]
+ },
+{
+ "id":  "WebAdmin-29-14-02",
+ "name":  "Gửi lại bản tin đồng bộ Dịch vụ công",
+ "children":  [
+
+ ]
+ },
+{
+ "id":  "WebAdmin-29-14-03",
+ "name":  "Kết xuất Excel Nhật ký đồng bộ Dịch vụ công",
  "children":  [
 
  ]

@@ -68,6 +68,7 @@ flowchart TD
 | Vai trò phụ trách | Enum(String(50)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Số điện thoại | String(20) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Email | String(255) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi.<br>- Hiển thị `-` nếu chưa nhập. |
+| Cán bộ xử lý | String(100) | Không | Theo dữ liệu hệ thống | Control UI: Text (Read-only).<br>- Họ và tên cán bộ đã nhập bản ghi (người tạo). |
 | Trạng thái | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Control UI: Badge.<br>- Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | Phân trang | - | - | 20 bản ghi/trang | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
@@ -81,7 +82,7 @@ flowchart TD
 |  |  |  | **TH2 - Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí tìm kiếm đã nhập/chọn, thiết lập các ô lọc về giá trị mặc định. |
 | 3 | Thêm mới | Button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa đầu mối Lãnh đạo, công chức BTNN](#433195-mh03---màn-hình-thêm-mớisửa-đầu-mối-lãnh-đạo-công-chức-btnn) ở chế độ Thêm mới với form thông tin để trống. |
-| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Tỉnh/Thành phố, Đơn vị, Họ và tên, Chức vụ, Vai trò phụ trách, Số điện thoại, Email, Trạng thái.<br>- Tên tệp: `yyyyMMdd_Danh_sach_dau_moi_cong_tac_BTNN.xlsx`. |
+| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-chuan-ket-xuat-excel):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Tỉnh/Thành phố, Đơn vị, Họ và tên, Chức vụ, Vai trò phụ trách, Số điện thoại, Email, Trạng thái.<br>- Tên tệp: `yyyyMMdd_Danh_sach_dau_moi_cong_tac_BTNN.xlsx`. |
 |  |  |  | **TH1 - Không có dữ liệu**: Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải tệp. |
 |  |  |  | **TH2 - Có dữ liệu**: Hệ thống tải tệp Excel về máy người dùng. |
 | 5 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Tỉnh/Thành phố<br>+ Đơn vị<br>+ Họ và tên |
@@ -107,7 +108,7 @@ flowchart TD
 | Tiêu đề màn hình | - | - | - | Control UI: Label<br>Hiển thị "Xem chi tiết thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương". |
 | **I. Thông tin chung** |  |  |  |  |
 | Trạng thái | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi (giá trị `Trạng thái`). |
-| Người tạo/Cán bộ phụ trách | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Cán bộ xử lý | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Ngày tạo/cập nhật | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Chế độ | - | - | - | Control UI: Label<br>Hiển thị "Chỉ xem". |
 | **II. Thông tin đầu mối** |  |  |  |  |
@@ -148,7 +149,7 @@ flowchart TD
 | Tiêu đề màn hình | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương" hoặc "Sửa thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương". |
 | **I. Thông tin chung** |  |  |  |  |
 | Trạng thái | - | - | Theo ngữ cảnh | Control UI: Label<br>Thêm mới hiển thị "Đang nhập"; Sửa hiển thị theo dữ liệu bản ghi. |
-| Người tạo/Cán bộ phụ trách | - | - | Theo tài khoản đăng nhập | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Cán bộ xử lý | - | - | Theo tài khoản đăng nhập | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Ngày tạo/cập nhật | - | - | Theo dữ liệu hệ thống | Control UI: Label<br>Định dạng `dd/mm/yyyy`. |
 | Chế độ | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới" hoặc "Sửa". |
 | **II. Thông tin đầu mối** |  |  |  |  |

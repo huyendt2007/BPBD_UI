@@ -15,6 +15,7 @@
     let doneCb = null;
     let assignUnits = []; // đơn vị nhận theo cấu hình của đơn vị đang phân công
     let assignOfficers = []; // cán bộ được phân công theo cấu hình của đơn vị đang phân công
+    let assignOpts = null; // [cdpd] tham số phân công riêng (VD Cử người phục hồi danh dự - BTNN_WF.PHDD_ASSIGN); null = Phân công tại Tiếp nhận hồ sơ
 
     const CSS = `
     .ld-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); display: none; align-items: center; justify-content: center; z-index: 9500; }
@@ -101,7 +102,7 @@
 
     const HTML = `
     <div class="ld-overlay" id="ldAssignOverlay"><div class="ld-modal">
-        <div class="ld-modal-header"><h3><i class="fa-solid fa-diagram-project"></i> Phân công xử lý hồ sơ <span id="ldACode"></span></h3><span class="ld-close" data-close="ldAssignOverlay">&times;</span></div>
+        <div class="ld-modal-header"><h3><i class="fa-solid fa-diagram-project" id="ldAIcon"></i> <span id="ldATitle">Phân công xử lý hồ sơ</span> <span id="ldACode"></span></h3><span class="ld-close" data-close="ldAssignOverlay">&times;</span></div>
         <div class="ld-modal-body">
             <div class="ld-muted" id="ldAContext" style="margin-bottom:10px;"></div>
             <div class="ld-muted" id="ldANoConfig" style="display:none;">Đơn vị chưa được cấu hình luồng xử lý.</div>
@@ -295,17 +296,23 @@
     }
 
     // ---------- Phân công ----------
-    function openAssign(code, cb) {
+    // opts (không bắt buộc): { title, icon, unitOf(rec), nodeOf(rec), canAssign(rec, me), assignUnit(code, unit, note), assignOfficer(code, chuTri, note) }
+    function openAssign(code, cb, opts) {
         mount();
         const rec = WF.getRecord(code);
         const me = WF.getCurrentUserId();
         doneCb = cb;
-        if (!rec || !WF.canAssign(rec, me)) { notify('Hồ sơ đã được xử lý bởi người khác. Danh sách đã được tải lại.', false); finish(); return; }
-        if (WF.markViewed(rec, me)) WF.upsertRecord(rec);
+        assignOpts = opts || null;
+        const can = assignOpts ? assignOpts.canAssign(rec, me) : WF.canAssign(rec, me);
+        if (!rec || !can) { notify('Hồ sơ đã được xử lý bởi người khác. Danh sách đã được tải lại.', false); finish(); return; }
+        if (!assignOpts && WF.markViewed(rec, me)) WF.upsertRecord(rec);
         acting = code;
-        const node = WF.getNodeConfig(rec.currentUnitId, WF.flowTypeOf(rec)) || {};
+        const node = (assignOpts ? assignOpts.nodeOf(rec) : WF.getNodeConfig(rec.currentUnitId, WF.flowTypeOf(rec))) || {};
+        const unitNow = assignOpts ? assignOpts.unitOf(rec) : rec.currentUnitId;
+        document.getElementById('ldATitle').textContent = assignOpts && assignOpts.title ? assignOpts.title : 'Phân công xử lý hồ sơ';
+        document.getElementById('ldAIcon').className = assignOpts && assignOpts.icon ? assignOpts.icon : 'fa-solid fa-diagram-project';
         document.getElementById('ldACode').textContent = rec.maVuViec || code;
-        document.getElementById('ldAContext').textContent = `Đơn vị đang phân công: ${WF.unitName(rec.currentUnitId)}`;
+        document.getElementById('ldAContext').textContent = `Đơn vị đang phân công: ${WF.unitName(unitNow)}`;
         // Mỗi đơn vị chỉ có 01 hình thức phân công theo cấu hình luồng: Chuyển đơn vị (Đơn vị nhận) hoặc Phân công cán bộ (Cán bộ chủ trì)
         const canUnit = !!(node.allowUnit && (node.units || []).length);
         const canOfficer = !canUnit && !!(node.allowOfficer && (node.officers || []).length);
@@ -410,9 +417,10 @@
             if (cBox) cBox.classList.add('is-invalid');
             return; 
         }
-        const res = unitShown ? WF.assignToUnit(acting, unit, note) : WF.assignToOfficers(acting, chuTri, note);
+        const res = assignOpts ? (unitShown ? assignOpts.assignUnit(acting, unit, note) : assignOpts.assignOfficer(acting, chuTri, note))
+            : (unitShown ? WF.assignToUnit(acting, unit, note) : WF.assignToOfficers(acting, chuTri, note));
         close('ldAssignOverlay');
-        notify(res.ok ? `Đã phân công hồ sơ ${acting}. Trạng thái: [${res.record.status}].` : res.message, res.ok);
+        notify(res.ok ? `Đã phân công hồ sơ ${(assignOpts && res.record.maVuViec) || acting}. Trạng thái: [${res.record.status}].` : res.message, res.ok);
         finish();
     }
 

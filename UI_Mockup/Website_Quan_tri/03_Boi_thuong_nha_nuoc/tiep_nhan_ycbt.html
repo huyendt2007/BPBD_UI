@@ -172,27 +172,10 @@
         @media (max-width: 900px) {
             .nyc-span-2 { grid-column: auto; }
         }
-        .nyc-type-radios {
-            align-items: center;
-            display: flex;
-            gap: 20px;
-            min-height: 38px;
-        }
-
-        .nyc-type-radios label {
-            align-items: center;
-            cursor: pointer;
-            display: inline-flex;
-            gap: 6px;
-            font-weight: 600;
-            font-size: 13px;
-            color: #1e293b;
-        }
-
-        .nyc-type-radios input:disabled + span,
-        .nyc-type-radios input:disabled {
-            cursor: not-allowed;
-        }
+        /* Loại người yêu cầu / Loại người bị thiệt hại: radio Cá nhân / Tổ chức, không icon (đồng nhất Xác định CQGQBT) */
+        .nyc-type-group { display: flex; gap: 24px; padding-top: 6px; }
+        .nyc-type-radio { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13.5px; font-weight: 500; }
+        .nyc-type-radio input:disabled + span { color: #94a3b8; }
 
         #formView.readonly-mode .required {
             display: none !important;
@@ -586,15 +569,9 @@
                     <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Loại người yêu cầu<span class="required">*</span></span>
-                            <div class="nyc-type-radios" id="formNycTypeGroup" style="height: 38px; display: flex; align-items: center; gap: 20px; background: #f8fafc; padding: 0 14px; border: 1px solid #cbd5e1; border-radius: 4px;">
-                                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; color: #1e293b; margin: 0;">
-                                    <input type="radio" name="formNycType" id="formNycTypeCaNhan" value="Cá nhân" checked onchange="onNycTypeChange()">
-                                    <i class="fa-solid fa-user" style="color: #2563eb; font-size: 12px;"></i> Cá nhân
-                                </label>
-                                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; color: #1e293b; margin: 0;">
-                                    <input type="radio" name="formNycType" id="formNycTypeToChuc" value="Tổ chức" onchange="onNycTypeChange()">
-                                    <i class="fa-solid fa-building" style="color: #0284c7; font-size: 12px;"></i> Tổ chức
-                                </label>
+                            <div class="nyc-type-group" id="formNycTypeGroup">
+                                <label class="nyc-type-radio"><input type="radio" name="formNycType" id="formNycTypeCaNhan" value="Cá nhân" checked onchange="onNycTypeChange()"> <span>Cá nhân</span></label>
+                                <label class="nyc-type-radio"><input type="radio" name="formNycType" id="formNycTypeToChuc" value="Tổ chức" onchange="onNycTypeChange()"> <span>Tổ chức</span></label>
                             </div>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
@@ -740,15 +717,9 @@
                         <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Loại người bị thiệt hại</span>
-                                <div class="nyc-type-radios" id="nbthTypeGroup" style="height: 38px; display: flex; align-items: center; gap: 20px; background: #f8fafc; padding: 0 14px; border: 1px solid #cbd5e1; border-radius: 4px;">
-                                    <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; color: #1e293b; margin: 0;">
-                                        <input type="radio" name="nbthType" id="nbthTypeCaNhan" value="Cá nhân" checked onchange="nbthToggleType()">
-                                        <i class="fa-solid fa-user" style="color: #2563eb; font-size: 12px;"></i> Cá nhân
-                                    </label>
-                                    <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; color: #1e293b; margin: 0;">
-                                        <input type="radio" name="nbthType" id="nbthTypeToChuc" value="Tổ chức" onchange="nbthToggleType()">
-                                        <i class="fa-solid fa-building" style="color: #0284c7; font-size: 12px;"></i> Tổ chức
-                                    </label>
+                                <div class="nyc-type-group" id="nbthTypeGroup">
+                                    <label class="nyc-type-radio"><input type="radio" name="nbthType" id="nbthTypeCaNhan" value="Cá nhân" checked onchange="nbthToggleType()"> <span>Cá nhân</span></label>
+                                    <label class="nyc-type-radio"><input type="radio" name="nbthType" id="nbthTypeToChuc" value="Tổ chức" onchange="nbthToggleType()"> <span>Tổ chức</span></label>
                                 </div>
                             </div>
                             <div class="form-group nbth-ca-nhan" style="margin-bottom: 0;">
@@ -856,7 +827,7 @@
                 <div id="addBasisBtnWrapper" style="margin-top:10px; margin-bottom:20px;">
                     <button type="button" class="tlkt-btn-add" onclick="addBasisRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
                 </div>
-                <div class="info-group-title">Bảng tài liệu đính kèm</div>
+                <div class="info-group-title">Tài liệu đính kèm</div>
                 <div class="table-container">
                     <table class="custom-table" style="min-width:760px;">
                         <thead>
@@ -924,8 +895,8 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261029tldk"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261030s2"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script>
         // Người dùng đăng nhập (giả lập) - cán bộ tiếp nhận
@@ -937,7 +908,7 @@
         const OTHER_OFFICER = "Trần Thị Thu Hà";
         const STORAGE_KEY = "receptionClaimsList_v2026";
         const SEED_VERSION_KEY = "receptionSeedVersion";
-        const SEED_VERSION = "v7b-tiepnhanhoso";
+        const SEED_VERSION = "v8-20261030s2";
         // Các trạng thái hồ sơ thuộc phạm vi phân công của màn Tiếp nhận hồ sơ
         const RECEPTION_STATUSES = ["Chờ phân công", "Đang phân công"];
         // Nguồn hồ sơ (04 giá trị) và Hình thức tiếp nhận (Danh mục DM_25, 04 giá trị)
@@ -1051,7 +1022,7 @@
                 nycAddressDetail: "Số 88 Kim Mã",
                 address: "Số 88 Kim Mã, Phường Ba Đình, Thành phố Hà Nội",
                 status: "Chờ tiếp nhận",
-                agency: "UBND Quận Ba Đình",
+                agency: "UBND phường Ba Đình",
                 files: [{ name: "Don_de_nghi_XDCQ_BaDinh.pdf", url: "#" }],
                 receptionDocs: [{ name: "Đơn đề nghị xác định cơ quan", file: "Don_de_nghi_XDCQ_BaDinh.pdf" }],
                 timeline: [{ title: "Tiếp nhận hồ sơ", date: "05/08/2026", desc: "Đã tiếp nhận thông tin ban đầu. Trạng thái: Chờ tiếp nhận.", status: "completed" }]
@@ -1177,7 +1148,7 @@
                 nycAddressDetail: "Số 102 Hoàng Quốc Việt",
                 address: "Số 102 Hoàng Quốc Việt, Phường Cầu Giấy, Thành phố Hà Nội",
                 status: "Chờ tiếp nhận",
-                agency: "UBND Quận Cầu Giấy",
+                agency: "UBND phường Cầu Giấy",
                 files: [{ name: "Don_XDCQ_Vu_Dinh_Trong.pdf", url: "#" }],
                 receptionDocs: [{ name: "Đơn đề nghị xác định cơ quan", file: "Don_XDCQ_Vu_Dinh_Trong.pdf" }],
                 timeline: [{ title: "Tiếp nhận hồ sơ", date: "11/08/2026", desc: "Đã tiếp nhận thông tin ban đầu. Trạng thái: Chờ tiếp nhận.", status: "completed" }]
@@ -1503,7 +1474,7 @@
                 nycTinhThanh: rec.nycTinhThanh, nycPhuongXa: rec.nycPhuongXa, nycAddressDetail: rec.nycAddressDetail,
                 nycType: BTNN_WF.nycTypeOf(rec), nycDocType: rec.nycDocType || "", nycDocNo: rec.nycDocNo || "", nycOrgCode: rec.nycOrgCode || "",
                 nycEmail: rec.nycEmail || "", nycCountry: rec.nycCountry || "Việt Nam", nbthOrgName: rec.nbthOrgName || "", nbthOrgCode: rec.nbthOrgCode || "",
-                vanBanCanCu: rec.vanBanCanCu || [], vuViecLienQuan: rec.vuViecLienQuan || "", hanhVi: rec.hanhVi || "", agency: BTNN_WF.unitName(rec.rootUnitId), fromWorkflow: true
+                vanBanCanCu: rec.vanBanCanCu || [], hanhVi: rec.hanhVi || "", agency: BTNN_WF.unitName(rec.rootUnitId), fromWorkflow: true
             };
         }
         // Hồ sơ luồng do cán bộ đang đăng nhập tiếp nhận tại màn hình này (không có trong danh sách tiếp nhận của trình duyệt)
@@ -1798,7 +1769,6 @@
                 source: "Tiếp nhận",
                 nguonHoSo: SOURCES.TIEP_NHAN,
                 maVuViec: claim.maVuViec || undefined,
-                vuViecLienQuan: claim.vuViecLienQuan || "",
                 hinhThucTiepNhan: claim.nopKenh,
                 rootUnitId: claim.rootUnitId,
                 receivedAt: toWfTime(claim.receivedAt),
@@ -2659,7 +2629,7 @@
                                 ? `<span style="color:var(--text-muted); font-style:italic;">--</span>`
                                 : `<button type="button" class="tlkt-btn-pri" onclick="document.getElementById('docFile_${idx}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`
                             )}
-                        <input id="docFile_${idx}" type="file" style="display:none;" onchange="uploadDocFile(${idx}, this)">
+                        <input id="docFile_${idx}" type="file" style="display:none;" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="uploadDocFile(${idx}, this)">
                     </td>
                     <td style="text-align:center;">
                         <span class="tlkt-acts">
@@ -2953,7 +2923,7 @@
                         ${doc.file
                             ? `<span class="file-name"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> ${escapeHtml(doc.file)}</span>`
                             : (isFormReadOnly ? `<span class="muted">-</span>` : `<button type="button" class="tlkt-btn-pri" onclick="document.getElementById('basisFile_${idx}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`)}
-                        <input type="file" id="basisFile_${idx}" style="display:none;" accept="${BASIS_FILE_ACCEPT}" onchange="uploadBasisFile(${idx}, this)">
+                        <input type="file" id="basisFile_${idx}" style="display:none;" accept="${BASIS_FILE_ACCEPT}" onchange="uploadBasisFile(${idx}, this)">${doc.err ? `<div class="vbcc-row-err" style="color:#dc2626; font-size:12px; margin-top:4px;"><i class="fa-solid fa-circle-exclamation"></i> ${escapeHtml(doc.err)}</div>` : ""}
                     </td>
                     <td style="text-align:center;">
                         <span class="tlkt-acts">
@@ -2976,16 +2946,22 @@
             if (basisRows[idx]) basisRows[idx].name = value;
         }
 
-        // Văn bản làm căn cứ: chỉ cho tải file định dạng .pdf, .jpg, .png
-        const BASIS_FILE_ACCEPT = ".pdf,.jpg,.png";
+        // Văn bản làm căn cứ: chỉ nhận PDF và ảnh (.pdf, .jpg, .jpeg, .png); sai định dạng: lỗi tại dòng (MSG-ERR-FILE-003), không nhận tệp
+        const BASIS_FILE_ACCEPT = ".pdf,.jpg,.jpeg,.png";
         function uploadBasisFile(idx, input) {
             if (!basisRows[idx] || !input.files || !input.files[0]) return;
             const fileName = input.files[0].name;
-            if (!/\.(pdf|jpg|png)$/i.test(fileName)) {
+            // Sai định dạng: MSG-ERR-FILE-003; vượt 50MB: MSG-ERR-FILE-006 (lỗi tại dòng, không nhận tệp)
+            const basisErr = !/\.(pdf|jpg|jpeg|png)$/i.test(fileName)
+                ? `Định dạng tệp tin ${fileName} không hợp lệ. Chỉ chấp nhận các định dạng .pdf, .jpg, .jpeg, .png.`
+                : (input.files[0].size > 50 * 1024 * 1024 ? `Dung lượng tệp tin ${fileName} vượt quá 50MB. Vui lòng kiểm tra lại.` : "");
+            if (basisErr) {
                 input.value = "";
-                showToast("File không đúng định dạng. Chỉ cho phép tải file định dạng .pdf, .jpg, .png", "error");
+                basisRows[idx].err = basisErr;
+                renderBasisRows();
                 return;
             }
+            basisRows[idx].err = "";
             basisRows[idx].file = fileName;
             if (!basisRows[idx].name) basisRows[idx].name = fileName.replace(/\.[^.]+$/, "");
             renderBasisRows();
@@ -3075,13 +3051,13 @@
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <!-- [nbth] Văn bản yêu cầu bồi thường mặc định; Người bị thiệt hại Cá nhân/Tổ chức; địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại -->
-    <script src="tiep_nhan_nbth.js?v=20261027nbthe3"></script>
+    <script src="tiep_nhan_nbth.js?v=20261030s2"></script>
     <!-- Trình ký Phiếu tiếp nhận (Mẫu 02/BTNN): thay thao tác In Phiếu tiếp nhận -->
-    <script src="tiep_nhan_ptn.js?v=20261029mh03d"></script>
+    <script src="tiep_nhan_ptn.js?v=20261030s2"></script>
     <!-- [dvc] Hồ sơ nguồn Dịch vụ công: Xem chi tiết đầy đủ theo bố cục Nhập liệu hồ sơ vụ việc; dữ liệu mẫu đầy đủ (bảng thiệt hại DM_27 dùng btnn_thiet_hai.js) -->
     <script src="btnn_thiet_hai.js?v=20261028dm27"></script>
-    <script src="tiep_nhan_dvc.js?v=20261029mh03a"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="tiep_nhan_dvc.js?v=20261030s2"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 
 </html>

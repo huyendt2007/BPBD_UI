@@ -10,7 +10,15 @@
 
 *a. Phân quyền*
 
-\- Cán bộ Sở Tư pháp: được tra cứu, xem chi tiết, thêm mới và gửi; sửa, xóa bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" (chưa cập nhật kết quả phản hồi) do chính mình tạo; cập nhật kết quả phản hồi cho bản ghi do mình tạo.
+\- Người dùng thuộc Sở Tư pháp: được tra cứu, xem chi tiết, thêm mới và gửi; sửa, xóa bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" (chưa cập nhật kết quả phản hồi) do Sở mình tạo; cập nhật kết quả phản hồi cho bản ghi do Sở mình tạo.
+
+\- Người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước: tra cứu, xem chi tiết bản ghi của mọi Sở Tư pháp; không thêm mới, không thao tác trên bản ghi.
+
+\- Người dùng thuộc Sở Tư pháp chỉ xem bản ghi do Sở mình tạo; người dùng thuộc đơn vị khác không xem được dữ liệu.
+
+\- Người dùng thuộc UBND cấp tỉnh: chỉ xem chi tiết bản ghi của Sở Tư pháp trực thuộc; không thêm mới, không thao tác.
+
+\- Phạm vi dữ liệu theo [Quy tắc phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-tac-pham-vi-du-lieu-btp-stp).
 
 *b. Điều kiện thực hiện*
 
@@ -55,15 +63,18 @@ flowchart TD
 | **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Số văn bản kiến nghị | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số văn bản kiến nghị...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
 | Số Bản án/Quyết định | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số Bản án/Quyết định...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
+| Đơn vị thực hiện | List(String(50)) | Không | Tất cả | Control UI: Cây đơn vị chọn nhiều (Tree select) theo Cơ cấu tổ chức, có ô tìm kiếm theo tên.<br>- Chỉ hiển thị khi người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.<br>- Cây gồm các Sở Tư pháp và đơn vị trực thuộc, theo [Quy tắc phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-tac-pham-vi-du-lieu-btp-stp).<br>- Mỗi nút có ô tích; tích nút cha thì tích toàn bộ nút con.<br>- `Tất cả`: không lọc.<br>- Nút `Các Sở Tư pháp`: tích nhanh toàn bộ các Sở Tư pháp trong cây.<br>- Chọn từ 02 đơn vị trở lên: ô hiển thị "Đã chọn [n] đơn vị".<br>- Lọc bản ghi có `Đơn vị thực hiện` hoặc đơn vị công tác của `Cán bộ xử lý` thuộc các đơn vị đã tích. |
 | Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Đã gửi - Chờ phản hồi<br>+ Đã có phản hồi<br>+ Đã thực hiện<br>+ Không thực hiện |
 | Từ ngày gửi | Date | Không | Trống | Control UI: Date input.<br>- Placeholder: "dd/mm/yyyy". |
 | Đến ngày gửi | Date | Không | Trống | Control UI: Date input.<br>- Placeholder: "dd/mm/yyyy". |
-| **II. Bảng danh sách kết quả** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải Trang 1.<br>- Sắp xếp mặc định: theo "Ngày tạo" giảm dần.<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
+| **II. Bảng danh sách kết quả** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Phạm vi bản ghi theo [Quy tắc phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-tac-pham-vi-du-lieu-btp-stp):<br>+ Người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước: bản ghi của mọi Sở Tư pháp; các icon thao tác hiển thị mờ.<br>+ Người dùng thuộc Sở Tư pháp: bản ghi do Sở mình tạo.<br>+ Người dùng thuộc UBND cấp tỉnh: bản ghi của Sở Tư pháp trực thuộc; các icon thao tác hiển thị mờ.<br>+ Người dùng thuộc đơn vị khác: không hiển thị bản ghi.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải Trang 1.<br>- Sắp xếp mặc định: theo "Ngày tạo" giảm dần.<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
 | STT | Integer(10) | Không | Theo trang hiện tại | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Số văn bản kiến nghị | String(50) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Số Bản án/Quyết định bị kiến nghị | String(50) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Người/cơ quan có thẩm quyền kháng nghị | String(255) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Ngày gửi | Date | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Định dạng `dd/mm/yyyy`. |
+| Cán bộ xử lý | String(100) | Không | Theo dữ liệu hệ thống | Control UI: Text (Read-only).<br>- Họ và tên cán bộ đã nhập bản ghi (người tạo). |
+| Đơn vị thực hiện | String(255) | Không | Theo dữ liệu hệ thống | Control UI: Text (Read-only).<br>- Chỉ hiển thị khi người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.<br>- Đặt ngay sau cột `Cán bộ xử lý`.<br>- Hiển thị tên đơn vị thực hiện của bản ghi. |
 | Trạng thái | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Control UI: Badge.<br>- Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa<br>+ Cập nhật phản hồi<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | Phân trang | - | - | 20 bản ghi/trang | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
@@ -76,18 +87,19 @@ flowchart TD
 |  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày gửi` lớn hơn `Đến ngày gửi`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
 |  |  |  | **TH2 - Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí đã nhập/chọn và đưa về Trang 1. |
 |  |  |  | **TH3 - Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ. |
+|  |  |  | **TH4 - Đơn vị của người dùng không thuộc phạm vi dữ liệu**: Người dùng không thuộc Bộ Tư pháp, Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước, Sở Tư pháp hoặc UBND cấp tỉnh; bảng kết quả hiển thị 01 dòng căn giữa, in nghiêng: "Đơn vị của người dùng không thuộc phạm vi dữ liệu của chức năng này.". |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí tìm kiếm đã nhập/chọn, thiết lập các ô lọc về giá trị mặc định. |
-| 3 | Thêm mới | Button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa kiến nghị kháng nghị bản án, quyết định](#433115-mh03---màn-hình-thêm-mớisửa-kiến-nghị-kháng-nghị-bản-án-quyết-định) ở chế độ Thêm mới với form thông tin để trống. |
-| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Số văn bản kiến nghị, Số Bản án/Quyết định bị kiến nghị, Người/cơ quan có thẩm quyền kháng nghị, Ngày gửi, Trạng thái.<br>- Tên tệp: `yyyyMMdd_Danh_sach_kien_nghi_khang_nghi_ban_an.xlsx`. |
+| 3 | Thêm mới | Button | Chỉ hiển thị khi người dùng thuộc Sở Tư pháp.<br>- Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa kiến nghị kháng nghị bản án, quyết định](#433115-mh03---màn-hình-thêm-mớisửa-kiến-nghị-kháng-nghị-bản-án-quyết-định) ở chế độ Thêm mới với form thông tin để trống. |
+| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-chuan-ket-xuat-excel):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Số văn bản kiến nghị, Số Bản án/Quyết định bị kiến nghị, Người/cơ quan có thẩm quyền kháng nghị, Ngày gửi, Trạng thái.<br>- Tên tệp: `yyyyMMdd_Danh_sach_kien_nghi_khang_nghi_ban_an.xlsx`. |
 |  |  |  | **TH1 - Không có dữ liệu**: Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải tệp. |
 |  |  |  | **TH2 - Có dữ liệu**: Hệ thống tải tệp Excel về máy người dùng. |
 | 5 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Số văn bản kiến nghị<br>+ Số Bản án/Quyết định bị kiến nghị<br>+ Người/cơ quan có thẩm quyền kháng nghị |
 |  |  |  | **TH1 - Chọn lại cột đang sắp xếp**: Hệ thống đảo chiều sắp xếp tăng dần/giảm dần và cập nhật icon mũi tên trên tiêu đề cột. |
 |  |  |  | **TH2 - Chọn cột khác**: Hệ thống sắp xếp danh sách theo cột được chọn. |
 | 6 | Row click | Row click | Khi người dùng click vào bất kỳ vị trí nào trên dòng dữ liệu (trừ các nút thao tác), hệ thống mở [MH02 - Màn hình Chi tiết kiến nghị kháng nghị bản án, quyết định](#433114-mh02---màn-hình-chi-tiết-kiến-nghị-kháng-nghị-bản-án-quyết-định). |
-| 7 | Sửa | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" do cán bộ đăng nhập tạo; trường hợp khác icon hiển thị mờ, không cho thao tác.<br>- Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa kiến nghị kháng nghị bản án, quyết định](#433115-mh03---màn-hình-thêm-mớisửa-kiến-nghị-kháng-nghị-bản-án-quyết-định) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
-| 8 | Xóa | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" do cán bộ đăng nhập tạo; trường hợp khác icon hiển thị mờ, không cho thao tác.<br>- Hệ thống mở [Popup Xác nhận](#433116-popup-xác-nhận). |
-| 9 | Cập nhật phản hồi | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" hoặc "Đã có phản hồi"; trường hợp khác icon hiển thị mờ.<br>- Hệ thống mở [Popup Cập nhật kết quả phản hồi](#433117-popup-cập-nhật-kết-quả-phản-hồi). |
+| 7 | Sửa | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" do Sở Tư pháp của người dùng tạo; trường hợp khác icon hiển thị mờ, không cho thao tác.<br>- Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa kiến nghị kháng nghị bản án, quyết định](#433115-mh03---màn-hình-thêm-mớisửa-kiến-nghị-kháng-nghị-bản-án-quyết-định) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
+| 8 | Xóa | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" do Sở Tư pháp của người dùng tạo; trường hợp khác icon hiển thị mờ, không cho thao tác.<br>- Hệ thống mở [Popup Xác nhận](#433116-popup-xác-nhận). |
+| 9 | Cập nhật phản hồi | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" hoặc "Đã có phản hồi" do Sở Tư pháp của người dùng tạo; trường hợp khác icon hiển thị mờ.<br>- Hệ thống mở [Popup Cập nhật kết quả phản hồi](#433117-popup-cập-nhật-kết-quả-phản-hồi). |
 | 10 | Phân trang & chuyển trang | Pagination | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ---
@@ -105,7 +117,7 @@ flowchart TD
 | Tiêu đề màn hình | - | - | - | Control UI: Label<br>Hiển thị "Xem chi tiết kiến nghị người có thẩm quyền kháng nghị bản án". |
 | **I. Thông tin chung** |  |  |  |  |
 | Trạng thái | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi (giá trị `Trạng thái`). |
-| Người tạo/Cán bộ phụ trách | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Cán bộ xử lý | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Ngày tạo/cập nhật | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Chế độ | - | - | - | Control UI: Label<br>Hiển thị "Chỉ xem". |
 | **II. Thông tin kiến nghị** |  |  |  |  |
@@ -131,8 +143,8 @@ flowchart TD
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Xem file | Link | Khi click vào liên kết "Xem file" của tài liệu đính kèm, hệ thống mở nội dung file tại một tab trình duyệt mới. |
-| 2 | Sửa | Button | Chỉ cho phép khi bản ghi ở trạng thái "Đã gửi - Chờ phản hồi"; trường hợp khác nút hiển thị mờ, không cho thao tác.<br>- Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa kiến nghị kháng nghị bản án, quyết định](#433115-mh03---màn-hình-thêm-mớisửa-kiến-nghị-kháng-nghị-bản-án-quyết-định) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
-| 3 | Xóa | Button | Chỉ cho phép khi bản ghi ở trạng thái "Đã gửi - Chờ phản hồi"; trường hợp khác nút hiển thị mờ, không cho thao tác.<br>- Hệ thống mở [Popup Xác nhận](#433116-popup-xác-nhận); nếu người dùng chọn `Đồng ý`, hệ thống xóa bản ghi, đóng màn hình chi tiết và quay lại [MH01 - Màn hình Danh sách kiến nghị kháng nghị bản án, quyết định](#433113-mh01---màn-hình-danh-sách-kiến-nghị-kháng-nghị-bản-án-quyết-định). |
+| 2 | Sửa | Button | Chỉ hiển thị khi bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" và do Sở Tư pháp của người dùng tạo.<br>- Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa kiến nghị kháng nghị bản án, quyết định](#433115-mh03---màn-hình-thêm-mớisửa-kiến-nghị-kháng-nghị-bản-án-quyết-định) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
+| 3 | Xóa | Button | Chỉ hiển thị khi bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" và do Sở Tư pháp của người dùng tạo.<br>- Hệ thống mở [Popup Xác nhận](#433116-popup-xác-nhận); nếu người dùng chọn `Đồng ý`, hệ thống xóa bản ghi, đóng màn hình chi tiết và quay lại [MH01 - Màn hình Danh sách kiến nghị kháng nghị bản án, quyết định](#433113-mh01---màn-hình-danh-sách-kiến-nghị-kháng-nghị-bản-án-quyết-định). |
 | 4 | Đóng | Button | Khi người dùng click nút "Đóng" ở góc phải tiêu đề hoặc ở chân màn hình, hệ thống đóng màn hình chi tiết và quay lại [MH01 - Màn hình Danh sách kiến nghị kháng nghị bản án, quyết định](#433113-mh01---màn-hình-danh-sách-kiến-nghị-kháng-nghị-bản-án-quyết-định). |
 
 ---
@@ -150,7 +162,7 @@ flowchart TD
 | Tiêu đề màn hình | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới kiến nghị người có thẩm quyền kháng nghị bản án" hoặc "Sửa kiến nghị người có thẩm quyền kháng nghị bản án". |
 | **I. Thông tin chung** |  |  |  |  |
 | Trạng thái | - | - | Theo ngữ cảnh | Control UI: Label<br>Thêm mới hiển thị "Đang nhập"; Sửa hiển thị theo dữ liệu bản ghi. |
-| Người tạo/Cán bộ phụ trách | - | - | Theo tài khoản đăng nhập | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Cán bộ xử lý | - | - | Theo tài khoản đăng nhập | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Ngày tạo/cập nhật | - | - | Theo dữ liệu hệ thống | Control UI: Label<br>Định dạng `dd/mm/yyyy`. |
 | Chế độ | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới" hoặc "Sửa". |
 | **II. Thông tin kiến nghị** |  |  |  |  |

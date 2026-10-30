@@ -600,7 +600,7 @@
             + (other ? row([fld('Nội dung yêu cầu khôi phục quyền và lợi ích hợp pháp khác', other, { full: true, area: true })]) : ''));
         // Bảng tài liệu đính kèm: tài liệu nhận từ Dịch vụ công (Thành phần hồ sơ (1), (3), (4)); (2) tại khối Văn bản làm căn cứ yêu cầu bồi thường
         var docs = (r.attachedDocs || []).map(function (x) { return { name: x.name, file: x.file }; });
-        h += sec('Bảng tài liệu đính kèm', '<div id="dvcDocsTable">' + roTable(docs, 'Tên tài liệu, văn bản', DVC_ACT) + '</div>');
+        h += sec('Tài liệu đính kèm', '<div id="dvcDocsTable">' + roTable(docs, 'Tên tài liệu, văn bản', DVC_ACT) + '</div>');
         return h;
     }
     // [mh03ui] MH03 hồ sơ nguồn khác Dịch vụ công: dựng toàn bộ nội dung chỉ đọc từ giá trị đã nạp lên form (giữ nguyên dữ liệu, điều kiện hiển thị của form)
@@ -616,7 +616,7 @@
         var basis = typeof basisRows !== 'undefined' && Array.isArray(basisRows) ? basisRows : [];
         var docs = typeof docRows !== 'undefined' && Array.isArray(docRows) ? docRows : [];
         if (basis.length) h += sec('Văn bản làm căn cứ yêu cầu bồi thường', roTable(basis, 'Tên văn bản căn cứ', { view: function (i) { return 'viewBasisFile(' + i + ')'; }, dl: function (i) { return 'downloadBasisFile(' + i + ')'; } }));
-        if (docs.length) h += sec('Bảng tài liệu đính kèm', roTable(docs, 'Tên tài liệu, văn bản', { view: function (i) { return 'viewDocFile(' + i + ')'; }, dl: function (i) { return 'downloadDocFile(' + i + ')'; } }));
+        if (docs.length) h += sec('Tài liệu đính kèm', roTable(docs, 'Tên tài liệu, văn bản', { view: function (i) { return 'viewDocFile(' + i + ')'; }, dl: function (i) { return 'downloadDocFile(' + i + ')'; } }));
         return h;
     }
 

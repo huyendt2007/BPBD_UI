@@ -104,7 +104,7 @@ ${1}popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH07 - Popup Ký số hồ
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Thu gọn / Mở rộng khối | Click tiêu đề khối | Thực hiện giống chức năng **Thu gọn / Mở rộng khối** tại [MH03 - Màn hình Xem chi tiết đề nghị - Quản lý Chỉnh lý thông tin, Hủy và Khôi phục đăng ký - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Quan_ly_chinh_ly_huy_khoi_phuc_dang_ky.md#mh03). |
-| 2 | Xem file / Tải xuống | Link | Áp dụng tại khối Tệp tin đính kèm và các file đính kèm của hồ sơ gốc.<br>- Xem file: Mở file tại một tab mới.<br>- Tải xuống: Tải file về máy. |
+| 2 | Xem file / Tải xuống | Link | Áp dụng tại khối Tài liệu đính kèm và các file đính kèm của hồ sơ gốc.<br>- Xem file: Mở file tại một tab mới.<br>- Tải xuống: Tải file về máy. |
 | 3 | Đóng | Nút | Hệ thống đóng màn hình Xem chi tiết và quay lại [MH01 - Màn hình Danh sách đề nghị Chỉnh lý thông tin, Hủy và Khôi phục đăng ký chờ ký duyệt](#mh01), giữ nguyên bộ lọc tìm kiếm và trang dữ liệu trước đó. |
 | 4 | Từ chối đề nghị | Nút | - **TH1 (Đề nghị không còn ở trạng thái "Chờ duyệt đề nghị")**: Hệ thống hiển thị [[MSG-ERR-DK-005]](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#msg-err-dk-005), không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH05 - Popup Từ chối đề nghị](#mh05) cho đề nghị đang xem. |
 | 5 | Duyệt đề nghị | Nút | - **TH1 (Đề nghị không còn ở trạng thái "Chờ duyệt đề nghị")**: Hệ thống hiển thị [[MSG-ERR-DK-005]](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#msg-err-dk-005), không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH04 - Popup Duyệt đề nghị và Phân công người thực hiện](#mh04) cho đề nghị đang xem. |

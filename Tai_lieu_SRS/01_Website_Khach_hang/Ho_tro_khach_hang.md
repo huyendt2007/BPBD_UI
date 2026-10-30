@@ -96,7 +96,7 @@
 | Lĩnh vực nghiệp vụ | Enum(String(50)) | Có | Lấy từ hệ thống | Control UI: Hiển thị/Read-only.<br>\- Biện pháp bảo đảm hoặc Bồi thường nhà nước. |
 | Người ký / Chức danh | String(255) | Không | Lấy từ hệ thống | Control UI: Hiển thị/Read-only.<br>\- Chỉ hiển thị nếu có dữ liệu. |
 | Trích yếu | Text(2000) | Có | Lấy từ hệ thống | Control UI: Hiển thị/Read-only. |
-| Tài liệu đính kèm liên quan | File | Không | Lấy từ hệ thống | Control UI: Bảng/Danh sách hiển thị.<br>\- Danh sách các tệp tài liệu liên quan đến văn bản (nếu có), mỗi tệp có liên kết "Xem file" (mở tại một tab riêng) và "Tải về". Chỉ hiển thị nếu có dữ liệu. |
+| Tài liệu đính kèm | File | Không | Lấy từ hệ thống | Control UI: Bảng/Danh sách hiển thị.<br>\- Danh sách các tệp tài liệu liên quan đến văn bản (nếu có), mỗi tệp có liên kết "Xem file" (mở tại một tab riêng) và "Tải về". Chỉ hiển thị nếu có dữ liệu. |
 | Media hướng dẫn | File | Không | Lấy từ hệ thống | Control UI: Danh sách hiển thị.<br>\- Danh sách video hướng dẫn liên quan đến văn bản (nếu có). Chỉ hiển thị nếu có dữ liệu. |
 
 ##### 4.1.20.3.3. Chức năng trên màn hình

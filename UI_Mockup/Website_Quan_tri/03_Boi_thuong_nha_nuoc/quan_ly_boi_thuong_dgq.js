@@ -68,10 +68,10 @@ function dgqThuLy(claim) {
     var m = String(dt).match(/\d{2}\/\d{2}\/\d{4}/);
     return { no: no, date: m ? m[0] : '' };
 }
-// ##TenCoQuanQuanLyNhaNuocBTNN##: cấp Trung ương -> Cục Bồi thường nhà nước - Bộ Tư pháp; cấp địa phương -> Sở Tư pháp tỉnh/thành phố
+// ##TenCoQuanQuanLyNhaNuocBTNN##: cấp Trung ương -> Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước - Bộ Tư pháp; cấp địa phương -> Sở Tư pháp tỉnh/thành phố
 function dgqQlnn(unitId, issuer) {
     var W = typeof gqW === 'function' ? gqW() : null;
-    if (/^(Bộ|Cục|Tòa án nhân dân tối cao|Viện kiểm sát nhân dân tối cao|Văn phòng Chính phủ|Thanh tra Chính phủ)/i.test(String(issuer || ''))) return 'Cục Bồi thường nhà nước - Bộ Tư pháp';
+    if (/^(Bộ|Cục|Tòa án nhân dân tối cao|Viện kiểm sát nhân dân tối cao|Văn phòng Chính phủ|Thanh tra Chính phủ)/i.test(String(issuer || ''))) return 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước - Bộ Tư pháp';
     try { var stp = W && W.stpOfUnit ? W.stpOfUnit(unitId) : ''; if (stp) return W.unitName(stp); } catch (e) { /* mockup */ }
     return 'Sở Tư pháp ……';
 }

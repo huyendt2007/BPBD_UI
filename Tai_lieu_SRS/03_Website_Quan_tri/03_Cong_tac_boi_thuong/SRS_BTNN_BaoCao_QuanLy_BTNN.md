@@ -38,8 +38,8 @@ Các báo cáo từ mục 4.3.3.24.4 đến 4.3.3.24.8 dùng chung bộ chỉ ti
 | Số vụ đang giải quyết | Integer(10) | - | Hệ thống tính | Đếm vụ việc có trạng thái thuộc nhóm đang xử lý theo danh mục [DM_24]. |
 | Số vụ đã giải quyết xong | Integer(10) | - | Hệ thống tính | Đếm vụ việc đã có kết quả giải quyết cuối cùng, bao gồm `Hoàn thành` và các vụ đã có văn bản giải quyết bồi thường có hiệu lực pháp luật. |
 | Số vụ đình chỉ/tạm đình chỉ | Integer(10) | - | Hệ thống tính | Đếm vụ việc có trạng thái `Tạm đình chỉ giải quyết` hoặc `Đình chỉ giải quyết` trong kỳ báo cáo. |
-| Số vụ đã chi trả | Integer(10) | - | Hệ thống tính | Đếm vụ việc có phát sinh chi trả tiền bồi thường hoàn thành theo module Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường. |
-| Tổng tiền đã chi trả | Decimal(18,0) | - | Hệ thống tính | Tổng số tiền thực tế đã chi trả trong kỳ báo cáo, đơn vị nghìn đồng. |
+| Số vụ đã chi trả | Integer(10) | - | Hệ thống tính | Đếm vụ việc có phát sinh chi trả tiền bồi thường hoàn thành theo module Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường; gồm vụ việc trả lại ngân sách nhà nước một phần. |
+| Tổng tiền đã chi trả | Decimal(18,0) | - | Hệ thống tính | Tổng số tiền thực tế đã chi trả trong kỳ báo cáo, đơn vị nghìn đồng; theo Số tiền đã chi thực tế, không gồm Số tiền trả lại ngân sách nhà nước. |
 | Tổng tiền còn phải chi trả | Decimal(18,0) | - | Hệ thống tính | Tổng số tiền còn phải chi trả theo quyết định/bản án có hiệu lực, đơn vị nghìn đồng. |
 | Tỷ lệ giải quyết | Decimal(5,2) | - | Hệ thống tính | Công thức: `Số vụ đã giải quyết xong / (Số vụ thụ lý mới + Số vụ kỳ trước chuyển sang) * 100`. Nếu mẫu số bằng 0 thì hiển thị `0%`. |
 

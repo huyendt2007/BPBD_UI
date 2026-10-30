@@ -546,7 +546,7 @@
         <div class="section-head">
             <div class="section-title"><i class="fa-solid fa-table-list"></i> Bảng kết quả tìm kiếm</div>
             <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
-                <button class="btn btn-primary" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
+                <button class="btn btn-primary" id="btnAddNew" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
                 <button class="btn btn-secondary" id="btnExportExcel" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
             </div>
         </div>
@@ -651,9 +651,12 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
-    <script src="btnn_tim_kiem_vu_viec.js?v=20261029sn1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
+    <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
+    <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script>
+        // Phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp (btnn_pham_vi_don_vi.js)
+        const PV = window.BTNN_PHAMVI;
         const commonStatusOptions = ['Tất cả', 'Đang xử lý', 'Hoàn thành'];
         const workContentOptions = [
             'Giải quyết yêu cầu bồi thường',
@@ -702,25 +705,27 @@
                     ['legalBasis', 'Căn cứ pháp luật', 'text', false],
                     ['coordinationAgency', 'Cơ quan phối hợp', 'text', false]
                 ],
+                // Đơn vị thực hiện của hồ sơ (đơn vị gốc của người tạo); mã không có trong danh sách: Bộ Tư pháp
+                units: { 'HD-BTNN-2026-002': 'STP-HN', 'HD-BTNN-2026-003': 'STP-HP', 'HD-BTNN-2026-007': 'STP-HCM', 'HD-BTNN-2026-010': 'STP-HCM', 'HD-BTNN-2026-012': 'STP-HP', 'HD-BTNN-2026-014': 'STP-HN', 'HD-BTNN-2026-016': 'STP-HN' },
                 mainContentLabel: 'Nội dung đề nghị',
                 resultLabel: 'Nội dung hướng dẫn/giải đáp',
                 rows: [
                     ['HD-BTNN-2026-001', 'Sở Tư pháp TP. Hà Nội', 'Hướng dẫn nghiệp vụ', 'Văn bản', '02/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
-                    ['HD-BTNN-2026-002', 'UBND tỉnh Lâm Đồng', 'Giải đáp vướng mắc', 'Hòm thư điện tử', '31/07/2026', 'Trần Thị Minh', 'Hoàn thành'],
-                    ['HD-BTNN-2026-003', 'Cục THADS TP. Hải Phòng', 'Hướng dẫn nghiệp vụ', 'Họp liên ngành', '25/07/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
-                    ['HD-BTNN-2026-004', 'Sở Tư pháp TP. Hồ Chí Minh', 'Hướng dẫn nghiệp vụ', 'Văn bản', '22/07/2026', 'Lê Văn Nam', 'Hoàn thành'],
-                    ['HD-BTNN-2026-005', 'UBND tỉnh Đồng Nai', 'Giải đáp vướng mắc', 'Cổng thông tin điện tử', '18/07/2026', 'Trần Thị Minh', 'Đang xử lý'],
+                    ['HD-BTNN-2026-002', 'UBND phường Cầu Giấy, Thành phố Hà Nội', 'Giải đáp vướng mắc', 'Hòm thư điện tử', '31/07/2026', 'Đỗ Văn Chung', 'Hoàn thành'],
+                    ['HD-BTNN-2026-003', 'Cục THADS TP. Hải Phòng', 'Hướng dẫn nghiệp vụ', 'Họp liên ngành', '25/07/2026', 'Tăng Thị Diệu', 'Đang xử lý'],
+                    ['HD-BTNN-2026-004', 'Sở Tư pháp TP. Hồ Chí Minh', 'Hướng dẫn nghiệp vụ', 'Văn bản', '22/07/2026', 'Phạm Minh Đức', 'Hoàn thành'],
+                    ['HD-BTNN-2026-005', 'UBND tỉnh Đồng Nai', 'Giải đáp vướng mắc', 'Cổng thông tin điện tử', '18/07/2026', 'Trần Thị Thu Hà', 'Đang xử lý'],
                     ['HD-BTNN-2026-006', 'Sở Tư pháp tỉnh Quảng Ninh', 'Hướng dẫn nghiệp vụ', 'Trực tiếp', '15/07/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
-                    ['HD-BTNN-2026-007', 'TAND tỉnh Nghệ An', 'Giải đáp vướng mắc', 'Văn bản', '10/07/2026', 'Lê Văn Nam', 'Đang xử lý'],
-                    ['HD-BTNN-2026-008', 'UBND TP. Đà Nẵng', 'Hướng dẫn nghiệp vụ', 'Hòm thư điện tử', '05/07/2026', 'Trần Thị Minh', 'Hoàn thành'],
+                    ['HD-BTNN-2026-007', 'Chi cục Thi hành án dân sự quận Bình Tân, Thành phố Hồ Chí Minh', 'Giải đáp vướng mắc', 'Văn bản', '10/07/2026', 'Châu Ngọc Ánh', 'Đang xử lý'],
+                    ['HD-BTNN-2026-008', 'UBND TP. Đà Nẵng', 'Hướng dẫn nghiệp vụ', 'Hòm thư điện tử', '05/07/2026', 'Trần Thị Thu Hà', 'Hoàn thành'],
                     ['HD-BTNN-2026-009', 'Sở Tư pháp tỉnh Thanh Hóa', 'Giải đáp vướng mắc', 'Họp liên ngành', '28/06/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
-                    ['HD-BTNN-2026-010', 'Cục THADS TP. Cần Thơ', 'Hướng dẫn nghiệp vụ', 'Văn bản', '20/06/2026', 'Lê Văn Nam', 'Hoàn thành'],
-                    ['HD-BTNN-2026-011', 'Sở Tư pháp tỉnh Bình Dương', 'Giải đáp vướng mắc', 'Trực tiếp', '15/06/2026', 'Trần Thị Minh', 'Đang xử lý'],
-                    ['HD-BTNN-2026-012', 'UBND tỉnh Bắc Ninh', 'Hướng dẫn nghiệp vụ', 'Cổng thông tin điện tử', '10/06/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
-                    ['HD-BTNN-2026-013', 'Sở Tư pháp tỉnh Thừa Thiên Huế', 'Giải đáp vướng mắc', 'Văn bản', '02/06/2026', 'Lê Văn Nam', 'Hoàn thành'],
-                    ['HD-BTNN-2026-014', 'Ông Lê Văn Hoàng (Công dân)', 'Giải đáp vướng mắc', 'Cổng thông tin điện tử', '28/05/2026', 'Trần Thị Minh', 'Đang xử lý'],
-                    ['HD-BTNN-2026-015', 'Cục Bồi thường nhà nước', 'Bồi dưỡng kỹ năng, nghiệp vụ', 'Trực tiếp', '20/05/2026', 'Lê Văn Nam', 'Hoàn thành'],
-                    ['HD-BTNN-2026-016', 'Sở Tư pháp TP. Hà Nội', 'Truyền thông, tuyên truyền, phổ biến pháp luật', 'Cổng thông tin điện tử', '12/05/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý']
+                    ['HD-BTNN-2026-010', 'Viện kiểm sát nhân dân Quận 1, Thành phố Hồ Chí Minh', 'Hướng dẫn nghiệp vụ', 'Văn bản', '20/06/2026', 'Châu Ngọc Ánh', 'Hoàn thành'],
+                    ['HD-BTNN-2026-011', 'Sở Tư pháp tỉnh Bình Dương', 'Giải đáp vướng mắc', 'Trực tiếp', '15/06/2026', 'Trần Thị Thu Hà', 'Đang xử lý'],
+                    ['HD-BTNN-2026-012', 'Viện kiểm sát nhân dân Thành phố Hải Phòng', 'Hướng dẫn nghiệp vụ', 'Cổng thông tin điện tử', '10/06/2026', 'Tăng Thị Diệu', 'Hoàn thành'],
+                    ['HD-BTNN-2026-013', 'Sở Tư pháp tỉnh Thừa Thiên Huế', 'Giải đáp vướng mắc', 'Văn bản', '02/06/2026', 'Phạm Minh Đức', 'Hoàn thành'],
+                    ['HD-BTNN-2026-014', 'Ông Lê Văn Hoàng (Công dân)', 'Giải đáp vướng mắc', 'Cổng thông tin điện tử', '28/05/2026', 'Đỗ Văn Chung', 'Đang xử lý'],
+                    ['HD-BTNN-2026-015', 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', 'Bồi dưỡng kỹ năng, nghiệp vụ', 'Trực tiếp', '20/05/2026', 'Phạm Minh Đức', 'Hoàn thành'],
+                    ['HD-BTNN-2026-016', 'Sở Tư pháp TP. Hà Nội', 'Truyền thông, tuyên truyền, phổ biến pháp luật', 'Cổng thông tin điện tử', '12/05/2026', 'Đỗ Văn Chung', 'Đang xử lý']
                 ]
             },
             theo_doi_don_doc: {
@@ -757,21 +762,21 @@
                 resultLabel: 'Nội dung phản hồi/kết quả thực hiện',
                 rows: [
                     ['TDDD-BTNN-2026-001', 'Theo dõi công tác BTNN', 'Sở Tư pháp TP. Hà Nội', 'Giải quyết yêu cầu bồi thường', '15/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang theo dõi phản hồi'],
-                    ['TDDD-BTNN-2026-002', 'Đôn đốc công tác BTNN', 'UBND tỉnh Lâm Đồng', 'Xác định và thực hiện trách nhiệm hoàn trả', '20/08/2026', 'Trần Thị Minh', 'Đã gửi'],
+                    ['TDDD-BTNN-2026-002', 'Đôn đốc công tác BTNN', 'UBND tỉnh Lâm Đồng', 'Xác định và thực hiện trách nhiệm hoàn trả', '20/08/2026', 'Trần Thị Thu Hà', 'Đã gửi'],
                     ['TDDD-BTNN-2026-003', 'Theo dõi công tác BTNN', 'Sở Tư pháp TP. Hải Phòng', 'Quản lý nhà nước về công tác BTNN', '—', 'Nguyễn Văn Cán Bộ', 'Đang theo dõi phản hồi'],
-                    ['TDDD-BTNN-2026-004', 'Đôn đốc công tác BTNN', 'UBND TP. Hồ Chí Minh', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', '25/08/2026', 'Lê Văn Nam', 'Đang theo dõi phản hồi'],
-                    ['TDDD-BTNN-2026-005', 'Theo dõi công tác BTNN', 'Sở Tư pháp tỉnh Đồng Nai', 'Phục hồi danh dự', '30/08/2026', 'Trần Thị Minh', 'Hoàn thành'],
+                    ['TDDD-BTNN-2026-004', 'Đôn đốc công tác BTNN', 'UBND TP. Hồ Chí Minh', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', '25/08/2026', 'Phạm Minh Đức', 'Đang theo dõi phản hồi'],
+                    ['TDDD-BTNN-2026-005', 'Theo dõi công tác BTNN', 'Sở Tư pháp tỉnh Đồng Nai', 'Phục hồi danh dự', '30/08/2026', 'Trần Thị Thu Hà', 'Hoàn thành'],
                     ['TDDD-BTNN-2026-006', 'Yêu cầu báo cáo', 'TAND tỉnh Bình Thuận', 'Giải quyết yêu cầu bồi thường', '10/09/2026', 'Nguyễn Văn Cán Bộ', 'Đã gửi'],
-                    ['TDDD-BTNN-2026-007', 'Đôn đốc công tác BTNN', 'UBND tỉnh Bà Rịa - Vũng Tàu', 'Xử lý kỷ luật', '15/09/2026', 'Lê Văn Nam', 'Đang theo dõi phản hồi'],
-                    ['TDDD-BTNN-2026-008', 'Theo dõi công tác BTNN', 'Sở Tư pháp tỉnh Nghệ An', 'Xác định và thực hiện trách nhiệm hoàn trả', '05/08/2026', 'Trần Thị Minh', 'Hoàn thành'],
+                    ['TDDD-BTNN-2026-007', 'Đôn đốc công tác BTNN', 'UBND tỉnh Bà Rịa - Vũng Tàu', 'Xử lý kỷ luật', '15/09/2026', 'Phạm Minh Đức', 'Đang theo dõi phản hồi'],
+                    ['TDDD-BTNN-2026-008', 'Theo dõi công tác BTNN', 'Sở Tư pháp tỉnh Nghệ An', 'Xác định và thực hiện trách nhiệm hoàn trả', '05/08/2026', 'Trần Thị Thu Hà', 'Hoàn thành'],
                     ['TDDD-BTNN-2026-009', 'Yêu cầu báo cáo', 'Cục THADS tỉnh Thanh Hóa', 'Giải quyết yêu cầu bồi thường', '18/09/2026', 'Nguyễn Văn Cán Bộ', 'Đã gửi'],
-                    ['TDDD-BTNN-2026-010', 'Theo dõi công tác BTNN', 'UBND TP. Đà Nẵng', 'Quản lý nhà nước về công tác BTNN', '—', 'Lê Văn Nam', 'Đang theo dõi phản hồi'],
-                    ['TDDD-BTNN-2026-011', 'Đôn đốc công tác BTNN', 'Sở Tư pháp tỉnh Quảng Nam', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', '22/09/2026', 'Trần Thị Minh', 'Đang theo dõi phản hồi'],
+                    ['TDDD-BTNN-2026-010', 'Theo dõi công tác BTNN', 'UBND TP. Đà Nẵng', 'Quản lý nhà nước về công tác BTNN', '—', 'Phạm Minh Đức', 'Đang theo dõi phản hồi'],
+                    ['TDDD-BTNN-2026-011', 'Đôn đốc công tác BTNN', 'Sở Tư pháp tỉnh Quảng Nam', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', '22/09/2026', 'Trần Thị Thu Hà', 'Đang theo dõi phản hồi'],
                     ['TDDD-BTNN-2026-012', 'Theo dõi công tác BTNN', 'UBND tỉnh Thái Bình', 'Giải quyết yêu cầu bồi thường', '12/07/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
-                    ['TDDD-BTNN-2026-013', 'Yêu cầu báo cáo', 'Sở Tư pháp tỉnh Khánh Hòa', 'Phục hồi danh dự', '28/09/2026', 'Lê Văn Nam', 'Đang theo dõi phản hồi'],
-                    ['TDDD-BTNN-2026-014', 'Theo dõi công tác BTNN', 'UBND tỉnh Phú Thọ', 'Xác định và thực hiện trách nhiệm hoàn trả', '05/10/2026', 'Trần Thị Minh', 'Đang theo dõi phản hồi'],
+                    ['TDDD-BTNN-2026-013', 'Yêu cầu báo cáo', 'Sở Tư pháp tỉnh Khánh Hòa', 'Phục hồi danh dự', '28/09/2026', 'Phạm Minh Đức', 'Đang theo dõi phản hồi'],
+                    ['TDDD-BTNN-2026-014', 'Theo dõi công tác BTNN', 'UBND tỉnh Phú Thọ', 'Xác định và thực hiện trách nhiệm hoàn trả', '05/10/2026', 'Trần Thị Thu Hà', 'Đang theo dõi phản hồi'],
                     ['TDDD-BTNN-2026-015', 'Đôn đốc công tác BTNN', 'Sở Tư pháp tỉnh Lâm Đồng', 'Giải quyết yêu cầu bồi thường', '20/10/2026', 'Nguyễn Văn Cán Bộ', 'Đã gửi'],
-                    ['TDDD-BTNN-2026-016', 'Yêu cầu báo cáo', 'Bộ Tài chính', 'Xử lý kỷ luật', '25/10/2026', 'Lê Văn Nam', 'Đã gửi']
+                    ['TDDD-BTNN-2026-016', 'Yêu cầu báo cáo', 'Bộ Tài chính', 'Xử lý kỷ luật', '25/10/2026', 'Phạm Minh Đức', 'Đã gửi']
                 ]
             },
             kiem_tra: {
@@ -856,23 +861,25 @@
                     ['handler', 'Đơn vị/cán bộ xử lý', 'text', true],
                     ['deadline', 'Hạn xử lý', 'date', false]
                 ],
+                // Đơn vị thực hiện của hồ sơ (đơn vị gốc của người tạo); mã không có trong danh sách: Bộ Tư pháp
+                units: { 'KNTC-BTNN-2026-003': 'STP-HN', 'KNTC-BTNN-2026-004': 'STP-HCM', 'KNTC-BTNN-2026-005': 'STP-HCM', 'KNTC-BTNN-2026-006': 'STP-HP', 'KNTC-BTNN-2026-008': 'STP-HN', 'KNTC-BTNN-2026-009': 'STP-HN', 'KNTC-BTNN-2026-011': 'STP-HCM', 'KNTC-BTNN-2026-012': 'STP-HP' },
                 mainContentLabel: 'Nội dung tiếp nhận',
                 resultLabel: 'Kết quả xác minh/xử lý và biện pháp xử lý/khắc phục',
                 rows: [
                     ['KNTC-BTNN-2026-001', 'Ông Nguyễn Văn D', 'Khiếu nại', 'Giải quyết yêu cầu bồi thường', 'BT-2026-012', '02/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
-                    ['KNTC-BTNN-2026-002', 'Sở Tư pháp TP. Hà Nội', 'Kiến nghị', 'Kiểm tra công tác BTNN', '—', '01/08/2026', 'Trần Thị Minh', 'Đang xử lý'],
-                    ['KNTC-BTNN-2026-003', 'Công dân phản ánh qua Cổng TTĐT', 'Phản ánh', 'Đôn đốc công tác BTNN', 'BT-2026-021', '28/07/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
-                    ['KNTC-BTNN-2026-004', 'Bà Lê Thị Hương', 'Tố cáo', 'Xử lý kỷ luật', 'BT-2026-008', '25/07/2026', 'Lê Văn Nam', 'Đang xử lý'],
-                    ['KNTC-BTNN-2026-005', 'Công ty TNHH Hưng Phát', 'Khiếu nại', 'Xác định và thực hiện trách nhiệm hoàn trả', 'BT-2026-015', '20/07/2026', 'Trần Thị Minh', 'Hoàn thành'],
-                    ['KNTC-BTNN-2026-006', 'Ông Vũ Đình Trọng', 'Phản ánh', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', 'BT-2026-025', '15/07/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
-                    ['KNTC-BTNN-2026-007', 'Sở Tư pháp tỉnh Bình Thuận', 'Kiến nghị', 'Quản lý nhà nước về công tác BTNN', '—', '10/07/2026', 'Lê Văn Nam', 'Hoàn thành'],
-                    ['KNTC-BTNN-2026-008', 'Bà Phạm Thị Mai', 'Khiếu nại', 'Giải quyết yêu cầu bồi thường', 'BT-2026-030', '05/07/2026', 'Trần Thị Minh', 'Đang xử lý'],
-                    ['KNTC-BTNN-2026-009', 'UBND huyện Đan Phượng', 'Xử lý vi phạm', 'Giải quyết yêu cầu bồi thường', 'BT-2026-018', '28/06/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
-                    ['KNTC-BTNN-2026-010', 'Ông Đỗ Quốc Cường', 'Tố cáo', 'Phục hồi danh dự', 'BT-2026-022', '22/06/2026', 'Lê Văn Nam', 'Hoàn thành'],
-                    ['KNTC-BTNN-2026-011', 'Công ty CP Đầu tư Vĩnh An', 'Khiếu nại', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', 'BT-2026-019', '18/06/2026', 'Trần Thị Minh', 'Đang xử lý'],
-                    ['KNTC-BTNN-2026-012', 'Công dân gửi đơn qua Bưu điện', 'Phản ánh', 'Giải quyết yêu cầu bồi thường', 'BT-2026-014', '12/06/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
-                    ['KNTC-BTNN-2026-013', 'Ông Hoàng Minh Tuấn', 'Khiếu nại', 'Xác định và thực hiện trách nhiệm hoàn trả', 'BT-2026-027', '05/06/2026', 'Lê Văn Nam', 'Đang xử lý'],
-                    ['KNTC-BTNN-2026-014', 'Bà Nguyễn Thu Trang', 'Kiến nghị', 'Quản lý nhà nước về công tác BTNN', '—', '01/06/2026', 'Trần Thị Minh', 'Hoàn thành']
+                    ['KNTC-BTNN-2026-002', 'Sở Tư pháp TP. Hà Nội', 'Kiến nghị', 'Kiểm tra công tác BTNN', '—', '01/08/2026', 'Trần Thị Thu Hà', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-003', 'Công dân phản ánh qua Cổng TTĐT', 'Phản ánh', 'Đôn đốc công tác BTNN', 'BT-2026-021', '28/07/2026', 'Đỗ Văn Chung', 'Hoàn thành'],
+                    ['KNTC-BTNN-2026-004', 'Bà Lê Thị Hương', 'Tố cáo', 'Xử lý kỷ luật', 'BT-2026-008', '25/07/2026', 'Châu Ngọc Ánh', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-005', 'Công ty TNHH Hưng Phát', 'Khiếu nại', 'Xác định và thực hiện trách nhiệm hoàn trả', 'BT-2026-015', '20/07/2026', 'Châu Ngọc Ánh', 'Hoàn thành'],
+                    ['KNTC-BTNN-2026-006', 'Ông Vũ Đình Trọng', 'Phản ánh', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', 'BT-2026-025', '15/07/2026', 'Tăng Thị Diệu', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-007', 'Sở Tư pháp tỉnh Bình Thuận', 'Kiến nghị', 'Quản lý nhà nước về công tác BTNN', '—', '10/07/2026', 'Phạm Minh Đức', 'Hoàn thành'],
+                    ['KNTC-BTNN-2026-008', 'Bà Phạm Thị Mai', 'Khiếu nại', 'Giải quyết yêu cầu bồi thường', 'BT-2026-030', '05/07/2026', 'Đỗ Văn Chung', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-009', 'UBND phường Liễu Giai', 'Xử lý vi phạm', 'Giải quyết yêu cầu bồi thường', 'BT-2026-018', '28/06/2026', 'Đỗ Văn Chung', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-010', 'Ông Đỗ Quốc Cường', 'Tố cáo', 'Phục hồi danh dự', 'BT-2026-022', '22/06/2026', 'Phạm Minh Đức', 'Hoàn thành'],
+                    ['KNTC-BTNN-2026-011', 'Công ty CP Đầu tư Vĩnh An', 'Khiếu nại', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', 'BT-2026-019', '18/06/2026', 'Châu Ngọc Ánh', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-012', 'Công dân gửi đơn qua Bưu điện', 'Phản ánh', 'Giải quyết yêu cầu bồi thường', 'BT-2026-014', '12/06/2026', 'Tăng Thị Diệu', 'Hoàn thành'],
+                    ['KNTC-BTNN-2026-013', 'Ông Hoàng Minh Tuấn', 'Khiếu nại', 'Xác định và thực hiện trách nhiệm hoàn trả', 'BT-2026-027', '05/06/2026', 'Phạm Minh Đức', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-014', 'Bà Nguyễn Thu Trang', 'Kiến nghị', 'Quản lý nhà nước về công tác BTNN', '—', '01/06/2026', 'Trần Thị Thu Hà', 'Hoàn thành']
                 ]
             }
         };
@@ -1079,9 +1086,11 @@
         function actionButtons(row) {
             const status = row[row.length - 1];
             // Hồ sơ được lưu thẳng vào trạng thái xử lý, cho phép sửa khi chưa Hoàn thành
-            const canEdit = status !== 'Hoàn thành';
-            const canUpdate = status.includes('Đang') || status === 'Đã gửi' || status === 'Đang theo dõi phản hồi' || status === 'Theo dõi xử lý sau kiểm tra';
-            const canFinish = status.includes('Đang') || status === 'Đã gửi' || status === 'Theo dõi xử lý sau kiểm tra';
+            // Hồ sơ của đơn vị khác (Bộ Tư pháp/Cục xem hồ sơ của Sở Tư pháp): mọi nút mờ, chỉ xem chi tiết bằng click dòng
+            const own = PV.canEdit(PV.ownerOf(row));
+            const canEdit = own && status !== 'Hoàn thành';
+            const canUpdate = own && (status.includes('Đang') || status === 'Đã gửi' || status === 'Đang theo dõi phản hồi' || status === 'Theo dõi xử lý sau kiểm tra');
+            const canFinish = own && (status.includes('Đang') || status === 'Đã gửi' || status === 'Theo dõi xử lý sau kiểm tra');
             return `
                 <div style="display:flex; gap:6px; justify-content:center;">
                     <button data-admin-icon-normalized="1" class="icon-btn edit ${canEdit ? '' : 'disabled'}" title="Sửa" onclick="event.stopPropagation(); openForm('edit', '${row[0]}')"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -1145,11 +1154,27 @@
             container.innerHTML += nextPage + lastPage;
         }
 
+        // Phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp: cột Đơn vị thực hiện chỉ hiển thị với người dùng thuộc Bộ Tư pháp/Cục (sau cột mã hồ sơ)
+        // Cán bộ xử lý: cán bộ đã nhập hồ sơ (người tạo); Đơn vị thực hiện đặt ngay sau cột Cán bộ xử lý
+        const officerIndex = () => currentConfig.columns.indexOf('Cán bộ xử lý');
+        function gridColumns() {
+            const cols = currentConfig.columns, i = officerIndex();
+            return PV.isBtp() ? [...cols.slice(0, i + 1), 'Đơn vị thực hiện', ...cols.slice(i + 1)] : cols;
+        }
+        function displayRow(src) {
+            if (!PV.isBtp()) return src;
+            const i = officerIndex();
+            const r = [...src.slice(0, i + 1), PV.unitName(PV.ownerOf(src)), ...src.slice(i + 1)];
+            r.unit = PV.ownerOf(src);
+            return r;
+        }
+
         function renderTable() {
             const head = document.getElementById('tableHead');
             const body = document.getElementById('tableBody');
-            const actionIndex = currentConfig.columns.length - 1;
-            head.innerHTML = `<tr><th style="width:56px; text-align:center;">STT</th>${currentConfig.columns.map((col, index) => `<th style="${index === actionIndex ? 'width:140px; text-align:center;' : ''}">${col}</th>`).join('')}</tr>`;
+            const gridCols = gridColumns();
+            const actionIndex = gridCols.length - 1;
+            head.innerHTML = `<tr><th style="width:56px; text-align:center;">STT</th>${gridCols.map((col, index) => `<th style="${index === actionIndex ? 'width:140px; text-align:center;' : ''}">${col}</th>`).join('')}</tr>`;
 
             const keyword = (document.getElementById('filter_keyword')?.value || '').trim().toLowerCase();
             const group = (document.getElementById('filter_group')?.value || '').trim();
@@ -1157,6 +1182,7 @@
             const content = (document.getElementById('filter_content')?.value || '').trim();
             const status = document.getElementById('filter_status')?.value || '';
             let filtered = workingRows.filter(row => {
+                if (!PV.canSee(PV.ownerOf(row)) || !PV.matchFilter(PV.ownerOf(row), row[officerIndex()])) return false;
                 if (keyword && !String(row[0] || '').toLowerCase().includes(keyword)) return false;
                 if (moduleKey === 'theo_doi_don_doc') {
                     if (group && row[1] !== group) return false;
@@ -1178,7 +1204,7 @@
             const currentRangeEl = document.getElementById('currentRange');
 
             if (total === 0) {
-                body.innerHTML = `<tr><td colspan="${currentConfig.columns.length + 1}" style="text-align:center; color:var(--text-muted); padding:26px;">Không có bản ghi phù hợp.</td></tr>`;
+                body.innerHTML = PV.level() === 'OTHER' ? PV.denyRow(gridCols.length + 1) : `<tr><td colspan="${gridCols.length + 1}" style="text-align:center; color:var(--text-muted); padding:26px;">Không có bản ghi phù hợp.</td></tr>`;
                 if (totalCountEl) totalCountEl.innerText = '0';
                 if (currentRangeEl) currentRangeEl.innerText = '0-0';
                 renderPaginationPages(1);
@@ -1192,7 +1218,7 @@
 
             const pageRows = filtered.slice(startIdx, endIdx);
 
-            body.innerHTML = pageRows.map((row, index) => `
+            body.innerHTML = pageRows.map((src, index) => { const row = displayRow(src); return `
                 <tr onclick="openForm('view', '${row[0]}')">
                     <td style="text-align:center;">${startIdx + index + 1}</td>
                     ${row.map((cell, cellIndex) => {
@@ -1212,7 +1238,7 @@
                     }).join('')}
                     <td style="text-align:center;">${actionButtons(row)}</td>
                 </tr>
-            `).join('');
+            `; }).join('');
 
             renderPaginationPages(maxPages);
         }
@@ -1392,7 +1418,8 @@
             document.getElementById('codeLabel').innerText = currentConfig.codeLabel;
             document.getElementById('formCode').innerText = isNew ? 'Hệ thống tự sinh' : code;
             document.getElementById('formStatus').innerText = row ? row[row.length - 1] : 'Đang nhập';
-            document.getElementById('formOfficer').innerText = row ? row[row.length - 2] : 'Nguyễn Văn Cán Bộ';
+            // Cán bộ xử lý: người tạo hồ sơ; thêm mới: người dùng đang đăng nhập
+            document.getElementById('formOfficer').innerText = row ? row[row.length - 2] : PV.creatorOf(null);
             document.getElementById('formFields').innerHTML = currentConfig.fields.map(fieldControl).join('');
             caseSelected = {};
             document.getElementById('detailPanel').classList.toggle('view-mode', mode === 'view');
@@ -1494,12 +1521,13 @@
         // Kết xuất Excel dùng chung các module (Hướng dẫn nghiệp vụ, Khiếu nại/tố cáo/xử lý vi phạm): toàn bộ bản ghi theo bộ lọc hiện tại, đúng các cột của lưới (bỏ Thao tác)
         const XLSX_FILE_NAMES = { huong_dan: 'Danh_sach_huong_dan_nghiep_vu_BTNN', khieu_nai: 'Danh_sach_khieu_nai_to_cao_xu_ly_vi_pham' };
         function exportExcel() {
-            const gridCols = currentConfig.columns.slice(0, -1);
+            const gridCols = gridColumns().slice(0, -1);
             return BTNN_XLSX.exportGrid({
                 title: currentConfig.title,
                 name: XLSX_FILE_NAMES[moduleKey] || 'Danh_sach_nghiep_vu_BTNN',
                 headers: gridCols,
-                rows: lastFilteredRows.map(row => row.slice(0, gridCols.length))
+                rows: lastFilteredRows.map(row => displayRow(row).slice(0, gridCols.length)),
+                note: PV.filterNote()
             });
         }
 
@@ -1508,6 +1536,8 @@
                 const el = document.getElementById(`filter_${id}`);
                 if (el) el.value = '';
             });
+            const unitFilter = document.getElementById('filter_unit');
+            if (unitFilter) { unitFilter.value = ''; document.getElementById('filter_unit_text').value = 'Tất cả'; }
             currentPage = 1;
             renderTable();
         }
@@ -1531,9 +1561,14 @@
             document.title = currentConfig.title;
             document.getElementById('pageTitle').innerHTML = `<i class="fa-solid ${currentConfig.icon}"></i> ${currentConfig.title}`;
             document.getElementById('pageSubtitle').innerText = currentConfig.subtitle;
-            document.getElementById('filterGrid').innerHTML = currentConfig.filters.map(renderFilterControl).join('');
+            // Bộ lọc Đơn vị thực hiện (chỉ người dùng thuộc Bộ Tư pháp/Cục) đặt sau 02 ô tìm kiếm đầu
+            const filterHtml = currentConfig.filters.map(renderFilterControl);
+            filterHtml.splice(2, 0, PV.filterHtml({ label: 'Đơn vị thực hiện', includeBtp: true }));
+            document.getElementById('filterGrid').innerHTML = filterHtml.join('');
             initDatePickers(document.getElementById('filterGrid'));
-            workingRows = currentConfig.rows.map(row => [...row]);
+            const units = currentConfig.units || {};
+            workingRows = currentConfig.rows.map(row => { const r = [...row]; r.unit = units[row[0]] || PV.BTP; return r; });
+            document.getElementById('btnAddNew').style.display = PV.canCreate(false) ? '' : 'none';
 
             const tabs = document.getElementById('moduleTabs');
             if (currentConfig.tabs && currentConfig.tabs.length > 0) {
@@ -1554,14 +1589,14 @@
     </script>
     <!-- Kết xuất Excel dùng chung BTNN (SheetJS như dashboard_btnn.html) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="btnn_ket_xuat_excel.js?v=20261029xlsx"></script>
+    <script src="btnn_ket_xuat_excel.js?v=20261030dvth1"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_form_page.js?v=20261026fp"></script>
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 
 </html>

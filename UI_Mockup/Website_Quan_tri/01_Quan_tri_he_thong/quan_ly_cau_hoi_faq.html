@@ -1798,8 +1798,43 @@
             showToast("Đã thực hiện tìm kiếm", "success");
         }
 
+        // Kết xuất Excel: theo Quy chuẩn Kết xuất Excel dùng chung (04_Danh_muc_va_Phu_luc.md #quy-chuan-ket-xuat-excel)
+        // Toàn bộ bản ghi theo bộ lọc/sắp xếp hiện tại (không theo trang); cột theo lưới đang hiển thị, bỏ cột Thao tác
         function exportExcel() {
-            showToast("Đã kết xuất Excel danh sách câu hỏi FAQ thành công", "success");
+            const sz = pageSize, pg = currentPage;
+            pageSize = 1e9; currentPage = 1; refreshTable();
+            const table = document.getElementById('faqTable');
+            const ths = Array.from(table.querySelectorAll('thead th'));
+            const vis = ths.map((th, i) => (getComputedStyle(th).display !== 'none' ? i : -1)).filter(i => i >= 0);
+            const keep = vis.filter(i => !/Thao tác/i.test(ths[i].textContent));
+            const cellText = c => (c ? (c.innerText || c.textContent || '') : '').split('\n').map(s => s.trim()).filter(Boolean).join('; ');
+            const rows = Array.from(table.querySelectorAll('tbody tr')).filter(tr => tr.cells.length === ths.length || tr.cells.length === vis.length)
+                .map(tr => keep.map(i => { const c = tr.cells.length === ths.length ? tr.cells[i] : tr.cells[vis.indexOf(i)]; return { v: cellText(c), al: c ? getComputedStyle(c).textAlign : 'left' }; }));
+            const headers = keep.map(i => ths[i].textContent.replace(/\s+/g, ' ').trim());
+            pageSize = sz; currentPage = pg; refreshTable();
+            if (!rows.length) { showToast('Không có dữ liệu để kết xuất Excel. [MSG-WRN-SYS-001]', 'error'); return; }
+            const p2 = x => String(x).padStart(2, '0'), now = new Date();
+            const stamp = `${p2(now.getDate())}/${p2(now.getMonth() + 1)}/${now.getFullYear()} ${p2(now.getHours())}:${p2(now.getMinutes())}`;
+            const ymd = `${now.getFullYear()}${p2(now.getMonth() + 1)}${p2(now.getDate())}`;
+            const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+            const fromD = document.getElementById('filterFromDate').value.trim(), toD = document.getElementById('filterToDate').value.trim();
+            const info = (fromD || toD) ? `Ngày tạo: Từ ngày ${fromD || '...'} đến ngày ${toD || '...'}` : `Thời điểm xuất: ${stamp}`;
+            const u = window.BTNN_WF && BTNN_WF.getCurrentUser ? BTNN_WF.getCurrentUser() : null;
+            const n = headers.length, font = "font-family:'Times New Roman';";
+            const html = '<meta charset="UTF-8"><table border="1">'
+                + `<tr><td colspan="${n}" style="${font}font-size:15pt;font-weight:bold;text-align:center;border:none;">DANH SÁCH CÂU HỎI VÀ TRẢ LỜI THƯỜNG GẶP</td></tr>`
+                + `<tr><td colspan="${n}" style="${font}font-size:11pt;font-style:italic;text-align:center;border:none;">${esc(info)}</td></tr>`
+                + '<tr>' + headers.map(h => `<th style="${font}font-size:12pt;background:#e5e7eb;">${esc(h)}</th>`).join('') + '</tr>'
+                + rows.map(r => '<tr>' + r.map(c => `<td style="${font}font-size:12pt;mso-number-format:'\\@';text-align:${c.al === 'right' || c.al === 'center' ? c.al : 'left'};">${esc(c.v)}</td>`).join('') + '</tr>').join('')
+                + `<tr><td colspan="${n}" style="${font}font-size:10pt;font-style:italic;text-align:right;border:none;">Xuất ngày ${esc(stamp)} bởi ${esc((u && (u.name || u.fullName || u.username)) || 'Người dùng hiện tại')}</td></tr>`
+                + '</table>';
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob(['﻿' + html], { type: 'application/vnd.ms-excel;charset=utf-8' }));
+            // Mockup sinh bảng HTML nên dùng đuôi .xls; hệ thống thật xuất .xlsx theo quy chuẩn
+            a.download = `${ymd}_Quan_ly_cau_hoi_va_tra_loi_thuong_gap.xls`;
+            document.body.appendChild(a); a.click();
+            setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+            showToast(`Đã kết xuất ${rows.length} câu hỏi ra tệp Excel.`, 'success');
         }
 
         // CUSTOM CONFIRMATION MODAL & DELETE
@@ -2442,6 +2477,6 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="admin-ui-standardizer.js"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 </html>

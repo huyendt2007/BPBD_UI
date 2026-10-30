@@ -71,7 +71,9 @@ function sdxNeg(c, date, pay, rights) {
         },
         otherRights: rights || '',
         otherRequests: 'Hai bên thống nhất thời hạn chi trả theo Quyết định giải quyết bồi thường.',
-        docs: [{ name: 'Biên bản thương lượng', file: 'Bien_ban_thuong_luong_' + c.code + '.pdf' }, { name: 'Giấy mời tham gia thương lượng', file: 'Giay_moi_thuong_luong_' + c.code + '.pdf' }],
+        // [dvc1] Biên bản kết quả thương lượng việc bồi thường: trường tệp riêng (01 tệp .pdf)
+        bienBan: { name: 'Bien_ban_ket_qua_thuong_luong_' + c.code + '.pdf', size: '386 KB', url: '#' },
+        docs: [{ name: 'Giấy mời tham gia thương lượng', file: 'Giay_moi_thuong_luong_' + c.code + '.pdf' }],
         savedAt: date + ' 16:00', savedBy: SDX_CB
     };
     return c;
@@ -127,7 +129,7 @@ function sdxReply(c, date, opinion, file) {
 function sdxBase(o) {
     var c = Object.assign({
         assignedOfficer: SDX_CB, nycType: 'Cá nhân', nycRole: 'Người bị thiệt hại', role: 'Người bị thiệt hại',
-        nycCountry: 'Việt Nam', nycTinhThanh: 'Hà Nội', nycCardType: 'CCCD', cardType: 'CCCD', nycCardPlace: 'Cục Cảnh sát QLHC về TTXH',
+        nycCountry: 'Việt Nam', nycTinhThanh: 'Hà Nội', nycCardType: 'CMND/CCCD/Chứng minh quân đội', cardType: 'CMND/CCCD/Chứng minh quân đội', nycCardPlace: 'Cục Cảnh sát QLHC về TTXH',
         nguonHoSo: 'Tiếp nhận mới', hinhThucTiepNhan: 'Trực tiếp', notifyMethod: 'Qua dịch vụ bưu chính',
         applicableLaw: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', victimAlive: 'yes',
         advanceNum: 0, slaDays: 0, slaStatus: 'normal', restoreHonor: false, sdxSeed: true
@@ -153,23 +155,23 @@ function sdxClaims() {
         fieldGroup: 'hình sự', date: '01/10/2026', deadline: '30/11/2026', requestDocDate: '28/09/2026',
         nyc: 'Đỗ Thị Lan', nycBirth: '14/03/1985', nycCardNo: '001185009871', nycCardDate: '20/04/2021',
         nycPhone: '0912401401', nycEmail: 'dothilan85@gmail.com', nycPhuongXa: 'Phường Văn Miếu - Quốc Tử Giám', nycAddressDetail: 'Số 12 ngõ 46 Quốc Tử Giám',
-        agency: 'Công an quận Đống Đa',
+        agency: 'Công an phường Văn Miếu - Quốc Tử Giám',
         docBase: 'Quyết định đình chỉ điều tra số 15/QĐ-CQĐT ngày 10/08/2026 (người bị tạm giữ không thực hiện hành vi phạm tội)',
         vanBanCanCu: [{ name: 'Quyết định đình chỉ điều tra số 15/QĐ-CQĐT', file: 'QD_15_CQDT_dinh_chi_dieu_tra.pdf' }],
         hanhVi: 'Tạm giữ hình sự 03 ngày đối với người không thực hiện hành vi phạm tội.',
         nhanQua: 'Danh dự, uy tín bị ảnh hưởng tại nơi cư trú và nơi làm việc.',
         status: 'Từ chối phục hồi danh dự', phddStatus: 'Từ chối phục hồi danh dự', slaText: 'Người bị thiệt hại từ chối quyền được phục hồi danh dự',
         phddForm: 'Trực tiếp xin lỗi và cải chính công khai', phddFormApology: true, phddFormNews: false,
-        appointedOfficers: sdxAppointed('Công an quận Đống Đa', '05/10/2026'),
-        qdCuNguoi: { signedFile: 'QD_cu_nguoi_giai_quyet_BT-2026-401_da_ky.pdf', officers: [{ name: SDX_CB, position: 'Chuyên viên', unit: 'Công an quận Đống Đa' }] },
+        appointedOfficers: sdxAppointed('Công an phường Văn Miếu - Quốc Tử Giám', '05/10/2026'),
+        qdCuNguoi: { signedFile: 'QD_cu_nguoi_giai_quyet_BT-2026-401_da_ky.pdf', officers: [{ name: SDX_CB, position: 'Chuyên viên', unit: 'Công an phường Văn Miếu - Quốc Tử Giám' }] },
         thongBaoThuLy: { signingMethod: 'Ký ngoài', issuedAt: '05/10/2026', soKyHieu: '102/TB-CAQ', ngay: '05/10/2026', fileName: 'Thong_bao_thu_ly_BT-2026-401.pdf' },
         files: [{ name: 'Van_ban_yeu_cau_phuc_hoi_danh_du_BT-2026-401.pdf', url: '#' }],
         timeline: [
             sdxT('Tiếp nhận hồ sơ', '01/10/2026', 'Tiếp nhận văn bản yêu cầu phục hồi danh dự trực tiếp tại trụ sở.', 'Hệ thống / Người nộp đơn'),
-            sdxT('Thông báo thụ lý hồ sơ', '05/10/2026', 'Ban hành Thông báo thụ lý số 102/TB-CAQ; cử ông Nguyễn Văn Chuyên Viên giải quyết.', 'Nguyễn Hữu Thắng (Trưởng Công an quận)')
+            sdxT('Thông báo thụ lý hồ sơ', '05/10/2026', 'Ban hành Thông báo thụ lý số 102/TB-CAQ; cử ông Nguyễn Văn Chuyên Viên giải quyết.', 'Nguyễn Hữu Thắng (Trưởng Công an phường)')
         ]
     });
-    sdxM26(c1, { no: '41/TB-CAQ', date: '09/10/2026', send: '10/10/2026', signer: 'Nguyễn Hữu Thắng', title: 'Trưởng Công an quận', time: '05/11/2026 08:30', place: 'Hội trường Công an quận Đống Đa' });
+    sdxM26(c1, { no: '41/TB-CAQ', date: '09/10/2026', send: '10/10/2026', signer: 'Nguyễn Hữu Thắng', title: 'Trưởng Công an phường', time: '05/11/2026 08:30', place: 'Hội trường Công an phường Văn Miếu - Quốc Tử Giám' });
     sdxReply(c1, '16/10/2026', 'Từ chối', 'Van_ban_tu_choi_phuc_hoi_danh_du_BT-2026-401.pdf');
     c1.phddTimeline = [
         sdxP('Thụ lý hồ sơ', '05/10/2026', 'Thủ trưởng cơ quan giải quyết bồi thường thụ lý hồ sơ, cử người giải quyết. Bắt đầu tiến trình phục hồi danh dự.'),
@@ -455,14 +457,14 @@ function sdxClaims() {
         fieldGroup: 'thi hành án dân sự', date: '02/10/2026', deadline: '01/12/2026', requestDocDate: '30/09/2026',
         nyc: 'Bùi Văn Hải', nycBirth: '03/04/1978', nycCardNo: '001078008409', nycCardDate: '12/10/2021',
         nycPhone: '0904409409', nycEmail: '', nycPhuongXa: 'Phường Hoàng Mai', nycAddressDetail: 'Số 66 Tam Trinh',
-        agency: 'UBND phường Hoàng Mai',
+        agency: 'UBND phường Bạch Mai',
         docBase: 'Quyết định hủy Quyết định cưỡng chế thi hành án số 18/QĐ-CCTHA ngày 20/08/2026',
         hanhVi: 'Cưỡng chế giao tài sản không đúng đối tượng phải thi hành án.',
         nhanQua: 'Mất quyền sử dụng kho hàng 02 tháng, hàng hóa hư hỏng.',
         status: 'Đã chuyển CQGQBT', slaText: 'Đã chuyển cơ quan giải quyết bồi thường',
         thietHaiList: sdxThiet([[1, 140000000], [2, 60000000]]),
-        appointedOfficers: sdxAppointed('UBND phường Hoàng Mai', '05/10/2026'),
-        qdCuNguoi: { signedFile: 'QD_cu_nguoi_giai_quyet_BT-2026-409_da_ky.pdf', officers: [{ name: SDX_CB, position: 'Chuyên viên', unit: 'UBND phường Hoàng Mai' }] },
+        appointedOfficers: sdxAppointed('UBND phường Bạch Mai', '05/10/2026'),
+        qdCuNguoi: { signedFile: 'QD_cu_nguoi_giai_quyet_BT-2026-409_da_ky.pdf', officers: [{ name: SDX_CB, position: 'Chuyên viên', unit: 'UBND phường Bạch Mai' }] },
         thongBaoThuLy: { signingMethod: 'Ký ngoài', issuedAt: '05/10/2026', soKyHieu: '88/TB-UBND', ngay: '05/10/2026', fileName: 'Thong_bao_thu_ly_BT-2026-409.pdf' },
         transferRequest: {
             via: 'Chuyển CQGQBT', prevStatus: 'Cử người giải quyết bồi thường', targetName: 'Thi hành án dân sự TP. Hà Nội',
@@ -490,21 +492,21 @@ function sdxClaims() {
         fieldGroup: 'hành chính', date: '05/10/2026', deadline: '04/12/2026', requestDocDate: '02/10/2026',
         nyc: 'Đinh Công Sơn', nycBirth: '17/08/1983', nycCardNo: '001083006410', nycCardDate: '08/12/2021',
         nycPhone: '0989410410', nycEmail: 'dinhcongson@gmail.com', nycPhuongXa: 'Phường Long Biên', nycAddressDetail: 'Số 21 ngõ 12 Ngọc Lâm',
-        agency: 'UBND phường Long Biên',
+        agency: 'UBND phường Việt Hưng',
         docBase: 'Quyết định hủy Quyết định tạm giữ phương tiện số 30/QĐ-TGPT ngày 10/09/2026',
         hanhVi: 'Tạm giữ phương tiện vận tải quá thời hạn quy định.',
         nhanQua: 'Không khai thác được phương tiện vận tải 40 ngày.',
         status: 'Đã chuyển CQGQBT', slaText: 'Không thụ lý - chuyển cơ quan có thẩm quyền',
         thietHaiList: sdxThiet([[2, 48000000], [6, 7000000]]),
         ktlReasonCode: 'KTL_01', ktlReasonName: k1,
-        ktlDetail: 'Người thi hành công vụ gây thiệt hại thuộc Công an phường Long Biên.',
-        rejectType: 'Đã chuyển CQGQBT', rejectReason: k1 + ': Người thi hành công vụ gây thiệt hại thuộc Công an phường Long Biên.',
+        ktlDetail: 'Người thi hành công vụ gây thiệt hại thuộc Công an phường Việt Hưng.',
+        rejectType: 'Đã chuyển CQGQBT', rejectReason: k1 + ': Người thi hành công vụ gây thiệt hại thuộc Công an phường Việt Hưng.',
         rejectDate: '09/10/2026', rejectOfficer: 'Kiều Văn Nam (Chủ tịch UBND phường)', signingMethod: 'online',
         signedFile: f10, ktlDocNumber: '09/TB-UBND', ktlDocDate: '09/10/2026',
         rejectionLog: [{ date: '09/10/2026', officer: 'Kiều Văn Nam (Chủ tịch UBND phường)', action: 'Không thụ lý', reason: k1, method: 'Ký số', docNumber: '09/TB-UBND', docDate: '09/10/2026', file: f10 }],
         transferRequest: {
-            via: 'Không thụ lý', mode: 'CQ', targetName: 'Công an phường Long Biên',
-            content: 'Không thụ lý do không thuộc thẩm quyền; chuyển hồ sơ để Công an phường Long Biên giải quyết theo thẩm quyền (Khoản 2 Điều 43 Luật Trách nhiệm bồi thường của Nhà nước).',
+            via: 'Không thụ lý', mode: 'CQ', targetName: 'Công an phường Việt Hưng',
+            content: 'Không thụ lý do không thuộc thẩm quyền; chuyển hồ sơ để Công an phường Việt Hưng giải quyết theo thẩm quyền (Khoản 2 Điều 43 Luật Trách nhiệm bồi thường của Nhà nước).',
             docNo: '09/TB-UBND', docDate: '09/10/2026', signedFile: f10,
             files: [{ name: 'Ho_so_yeu_cau_boi_thuong_BT-2026-410.pdf' }],
             at: '09/10/2026'
@@ -513,7 +515,7 @@ function sdxClaims() {
         timeline: [
             sdxT('Tiếp nhận hồ sơ', '05/10/2026', 'Tiếp nhận văn bản yêu cầu bồi thường trực tiếp.', 'Hệ thống / Người nộp đơn'),
             sdxT('Trình Không thụ lý hồ sơ', '07/10/2026', 'Trình Lãnh đạo ký Thông báo không thụ lý (Mẫu 04/BTNN), lý do KTL_01, kèm chuyển cơ quan có thẩm quyền.', SDX_CB),
-            sdxT('Đã chuyển CQGQBT', '09/10/2026', 'Lãnh đạo ký số Thông báo không thụ lý số 09/TB-UBND. Hồ sơ chuyển đến Công an phường Long Biên.', 'Kiều Văn Nam (Chủ tịch UBND phường)')
+            sdxT('Đã chuyển CQGQBT', '09/10/2026', 'Lãnh đạo ký số Thông báo không thụ lý số 09/TB-UBND. Hồ sơ chuyển đến Công an phường Việt Hưng.', 'Kiều Văn Nam (Chủ tịch UBND phường)')
         ]
     });
     L.push(c10);
@@ -558,7 +560,7 @@ function sdxClaims() {
         nyc: 'Lương Thị Thu', nycBirth: '06/06/1992', nycCardNo: '001192004412', nycCardDate: '27/04/2022',
         nycPhone: '0966412412', nycEmail: 'luongthu92@gmail.com', nycPhuongXa: 'Phường Hai Bà Trưng', nycAddressDetail: 'Số 3 ngõ 105 Bạch Mai',
         hinhThucTiepNhan: 'Qua dịch vụ bưu chính',
-        agency: 'UBND phường Hai Bà Trưng',
+        agency: 'UBND phường Đồng Nhân',
         docBase: 'Chưa cung cấp văn bản làm căn cứ yêu cầu bồi thường',
         hanhVi: 'Cưỡng chế thu hồi biển quảng cáo.',
         nhanQua: 'Thiệt hại biển quảng cáo và chi phí lắp đặt lại.',

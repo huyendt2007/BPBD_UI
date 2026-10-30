@@ -49,9 +49,10 @@
         var now = new Date();
         var fileName = stamp(now) + '_' + o.name + '.xlsx';
         var title = String(o.title || '').toUpperCase();
-        var info = 'Thời điểm xuất: ' + viDateTime(now);
+        // Dòng 2: thời điểm xuất; kèm điều kiện lọc cần ghi (o.note) nếu có
+        var info = 'Thời điểm xuất: ' + viDateTime(now) + (o.note ? ' - ' + o.note : '');
         var footer = 'Xuất ngày ' + viDateTime(now) + ' bởi ' + currentUserName();
-        var result = { fileName: fileName, headers: headers, rowCount: body.length, rows: body, lib: global.XLSX ? 'SheetJS' : 'html' };
+        var result = { fileName: fileName, headers: headers, info: info, rowCount: body.length, rows: body, lib: global.XLSX ? 'SheetJS' : 'html' };
         global.__lastXlsx = result;
 
         if (global.XLSX && global.XLSX.utils) {

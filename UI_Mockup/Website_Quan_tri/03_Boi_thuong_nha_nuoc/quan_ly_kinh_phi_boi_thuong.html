@@ -1179,7 +1179,7 @@
                             <select class="form-control" id="formProposalCqCap">
                                 <option value="Sở Tài chính Hà Nội">[STC-HN] - Sở Tài chính Hà Nội</option>
                                 <option value="Bộ Tài chính">[BTC] - Bộ Tài chính</option>
-                                <option value="Phòng Tài chính - Kế hoạch Quận Cầu Giấy">[PTCKH-CG] - Phòng Tài chính - Kế hoạch Quận Cầu Giấy</option>
+                                <option value="Phòng Kinh tế phường Cầu Giấy">[PTCKH-CG] - Phòng Kinh tế phường Cầu Giấy</option>
                                 <option value="Sở Tài chính TP. Hồ Chí Minh">[STC-HCM] - Sở Tài chính TP. Hồ Chí Minh</option>
                             </select>
                         </div>
@@ -1448,39 +1448,17 @@
                 </div>
             </div>
 
-            <!-- KHỐI 6: NỘI DUNG TỜ TRÌNH VÀ TÀI LIỆU GỬI KÈM -->
+            <!-- KHỐI 6: TÀI LIỆU ĐÍNH KÈM - 02 bảng Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo (quy tắc 5.9, btnn_tai_lieu_kem_theo.js).
+                 Chế độ xem: bảng không có dòng thì ẩn; cả 02 bảng không có dòng thì ẩn cả khối. Dựng tại renderProposalAttachedDocs(). -->
             <div class="accordion-item" id="block6_NotesAndDocs">
                 <div class="accordion-header active" onclick="toggleAccordion('block6_NotesAndDocs')">
-                    <span><i class="fa-solid fa-file-lines" style="color: var(--primary-light); margin-right: 8px;"></i> 6. Nội dung tờ trình và Tài liệu gửi kèm</span>
+                    <span><i class="fa-solid fa-paperclip" style="color: var(--primary-light); margin-right: 8px;"></i> 6. Tài liệu đính kèm</span>
                     <i class="fa-solid fa-chevron-down accordion-icon rotated"></i>
                 </div>
                 <div class="accordion-body show">
-                    <!-- Trích yếu nội dung tờ trình -->
-                    <div class="form-group">
-                        <span class="form-label">Ý kiến đề xuất / Trích yếu nội dung tờ trình <span class="required">*</span></span>
-                        <textarea class="form-control" id="formProposalNotes" rows="3" placeholder="Nêu rõ căn cứ đề nghị, tiến trình thụ lý, thỏa thuận hoặc báo cáo xác minh thiệt hại tương ứng..."></textarea>
-                    </div>
-
-                    <!-- Danh mục tài liệu gửi kèm -->
-                    <div class="form-group" style="margin-top: 20px; margin-bottom: 0;">
-                        <span class="form-label" style="font-weight: 700;">Danh mục tài liệu, tờ trình gửi kèm <span class="required">*</span></span>
-                        <div class="table-container">
-                            <table class="custom-table" id="proposalAttachedDocsTable">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 50px; text-align: center;">STT</th>
-                                        <th style="text-align: center;">Tên tài liệu, văn bản</th>
-                                        <th style="width: 250px; text-align: center;">File đính kèm</th>
-                                        <th style="width: 110px; text-align: center;">Thao tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="proposalAttachedDocsBody">
-                                    <!-- Dynamic rows -->
-                                </tbody>
-                            </table>
-                        </div>
-                        <div style="margin-top: 10px;"><button type="button" class="tlkt-btn-add" onclick="addProposalDocRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button></div>
-                    </div>
+                    <!-- Trường ẩn giữ tương thích dữ liệu cũ (đã bỏ Nội dung tờ trình khỏi giao diện) -->
+                    <textarea id="formProposalNotes" style="display: none;"></textarea>
+                    <div id="kpProposalDocsHost"></div>
                 </div>
             </div>
 
@@ -1902,20 +1880,21 @@
 
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="quan_ly_kinh_phi_boi_thuong.js?v=20261029sn1"></script>
-    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
+    <script src="quan_ly_kinh_phi_boi_thuong.js?v=20261030s10"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
+    <script src="btnn_dvc_sync.js?v=20261030dvc1"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
-    <script src="quan_ly_kinh_phi_kptb.js?v=20261029tldk"></script>
+    <script src="quan_ly_kinh_phi_kptb.js?v=20261030s10b"></script>
     <!-- [th7] Khoản thiệt hại của bản ghi tạo từ Tòa án (02 cấp): cộng theo nhóm, dòng "Các thiệt hại khác" -->
     <script src="quan_ly_kinh_phi_thkhac.js?v=20261027th7"></script>
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
-    <script src="quan_ly_kinh_phi_qdtu.js?v=20261029tlcam2"></script>
+    <script src="quan_ly_kinh_phi_qdtu.js?v=20261030s2"></script>
     <script src="quan_ly_kinh_phi_kpcd.js?v=20261029tldk"></script>
-    <script src="quan_ly_kinh_phi_kpdt.js?v=20261029tlcam2"></script>
-    <script src="quan_ly_kinh_phi_kpdc.js?v=20261029sn1"></script>
-    <script src="quan_ly_kinh_phi_kpux.js?v=20261029sn1"></script>
+    <script src="quan_ly_kinh_phi_kpdt.js?v=20261030s10"></script>
+    <script src="quan_ly_kinh_phi_kpdc.js?v=20261030s2"></script>
+    <script src="quan_ly_kinh_phi_kpux.js?v=20261030s10b"></script>
     <!-- [hlqd] Chặn Trình thông báo chi trả / Cập nhật chi trả khi Quyết định GQBT Không có hiệu lực -->
     <script src="quan_ly_kinh_phi_hlqd.js?v=20261029sn1"></script>
 
@@ -2074,7 +2053,7 @@
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 
 </html>

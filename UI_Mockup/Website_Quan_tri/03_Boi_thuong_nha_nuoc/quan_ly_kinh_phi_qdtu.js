@@ -1544,7 +1544,7 @@ function qdtuView(id) {
 function qdtuEnsureMockClaim(item) {
     if (!qdtuIs(item) || typeof mockClaims === 'undefined' || mockClaims.some(c => c.code === item.ycbtCode)) return;
     const f = item.qdtu;
-    mockClaims.push({ code: item.ycbtCode, nyc: f.nycName, role: f.nycRole || 'Người bị thiệt hại', cardType: 'CCCD', cardNo: f.nycIdNo, address: f.nycAddress, agency: f.unitName, field: 'Lĩnh vực khác', amount: f.amount, status: 'Xác minh thiệt hại',
+    mockClaims.push({ code: item.ycbtCode, nyc: f.nycName, role: f.nycRole || 'Người bị thiệt hại', cardType: 'CMND/CCCD/Chứng minh quân đội', cardNo: f.nycIdNo, address: f.nycAddress, agency: f.unitName, field: 'Lĩnh vực khác', amount: f.amount, status: 'Xác minh thiệt hại',
         suggestedAdvance: f.amount, advanceTinhThan: f.tinhThan, advanceKhac: f.khac, advanceRecKenh: f.payMethod === QDTU_CASH ? 'tien-mat' : 'chuyen-khoan', advanceBankUser: f.accHolder, advanceBankAccount: f.account, advanceBankName: f.bank, advanceBankBranch: f.branch });
 }
 // Cập nhật chi trả: điền sẵn người nhận, phương thức chi trả theo Quyết định tạm ứng

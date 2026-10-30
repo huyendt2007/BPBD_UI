@@ -71,7 +71,7 @@
 | Nội dung trả lời | Text(2000) | Có | Lấy từ hệ thống | Control UI: Hiển thị/Read-only.<br>- Nội dung giải đáp chi tiết (hiển thị định dạng văn bản giàu ký tự). |
 | Nhóm chủ đề | String(255) | Có | Lấy từ hệ thống | Control UI: Hiển thị/Read-only.<br>- Tên nhóm chủ đề phân loại câu hỏi FAQ. |
 | Thứ tự hiển thị | String(255) | Không | Lấy từ hệ thống | Control UI: Hiển thị/Read-only.<br>- Thứ tự sắp xếp hiển thị. |
-| **II. Danh sách file đính kèm** | | | | |
+| **II. Tài liệu đính kèm** | | | | |
 | File tài liệu đính kèm | File | Không | Lấy từ hệ thống | Control UI: Hiển thị/Read-only.<br>- Danh sách các file tài liệu hướng dẫn (PDF, JPG, PNG). Có liên kết "Xem file" để xem/tải về. |
 | File hướng dẫn media | File | Không | Lấy từ hệ thống | Control UI: Hiển thị/Read-only.<br>- Danh sách các video/âm thanh hướng dẫn (MP4, MP3). Có liên kết "Xem file". |
 

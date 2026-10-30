@@ -147,8 +147,9 @@ function kpdtStatusHtml(item) {
     const sub = (st === 'Chờ duyệt' || st === 'Bị trả lại') ? `<div class="wf-sub">${kpdtEsc(kpdtKind(item))}</div>` : '';
     return `<span class="kpdt-st"><span class="badge ${kpdtStatusClass(st)}">${kpdtEsc(st)}</span>${sub}</span>`;
 }
-function kpdtClaimLink(code) {
-    return `<a href="javascript:void(0)" onclick="openLinkedClaimDetail('${kpdtEsc(code)}')" style="color:var(--primary-light); text-decoration:underline;">${kpdtEsc(code)}</a>`;
+// courtCaseId: bản ghi từ Theo dõi vụ việc tại Tòa án -> mở đúng vụ việc tại Tòa án
+function kpdtClaimLink(code, courtCaseId) {
+    return `<a href="javascript:void(0)" onclick="openLinkedClaimDetail('${kpdtEsc(code)}', '${kpdtEsc(courtCaseId || '')}')" style="color:var(--primary-light); text-decoration:underline;">${kpdtEsc(code)}</a>`;
 }
 // Tệp văn bản: thẻ tệp + Xem file | Tải file
 function kpdtFileHtml(f) {
@@ -282,7 +283,7 @@ function kpdtAdvBody(item) {
     const diff = typeof qdtuDiffRecipient === 'function' ? qdtuDiffRecipient(f) : false;
     const total = (Number(f.tinhThan) || 0) + (Number(f.khac) || 0);
     kpdtCurFile = kpdtAdvFile(item, f);
-    const claim = `<div class="kpdt-grid">${kpdtFld('Mã hồ sơ', kpdtClaimLink(item.ycbtCode) + (vv ? ` <span style="font-weight:500; color:#64748b;">- Mã vụ việc ${kpdtEsc(vv)}</span>` : ''))}${kpdtFld('Cơ quan giải quyết', kpdtEsc(f.unitName))}</div>`;
+    const claim = `<div class="kpdt-grid">${kpdtFld('Mã hồ sơ', kpdtClaimLink(item.ycbtCode, item.courtCaseId) + (vv ? ` <span style="font-weight:500; color:#64748b;">- Mã vụ việc ${kpdtEsc(vv)}</span>` : ''))}${kpdtFld('Cơ quan giải quyết', kpdtEsc(f.unitName))}</div>`;
     const nyc = `<div class="kpdt-grid">${kpdtFld('Họ và tên/Tên tổ chức', kpdtEsc(f.nycName))}${kpdtFld('Số định danh cá nhân/hộ chiếu/giấy tờ đi lại có giá trị quốc tế/Mã số của tổ chức', kpdtEsc(f.nycIdNo))}${kpdtFld('Địa chỉ', kpdtEsc(f.nycAddress), true)}</div>`;
     const money = `<div class="kpdt-grid">${kpdtFld('Thiệt hại về tinh thần (đồng)', kpdtFmt(f.tinhThan))}${kpdtFld('Thiệt hại khác có thể tính được ngay mà không cần xác minh (đồng)', kpdtFmt(f.khac))}${kpdtFld('Tỷ lệ tạm ứng trên tổng số tiền thiệt hại (%)', f.rate === '' ? '' : kpdtEsc((Number(f.rate) || 0).toLocaleString('vi-VN', { maximumFractionDigits: 2 })))}
         <div class="kpdt-fld"><span class="form-label">Số tiền tạm ứng kinh phí (đồng)</span><div class="kpdt-ro">${kpdtFmt(f.amount)}</div><div class="kpdt-words">Viết bằng chữ: ${kpdtEsc(docTienBangChu(Number(f.amount) || 0))}</div></div></div>
@@ -302,8 +303,16 @@ function kpdtAdvBody(item) {
         + kpdtCard('fa-hand-holding-dollar', 'Thông tin người nhận tạm ứng', rec)
         + kpdtCard('fa-money-bill-transfer', 'Phương thức chi trả tiền tạm ứng', pay)
         + kpdtCard('fa-file-signature', 'Quyết định tạm ứng kinh phí', dec)
-        + kpdtCard('fa-paperclip', 'Tài liệu đính kèm', kpdtDocsHtml(s.attachments || item.files || [], { noTitle: true }))
+        + kpdtAdvDocsCard(s.attachments || item.files || [])
         + kpdtHistHtml(item);
+}
+// Khối Tài liệu đính kèm: 02 bảng Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo (quy tắc 5.9);
+// bảng không có dòng thì ẩn, cả 02 bảng không có dòng thì ẩn cả khối; dữ liệu cũ chưa phân loại -> Tài liệu không ban hành kèm theo
+function kpdtAdvDocsCard(list) {
+    if (typeof tlktViewHtml !== 'function') return '';
+    const rows = typeof kpProposalDocsNorm === 'function' ? kpProposalDocsNorm(list) : kpdtDocsNorm(list);
+    const h = tlktViewHtml(rows, { boxClass: 'tlkt-view', titleClass: 'tlkt-sec-title' });
+    return h ? kpdtCard('fa-paperclip', 'Tài liệu đính kèm', h) : '';
 }
 
 // ---------------- Chi trả tiền bồi thường ----------------
@@ -331,7 +340,7 @@ function kpdtPayBody(item) {
     const info = getTreasuryInfo(item);
     const st = kpNormStatus(item.status);
     kpdtCurFile = kpdtPayFile(item);
-    const general = `<div class="kpdt-grid c3">${kpdtFld('Mã kinh phí', kpdtEsc(item.code))}${kpdtFld('Mã hồ sơ GQBT', kpdtClaimLink(item.ycbtCode))}
+    const general = `<div class="kpdt-grid c3">${kpdtFld('Mã kinh phí', kpdtEsc(item.code))}${kpdtFld('Mã hồ sơ GQBT', kpdtClaimLink(item.ycbtCode, item.courtCaseId))}
         ${kpdtFld('Mã vụ việc', kpdtEsc(kpdtVv(item.ycbtCode)))}${kpdtFld('Tên cá nhân/Tổ chức yêu cầu', kpdtEsc(item.nycName))}${kpdtFld('Số tiền chi trả', kpdtFmt(item.amount) + ' đồng')}
         ${kpdtFld('Ngày tạo', kpdtEsc(item.date))}${kpdtFld('Cán bộ xử lý', kpdtEsc(item.user))}${kpdtFld('Trạng thái', kpdtStatusHtml(item))}</div>`;
     const notice = `<div class="kpdt-grid">${kpdtFld('Hình thức ký', n ? (n.signMethod === 'Ký ngoài' ? 'Ký ngoài' : 'Ký số trên hệ thống') : '')}<div></div>
@@ -348,9 +357,13 @@ function kpdtPayBody(item) {
           + kpdtFld('Ngân hàng', kpdtEsc(p ? [p.bank, p.branch].filter(Boolean).join(' - ') : [po.bank || r.bank || item.payoutBankName, po.branch || r.branch || item.payoutBankBranch].filter(Boolean).join(' - ')));
     const payInfo = `<div class="kpdt-grid c3">${kpdtFld('Phương thức chi trả', kpdtEsc(method))}${payFields}
         ${kpdtFld('Ngày chi trả', kpdtEsc(p ? p.payDate : (item.payoutDate || '')))}${kpdtFld('Số tiền chi trả', p ? kpdtFmt(p.amount) + ' đồng' : (item.payoutDate ? kpdtFmt(item.payoutAmountReal || item.amount) + ' đồng' : ''))}<div class="kpdt-full">${kpdtDocsHtml(p ? p.files : (item.payoutFiles || item.payoutFile || []))}</div></div>`;
+    // Chi trả tiền bồi thường chi nhiều lần: Lịch sử chi trả + Tổng đã chi / Còn phải chi (thay Ngày chi trả, Số tiền chi trả của 01 lần)
+    const ph = item.type === 'Chi trả tiền bồi thường' && typeof kpPayHistory === 'function' ? kpPayHistory(item) : null;
+    const payHistHtml = ph && ph.length ? kpdtPayHistHtml(item, ph) : '';
+    const payCard = payHistHtml ? `<div class="kpdt-grid c3">${kpdtFld('Phương thức chi trả', kpdtEsc(method))}${payFields}</div>${payHistHtml}` : payInfo;
     const isSq = st === 'Trả lại ngân sách nhà nước';
     const sq = `<div class="kpdt-grid">${kpdtFld('Số chứng từ / quyết định trả lại ngân sách nhà nước', kpdtEsc(item.treasuryVoucherNo))}${kpdtFld('Ngày trả lại ngân sách nhà nước', kpdtEsc(item.treasuryForfeitDate))}
-        ${kpdtFld('Số tiền trả lại ngân sách nhà nước (VNĐ)', item.treasuryAmount != null ? kpdtFmt(item.treasuryAmount) : '')}${kpdtFld('Căn cứ / lý do trả lại ngân sách nhà nước', kpdtEsc(item.treasuryReason))}
+        ${kpdtFld('Số tiền trả lại ngân sách nhà nước (VNĐ)', item.treasuryAmount != null ? kpdtFmt(item.treasuryAmount) : '')}${item.type === 'Chi trả tiền bồi thường' ? kpdtFld('Số tiền đã chi thực tế (VNĐ)', kpdtFmt(Math.max(0, (Number(item.amount) || 0) - (Number(item.treasuryAmount) || 0)))) : ''}${kpdtFld('Căn cứ / lý do trả lại ngân sách nhà nước', kpdtEsc(item.treasuryReason))}
         <div class="kpdt-full">${kpdtDocsHtml(item.treasuryFile || [])}</div></div>`;
     const sup = item.kptbSupp ? `<div class="kpdt-grid">${kpdtFld('Ngày đề nghị', kpdtEsc(item.kptbSupp.at))}${kpdtFld('Cán bộ đề nghị', kpdtEsc(kpdtUserName(item.kptbSupp.by)))}${kpdtFld('Văn bản đề nghị', kpdtEsc(item.kptbSupp.file))}${kpdtFld('Nội dung đề nghị', kpdtEsc(item.kptbSupp.content), true)}</div>` : '';
     return kpdtRejHtml(item)
@@ -358,11 +371,22 @@ function kpdtPayBody(item) {
         + (sup ? kpdtCard('fa-file-invoice-dollar', 'Đề nghị cấp bổ sung kinh phí', sup) : '')
         + kpdtCard('fa-file-signature', 'Thông báo chi trả tiền bồi thường', notice)
         + kpdtCard('fa-hourglass-half', 'Theo dõi hạn nhận kinh phí/Trả lại ngân sách nhà nước', track)
-        + kpdtCard('fa-receipt', 'Thông tin chi trả', payInfo)
+        + kpdtCard('fa-receipt', 'Thông tin chi trả', payCard)
         + (isSq ? kpdtCard('fa-building-columns', 'Thông tin Trả lại ngân sách nhà nước', sq) : '')
         + kpdtHistHtml(item);
 }
 
+// Bảng Lịch sử chi trả: Lần, Ngày chi, Số tiền, Chứng từ, Người cập nhật; dòng Tổng đã chi / Còn phải chi
+function kpdtPayHistHtml(item, ph) {
+    const total = ph.reduce((s, x) => s + (Number(x && x.amount) || 0), 0);
+    const remain = kpNormStatus(item.status) === 'Trả lại ngân sách nhà nước' ? 0 : Math.max(0, (Number(item.amount) || 0) - total);
+    const th = 'style="padding:6px 8px; border:1px solid #E2E8F0; background:#F8FAFC; text-align:left;"', td = 'style="padding:6px 8px; border:1px solid #E2E8F0;"';
+    const docs = x => (x.files || []).map(f => kpdtEsc((f && f.file && f.file.name) || (f && f.name) || f)).join('<br>') || '-';
+    const rows = ph.map((x, i) => `<tr><td ${td}>${x.no || i + 1}</td><td ${td}>${kpdtEsc(x.payDate)}</td><td style="padding:6px 8px; border:1px solid #E2E8F0; text-align:right;">${kpdtFmt(x.amount)}</td><td ${td}>${docs(x)}</td><td ${td}>${kpdtEsc(x.by ? kpdtUserName(x.by) : (item.user || ''))}</td></tr>`).join('');
+    return `<div class="kpdt-full" style="margin-top:8px;"><span class="form-label">Lịch sử chi trả</span>
+        <table id="kpdtPayHist" style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4px;"><thead><tr><th ${th}>Lần</th><th ${th}>Ngày chi</th><th ${th}>Số tiền (VNĐ)</th><th ${th}>Chứng từ</th><th ${th}>Người cập nhật</th></tr></thead><tbody>${rows}</tbody></table>
+        <div class="kpdt-grid c3" style="margin-top:8px;">${kpdtFld('Tổng đã chi (VNĐ)', kpdtFmt(total))}${kpdtFld('Còn phải chi (VNĐ)', kpdtFmt(remain))}</div></div>`;
+}
 // ---------------- Thanh nút theo trạng thái (như popup chi tiết trước đây) ----------------
 function kpdtButtons(item) {
     const b = (cls, icon, label, js) => `<button type="button" class="btn ${cls}" onclick="${js}"><i class="fa-solid ${icon}"></i> ${label}</button>`;

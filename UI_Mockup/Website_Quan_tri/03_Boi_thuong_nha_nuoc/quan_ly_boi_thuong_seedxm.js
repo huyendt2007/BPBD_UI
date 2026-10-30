@@ -181,7 +181,7 @@ function sxmTlDraft(c, dk) {
         participation: 'DONG_Y', decision: 'Đồng ý thương lượng', date: d, place: 'Phòng họp số 2 - ' + c.agency,
         participants: sdxOfficials(c.agency), claimantParticipants: [{ name: c.nycRepName || c.nyc, idNo: c.nycCardNo || '', address: c.nycAddressDetail || '' }],
         items: c.verifiedItems.map(function (v, i) {
-            // [tlst] Bản nháp có đủ 03 Trạng thái thương lượng: Thành công / Không thành công / Không tiếp tục thương lượng; các mục còn lại chưa chọn
+            // [tlst] Kết quả đã lưu có đủ 03 Trạng thái thương lượng: Thành công / Không thành công / Không tiếp tục thương lượng; các mục còn lại chưa chọn
             var b = { key: v.key, label: v.label, proposed: v.proposed, verified: v.verified };
             if (i === 0) return Object.assign(b, { agreed: v.verified, status: 'Thành công', reason: '' });
             if (i === 1) return Object.assign(b, { agreed: 0, status: 'Không thành công', reason: 'Hai bên chưa thống nhất mức bồi thường do khác biệt về giá trị thẩm định.' });
@@ -191,7 +191,7 @@ function sxmTlDraft(c, dk) {
         payment: { method: '', receiverName: '', receiverIdNo: '', receiverAddress: '', bankUser: '', bankAccount: '', bankName: '', bankBranch: '' },
         otherRights: '', otherRequests: 'Người yêu cầu bồi thường đề nghị thương lượng tiếp mục còn lại sau khi bổ sung chứng từ.',
         docs: [{ name: 'Giấy mời tham gia thương lượng', file: 'Giay_moi_thuong_luong_' + c.code + '.pdf' }],
-        savedAt: d + ' 10:15', savedBy: SDX_CB, draft: true,
+        savedAt: d + ' 10:15', savedBy: SDX_CB,
         // [tltt] Thông tin thỏa thuận khác: có tích cả 02 thỏa thuận; [t89] kéo dài thương lượng chỉ có Từ ngày (demo không có Đến ngày)
         extend: { on: true, from: d, to: '' },
         earlyEffect: { on: true, text: 'kể từ ngày ký' }

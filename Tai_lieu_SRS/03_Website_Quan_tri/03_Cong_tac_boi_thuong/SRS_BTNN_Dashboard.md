@@ -24,7 +24,7 @@
 
 \- Dashboard chỉ đọc, tổng hợp từ dữ liệu đã có trên hệ thống; không phát sinh nhập liệu mới (trừ chức năng Cấu hình).
 
-\- Màn hình công việc chờ xử lý của Lãnh đạo, mục đầu tiên của nhóm menu "Bồi thường nhà nước": xem [Dashboard Lãnh đạo - Dashboard - Công tác bồi thường nhà nước (Website Quản trị)](#db-lanh-dao).
+\- Màn hình công việc chờ xử lý của Lãnh đạo, mục đầu tiên của nhóm menu "Bồi thường nhà nước": xem [Bàn làm việc Lãnh đạo - Dashboard - Công tác bồi thường nhà nước (Website Quản trị)](#db-lanh-dao).
 
 *a. Phân quyền*
 
@@ -43,7 +43,7 @@
 | STT | Nội dung | Quy tắc |
 | :-- | :--- | :--- |
 | 1 | Nguồn dữ liệu kết quả đánh giá | Dữ liệu tại Quản lý chấm điểm công tác BTNN: điểm tự chấm, điểm Bộ Tư pháp đánh giá, xếp loại [DM_33].<br>- Phạm vi: theo từng Sở Tư pháp (01 Sở Tư pháp/01 tỉnh, thành phố).<br>- Chỉ lấy kỳ chấm điểm đã được Bộ Tư pháp đánh giá, xếp loại; xếp loại theo [BR-BTNN-CD-003].<br>- Áp dụng cho: Phân tích theo thời gian, Phân tích theo địa phương, thẻ và biểu đồ xếp loại tại màn hình tổng quan. |
-| 2 | Nguồn dữ liệu vụ việc | Dữ liệu vụ việc yêu cầu bồi thường (YCBT) trên hệ thống, dùng chung bộ chỉ tiêu với Báo cáo Mẫu số 03-TT08: Số vụ việc thụ lý, Số vụ việc đã giải quyết, Số tiền đã chi trả.<br>- Phạm vi: theo địa phương (tỉnh, thành phố nơi cơ quan giải quyết bồi thường đóng trụ sở).<br>- Áp dụng cho: Phân tích theo phạm vi trách nhiệm, theo cơ quan giải quyết, theo cấp thực hiện, Phân tích trong phạm vi cả nước và các thẻ, biểu đồ vụ việc tại màn hình tổng quan.<br>- Một vụ việc chỉ được tính một lần trong cùng kỳ, cùng chỉ tiêu.<br>- Gồm cả vụ việc tại [Theo dõi vụ việc tại Tòa án - Theo dõi vụ việc tại Tòa án - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_TheoDoiVuViecToaAn.md); vụ việc tại Tòa án ở trạng thái `Trả lại đơn khởi kiện` không được tính vào số liệu thống kê (thẻ số liệu, biểu đồ, bản đồ và Bảng số liệu).<br>- Vụ việc đếm theo Mã vụ việc và Trạng thái vụ việc (vụ việc `Yêu cầu cả hai` tính 01 vụ việc; `Đang phục hồi danh dự` chưa tính là đã giải quyết xong) theo quy tắc [Vụ việc gồm 02 nhánh giải quyết - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-vu-viec-hai-nhanh). |
+| 2 | Nguồn dữ liệu vụ việc | Dữ liệu vụ việc yêu cầu bồi thường (YCBT) trên hệ thống, dùng chung bộ chỉ tiêu với Báo cáo Mẫu số 03-TT08: Số vụ việc thụ lý, Số vụ việc đã giải quyết, Số tiền đã chi trả.<br>- Số tiền đã chi trả: theo Số tiền đã chi thực tế; vụ việc trả lại ngân sách nhà nước một phần vẫn tính là đã chi trả; không gồm Số tiền trả lại ngân sách nhà nước.<br>- Phạm vi: theo địa phương (tỉnh, thành phố nơi cơ quan giải quyết bồi thường đóng trụ sở).<br>- Áp dụng cho: Phân tích theo phạm vi trách nhiệm, theo cơ quan giải quyết, theo cấp thực hiện, Phân tích trong phạm vi cả nước và các thẻ, biểu đồ vụ việc tại màn hình tổng quan.<br>- Một vụ việc chỉ được tính một lần trong cùng kỳ, cùng chỉ tiêu.<br>- Gồm cả vụ việc tại [Theo dõi vụ việc tại Tòa án - Theo dõi vụ việc tại Tòa án - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_TheoDoiVuViecToaAn.md); vụ việc tại Tòa án ở trạng thái `Trả lại đơn khởi kiện` không được tính vào số liệu thống kê (thẻ số liệu, biểu đồ, bản đồ và Bảng số liệu).<br>- Vụ việc đếm theo Mã vụ việc và Trạng thái vụ việc (vụ việc `Yêu cầu cả hai` tính 01 vụ việc; `Đang phục hồi danh dự` chưa tính là đã giải quyết xong).<br>- Hệ thống không thống kê vụ việc chỉ có yêu cầu phục hồi danh dự (vụ việc chỉ có hồ sơ `Chỉ yêu cầu phục hồi danh dự` hoặc hồ sơ cán bộ chủ động phục hồi danh dự, không có yêu cầu bồi thường thiệt hại bằng tiền) theo [Phạm vi thống kê vụ việc - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_BaoCao_CongTacBTNN.md#bctt-pham-vi-thong-ke). |
 | 3 | Chiều phân tích | Thời gian: năm đánh giá.<br>- Địa phương: Sở Tư pháp/tỉnh, thành phố theo Danh mục địa bàn (cấp Tỉnh/Thành phố).<br>- Phạm vi trách nhiệm bồi thường: Lĩnh vực phát sinh thiệt hại [DM_22].<br>- Cơ quan giải quyết bồi thường: Đơn vị giải quyết của vụ việc [DM_DON_VI].<br>- Cấp thực hiện: Loại cơ quan báo cáo [DM_43]. |
 | 4 | Kỳ số liệu | Loại kỳ báo cáo [DM_44]: Báo cáo năm số liệu thực tế (01/01 - 31/10); Số liệu thống kê năm chính thức (01/01 - 31/12). |
 | 5 | Tham số mặc định | Khi mở màn hình, bộ lọc, loại biểu đồ, chỉ tiêu lấy theo cấu hình đang "Áp dụng" tại [MH02 - Cấu hình lựa chọn hình thức hiển thị](#db-mh02); chưa có cấu hình: Biểu đồ cột, chỉ tiêu đầu tiên của màn hình.<br>- Năm mặc định: năm hiện tại đối với dữ liệu vụ việc; năm đánh giá gần nhất đã có kết quả đối với dữ liệu chấm điểm. |
@@ -162,7 +162,7 @@
 | 1 | Tìm kiếm | Nút | - Tổng hợp lại số liệu, vẽ lại biểu đồ, bản đồ, bảng theo điều kiện lọc. |
 | 2 | Xóa bộ lọc | Nút | - Đưa bộ lọc về giá trị mặc định theo cấu hình và tải lại. |
 | 3 | Cột / Tròn / Hình sin | Nhóm nút | - Đổi loại biểu đồ theo quy tắc của từng màn hình; giữ nguyên điều kiện lọc. |
-| 4 | Kết xuất Excel | Nút | - Xuất Bảng số liệu ra tệp .xlsx. |
+| 4 | Kết xuất Excel | Nút | - Theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-chuan-ket-xuat-excel): định dạng tệp, font chữ, căn lề, dòng tiêu đề, dòng thông tin, footer, ghi nhật ký.<br>- Bảng số liệu rỗng: không kết xuất, hiển thị [MSG-WRN-SYS-001].<br>- Có dữ liệu: tải tệp `.xlsx` gồm Bảng số liệu theo điều kiện lọc hiện hành, kể cả dòng Tổng cộng.<br>- Tên tệp: `yyyyMMdd_[Tên màn hình phân tích].xlsx`; tên màn hình viết không dấu, nối bằng `_`.<br>- Dòng 1 (tiêu đề): tên màn hình phân tích, in hoa.<br>- Dòng 2 (thông tin): điều kiện lọc hiện hành, dạng `[Tên trường lọc]: [Giá trị]`, phân tách bằng dấu `;`.<br>- Cột xuất: đúng các cột của Bảng số liệu. |
 | 5 | Click tỉnh, thành phố trên bản đồ | Bản đồ | - Mở màn hình phân tích liên quan, lọc theo tỉnh, thành phố được chọn. |
 
 ---
@@ -317,35 +317,37 @@
 ---
 
 <a id="db-lanh-dao"></a>
-#### 4.3.3.28.12. Dashboard Lãnh đạo
+#### 4.3.3.28.12. Bàn làm việc Lãnh đạo
 
-\- Tổng hợp công việc chờ xử lý của người dùng đang đăng nhập tại 06 phân hệ giải quyết bồi thường; chọn khối để mở tab `Chờ xử lý` của phân hệ tương ứng.
+\- Tổng hợp công việc chờ xử lý của người dùng đang đăng nhập tại các phân hệ giải quyết bồi thường; chọn khối để mở tab `Chờ xử lý` của phân hệ tương ứng.
 
 \- Màn hình chỉ đọc, không phát sinh nhập liệu.
 
 | STT | Nội dung | Quy tắc |
 | :-- | :--- | :--- |
-| 1 | Vị trí menu | Mục đầu tiên của nhóm menu "Bồi thường nhà nước", trước mục "Tiếp nhận hồ sơ".<br>- Hiển thị tại LeftMenu của Trang chủ Bồi thường nhà nước và Trang chủ Website Quản trị. |
-| 2 | Phân quyền | Quyền "Xem Dashboard Lãnh đạo" thuộc chức năng Dashboard Lãnh đạo. |
-| 3 | Số lượng | Số lượng của khối bằng số hồ sơ tại tab `Chờ xử lý` của phân hệ theo người dùng đang đăng nhập; trùng số hiển thị tại mục menu của phân hệ.<br>- Tổng công việc chờ xử lý bằng tổng số lượng 06 khối. |
+| 1 | Vị trí menu | Mục đầu tiên của nhóm menu "Bồi thường nhà nước", trước mục "Tiếp nhận hồ sơ".<br>- Hiển thị tại LeftMenu của Trang chủ Bồi thường nhà nước và Trang chủ Website Quản trị.<br>- Breadcrumb: `Trang chủ / Bồi thường nhà nước / Bàn làm việc Lãnh đạo`. |
+| 2 | Phân quyền | Quyền "Xem Bàn làm việc Lãnh đạo" thuộc chức năng Bàn làm việc Lãnh đạo. |
+| 3 | Số lượng | Số lượng của khối bằng số công việc đang chờ chính người dùng đang đăng nhập xử lý; danh sách công việc của khối lấy từ cùng danh sách này.<br>- Chờ phân công, Chờ duyệt Xác định CQGQBT, Chờ duyệt Giải quyết YCBT, Chờ duyệt QĐ Giải quyết YCBT: hồ sơ người dùng thuộc Nhóm lãnh đạo của đơn vị đang phân công hoặc cấp ký duyệt hiện hành.<br>- Chờ duyệt QĐ tạm ứng, Chờ duyệt Thông báo chi trả: đề nghị `Chờ duyệt` của menu con trình người dùng ký duyệt.<br>- Chờ duyệt Xem xét hoàn trả: hồ sơ chờ Lãnh đạo duyệt, người dùng thuộc Nhóm lãnh đạo của cơ quan giải quyết bồi thường của vụ việc.<br>- Người dùng không có công việc chờ xử lý: số lượng các khối bằng 0.<br>- Tổng công việc chờ xử lý bằng tổng số lượng 07 khối. |
+| 4 | Công việc mới nhất | Công việc của khối sắp xếp theo thời điểm trình/giao giảm dần (mới nhất trước).<br>- Khối Chờ duyệt Xem xét hoàn trả: sắp xếp theo thời điểm cập nhật trạng thái gần nhất của hồ sơ (trình, ký, ban hành); chưa có thì lấy mốc thời gian cuối cùng trong lịch sử xử lý của hồ sơ. |
 
 ##### 4.3.3.28.12.1. Màn hình
 
-![Dashboard Lãnh đạo](images/VCLD_MH01_Dashboard_Lanh_dao.png)
+![Bàn làm việc Lãnh đạo](images/VCLD_MH01_Dashboard_Lanh_dao.png)
 
 ##### 4.3.3.28.12.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề màn hình | String(255) | - | `Dashboard Lãnh đạo` | Control UI: Text heading (Read-only).<br>- Hiển thị đúng tên mục Menu `Dashboard Lãnh đạo`. |
-| Tổng công việc chờ xử lý | Integer(10) | - | Theo dữ liệu | Control UI: Label.<br>- Tổng số lượng 06 khối (quy tắc 3). |
-| **Khối công việc chờ xử lý** | Section | - | - | Control UI: Card grid.<br>- 06 khối theo thứ tự (Tên khối - Tên phân hệ):<br>+ Chờ phân công - Tiếp nhận hồ sơ<br>+ Chờ duyệt Xác định CQGQBT - Xác định cơ quan giải quyết bồi thường<br>+ Chờ duyệt Giải quyết YCBT - Giải quyết yêu cầu bồi thường<br>+ Chờ duyệt QĐ Giải quyết YCBT - Quyết định giải quyết bồi thường<br>+ Chờ duyệt cấp kinh phí - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường<br>+ Chờ duyệt Xem xét hoàn trả - Xem xét trách nhiệm hoàn trả |
+| Tiêu đề màn hình | String(255) | - | `Bàn làm việc Lãnh đạo` | Control UI: Text heading (Read-only).<br>- Hiển thị đúng tên mục Menu `Bàn làm việc Lãnh đạo`. |
+| Tổng công việc chờ xử lý | Integer(10) | - | Theo dữ liệu | Control UI: Label.<br>- Hiển thị bên phải tiêu đề màn hình, nội dung "Tổng công việc chờ xử lý: [N]".<br>- N theo quy tắc 3. |
+| **Khối công việc chờ xử lý** | Section | - | - | Control UI: Card grid.<br>- 07 khối theo thứ tự (Tên khối - Tên phân hệ):<br>+ Chờ phân công - Tiếp nhận hồ sơ<br>+ Chờ duyệt Xác định CQGQBT - Xác định cơ quan giải quyết bồi thường<br>+ Chờ duyệt Giải quyết YCBT - Giải quyết yêu cầu bồi thường<br>+ Chờ duyệt QĐ Giải quyết YCBT - Quyết định giải quyết bồi thường<br>+ Chờ duyệt QĐ tạm ứng - Kinh phí - Tạm ứng kinh phí<br>+ Chờ duyệt Thông báo chi trả - Kinh phí - Chi trả tiền bồi thường<br>+ Chờ duyệt Xem xét hoàn trả - Xem xét trách nhiệm hoàn trả<br>- Mỗi khối gồm 03 phần:<br>+ Phần đầu: Icon, Tên khối, Tên phân hệ, Số lượng<br>+ Danh sách công việc<br>+ Phần cuối: Số công việc còn lại, Mở danh sách Chờ xử lý |
+| Icon | Icon | - | Theo khối | Control UI: Icon. |
 | Tên khối | String(255) | - | Theo khối | Control UI: Label. |
 | Tên phân hệ | String(255) | - | Theo khối | Control UI: Label. |
-| Số lượng | Integer(10) | - | Theo dữ liệu | Control UI: Label.<br>- Theo quy tắc 3. |
-| Danh sách công việc | List | - | Theo dữ liệu | Control UI: List (Read-only).<br>- Tối đa 03 công việc đầu tiên của tab `Chờ xử lý`.<br>- Mỗi dòng: `Mã hồ sơ` và nội dung tóm tắt:<br>+ Khối Chờ duyệt cấp kinh phí: "[Tên cá nhân/Tổ chức yêu cầu] - [Nội dung trình] - [Số tiền] đ"<br>+ Khối Chờ duyệt Xem xét hoàn trả: "[Trạng thái] - Vụ việc [Mã vụ việc]"<br>+ Khối khác: "[Tên cá nhân/Tổ chức yêu cầu] - [Nội dung trình]"; việc chờ cử người giải quyết hiển thị nội dung "Cử người giải quyết bồi thường"<br>- Số lượng bằng 0: hiển thị "Không có công việc chờ xử lý." |
-| Số công việc còn lại | String(100) | - | Ẩn | Control UI: Label.<br>- Nội dung "và [n] công việc khác".<br>- Chỉ hiển thị khi số lượng lớn hơn số công việc đã hiển thị. |
-| Mở danh sách Chờ xử lý | HyperLink | - | - | Control UI: HyperLink. |
+| Số lượng | Integer(10) | - | Theo dữ liệu | Control UI: Label.<br>- Hiển thị bên phải phần đầu khối.<br>- Theo quy tắc 3. |
+| Danh sách công việc | List | - | Theo dữ liệu | Control UI: List (Read-only).<br>- Tối đa 03 công việc mới nhất (quy tắc 4).<br>- Mỗi dòng: `Mã hồ sơ` và "[Nội dung tóm tắt] - [Mã vụ việc]".<br>- Mã hồ sơ trùng Mã vụ việc: không hiển thị lại Mã vụ việc.<br>- Nội dung tóm tắt theo khối:<br>+ Chờ phân công: "Chờ phân công xử lý"<br>+ Chờ duyệt Xác định CQGQBT, Chờ duyệt Giải quyết YCBT, Chờ duyệt QĐ Giải quyết YCBT: "Chờ duyệt [Nội dung trình]"<br>+ Việc chờ Cử người phục hồi danh dự (hồ sơ cán bộ chủ động phục hồi danh dự ở trạng thái `Cử người phục hồi danh dự`, người dùng thuộc Nhóm lãnh đạo của đơn vị đang phân công): thuộc khối Chờ duyệt Giải quyết YCBT, nội dung "Chờ cử người phục hồi danh dự"<br>+ Chờ duyệt QĐ tạm ứng: "Chờ duyệt QĐ tạm ứng kinh phí"<br>+ Chờ duyệt Thông báo chi trả: "Chờ duyệt Thông báo chi trả"<br>+ Chờ duyệt Xem xét hoàn trả: "[Trạng thái hồ sơ hoàn trả]"<br>- Số lượng bằng 0: hiển thị "Không có công việc chờ xử lý." |
+| Số công việc còn lại | String(100) | - | Ẩn | Control UI: Label.<br>- Hiển thị bên trái phần cuối khối, nội dung "và [X] công việc khác".<br>- X = Số lượng - số công việc đã hiển thị.<br>- Chỉ hiển thị khi X lớn hơn 0. |
+| Mở danh sách Chờ xử lý | HyperLink | - | - | Control UI: HyperLink.<br>- Hiển thị bên phải phần cuối khối, nội dung "Mở danh sách Chờ xử lý →". |
 
 ##### 4.3.3.28.12.3. Chức năng trên màn hình
 

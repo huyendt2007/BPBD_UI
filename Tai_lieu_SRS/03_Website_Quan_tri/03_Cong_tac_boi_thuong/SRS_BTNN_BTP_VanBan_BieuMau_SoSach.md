@@ -2,7 +2,7 @@
 
 ##### 4.3.3.15.1. Mục đích
 
-\- Cho phép cán bộ Bộ Tư pháp (Cục Bồi thường nhà nước) ghi nhận, quản lý và tra cứu thông tin văn bản, biểu mẫu, sổ sách về công tác bồi thường nhà nước (BTNN) do Bộ Tư pháp ban hành theo thẩm quyền quản lý nhà nước quy định tại khoản 1 Điều 73 Luật Trách nhiệm bồi thường của Nhà nước.
+\- Cho phép cán bộ Bộ Tư pháp (Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước) ghi nhận, quản lý và tra cứu thông tin văn bản, biểu mẫu, sổ sách về công tác bồi thường nhà nước (BTNN) do Bộ Tư pháp ban hành theo thẩm quyền quản lý nhà nước quy định tại khoản 1 Điều 73 Luật Trách nhiệm bồi thường của Nhà nước.
 
 \- Cho phép ghi nhận cả văn bản Bộ Tư pháp ban hành theo thẩm quyền và văn bản quy định chi tiết, hướng dẫn thi hành Luật Trách nhiệm bồi thường của Nhà nước do Bộ Tư pháp trình cơ quan nhà nước có thẩm quyền ban hành, theo khoản 2 Điều 44 dự thảo Nghị định quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước (bản gửi lấy ý kiến ngày 28/9/2026).
 
@@ -67,6 +67,7 @@ flowchart TD
 | Số, ký hiệu | String(50) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Cơ quan ban hành | String(255) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Ngày ban hành | Date | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Định dạng `dd/mm/yyyy`. |
+| Cán bộ xử lý | String(100) | Không | Theo dữ liệu hệ thống | Control UI: Text (Read-only).<br>- Họ và tên cán bộ đã nhập bản ghi (người tạo). |
 | Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | Phân trang | - | - | 20 bản ghi/trang | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
@@ -80,7 +81,7 @@ flowchart TD
 |  |  |  | **TH3 - Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí tìm kiếm đã nhập/chọn, thiết lập các ô lọc về giá trị mặc định. |
 | 3 | Thêm mới | Button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa văn bản, biểu mẫu, sổ sách về công tác BTNN](#433155-mh03---màn-hình-thêm-mớisửa-văn-bản-biểu-mẫu-sổ-sách-về-công-tác-btnn) ở chế độ Thêm mới với form thông tin để trống. |
-| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Tên văn bản/biểu mẫu/sổ sách, Loại nội dung, Hình thức ban hành, Số, ký hiệu, Cơ quan ban hành, Ngày ban hành.<br>- Tên tệp: `yyyyMMdd_Danh_sach_van_ban_bieu_mau_so_sach_BTNN.xlsx`. |
+| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-chuan-ket-xuat-excel):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Tên văn bản/biểu mẫu/sổ sách, Loại nội dung, Hình thức ban hành, Số, ký hiệu, Cơ quan ban hành, Ngày ban hành.<br>- Tên tệp: `yyyyMMdd_Danh_sach_van_ban_bieu_mau_so_sach_BTNN.xlsx`. |
 |  |  |  | **TH1 - Không có dữ liệu**: Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải tệp. |
 |  |  |  | **TH2 - Có dữ liệu**: Hệ thống tải tệp Excel về máy người dùng. |
 | 5 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Tên văn bản/biểu mẫu/sổ sách<br>+ Loại nội dung<br>+ Hình thức ban hành |
@@ -105,7 +106,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề màn hình | - | - | - | Control UI: Label<br>Hiển thị "Xem chi tiết ban hành văn bản, biểu mẫu, sổ sách về công tác BTNN theo thẩm quyền". |
 | **I. Thông tin chung** |  |  |  |  |
-| Người tạo/Cán bộ phụ trách | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Cán bộ xử lý | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Ngày tạo/cập nhật | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Chế độ | - | - | - | Control UI: Label<br>Hiển thị "Chỉ xem". |
 | **II. Thông tin văn bản, biểu mẫu, sổ sách** |  |  |  |  |
@@ -145,7 +146,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề màn hình | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới ban hành văn bản, biểu mẫu, sổ sách về công tác BTNN theo thẩm quyền" hoặc "Sửa ban hành văn bản, biểu mẫu, sổ sách về công tác BTNN theo thẩm quyền". |
 | **I. Thông tin chung** |  |  |  |  |
-| Người tạo/Cán bộ phụ trách | - | - | Theo tài khoản đăng nhập | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Cán bộ xử lý | - | - | Theo tài khoản đăng nhập | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Ngày tạo/cập nhật | - | - | Theo dữ liệu hệ thống | Control UI: Label<br>Định dạng `dd/mm/yyyy`. |
 | Chế độ | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới" hoặc "Sửa". |
 | **II. Thông tin văn bản, biểu mẫu, sổ sách** |  |  |  |  |

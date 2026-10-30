@@ -1754,17 +1754,6 @@
             if (!allData || !Array.isArray(allData) || allData.length === 0) {
                 localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(initialMockPeriods));
                 allData = initialMockPeriods;
-            } else {
-                // Bỏ dữ liệu chấm dở được lưu tạm trước đây: bảng điểm chỉ được lưu khi Gửi BTP / Hoàn thành đánh giá
-                let changed = false;
-                allData.forEach(p => {
-                    if (p.status === 'Đang tự chấm' && (p.selfScore || (p.details && Object.keys(p.details).length))) {
-                        p.details = {}; p.selfScore = 0; p.bonus = []; p.grade = 'Chưa xếp loại'; changed = true;
-                    } else if (p.status === 'BTP đang đánh giá' && (p.btpDetails || p.btpScore)) {
-                        delete p.btpDetails; p.btpScore = 0; changed = true;
-                    }
-                });
-                if (changed) localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(allData));
             }
             currentPeriods = allData;
 
@@ -3847,7 +3836,7 @@
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 
 </html>

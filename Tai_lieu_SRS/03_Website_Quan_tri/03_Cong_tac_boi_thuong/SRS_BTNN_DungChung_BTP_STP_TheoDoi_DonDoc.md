@@ -16,9 +16,17 @@
 
 *a. Phân quyền*:
 
-\- Cán bộ Bộ Tư pháp, cán bộ Sở Tư pháp: tra cứu, thêm mới, sửa, cập nhật phản hồi, hoàn thành hồ sơ do cơ quan mình lập.
+\- Người dùng thuộc Bộ Tư pháp, Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước hoặc Sở Tư pháp: tra cứu, thêm mới; sửa, cập nhật phản hồi, hoàn thành hồ sơ do đơn vị mình lập.
 
-\- Người dùng chỉ xem được hồ sơ do cơ quan của mình (đơn vị gốc trên cây Cơ cấu tổ chức) lập.
+\- Người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước: xem chi tiết hồ sơ của mọi Sở Tư pháp; không thao tác trên hồ sơ của Sở Tư pháp.
+
+\- Người dùng thuộc Sở Tư pháp: chỉ xem hồ sơ do Sở mình lập.
+
+\- Người dùng thuộc đơn vị khác: không xem được dữ liệu.
+
+\- Người dùng thuộc UBND cấp tỉnh: chỉ xem chi tiết hồ sơ của Sở Tư pháp trực thuộc; không thêm mới, không thao tác.
+
+\- Phạm vi dữ liệu theo [Quy tắc phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-tac-pham-vi-du-lieu-btp-stp).
 
 *b. Điều kiện thực hiện*:
 
@@ -57,12 +65,13 @@ flowchart TD
 | **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối.<br>- Các ô lọc thay đổi theo tab đang chọn. |
 | Mã hồ sơ | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập mã hồ sơ...".<br>- Tìm gần đúng. |
 | Cơ quan | String(255) | Không | Trống | Control UI: Text input.<br>- Nhãn theo tab: `Cơ quan được theo dõi`, `Cơ quan được yêu cầu báo cáo`, `Cơ quan được đôn đốc`.<br>- Tìm gần đúng theo tên cơ quan; với tab Đôn đốc, tìm cả theo cơ quan được đề nghị đôn đốc. |
+| Đơn vị thực hiện | List(String(50)) | Không | Tất cả | Control UI: Cây đơn vị chọn nhiều (Tree select) theo Cơ cấu tổ chức, có ô tìm kiếm theo tên.<br>- Chỉ hiển thị khi người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.<br>- Cây gồm Bộ Tư pháp, Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước và đơn vị trực thuộc; các Sở Tư pháp và đơn vị trực thuộc, theo [Quy tắc phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-tac-pham-vi-du-lieu-btp-stp).<br>- Mỗi nút có ô tích; tích nút cha thì tích toàn bộ nút con.<br>- `Tất cả`: không lọc.<br>- Nút `Các Sở Tư pháp`: tích nhanh toàn bộ các Sở Tư pháp trong cây.<br>- Chọn từ 02 đơn vị trở lên: ô hiển thị "Đã chọn [n] đơn vị".<br>- Lọc bản ghi có `Đơn vị thực hiện` hoặc đơn vị công tác của `Cán bộ xử lý` thuộc các đơn vị đã tích. |
 | Nội dung | Enum(String(255)) | Không | Tất cả | Control UI: Combobox.<br>- Nhãn và danh sách theo tab: `Nội dung theo dõi` (khoản 2 Điều 8), `Nội dung yêu cầu báo cáo` (Điều 11), `Nội dung đôn đốc` (khoản 2 Điều 13); giá trị như tại [MH02 - Màn hình Thêm mới/Sửa hồ sơ theo dõi, đôn đốc công tác BTNN](#43384-mh02---màn-hình-thêm-mớisửa-hồ-sơ-theo-dõi-đôn-đốc-công-tác-btnn). |
 | Hình thức đôn đốc | Enum(String(100)) | Không | Tất cả | Control UI: Combobox, chỉ hiển thị ở tab `Đôn đốc công tác BTNN`.<br>Gồm:<br>+ Đôn đốc trực tiếp<br>+ Đề nghị cơ quan có thẩm quyền đôn đốc |
 | Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tab Theo dõi: `Đang theo dõi`, `Hoàn thành`.<br>- Tab Yêu cầu báo cáo, Đôn đốc: `Chờ phản hồi`, `Đã có phản hồi`, `Hoàn thành`. |
 | Từ ngày | Date | Không | Trống | Control UI: DatePicker.<br>- Placeholder: "dd/mm/yyyy".<br>- So sánh với Ngày lập (tab Theo dõi) hoặc Ngày văn bản (tab Yêu cầu báo cáo, Đôn đốc). |
 | Đến ngày | Date | Không | Trống | Control UI: DatePicker.<br>- Placeholder: "dd/mm/yyyy". |
-| **II. Bảng danh sách kết quả** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Chỉ gồm hồ sơ do cơ quan của người dùng lập.<br>- Sắp xếp mặc định theo Mã hồ sơ giảm dần.<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]. |
+| **II. Bảng danh sách kết quả** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Phạm vi bản ghi theo [Quy tắc phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-tac-pham-vi-du-lieu-btp-stp):<br>+ Người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước: bản ghi của Bộ Tư pháp và của mọi Sở Tư pháp.<br>+ Người dùng thuộc Sở Tư pháp: bản ghi do Sở mình tạo.<br>+ Người dùng thuộc UBND cấp tỉnh: bản ghi của Sở Tư pháp trực thuộc; các icon thao tác hiển thị mờ.<br>+ Người dùng thuộc đơn vị khác: không hiển thị bản ghi.<br>- Hồ sơ của đơn vị khác: các icon thao tác hiển thị mờ.<br>- Sắp xếp mặc định theo Mã hồ sơ giảm dần.<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]. |
 | **II.1. Tab Theo dõi công tác BTNN** | - | - | - | Hiển thị khi người dùng chọn tab `Theo dõi công tác BTNN`. |
 | STT | Integer(10) | - | - | Theo dữ liệu bản ghi. |
 | Mã hồ sơ | String(50) | - | - | Theo dữ liệu bản ghi. |
@@ -70,7 +79,8 @@ flowchart TD
 | Nội dung theo dõi | Enum(String(255)) | - | - | Theo dữ liệu bản ghi. |
 | Căn cứ theo dõi | Enum(String(255)) | - | - | Theo dữ liệu bản ghi. |
 | Ngày lập | Date | - | - | Theo dữ liệu bản ghi.<br>- Định dạng `dd/mm/yyyy`. |
-| Cán bộ xử lý | String(100) | - | - | Theo dữ liệu bản ghi. |
+| Cán bộ xử lý | String(100) | - | - | Control UI: Text (Read-only).<br>- Họ và tên cán bộ đã nhập hồ sơ (người tạo). |
+| Đơn vị thực hiện | String(255) | - | - | Control UI: Text (Read-only).<br>- Chỉ hiển thị khi người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.<br>- Đặt ngay sau cột `Cán bộ xử lý`.<br>- Hiển thị tên đơn vị thực hiện của bản ghi. |
 | Trạng thái | Enum(String(50)) | - | - | Control UI: Badge, theo dữ liệu bản ghi. |
 | Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Hoàn thành<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | **II.2. Tab Yêu cầu báo cáo** | - | - | - | Hiển thị khi người dùng chọn tab `Yêu cầu báo cáo`. |
@@ -81,6 +91,8 @@ flowchart TD
 | Số văn bản | String(50) | - | - | Theo dữ liệu bản ghi. |
 | Ngày văn bản | Date | - | - | Theo dữ liệu bản ghi.<br>- Định dạng `dd/mm/yyyy`. |
 | Hạn báo cáo | Date | - | - | Theo dữ liệu bản ghi.<br>- Định dạng `dd/mm/yyyy`.<br>- Khi hồ sơ chưa có phản hồi và ngày hiện tại lớn hơn hạn, hiển thị thêm nhãn đỏ `Quá hạn`. |
+| Cán bộ xử lý | String(100) | - | - | Control UI: Text (Read-only).<br>- Họ và tên cán bộ đã nhập hồ sơ (người tạo). |
+| Đơn vị thực hiện | String(255) | - | - | Control UI: Text (Read-only).<br>- Chỉ hiển thị khi người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.<br>- Đặt ngay sau cột `Cán bộ xử lý`.<br>- Hiển thị tên đơn vị thực hiện của bản ghi. |
 | Trạng thái | Enum(String(50)) | - | - | Control UI: Badge, theo dữ liệu bản ghi. |
 | Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Cập nhật phản hồi<br>+ Hoàn thành<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | **II.3. Tab Đôn đốc công tác BTNN** | - | - | - | Hiển thị khi người dùng chọn tab `Đôn đốc công tác BTNN`. |
@@ -91,6 +103,8 @@ flowchart TD
 | Cơ quan được đôn đốc | String(255) | - | - | Theo dữ liệu bản ghi. |
 | Nội dung đôn đốc | Enum(String(255)) | - | - | Theo dữ liệu bản ghi. |
 | Hạn phản hồi | Date | - | - | Theo dữ liệu bản ghi.<br>- Định dạng `dd/mm/yyyy`.<br>- Khi hồ sơ chưa có phản hồi và ngày hiện tại lớn hơn hạn, hiển thị thêm nhãn đỏ `Quá hạn`. |
+| Cán bộ xử lý | String(100) | - | - | Control UI: Text (Read-only).<br>- Họ và tên cán bộ đã nhập hồ sơ (người tạo). |
+| Đơn vị thực hiện | String(255) | - | - | Control UI: Text (Read-only).<br>- Chỉ hiển thị khi người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.<br>- Đặt ngay sau cột `Cán bộ xử lý`.<br>- Hiển thị tên đơn vị thực hiện của bản ghi. |
 | Trạng thái | Enum(String(50)) | - | - | Control UI: Badge, theo dữ liệu bản ghi. |
 | Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Cập nhật phản hồi<br>+ Hoàn thành<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 
@@ -103,12 +117,13 @@ flowchart TD
 |  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
 |  |  |  | **TH2 - Hợp lệ**: Hệ thống hiển thị các hồ sơ thỏa mãn đồng thời các tiêu chí và đưa về Trang 1. |
 |  |  |  | **TH3 - Không có dữ liệu**: Bảng hiển thị 01 dòng [MSG-INF-SYS-001]. |
+|  |  |  | **TH4 - Đơn vị của người dùng không thuộc phạm vi dữ liệu**: Người dùng không thuộc Bộ Tư pháp, Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước, Sở Tư pháp hoặc UBND cấp tỉnh; bảng kết quả hiển thị 01 dòng căn giữa, in nghiêng: "Đơn vị của người dùng không thuộc phạm vi dữ liệu của chức năng này.". |
 | 3 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách. |
-| 4 | Thêm mới | Button | Hệ thống mở [MH02 - Màn hình Thêm mới/Sửa hồ sơ theo dõi, đôn đốc công tác BTNN](#43384-mh02---màn-hình-thêm-mớisửa-hồ-sơ-theo-dõi-đôn-đốc-công-tác-btnn), `Nhóm nghiệp vụ` mặc định theo tab đang chọn. |
-| 5 | Kết xuất Excel | Button | Kết xuất danh sách của tab đang chọn ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md):<br>- Phạm vi: toàn bộ bản ghi của tab đang chọn thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới của tab, không gồm cột Thao tác:<br>+ Tab Theo dõi công tác BTNN: STT, Mã hồ sơ, Cơ quan được theo dõi, Nội dung theo dõi, Căn cứ theo dõi, Ngày lập, Cán bộ xử lý, Trạng thái.<br>+ Tab Yêu cầu báo cáo: STT, Mã hồ sơ, Cơ quan được yêu cầu báo cáo, Nội dung yêu cầu báo cáo, Số văn bản, Ngày văn bản, Hạn báo cáo, Trạng thái.<br>+ Tab Đôn đốc công tác BTNN: STT, Mã hồ sơ, Hình thức đôn đốc, Cơ quan nhận văn bản, Cơ quan được đôn đốc, Nội dung đôn đốc, Hạn phản hồi, Trạng thái.<br>- Tên tệp theo tab:<br>+ Tab Theo dõi công tác BTNN: `yyyyMMdd_Danh_sach_theo_doi_cong_tac_BTNN.xlsx`.<br>+ Tab Yêu cầu báo cáo: `yyyyMMdd_Danh_sach_yeu_cau_bao_cao_BTNN.xlsx`.<br>+ Tab Đôn đốc công tác BTNN: `yyyyMMdd_Danh_sach_don_doc_cong_tac_BTNN.xlsx`. |
+| 4 | Thêm mới | Button | Chỉ hiển thị khi người dùng thuộc Bộ Tư pháp, Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước hoặc Sở Tư pháp.<br>- Hệ thống mở [MH02 - Màn hình Thêm mới/Sửa hồ sơ theo dõi, đôn đốc công tác BTNN](#43384-mh02---màn-hình-thêm-mớisửa-hồ-sơ-theo-dõi-đôn-đốc-công-tác-btnn), `Nhóm nghiệp vụ` mặc định theo tab đang chọn. |
+| 5 | Kết xuất Excel | Button | Kết xuất danh sách của tab đang chọn ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-chuan-ket-xuat-excel):<br>- Phạm vi: toàn bộ bản ghi của tab đang chọn thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới của tab, không gồm cột Thao tác:<br>+ Tab Theo dõi công tác BTNN: STT, Mã hồ sơ, Cơ quan được theo dõi, Nội dung theo dõi, Căn cứ theo dõi, Ngày lập, Cán bộ xử lý, Trạng thái.<br>+ Tab Yêu cầu báo cáo: STT, Mã hồ sơ, Cơ quan được yêu cầu báo cáo, Nội dung yêu cầu báo cáo, Số văn bản, Ngày văn bản, Hạn báo cáo, Trạng thái.<br>+ Tab Đôn đốc công tác BTNN: STT, Mã hồ sơ, Hình thức đôn đốc, Cơ quan nhận văn bản, Cơ quan được đôn đốc, Nội dung đôn đốc, Hạn phản hồi, Trạng thái.<br>- Tên tệp theo tab:<br>+ Tab Theo dõi công tác BTNN: `yyyyMMdd_Danh_sach_theo_doi_cong_tac_BTNN.xlsx`.<br>+ Tab Yêu cầu báo cáo: `yyyyMMdd_Danh_sach_yeu_cau_bao_cao_BTNN.xlsx`.<br>+ Tab Đôn đốc công tác BTNN: `yyyyMMdd_Danh_sach_don_doc_cong_tac_BTNN.xlsx`. |
 |  |  |  | **TH1 - Không có dữ liệu**: Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải tệp. |
 |  |  |  | **TH2 - Có dữ liệu**: Hệ thống tải tệp Excel về máy người dùng. |
-| 6 | Row click | Row click | Hệ thống mở [MH03 - Màn hình Xem chi tiết/Cập nhật phản hồi](#43385-mh03---màn-hình-xem-chi-tiếtcập-nhật-phản-hồi) ở chế độ xem. |
+| 6 | Row click | Row click | Hệ thống mở [MH03 - Màn hình Xem chi tiết/Cập nhật phản hồi](#43385-mh03---màn-hình-xem-chi-tiếtcập-nhật-phản-hồi) ở chế độ xem.<br>- Hồ sơ của đơn vị khác: chỉ hiển thị nút `Đóng`. |
 | 7 | Sửa | Icon button | Chỉ cho phép với hồ sơ theo dõi ở trạng thái `Đang theo dõi`, hoặc hồ sơ yêu cầu báo cáo/đôn đốc ở trạng thái `Chờ phản hồi`. Hệ thống mở [MH02 - Màn hình Thêm mới/Sửa hồ sơ theo dõi, đôn đốc công tác BTNN](#43384-mh02---màn-hình-thêm-mớisửa-hồ-sơ-theo-dõi-đôn-đốc-công-tác-btnn) ở chế độ Sửa. |
 | 8 | Cập nhật phản hồi | Icon button | Chỉ ở tab Yêu cầu báo cáo, Đôn đốc, cho phép khi trạng thái `Chờ phản hồi` hoặc `Đã có phản hồi`. Hệ thống mở [MH03 - Màn hình Xem chi tiết/Cập nhật phản hồi](#43385-mh03---màn-hình-xem-chi-tiếtcập-nhật-phản-hồi) ở chế độ Cập nhật phản hồi. |
 | 9 | Hoàn thành | Icon button | - Hồ sơ theo dõi (`Đang theo dõi`): hệ thống mở [MH02 - Màn hình Thêm mới/Sửa hồ sơ theo dõi, đôn đốc công tác BTNN](#43384-mh02---màn-hình-thêm-mớisửa-hồ-sơ-theo-dõi-đôn-đốc-công-tác-btnn) để nhập `Kết quả theo dõi` và hoàn thành.<br>- Hồ sơ yêu cầu báo cáo, đôn đốc: chỉ cho phép khi trạng thái `Đã có phản hồi`; hệ thống mở [Popup Xác nhận](#43386-popup-xác-nhận), nếu chọn `Đồng ý` thì chuyển hồ sơ sang `Hoàn thành` và ghi lịch sử xử lý. |
@@ -214,11 +229,11 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Cập nhật phản hồi | Button | Hiển thị ở chế độ xem với hồ sơ yêu cầu báo cáo, đôn đốc ở trạng thái `Chờ phản hồi` hoặc `Đã có phản hồi`. Hệ thống chuyển màn hình sang chế độ Cập nhật phản hồi. |
+| 1 | Cập nhật phản hồi | Button | Hiển thị ở chế độ xem với hồ sơ yêu cầu báo cáo, đôn đốc do đơn vị của người dùng lập, ở trạng thái `Chờ phản hồi` hoặc `Đã có phản hồi`. Hệ thống chuyển màn hình sang chế độ Cập nhật phản hồi. |
 | 2 | Lưu phản hồi | Button | Hiển thị ở chế độ Cập nhật phản hồi. Khi người dùng click nút, hệ thống kiểm tra dữ liệu: |
 |  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Vi phạm [BR-VAL-001]. Hệ thống viền đỏ các ô lỗi, hiển thị "Đây là trường bắt buộc" và không cho lưu. |
 |  |  |  | **TH2 - Hợp lệ**: Hệ thống lưu phản hồi kèm cán bộ cập nhật, chuyển hồ sơ sang `Đã có phản hồi`, ghi lịch sử xử lý, đóng màn hình và hiển thị [MSG-SUC-SYS-002]. |
-| 3 | Hoàn thành | Button | Hiển thị ở chế độ xem khi trạng thái `Đã có phản hồi`. Hệ thống mở [Popup Xác nhận](#43386-popup-xác-nhận); nếu chọn `Đồng ý`, chuyển hồ sơ sang `Hoàn thành`. |
+| 3 | Hoàn thành | Button | Hiển thị ở chế độ xem với hồ sơ do đơn vị của người dùng lập, khi trạng thái `Đã có phản hồi`. Hệ thống mở [Popup Xác nhận](#43386-popup-xác-nhận); nếu chọn `Đồng ý`, chuyển hồ sơ sang `Hoàn thành`. |
 | 4 | Liên kết hồ sơ vụ việc | Link | Hệ thống mở [MH05 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường - SRS Giải quyết yêu cầu bồi thường - Giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43317-mh05---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) tại tab trình duyệt mới. |
 | 5 | Xem file | Link | Hệ thống mở file của dòng tài liệu tại một tab trình duyệt mới. |
 | 6 | Đóng / Hủy bỏ | Button | Hệ thống đóng màn hình, không lưu dữ liệu đang nhập và quay lại [MH01 - Màn hình Danh sách theo dõi, đôn đốc công tác BTNN](#43383-mh01---màn-hình-danh-sách-theo-dõi-đôn-đốc-công-tác-btnn). |

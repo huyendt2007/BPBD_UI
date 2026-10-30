@@ -33,7 +33,7 @@ const HT_ST_MAP = {
     // Chốt 23/10: bỏ 2 trạng thái, dữ liệu cũ quy về Đình chỉ xem xét hoàn trả
     'Không xem xét trách nhiệm hoàn trả': ['Đình chỉ xem xét hoàn trả', ''], 'Chấm dứt thu hồi': ['Đình chỉ xem xét hoàn trả', '']
 };
-// Hồ sơ nháp: mới khởi tạo, chưa trình/ban hành QĐ thành lập Hội đồng -> không có trạng thái (mã nội bộ giữ để điều khiển Bước 1)
+// Hồ sơ chưa thành lập Hội đồng: mới khởi tạo, chưa trình/ban hành QĐ thành lập Hội đồng -> không có trạng thái (mã nội bộ giữ để điều khiển Bước 1)
 const HT_ST_DRAFT = 'Chờ thành lập hội đồng';
 const HT_LOAI_CODE = {
     'Chờ duyệt': { 'Thành lập hội đồng': 'Chờ duyệt QĐ thành lập', 'QĐ hoàn trả': 'Chờ duyệt QĐ hoàn trả', 'Đình chỉ xem xét hoàn trả': 'Chờ duyệt QĐ đình chỉ' },
@@ -59,7 +59,7 @@ const HT_ST_STYLE = {
     'Hoàn thành': ['#ecfdf5', '#059669', '#a7f3d0'],
     'Đình chỉ xem xét hoàn trả': ['#f1f5f9', '#475569', '#cbd5e1']
 };
-// Badge trạng thái (đồng bộ màn Quyết định GQBT): pill không icon; Chờ duyệt / Bị trả lại có dòng phụ Loại trình; hồ sơ nháp không hiển thị trạng thái
+// Badge trạng thái (đồng bộ màn Quyết định GQBT): pill không icon; Chờ duyệt / Bị trả lại có dòng phụ Loại trình; hồ sơ chưa thành lập Hội đồng không hiển thị trạng thái
 function htStBadgeHtml(code) {
     if (!code || code === HT_ST_DRAFT) return '<span style="color:#94a3b8;">—</span>';
     const v = htStView(code);
@@ -303,7 +303,7 @@ function dchtVbCanCuDefault() {
 function dchtOfficers() { return ((activeDossier && activeDossier.refundOfficers) || []).map(o => o && o.name).filter(Boolean); }
 function dchtQlnn() {
     const a = dchtAgency();
-    if (/^(Bộ|Cục|Tòa án nhân dân tối cao|Viện kiểm sát nhân dân tối cao|Văn phòng Chính phủ|Thanh tra Chính phủ)/i.test(a)) return 'Cục Bồi thường nhà nước - Bộ Tư pháp';
+    if (/^(Bộ|Cục|Tòa án nhân dân tối cao|Viện kiểm sát nhân dân tối cao|Văn phòng Chính phủ|Thanh tra Chính phủ)/i.test(a)) return 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước - Bộ Tư pháp';
     const dd = typeof tlhdDiaDanh === 'function' ? tlhdDiaDanh() : '';
     return dd && dd !== '……' ? 'Sở Tư pháp ' + (/(Hà Nội|Hồ Chí Minh|Hải Phòng|Đà Nẵng)/.test(dd) ? 'Thành phố ' : 'tỉnh ') + dd : 'Sở Tư pháp ……';
 }

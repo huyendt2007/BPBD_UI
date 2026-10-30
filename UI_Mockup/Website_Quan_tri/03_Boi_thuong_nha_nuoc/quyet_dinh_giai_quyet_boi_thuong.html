@@ -2276,7 +2276,8 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
+    <script src="btnn_dvc_sync.js?v=20261030dvc1"></script>
     <!-- [th2c] Danh mục Loại thiệt hại 2 cấp (DM_27) + bảng 2 cấp dùng chung -->
     <script src="btnn_thiet_hai.js?v=20261028dm27"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
@@ -2391,10 +2392,10 @@
         // Dữ liệu mẫu dự phòng khi trình duyệt chưa có claimsList
         const FALLBACK_CLAIMS = [
             {
-                id: 'HS31', code: 'BT-2026-031', nyc: 'Nguyễn Thị Hồng Nhung', nbth: 'Nguyễn Thị Hồng Nhung', status: 'Chờ ban hành QĐ', agency: 'Bộ Tư pháp',
-                nycCardNo: '001190012345', nycAddressDetail: 'Số 12 ngõ 45 Hoàng Quốc Việt', nycPhuongXa: '00166 - Phường Nghĩa Đô', nycTinhThanh: 'Thành phố Hà Nội',
-                linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Thu hồi giấy phép kinh doanh trái pháp luật.', advanceNum: 20000000,
-                payoutMethod: 'Nhận qua chuyển khoản', payoutRecName: 'Nguyễn Thị Hồng Nhung', payoutBankAccount: '0011004455667', payoutBankName: 'Vietcombank', payoutBankBranch: 'Chi nhánh Thăng Long',
+                id: 'HS31', code: 'BT-2026-058', nyc: 'Vũ Thị Lan Anh', nbth: 'Vũ Thị Lan Anh', status: 'Chờ ban hành QĐ', agency: 'Sở Tư pháp Hà Nội',
+                nycCardNo: '001190007788', nycAddressDetail: 'Số 25 phố Kim Mã', nycPhuongXa: '00118 - Phường Giảng Võ', nycTinhThanh: 'Thành phố Hà Nội',
+                linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Xử phạt vi phạm hành chính và tịch thu hàng hóa trái pháp luật.', advanceNum: 0,
+                payoutMethod: 'Nhận qua chuyển khoản', payoutRecName: 'Vũ Thị Lan Anh', payoutBankAccount: '0011004455667', payoutBankName: 'Vietcombank', payoutBankBranch: 'Chi nhánh Thăng Long',
                 verifiedItems: [
                     { key: 'TH_TS_02', proposed: 70000000, verified: 60000000, note: 'Đối chiếu hóa đơn sửa chữa' },
                     { key: 'TH_TS_06', proposed: 50000000, verified: 40000000, note: 'Đối chiếu biên lai nộp tiền' },
@@ -2402,62 +2403,62 @@
                     { key: 'TT', label: 'Thiệt hại về tinh thần', proposed: 30000000, verified: 20000000, note: 'Theo mức lương cơ sở' }
                 ],
                 negotiation: {
-                    participation: 'DONG_Y', decision: 'Đồng ý thương lượng', date: '05/10/2026', place: 'Phòng họp số 2 - Bộ Tư pháp',
-                    participants: [{ name: 'Nguyễn Văn Cán Bộ', position: 'Chuyên viên', unit: 'Phòng Quản lý nghiệp vụ về bồi thường nhà nước' }],
+                    participation: 'DONG_Y', decision: 'Đồng ý thương lượng', date: '05/10/2026', place: 'Phòng họp số 2 - Sở Tư pháp Hà Nội',
+                    participants: [{ name: 'Nguyễn Văn Cán Bộ', position: 'Chuyên viên', unit: 'Sở Tư pháp Hà Nội' }],
                     items: [
                         { key: 'TH_TS_02', proposed: 70000000, verified: 60000000, agreed: 57000000, status: 'Thành công', reason: 'Hai bên thống nhất mức bồi thường.' },
                         { key: 'TH_TS_06', proposed: 50000000, verified: 40000000, agreed: 38000000, status: 'Thành công', reason: 'Hai bên thống nhất mức bồi thường.' },
                         { key: 'TN', label: 'Thu nhập thực tế bị mất/giảm sút', proposed: 60000000, verified: 45000000, agreed: 0, status: 'Không thành công', reason: 'Người yêu cầu không đồng ý cách tính thu nhập.' },
                         { key: 'TT', label: 'Thiệt hại về tinh thần', proposed: 30000000, verified: 20000000, agreed: 20000000, status: 'Thành công', reason: '' }
                     ],
-                    otherRequests: '', docs: [{ name: 'Biên bản thương lượng', file: 'Bien_ban_thuong_luong_BT-2026-031.pdf' }],
+                    otherRequests: '', docs: [{ name: 'Biên bản thương lượng', file: 'Bien_ban_thuong_luong_BT-2026-058.pdf' }],
                     earlyEffect: { on: true, text: 'kể từ ngày ký' }, extend: { on: true, from: '05/10/2026', to: '20/10/2026' }
                 }
             },
             {
-                id: 'HS32', code: 'BT-2026-032', nyc: 'Đỗ Mạnh Cường', nbth: 'Đỗ Mạnh Cường', status: 'Chờ ban hành QĐ', agency: 'Bộ Tư pháp',
-                nycCardNo: '001085006789', nycAddressDetail: 'Số 8 phố Trần Duy Hưng', nycPhuongXa: '00175 - Phường Trung Hòa', nycTinhThanh: 'Thành phố Hà Nội',
-                linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', hanhVi: 'Tạm giữ hình sự trái pháp luật.', advanceNum: 0,
-                payoutMethod: 'Nhận tiền mặt', payoutCashPlace: 'Kho bạc Nhà nước Thành phố Hà Nội', payoutCashNote: 'Chi trả tiền mặt tại cơ quan giải quyết bồi thường',
+                id: 'HS32', code: 'BT-2026-010', nyc: 'Nguyễn Văn F', nbth: 'Nguyễn Văn F', status: 'Chờ ban hành QĐ', agency: 'Tòa án nhân dân Tỉnh Lâm Đồng',
+                nycCardNo: '001092003842', nycAddressDetail: 'Số 15 ngõ 82 Hoàng Quốc Việt', nycPhuongXa: '00166 - Phường Nghĩa Đô', nycTinhThanh: 'Thành phố Hà Nội',
+                linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', hanhVi: 'Giam giữ oan sai 45 ngày do sai sót điều tra.', advanceNum: 0,
+                payoutMethod: 'Nhận tiền mặt', payoutCashPlace: 'Tòa án nhân dân Tỉnh Lâm Đồng', payoutCashNote: 'Chi trả tiền mặt tại cơ quan giải quyết bồi thường',
                 verifiedItems: [
                     { key: 'TN', label: 'Thu nhập thực tế bị mất/giảm sút', proposed: 40000000, verified: 36000000, note: '' },
                     { key: 'TT', label: 'Thiệt hại về tinh thần', proposed: 50000000, verified: 42000000, note: '' }
                 ],
                 negotiation: {
                     participation: 'TU_CHOI', decision: 'Người yêu cầu bồi thường từ chối thương lượng', reason: 'Người yêu cầu có văn bản từ chối thương lượng ngày 02/10/2026.',
-                    docs: [{ name: 'Văn bản từ chối thương lượng của người yêu cầu', file: 'Van_ban_tu_choi_thuong_luong_BT-2026-032.pdf' }], items: []
+                    docs: [{ name: 'Văn bản từ chối thương lượng của người yêu cầu', file: 'Van_ban_tu_choi_thuong_luong_BT-2026-010.pdf' }], items: []
                 }
             },
             {
-                id: 'HS33', code: 'BT-2026-033', nyc: 'Hoàng Thị Lan', nbth: 'Hoàng Thị Lan', status: 'Chờ ban hành QĐ', agency: 'Bộ Tư pháp', requestType: 'money',
-                nycCardNo: '001192007788', nycAddressDetail: 'Số 21 phố Kim Mã', nycPhuongXa: '00118 - Phường Giảng Võ', nycTinhThanh: 'Thành phố Hà Nội',
-                linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Cưỡng chế tháo dỡ công trình trái pháp luật.', advanceNum: 10000000,
-                payoutMethod: 'Nhận qua chuyển khoản', payoutRecName: 'Hoàng Thị Lan', payoutBankAccount: '0451000778899', payoutBankName: 'Vietinbank', payoutBankBranch: 'Chi nhánh Ba Đình',
+                id: 'HS33', code: 'BT-2026-059', nyc: 'Lương Văn Khải', nbth: 'Lương Văn Khải', status: 'Chờ ban hành QĐ', agency: 'Sở Tư pháp Hà Nội', requestType: 'money',
+                nycCardNo: '001087006655', nycAddressDetail: 'Số 8 ngõ 32 phố Đội Cấn', nycPhuongXa: '00001 - Phường Ba Đình', nycTinhThanh: 'Thành phố Hà Nội',
+                linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Cưỡng chế thu hồi đất trái pháp luật, phá dỡ công trình phụ trên đất.', advanceNum: 0,
+                payoutMethod: 'Nhận qua chuyển khoản', payoutRecName: 'Lương Văn Khải', payoutBankAccount: '0451000778899', payoutBankName: 'Vietinbank', payoutBankBranch: 'Chi nhánh Ba Đình',
                 verifiedItems: [
                     { key: 'TS', label: 'Tài sản bị xâm phạm', proposed: 80000000, verified: 72000000, note: 'Theo biên bản định giá' },
                     { key: 'TT', label: 'Thiệt hại về tinh thần', proposed: 20000000, verified: 15000000, note: '' }
                 ],
                 negotiation: {
                     participation: 'TU_CHOI_GIAY_MOI_2_LAN', decision: 'Người yêu cầu bồi thường hai lần từ chối nhận giấy mời tham gia thương lượng', reason: 'Bưu tá xác nhận người yêu cầu từ chối nhận giấy mời ngày 01/10/2026 và 06/10/2026.',
-                    docs: [{ name: 'Biên bản giao giấy mời có xác nhận của bưu tá', file: 'Bien_ban_giao_giay_moi_BT-2026-033.pdf' }], items: []
+                    docs: [{ name: 'Biên bản giao giấy mời có xác nhận của bưu tá', file: 'Bien_ban_giao_giay_moi_BT-2026-059.pdf' }], items: []
                 }
             },
             {
-                id: 'HS34', code: 'BT-2026-034', nyc: 'Vũ Đình Khoa', nbth: 'Vũ Đình Toàn (bố đẻ)', status: 'Chờ ban hành QĐ', agency: 'Bộ Tư pháp', requestType: 'money',
-                nycCardNo: '001087005566', nycAddressDetail: 'Số 3 ngõ 10 Láng Hạ', nycPhuongXa: '00199 - Phường Láng', nycTinhThanh: 'Thành phố Hà Nội',
-                linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', hanhVi: 'Khám xét chỗ ở trái pháp luật.', advanceNum: 0,
-                payoutMethod: 'Nhận qua chuyển khoản', payoutRecName: 'Vũ Đình Khoa', payoutBankAccount: '1903355667788', payoutBankName: 'Techcombank', payoutBankBranch: 'Chi nhánh Hoàn Kiếm',
+                id: 'HS34', code: 'BT-2026-060', nyc: 'Đinh Thị Hồng Nhung', nbth: 'Đinh Thị Hồng Nhung', status: 'Chờ ban hành QĐ', agency: 'Sở Tư pháp Hà Nội', requestType: 'money',
+                nycCardNo: '001192004411', nycAddressDetail: 'Số 102 đường Lạc Long Quân', nycPhuongXa: '00097 - Phường Tây Hồ', nycTinhThanh: 'Thành phố Hà Nội',
+                linhVuc: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ', hanhVi: 'Kê biên, xử lý tài sản không thuộc sở hữu của người phải thi hành án.', advanceNum: 0,
+                payoutMethod: 'Nhận qua chuyển khoản', payoutRecName: 'Đinh Thị Hồng Nhung', payoutBankAccount: '1903355667788', payoutBankName: 'Techcombank', payoutBankBranch: 'Chi nhánh Hoàn Kiếm',
                 thietHaiList: [
                     { type: 1, val: 50000000, xmVal: 45000000, xmNote: 'Theo hóa đơn sửa chữa' },
                     { type: 5, val: 30000000, xmVal: 25000000, xmNote: 'Theo mức lương cơ sở' }
                 ],
                 negotiation: {
                     participation: 'VANG_MAT_2_LAN', decision: 'Người yêu cầu bồi thường hai lần không đến địa điểm thương lượng khi đã nhận giấy mời mà không có lý do chính đáng', reason: 'Người yêu cầu vắng mặt tại phiên thương lượng ngày 03/10/2026 và 08/10/2026.',
-                    docs: [{ name: 'Biên bản xác nhận vắng mặt 2 lần', file: 'Bien_ban_vang_mat_BT-2026-034.pdf' }], items: []
+                    docs: [{ name: 'Biên bản xác nhận vắng mặt 2 lần', file: 'Bien_ban_vang_mat_BT-2026-060.pdf' }], items: []
                 }
             },
             {
-                id: 'PHDD31', code: 'PHDD-2026-031', nyc: 'Nguyễn Thị Hồng Nhung', nbth: 'Nguyễn Thị Hồng Nhung', status: 'Chờ ban hành QĐ', agency: 'Bộ Tư pháp', requestType: 'honor', relatedCode: 'BT-2026-031'
+                id: 'PHDD31', code: 'PHDD-2026-031', nyc: 'Vũ Thị Lan Anh', nbth: 'Vũ Thị Lan Anh', status: 'Chờ ban hành QĐ', agency: 'Sở Tư pháp Hà Nội', requestType: 'honor', relatedCode: 'BT-2026-058'
             },
             {
                 id: 'HS22', code: 'BT-2026-022', nyc: 'Trần Văn Phú', nbth: 'Trần Văn Phú', status: 'Chờ ban hành QĐ', agency: 'Sở Tư pháp Hà Nội',
@@ -2470,9 +2471,10 @@
                 ]
             },
             {
-                id: 'HS15', code: 'BT-2026-015', nyc: 'Phạm Thanh Sơn', nbth: 'Phạm Minh Tuấn (con trai)', status: 'Chờ ban hành QĐ', agency: 'UBND quận Cầu Giấy',
-                nycCardNo: '031089004455', nycAddressDetail: 'Số 45 phố Nguyễn Phong Sắc', nycPhuongXa: 'Phường Dịch Vọng Hậu', nycTinhThanh: 'Thành phố Hà Nội',
-                advanceNum: 15000000, payoutMethod: 'Nhận tiền mặt', payoutCashPlace: 'UBND quận Cầu Giấy, Thành phố Hà Nội', payoutCashNote: 'Nhận tiền mặt tại phòng Kế toán ngân sách',
+                id: 'HS15', code: 'BT-2026-605', nyc: 'Mạc Đăng Khoa', nbth: 'Mạc Đăng Khoa', status: 'Chờ ban hành QĐ', agency: 'Sở Tư pháp Hà Nội',
+                nycCardNo: '001076004605', nycAddressDetail: 'Số 52 Hoàng Hoa Thám', nycPhuongXa: 'Phường Ngọc Hà', nycTinhThanh: 'Thành phố Hà Nội',
+                linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Xử phạt vi phạm hành chính, tạm giữ tang vật, phương tiện trái pháp luật.',
+                advanceNum: 0, payoutMethod: 'Nhận tiền mặt', payoutCashPlace: 'Sở Tư pháp Hà Nội', payoutCashNote: 'Nhận tiền mặt tại phòng Kế toán ngân sách',
                 verifiedItems: [
                     { key: 'TS', label: 'Tài sản bị xâm phạm', proposed: 150000000, verified: 135000000, note: 'Theo kết quả xác minh thực tế' }
                 ]
@@ -2642,19 +2644,19 @@
                     items: seedItems([['Tài sản bị xâm phạm', 150000000, 150000000, 150000000], ['Thu nhập thực tế bị mất/giảm sút', 70000000, 70000000, 70000000]]), recipient: { name: 'Lý Thị K', idNo: '001090112233', account: '0451000123456', bank: 'Vietinbank', branch: '' },
                     cancel: { kind: KIND_HUY, content: 'Quyết định hành chính làm căn cứ yêu cầu bồi thường đã được cơ quan có thẩm quyền bãi bỏ toàn bộ.', draftDoc: { source: 'generated', generatedName: 'Du_thao_Huy_QD_BT-2026-006.doc' }, approvedBy: 'ct_hm', at: '15:00 15/08/2026' },
                     history: [{ at: '14:00 20/07/2026', userId: 'cv_hm1', userName: W.userName('cv_hm1'), action: 'Ban hành', note: 'Số 18/QĐ-UBND ngày 20/07/2026.' }, { at: '15:00 15/08/2026', userId: 'ct_hm', userName: W.userName('ct_hm'), action: 'Phê duyệt cấp cuối', note: 'Hủy QĐ. Quyết định chuyển [Hủy quyết định].' }], createdBy: 'cv_hm1' }),
-                seedDec({ id: 'QD-03', claimCode: 'BT-2026-005', nycName: 'Lê Văn D', nycAddress: 'Số 5 phố Huế, Phường Hai Bà Trưng, Thành phố Hà Nội', unitId: 'STP-HN', leaderId: 'tp_hctp_hn', approvedBy: 'gdso_hn', status: ST.DA_BH, decNo: '15/QĐ-STP', issueDate: '03/07/2026', signedFile: 'QD_15_GQBT_da_ky.pdf',
-                    items: seedItems([['Thu nhập thực tế bị mất/giảm sút', 260000000, 250000000, 250000000]]), recipient: { name: 'Lê Văn D', idNo: '001080004567', account: '19033445566011', bank: 'Techcombank', branch: 'Chi nhánh Hoàn Kiếm' },
-                    history: [{ at: '16:00 03/07/2026', userId: 'cv_hn1', userName: W.userName('cv_hn1'), action: 'Ban hành', note: 'Số 15/QĐ-STP ngày 03/07/2026.' }], createdBy: 'cv_hn1' }),
-                seedDec({ id: 'QD-04', claimCode: 'BT-2026-012', nycName: 'Lê Văn H', nycAddress: 'Số 30 Lạc Long Quân, Phường Tây Hồ, Thành phố Hà Nội', unitId: 'BTP-01', leaderId: 'tpbt', approvedBy: 'oanhdh', approvedAt: '10:00 09/10/2026', status: ST.DA_BH, decNo: '30/QĐ-BTP', issueDate: '09/10/2026', signedFile: 'QD_GQBT_BT-2026-012_ky_so.pdf', signMethod: 'Ký số', advance: 200000000, lastKind: KIND_QD,
-                    items: seedItems([['Tài sản bị xâm phạm', 900000000, 850000000, 850000000]]), recipient: { name: 'Lê Văn H', idNo: '001075001122', account: '0021000998877', bank: 'BIDV', branch: '' },
-                    history: [{ at: '08:30 06/10/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình ký duyệt', note: 'Trình Trần Văn Bồi Thường - Trưởng phòng ký duyệt.' }, { at: '10:00 09/10/2026', userId: 'oanhdh', userName: W.userName('oanhdh'), action: 'Phê duyệt cấp cuối', note: 'Quyết định GQBT. Quyết định chuyển [Đã ban hành]. Số 30/QĐ-BTP ngày 09/10/2026.' }] }),
-                seedDec({ id: 'QD-05', claimCode: 'BT-2026-015', nycName: 'Vũ Thị L', nycAddress: 'Số 9 Cầu Giấy, Phường Cầu Giấy, Thành phố Hà Nội', unitId: 'BTP-01', leaderId: 'tpbt', status: ST.TRA_LAI, wfKind: KIND_QD,
-                    items: seedItems([['Tài sản bị xâm phạm', 150000000, 140000000, 140000000, 130000000]]), adjustReason: 'Giảm trừ phần giá trị tài sản đã được hoàn trả.', recipient: { name: 'Vũ Thị L', idNo: '001082003344', account: '0123456789', bank: 'Agribank', branch: '' },
-                    returned: { reason: 'Rà soát lại mức bồi thường tài sản theo biên bản định giá; bổ sung lý do điều chỉnh.', by: 'cuctruong', at: '15:00 08/10/2026', kind: KIND_QD },
-                    history: [{ at: '08:00 07/10/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình ký duyệt', note: 'Trình Trần Văn Bồi Thường - Trưởng phòng ký duyệt.' }, { at: '15:00 08/10/2026', userId: 'cuctruong', userName: W.userName('cuctruong'), action: 'Từ chối phê duyệt', note: 'Quyết định GQBT: Rà soát lại mức bồi thường tài sản theo biên bản định giá; bổ sung lý do điều chỉnh.' }] }),
-                seedDec({ id: 'QD-06', claimCode: 'BT-2026-023', nycName: 'Phạm Văn Nam', nycAddress: 'Số 56 đường Lê Lợi, Ngô Quyền, Hải Phòng', unitId: 'BTP-01', leaderId: 'tpbt', status: ST.CHO_DUYET, wfKind: KIND_QD, wfSubmittedAt: '09:00 10/10/2026',
+                seedDec({ id: 'QD-03', claimCode: 'BT-2026-005', nycName: 'Lê Văn D', nycAddress: 'Số 234 Láng Hạ, Đống Đa, Hà Nội', unitId: 'STP-HP', leaderId: 'gdso_hp', approvedBy: 'gdso_hp', status: ST.DA_BH, decNo: '104/QĐ-BT', issueDate: '02/04/2026', signedFile: 'QD_104_GQBT_da_ky.pdf',
+                    items: seedItems([['Thu nhập thực tế bị mất/giảm sút', 260000000, 250000000, 250000000]]), recipient: { name: 'Lê Văn D', idNo: '001089004823', account: '123456789012', bank: 'Vietcombank', branch: 'Chi nhánh Đống Đa' },
+                    history: [{ at: '16:00 02/04/2026', userId: 'cv_hp1', userName: W.userName('cv_hp1'), action: 'Ban hành', note: 'Số 104/QĐ-BT ngày 02/04/2026.' }], createdBy: 'cv_hp1' }),
+                seedDec({ id: 'QD-04', claimCode: 'BT-2026-012', nycName: 'Lê Văn H', nycAddress: 'Lê Đại Hành, Hai Bà Trưng, Hà Nội', unitId: 'THADS-HN', leaderId: 'ct_thadshn', approvedBy: 'ct_thadshn', approvedAt: '10:00 05/07/2026', status: ST.DA_BH, decNo: '56/QĐ-BT', issueDate: '05/07/2026', signedFile: 'QD_GQBT_BT-2026-012_ky_so.pdf', signMethod: 'Ký số', advance: 100000000, lastKind: KIND_QD,
+                    items: seedItems([['Tài sản bị xâm phạm', 900000000, 850000000, 850000000]]), recipient: { name: 'Lê Văn H', idNo: '001091002934', account: '0021000998877', bank: 'BIDV', branch: '' },
+                    history: [{ at: '08:30 02/07/2026', userId: 'chv_thadshn1', userName: W.userName('chv_thadshn1'), action: 'Trình ký duyệt', note: 'Trình ' + W.userLabel('ct_thadshn') + ' ký duyệt.' }, { at: '10:00 05/07/2026', userId: 'ct_thadshn', userName: W.userName('ct_thadshn'), action: 'Phê duyệt cấp cuối', note: 'Quyết định GQBT. Quyết định chuyển [Đã ban hành]. Số 56/QĐ-BT ngày 05/07/2026.' }], createdBy: 'chv_thadshn1' }),
+                seedDec({ id: 'QD-05', claimCode: 'BT-2026-518', nycName: 'Kiều Văn Nghĩa', nycAddress: 'Số 7 Giải Phóng, Phường Thịnh Liệt, Thành phố Hà Nội', unitId: 'STP-HN', leaderId: 'gdso_hn', status: ST.TRA_LAI, wfKind: KIND_QD,
+                    items: seedItems([['Tài sản bị xâm phạm', 173000000, 160000000, 160000000, 155000000]]), adjustReason: 'Giảm trừ phần giá trị tài sản đã được hoàn trả.', recipient: { name: 'Kiều Văn Nghĩa', idNo: '001077003516', account: '0123456789', bank: 'Agribank', branch: '' },
+                    returned: { reason: 'Số tiền bồi thường tại dự thảo chưa khớp Biên bản thương lượng; đề nghị rà soát lại.', by: 'gdso_hn', at: '15:00 08/10/2026', kind: KIND_QD },
+                    history: [{ at: '08:00 07/10/2026', userId: 'cv_hn1', userName: W.userName('cv_hn1'), action: 'Trình ký duyệt', note: 'Trình ' + W.userLabel('gdso_hn') + ' ký duyệt.' }, { at: '15:00 08/10/2026', userId: 'gdso_hn', userName: W.userName('gdso_hn'), action: 'Từ chối phê duyệt', note: 'Quyết định GQBT: Số tiền bồi thường tại dự thảo chưa khớp Biên bản thương lượng; đề nghị rà soát lại.' }], createdBy: 'cv_hn1' }),
+                seedDec({ id: 'QD-06', claimCode: 'BT-2026-023', nycName: 'Phạm Văn Nam', nycAddress: 'Số 56 đường Lê Lợi, Ngô Quyền, Hải Phòng', unitId: 'VKS-HP', leaderId: 'vt_vkshp', status: ST.CHO_DUYET, wfKind: KIND_QD, wfSubmittedAt: '09:00 10/10/2026',
                     items: seedItems([['Thu nhập thực tế bị mất/giảm sút', 100000000, 90000000, 90000000], ['Thiệt hại về tinh thần', 60000000, 70000000, 70000000]]), recipient: { name: 'Phạm Văn Nam', idNo: '001093004832', account: '9704229200112233', bank: 'MB Bank', branch: 'Chi nhánh Hải Phòng' },
-                    history: [{ at: '09:00 10/10/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình ký duyệt', note: 'Trình Trần Văn Bồi Thường - Trưởng phòng ký duyệt.' }] })
+                    history: [{ at: '09:00 10/10/2026', userId: 'ksv_vkshp1', userName: W.userName('ksv_vkshp1'), action: 'Trình ký duyệt', note: 'Trình ' + W.userLabel('vt_vkshp') + ' ký duyệt.' }], createdBy: 'ksv_vkshp1' })
             ];
         }
         // Hồ sơ luồng của Quyết định mẫu đang Chờ duyệt (để Lãnh đạo được giao phê duyệt được)
@@ -2662,14 +2664,23 @@
             if (W.getRecord('BT-2026-023')) return;
             const at = '09:00 10/10/2026';
             W.upsertRecord({
-                id: 'WF-BT-2026-023', code: 'BT-2026-023', module: 'YCBT', loaiYeuCau: W.REQUEST_TYPE_YCBT, nycName: 'Phạm Văn Nam', chuTri: 'canbonv', createdBy: 'canbonv',
-                rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', status: W.STATUS.CHO_PHE_DUYET, linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', hanhVi: 'Bắt giữ oan sai do sai sót nghiệp vụ công tố.',
+                id: 'WF-BT-2026-023', code: 'BT-2026-023', module: 'YCBT', loaiYeuCau: W.REQUEST_TYPE_YCBT, nycName: 'Phạm Văn Nam', chuTri: 'ksv_vkshp1', createdBy: 'ksv_vkshp1',
+                rootUnitId: 'VKS-HP', currentUnitId: 'VKS-HP', status: W.STATUS.CHO_PHE_DUYET, linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', hanhVi: 'Bắt giữ oan sai do sai sót nghiệp vụ công tố.',
                 routes: [],
-                approval: { kind: KIND_QD, content: 'Kính trình Lãnh đạo ký duyệt dự thảo Quyết định giải quyết bồi thường.', files: [], draftDoc: { source: 'generated', generatedName: 'Du_thao_QD_GQBT_BT-2026-023.doc', formNo: 'Mẫu số 18/BTNN', bodyHtml: buildQdDocHtml(seedDecs.find(x => x.claimCode === 'BT-2026-023')) }, resultStatus: RESULT_STATUS[KIND_QD], action: null, prevStatus: 'Chờ ban hành QĐ', path: ['PLN-02', 'CĐK-01', 'BTP-01'], level: 0, steps: [], assignees: ['tpbt'], submittedBy: 'canbonv', submittedAt: at, pending: { since: at } },
-                history: [{ at, userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình phê duyệt', note: 'Quyết định GQBT. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.' }]
+                approval: { kind: KIND_QD, content: 'Kính trình Lãnh đạo ký duyệt dự thảo Quyết định giải quyết bồi thường.', files: [], draftDoc: { source: 'generated', generatedName: 'Du_thao_QD_GQBT_BT-2026-023.doc', formNo: 'Mẫu số 18/BTNN', bodyHtml: buildQdDocHtml(seedDecs.find(x => x.claimCode === 'BT-2026-023')) }, resultStatus: RESULT_STATUS[KIND_QD], action: null, prevStatus: 'Chờ ban hành QĐ', path: ['VKS-HP'], level: 0, steps: [], assignees: ['vt_vkshp'], submittedBy: 'ksv_vkshp1', submittedAt: at, pending: { since: at } },
+                history: [{ at, userId: 'ksv_vkshp1', userName: W.userName('ksv_vkshp1'), action: 'Trình phê duyệt', note: 'Quyết định GQBT. Trình ' + W.userName('vt_vkshp') + ' - ' + W.unitName('VKS-HP') + '.' }]
             });
         }
+        const QD_SEED_VER = '20261030s2';
+        const QD_SEED_VER_KEY = 'btnn_qd_gqbt_seed_ver';
         function loadDecisions() {
+            try {
+                if (localStorage.getItem(QD_SEED_VER_KEY) !== QD_SEED_VER) {
+                    ['btnn_qd_qdld_seed_v1', 'btnn_qd_ctqd_seed_v1', 'btnn_qdhl_seed_v2'].forEach(k => localStorage.removeItem(k));
+                    localStorage.removeItem(KEY_DEC);
+                    localStorage.setItem(QD_SEED_VER_KEY, QD_SEED_VER);
+                }
+            } catch (e) { /* bỏ qua */ }
             let list = readJson(KEY_DEC, null);
             if (Array.isArray(list)) {
                 // Chuẩn hóa dữ liệu cũ: "Sửa chữa, đính chính" -> "Sửa chữa, bổ sung"
@@ -2961,9 +2972,42 @@
             currentPage = 1;
             renderDecTable();
         }
+        // Kết xuất Excel: theo Quy chuẩn Kết xuất Excel dùng chung (04_Danh_muc_va_Phu_luc.md #quy-chuan-ket-xuat-excel)
+        // Toàn bộ bản ghi của tab theo bộ lọc hiện tại (không theo trang); cột theo lưới, bỏ cột Thao tác
         function exportDecExcel() {
             if (!filteredDecisions().length) { showToast('Không có dữ liệu để kết xuất Excel.', 'error'); return; }
-            showToast('Kết xuất danh sách quyết định ra tệp Excel thành công.', 'success');
+            const sz = pageSize, pg = currentPage;
+            pageSize = 1e9; currentPage = 1; renderDecTable();
+            const table = $('decisionsTable');
+            const ths = Array.from(table.querySelectorAll('thead th'));
+            const keep = ths.map((th, i) => (getComputedStyle(th).display !== 'none' && !/Thao tác/i.test(th.textContent) ? i : -1)).filter(i => i >= 0);
+            const cellText = c => (c.innerText || c.textContent || '').split('\n').map(s => s.trim()).filter(Boolean).join('; ');
+            const rows = Array.from(table.querySelectorAll('tbody tr')).filter(tr => tr.cells.length === ths.length)
+                .map(tr => keep.map(i => ({ v: cellText(tr.cells[i]), al: getComputedStyle(tr.cells[i]).textAlign })));
+            const headers = keep.map(i => ths[i].textContent.replace(/\s+/g, ' ').trim());
+            pageSize = sz; currentPage = pg; renderDecTable();
+            const p2 = x => String(x).padStart(2, '0'), now = new Date();
+            const stamp = `${p2(now.getDate())}/${p2(now.getMonth() + 1)}/${now.getFullYear()} ${p2(now.getHours())}:${p2(now.getMinutes())}`;
+            const ymd = `${now.getFullYear()}${p2(now.getMonth() + 1)}${p2(now.getDate())}`;
+            const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+            const fromD = $('searchDecFromDate').value.trim(), toD = $('searchDecToDate').value.trim();
+            const info = (fromD || toD) ? `Từ ngày ${fromD || '...'} đến ngày ${toD || '...'}` : `Thời điểm xuất: ${stamp}`;
+            const u = window.BTNN_WF && BTNN_WF.getCurrentUser ? BTNN_WF.getCurrentUser() : null;
+            const n = headers.length, font = "font-family:'Times New Roman';";
+            const html = '<meta charset="UTF-8"><table border="1">'
+                + `<tr><td colspan="${n}" style="${font}font-size:15pt;font-weight:bold;text-align:center;border:none;">DANH SÁCH QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG</td></tr>`
+                + `<tr><td colspan="${n}" style="${font}font-size:11pt;font-style:italic;text-align:center;border:none;">${esc(info)}</td></tr>`
+                + '<tr>' + headers.map(h => `<th style="${font}font-size:12pt;background:#e5e7eb;">${esc(h)}</th>`).join('') + '</tr>'
+                + rows.map(r => '<tr>' + r.map(c => `<td style="${font}font-size:12pt;mso-number-format:'\\@';text-align:${c.al === 'right' || c.al === 'center' ? c.al : 'left'};">${esc(c.v)}</td>`).join('') + '</tr>').join('')
+                + `<tr><td colspan="${n}" style="${font}font-size:10pt;font-style:italic;text-align:right;border:none;">Xuất ngày ${esc(stamp)} bởi ${esc((u && (u.name || u.fullName || u.username)) || 'Người dùng hiện tại')}</td></tr>`
+                + '</table>';
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob(['﻿' + html], { type: 'application/vnd.ms-excel;charset=utf-8' }));
+            // Mockup sinh bảng HTML nên dùng đuôi .xls; hệ thống thật xuất .xlsx theo quy chuẩn
+            a.download = `${ymd}_Quyet_dinh_giai_quyet_boi_thuong.xls`;
+            document.body.appendChild(a); a.click();
+            setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+            showToast(`Đã kết xuất ${rows.length} quyết định ra tệp Excel.`, 'success');
         }
         function showList() {
             $('contentListDecisions').style.display = '';
@@ -5130,6 +5174,6 @@
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
     <script src="filter_toggle_auto.js?v=20261012"></script>
-    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>
 </html>

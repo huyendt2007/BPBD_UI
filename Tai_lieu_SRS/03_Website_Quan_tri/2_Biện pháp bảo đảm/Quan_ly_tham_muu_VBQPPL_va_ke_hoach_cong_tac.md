@@ -59,7 +59,7 @@ Màn hình cung cấp biểu mẫu nhập dữ liệu trực quan để khởi t
 | Ngày hoàn thành dự kiến | Date | Có | Trống | - Hạn định trình dự thảo lên cấp thẩm quyền. Phải lớn hơn hoặc bằng Ngày bắt đầu thực hiện. |
 | Ngày ban hành thực tế | Date | Không | Trống | - Chỉ cho phép nhập khi trạng thái hồ sơ chuyển sang "Đã ban hành". Phải lớn hơn hoặc bằng Ngày bắt đầu thực hiện. |
 | Trạng thái tiến độ | Enum(String(50)) | Có | Đang soạn thảo | Control UI: Hộp chọn.<br>- Gồm các trạng thái:<br>+ Đang soạn thảo<br>+ Đang lấy ý kiến<br>+ Đang thẩm định<br>+ Đang trình ký<br>+ Đã ban hành<br>+ Tạm dừng/Hủy bỏ. |
-| **III. Tệp tài liệu đính kèm**| | | | |
+| **III. Tài liệu đính kèm**| | | | |
 | Danh sách tệp đính kèm | File | Không | Trống | Control UI: Upload file.<br>- Cho phép upload nhiều file liên quan (Tờ trình, Dự thảo văn bản, Bản tổng hợp ý kiến, Báo cáo thẩm định...). Dung lượng tối đa: 25MB/file.<br>- **Xem file**: Chỉ hiển thị cạnh tên file sau khi tệp tin đã được tải lên thành công. Cho phép mở xem tệp tin trong tab mới.<br>- **Xóa**: Chỉ hiển thị cạnh tên file sau khi tệp tin đã được tải lên thành công. Cho phép gỡ bỏ tệp tin khỏi danh sách đính kèm. |
 | Ghi chú hồ sơ | String(1000) | Không | Trống | - Các ghi chú đặc biệt về tiến độ hoặc khó khăn vướng mắc. |
 
@@ -102,7 +102,7 @@ Màn hình cho phép Cán bộ nghiệp vụ điều chỉnh thông tin hồ sơ
 | Ngày hoàn thành dự kiến | Date | Có | Lấy theo dữ liệu hiện tại của hồ sơ | - Cho phép chỉnh sửa. Hạn định trình dự thảo lên cấp thẩm quyền. Phải lớn hơn hoặc bằng Ngày bắt đầu thực hiện. |
 | Ngày ban hành thực tế | Date | Không | Lấy theo dữ liệu hiện tại của hồ sơ | - Cho phép chỉnh sửa. Chỉ cho phép nhập khi trạng thái hồ sơ chuyển sang "Đã ban hành". Phải lớn hơn hoặc bằng Ngày bắt đầu thực hiện. |
 | Trạng thái tiến độ | Enum(String(50)) | Có | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hộp chọn.<br>- Cho phép chỉnh sửa. Gồm các trạng thái:<br>+ Đang soạn thảo<br>+ Đang lấy ý kiến<br>+ Đang thẩm định<br>+ Đang trình ký<br>+ Đã ban hành<br>+ Tạm dừng/Hủy bỏ. |
-| **III. Tệp tài liệu đính kèm**| | | | |
+| **III. Tài liệu đính kèm**| | | | |
 | Danh sách tệp đính kèm | File | Không | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Upload file.<br>- Cho phép upload nhiều file liên quan (Tờ trình, Dự thảo văn bản, Bản tổng hợp ý kiến, Báo cáo thẩm định...). Dung lượng tối đa: 25MB/file.<br>- **Xem file**: Chỉ hiển thị cạnh tên file sau khi tệp tin đã được tải lên thành công. Cho phép mở xem tệp tin trong tab mới.<br>- **Xóa**: Chỉ hiển thị cạnh tên file sau khi tệp tin đã được tải lên thành công. Cho phép gỡ bỏ tệp tin khỏi danh sách đính kèm. |
 | Ghi chú hồ sơ | String(1000) | Không | Lấy theo dữ liệu hiện tại của hồ sơ | - Các ghi chú đặc biệt về tiến độ hoặc khó khăn vướng mắc. |
 
@@ -145,7 +145,7 @@ Màn hình cung cấp giao diện chỉ đọc để người dùng xem thông t
 | Ngày hoàn thành dự kiến | Date | - | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hiển thị/Read-only.<br>- Hiển thị ngày hoàn thành dự kiến. |
 | Ngày ban hành thực tế | Date | - | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hiển thị/Read-only.<br>- Hiển thị ngày ban hành thực tế (chỉ hiển thị nếu có dữ liệu). |
 | Trạng thái tiến độ | Enum(String(50)) | - | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hiển thị/Read-only.<br>- Hiển thị trạng thái tiến độ hiện hành. |
-| **III. Tệp tài liệu đính kèm**| | | | |
+| **III. Tài liệu đính kèm**| | | | |
 | Danh sách tệp đính kèm | File | - | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hiển thị/Read-only.<br>- **Xem file**: Hiển thị cạnh tên file đã tải lên. Cho phép mở xem tệp tin trong tab mới.<br>- Không có nút Xóa file hoặc nút tải tệp mới. |
 | Ghi chú hồ sơ | Text(2000) | - | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hiển thị/Read-only.<br>- Hiển thị ghi chú của hồ sơ (nếu có). |
 
@@ -731,7 +731,7 @@ Màn hình xem chi tiết hiển thị dưới dạng Panel chỉ đọc (inline
 | Ngày hoàn thành dự kiến | Date | - | Lấy theo dữ liệu hồ sơ | Control UI: Hiển thị/Read-only.<br>- Hiển thị hạn dự kiến. |
 | Ngày hoàn thành thực tế | Date | - | Lấy theo dữ liệu hồ sơ | Control UI: Hiển thị/Read-only.<br>- Hiển thị nếu có dữ liệu. |
 | Ghi chú tiến độ | Text(2000) | - | Lấy theo dữ liệu hồ sơ | Control UI: Hiển thị/Read-only.<br>- Ẩn nếu trống. |
-| **VI. Danh sách file đính kèm** | File | - | Lấy theo dữ liệu hồ sơ | - Hiển thị danh mục tệp tin dạng bảng chỉ đọc. Hỗ trợ click vào tên file để tải xuống trực tiếp. Không cho phép xóa file. |
+| **VI. Tài liệu đính kèm** | File | - | Lấy theo dữ liệu hồ sơ | - Hiển thị danh mục tệp tin dạng bảng chỉ đọc. Hỗ trợ click vào tên file để tải xuống trực tiếp. Không cho phép xóa file. |
 | **Nút chức năng** | | | | (Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình) |
 | Chỉnh sửa | String(255) | - | - | - Nút hiển thị ở góc trên bên phải của Panel. |
 | In hồ sơ | String(255) | - | - | - Nút hiển thị ở góc trên bên phải của Panel. |
