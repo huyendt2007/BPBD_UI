@@ -7,7 +7,7 @@
  *     thêm 01 lần sửa chữa, bổ sung -> QUYET_DINH_SUA_DOI_BO_SUNG.
  *   + 'proposalsList' (Chi trả tiền bồi thường): chuyển Chờ chi trả -> THONG_BAO_CHI_TRA.
  * - Trang Giải quyết yêu cầu bồi thường ghi bản tin qua quan_ly_boi_thuong_lth.js (theo đổi trạng thái hồ sơ).
- * Bước, mã trạng thái: Tài liệu API tích hợp DVC BTNN - mục 8.2.
+ * Bước, mã trạng thái: Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.2.
  */
 (function () {
     if (window.BTNN_DVC) return;

@@ -395,16 +395,13 @@
         var g = list ? list.closest('.form-group') : null;
         if (g) {
             var lb = g.querySelector('.form-label');
-            if (lb) lb.innerHTML = 'Tài liệu đính kèm khác trong quá trình xác minh<div style="font-size:12px; font-weight:400; color:#64748b;">Tài liệu nội bộ của đơn vị giải quyết bồi thường; không trả cho người yêu cầu bồi thường, không chuyển khi chuyển hồ sơ cho đơn vị khác.</div>';
+            if (lb) lb.innerHTML = 'Tài liệu đính kèm';
             var old = el('xmReportGroup');
             if (old) old.remove();
-            g.insertAdjacentHTML('beforebegin', '<div class="form-group" id="xmReportGroup" style="margin-top:15px;">'
-                + '<span class="form-label">Báo cáo xác minh thiệt hại <span class="required">*</span><div style="font-size:12px; font-weight:400; color:#64748b;">Tài liệu trả cho người yêu cầu bồi thường; bắt buộc khi Hoàn thành xác minh.</div></span>'
-                + '<div id="editXmReportList" style="margin-top:6px;"></div></div>');
-            // [dvc1] Trường 01 tệp .pdf (không phải bảng nhiều dòng)
+            // [dvc3] Báo cáo xác minh thiệt hại là dòng bắt buộc cố định trong bảng Tài liệu đính kèm (giống Tiếp nhận hồ sơ)
             var rep0 = pdfNorm((claim.xmReportFiles || [])[0]);
             xmReportDraft = rep0 ? [rep0] : [];
-            pdfMount('xm_bc', 'editXmReportList', rep0, function (f) { xmReportDraft = f ? [f] : []; if (f) pdfErr('xm_bc', ''); });
+            if (typeof window.renderXmFiles === 'function') window.renderXmFiles();
         }
         var te = el('editXacMinhTimeExtension');
         if (!te) return;
@@ -417,7 +414,7 @@
         var x = claim.xmExtend || extFromText(claim.xmTimeExtension);
         te.insertAdjacentHTML('afterend', '<div id="xmExtBlock" class="lth-opt">'
             + '<label class="lth-chk"><input type="checkbox" id="xmExtOn"' + (x.on ? ' checked' : '') + ' onchange="lthXmExtTick(this.checked)"> <span>' + XM_EXT_LABEL + '</span></label>'
-            + '<div id="xmExtBox" class="lth-opt-sub"' + (x.on ? '' : ' style="display:none;"') + '><span class="form-label">Thời gian thỏa thuận kéo dài</span>'
+            + '<div id="xmExtBox" class="lth-opt-sub"' + (x.on ? '' : ' style="display:none;"') + '>'
             + '<div class="grid-2" style="gap:12px;">'
             + '<div class="form-group" style="margin-bottom:0;"><span class="form-label">Từ ngày <span class="required">*</span></span><div class="date-input-wrapper"><input type="text" class="form-control" id="xmExtFrom" value="' + esc(x.from || '') + '" placeholder="dd/mm/yyyy" oninput="ptClearErr(this)" onchange="ptClearErr(this)"><i class="fa-regular fa-calendar-days"></i></div>' + TT_ERR + '</div>'
             + '<div class="form-group" style="margin-bottom:0;"><span class="form-label">Đến ngày</span><div class="date-input-wrapper"><input type="text" class="form-control" id="xmExtTo" value="' + esc(x.to || '') + '" placeholder="dd/mm/yyyy" oninput="ptClearErr(this)" onchange="ptClearErr(this)"><i class="fa-regular fa-calendar-days"></i></div>' + TT_ERR + '</div>'
@@ -443,17 +440,33 @@
             set(f, !f.value.trim() ? 'Đây là trường bắt buộc' : (!df ? 'Ngày không đúng định dạng dd/mm/yyyy' : ''));
             set(t, !t.value.trim() ? '' : (!dt ? 'Ngày không đúng định dạng dd/mm/yyyy' : (df && dt < df ? 'Đến ngày phải lớn hơn hoặc bằng Từ ngày' : '')));
         }
-        var bad = pdfValidate('xm_bc', complete);
-        if (bad && !first) first = bad;
+        // Dòng bắt buộc Báo cáo xác minh thiệt hại: bắt buộc có tệp khi Hoàn thành xác minh; lỗi tại dòng
+        if (el('ctvvDocs_xm') && typeof ctvvDocsValidate === 'function' && !ctvvDocsValidate('xm', false, !!complete) && !first) first = el('ctvv_xm_Btn_0') || el('ctvvDocs_xm');
         return first;
     }
     function xmBcCheck(complete) { return xmBcValidate(complete); }
-    // Màn xem: 02 khối tài liệu theo lần xác minh
+    // [dvc3] Bảng Tài liệu đính kèm (nhập): dòng 1 cố định Báo cáo xác minh thiệt hại (.pdf), các dòng khác thêm tự do
+    window.renderXmFiles = function () {
+        var host = el('editXmFilesList'); if (!host || typeof ctvvDocsMount !== 'function') return;
+        var lbl = host.parentNode ? host.parentNode.querySelector('label.btn') : null;
+        if (lbl) lbl.style.display = 'none';
+        host.style.display = 'block';
+        var r0 = (xmReportDraft || [])[0] || null;
+        ctvvDocsMount('xm', 'editXmFilesList', ctvvFromLegacy(typeof xmSelectedFiles !== 'undefined' ? xmSelectedFiles : []), {
+            required: false, title: '',
+            fixed: { name: XM_BC_NAME, exts: ['.pdf'], file: r0 ? r0.name : '', size: r0 ? r0.size : '', fileId: r0 ? r0.fileId : '' },
+            onSync: function (rows) {
+                var f = rows[0] && rows[0].fixedRow ? rows[0] : null;
+                xmReportDraft = f && f.file ? [{ name: f.file, size: f.size, fileId: f.fileId, url: '#', title: XM_BC_NAME }] : [];
+                xmSelectedFiles = ctvvToLegacy(rows.filter(function (r) { return !r.fixedRow; }));
+            }
+        });
+    };
+    var XM_BC_NAME = 'Báo cáo xác minh thiệt hại';
+    // Màn xem: bảng Tài liệu đính kèm, dòng 1 là Báo cáo xác minh thiệt hại
     function xmDocsBlocks(rep, oth, pfx) {
-        return vxmTitle('fa-file-contract', 'Báo cáo xác minh thiệt hại')
-            + '<div style="font-size:12px; color:#475569; margin:-2px 0 6px;">Tài liệu trả cho người yêu cầu bồi thường</div>'
-            + pdfViewHtml(rep[0], pfx + '_report', 'Chưa có Báo cáo xác minh thiệt hại')
-            + (oth.length ? vxmTitle('fa-paperclip', 'Tài liệu đính kèm khác trong quá trình xác minh') + '<div style="font-size:12px; color:#475569; margin:-2px 0 6px;">Tài liệu nội bộ của đơn vị giải quyết bồi thường; không trả cho người yêu cầu bồi thường</div>' + vxmDocsTableHtml(oth, pfx + '_internal') : '');
+        var r0 = rep && rep[0] ? Object.assign({}, rep[0], { title: XM_BC_NAME }) : { title: XM_BC_NAME, name: '' };
+        return vxmTitle('fa-paperclip', 'Tài liệu đính kèm') + vxmDocsTableHtml([r0].concat(oth || []), pfx + '_docs');
     }
     var EXT_FIELD_RE = /<div class="vxm-text-field"[^>]*><div[^>]*>Thỏa thuận việc kéo dài thời gian xác minh<\/div><div[^>]*>[\s\S]*?<\/div><\/div>/;
     var origRB = window.vxmRoundBodyHtml;
@@ -494,7 +507,7 @@
     }
 
     // ======================= [dvc1] Trường tệp riêng 01 file PDF =======================
-    // Báo cáo xác minh thiệt hại (key 'xm_bc'), Biên bản kết quả thương lượng việc bồi thường (key 'tl_bb'):
+    // Báo cáo xác minh thiệt hại (key 'xm_bc'), Biên bản kết quả thương lượng việc giải quyết bồi thường (key 'tl_bb'):
     // 01 tệp, chỉ .pdf ([MSG-ERR-FILE-001]), tối đa 50MB ([MSG-ERR-FILE-006]); không có nút thêm dòng; lỗi hiển thị tại trường (không toast).
     // Hồ sơ Nguồn hồ sơ = Dịch vụ công: tên tệp, dung lượng, mã băm của đúng tệp này được gửi về Dịch vụ công quốc gia.
     var PDF_MAX = 50 * 1024 * 1024;
@@ -578,10 +591,12 @@
     var pdfViewSeq = 0;
     window.LTH_PDF = { mount: pdfMount, get: pdfGet, validate: pdfValidate, viewHtml: pdfViewHtml };
 
-    // ======================= [dvc1] Biên bản kết quả thương lượng việc bồi thường (trường tệp riêng, Đồng ý thương lượng) =======================
+    // ======================= [dvc1] Biên bản kết quả thương lượng việc giải quyết bồi thường (trường tệp riêng, Đồng ý thương lượng) =======================
     // negotiation.bienBan = { name, size, fileId, url }; negotiation.docs = Tài liệu đính kèm khác (không bắt buộc).
     // Dữ liệu cũ: dòng "Biên bản thương lượng" trong negotiation.docs chuyển sang negotiation.bienBan.
-    var TL_BB_LABEL = 'Biên bản kết quả thương lượng việc bồi thường';
+    var TL_BB_LABEL = 'Biên bản kết quả thương lượng việc giải quyết bồi thường';
+    window.LTH_TL_BB_NAME = TL_BB_LABEL;
+    var tlBbDraft = null; // tệp của dòng bắt buộc Biên bản (form Đồng ý thương lượng)
     function bbIs(d) { var t = noAcc(((d && d.name) || '') + ' ' + ((d && d.file) || '')); return /bien ban/.test(t) && /thuong luong/.test(t) && !/giay moi|vang mat|tu choi/.test(t); }
     function bbNorm(claim) {
         var neg = claim && claim.negotiation;
@@ -602,13 +617,35 @@
         if (lb) lb.textContent = 'Tài liệu đính kèm';
         var de = el('tlDocsErr');
         if (de) de.style.display = 'none';
-        var neg = claim.negotiation || {};
-        var dong = (typeof tlParticipationOf === 'function' ? tlParticipationOf(neg) : neg.participation) === 'DONG_Y';
-        g.insertAdjacentHTML('beforebegin', '<div class="form-group" id="tlBbGroup"><span class="form-label" style="margin:0;">' + TL_BB_LABEL + ' <span class="required">*</span></span><div id="tlBbWrap" style="margin-top:8px;"></div></div>');
-        pdfMount('tl_bb', 'tlBbWrap', dong ? neg.bienBan : null);
     }
-    window.lthTlBbReadHtml = function (neg) {
-        return vxmTitle('fa-file-signature', TL_BB_LABEL) + pdfViewHtml(neg && neg.bienBan, 'tlBbRead', 'Chưa có ' + TL_BB_LABEL);
+    // [dvc3] Bảng Tài liệu đính kèm (Đồng ý thương lượng): dòng 1 cố định Biên bản kết quả thương lượng việc giải quyết bồi thường (.pdf)
+    var origTRD = window.tlRenderDocs;
+    if (typeof origTRD === 'function') window.tlRenderDocs = function (k) {
+        k = k || 'docs';
+        if (k !== 'docs' || typeof ctvvDocsMount !== 'function' || typeof TL_DOC_KINDS === 'undefined') return origTRD.apply(this, arguments);
+        var K = TL_DOC_KINDS.docs, wrap = el(K.wrap); if (!wrap) return;
+        var addBtn = el('tlAddDocBtn'); if (addBtn) addBtn.style.display = 'none';
+        var b = tlBbDraft;
+        ctvvDocsMount('tl_docs', K.wrap, (tlState.docs || []).filter(function (d) { return !bbIs(d); }).map(function (d) { return { title: d.name || '', file: d.file || '', size: d.size || '', fileId: d.fileId || '' }; }), {
+            required: false, title: '', idp: K.p, minRow: true,
+            fixed: { name: TL_BB_LABEL, exts: ['.pdf'], file: b ? b.name : '', size: b ? b.size : '', fileId: b ? b.fileId : '' },
+            onSync: function (rows) {
+                var r0 = rows[0] && rows[0].fixedRow ? rows[0] : null;
+                tlBbDraft = r0 && r0.file ? { name: r0.file, size: r0.size, fileId: r0.fileId, url: '#', title: TL_BB_LABEL } : null;
+                tlState.docs = rows.filter(function (r) { return !r.fixedRow; }).map(function (r) { return { name: r.title, file: r.file, size: r.size, fileId: r.fileId }; });
+            }
+        });
+    };
+    // Đồng bộ tên tài liệu của bảng Đồng ý thương lượng qua bảng dùng chung (dòng Biên bản cố định không thuộc tlState.docs)
+    var origTSD = window.tlSyncDocs;
+    if (typeof origTSD === 'function') window.tlSyncDocs = function (k) {
+        if ((k || 'docs') === 'docs' && el('ctvvDocs_tl_docs') && typeof ctvvDocsSync === 'function') { ctvvDocsSync('tl_docs'); return; }
+        return origTSD.apply(this, arguments);
+    };
+    // Xem chi tiết: dòng Biên bản đứng đầu bảng Tài liệu đính kèm
+    window.lthTlDocsRead = function (neg) {
+        var b = neg && neg.bienBan;
+        return [{ title: TL_BB_LABEL, file: b ? (b.name || '') : '', name: b ? (b.name || '') : '', size: b ? b.size : '', fileId: b ? b.fileId : '' }];
     };
     var tlBbBad = false;
 
@@ -663,6 +700,8 @@
     var origTLR = window.tlRenderEditBlock;
     if (typeof origTLR === 'function') window.tlRenderEditBlock = function (claim) {
         if (claim) { TH.normClaim(claim); bbNorm(claim); }
+        var ng = (claim && claim.negotiation) || {};
+        tlBbDraft = ng.bienBan && (typeof tlParticipationOf === 'function' ? tlParticipationOf(ng) : ng.participation) === 'DONG_Y' ? pdfNorm(ng.bienBan) : null;
         var r = origTLR.apply(this, arguments);
         try { renderTl(claim); } catch (e) { console.warn('lth tl', e); }
         return r;
@@ -754,13 +793,12 @@
             + '<span class="form-label" style="color:#166534; font-weight:700;">Thông tin thỏa thuận khác</span>'
             + '<div class="lth-opt-list">'
             + '<div class="lth-opt"><label class="lth-chk"><input type="checkbox" id="tlExtOn"' + (ex.on ? ' checked' : '') + ' onchange="lthTlAgreeTick(\'ext\', this.checked)"> <span>Thỏa thuận kéo dài thương lượng</span></label>'
-            + '<div id="tlExtBox" class="lth-opt-sub"' + (ex.on ? '' : ' style="display:none;"') + '><span class="form-label">Thời gian thỏa thuận kéo dài</span><div class="grid-2" style="gap:12px;">'
+            + '<div id="tlExtBox" class="lth-opt-sub"' + (ex.on ? '' : ' style="display:none;"') + '><div class="grid-2" style="gap:12px;">'
             + '<div class="form-group" style="margin-bottom:0;"><span class="form-label">Từ ngày <span class="required">*</span></span><div class="date-input-wrapper"><input type="text" class="form-control" id="tlExtFrom" value="' + esc(ex.from || '') + '" placeholder="dd/mm/yyyy" oninput="ptClearErr(this)" onchange="ptClearErr(this)"><i class="fa-regular fa-calendar-days"></i></div>' + TT_ERR + '</div>'
             + '<div class="form-group" style="margin-bottom:0;"><span class="form-label">Đến ngày</span><div class="date-input-wrapper"><input type="text" class="form-control" id="tlExtTo" value="' + esc(ex.to || '') + '" placeholder="dd/mm/yyyy" oninput="ptClearErr(this)" onchange="ptClearErr(this)"><i class="fa-regular fa-calendar-days"></i></div>' + TT_ERR + '</div>'
             + '</div></div></div>'
             + '<div class="lth-opt"><label class="lth-chk"><input type="checkbox" id="tlEarlyOn"' + (ef.on ? ' checked' : '') + ' onchange="lthTlAgreeTick(\'early\', this.checked)"> <span>Thỏa thuận hiệu lực sớm hơn của Quyết định giải quyết bồi thường</span></label>'
             + '<div id="tlEarlyBox" class="lth-opt-sub"' + (ef.on ? '' : ' style="display:none;"') + '><div class="form-group">'
-            + '<span class="form-label">Nội dung thỏa thuận hiệu lực sớm hơn <span class="required">*</span></span>'
             + '<textarea class="form-control" id="tlEarlyText" rows="2" maxlength="1000" placeholder="Nhập nội dung thỏa thuận hiệu lực sớm hơn của Quyết định giải quyết bồi thường..." oninput="ptClearErr(this)">' + esc(ef.text || '') + '</textarea>' + TT_ERR + '</div></div></div>'
             + '</div></div>');
         if (typeof flatpickr !== 'undefined') flatpickr('#tlExtFrom, #tlExtTo', { dateFormat: 'd/m/Y', allowInput: true });
@@ -876,11 +914,13 @@
         tlAdded = added; tlOff = offKeys;
         // [tltt] Khối Thông tin thỏa thuận khác: lỗi thì không lưu (xử lý gốc vẫn hiển thị lỗi các trường khác)
         tlAgreeBlock = !!(chk && chk.value === 'DONG_Y' && tlAgreeValidate());
-        // [dvc1] Biên bản kết quả thương lượng việc bồi thường: bắt buộc khi Đồng ý thương lượng; lỗi hiển thị tại trường
-        tlBbBad = !!(chk && chk.value === 'DONG_Y' && pdfValidate('tl_bb', true));
+        // [dvc1] Biên bản kết quả thương lượng việc giải quyết bồi thường: bắt buộc khi Đồng ý thương lượng; lỗi hiển thị tại trường
+        tlBbBad = !!(chk && chk.value === 'DONG_Y' && el('ctvvDocs_tl_docs') && typeof ctvvDocsValidate === 'function' && !ctvvDocsValidate('tl_docs', false, true));
         try {
             res = origTLS.apply(this, arguments);
         } finally {
+            // Giữ lỗi tại dòng Biên bản sau các bước kiểm tra khác của form
+            if (tlBbBad && typeof ctvvDocsValidate === 'function') ctvvDocsValidate('tl_docs', false, true);
             tlAdded = []; tlOff = []; tlAgreeBlock = false; tlBbBad = false;
             if (!(claim.negotiation && claim.negotiation !== prevNeg)) {
                 tlState.items = old;
@@ -899,8 +939,8 @@
             var fe = document.querySelector('#lthTlAgree .is-invalid'); if (fe) fe.focus();
             return;
         }
-        if (tlBbBad && neg && neg.participation === 'DONG_Y') { var bbE = el('lthPdfBtn_tl_bb'); if (bbE && bbE.focus) bbE.focus(); return; }
-        if (neg && neg.participation === 'DONG_Y' && PDF.tl_bb && el('lthPdf_tl_bb')) neg.bienBan = pdfGet('tl_bb');
+        if (tlBbBad && neg && neg.participation === 'DONG_Y') { var bbE = el('tlDocBtn_0'); if (bbE && bbE.focus) bbE.focus(); return; }
+        if (neg && neg.participation === 'DONG_Y' && el('ctvvDocs_tl_docs')) { neg.bienBan = tlBbDraft ? Object.assign({}, tlBbDraft) : null; if (Array.isArray(neg.docs)) neg.docs = neg.docs.filter(function (d) { return !bbIs(d); }); }
         if (neg && neg.participation === 'DONG_Y' && el('lthTlAgree')) Object.assign(neg, tlAgreeValues());
         if (neg && Array.isArray(neg.items)) {
             var bs = bsMap(claim);
@@ -989,7 +1029,7 @@
     if (document.readyState === 'complete') installNoToast(); else window.addEventListener('load', installNoToast);
 
     // ======================= [dvc1] Mô phỏng gửi kết quả về Dịch vụ công (bước phát sinh tại trang này) =======================
-    // Hồ sơ Nguồn hồ sơ = Dịch vụ công đổi Trạng thái vụ việc qua bước gửi (Tài liệu API tích hợp DVC BTNN - mục 8.2):
+    // Hồ sơ Nguồn hồ sơ = Dịch vụ công đổi Trạng thái vụ việc qua bước gửi (Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.2):
     // ghi 01 bản tin vào localStorage 'btnn_dvc_sync_log_new'; màn Nhật ký đồng bộ Dịch vụ công (nhat_ky_dong_bo_dvc.js) nạp vào danh sách.
     // Mockup chỉ suy bước theo đổi trạng thái tại trang Giải quyết YCBT; Quyết định GQBT, Hủy / Sửa chữa QĐ, Thông báo chi trả, Thông báo PHDD phát sinh ở trang khác.
     var DVC_CASE = { 'Cử người giải quyết bồi thường': 'CU_NGUOI_GIAI_QUYET', 'Xác minh thiệt hại': 'XAC_MINH_THIET_HAI', 'Thương lượng': 'THUONG_LUONG', 'Chờ ban hành QĐ': 'CHO_BAN_HANH_QD',

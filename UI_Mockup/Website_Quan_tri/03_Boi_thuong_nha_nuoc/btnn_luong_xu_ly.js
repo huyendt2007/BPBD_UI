@@ -7,6 +7,40 @@
 (function (global) {
     'use strict';
 
+    // Bộ chọn ngày flatpickr nạp từ CDN (cdn.jsdelivr.net): mạng chặn / tải lỗi thì lệnh flatpickr(...) đầu hàm khởi tạo trang báo lỗi
+    // -> trang dừng trước khi nạp dữ liệu mẫu và vẽ danh sách (danh sách trống). Thay bằng bản tối giản: ô ngày nhập tay dd/mm/yyyy, các hàm khởi tạo chạy tiếp.
+    // CDN nạp sau (trang đặt btnn_luong_xu_ly.js trước thẻ CDN) thì flatpickr thật ghi đè bản tối giản.
+    (function flatpickrDuPhong() {
+        if (typeof global.flatpickr === 'function') return;
+        const p2 = n => String(n).padStart(2, '0');
+        const fmt = d => (d instanceof Date && !isNaN(d)) ? p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + '/' + d.getFullYear() : String(d == null ? '' : d);
+        function one(el, opts) {
+            const inst = {
+                element: el, input: el, config: opts || {}, selectedDates: [], isStub: true,
+                clear() { if (el) el.value = ''; },
+                setDate(d) { const v = Array.isArray(d) ? d[0] : d; if (el) el.value = (v == null || v === '') ? '' : fmt(v); },
+                open() {}, close() {}, toggle() {}, redraw() {}, jumpToDate() {}, set() {},
+                destroy() { if (el) delete el._flatpickr; }
+            };
+            if (el) el._flatpickr = inst;
+            return inst;
+        }
+        function fp(target, opts) {
+            let els = [];
+            try { els = typeof target === 'string' ? Array.from(document.querySelectorAll(target)) : ((target && !target.nodeType && target.length !== undefined) ? Array.from(target) : [target]); } catch (e) { els = []; }
+            const list = els.filter(Boolean).map(el => el._flatpickr || one(el, opts));
+            return list.length === 1 ? list[0] : (list.length ? list : one(null, opts));
+        }
+        fp.isStub = true;
+        fp.l10ns = { default: {} };
+        fp.localize = function () {};
+        fp.setDefaults = function () {};
+        fp.formatDate = d => fmt(d);
+        fp.parseDate = s => { const m = String(s || '').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? new Date(+m[3], +m[2] - 1, +m[1]) : undefined; };
+        global.flatpickr = fp;
+        try { document.addEventListener('DOMContentLoaded', () => { if (global.flatpickr && global.flatpickr.isStub) console.warn('[BTNN] Không tải được flatpickr từ CDN: dùng ô ngày nhập tay dd/mm/yyyy.'); }); } catch (e) { /* bỏ qua */ }
+    })();
+
     const KEY_RECORDS = 'btnn_wf_records_v1';
     const KEY_FLOW = 'btnn_flow_config_v2'; // { [Loại luồng]: { [đơn vị gốc]: { [đơn vị]: nút cấu hình } } }
     const KEY_FLOW_V1 = 'btnn_flow_config_v1';
@@ -761,6 +795,9 @@
             if (r.code && !isVuViecCode(r.code) && reg[r.code] !== r.maVuViec) linkVuViec(r.code, r.maVuViec);
             if (r.claimCode && /^BT-/.test(r.claimCode) && reg[r.claimCode] !== r.maVuViec) linkVuViec(r.claimCode, r.maVuViec);
         });
+        // Dời ngày dữ liệu mẫu kho luồng theo tháng hiện tại (cùng phép dời với claimsList / proposalsList / btnn_qd_gqbt_v2):
+        // trang Giải quyết YCBT lấy lại Ngày tiếp nhận, trạng thái từ kho luồng -> mọi hồ sơ của kho phải cùng độ dời
+        try { if (shiftSeedDates(list)) changed = true; } catch (e) { /* mockup */ }
         if (changed) writeJson(KEY_RECORDS, list);
         return list;
     }
@@ -3273,6 +3310,106 @@
     }
     try { migrateCaseStatusRename(); } catch (e) { /* mockup */ }
 
+    // ---------------- Dời ngày dữ liệu mẫu Giải quyết YCBT / Kinh phí theo tháng hiện tại ----------------
+    // Dữ liệu mẫu lập theo tháng 10/2026 (mốc 30/10/2026). Bộ lọc mặc định "ngày đầu tháng - ngày hiện tại" (SRS) -> sang tháng sau danh sách trống.
+    // - Độ dời = số ngày từ 01/10/2026 đến ngày đầu tháng hiện tại (tháng 10/2026: 0, không dời); cùng 01 độ dời cho mọi mốc của mọi kho
+    //   (claimsList, proposalsList, btnn_qd_gqbt_v2, btnn_wf_records_v1, kho Phục hồi danh dự btnn_gq_phdd_*) -> Ngày QĐ, Ngày chi trả, Ngày tiếp nhận giữa các phân hệ khớp nhau.
+    // - Chỉ dời ngày năm 2026 trở đi (giữ ngày sinh, ngày cấp giấy tờ, văn bản cũ); mốc dời qua hôm nay thì lấy hôm nay (giữ thứ tự các mốc),
+    //   trừ trường hạn / thời điểm hẹn (SD_KEEP_FUTURE) dời nguyên khoảng.
+    // - Không dời: hồ sơ người dùng tạo (claim.userCreated, hoặc có mốc sau 30/10/2026 khi chưa dời lần nào); đánh dấu _sdShift (tổng số ngày đã dời),
+    //   _sdAt (ngày dời gần nhất) để không dời 2 lần; lần dời sau (sang tháng mới) chỉ dời thêm phần chênh, mốc người dùng thêm sau _sdAt giữ nguyên.
+    function sdDayNum(d) { return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate(); }
+    function sdTargetShift() {
+        var n = new Date();
+        return Math.max(0, Math.round((Date.UTC(n.getFullYear(), n.getMonth(), 1) - Date.UTC(2026, 9, 1)) / 86400000));
+    }
+    var SD_BASE_DAY = 20261030;
+    var SD_KEEP_FUTURE = /deadline|^han[A-Z_]|[a-z]Han$|hanXuLy|DateExp$|TimeExp$|^toDate$|^endDate$|^to$|^time$|nextDate|dueDate|bodyHtml|sungQuyDate/;
+    var SD_DATE_RE = /\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g;
+    function sdWalk(o, key, fn) {
+        if (typeof o === 'string') return fn(o, key);
+        if (Array.isArray(o)) { for (var i = 0; i < o.length; i++) o[i] = sdWalk(o[i], key, fn); return o; }
+        if (o && typeof o === 'object') { Object.keys(o).forEach(function (k) { if (k !== '_sdShift' && k !== '_sdAt') o[k] = sdWalk(o[k], k, fn); }); return o; }
+        return o;
+    }
+    // Có mốc (không phải hạn) sau mốc dữ liệu mẫu 30/10/2026 -> hồ sơ người dùng tạo
+    function sdHasLaterDate(rec) {
+        var found = false;
+        sdWalk(rec, '', function (s, key) {
+            if (!found && !SD_KEEP_FUTURE.test(key || '') && s.indexOf('/') >= 0) {
+                s.replace(SD_DATE_RE, function (m, d, mo, y) { if (+y >= 2026 && (+y) * 10000 + (+mo) * 100 + (+d) > SD_BASE_DAY) found = true; return m; });
+            }
+            return s;
+        });
+        return found;
+    }
+    // Dời ngày các bản ghi mẫu của danh sách (sửa tại chỗ); filter: chỉ xét bản ghi thỏa điều kiện. Trả về true nếu có thay đổi.
+    function shiftSeedDates(list, filter) {
+        if (!Array.isArray(list)) return false;
+        var target = sdTargetShift();
+        if (!target) return false;
+        var today = new Date(); today.setHours(0, 0, 0, 0);
+        var todayNum = sdDayNum(today);
+        var p2 = function (n) { return String(n).padStart(2, '0'); };
+        var changed = false;
+        list.forEach(function (rec) {
+            if (!rec || typeof rec !== 'object' || rec.userCreated || rec._sdUser) return;
+            if (filter && !filter(rec)) return;
+            var applied = Number(rec._sdShift) || 0;
+            if (applied >= target) return;
+            var since = applied ? (Number(rec._sdAt) || 0) : 0;
+            if (!applied && sdHasLaterDate(rec)) { rec._sdUser = true; changed = true; return; }
+            var delta = target - applied;
+            sdWalk(rec, '', function (s, key) {
+                if (s.indexOf('/') < 0) return s;
+                var keep = SD_KEEP_FUTURE.test(key || '');
+                return s.replace(SD_DATE_RE, function (m, d, mo, y) {
+                    if (+y < 2026) return m;
+                    // Lần dời sau: mốc người dùng thêm sau lần dời trước giữ nguyên
+                    if (since && !keep && (+y) * 10000 + (+mo) * 100 + (+d) > since) return m;
+                    var t = new Date(+y, +mo - 1, +d + delta);
+                    if (!keep && t > today) t = new Date(today);
+                    return p2(t.getDate()) + '/' + p2(t.getMonth() + 1) + '/' + t.getFullYear();
+                });
+            });
+            rec._sdShift = target;
+            rec._sdAt = todayNum;
+            changed = true;
+        });
+        return changed;
+    }
+    // Kho đã lưu: dời khi nạp trang (trước khi trang đọc kho)
+    // Gồm kho Phục hồi danh dự của Giải quyết YCBT (btnn_gq_phdd_claims_v1: danh sách; btnn_gq_phdd_track_v1: theo Mã hồ sơ) - trang nạp lại vào claimsList khi tải
+    (function shiftStoredSeedDates() {
+        if (!sdTargetShift()) return;
+        ['claimsList', 'proposalsList', 'btnn_qd_gqbt_v2', 'btnn_gq_phdd_claims_v1', 'btnn_gq_phdd_track_v1'].forEach(function (k) {
+            var data = readJson(k, null);
+            if (Array.isArray(data)) { if (shiftSeedDates(data)) writeJson(k, data); }
+            else if (data && typeof data === 'object') { if (shiftSeedDates(Object.keys(data).map(function (c) { return data[c]; }))) writeJson(k, data); }
+        });
+    })();
+    // Dữ liệu mẫu trang nạp trong bộ nhớ (chưa ghi kho): dời trước khi vẽ danh sách
+    // Giải quyết YCBT (claimsList / renderClaimsTable), Kinh phí (proposalsList / renderProposalsTable), QĐ GQBT (decisions / renderDecTable)
+    (function hookPageSeedDates() {
+        if (!sdTargetShift()) return;
+        var HOOKS = [
+            ['renderClaimsTable', function () { return typeof claimsList !== 'undefined' ? claimsList : null; }],
+            ['renderProposalsTable', function () { return typeof proposalsList !== 'undefined' ? proposalsList : null; }],
+            ['renderDecTable', function () { return typeof decisions !== 'undefined' ? decisions : null; }]
+        ];
+        function install() {
+            HOOKS.forEach(function (h) {
+                var f = global[h[0]];
+                if (typeof f !== 'function' || f.__sdShift) return;
+                var w = function () { try { shiftSeedDates(h[1]()); } catch (e) { /* mockup */ } return f.apply(this, arguments); };
+                w.__sdShift = true;
+                global[h[0]] = w;
+            });
+        }
+        install();
+        try { document.addEventListener('DOMContentLoaded', install); } catch (e) { /* mockup */ }
+    })();
+
     global.BTNN_WF = {
         KEYS: { RECORDS: KEY_RECORDS, FLOW: KEY_FLOW, USER: KEY_USER, RECEPTION_CLAIMS: KEY_RECEPTION_CLAIMS },
         receptionPendingItems, receptionPendingCount, receptionSeeded,
@@ -3297,6 +3434,6 @@
         statusBadge, routeText, routeStateText, renderRoutesHtml, renderHistoryHtml, renderApprovalHtml,
         docHeaderHtml, docPageHtml, openDocTab, downloadDocWord,
         draftDocName, draftBaseName, submittedDraftName, buildSupplementDraftHtml, previewDraftDoc, downloadDraftDoc, downloadSelectHtml, previewDraftDocByCode, downloadDraftDocByCode, renderDraftDocHtml, previewSubmittedDraft, downloadSubmittedDraft,
-        mountUserSwitcher, nowText, dateText, esc
+        mountUserSwitcher, nowText, dateText, esc, shiftSeedDates
     };
 })(window);

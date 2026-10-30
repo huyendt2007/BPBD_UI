@@ -1,23 +1,23 @@
 /*
  * [dvc1] Nhật ký đồng bộ Dịch vụ công (prefix nkdv)
  * - Danh sách bản tin BTNN gửi kết quả xử lý hồ sơ về Dịch vụ công quốc gia
- *   (Tài liệu API tích hợp DVC BTNN - mục 8; SRS: Tai_lieu_SRS/03_Website_Quan_tri/01_Quan_tri_he_thong/Nhat_ky_dong_bo_DVC.md).
+ *   (Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia - mục 3; SRS: Tai_lieu_SRS/03_Website_Quan_tri/01_Quan_tri_he_thong/Nhat_ky_dong_bo_DVC.md).
  * - Lọc theo mã, bước, kết quả, khoảng thời gian gửi; Xem chi tiết dạng trang (link tệp, mã băm, JSON request/response, lịch sử các lần gửi);
  *   Gửi lại (chỉ bản tin Lỗi, giữ nguyên transaction_id, popup xác nhận); Kết xuất Excel.
  * - Thông báo hiển thị trực tiếp đầu danh sách (không dùng toast).
  * - Dữ liệu mẫu gắn với hồ sơ Nguồn hồ sơ = Dịch vụ công của trang Giải quyết yêu cầu bồi thường; lưu localStorage theo phiên bản NKDV_SEED_VER.
  */
-var NKDV_SEED_VER = '20261030dvc3';
+var NKDV_SEED_VER = '20261030dvc4';
 var NKDV_KEY = 'btnn_dvc_sync_log';
 var NKDV_KEY_VER = 'btnn_dvc_sync_log_ver';
-// 16 bước theo Tài liệu API tích hợp DVC BTNN - mục 8.2 (thứ tự theo luồng)
+// 16 bước theo Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.2 (thứ tự theo luồng)
 var NKDV_STEPS = [
     ['YEU_CAU_BO_SUNG', 'Thông báo về việc yêu cầu bổ sung hồ sơ yêu cầu bồi thường (Mẫu 03/BTNN)'],
     ['THONG_BAO_KHONG_THU_LY', 'Thông báo không thụ lý hồ sơ yêu cầu bồi thường (Mẫu 04/BTNN)'],
     ['THONG_BAO_THU_LY', 'Thông báo thụ lý hồ sơ yêu cầu bồi thường (Mẫu 04/BTNN)'],
     ['QUYET_DINH_CU_NGUOI', 'Quyết định cử người giải quyết bồi thường (Mẫu 06/BTNN)'],
     ['BAO_CAO_XAC_MINH', 'Báo cáo xác minh thiệt hại'],
-    ['BIEN_BAN_THUONG_LUONG', 'Biên bản kết quả thương lượng việc bồi thường'],
+    ['BIEN_BAN_THUONG_LUONG', 'Biên bản kết quả thương lượng việc giải quyết bồi thường'],
     ['QUYET_DINH_GIAI_QUYET', 'Quyết định giải quyết bồi thường (Mẫu 18/BTNN)'],
     ['QUYET_DINH_HUY', 'Quyết định hủy quyết định giải quyết bồi thường (Mẫu 20/BTNN)'],
     ['QUYET_DINH_SUA_DOI_BO_SUNG', 'Quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường (Mẫu 21/BTNN)'],
@@ -125,7 +125,7 @@ function nkdvLoad() {
 }
 function nkdvSave() { try { localStorage.setItem(NKDV_KEY, JSON.stringify(nkdvList)); localStorage.setItem(NKDV_KEY_VER, NKDV_SEED_VER); } catch (e) { /* mockup */ } }
 
-// ---------- JSON request / response (Tài liệu API mục 8.3, 8.4) ----------
+// ---------- JSON request / response (Tài liệu kết nối DVC - mục 3.3, 3.4) ----------
 function nkdvRequest(m, at) {
     var d = m.document;
     return {

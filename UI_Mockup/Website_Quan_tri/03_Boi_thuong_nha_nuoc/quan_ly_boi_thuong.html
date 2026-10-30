@@ -2756,10 +2756,10 @@
                     </div>
                     <div class="form-group" style="margin-bottom: 14px;">
                         <span class="form-label" style="font-weight: 600;">Phương thức nhận thông báo<span class="required">*</span></span>
-                        <!-- Thứ tự theo Mẫu 01/BTNN; mặc định và quy tắc nhãn/placeholder giống màn Xác định cơ quan giải quyết bồi thường -->
+                        <!-- Thứ tự theo Mẫu 01/BTNN; mặc định Trực tiếp; quy tắc nhãn/placeholder giống màn Xác định cơ quan giải quyết bồi thường -->
                         <div id="claimNotifyMethodGroup" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; margin-top: 8px;">
                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: normal; margin-bottom: 0;">
-                                <input type="radio" name="claimNotifyMethod" value="Trực tiếp" onchange="handleClaimNotifyMethodChange(this.value)">
+                                <input type="radio" name="claimNotifyMethod" value="Trực tiếp" checked onchange="handleClaimNotifyMethodChange(this.value)">
                                 <span>Trực tiếp</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: normal; margin-bottom: 0;">
@@ -2771,7 +2771,7 @@
                                 <span>Qua thư điện tử</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: normal; margin-bottom: 0;">
-                                <input type="radio" name="claimNotifyMethod" value="Qua Cổng Dịch vụ công quốc gia hoặc Ứng dụng định danh quốc gia (VNeID)" checked onchange="handleClaimNotifyMethodChange(this.value)">
+                                <input type="radio" name="claimNotifyMethod" value="Qua Cổng Dịch vụ công quốc gia hoặc Ứng dụng định danh quốc gia (VNeID)" onchange="handleClaimNotifyMethodChange(this.value)">
                                 <span>Qua Cổng Dịch vụ công quốc gia hoặc Ứng dụng định danh quốc gia (VNeID)</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: normal; margin-bottom: 0;">
@@ -2781,8 +2781,8 @@
                         </div>
                     </div>
                     <div class="form-group" style="margin-bottom: 0;">
-                        <span class="form-label" id="claimNotifyAddressLabel" style="font-weight: 600;">Địa chỉ, đầu mối nhận thông báo (Tài khoản Cổng DVC / Số ĐDCN / VNeID) <span class="required">*</span></span>
-                        <input type="text" class="form-control" id="claimNotifyAddress" placeholder="Nhập số định danh cá nhân / tài khoản VNeID hoặc tài khoản Cổng DVC nhận thông báo...">
+                        <span class="form-label" id="claimNotifyAddressLabel" style="font-weight: 600;">Địa chỉ, đầu mối nhận thông báo (Trực tiếp tại trụ sở) <span class="required">*</span></span>
+                        <input type="text" class="form-control" id="claimNotifyAddress" placeholder="Nhận trực tiếp tại trụ sở cơ quan giải quyết (hoặc thông tin người nhận)...">
                         <div class="error-message" id="errClaimNotifyAddress">Đây là trường bắt buộc</div>
                     </div>
                 </div>
@@ -4379,7 +4379,7 @@
     </div>
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
-    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
     <script src="btnn_dvc_sync.js?v=20261030dvc1"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
@@ -4388,8 +4388,8 @@
     <script src="quan_ly_boi_thuong_dcgq.js?v=20261029tlcam2"></script>
     <script src="quan_ly_kinh_phi_kpdc.js?v=20261030s2"></script>
     <!-- [th2c] Danh mục Loại thiệt hại 2 cấp (DM_27) + bảng 2 cấp dùng chung -->
-    <script src="btnn_thiet_hai.js?v=20261028dm27"></script>
-    <script src="quan_ly_boi_thuong_seedx.js?v=20261030dvc1"></script>
+    <script src="btnn_thiet_hai.js?v=20261030dm28"></script>
+    <script src="quan_ly_boi_thuong_seedx.js?v=20261030sd1"></script>
     <!-- [hlqd] Hồ sơ mẫu BT-2026-191..194 cho Quyết định GQBT mẫu thử Hiệu lực -->
     <script src="quan_ly_boi_thuong_hlqd.js?v=20261029sn1"></script>
     <script src="quan_ly_boi_thuong_seedht.js?v=20261030s10"></script>
@@ -9905,11 +9905,15 @@
             seedNycOrgSampleClaims();
             // Dữ liệu mẫu các trạng thái kết thúc (quan_ly_boi_thuong_seedx.js): bổ sung nếu chưa có, không ghi đè bản ghi đã có
             if (typeof sdxSeedClaims === 'function') sdxSeedClaims();
+            // Dời ngày dữ liệu mẫu theo tháng hiện tại (BTNN_WF.shiftSeedDates, cùng phép dời với QĐ GQBT / Kinh phí) trước khi gán lại Ngày tiếp nhận hồ sơ mẫu HS*:
+            // các mốc khác của hồ sơ HS* (Ngày QĐ, xác minh...) dời cùng độ dời với kho Quyết định GQBT
+            if (window.BTNN_WF && typeof BTNN_WF.shiftSeedDates === 'function') { try { BTNN_WF.shiftSeedDates(claimsList); } catch (e) { /* mockup */ } }
 
             // Dynamically assign mock dates in current month so they bypass the default date filters on load
             claimsList.forEach((claim, idx) => {
                 if (claim.id && claim.id.startsWith('HS') && !claim.userCreated) {
-                    const dayNum = (idx % 8) + 1;
+                    // Ngày 01-08 của tháng hiện tại, không vượt quá hôm nay (đầu tháng: không sinh ngày tương lai nằm ngoài bộ lọc Đến ngày)
+                    const dayNum = Math.min((idx % 8) + 1, today.getDate());
                     const d = String(dayNum).padStart(2, '0');
                     const m = String(today.getMonth() + 1).padStart(2, '0');
                     const y = today.getFullYear();
@@ -9935,7 +9939,8 @@
             // Mã vụ việc VVBT- cho mọi hồ sơ (dữ liệu mẫu, hồ sơ cũ, vụ việc Chỉ PHDD): cùng một Mã hồ sơ BT- luôn ra cùng Mã vụ việc
             ensureClaimsVuViec();
             phddPersistStore();
-            localStorage.setItem('claimsList', JSON.stringify(claimsList));
+            // Bộ nhớ localStorage đầy (QuotaExceededError): vẫn vẽ danh sách từ dữ liệu trong trang, không dừng hàm khởi tạo
+            try { localStorage.setItem('claimsList', JSON.stringify(claimsList)); } catch (e) { console.warn('[BTNN] Không lưu được claimsList vào localStorage:', e && e.name); }
 
             // Populate table on load (mặc định Tab "Vụ việc chờ xử lý": nạp bộ lọc Trạng thái + số lượng theo tab)
             // Tham số requestKind (VD từ menu cũ Phục hồi danh dự: requestKind=has-phdd): lọc sẵn Loại yêu cầu
@@ -11050,7 +11055,8 @@
             }
         }
 
-        const NOTIFY_METHOD_DEFAULT_CLAIM = 'Qua Cổng Dịch vụ công quốc gia hoặc Ứng dụng định danh quốc gia (VNeID)';
+        // Mặc định Phương thức nhận thông báo trên form Tạo hồ sơ giải quyết bồi thường
+        const NOTIFY_METHOD_DEFAULT_CLAIM = 'Trực tiếp';
 
         // Nhãn/placeholder "Địa chỉ, đầu mối nhận thông báo" đổi theo phương thức (cùng quy tắc màn Xác định CQGQBT)
         function handleClaimNotifyMethodChange(method) {
@@ -11217,7 +11223,7 @@
                 document.getElementById('claimNYCAddress').value = getClaimAddressDetail(claim);
                 document.getElementById('claimHanhVi').value = claim.hanhVi || '';
                 document.getElementById('claimNhanQua').value = claim.nhanQua || '';
-                // Phương thức nhận thông báo: theo hồ sơ (kế thừa từ Xác định CQGQBT nếu có), mặc định như màn Xác định CQGQBT
+                // Phương thức nhận thông báo: theo hồ sơ (kế thừa từ Xác định CQGQBT nếu có), không có dữ liệu: mặc định Trực tiếp
                 setClaimNotifyMethodOnForm(claim.notifyMethod || NOTIFY_METHOD_DEFAULT_CLAIM, claim.notifyAddress || '');
                 document.getElementById('claimCqNhan').value = claim.agency || '';
                 populateClaimReportForm(claim);
@@ -12786,14 +12792,14 @@
             if (isAssignedToOther && isClaimRestrictedToAppointed(claim)) {
                 selectedClaimId = null;
                 isDetailEditMode = false;
-                showToast(`Bạn không thuộc danh sách cán bộ được cử giải quyết hồ sơ ${claim.code}. Không thể xem và cập nhật hồ sơ.`, "error");
+                gqDetailDeny(`Bạn không thuộc danh sách cán bộ được cử giải quyết hồ sơ ${claim.code}. Không thể xem và cập nhật hồ sơ.`);
                 return;
             }
             // [gqfix3] Trước khi cử người: chỉ cán bộ được phân công xử lý hồ sơ được xem
             if (currentRole === 'chuyen-vien' && typeof gqldPreAppoint === 'function' && gqldPreAppoint(claim) && gqldGateReason(claim, currentRole, currentOfficer)) {
                 selectedClaimId = null;
                 isDetailEditMode = false;
-                showToast(`Bạn không phải cán bộ được phân công xử lý hồ sơ ${claim.code}. Không thể xem và cập nhật hồ sơ.`, "error");
+                gqDetailDeny(`Bạn không phải cán bộ được phân công xử lý hồ sơ ${claim.code}. Không thể xem và cập nhật hồ sơ.`);
                 return;
             }
 
@@ -12911,6 +12917,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 }
             }
         }
+
+        // [mh05] Không được xem chi tiết hồ sơ: dải thông báo thay cho nội dung màn hình (quan_ly_boi_thuong_mh05.js)
+        function gqDetailDeny(msg) { if (typeof window.gqDetailShowDenied === 'function') window.gqDetailShowDenied(msg); else showToast(msg, 'error'); }
 
         function closeCaseDetail() {
             if (navigateBackFromLinkedClaimDetail()) return;
@@ -13443,7 +13452,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                                 <i class="fa-solid fa-bell"></i> PHƯƠNG THỨC ĐỀ NGHỊ NHẬN THÔNG BÁO VỀ VIỆC GIẢI QUYẾT YÊU CẦU BỒI THƯỜNG
                             </span>
                             <div class="grid-2-cols" style="gap: 12px 20px; font-size: 13px;">
-                                <div><strong style="color:var(--text-muted);">Phương thức nhận thông báo:</strong> <br><span class="badge badge-info" style="font-size:12px; font-weight:600; padding:4px 8px;">${normalizeClaimNotifyMethod(claim.notifyMethod || NOTIFY_METHOD_DEFAULT_CLAIM)}</span></div>
+                                <div><strong style="color:var(--text-muted);">Phương thức nhận thông báo:</strong> <br><span class="badge badge-info" style="font-size:12px; font-weight:600; padding:4px 8px;">${normalizeClaimNotifyMethod(claim.notifyMethod)}</span></div>
                                 <div><strong style="color:var(--text-muted);">Địa chỉ, đầu mối nhận thông báo:</strong> <br><span style="font-weight:600; color:var(--text-main);">${claim.notifyAddress || (claim.cardNo ? ('Tài khoản VNeID (Số ĐDĐT: ' + (claim.nycCardNo || claim.cardNo) + (claim.phone ? ' - SĐT: ' + claim.phone : '') + ')') : 'Tài khoản Cổng Dịch vụ công / VNeID')}</span></div>
                             </div>
                         </div>
@@ -17185,7 +17194,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             }
             // Chỉ xem, bố cục và thứ tự giống popup Cập nhật kết quả thương lượng; không hiển thị ghi chú giải thích
             const meta = neg.savedAt || neg.savedBy ? `<div style="color:#64748b; font-size:12px; margin-top:8px;">Cập nhật: ${ptE(vxmTime(neg.savedAt) || '--')}${neg.savedBy ? ' - ' + ptE(neg.savedBy) : ''}</div>` : '';
-            const docs = (neg.docs || []).map(d => ({ title: d.name, file: d.file || d.name }));
+            // [dvc3] Đồng ý thương lượng: dòng 1 bảng Tài liệu đính kèm là Biên bản kết quả thương lượng việc giải quyết bồi thường
+            const docs = (code === 'DONG_Y' && typeof lthTlDocsRead === 'function' ? lthTlDocsRead(neg) : []).concat((neg.docs || []).map(d => ({ title: d.name, file: d.file || d.name, size: d.size || '', fileId: d.fileId || '' })));
             const partHtml = vxmTextHtml('Tình trạng tham gia thương lượng', neg.decision);
             if (code !== 'DONG_Y') {
                 const reason = neg.reason || neg.note || '';
@@ -17222,7 +17232,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     ${pay}
                     ${vxmTextHtml('Khôi phục quyền, lợi ích hợp pháp khác (nếu có)', neg.otherRights)}
                     ${vxmTextHtml('Các nội dung khác', neg.otherRequests)}
-                    ${typeof lthTlBbReadHtml === 'function' ? lthTlBbReadHtml(neg) : ''}
                     ${(docs || []).length ? vxmTitle('fa-paperclip', 'Tài liệu đính kèm') + vxmDocsTableHtml(docs, 'tlDocsRead') : ''}
                     ${meta}
                 </div>`;
@@ -25888,13 +25897,13 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
     <script src="filter_toggle_auto.js?v=20261012"></script>
     <!-- [ctvv] Chi tiết vụ việc: khối các bước đã qua, tên 03 tab, Trình ký Mẫu 26/BTNN, bảng Tài liệu đính kèm đồng nhất (đặt sau các script chính để bọc hàm) -->
-    <script src="quan_ly_boi_thuong_ctvv.js?v=20261030dvc1"></script>
+    <script src="quan_ly_boi_thuong_ctvv.js?v=20261030dvc8"></script>
     <!-- [ttgq] Popup Trình ký Quyết định tiếp tục giải quyết bồi thường (Mẫu số 23/BTNN) -->
     <script src="quan_ly_boi_thuong_ttgq.js?v=20261029tlcam2"></script>
     <!-- [ycbs] Tiếp nhận hồ sơ bổ sung: nhãn Hồ sơ gốc / Bổ sung, Đã cập nhật bổ sung (bọc hàm màn Nhập liệu hồ sơ vụ việc) -->
     <script src="quan_ly_boi_thuong_ycbs.js?v=20261030s2"></script>
     <!-- [phdx] Tab Phục hồi danh dự: bấm Step -> khối tương ứng; thu gọn / mở rộng khối; khối Hoãn phục hồi danh dự + Tiếp tục thực hiện -->
-    <script src="quan_ly_boi_thuong_phdd.js?v=20261029tldk"></script>
+    <script src="quan_ly_boi_thuong_phdd.js?v=20261030phdf"></script>
     <script src="quan_ly_boi_thuong_phddxa.js?v=20261029tldk"></script>
     <!-- [hdcv] Khối xem Hoãn / Tạm đình chỉ / Đình chỉ giải quyết bồi thường (tab Chi tiết giải quyết bồi thường) + dữ liệu mẫu BT-2026-431..437 -->
     <script src="quan_ly_boi_thuong_hdcv.js?v=20261029tldk"></script>
@@ -25906,7 +25915,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <!-- [tcvv] Xem chi tiết mở từ Tra cứu vụ việc (?readonly=1&returnUrl=tra_cuu...): tab mặc định, bỏ giới hạn cán bộ được cử; tcvvPreview=1: hồ sơ giả lập riêng của Tra cứu, không lưu vào claimsList -->
     <script src="tra_cuu_seed_tcvv.js?v=20261030s2"></script>
     <!-- [lth][th2c] Thiệt hại 02 cấp (nhóm / mục chi tiết DM_27) tại Nhập liệu hồ sơ, Xác minh thiệt hại, Thương lượng, Xem chi tiết; tích bổ sung mục / Yêu cầu phục hồi danh dự; popup xác nhận Hoàn thành xác minh -->
-    <script src="quan_ly_boi_thuong_lth.js?v=20261030dvc3"></script>
+    <script src="quan_ly_boi_thuong_lth.js?v=20261030dvc8"></script>
     <!-- [ktlc] Không thụ lý KTL_01: Chuyển hồ sơ cho theo cấp đơn vị / số lần chuyển, tự tạo hồ sơ Xác định CQGQBT -->
     <script src="quan_ly_boi_thuong_ktlc.js?v=20261030k3"></script>
     <!-- [tptl] Thành phần tham gia thương lượng: 1. Cơ quan, tổ chức (thành phần bắt buộc theo Cấp đơn vị / Lĩnh vực, Không tham gia + Lý do; thành phần khác), 2. Người yêu cầu bồi thường / người đại diện / người bảo vệ quyền lợi ích hợp pháp (đặt sau lth, ktlc) -->
@@ -25918,6 +25927,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="quan_ly_boi_thuong_cdpd.js?v=20261030cdpd6"></script>
     <!-- [dgq] Dừng giải quyết (Mẫu 05/BTNN): popup trình ký Thông báo dừng giải quyết, khối Thông tin dừng giải quyết, dữ liệu mẫu BT-2026-541..544 (đặt sau dcgq, hdcv) -->
     <script src="quan_ly_boi_thuong_dgq.js?v=20261030s2"></script>
+    <!-- [mh05] Xem chi tiết hồ sơ: khối Lý do bị trả lại / Không thụ lý / Chuyển CQGQBT / Thông tin xử lý và trình duyệt tại Tab 2; hồ sơ Bị trả lại mở Tab 2 + cuộn tới khối; dải thông báo không được xem (đặt sau mọi script bọc showCaseDetail) -->
+    <script src="quan_ly_boi_thuong_mh05.js?v=20261030m3"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>

@@ -71,7 +71,7 @@ function sdxNeg(c, date, pay, rights) {
         },
         otherRights: rights || '',
         otherRequests: 'Hai bên thống nhất thời hạn chi trả theo Quyết định giải quyết bồi thường.',
-        // [dvc1] Biên bản kết quả thương lượng việc bồi thường: trường tệp riêng (01 tệp .pdf)
+        // [dvc1] Biên bản kết quả thương lượng việc giải quyết bồi thường: trường tệp riêng (01 tệp .pdf)
         bienBan: { name: 'Bien_ban_ket_qua_thuong_luong_' + c.code + '.pdf', size: '386 KB', url: '#' },
         docs: [{ name: 'Giấy mời tham gia thương lượng', file: 'Giay_moi_thuong_luong_' + c.code + '.pdf' }],
         savedAt: date + ' 16:00', savedBy: SDX_CB
@@ -585,6 +585,9 @@ function sdxClaims() {
 }
 // Dời toàn bộ ngày dd/mm/yyyy của dữ liệu mẫu theo số tháng chênh lệch với tháng 10/2026
 function sdxShiftDates(list) {
+    // Dùng phép dời chung BTNN_WF.shiftSeedDates (mốc 10/2026, không vượt quá hôm nay trừ trường hạn, giữ ngày trước năm 2026, đánh dấu đã dời)
+    // để đồng nhất với hồ sơ mẫu khác, Quyết định GQBT và Kinh phí; cách dời theo tháng cũ (giữ ngày trong tháng) sinh ngày tương lai khi đầu tháng
+    if (window.BTNN_WF && typeof window.BTNN_WF.shiftSeedDates === 'function') { window.BTNN_WF.shiftSeedDates(list); return list; }
     var now = new Date();
     var delta = (now.getFullYear() - SDX_BASE.y) * 12 + (now.getMonth() + 1 - SDX_BASE.m);
     if (!delta) return list;

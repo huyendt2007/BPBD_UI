@@ -394,11 +394,9 @@
             </div>
 
             <div class="list-card">
-                <div class="list-header">
-                    <div>
-                        <div class="list-title"><i class="fa-solid fa-table-list"></i> Danh sách vụ việc tại Tòa án</div>
-                        <div class="result-count" id="resultCount">Hiển thị 0 bản ghi</div>
-                    </div>
+                <!-- Không hiển thị tiêu đề lưới / số bản ghi phía trên bảng; tổng số bản ghi tại thanh phân trang -->
+                <div class="list-header" data-grid-toolbar style="justify-content:flex-end;">
+                    <span id="resultCount" style="display:none;"></span>
                     <button class="btn btn-primary" id="btnAddNew" onclick="openCaseForm()">
                         <i class="fa-solid fa-plus"></i> Thêm mới
                     </button>
@@ -920,9 +918,9 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
     <!-- [th2c] Danh mục / bảng thiệt hại 2 cấp dùng chung (window.BTNN_TH) -->
-    <script src="btnn_thiet_hai.js?v=20261028dm27"></script>
+    <script src="btnn_thiet_hai.js?v=20261030dm28"></script>
     <style>#damageTreeWrap.dmg-ro tr.bth-kadd, #damageTreeWrap.dmg-ro .bth-kdel { display: none !important; }</style>
     <script>
         // ===== Cấu hình =====
@@ -2124,6 +2122,7 @@
     <script src="tra_cuu_seed_tcvv.js?v=20261030s2"></script>
     <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261030s2"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
+    <script src="btnn_grid_toolbar.js?v=20261030gt1"></script>
 </body>
 
 </html>

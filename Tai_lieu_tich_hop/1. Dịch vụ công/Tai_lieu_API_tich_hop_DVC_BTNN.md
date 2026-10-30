@@ -3,8 +3,8 @@
 
 | Mục | Nội dung |
 | :--- | :--- |
-| Phiên bản | 1.3 |
-| Ngày | 30/10/2026 |
+| Phiên bản | 1.2 |
+| Ngày | 29/10/2026 |
 | Môi trường | Thử nghiệm (DEV) |
 | Đối tác | Dịch vụ công (mã đối tác `DVC`) |
 | Tài liệu nghiệp vụ liên quan | `EForm_DVC_YeuCauBoiThuong.md`, `Ket_noi_chia_se_Dich_vu_cong_BTNN.md` (cùng thư mục) |
@@ -16,17 +16,15 @@
 | 1.0 | 27/10/2026 | Bản đầu |
 | 1.1 | 29/10/2026 | Theo E-Form 83 trường: khối `dossier_components`, `advance`, `payee`, `honor_restoration`, `other_rights`, `damages`; bổ sung độ dài tối đa thực tế, mã lỗi `TOO_MANY_ROWS`, `SECRET_NOT_ISSUED`, `GATEWAY_NOT_CONFIGURED`, khuôn `X-Idempotency-Key`, điều kiện Luồng tiếp nhận |
 | 1.2 | 29/10/2026 | `org-units`: `province_code` là tỉnh suy ra theo cây đơn vị, thêm tham số `claim_intake_only`, mặc định chỉ trả đơn vị còn hiệu lực; `ping` trả phong bì chuẩn kèm `data.server_time`; API tra trạng thái thêm khối `data.progress` (trạng thái hồ sơ và văn bản đã ban hành); thêm ca kiểm thử 16-18 |
-| 1.3 | 30/10/2026 | Thêm mục 8 - API gửi kết quả xử lý hồ sơ về Dịch vụ công (16 bước, trạng thái vụ việc, thông tin văn bản, link tệp kết quả kèm mã băm SHA-256, gửi lại, chống trùng, nhật ký đồng bộ) và API tải tệp kết quả `DVC_RESULT_FILE`; mục Mã lỗi, Ca kiểm thử, Chuyển môi trường đánh số lại 9-11; thêm ca kiểm thử 19-26; `progress.claim_status` (mục 7.8) dùng bộ mã trạng thái vụ việc mục 8.2, bỏ tham chiếu DM_24 |
 
 ---
 
 ## 1. Tổng quan
 
-Hệ thống BTNN kết nối với Cổng Dịch vụ công (DVC) qua ba nhóm API:
+Hệ thống BTNN cung cấp cho Cổng Dịch vụ công (DVC) hai nhóm API:
 
 1. **API chia sẻ danh mục** (chỉ đọc): DVC lấy các danh mục để dựng E-Form "Yêu cầu bồi thường nhà nước" - Quốc gia, Loại giấy tờ pháp lý, Địa bàn, Lĩnh vực phát sinh thiệt hại, Hình thức tiếp nhận, Tư cách người yêu cầu, Loại thiệt hại yêu cầu bồi thường, Phương thức nhận tiền bồi thường/tạm ứng, Loại yêu cầu giải quyết bồi thường, Cơ quan giải quyết bồi thường.
 2. **API nhận hồ sơ**: DVC gửi hồ sơ E-Form người dân/tổ chức đã nộp sang BTNN; hệ thống tạo hồ sơ ở màn **Tiếp nhận hồ sơ** của Cơ quan giải quyết bồi thường. DVC tra được trạng thái xử lý và tiến độ giải quyết (trạng thái hồ sơ, các văn bản đã ban hành).
-3. **API gửi kết quả xử lý** (BTNN gọi DVC): BTNN gửi kết quả từng bước giải quyết hồ sơ nộp qua DVC (văn bản, trạng thái vụ việc, link tệp kết quả kèm mã băm) sang DVC (mục 8).
 
 ```
                  (1) Lấy token (client_credentials)
@@ -44,7 +42,7 @@ Hệ thống BTNN kết nối với Cổng Dịch vụ công (DVC) qua ba nhóm 
 
 Mọi dữ liệu trao đổi là JSON, mã hóa UTF-8, qua HTTPS.
 
-BTNN chủ động gửi kết quả xử lý sang DVC theo mục 8 (địa chỉ nhận và phương thức xác thực do DVC cung cấp); DVC vẫn tra được trạng thái và tiến độ qua API tra trạng thái (mục 7.8) để đối soát.
+Thông báo trạng thái chủ động từ BTNN sang DVC: chờ chốt thông tin với DVC; hiện DVC tra trạng thái và tiến độ qua API tra trạng thái (mục 7.8).
 
 ---
 
@@ -61,7 +59,6 @@ BTNN chủ động gửi kết quả xử lý sang DVC theo mục 8 (địa ch�
 | Khóa ký HMAC | Gửi riêng qua kênh bảo mật (không ghi trong tài liệu) |
 | IP được phép gọi | IP máy chủ DVC do DVC cung cấp; IP khác bị từ chối |
 | Hạn mức | 100 lượt gọi/phút (theo cấu hình đối tác) |
-| Địa chỉ nhận kết quả xử lý (phía DVC) | DVC cung cấp, kèm phương thức xác thực (mục 8.1) |
 
 > Hai bí mật (client secret và khóa HMAC) chỉ hiển thị một lần khi BTNN cấp. Lộ bí mật thì báo BTNN cấp lại; bí mật cũ hết hiệu lực ngay.
 
@@ -71,16 +68,15 @@ BTNN chủ động gửi kết quả xử lý sang DVC theo mục 8 (địa ch�
 
 | Bước | Việc | Bên làm | Kết quả cần đạt |
 | :--- | :--- | :--- | :--- |
-| 1 | Chuẩn bị: DVC gửi IP máy chủ gọi API và đầu mối kỹ thuật. BTNN khai IP, cấp các mã API (mục 2 và 6), gửi client secret + khóa HMAC. Cơ quan đã có Luồng tiếp nhận hồ sơ "Giải quyết yêu cầu bồi thường" lấy bằng `org-units?claim_intake_only=true` (mục 6.4); cơ quan chưa có luồng thì hồ sơ dừng ở `RECEIVED` (mục 7.8). DVC gửi địa chỉ nhận kết quả và phương thức xác thực (mục 8.1) | Hai bên | DVC nhận đủ thông tin mục 2; BTNN nhận đủ thông tin mục 8.1 |
+| 1 | Chuẩn bị: DVC gửi IP máy chủ gọi API và đầu mối kỹ thuật. BTNN khai IP, cấp các mã API (mục 2 và 6), gửi client secret + khóa HMAC. Cơ quan đã có Luồng tiếp nhận hồ sơ "Giải quyết yêu cầu bồi thường" lấy bằng `org-units?claim_intake_only=true` (mục 6.4); cơ quan chưa có luồng thì hồ sơ dừng ở `RECEIVED` (mục 7.8) | Hai bên | DVC nhận đủ thông tin mục 2 |
 | 2 | Lấy token Keycloak (mục 4) | DVC | Nhận được `access_token` |
-| 3 | Ký gói tin và gọi thử `GET /api/share/v1/partner/ping` (mục 5) | DVC | HTTP 200, có `data.server_time`. Lỗi thì đối chiếu bảng mục 9 |
+| 3 | Ký gói tin và gọi thử `GET /api/share/v1/partner/ping` (mục 5) | DVC | HTTP 200, có `data.server_time`. Lỗi thì đối chiếu bảng mục 8 |
 | 4 | Đồng bộ danh mục lần đầu: gọi đủ các API ở mục 6.1, đi hết các trang, lưu `server_time` | DVC | Có đủ dữ liệu danh mục trên hệ thống DVC |
 | 5 | Dựng E-Form theo `EForm_DVC_YeuCauBoiThuong.md`, gắn từng ô với danh mục tương ứng và áp đúng quy tắc lọc (mục 6.6); ô Cơ quan giải quyết dùng `province_code` + `claim_intake_only=true` | DVC | E-Form hiển thị đúng giá trị, lọc đúng |
 | 6 | Lập lịch đồng bộ định kỳ bằng `last_sync_time` (mục 6.5), đề xuất mỗi ngày 1 lần hoặc mỗi giờ | DVC | Danh mục DVC luôn khớp BTNN |
-| 7 | Gửi hồ sơ thử (mục 7) theo bộ ca kiểm thử mục 10; BTNN đối chiếu hồ sơ trên màn Tiếp nhận | Hai bên | Mọi ca đạt kết quả mong đợi |
+| 7 | Gửi hồ sơ thử (mục 7) theo bộ ca kiểm thử mục 9; BTNN đối chiếu hồ sơ trên màn Tiếp nhận | Hai bên | Mọi ca đạt kết quả mong đợi |
 | 8 | Xử lý gửi lại / chống trùng và tra trạng thái (mục 7.7, 7.8) | DVC | Gửi lại không tạo hồ sơ trùng; hiển thị được trạng thái và tiến độ (`data.progress`) cho người nộp |
-| 9 | Nhận kết quả xử lý (mục 8): dựng API nhận, chống trùng theo `transaction_id`, tải tệp và kiểm mã băm (mục 8.5) | DVC | Nhận đủ 16 bước; gửi lại không tạo kết quả trùng |
-| 10 | Nghiệm thu trên môi trường thử nghiệm; khi chuyển chính thức BTNN gửi địa chỉ và bí mật mới | Hai bên | Biên bản nghiệm thu |
+| 9 | Nghiệm thu trên môi trường thử nghiệm; khi chuyển chính thức BTNN gửi địa chỉ và bí mật mới | Hai bên | Biên bản nghiệm thu |
 
 ---
 
@@ -733,8 +729,8 @@ Mọi lỗi được gom và trả **một lượt**. Giá trị danh mục ph�
 
 | Trường | Kiểu | Ý nghĩa |
 | :--- | :--- | :--- |
-| `progress.claim_status` | Chuỗi | Mã trạng thái vụ việc hiện tại, cùng bộ mã `case_status` tại mục 8.2 (vd `CHO_PHAN_CONG`, `XAC_MINH_THIET_HAI`, `YEU_CAU_BO_SUNG`, `HOAN_THANH`) |
-| `progress.claim_status_name` | Chuỗi | Tên trạng thái vụ việc theo bảng mã mục 8.2 |
+| `progress.claim_status` | Chuỗi | Mã trạng thái hiện tại của hồ sơ theo danh mục DM_24 (vd `CHO_PHAN_CONG`, `DANG_XAC_MINH`, `YEU_CAU_BO_SUNG`, `HOAN_THANH`) |
+| `progress.claim_status_name` | Chuỗi | Tên trạng thái theo DM_24 (`null` nếu mã không còn trong danh mục) |
 | `progress.updated_time` | Thời điểm ISO-8601 (+07:00) | Lần cập nhật hồ sơ gần nhất |
 | `progress.documents[]` | Mảng | Văn bản **đã ban hành**, cũ trước; rỗng nếu chưa có. Mỗi loại văn bản chỉ lấy lần ban hành mới nhất |
 | `progress.documents[].type` | Chuỗi | `THONG_BAO_THU_LY`, `THONG_BAO_KHONG_THU_LY`, `YEU_CAU_BO_SUNG`, `DUNG_GIAI_QUYET`, `QUYET_DINH_GIAI_QUYET` |
@@ -743,7 +739,7 @@ Mọi lỗi được gom và trả **một lượt**. Giá trị danh mục ph�
 | `progress.documents[].doc_date` | Ngày `yyyy-MM-dd` | Ngày văn bản |
 | `progress.documents[].issued_time` | Thời điểm ISO-8601 (+07:00) | Thời điểm ban hành (cấp duyệt cuối; văn bản yêu cầu bổ sung: lúc phát hành) |
 
-Chỉ trả những gì người yêu cầu được biết: văn bản yêu cầu bổ sung và Quyết định giải quyết chỉ khi đã phát hành; không có ý kiến nội bộ, người duyệt, phiếu chờ duyệt hay dự thảo. `claim_status` là trạng thái nội bộ của hồ sơ nên có thể là trạng thái trung gian (vd `CHO_PHAN_CONG`, `CHO_DUYET`).
+Chỉ trả những gì người yêu cầu được biết: văn bản yêu cầu bổ sung và Quyết định giải quyết chỉ khi đã phát hành; không có ý kiến nội bộ, người duyệt, phiếu chờ duyệt hay dự thảo. `claim_status` là trạng thái nội bộ của hồ sơ nên có thể là trạng thái trung gian (vd `CHO_PHAN_CONG`, `CHO_PHE_DUYET`).
 
 Ví dụ phản hồi của hồ sơ đã được thụ lý:
 
@@ -762,8 +758,8 @@ Ví dụ phản hồi của hồ sơ đã được thụ lý:
     "processed_time": "2026-10-27T09:31:02+07:00",
     "duplicate": false,
     "progress": {
-      "claim_status": "XAC_MINH_THIET_HAI",
-      "claim_status_name": "Xác minh thiệt hại",
+      "claim_status": "DANG_XAC_MINH",
+      "claim_status_name": "Đang xác minh thiệt hại",
       "updated_time": "2026-10-29T08:15:30+07:00",
       "documents": [
         {
@@ -783,198 +779,7 @@ Mã hồ sơ không có hoặc không phải của DVC: HTTP 404 `NOT_FOUND`. Th
 
 ---
 
-<a id="dvc-gui-ket-qua"></a>
-## 8. API gửi kết quả xử lý hồ sơ về Dịch vụ công
-
-BTNN **chủ động gửi** kết quả xử lý của hồ sơ nộp qua DVC sang hệ thống DVC tại các bước ở mục 8.2. Chiều gọi ngược với mục 6, 7: **BTNN là bên gọi, DVC là bên nhận**.
-
-Bản tin gửi **link tệp kết quả kèm mã băm**, không chứa nội dung tệp. DVC tải tệp qua link (mục 8.5) và đối chiếu mã băm.
-
-- Chỉ áp dụng cho hồ sơ có `Nguồn hồ sơ` = `Dịch vụ công` (hồ sơ nhận qua API mục 7, có `dvc_dossier_code`). Hồ sơ nguồn khác không gửi, kể cả hồ sơ đã chuyển sang cơ quan khác (tại cơ quan nhận có `Nguồn hồ sơ` = `Chuyển CQGQBT`).
-- Gửi bất đồng bộ sau khi thao tác nghiệp vụ trên BTNN đã hoàn tất. Gửi lỗi không hoàn tác thao tác nghiệp vụ.
-- API tra trạng thái (mục 7.8) giữ nguyên, DVC dùng để đối soát khi nghi thiếu bản tin.
-
-| API | Phương thức + đường dẫn | Bên cung cấp | Mã API |
-| :--- | :--- | :--- | :--- |
-| Nhận kết quả xử lý | `POST <địa chỉ nhận kết quả do DVC cung cấp>` | DVC | - |
-| Tải tệp kết quả | `GET /api/share/v1/compensation/result-files/{file_id}` | BTNN | `DVC_RESULT_FILE` |
-
-### 8.1. Kết nối và xác thực
-
-| Mục | Giá trị |
-| :--- | :--- |
-| Địa chỉ nhận kết quả | DVC cung cấp (môi trường thử nghiệm và chính thức), chỉ nhận HTTPS |
-| Xác thực | Đề xuất: BTNN ký gói tin theo khuôn mục 5.2 (header `X-Partner-Code` = `BTNN`, `X-Timestamp`, `X-Nonce`, `X-Signature`) bằng khóa HMAC do DVC cấp; DVC có thể thay bằng phương thức khác và báo BTNN trước khi kết nối |
-| Chống trùng | Header `X-Idempotency-Key` = `transaction_id` |
-| Content-Type | `application/json`, UTF-8 |
-| Thời gian chờ phản hồi | Đề xuất 30 giây; quá hạn coi là gửi không thành công |
-| Thành công | HTTP 200 và `code` = `SUCCESS` |
-| Ghi chú | Các giá trị ghi "Đề xuất" tại mục 8 (xác thực, thời gian chờ, lịch gửi lại, thuật toán băm, cách tải tệp): đề xuất, chốt với DVC khi kết nối |
-
-<a id="dvc-gui-ket-qua-buoc"></a>
-### 8.2. Các bước phải gửi
-
-Mỗi bước gửi 01 bản tin. Thời điểm gửi:
-- Quyết định, Thông báo: Lãnh đạo cấp cuối Ký duyệt (Ký số), hoặc cán bộ bấm `Ban hành văn bản` (Ký ngoài).
-- Báo cáo xác minh thiệt hại: cán bộ xác nhận `Hoàn thành xác minh`.
-- Biên bản kết quả thương lượng việc bồi thường: cán bộ `Lưu kết quả thương lượng` với `Tình trạng tham gia thương lượng` = `Đồng ý thương lượng`.
-
-Link tệp kết quả gửi kèm mã băm:
-- Ký số: link tệp PDF Lãnh đạo đã ký số.
-- Ký ngoài: link tệp PDF đã ký, đóng dấu cán bộ tải lên khi Ban hành.
-- Báo cáo xác minh thiệt hại, Biên bản kết quả thương lượng việc bồi thường: link tệp PDF tại trường tệp riêng của bước (01 tệp).
-- Mỗi bước gửi link của 01 tệp kết quả chính; không gửi link `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo` và tài liệu đính kèm khác.
-
-| Bước | `step_code` | Sự kiện kích hoạt | Văn bản kết quả (gửi link tệp và mã băm) | `case_status` gửi kèm |
-| :--- | :--- | :--- | :--- | :--- |
-| 1 | `YEU_CAU_BO_SUNG` | Ký duyệt / Ban hành Thông báo yêu cầu bổ sung | Thông báo về việc yêu cầu bổ sung hồ sơ yêu cầu bồi thường (Mẫu 03/BTNN) | `YEU_CAU_BO_SUNG` |
-| 2 | `THONG_BAO_KHONG_THU_LY` | Ký duyệt / Ban hành Thông báo không thụ lý | Thông báo không thụ lý hồ sơ yêu cầu bồi thường (Mẫu 04/BTNN) | `KHONG_THU_LY`; lý do "Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình": `DA_CHUYEN_CQGQBT` |
-| 3 | `THONG_BAO_THU_LY` | Ký duyệt / Ban hành Thông báo thụ lý | Thông báo thụ lý hồ sơ yêu cầu bồi thường (Mẫu 04/BTNN) | `CU_NGUOI_GIAI_QUYET` |
-| 4 | `QUYET_DINH_CU_NGUOI` | Ký duyệt / Ban hành Quyết định cử người giải quyết bồi thường | Quyết định cử người giải quyết bồi thường (Mẫu 06/BTNN) | `XAC_MINH_THIET_HAI` (vụ việc chỉ yêu cầu phục hồi danh dự: `DANG_PHUC_HOI_DANH_DU`) |
-| 5 | `BAO_CAO_XAC_MINH` | Hoàn thành xác minh | Báo cáo xác minh thiệt hại | `THUONG_LUONG` |
-| 6 | `BIEN_BAN_THUONG_LUONG` | Lưu kết quả thương lượng, `Đồng ý thương lượng` | Biên bản kết quả thương lượng việc bồi thường | `CHO_BAN_HANH_QD` |
-| 7 | `QUYET_DINH_GIAI_QUYET` | Ký duyệt / Ban hành Quyết định giải quyết bồi thường | Quyết định giải quyết bồi thường (Mẫu 18/BTNN) | `CHO_CHI_TRA` |
-| 8 | `QUYET_DINH_HUY` | Ký duyệt / Ban hành Quyết định hủy | Quyết định hủy quyết định giải quyết bồi thường (Mẫu 20/BTNN) | Trạng thái vụ việc hiện tại (Quyết định hủy không đổi trạng thái vụ việc) |
-| 9 | `QUYET_DINH_SUA_DOI_BO_SUNG` | Ký duyệt / Ban hành Quyết định sửa chữa, bổ sung | Quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường (Mẫu 21/BTNN) | Trạng thái vụ việc hiện hành (không đổi) |
-| 10 | `QUYET_DINH_HOAN` | Ký duyệt / Ban hành Quyết định hoãn | Quyết định hoãn giải quyết bồi thường (Mẫu 22/BTNN) | `HOAN_GIAI_QUYET` |
-| 11 | `QUYET_DINH_TIEP_TUC` | Ký duyệt / Ban hành Quyết định tiếp tục | Quyết định tiếp tục giải quyết bồi thường (Mẫu 23/BTNN) | Trạng thái trước khi hoãn / tạm đình chỉ |
-| 12 | `QUYET_DINH_TAM_DINH_CHI` | Ký duyệt / Ban hành Quyết định tạm đình chỉ | Quyết định tạm đình chỉ giải quyết yêu cầu bồi thường (Mẫu 24/BTNN) | `TAM_DINH_CHI` |
-| 13 | `QUYET_DINH_DINH_CHI` | Ký duyệt / Ban hành Quyết định đình chỉ | Quyết định đình chỉ giải quyết yêu cầu bồi thường (Mẫu 25/BTNN) | `DINH_CHI_GIAI_QUYET` |
-| 14 | `THONG_BAO_DUNG_GIAI_QUYET` | Ký duyệt / Ban hành Thông báo dừng giải quyết | Thông báo về việc dừng giải quyết yêu cầu bồi thường (Mẫu 05/BTNN) | `DUNG_GIAI_QUYET` |
-| 15 | `THONG_BAO_PHUC_HOI_DANH_DU` | Ký duyệt / Ban hành Thông báo tổ chức thực hiện phục hồi danh dự | Thông báo về việc tổ chức thực hiện phục hồi danh dự (Mẫu 26/BTNN) | Trạng thái vụ việc hiện hành (vụ việc chỉ yêu cầu phục hồi danh dự: `DANG_PHUC_HOI_DANH_DU`) |
-| 16 | `THONG_BAO_CHI_TRA` | Ký duyệt / Ban hành Thông báo chi trả | Thông báo về việc chi trả tiền bồi thường (Mẫu 32/BTNN) | `CHO_CHI_TRA` |
-
-Bước lặp lại (vd hoãn giải quyết nhiều lần) thì mỗi lần ban hành là 01 bản tin mới, `transaction_id` mới.
-
-Không gửi:
-- Hoàn thành phục hồi danh dự.
-- Chuyển CQGQBT; hồ sơ tại cơ quan nhận (`Nguồn hồ sơ` = `Chuyển CQGQBT`) không gửi.
-- Hoàn thành chi trả, Trả lại ngân sách nhà nước.
-- Kết quả thương lượng có `Tình trạng tham gia thương lượng` khác `Đồng ý thương lượng` (không gửi tài liệu minh chứng).
-
-**Mã trạng thái vụ việc (`case_status`)**: trạng thái vụ việc tổng hợp sau bước, theo Trạng thái vụ việc Giải quyết YCBT của BTNN. Đây là bộ mã trạng thái duy nhất, dùng chung cho `progress.claim_status` (mục 7.8). Vụ việc yêu cầu cả bồi thường thiệt hại và phục hồi danh dự: gửi 01 trạng thái tổng hợp.
-
-| `case_status` | `case_status_name` |
-| :--- | :--- |
-| `CHO_PHAN_CONG` | Chờ phân công (hồ sơ tại màn Tiếp nhận hồ sơ; chỉ dùng tại mục 7.8) |
-| `CHO_TIEP_NHAN` | Chờ tiếp nhận (chỉ dùng tại mục 7.8) |
-| `CHO_DUYET` | Chờ duyệt (chỉ dùng tại mục 7.8) |
-| `BI_TRA_LAI` | Bị trả lại (chỉ dùng tại mục 7.8) |
-| `CU_NGUOI_PHUC_HOI_DANH_DU` | Cử người phục hồi danh dự (chỉ dùng tại mục 7.8) |
-| `CU_NGUOI_GIAI_QUYET` | Cử người giải quyết bồi thường |
-| `XAC_MINH_THIET_HAI` | Xác minh thiệt hại |
-| `THUONG_LUONG` | Thương lượng |
-| `CHO_BAN_HANH_QD` | Chờ ban hành QĐ |
-| `CHO_CHI_TRA` | Chờ chi trả |
-| `HOAN_THANH` | Hoàn thành |
-| `DANG_PHUC_HOI_DANH_DU` | Đang phục hồi danh dự |
-| `HOAN_PHUC_HOI_DANH_DU` | Hoãn phục hồi danh dự |
-| `TU_CHOI_PHUC_HOI_DANH_DU` | Từ chối phục hồi danh dự |
-| `HOAN_GIAI_QUYET` | Hoãn giải quyết |
-| `TAM_DINH_CHI` | Tạm đình chỉ |
-| `DINH_CHI_GIAI_QUYET` | Đình chỉ giải quyết |
-| `DUNG_GIAI_QUYET` | Dừng giải quyết |
-| `DA_CHUYEN_CQGQBT` | Đã chuyển CQGQBT |
-| `KHONG_THU_LY` | Không thụ lý |
-| `YEU_CAU_BO_SUNG` | Yêu cầu bổ sung |
-
-### 8.3. Thân request
-
-| Trường | Kiểu | Bắt buộc | Ý nghĩa |
-| :--- | :--- | :--- | :--- |
-| `transaction_id` | Chuỗi (tối đa 100) | Có | Mã giao dịch, duy nhất cho mỗi lần phát sinh kết quả; gửi lại giữ nguyên |
-| `sent_at` | Thời điểm ISO-8601 (+07:00) | Có | Thời điểm gửi của lượt gửi này |
-| `dvc_dossier_code` | Chuỗi | Có | Mã hồ sơ bên DVC (đã gửi ở mục 7.2) |
-| `receipt_no` | Chuỗi | Có | Số tiếp nhận BTNN đã trả (mục 7.7) |
-| `case_code` | Chuỗi | Có | Mã vụ việc `VVBT-yyyy-nnn` |
-| `dossier_code` | Chuỗi | Có | Mã hồ sơ giải quyết `BT-yyyy-nnn` |
-| `step_code` | Chuỗi | Có | Mã bước, mục 8.2 |
-| `step_name` | Chuỗi | Có | Tên văn bản / bước, cột "Văn bản kết quả" mục 8.2 |
-| `event_time` | Thời điểm ISO-8601 (+07:00) | Có | Thời điểm phát sinh kết quả (ký duyệt cấp cuối, ban hành, hoàn thành xác minh, lưu kết quả thương lượng) |
-| `case_status` | Chuỗi | Có | Mã trạng thái vụ việc sau bước, mục 8.2 |
-| `case_status_name` | Chuỗi | Có | Tên trạng thái vụ việc |
-| `document.doc_no` | Chuỗi | Không | Số, ký hiệu văn bản; `null` nếu không có (Báo cáo xác minh, Biên bản thương lượng) |
-| `document.doc_date` | Ngày `yyyy-MM-dd` | Không | Ngày ký / ngày văn bản |
-| `document.issued_time` | Thời điểm ISO-8601 (+07:00) | Không | Thời điểm ban hành |
-| `document.signing_method` | Chuỗi | Không | `KY_SO` (Ký số trên hệ thống) hoặc `KY_NGOAI`; `null` với Báo cáo xác minh, Biên bản thương lượng |
-| `document.signer_name` | Chuỗi | Không | Người ký |
-| `document.signer_position` | Chuỗi | Không | Chức vụ người ký |
-| `file.file_id` | Chuỗi | Có | Mã tệp tại BTNN |
-| `file.file_url` | Chuỗi | Có | Link tệp kết quả, tải qua cổng API BTNN (mục 8.5) |
-| `file.file_size` | Số nguyên | Có | Dung lượng (byte) |
-| `file.mime_type` | Chuỗi | Có | Định dạng tệp, `application/pdf` |
-| `file.hash_algorithm` | Chuỗi | Có | Thuật toán băm, `SHA-256` (đề xuất) |
-| `file.hash_value` | Chuỗi | Có | Mã băm của tệp, hex chữ thường (64 ký tự) |
-
-Bản tin không có tên tệp. DVC cần tên để hiển thị thì dùng `step_name` (đề xuất, chốt với DVC khi kết nối).
-
-Ví dụ:
-
-```json
-{
-  "transaction_id": "KQ-BT-2026-007-THONG_BAO_THU_LY-001",
-  "sent_at": "2026-10-28T16:40:20+07:00",
-  "dvc_dossier_code": "H48.12.2026.000123",
-  "receipt_no": "API-20261027-000123",
-  "case_code": "VVBT-2026-012",
-  "dossier_code": "BT-2026-007",
-  "step_code": "THONG_BAO_THU_LY",
-  "step_name": "Thông báo thụ lý hồ sơ yêu cầu bồi thường (Mẫu 04/BTNN)",
-  "event_time": "2026-10-28T16:40:00+07:00",
-  "case_status": "CU_NGUOI_GIAI_QUYET",
-  "case_status_name": "Cử người giải quyết bồi thường",
-  "document": {
-    "doc_no": "12/TB-TLBT",
-    "doc_date": "2026-10-28",
-    "issued_time": "2026-10-28T16:40:00+07:00",
-    "signing_method": "KY_SO",
-    "signer_name": "Lê Hoàng Nam",
-    "signer_position": "Cục trưởng"
-  },
-  "file": {
-    "file_id": "f3b1c0de-0000-7000-8000-000000000001",
-    "file_url": "https://79.108.216.78:9982/api/share/v1/compensation/result-files/f3b1c0de-0000-7000-8000-000000000001",
-    "file_size": 245760,
-    "mime_type": "application/pdf",
-    "hash_algorithm": "SHA-256",
-    "hash_value": "9f2c4e0b7a1d3c5e8f6a2b4c6d8e0f1a3b5c7d9e1f2a4b6c8d0e2f4a6b8c0d2e"
-  }
-}
-```
-
-<a id="dvc-nhat-ky-dong-bo"></a>
-### 8.4. Phản hồi của DVC, gửi lại và chống trùng
-
-DVC trả khuôn phản hồi như mục 6.3:
-
-```json
-{ "code": "SUCCESS", "message": null, "data": { "transaction_id": "KQ-BT-2026-007-THONG_BAO_THU_LY-001", "duplicate": false } }
-```
-
-| Kết quả DVC trả | BTNN xử lý |
-| :--- | :--- |
-| HTTP 200, `SUCCESS` | Ghi thành công |
-| HTTP 200, `SUCCESS`, `duplicate` = `true` | Ghi thành công (DVC đã nhận trước đó) |
-| Quá thời gian chờ, lỗi kết nối, HTTP 429, 5xx | Tự gửi lại |
-| HTTP 400 (`VALIDATION_ERROR`), 401, 403, 404 (`NOT_FOUND` - không có `dvc_dossier_code`) | Không tự gửi lại; ghi `FAILED`, cán bộ kiểm tra rồi `Gửi lại` tại màn Nhật ký đồng bộ Dịch vụ công |
-
-- **Gửi lại**: tối đa 05 lần sau lần đầu, cách nhau 1, 5, 15, 60, 240 phút (đề xuất, chốt với DVC khi kết nối). Hết số lần mà chưa thành công: ghi `FAILED`.
-- **Gửi lại thủ công** (cán bộ bấm `Gửi lại` cho bản tin `FAILED`): giữ nguyên `transaction_id`. Vẫn lỗi tạm thời (quá thời gian chờ, lỗi kết nối, HTTP 429, 5xx): chuyển `RETRYING` và tự gửi lại theo lịch trên. Lỗi HTTP 400, 401, 403, 404: giữ `FAILED`.
-- **Thứ tự**: các bản tin của cùng `dvc_dossier_code` gửi theo thứ tự `event_time`; bản tin sau chỉ gửi khi bản tin trước đã thành công hoặc `FAILED`.
-- **Chống trùng (idempotent)**: gửi lại giữ nguyên `transaction_id`, `X-Idempotency-Key` và toàn bộ nội dung, chỉ đổi `sent_at`. DVC nhận `transaction_id` đã có: trả HTTP 200, `duplicate` = `true`, không xử lý lại.
-- **Nhật ký đồng bộ**: BTNN ghi mỗi lượt gửi gồm `transaction_id`, `dvc_dossier_code`, `step_code`, số lần gửi, thời điểm gửi, HTTP, `code` và `message` phản hồi, trạng thái (`PENDING`, `RETRYING`, `SUCCESS`, `FAILED`). Xem và gửi lại tại [Nhật ký đồng bộ Dịch vụ công - Nhật ký đồng bộ Dịch vụ công - Quản trị hệ thống (Website Quản trị)](../../Tai_lieu_SRS/03_Website_Quan_tri/01_Quan_tri_he_thong/Nhat_ky_dong_bo_DVC.md).
-
-### 8.5. Tải tệp kết quả
-
-`GET /api/share/v1/compensation/result-files/{file_id}` - DVC gọi kèm token và chữ ký như mục 4, 5 (thân rỗng). Cần được cấp mã API `DVC_RESULT_FILE`. Cách tải tệp có xác thực là đề xuất, chốt với DVC khi kết nối.
-
-- Thành công: HTTP 200, thân là nội dung tệp; `Content-Type` = `mime_type`; `Content-Disposition` có tên tệp do BTNN đặt.
-- DVC tính SHA-256 của nội dung tải về và so với `hash_value`; khác nhau thì tải lại.
-- `file_id` không có hoặc không thuộc hồ sơ nộp qua DVC: 404 `NOT_FOUND`. Lỗi khác theo mục 9.
-
----
-
-## 9. Mã lỗi chung của cổng API
+## 8. Mã lỗi chung của cổng API
 
 | HTTP | Mã | Nguyên nhân | Cách xử lý |
 | :--- | :--- | :--- | :--- |
@@ -997,7 +802,7 @@ DVC trả khuôn phản hồi như mục 6.3:
 
 ---
 
-## 10. Ca kiểm thử nghiệm thu
+## 9. Ca kiểm thử nghiệm thu
 
 | STT | Ca kiểm | Kết quả mong đợi |
 | :--- | :--- | :--- |
@@ -1019,18 +824,10 @@ DVC trả khuôn phản hồi như mục 6.3:
 | 16 | Gọi `org-units` với `province_code` + `claim_intake_only=true`; gửi `claim_intake_only=abc` | Chỉ đơn vị thuộc tỉnh đó và đã có Luồng tiếp nhận, `province_code` mỗi dòng là tỉnh suy ra; giá trị sai: 400 `VALIDATION_ERROR` |
 | 17 | Gửi hồ sơ tới cơ quan lấy từ ca 16, tra trạng thái trước và sau khi hồ sơ vào màn Tiếp nhận | `RECEIVED` với `progress` = `null`; sau ~1 phút `ACCEPTED` với `progress.claim_status`, `documents[]` (rỗng đến khi BTNN ban hành văn bản) |
 | 18 | Sau khi BTNN ban hành Thông báo thụ lý, tra trạng thái | `progress.documents[]` có `type` = `THONG_BAO_THU_LY` kèm `doc_no`, `doc_date`, `issued_time` |
-| 19 | BTNN Ký duyệt cấp cuối Thông báo thụ lý (bước 3) của hồ sơ ca 17 | DVC nhận 01 bản tin `step_code` = `THONG_BAO_THU_LY`, `case_status` = `CU_NGUOI_GIAI_QUYET`, đủ `document`, `file` |
-| 20 | DVC tải tệp theo `file.file_url` (mục 8.5) | HTTP 200; SHA-256 nội dung tải về trùng `file.hash_value`; `file_size` đúng |
-| 21 | DVC trả 5xx / quá 30 giây cho bản tin ca 19 | BTNN gửi lại cùng `transaction_id`; DVC trả `duplicate` = `true` từ lần thứ hai nhận được, không tạo kết quả trùng |
-| 22 | Hoàn thành xác minh, Lưu kết quả thương lượng (Đồng ý thương lượng) của hồ sơ ca 17 (bước 5, 6) | DVC nhận `BAO_CAO_XAC_MINH`, `BIEN_BAN_THUONG_LUONG` kèm link tệp PDF và mã băm của trường tệp riêng |
-| 23 | Ban hành văn bản của hồ sơ có `Nguồn hồ sơ` khác `Dịch vụ công` | Không có bản tin gửi DVC |
-| 24 | Ký duyệt cấp cuối Quyết định cử người giải quyết bồi thường (bước 4), Thông báo dừng giải quyết (bước 14) của hồ sơ ca 17 | DVC nhận `QUYET_DINH_CU_NGUOI` (`XAC_MINH_THIET_HAI`), `THONG_BAO_DUNG_GIAI_QUYET` (`DUNG_GIAI_QUYET`) |
-| 25 | Ban hành Quyết định hủy quyết định giải quyết bồi thường | DVC nhận `QUYET_DINH_HUY`, `case_status` = trạng thái vụ việc trước khi hủy |
-| 26 | Chuyển CQGQBT hồ sơ ca 17, cơ quan nhận ban hành Thông báo thụ lý | Không có bản tin gửi DVC (hồ sơ tại cơ quan nhận có `Nguồn hồ sơ` = `Chuyển CQGQBT`) |
 
 ---
 
-## 11. Chuyển sang môi trường chính thức và liên hệ
+## 10. Chuyển sang môi trường chính thức và liên hệ
 
 - Môi trường chính thức có địa chỉ cổng API, địa chỉ Keycloak và bí mật **khác** môi trường thử nghiệm; BTNN gửi khi chuyển. Không dùng bí mật thử nghiệm ở môi trường chính thức.
 - Đổi IP máy chủ, cần thêm API, hay nghi lộ bí mật: liên hệ đầu mối kỹ thuật BTNN để cập nhật trên màn Kết nối chia sẻ dữ liệu.

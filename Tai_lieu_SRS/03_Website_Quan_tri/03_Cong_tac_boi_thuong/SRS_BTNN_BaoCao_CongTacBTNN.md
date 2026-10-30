@@ -204,7 +204,7 @@ flowchart TD
 | Năm báo cáo | Enum(String(4)) | Không | `Tất cả` | Control UI: Combobox.<br>- Gồm `Tất cả` và các năm có báo cáo, giảm dần. |
 | Loại kỳ báo cáo | Enum(String(100)) | Không | `Tất cả` | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Báo cáo năm số liệu thực tế (01/01 - 31/10)<br>+ Số liệu thống kê năm chính thức (01/01 - 31/12) |
 | Trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Gồm `Tất cả` và các trạng thái thuộc tab đang chọn theo [Phạm vi xem và 02 tab Chờ xử lý / Đã xử lý - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-tab-xu-ly).<br>- Đổi tab: giá trị không thuộc tab mới đặt lại `Tất cả`. |
-| **II. Danh sách báo cáo** | Data grid | - | 10 bản ghi/trang | Control UI: Data grid.<br>- Sắp xếp theo Năm báo cáo giảm dần.<br>- Click dòng: mở MH03.<br>- Không có dữ liệu: 01 dòng `Không có dữ liệu`. |
+| **II. Danh sách báo cáo** | Data grid | - | 10 bản ghi/trang | Control UI: Data grid.<br>- Không hiển thị tiêu đề phía trên bảng.<br>- Sắp xếp theo Năm báo cáo giảm dần.<br>- Click dòng: mở MH03.<br>- Không có dữ liệu: 01 dòng `Không có dữ liệu`. |
 | STT | Integer | - | Tự tăng | Control UI: Label. |
 | Năm báo cáo | Integer(4) | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
 | Loại kỳ báo cáo | String(100) | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
@@ -213,7 +213,7 @@ flowchart TD
 | Trạng thái | Enum(String(50)) | - | Theo bản ghi | Control UI: Badge và dòng phụ.<br>- Giá trị theo [Quy tắc nghiệp vụ - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-quy-tac) quy tắc 3.<br>- `Chờ duyệt`: dòng phụ `Loại trình: Báo cáo công tác BTNN`, `Chờ Cấp [n] - [Họ tên Lãnh đạo]`.<br>- `Bị trả lại`: dòng phụ `Loại trình: Báo cáo công tác BTNN` (Lãnh đạo Từ chối) hoặc `Bộ Tư pháp trả lại` (Bộ Tư pháp trả lại báo cáo).<br>- `Đã ban hành`: dòng phụ `Đã gửi Bộ Tư pháp`. |
 | Ngày gửi gần nhất | DateTime | - | Theo bản ghi | Control UI: Label.<br>- Thời điểm Gửi phê duyệt gần nhất, định dạng `dd/mm/yyyy HH:mm`.<br>- Chưa gửi: `--`. |
 | Thao tác | Action buttons | - | - | Control UI: Icon button group.<br>- Cột cố định bên phải lưới khi cuộn ngang.<br>- Điều kiện theo trạng thái báo cáo tại [Quy tắc nghiệp vụ - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-quy-tac) quy tắc 3.<br>- Thao tác không thỏa điều kiện: hiển thị mờ (disabled), không cho click, có chú thích lý do.<br>Gồm:<br>+ Cập nhật: báo cáo `Đang nhập liệu` hoặc `Bị trả lại`.<br>+ Gửi phê duyệt: cùng điều kiện với Cập nhật.<br>+ Ký duyệt: báo cáo `Chờ duyệt`; người dùng là Lãnh đạo được chọn ở cấp phê duyệt hiện hành.<br>+ Từ chối: cùng điều kiện với Ký duyệt. |
-| Thanh phân trang | Panel | - | 10 bản ghi/trang | Control UI: Pagination bar.<br>- Số bản ghi/trang gồm:<br>+ 10<br>+ 20<br>+ 50<br>+ 100<br>- Ẩn khi không có bản ghi. |
+| Thanh phân trang | Panel | - | 10 bản ghi/trang | Control UI: Pagination bar.<br>- Số bản ghi/trang gồm:<br>+ 10<br>+ 20<br>+ 50<br>+ 100<br>- Thông tin `Hiển thị [từ]-[đến] trong tổng số [n] bản ghi`.<br>- Nút chuyển trang: Đầu, Trước, số trang, Sau, Cuối.<br>- Ẩn khi không có bản ghi. |
 
 #### 3. Chức năng trên màn hình
 
@@ -542,7 +542,7 @@ Màn hình mặc định của vai trò Bộ Tư pháp (Cán bộ Bộ Tư pháp
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Danh sách kỳ báo cáo | Data grid | - | Theo dữ liệu | Control UI: Data grid.<br>- Mỗi cặp Năm báo cáo - Loại kỳ báo cáo 01 dòng, giảm dần theo năm.<br>- Click dòng: mở MH08. |
+| Danh sách kỳ báo cáo | Data grid | - | Theo dữ liệu | Control UI: Data grid.<br>- Không hiển thị tiêu đề phía trên bảng.<br>- Mỗi cặp Năm báo cáo - Loại kỳ báo cáo 01 dòng, giảm dần theo năm.<br>- Click dòng: mở MH08. |
 | STT | Integer | - | Tự tăng | Control UI: Label. |
 | Năm báo cáo | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
 | Loại kỳ báo cáo | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |

@@ -114,7 +114,7 @@
 | Thành phần hiển thị | Enum(String(255)) | Không | Tất cả | Control UI: Hộp chọn, gồm 06 màn hình phân tích và 06 thành phần của màn hình tổng quan. |
 | Loại biểu đồ mặc định | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Gồm: Tất cả, Biểu đồ cột, Biểu đồ tròn, Biểu đồ hình sin, Bản đồ. |
 | Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Gồm: Tất cả, Áp dụng, Không áp dụng. |
-| **II. Danh sách cấu hình hiển thị** | - | - | - | Control UI: Bảng.<br>- Sắp xếp theo Áp dụng tại, sau đó Thứ tự hiển thị. |
+| **II. Danh sách cấu hình hiển thị** | - | - | - | Control UI: Bảng.<br>- Không hiển thị tiêu đề phía trên bảng.<br>- Không phân trang; dưới bảng hiển thị `Tổng số: [n] bản ghi`.<br>- Sắp xếp theo Áp dụng tại, sau đó Thứ tự hiển thị. |
 | STT | Integer(10) | - | Tự sinh | |
 | Thành phần hiển thị | String(255) | - | Theo dữ liệu | |
 | Áp dụng tại | String(50) | - | Theo dữ liệu | |

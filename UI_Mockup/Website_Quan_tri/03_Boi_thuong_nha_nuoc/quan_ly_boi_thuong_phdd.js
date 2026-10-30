@@ -4,7 +4,7 @@
  *    Step chưa tới: không cuộn, thông báo "Chưa đến bước này."
  * 2. Các khối 1, 2, 3 (và khối Hoãn phục hồi danh dự) thu gọn / mở rộng như tab "Chi tiết giải quyết bồi thường":
  *    khối của bước hiện tại mở, khối bước đã qua thu gọn, khối bước chưa tới ẩn. "Lịch sử xử lý" thu gọn / mở rộng (mặc định thu gọn).
- * 3. Khối "Hoãn phục hồi danh dự": danh sách các lần Hoãn / Tiếp tục (claim.phddHoanLogs);
+ * 3. Khối "Hoãn phục hồi danh dự": danh sách các lần Hoãn / Tiếp tục (claim.phddHoanLogs), lần gần nhất ở trên;
  *    trạng thái Hoãn phục hồi danh dự + chế độ cập nhật: form "Tiếp tục thực hiện phục hồi danh dự" -> nhánh PHDD về bước trước khi hoãn.
  * Dùng tiện ích sẵn có: ctvvDocsMount / ctvvDocsValidate / ctvvDocsViewHtml (quan_ly_boi_thuong_ctvv.js), setPhddStatus, saveClaimsToLocal, showConfirmModal, showToast.
  */
@@ -63,7 +63,7 @@ function phdxCss() {
         '.phdx-grid > div > b { display: block; color: #64748b; font-weight: 600; font-size: 12px; }',
         '.phdx-grid .phdx-span2 { grid-column: span 2; }',
         '.phdx-grid .phdx-span4 { grid-column: span 4; }',
-        '.phdx-form { border: 1px solid #bfdbfe; background: #f8fbff; border-radius: 8px; padding: 14px 16px; margin-top: 4px; }',
+        '.phdx-form { border: 1px solid #bfdbfe; background: #f8fbff; border-radius: 8px; padding: 14px 16px; margin: 4px 0 12px; }',
         '.phdx-form-title { font-weight: 700; font-size: 13px; color: #1e3a8a; margin-bottom: 10px; }',
         '.phdx-form .gqx-err { display: none; color: #dc2626; font-size: 12px; margin-top: 4px; }',
         '.phdx-form .form-control.is-invalid { border-color: #dc2626 !important; }',
@@ -244,8 +244,10 @@ function phdxRenderHoan(claim) {
         + '<span style="background: var(--primary-light); color: white; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px;"><i class="fa-solid fa-pause"></i></span>'
         + 'HOÃN PHỤC HỒI DANH DỰ <span style="font-weight: 500; color: #64748b; font-size: 12.5px;">(' + logs.length + ' lần' + (hoan ? ', đang hoãn' : '') + ')</span></h5>'
         + '<i class="fa-solid fa-chevron-down phdx-ico"></i></div>'
-        + '<div id="phdxHoanList">' + logs.map(function (l, i) { return phdxLogHtml(l, i, l === open); }).join('') + '</div>'
-        + (phdxCanResume(claim) ? phdxFormHtml() : '');
+        + '<div id="phdxHoanList">' + logs.map(function (l, i) {
+            // Form Tiếp tục đặt ngay dưới lần hoãn đang mở (lần gần nhất, trên cùng), trước các lần cũ
+            return phdxLogHtml(l, i, l === open) + (l === open && phdxCanResume(claim) ? phdxFormHtml() : '');
+        }).reverse().join('') + '</div>';
     if (phdxEl('phdxResumeForm')) {
         var d = phdxEl('phdxResumeDate');
         d.value = phdxToday();

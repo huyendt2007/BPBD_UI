@@ -2,7 +2,7 @@
 
 ##### 4.3.1.15.1. Mục đích
 
-\- Theo dõi các bản tin hệ thống gửi kết quả xử lý hồ sơ về Dịch vụ công quốc gia theo [Gửi kết quả xử lý hồ sơ về Dịch vụ công - Tài liệu API tích hợp DVC BTNN - Tài liệu tích hợp](../../../Tai_lieu_tich_hop/1.%20Dịch%20vụ%20công/Tai_lieu_API_tich_hop_DVC_BTNN.md#dvc-gui-ket-qua) và [Phản hồi của DVC, gửi lại và chống trùng - Tài liệu API tích hợp DVC BTNN - Tài liệu tích hợp](../../../Tai_lieu_tich_hop/1.%20Dịch%20vụ%20công/Tai_lieu_API_tich_hop_DVC_BTNN.md#dvc-nhat-ky-dong-bo).
+\- Theo dõi các bản tin hệ thống gửi kết quả xử lý hồ sơ về Dịch vụ công quốc gia theo [Gửi kết quả xử lý hồ sơ về Dịch vụ công - Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia - Tài liệu tích hợp](../../../Tai_lieu_tich_hop/1.%20Dịch%20vụ%20công/Ket_noi_chia_se_Dich_vu_cong_BTNN.md#dvc-gui-ket-qua) và [Gửi kết quả xử lý hồ sơ về Dịch vụ công - Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia - Tài liệu tích hợp](../../../Tai_lieu_tich_hop/1.%20Dịch%20vụ%20công/Ket_noi_chia_se_Dich_vu_cong_BTNN.md#dvc-gui-ket-qua).
 
 \- Màn hình phục vụ:
   + Tra cứu bản tin đã gửi
@@ -19,7 +19,7 @@
 | :--- | :--- | :--- |
 | 1 | Nguồn dữ liệu | - Mỗi bản tin là 01 lần phát sinh kết quả tại 16 bước theo [Gửi kết quả về Dịch vụ công quốc gia - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-gui-ket-qua-dvc).<br>- Chỉ áp dụng cho hồ sơ có `Nguồn hồ sơ` = `Dịch vụ công`; hồ sơ tại cơ quan nhận chuyển (`Nguồn hồ sơ` = `Chuyển CQGQBT`) không gửi.<br>- Mỗi bản tin có 01 `Mã giao dịch` (`transaction_id`) duy nhất.<br>- Bản tin gửi link tệp kết quả kèm mã băm, không gửi nội dung tệp. |
 | 2 | Kết quả | Gồm:<br>+ `Thành công`: Dịch vụ công trả HTTP 200, `code` = `SUCCESS` (kể cả `duplicate` = `true`).<br>+ `Đang gửi lại`: lần gửi gần nhất lỗi tạm thời (quá thời gian chờ, lỗi kết nối, HTTP 429, 5xx), hệ thống còn lượt tự gửi lại.<br>+ `Lỗi`: Dịch vụ công trả HTTP 400, 401, 403, 404, hoặc hết lượt tự gửi lại. |
-| 3 | Tự gửi lại | Theo lịch gửi lại tại [Phản hồi của DVC, gửi lại và chống trùng - Tài liệu API tích hợp DVC BTNN - Tài liệu tích hợp](../../../Tai_lieu_tich_hop/1.%20Dịch%20vụ%20công/Tai_lieu_API_tich_hop_DVC_BTNN.md#dvc-nhat-ky-dong-bo); mỗi lần gửi ghi thêm 01 dòng vào Lịch sử các lần gửi. |
+| 3 | Tự gửi lại | Theo cấu hình gửi lại của hệ thống; mỗi lần gửi ghi thêm 01 dòng vào Lịch sử các lần gửi. |
 | 4 | Gửi lại thủ công | - Chỉ áp dụng bản tin có Kết quả `Lỗi`.<br>- Giữ nguyên `transaction_id` và nội dung bản tin; chỉ đổi `sent_at`.<br>- Ghi thêm 01 dòng vào Lịch sử các lần gửi.<br>- Kết quả sau khi gửi lại:<br>+ Dịch vụ công trả thành công: `Thành công`.<br>+ Lỗi tạm thời (quá thời gian chờ, lỗi kết nối, HTTP 429, 5xx): `Đang gửi lại`; hệ thống tự gửi lại theo lịch tại quy tắc 3.<br>+ Lỗi không gửi lại được (HTTP 400, 401, 403, 404): giữ `Lỗi`. |
 | 5 | Phân quyền | - Chức năng `Nhật ký đồng bộ Dịch vụ công` thuộc nhóm `Quản trị hệ thống`, gồm các quyền:<br>+ `Xem Nhật ký đồng bộ Dịch vụ công`: mở màn hình, tìm kiếm, Xem chi tiết.<br>+ `Gửi lại bản tin đồng bộ Dịch vụ công`: thao tác `Gửi lại`.<br>+ `Kết xuất Excel Nhật ký đồng bộ Dịch vụ công`: thao tác `Kết xuất Excel`.<br>- Phạm vi dữ liệu (đề xuất): theo cơ quan giải quyết của hồ sơ, cùng quy tắc tại [Xem chi tiết - Phân quyền và phạm vi dữ liệu - Tra cứu vụ việc - Công tác bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_GiaiQuyetBT_TraCuu_VuViec.md#tcvv-quyen-xem-chi-tiet): đơn vị của người dùng, Sở Tư pháp quản lý cơ quan giải quyết; Bộ Tư pháp, Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước xem toàn bộ. |
 | 6 | Menu | `Quản trị hệ thống` > `Nhật ký đồng bộ Dịch vụ công`, đặt sau `Cấu hình luồng xử lý`. |
@@ -50,8 +50,8 @@
 | Đến ngày | Date | Không | Trống | Control UI: Datepicker.<br>- Placeholder: `dd/mm/yyyy`.<br>- Lọc bản tin có Thời điểm gửi gần nhất đến hết ngày này. |
 | Xóa bộ lọc | Button | - | - | Control UI: Button. |
 | Tìm kiếm | Button | - | - | Control UI: Button. |
-| **II. Danh sách bản tin gửi Dịch vụ công** | Section | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Tải Trang 1 khi mở màn hình.<br>- Sắp xếp mặc định theo Thời điểm gửi giảm dần.<br>- Số dòng hiển thị: 10 / 20 / 50, mặc định 20.<br>- Không có dữ liệu: 01 dòng `Không có dữ liệu` căn giữa. |
-| Kết xuất Excel | Button | - | - | Control UI: Button.<br>- Vị trí: thanh tiêu đề danh sách, cùng hàng số lượng bản ghi.<br>- Chỉ hiển thị khi người dùng có quyền `Kết xuất Excel Nhật ký đồng bộ Dịch vụ công`. |
+| **II. Danh sách bản tin gửi Dịch vụ công** | Section | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Không hiển thị tiêu đề và số lượng bản ghi phía trên bảng; tổng số bản ghi hiển thị tại thanh phân trang.<br>- Tải Trang 1 khi mở màn hình.<br>- Sắp xếp mặc định theo Thời điểm gửi giảm dần.<br>- Số dòng hiển thị: 10 / 20 / 50, mặc định 20.<br>- Không có dữ liệu: 01 dòng `Không có dữ liệu` căn giữa. |
+| Kết xuất Excel | Button | - | - | Control UI: Button.<br>- Vị trí: thanh công cụ phía trên danh sách, căn phải.<br>- Chỉ hiển thị khi người dùng có quyền `Kết xuất Excel Nhật ký đồng bộ Dịch vụ công`. |
 | STT | Integer(10) | - | Tự tăng | Control UI: Text (Read-only). |
 | Thời điểm gửi | DateTime | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Thời điểm gửi gần nhất, định dạng `dd/mm/yyyy HH:mm:ss`. |
 | Mã hồ sơ DVC | String(100) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- `dvc_dossier_code`. |
@@ -107,7 +107,7 @@
 | Cơ quan giải quyết | String(255) | - | Theo dữ liệu | Cơ quan giải quyết bồi thường của hồ sơ. |
 | Thời điểm phát sinh kết quả | DateTime | - | Theo dữ liệu | `event_time`, định dạng `dd/mm/yyyy HH:mm:ss`. |
 | Lần gửi lại tiếp theo | DateTime | - | `---` | Chỉ có giá trị khi Kết quả = `Đang gửi lại`. |
-| **3. Khối Văn bản** | Section | - | - | Control UI: Card, lưới 04 cột (Read-only).<br>- Báo cáo xác minh thiệt hại, Biên bản kết quả thương lượng việc bồi thường: hiển thị `Bước không có số, ký hiệu văn bản (tệp cán bộ tải lên tại trường tệp riêng của bước).` |
+| **3. Khối Văn bản** | Section | - | - | Control UI: Card, lưới 04 cột (Read-only).<br>- Báo cáo xác minh thiệt hại, Biên bản kết quả thương lượng việc giải quyết bồi thường: hiển thị `Bước không có số, ký hiệu văn bản (tệp cán bộ tải lên tại dòng bắt buộc trong bảng Tài liệu đính kèm của bước).` |
 | Số, ký hiệu văn bản | String(100) | - | Theo dữ liệu | `document.doc_no`. |
 | Ngày văn bản | Date | - | Theo dữ liệu | `document.doc_date`, định dạng `dd/mm/yyyy`. |
 | Hình thức ký | String(20) | - | Theo dữ liệu | `Ký số` / `Ký ngoài`. |
@@ -119,7 +119,7 @@
 | Dung lượng | Integer(19) | - | Theo dữ liệu | `[n] KB/MB ([số] byte)`; `file_size`. |
 | Định dạng | String(100) | - | Theo dữ liệu | `mime_type`. |
 | **5. Khối Lịch sử các lần gửi** | List(Object) | - | - | Control UI: Data grid (Read-only).<br>- Cột: Lần, Thời điểm gửi, HTTP, Mã phản hồi, Thông báo, Kết quả (`Thành công` / `Lỗi`).<br>- Sắp xếp theo lần gửi tăng dần.<br>- Quá thời gian chờ / lỗi kết nối: HTTP hiển thị `---`. |
-| **6. Khối Dữ liệu kỹ thuật (JSON)** | Section | - | Thu gọn | Control UI: Card thu gọn / mở rộng bằng click tiêu đề.<br>- 02 khối mã font monospace, cuộn dọc: `Request (lần gửi gần nhất)`, `Response (lần gửi gần nhất)`.<br>- Request: thân bản tin theo [Thân request - Tài liệu API tích hợp DVC BTNN - Tài liệu tích hợp](../../../Tai_lieu_tich_hop/1.%20Dịch%20vụ%20công/Tai_lieu_API_tich_hop_DVC_BTNN.md#dvc-gui-ket-qua).<br>- Response không có phản hồi: hiển thị `Không có phản hồi (quá thời gian chờ / lỗi kết nối)`. |
+| **6. Khối Dữ liệu kỹ thuật (JSON)** | Section | - | Thu gọn | Control UI: Card thu gọn / mở rộng bằng click tiêu đề.<br>- 02 khối mã font monospace, cuộn dọc: `Request (lần gửi gần nhất)`, `Response (lần gửi gần nhất)`.<br>- Request: thân bản tin chứa các thông tin theo [Gửi kết quả xử lý hồ sơ về Dịch vụ công - Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia - Tài liệu tích hợp](../../../Tai_lieu_tich_hop/1.%20Dịch%20vụ%20công/Ket_noi_chia_se_Dich_vu_cong_BTNN.md#dvc-gui-ket-qua).<br>- Response không có phản hồi: hiển thị `Không có phản hồi (quá thời gian chờ / lỗi kết nối)`. |
 | Thanh thao tác | Section | - | - | Control UI: Thanh cố định cuối màn hình, căn phải.<br>- Gồm `Đóng`, `Gửi lại`. |
 
 ###### 4.3.1.15.4.3. Chức năng trên màn hình

@@ -42,6 +42,8 @@ function ctvvCss() {
     st.id = 'ctvvCss';
     st.textContent = [
         '.ctvv-docs { margin-top: 6px; }',
+        '.ctvv-docs .ctvv-fixed-name { font-weight: 500; color: #1e293b; }',
+        '.ctvv-docs .ctvv-req-badge { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; background: #fee2e2; color: #b91c1c; vertical-align: middle; }',
         // [pdtb] Bảng Tài liệu đính kèm: nhãn phía trên bảng, bảng rộng 100% khối (kể cả khi khối cha đã chuyển dạng "nhãn: giá trị" ở chế độ xem)
         '.form-group:has(.ctvv-docs) { display: block !important; }',
         '.form-group:has(.ctvv-docs) > .form-label { display: block !important; margin: 0 0 6px !important; }',
@@ -93,13 +95,21 @@ function ctvvDocsMount(key, hostId, rows, opts) {
     CTVV_DOCS[key] = {
         hostId: hostId, rows: (rows || []).map(function (r) { return { title: r.title || '', file: r.file || '', size: r.size || '', fileId: r.fileId || '' }; }),
         required: !!opts.required, title: opts.title === undefined ? 'Tài liệu đính kèm' : opts.title,
-        idp: opts.idp || ('ctvv_' + key + '_'), onSync: opts.onSync || null, minRow: opts.minRow !== false
+        idp: opts.idp || ('ctvv_' + key + '_'), onSync: opts.onSync || null, minRow: opts.minRow !== false,
+        fixed: opts.fixed || null
     };
+    // [dvc3] Dòng bắt buộc cố định (giống dòng "Văn bản yêu cầu bồi thường" tại Tiếp nhận): đứng đầu, tên không sửa, không xóa dòng (chỉ xóa tệp)
+    var st = CTVV_DOCS[key];
+    if (st.fixed) {
+        var fr = st.rows.length && st.rows[0].fixedRow ? st.rows.shift() : null;
+        st.rows = [{ title: st.fixed.name, file: (fr && fr.file) || st.fixed.file || '', size: (fr && fr.size) || st.fixed.size || '', fileId: (fr && fr.fileId) || st.fixed.fileId || '', fixedRow: true }]
+            .concat(st.rows.filter(function (r) { return r.title || r.file; }));
+    }
     ctvvDocsRender(key);
 }
 function ctvvDocsSync(key) {
     var s = CTVV_DOCS[key]; if (!s) return;
-    s.rows.forEach(function (r, i) { var el = ctvvEl(s.idp + 'Name_' + i); if (el) r.title = el.value.trim(); });
+    s.rows.forEach(function (r, i) { if (r.fixedRow) { r.title = s.fixed.name; return; } var el = ctvvEl(s.idp + 'Name_' + i); if (el) r.title = el.value.trim(); });
     if (s.onSync) s.onSync(s.rows.map(function (r) { return Object.assign({}, r); }));
 }
 function ctvvDocsRender(key) {
@@ -107,20 +117,22 @@ function ctvvDocsRender(key) {
     var host = ctvvEl(s.hostId); if (!host) return;
     ctvvCss();
     if (!s.rows.length && s.minRow) s.rows = [{ title: '', file: '', size: '', fileId: '' }];
+    if (s.fixed && s.rows.length === 1 && s.rows[0].fixedRow && s.minRow) s.rows.push({ title: '', file: '', size: '', fileId: '' });
     var star = s.required ? '<span class="tlkt-req">*</span>' : '';
     var body = s.rows.map(function (r, i) {
         var fileCell = r.file
             ? pdtbFileHtml(r)
             : '<button type="button" class="tlkt-btn tlkt-btn-pri" id="' + s.idp + 'Btn_' + i + '" onclick="document.getElementById(\'' + s.idp + 'File_' + i + '\').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>';
-        return '<tr data-doc-idx="' + i + '">'
+        return '<tr data-doc-idx="' + i + '"' + (r.fixedRow ? ' data-fixed="1"' : '') + '>'
             + '<td class="tlkt-c">' + (i + 1) + '</td>'
-            + '<td><input type="text" class="tlkt-name" id="' + s.idp + 'Name_' + i + '" maxlength="500" value="' + ctvvE(r.title) + '" placeholder="Nhập tên tài liệu, văn bản" oninput="ctvvDocsOnName(\'' + key + '\',' + i + ')">'
+            + (r.fixedRow ? '<td><span class="ctvv-fixed-name">' + ctvvE(s.fixed.name) + '</span><span class="ctvv-req-badge">Bắt buộc</span>'
+                : '<td><input type="text" class="tlkt-name" id="' + s.idp + 'Name_' + i + '" maxlength="500" value="' + ctvvE(r.title) + '" placeholder="Nhập tên tài liệu, văn bản" oninput="ctvvDocsOnName(\'' + key + '\',' + i + ')">')
             + '<div class="tlkt-err error-message" id="' + s.idp + 'NameErr_' + i + '" style="display:none;">' + CTVV_REQ + '</div></td>'
-            + '<td class="tlkt-fc"><input type="file" id="' + s.idp + 'File_' + i + '" accept="' + CTVV_EXTS.join(',') + '" style="display:none;" onchange="ctvvDocsPick(\'' + key + '\',' + i + ',this)">' + fileCell
+            + '<td class="tlkt-fc"><input type="file" id="' + s.idp + 'File_' + i + '" accept="' + (r.fixedRow ? s.fixed.exts : CTVV_EXTS).join(',') + '" style="display:none;" onchange="ctvvDocsPick(\'' + key + '\',' + i + ',this)">' + fileCell
             + '<div class="tlkt-err error-message" id="' + s.idp + 'FileErr_' + i + '" style="display:none;">' + CTVV_REQ + '</div></td>'
             + '<td class="tlkt-c"><span class="tlkt-acts">'
             + '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib' + (r.file ? '' : ' is-disabled') + '" title="Xem file" aria-label="Xem file" onclick="ctvvDocsView(\'' + key + '\',' + i + ')"><i class="fa-solid fa-eye"></i></button>'
-            + '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib tlkt-ib-del" id="' + s.idp + 'Del_' + i + '" title="Xóa" aria-label="Xóa" onclick="ctvvDocsDel(\'' + key + '\',' + i + ')"><i class="fa-solid fa-trash"></i></button>'
+            + '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib tlkt-ib-del' + (r.fixedRow && !r.file ? ' is-disabled' : '') + '" id="' + s.idp + 'Del_' + i + '" title="' + (r.fixedRow ? 'Xóa file' : 'Xóa') + '" aria-label="' + (r.fixedRow ? 'Xóa file' : 'Xóa') + '"' + (r.fixedRow && !r.file ? ' disabled' : '') + ' onclick="ctvvDocsDel(\'' + key + '\',' + i + ')"><i class="fa-solid fa-trash"></i></button>'
             + '</span></td></tr>';
     }).join('');
     host.innerHTML = '<div class="ctvv-docs tlkt-sec" id="ctvvDocs_' + key + '">'
@@ -129,7 +141,7 @@ function ctvvDocsRender(key) {
         + (body || '<tr><td colspan="4" class="tlkt-empty">Chưa có tài liệu. Bấm "Thêm tài liệu" để bổ sung.</td></tr>') + '</tbody></table></div>'
         + '<div class="tlkt-err error-message" id="' + s.idp + 'Err" style="display:none;">' + CTVV_REQ + '</div>'
         + '<div><button type="button" class="tlkt-btn tlkt-btn-add tlkt-add" id="' + s.idp + 'Add" onclick="ctvvDocsAdd(\'' + key + '\')"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button></div>'
-        + '<div class="tlkt-hint"><i class="fa-solid fa-circle-info"></i> Chấp nhận tệp ' + CTVV_EXTS.join(', ') + ' (tối đa 50MB/tệp).</div>'
+        + '<div class="tlkt-hint"><i class="fa-solid fa-circle-info"></i> Chấp nhận tệp ' + CTVV_EXTS.join(', ') + ' (tối đa 50MB/tệp)' + (s.fixed ? '; dòng ' + ctvvE(s.fixed.name) + ': chỉ nhận 01 tệp ' + s.fixed.exts.join(', ') : '') + '.</div>'
         + '</div>';
 }
 function ctvvDocsSetErr(id, on, msg) { var e = ctvvEl(id); if (!e) return; if (msg) e.textContent = msg; e.style.display = on ? 'block' : 'none'; }
@@ -151,7 +163,10 @@ function ctvvDocsPick(key, i, input) {
     if (!f || !s.rows[i]) return;
     ctvvDocsSync(key);
     var ext = (String(f.name).match(/\.[^.]+$/) || [''])[0].toLowerCase();
-    var msg = CTVV_EXTS.indexOf(ext) < 0 ? 'Tệp không đúng định dạng. Chỉ chấp nhận ' + CTVV_EXTS.join(', ') + '.' : (f.size > CTVV_MAX ? 'Tệp vượt quá dung lượng cho phép (tối đa 50MB).' : '');
+    var fx = s.rows[i].fixedRow;
+    var msg = fx
+        ? (s.fixed.exts.indexOf(ext) < 0 ? 'Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .pdf.' : (f.size > CTVV_MAX ? 'Dung lượng tệp tin ' + f.name + ' vượt quá 50MB. Vui lòng kiểm tra lại.' : '')) // [MSG-ERR-FILE-001] / [MSG-ERR-FILE-006]
+        : (CTVV_EXTS.indexOf(ext) < 0 ? 'Tệp không đúng định dạng. Chỉ chấp nhận ' + CTVV_EXTS.join(', ') + '.' : (f.size > CTVV_MAX ? 'Tệp vượt quá dung lượng cho phép (tối đa 50MB).' : ''));
     input.value = '';
     if (msg) { ctvvDocsSetErr(s.idp + 'FileErr_' + i, true, msg); var b = ctvvEl(s.idp + 'Btn_' + i); if (b) b.classList.add('is-invalid'); return; }
     s.rows[i].file = f.name;
@@ -165,7 +180,7 @@ function ctvvDocsPick(key, i, input) {
 function ctvvDocsDel(key, i) {
     var s = CTVV_DOCS[key]; if (!s) return;
     ctvvDocsSync(key);
-    s.rows.splice(i, 1);
+    if (s.rows[i] && s.rows[i].fixedRow) { s.rows[i].file = ''; s.rows[i].size = ''; s.rows[i].fileId = ''; } else s.rows.splice(i, 1);
     ctvvDocsRender(key);
     ctvvDocsSync(key);
 }
@@ -182,15 +197,23 @@ function ctvvDownloadDoc(r) {
 }
 function ctvvDocsView(key, i) { var s = CTVV_DOCS[key]; if (s && s.rows[i]) ctvvOpenDoc(s.rows[i]); }
 // Kiểm tra: dòng có dữ liệu phải đủ Tên văn bản, căn cứ + tệp; bảng bắt buộc phải có tối thiểu 01 dòng đủ. Lỗi: tô viền đỏ, thông báo dưới ô, focus ô lỗi đầu tiên.
-function ctvvDocsValidate(key, required) {
+function ctvvDocsValidate(key, required, fixedReq) {
     var s = CTVV_DOCS[key]; if (!s) return true;
     if (!ctvvEl(s.hostId) || !ctvvEl('ctvvDocs_' + key)) return true;
     ctvvDocsSync(key);
     var req = required === undefined ? s.required : !!required;
     var first = null, full = 0;
-    var anyData = s.rows.some(function (r) { return r.title || r.file; });
+    var anyData = s.rows.some(function (r) { return !r.fixedRow && (r.title || r.file); });
     s.rows.forEach(function (r, i) {
-        var need = !!(r.title || r.file) || (req && i === 0 && !anyData);
+        if (r.fixedRow) {
+            if (fixedReq === undefined) return;
+            var bf = !!fixedReq && !r.file, fb = ctvvEl(s.idp + 'Btn_' + i);
+            if (fb) fb.classList.toggle('is-invalid', bf);
+            ctvvDocsSetErr(s.idp + 'FileErr_' + i, bf, CTVV_REQ);
+            if (!first && bf) first = fb;
+            return;
+        }
+        var need = !!(r.title || r.file) || (req && !anyData && i === (s.fixed ? 1 : 0));
         var badName = need && !r.title, badFile = need && !r.file;
         var n = ctvvEl(s.idp + 'Name_' + i), b = ctvvEl(s.idp + 'Btn_' + i);
         if (n) n.classList.toggle('is-invalid', badName);

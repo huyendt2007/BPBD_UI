@@ -543,8 +543,8 @@
     </div>
 
     <div class="section">
-        <div class="section-head">
-            <div class="section-title"><i class="fa-solid fa-table-list"></i> Bảng kết quả tìm kiếm</div>
+        <!-- Không hiển thị tiêu đề Bảng kết quả tìm kiếm; tổng số bản ghi tại thanh phân trang -->
+        <div class="section-head" data-grid-toolbar style="justify-content:flex-end;">
             <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
                 <button class="btn btn-primary" id="btnAddNew" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
                 <button class="btn btn-secondary" id="btnExportExcel" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
@@ -651,7 +651,7 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261030s2"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script>
@@ -1597,6 +1597,7 @@
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
+    <script src="btnn_grid_toolbar.js?v=20261030gt1"></script>
 </body>
 
 </html>

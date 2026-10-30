@@ -827,6 +827,21 @@
 
     var view = { name: 'list', id: null, tab: 'm41' };
     var filt = { year: 'all', period: 'all', status: 'all' };
+    // Phân trang MH01: mặc định 10 bản ghi/trang (10, 20, 50, 100); về Trang 1 khi Tìm kiếm, Xóa bộ lọc, chuyển tab, đổi vai trò
+    var pg = { page: 1, size: 10 };
+    // Thanh phân trang cùng kiểu các màn danh sách BTNN: Số dòng hiển thị, `Hiển thị [từ]-[đến] trong tổng số [n] bản ghi`, nút chuyển trang; ẩn khi không có bản ghi
+    function pagerHtml(total) {
+        if (!total) return '';
+        var pages = Math.max(1, Math.ceil(total / pg.size)), from = (pg.page - 1) * pg.size + 1, to = Math.min(total, pg.page * pg.size);
+        var it = function (p, label, title, cls) { return '<span class="page-item' + (cls ? ' ' + cls : '') + '" data-pg="' + p + '"' + (title ? ' title="' + title + '"' : '') + '>' + label + '</span>'; };
+        var nums = '';
+        for (var i = 1; i <= pages; i++) nums += it(i, i, '', pg.page === i ? 'active' : '');
+        return '<div class="pagination-bar" id="bcttPager"><div class="pagination-left"><span>Số dòng hiển thị:</span><select class="page-size-select" id="bcttPageSize">'
+            + [10, 20, 50, 100].map(function (n) { return '<option value="' + n + '"' + (pg.size === n ? ' selected' : '') + '>' + n + '</option>'; }).join('')
+            + '</select><span>Hiển thị <span style="font-weight:600;">' + from + '-' + to + '</span> trong tổng số <span style="font-weight:600;">' + total + '</span> bản ghi</span></div>'
+            + '<div class="pagination-pages">' + it(1, '&verbar;&lt;&lt;', 'Đầu', pg.page === 1 ? 'disabled' : '') + it(pg.page - 1, '&lt;', 'Trước', pg.page === 1 ? 'disabled' : '')
+            + nums + it(pg.page + 1, '&gt;', 'Sau', pg.page === pages ? 'disabled' : '') + it(pages, '&gt;&gt;&verbar;', 'Cuối', pg.page === pages ? 'disabled' : '') + '</div></div>';
+    }
 
     function statusCell(r) {
         var sub = '';
@@ -879,19 +894,28 @@
             + '</div><div class="toolbar-row uxu-filter-actions"><button class="btn btn-secondary" id="bcttFReset"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button><button class="btn btn-primary" id="bcttFGo"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button></div></div>';
         var rows = DB.reports.filter(function (r) { return inTab(listTab, r) && (filt.year === 'all' || String(r.year) === filt.year) && (filt.period === 'all' || r.period === filt.period) && (filt.status === 'all' || r.status === filt.status); })
             .sort(function (a, b) { return b.year - a.year; });
-        html += '<div class="card-section"><div class="section-title"><span><i class="fa-solid fa-table-list"></i> Danh sách báo cáo công tác bồi thường nhà nước</span>'
-            + (role === 'cb_stp' && listTab === 'pending' ? '<button class="btn btn-success btn-sm uxu-btn-tb" id="bcttCreate"><i class="fa-solid fa-plus"></i> Tạo báo cáo</button>' : '') + '</div>'
+        var total = rows.length, pages = Math.max(1, Math.ceil(total / pg.size));
+        if (pg.page > pages) pg.page = pages;
+        var off = (pg.page - 1) * pg.size;
+        rows = rows.slice(off, off + pg.size);
+        // Không hiển thị tiêu đề lưới; nút Tạo báo cáo trên thanh công cụ phía trên lưới, căn phải
+        html += '<div class="card-section">'
+            + (role === 'cb_stp' && listTab === 'pending' ? '<div style="display:flex; justify-content:flex-end; margin-bottom:12px;"><button class="btn btn-success btn-sm uxu-btn-tb" id="bcttCreate"><i class="fa-solid fa-plus"></i> Tạo báo cáo</button></div>' : '')
             + '<div class="table-container"><table class="custom-table" id="bcttListTable"><thead><tr><th>STT</th><th>Năm báo cáo</th><th>Loại kỳ báo cáo</th><th>Đơn vị báo cáo</th><th>Người lập</th><th>Trạng thái</th><th>Ngày gửi gần nhất</th><th>Thao tác</th></tr></thead><tbody>'
             + (rows.length ? rows.map(function (r, i) {
                 var acts = '<button class="icon-btn" title="Xem chi tiết" data-act="view" data-id="' + r.id + '"><i class="fa-solid fa-eye"></i></button>' + listActs(r);
-                return '<tr class="list-row" data-id="' + r.id + '"><td>' + (i + 1) + '</td><td>' + r.year + '</td><td class="text-left">' + PERIODS[r.period].label + '</td><td class="text-left">' + esc(r.unitName) + '</td><td class="text-left">' + esc(r.preparer.name) + '</td><td>' + statusCell(r) + '</td><td>' + (r.sentAt || '--') + '</td><td>' + acts + '</td></tr>';
+                return '<tr class="list-row" data-id="' + r.id + '"><td>' + (off + i + 1) + '</td><td>' + r.year + '</td><td class="text-left">' + PERIODS[r.period].label + '</td><td class="text-left">' + esc(r.unitName) + '</td><td class="text-left">' + esc(r.preparer.name) + '</td><td>' + statusCell(r) + '</td><td>' + (r.sentAt || '--') + '</td><td>' + acts + '</td></tr>';
             }).join('') : '<tr><td colspan="8">Không có dữ liệu</td></tr>')
-            + '</tbody></table></div></div>';
+            + '</tbody></table></div>' + pagerHtml(total) + '</div>';
         $('bcttApp').innerHTML = html;
-        $('bcttFGo').onclick = function () { filt.year = $('bcttFYear').value; filt.period = $('bcttFPeriod').value; filt.status = $('bcttFStatus').value; showList(); };
-        $('bcttFReset').onclick = function () { filt = { year: 'all', period: 'all', status: 'all' }; showList(); };
+        $('bcttFGo').onclick = function () { filt.year = $('bcttFYear').value; filt.period = $('bcttFPeriod').value; filt.status = $('bcttFStatus').value; pg.page = 1; showList(); };
+        $('bcttFReset').onclick = function () { filt = { year: 'all', period: 'all', status: 'all' }; pg.page = 1; showList(); };
         if ($('bcttCreate')) $('bcttCreate').onclick = openCreate;
-        $('bcttLTabs').onclick = function (e) { var t = e.target.closest('[data-ltab]'); if (t && t.getAttribute('data-ltab') !== listTab) { listTab = t.getAttribute('data-ltab'); showList(); } };
+        $('bcttLTabs').onclick = function (e) { var t = e.target.closest('[data-ltab]'); if (t && t.getAttribute('data-ltab') !== listTab) { listTab = t.getAttribute('data-ltab'); pg.page = 1; showList(); } };
+        if ($('bcttPager')) {
+            $('bcttPageSize').onchange = function () { pg.size = +this.value || 10; pg.page = 1; showList(); };
+            $('bcttPager').querySelector('.pagination-pages').onclick = function (e) { var t = e.target.closest('[data-pg]'); if (!t || t.classList.contains('disabled') || t.classList.contains('active')) return; pg.page = +t.getAttribute('data-pg'); showList(); };
+        }
         onClk($('bcttListTable'), function (e) {
             var b = e.target.closest('[data-act]');
             var tr = e.target.closest('tr[data-id]');
@@ -1594,7 +1618,7 @@
         var kys = [];
         DB.reports.forEach(function (r) { var k = r.year + '|' + r.period; if (kys.indexOf(k) < 0) kys.push(k); });
         kys.sort().reverse();
-        var html = '<div class="card-section"><div class="section-title"><span><i class="fa-solid fa-table-list"></i> Danh sách kỳ báo cáo công tác bồi thường nhà nước</span></div><div class="table-container"><table class="custom-table" id="bcttBtpList"><thead><tr><th>STT</th><th>Năm báo cáo</th><th>Loại kỳ báo cáo</th><th>Số Sở Tư pháp đã gửi</th><th>Tình hình tiếp nhận</th><th>Báo cáo tổng hợp của Bộ</th><th>Thao tác</th></tr></thead><tbody>'
+        var html = '<div class="card-section"><div class="table-container"><table class="custom-table" id="bcttBtpList"><thead><tr><th>STT</th><th>Năm báo cáo</th><th>Loại kỳ báo cáo</th><th>Số Sở Tư pháp đã gửi</th><th>Tình hình tiếp nhận</th><th>Báo cáo tổng hợp của Bộ</th><th>Thao tác</th></tr></thead><tbody>'
             + kys.map(function (k, i) {
                 var p = k.split('|'), n = issuedOf(+p[0], p[1]).length, bR = btpReportOf(+p[0], p[1]);
                 return '<tr class="list-row" data-ky="' + k + '"><td>' + (i + 1) + '</td><td>' + p[0] + '</td><td class="text-left">' + PERIODS[p[1]].label + '</td><td>' + n + '/' + PROVINCES.length + '</td><td><span class="badge ' + (n === PROVINCES.length ? 'badge-success' : 'badge-warning') + '">' + (n === PROVINCES.length ? 'Đủ số liệu' : 'Đang tiếp nhận') + '</span></td>'
@@ -1668,7 +1692,7 @@
         refreshShared();
     }
     // Đổi vai trò giả lập: lưu lại (ngữ cảnh badge LeftMenu đọc khóa này), về tab Chờ xử lý
-    function setRole(r) { role = ROLES[r] ? r : 'cb_stp'; listTab = 'pending'; try { localStorage.setItem(KEY_ROLE, role); } catch (e) { /* bỏ qua */ } showList(); }
+    function setRole(r) { role = ROLES[r] ? r : 'cb_stp'; listTab = 'pending'; pg.page = 1; try { localStorage.setItem(KEY_ROLE, role); } catch (e) { /* bỏ qua */ } showList(); }
     function refreshShared() {
         reportBadge();
         if (typeof window.btnnStickyActRefresh === 'function') { try { window.btnnStickyActRefresh(); } catch (e) { /* bỏ qua */ } }

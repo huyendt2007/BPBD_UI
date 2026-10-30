@@ -975,8 +975,12 @@ function syncFromLocalStorage() {
     // Force reset if version is old to fetch updated files and statuses
     const savedVersion = localStorage.getItem('proposals_version');
     if (savedVersion !== CURRENT_PROPOSALS_VERSION) {
-        localStorage.setItem('proposals_version', CURRENT_PROPOSALS_VERSION);
-        localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
+        // Ghi dữ liệu mẫu trước, ghi phiên bản sau: localStorage đầy (QuotaExceededError) thì giữ phiên bản cũ để lần tải sau nạp lại,
+        // không dừng hàm khởi tạo trang (danh sách vẫn vẽ từ dữ liệu mẫu trong trang)
+        try {
+            localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
+            localStorage.setItem('proposals_version', CURRENT_PROPOSALS_VERSION);
+        } catch (e) { console.warn('[BTNN] Không lưu được proposalsList vào localStorage:', e && e.name); }
     } else {
         const localProposals = localStorage.getItem('proposalsList');
         if (localProposals) {

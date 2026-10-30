@@ -845,8 +845,8 @@
                         <div class="error-message" id="errName">Tên danh mục không được để trống.</div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="inpNameEn">Tên danh mục (EN) <span class="required-mark">*</span></label>
-                        <input type="text" id="inpNameEn" class="form-control" placeholder="Nhập tên danh mục tiếng Anh" required>
+                        <label class="form-label" for="inpNameEn">Tên danh mục (EN)</label>
+                        <input type="text" id="inpNameEn" class="form-control" placeholder="Nhập tên danh mục tiếng Anh">
                         <div class="error-message" id="errNameEn">Tên danh mục tiếng Anh không được để trống.</div>
                     </div>
                     <div class="form-group">
@@ -953,7 +953,7 @@
     <!-- CUSTOM FLOATING TOOLTIP -->
     <div id="customTooltip" class="custom-tooltip"></div>
 
-    <script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261030s2"></script>
+    <script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261030sd4"></script>
     <script>
         // Custom Tooltip functions
         function showCellTooltip(event, text) {
@@ -2232,15 +2232,8 @@
                 document.getElementById('errName').style.display = 'none';
             }
 
-            if (!nameEn) {
-                document.getElementById('errNameEn').style.display = 'block';
-                if (valid) {
-                    document.getElementById('inpNameEn').focus();
-                }
-                valid = false;
-            } else {
-                document.getElementById('errNameEn').style.display = 'none';
-            }
+            // Tên danh mục (EN): không bắt buộc
+            document.getElementById('errNameEn').style.display = 'none';
 
             if ((typeCode === 'DM_TOOLTIP' || typeCode === 'DM_EMAIL_TEMPLATE') && !val) {
                 document.getElementById('errVal').style.display = 'block';

@@ -495,12 +495,13 @@ function agencyTotals(rows, metric) { return Object.entries(agencyMap(rows, metr
 
 // ===================== MH02 - Cấu hình =====================
 function renderConfig() {
+    // Không hiển thị tiêu đề lưới; không phân trang nên tổng số bản ghi hiển thị dưới lưới
     const scope = val('f_scope'), comp = val('f_comp'), ct = val('f_chart'), status = val('f_status');
     const list = CFG.filter(c => compById(c.id)).filter(c => (!scope || compById(c.id).scope === scope) && (!comp || c.id === comp) && (!ct || c.chart === ct) && (!status || c.status === status))
         .sort((a, b) => compById(a.id).scope.localeCompare(compById(b.id).scope) || a.order - b.order);
     const rows = list.map((c, i) => { const x = compById(c.id); const m = x.metrics ? (x.metrics.find(mm => mm[0] === c.metric) || ['', '-'])[1] : '-'; return [i + 1, esc(x.name), esc(x.scope), chartTypeLabel(c.chart), esc(m), c.order, `<span class="badge ${c.status === 'Áp dụng' ? 'on' : 'off'}">${c.status}</span>`, esc(c.user), esc(c.at), `<button class="icon-btn edit" title="Cập nhật" onclick="openCfgModal('${c.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`]; });
     const head = [{ t: 'STT' }, { t: 'Thành phần hiển thị' }, { t: 'Áp dụng tại' }, { t: 'Loại biểu đồ mặc định' }, { t: 'Chỉ tiêu mặc định' }, { t: 'Thứ tự hiển thị', num: true }, { t: 'Trạng thái' }, { t: 'Người cập nhật' }, { t: 'Thời điểm cập nhật' }, { t: 'Thao tác' }];
-    document.getElementById('content').innerHTML = `<div class="card"><div class="card-title"><span class="left"><i class="fa-solid fa-table-list"></i> Danh sách cấu hình hiển thị (${list.length})</span></div>${tableHtml(head, rows)}</div>`;
+    document.getElementById('content').innerHTML = `<div class="card">${tableHtml(head, rows)}<div class="cfg-total" style="margin-top:10px; font-size:12.5px; color:#64748b;">Tổng số: <strong>${list.length}</strong> bản ghi</div></div>`;
 }
 let editingId = null;
 function openCfgModal(id) {

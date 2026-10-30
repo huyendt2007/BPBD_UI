@@ -421,11 +421,9 @@
             </div>
 
             <div class="table-card">
-                <div class="table-header">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <div class="table-title"><i class="fa-solid fa-table-list"></i>Danh sách bản tin gửi Dịch vụ công</div>
-                        <div class="result-count" id="nkdvCountText">0 bản ghi</div>
-                    </div>
+                <!-- Không hiển thị tiêu đề lưới / số bản ghi phía trên bảng; tổng số bản ghi tại thanh phân trang -->
+                <div class="table-header" data-grid-toolbar style="justify-content:flex-end;">
+                    <span class="result-count" id="nkdvCountText" style="display:none;"></span>
                     <button class="btn btn-secondary" type="button" id="nkdvExportBtn" onclick="nkdvExportExcel()"><i class="fa-solid fa-file-excel" style="color:#16a34a;"></i> Kết xuất Excel</button>
                 </div>
                 <div class="table-responsive">
@@ -488,9 +486,10 @@
         </div>
     </div>
 
-    <script src="nhat_ky_dong_bo_dvc.js?v=20261030dvc6"></script>
+    <script src="nhat_ky_dong_bo_dvc.js?v=20261030dvc7"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
+    <script src="../03_Boi_thuong_nha_nuoc/btnn_grid_toolbar.js?v=20261030gt1"></script>
 </body>
 
 </html>

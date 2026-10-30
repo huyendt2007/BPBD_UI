@@ -91,7 +91,7 @@ STT trường theo bảng III của `EForm_DVC_YeuCauBoiThuong.md`.
 - Danh mục 02 cấp:
   - Cấp nhóm: mã nhóm, tên nhóm.
   - Cấp mục chi tiết: mã mục = mã nhóm + `_` + số thứ tự 02 chữ số; thuộc đúng 01 nhóm; tên mục.
-- 06 nhóm, 35 mục chi tiết; nhóm `VII. Các thiệt hại khác` không có mục chi tiết.
+- 06 nhóm, 36 mục chi tiết; nhóm `VII. Các thiệt hại khác` không có mục chi tiết.
 
 | Mã | Cấp | Tên |
 | :--- | :--- | :--- |
@@ -103,6 +103,7 @@ STT trường theo bảng III của `EForm_DVC_YeuCauBoiThuong.md`.
 | TH_TS_05 | Mục | Thu nhập thực tế bị mất do không sử dụng, khai thác được tài sản - Đối với tài sản không có cho thuê trên thị trường (Khoản 3, Điều 23) |
 | TH_TS_06 | Mục | Hoàn trả các khoản tiền đã nộp vào ngân sách nhà nước, bị tịch thu, thi hành án, khoản tiền đặt để bảo đảm và khoản lãi (Khoản 4, Điều 23) |
 | TH_TS_07 | Mục | Tiền phạt do vi phạm nghĩa vụ trong giao dịch dân sự, kinh tế đã có hiệu lực và khoản lãi của khoản tiền phạt (Khoản 5, Điều 23) |
+| TH_TS_08 | Mục | Thiệt hại xảy ra do vượt quá yêu cầu của tình thế cấp thiết (Khoản 6, Điều 23) |
 | **TH_TN** | Nhóm | **II. Thiệt hại do thu nhập thực tế bị mất hoặc bị giảm sút (Điều 24)** |
 | TH_TN_01 | Mục | Thu nhập ổn định từ tiền lương, tiền công bị mất hoặc bị giảm sút của cá nhân (Điểm a, Khoản 1, Điều 24) |
 | TH_TN_02 | Mục | Thu nhập không ổn định từ tiền lương, tiền công bị mất hoặc bị giảm sút của cá nhân (Điểm b, Khoản 1, Điều 24) |
@@ -165,3 +166,81 @@ STT trường theo bảng III của `EForm_DVC_YeuCauBoiThuong.md`.
 ### Cơ quan giải quyết bồi thường (Module Quản lý Cơ cấu tổ chức)
 
 - Chia sẻ qua API; nguồn: Module Quản lý Cơ cấu tổ chức của Hệ thống BTNN, lọc theo Tỉnh/Thành phố.
+
+---
+
+<a id="dvc-gui-ket-qua"></a>
+## 3. Gửi kết quả xử lý hồ sơ về Dịch vụ công
+
+- Áp dụng cho hồ sơ có `Nguồn hồ sơ` = `Dịch vụ công`. Hồ sơ nguồn khác không gửi, kể cả hồ sơ đã chuyển sang cơ quan giải quyết bồi thường khác.
+- Tại mỗi bước ở mục 3.1, hệ thống BTNN gửi sang Dịch vụ công các thông tin:
+  + Mã hồ sơ Dịch vụ công, `Mã vụ việc`, `Mã hồ sơ`.
+  + Sự kiện kích hoạt (bước).
+  + Trạng thái vụ việc sau bước, theo mục 3.2.
+  + Văn bản tương ứng của bước: link tệp PDF kèm mã băm; không gửi nội dung tệp.
+- Cách thức gửi (giao thức, xác thực, gửi lại khi lỗi) do Dev thống nhất với Dịch vụ công.
+
+<a id="dvc-gui-ket-qua-buoc"></a>
+### 3.1. Các bước cần gửi
+
+- Văn bản tương ứng:
+  + Ký số: tệp PDF Lãnh đạo đã ký số.
+  + Ký ngoài: tệp PDF đã ký, đóng dấu được tải lên khi `Ban hành văn bản`.
+  + Báo cáo xác minh thiệt hại, Biên bản kết quả thương lượng việc giải quyết bồi thường: tệp PDF của dòng bắt buộc cùng tên trong bảng `Tài liệu đính kèm` của bước.
+  + Mỗi bước gửi 01 văn bản; không gửi `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo`.
+
+| Bước | Sự kiện kích hoạt | Văn bản tương ứng | Trạng thái vụ việc |
+| :--- | :--- | :--- | :--- |
+| 1 | Ký duyệt cấp cuối / Ban hành Thông báo yêu cầu bổ sung | Thông báo về việc yêu cầu bổ sung hồ sơ yêu cầu bồi thường (Mẫu 03/BTNN) | Yêu cầu bổ sung |
+| 2 | Ký duyệt cấp cuối / Ban hành Thông báo không thụ lý | Thông báo không thụ lý hồ sơ yêu cầu bồi thường (Mẫu 04/BTNN) | Không thụ lý<br>Lý do `Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình`: Đã chuyển CQGQBT |
+| 3 | Ký duyệt cấp cuối / Ban hành Thông báo thụ lý | Thông báo thụ lý hồ sơ yêu cầu bồi thường (Mẫu 04/BTNN) | Cử người giải quyết bồi thường |
+| 4 | Ký duyệt cấp cuối / Ban hành Quyết định cử người giải quyết bồi thường | Quyết định cử người giải quyết bồi thường (Mẫu 06/BTNN) | Xác minh thiệt hại<br>Vụ việc chỉ yêu cầu phục hồi danh dự: Đang phục hồi danh dự |
+| 5 | Hoàn thành xác minh | Báo cáo xác minh thiệt hại | Thương lượng |
+| 6 | Lưu kết quả thương lượng với `Tình trạng tham gia thương lượng` = `Đồng ý thương lượng` | Biên bản kết quả thương lượng việc giải quyết bồi thường | Chờ ban hành QĐ |
+| 7 | Ký duyệt cấp cuối / Ban hành Quyết định giải quyết bồi thường | Quyết định giải quyết bồi thường (Mẫu 18/BTNN) | Chờ chi trả |
+| 8 | Ký duyệt cấp cuối / Ban hành Quyết định hủy quyết định giải quyết bồi thường | Quyết định hủy quyết định giải quyết bồi thường (Mẫu 20/BTNN) | Trạng thái vụ việc hiện hành (không đổi) |
+| 9 | Ký duyệt cấp cuối / Ban hành Quyết định sửa chữa, bổ sung | Quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường (Mẫu 21/BTNN) | Trạng thái vụ việc hiện hành (không đổi) |
+| 10 | Ký duyệt cấp cuối / Ban hành Quyết định hoãn | Quyết định hoãn giải quyết bồi thường (Mẫu 22/BTNN) | Hoãn giải quyết |
+| 11 | Ký duyệt cấp cuối / Ban hành Quyết định tiếp tục | Quyết định tiếp tục giải quyết bồi thường (Mẫu 23/BTNN) | Trạng thái trước khi hoãn / tạm đình chỉ |
+| 12 | Ký duyệt cấp cuối / Ban hành Quyết định tạm đình chỉ | Quyết định tạm đình chỉ giải quyết yêu cầu bồi thường (Mẫu 24/BTNN) | Tạm đình chỉ |
+| 13 | Ký duyệt cấp cuối / Ban hành Quyết định đình chỉ | Quyết định đình chỉ giải quyết yêu cầu bồi thường (Mẫu 25/BTNN) | Đình chỉ giải quyết |
+| 14 | Ký duyệt cấp cuối / Ban hành Thông báo dừng giải quyết | Thông báo về việc dừng giải quyết yêu cầu bồi thường (Mẫu 05/BTNN) | Dừng giải quyết |
+| 15 | Ký duyệt cấp cuối / Ban hành Thông báo tổ chức thực hiện phục hồi danh dự | Thông báo về việc tổ chức thực hiện phục hồi danh dự (Mẫu 26/BTNN) | Trạng thái vụ việc hiện hành<br>Vụ việc chỉ yêu cầu phục hồi danh dự: Đang phục hồi danh dự |
+| 16 | Ký duyệt cấp cuối / Ban hành Thông báo chi trả | Thông báo về việc chi trả tiền bồi thường (Mẫu 32/BTNN) | Chờ chi trả |
+
+- Bước lặp lại (VD hoãn giải quyết nhiều lần): mỗi lần ban hành gửi 01 lần.
+- Vụ việc yêu cầu cả bồi thường thiệt hại và phục hồi danh dự: gửi 01 trạng thái vụ việc tổng hợp.
+- Không gửi:
+  + Hoàn thành phục hồi danh dự.
+  + Chuyển CQGQBT.
+  + Hoàn thành chi trả, Trả lại ngân sách nhà nước.
+  + Kết quả thương lượng có `Tình trạng tham gia thương lượng` khác `Đồng ý thương lượng`.
+
+<a id="dvc-ma-trang-thai"></a>
+### 3.2. Mã trạng thái vụ việc
+
+Cột `Mã trạng thái DVC` để trống, mapping khi thống nhất với Dịch vụ công.
+
+| STT | Mã trạng thái BTNN | Trạng thái vụ việc | Mã trạng thái DVC |
+| :--- | :--- | :--- | :--- |
+| 1 | CHO_PHAN_CONG | Chờ phân công | |
+| 2 | CHO_TIEP_NHAN | Chờ tiếp nhận | |
+| 3 | CHO_DUYET | Chờ duyệt | |
+| 4 | BI_TRA_LAI | Bị trả lại | |
+| 5 | YEU_CAU_BO_SUNG | Yêu cầu bổ sung | |
+| 6 | KHONG_THU_LY | Không thụ lý | |
+| 7 | DA_CHUYEN_CQGQBT | Đã chuyển CQGQBT | |
+| 8 | CU_NGUOI_GIAI_QUYET | Cử người giải quyết bồi thường | |
+| 9 | CU_NGUOI_PHUC_HOI_DANH_DU | Cử người phục hồi danh dự | |
+| 10 | XAC_MINH_THIET_HAI | Xác minh thiệt hại | |
+| 11 | THUONG_LUONG | Thương lượng | |
+| 12 | CHO_BAN_HANH_QD | Chờ ban hành QĐ | |
+| 13 | CHO_CHI_TRA | Chờ chi trả | |
+| 14 | DANG_PHUC_HOI_DANH_DU | Đang phục hồi danh dự | |
+| 15 | HOAN_PHUC_HOI_DANH_DU | Hoãn phục hồi danh dự | |
+| 16 | TU_CHOI_PHUC_HOI_DANH_DU | Từ chối phục hồi danh dự | |
+| 17 | HOAN_GIAI_QUYET | Hoãn giải quyết | |
+| 18 | TAM_DINH_CHI | Tạm đình chỉ | |
+| 19 | DINH_CHI_GIAI_QUYET | Đình chỉ giải quyết | |
+| 20 | DUNG_GIAI_QUYET | Dừng giải quyết | |
+| 21 | HOAN_THANH | Hoàn thành | |

@@ -191,6 +191,16 @@
         };
         dossiersList.forEach(d => { if (isSeed(d) && !d._htDateShifted) { walk(d, ''); d._htDateShifted = true; } });
         if (window.HT_EXTRA_SEED && !window.__htExtraShifted) { walk(window.HT_EXTRA_SEED, ''); window.__htExtraShifted = true; }
+        // Ngày khởi tạo hồ sơ mẫu (dateCreated - chỉ dùng cho bộ lọc Từ ngày / Đến ngày, không hiển thị): độ lệch chung ở trên không đưa được
+        // hồ sơ mẫu khởi tạo từ tháng 5 - 9 vào khoảng mặc định (ngày đầu tháng - ngày hiện tại) -> danh sách mặc định gần như trống.
+        // Dàn ngày khởi tạo của hồ sơ mẫu trong tháng hiện tại, giữ thứ tự ngày khởi tạo giữa các hồ sơ mẫu.
+        if (!window.__htCreatedInMonth) {
+            window.__htCreatedInMonth = true;
+            const dn = s => { const m = String(s || '').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); return m ? (+m[3]) * 10000 + (+m[2]) * 100 + (+m[1]) : 0; };
+            const p2 = n => String(n).padStart(2, '0'), now = new Date(), last = now.getDate(), my = p2(now.getMonth() + 1) + '/' + now.getFullYear();
+            const seeds = dossiersList.filter(isSeed).sort((a, b) => dn(a.dateCreated) - dn(b.dateCreated));
+            seeds.forEach((d, i) => { d.dateCreated = p2(seeds.length > 1 ? 1 + Math.round(i * (last - 1) / (seeds.length - 1)) : last) + '/' + my; });
+        }
     } catch (e) { /* bỏ qua */ }
     if (!isDetail) return;
 
