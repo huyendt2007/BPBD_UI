@@ -56,7 +56,7 @@
 | Thời điểm gửi | DateTime | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Thời điểm gửi gần nhất, định dạng `dd/mm/yyyy HH:mm:ss`. |
 | Mã hồ sơ DVC | String(100) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- `dvc_dossier_code`. |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- `Mã vụ việc` `VVBT-yyyy-xxx`. |
-| Mã hồ sơ | String(50) | - | Theo dữ liệu | Control UI: HyperLink.<br>- `Mã hồ sơ` `BT-yyyy-xxx`.<br>- Click: mở chi tiết hồ sơ tại tab mới theo [Đường dẫn mở chi tiết vụ việc - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-url-chi-tiet), theo quyền xem chi tiết của người dùng. |
+| Mã hồ sơ | String(50) | - | Theo dữ liệu | Control UI: HyperLink.<br>- `Mã hồ sơ` `BT-yyyy-xxx`.<br>- Click: mở chi tiết hồ sơ tại tab mới theo [Mở bằng đường dẫn trực tiếp - MH04 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-mh05-duong-dan), theo quyền xem chi tiết của người dùng. |
 | Bước | String(255) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- `step_name`. |
 | Trạng thái vụ việc gửi | String(100) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- `case_status_name` đã gửi trong bản tin. |
 | Kết quả | Enum(String(20)) | - | Theo dữ liệu | Control UI: Badge (Read-only).<br>- `Thành công`: xanh lá; `Lỗi`: đỏ; `Đang gửi lại`: vàng. |

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="820" viewBox="0 0 740 820" font-family="Arial, Helvetica, sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f6fb0"/></marker></defs>
+<rect x="0" y="0" width="740" height="820" fill="#ffffff"/>
+<rect x="10" y="10" width="720" height="800" fill="#fff" stroke="#333333" stroke-width="1.2"/>
+<line x1="10" y1="50" x2="730" y2="50" stroke="#333333"/>
+<text x="20" y="36" font-size="15" font-weight="bold" fill="#111">QT11.1. Nghiệp vụ dùng cho Bộ Tư pháp (07 chức năng ghi nhận)</text>
+<rect x="10" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="130" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Cán bộ Bộ Tư pháp</text>
+<rect x="250" y="50" width="480" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="490" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Hệ thống</text>
+<line x1="250" y1="50" x2="250" y2="810" stroke="#333333" stroke-width="0.8"/>
+<polyline points="130,178 130,246.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,270 300,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="440,270 530,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="370,305 370,343" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="272,390 130,390 130,486.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="370,437 370,606.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,510 340,510 340,606.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,750 290,750" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<circle cx="130" cy="150" r="28" fill="#fff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="153" font-size="11.5" text-anchor="middle" fill="#111">Bắt đầu</text>
+<rect x="50" y="246.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="266" font-size="12.5" text-anchor="middle" fill="#111">1. Thêm mới / Sửa, Lưu</text>
+<text x="130" y="281.5" font-size="12.5" text-anchor="middle" fill="#111">thông tin</text>
+<rect x="50" y="486.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="506" font-size="12.5" text-anchor="middle" fill="#111">2. Tiếp tục lưu tại popup</text>
+<text x="130" y="521.5" font-size="12.5" text-anchor="middle" fill="#111">cảnh báo trùng</text>
+<rect x="50" y="726.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="746" font-size="12.5" text-anchor="middle" fill="#111">3. Xóa, xác nhận tại</text>
+<text x="130" y="761.5" font-size="12.5" text-anchor="middle" fill="#111">popup</text>
+<polygon points="370,235 440,270 370,305 300,270" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="273" font-size="11.5" text-anchor="middle" fill="#111">Dữ liệu hợp lệ?</text>
+<rect x="530" y="247" width="160" height="46" rx="8" fill="#fafafa" stroke="#333333" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="610" y="273.75" font-size="12.5" text-anchor="middle" fill="#111">Báo lỗi dưới ô, không lưu</text>
+<polygon points="370,343 468,390 370,437 272,390" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="379" font-size="11.5" text-anchor="middle" fill="#111">Trùng Số văn bản /</text>
+<text x="370" y="393" font-size="11.5" text-anchor="middle" fill="#111">Số, ký hiệu / Số</text>
+<text x="370" y="407" font-size="11.5" text-anchor="middle" fill="#111">điện thoại?</text>
+<rect x="290" y="606.5" width="160" height="47" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="370" y="626" font-size="12.5" text-anchor="middle" fill="#111">Lưu, hiển thị trên danh</text>
+<text x="370" y="641.5" font-size="12.5" text-anchor="middle" fill="#111">sách</text>
+<rect x="290" y="726.5" width="160" height="47" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="370" y="746" font-size="12.5" text-anchor="middle" fill="#111">Xóa bản ghi khỏi danh</text>
+<text x="370" y="761.5" font-size="12.5" text-anchor="middle" fill="#111">sách</text>
+<rect x="466.09619140625" y="252" width="37.8076171875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="485" y="264" font-size="11" text-anchor="middle" fill="#1f4e79">Không</text>
+<rect x="373" y="316" width="20.0615234375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="383.03076171875" y="328" font-size="11" text-anchor="middle" fill="#1f4e79">Có</text>
+<rect x="190.96923828125" y="372" width="20.0615234375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="201" y="384" font-size="11" text-anchor="middle" fill="#1f4e79">Có</text>
+<rect x="373" y="513.75" width="37.8076171875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="391.90380859375" y="525.75" font-size="11" text-anchor="middle" fill="#1f4e79">Không</text>
+</svg>

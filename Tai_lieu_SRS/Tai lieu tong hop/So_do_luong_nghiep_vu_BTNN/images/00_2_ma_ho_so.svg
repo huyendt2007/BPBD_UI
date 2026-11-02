@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="580" viewBox="0 0 980 580" font-family="Arial, Helvetica, sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f6fb0"/></marker></defs>
+<rect x="0" y="0" width="980" height="580" fill="#ffffff"/>
+<rect x="10" y="10" width="960" height="560" fill="#fff" stroke="#333333" stroke-width="1.2"/>
+<line x1="10" y1="50" x2="970" y2="50" stroke="#333333"/>
+<text x="20" y="36" font-size="15" font-weight="bold" fill="#111">QT0.2. Mã vụ việc và Mã hồ sơ qua các phân hệ</text>
+<rect x="10" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="130" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Điểm vào vụ việc</text>
+<rect x="250" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="370" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Xác định CQGQBT (XD-)</text>
+<line x1="250" y1="50" x2="250" y2="570" stroke="#333333" stroke-width="0.8"/>
+<rect x="490" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="610" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Giải quyết YCBT (BT-)</text>
+<line x1="490" y1="50" x2="490" y2="570" stroke="#333333" stroke-width="0.8"/>
+<rect x="730" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="850" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Xem xét hoàn trả (HT-)</text>
+<line x1="730" y1="50" x2="730" y2="570" stroke="#333333" stroke-width="0.8"/>
+<polyline points="160,189 160,270 290,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,150 610,150 610,246.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="450,270 530,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="610,293.5 610,468.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="580,293.5 580,460 400,460 400,486.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="450,510 530,510" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="690,270 820,270 820,366.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="530,280 460,280 460,450 160,450 160,478.75" fill="none" stroke="#2f6fb0" stroke-width="1.4" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+<rect x="50" y="111" width="160" height="78" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="130" y="130.5" font-size="12.5" text-anchor="middle" fill="#111">Sinh Mã vụ việc VVBT:</text>
+<text x="130" y="146" font-size="12.5" text-anchor="middle" fill="#111">Tiếp nhận mới / Dịch vụ</text>
+<text x="130" y="161.5" font-size="12.5" text-anchor="middle" fill="#111">công / Thêm mới chọn Vụ</text>
+<text x="130" y="177" font-size="12.5" text-anchor="middle" fill="#111">việc mới</text>
+<rect x="50" y="478.75" width="160" height="62.5" rx="8" fill="#fafafa" stroke="#333333" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="130" y="498.25" font-size="12.5" text-anchor="middle" fill="#111">Nộp lại sau Không thụ lý:</text>
+<text x="130" y="513.75" font-size="12.5" text-anchor="middle" fill="#111">vụ việc mới, Mã vụ việc</text>
+<text x="130" y="529.25" font-size="12.5" text-anchor="middle" fill="#111">mới</text>
+<rect x="290" y="247" width="160" height="46" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="273.75" font-size="12.5" text-anchor="middle" fill="#111">Hồ sơ XD-</text>
+<rect x="290" y="486.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="506" font-size="12.5" text-anchor="middle" fill="#111">Hồ sơ XD- mới tại Bộ Tư</text>
+<text x="370" y="521.5" font-size="12.5" text-anchor="middle" fill="#111">pháp / Sở Tư pháp</text>
+<rect x="530" y="246.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="266" font-size="12.5" text-anchor="middle" fill="#111">Hồ sơ BT- (dùng cho cả</text>
+<text x="610" y="281.5" font-size="12.5" text-anchor="middle" fill="#111">03 Loại yêu cầu)</text>
+<rect x="530" y="468.5" width="160" height="83" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="488" font-size="12.5" text-anchor="middle" fill="#111">Hồ sơ BT- mới tại cơ</text>
+<text x="610" y="503.5" font-size="12.5" text-anchor="middle" fill="#111">quan nhận</text>
+<rect x="552.397216796875" y="511.5" width="115.20556640625" height="32" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="610" y="523.5" font-size="11" text-anchor="middle" fill="#6b4e00">Hồ sơ cũ: Đã chuyển</text>
+<text x="610" y="536.5" font-size="11" text-anchor="middle" fill="#6b4e00">CQGQBT</text>
+<rect x="770" y="366.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="850" y="386" font-size="12.5" text-anchor="middle" fill="#111">Hồ sơ HT- (01 hồ sơ / vụ</text>
+<text x="850" y="401.5" font-size="12.5" text-anchor="middle" fill="#111">việc)</text>
+<rect x="463.165771484375" y="226" width="53.66845703125" height="42" fill="#ffffff" opacity="0.92"/>
+<text x="490" y="238" font-size="11" text-anchor="middle" fill="#1f4e79">Tự động</text>
+<text x="490" y="251" font-size="11" text-anchor="middle" fill="#1f4e79">chuyển</text>
+<text x="490" y="264" font-size="11" text-anchor="middle" fill="#1f4e79">CQGQBT</text>
+<rect x="613" y="360" width="113.5078125" height="42" fill="#ffffff" opacity="0.92"/>
+<text x="669.75390625" y="372" font-size="11" text-anchor="middle" fill="#1f4e79">Chuyển CQGQBT /</text>
+<text x="669.75390625" y="385" font-size="11" text-anchor="middle" fill="#1f4e79">Không thụ lý: cơ quan</text>
+<text x="669.75390625" y="398" font-size="11" text-anchor="middle" fill="#1f4e79">khác</text>
+<rect x="293.138671875" y="453.45" width="103.861328125" height="29" fill="#ffffff" opacity="0.92"/>
+<text x="345.0693359375" y="465.45" font-size="11" text-anchor="middle" fill="#1f4e79">Không thụ lý: Bộ Tư</text>
+<text x="345.0693359375" y="478.45" font-size="11" text-anchor="middle" fill="#1f4e79">pháp / Sở Tư pháp</text>
+<rect x="457.953125" y="479" width="64.09375" height="29" fill="#ffffff" opacity="0.92"/>
+<text x="490" y="491" font-size="11" text-anchor="middle" fill="#1f4e79">Kết quả xác</text>
+<text x="490" y="504" font-size="11" text-anchor="middle" fill="#1f4e79">định</text>
+<rect x="733.057373046875" y="252" width="95.88525390625" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="781" y="264" font-size="11" text-anchor="middle" fill="#1f4e79">Đã hoàn tất chi trả</text>
+<rect x="389.8447265625" y="357" width="67.1552734375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="423.42236328125" y="369" font-size="11" text-anchor="middle" fill="#1f4e79">Không thụ lý</text>
+</svg>

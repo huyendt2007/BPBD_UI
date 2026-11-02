@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1220" height="700" viewBox="0 0 1220 700" font-family="Arial, Helvetica, sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f6fb0"/></marker></defs>
+<rect x="0" y="0" width="1220" height="700" fill="#ffffff"/>
+<rect x="10" y="10" width="1200" height="680" fill="#fff" stroke="#333333" stroke-width="1.2"/>
+<line x1="10" y1="50" x2="1210" y2="50" stroke="#333333"/>
+<text x="20" y="36" font-size="15" font-weight="bold" fill="#111">QT2.2. Xác định CQGQBT - ký duyệt và kết quả</text>
+<rect x="10" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="130" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Cán bộ xử lý</text>
+<rect x="250" y="50" width="480" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="490" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Lãnh đạo được giao (Phòng, Cục / Sở, Bộ / UBND cấp tỉnh)</text>
+<line x1="250" y1="50" x2="250" y2="690" stroke="#333333" stroke-width="0.8"/>
+<rect x="730" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="850" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Hệ thống</text>
+<line x1="730" y1="50" x2="730" y2="690" stroke="#333333" stroke-width="0.8"/>
+<rect x="970" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="1090" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Phân hệ khác</text>
+<line x1="970" y1="50" x2="970" y2="690" stroke="#333333" stroke-width="0.8"/>
+<polyline points="210,270 300,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="440,270 540,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="370,305 370,475" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="610,235 610,192.75" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="610,305 610,367" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="580,192.75 580,210 370,210 370,235" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="530,150 450,150" fill="none" stroke="#2f6fb0" stroke-width="1.4" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+<polyline points="290,510 210,510" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="130,486.5 130,293.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="690,390 780,390" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="850,355 850,293" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="850,425 850,487" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="920,390 950,390 950,630 930,630" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="930,270 1010,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="880,653 880,680 1090,680 1090,661.25" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polygon points="50,246.5 196,246.5 210,270 196,293.5 50,293.5" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="124" y="266" font-size="12.5" text-anchor="middle" fill="#111">Từ QT2.1: hồ sơ Chờ</text>
+<text x="124" y="281.5" font-size="12.5" text-anchor="middle" fill="#111">duyệt</text>
+<rect x="50" y="486.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="506" font-size="12.5" text-anchor="middle" fill="#111">13. Cập nhật hồ sơ Bị trả</text>
+<text x="130" y="521.5" font-size="12.5" text-anchor="middle" fill="#111">lại, trình lại từ cấp 1</text>
+<polygon points="370,235 440,270 370,305 300,270" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="266" font-size="11.5" text-anchor="middle" fill="#111">Lãnh đạo đồng</text>
+<text x="370" y="280" font-size="11.5" text-anchor="middle" fill="#111">ý?</text>
+<polygon points="610,235 680,270 610,305 540,270" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="273" font-size="11.5" text-anchor="middle" fill="#111">Cấp cuối?</text>
+<rect x="530" y="107.25" width="160" height="85.5" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="126.75" font-size="12.5" text-anchor="middle" fill="#111">7. Ký duyệt cấp trung</text>
+<text x="610" y="142.25" font-size="12.5" text-anchor="middle" fill="#111">gian, chuyển cấp tiếp</text>
+<text x="610" y="157.75" font-size="12.5" text-anchor="middle" fill="#111">theo</text>
+<rect x="578.3798828125" y="165.75" width="63.240234375" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="610" y="177.75" font-size="11" text-anchor="middle" fill="#6b4e00">Chờ duyệt</text>
+<rect x="530" y="367" width="160" height="46" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="393.75" font-size="12.5" text-anchor="middle" fill="#111">8. Ký duyệt cấp cuối</text>
+<rect x="290" y="475" width="160" height="70" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="494.5" font-size="12.5" text-anchor="middle" fill="#111">9. Từ chối (bất kỳ cấp),</text>
+<text x="370" y="510" font-size="12.5" text-anchor="middle" fill="#111">nhập lý do</text>
+<rect x="344.13232421875" y="518" width="51.7353515625" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="370" y="530" font-size="11" text-anchor="middle" fill="#6b4e00">Bị trả lại</text>
+<rect x="290" y="126.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="146" font-size="12.5" text-anchor="middle" fill="#111">10. Thu hồi khi cấp tiếp</text>
+<text x="370" y="161.5" font-size="12.5" text-anchor="middle" fill="#111">theo chưa xử lý</text>
+<rect x="530" y="598.75" width="160" height="62.5" rx="8" fill="#fafafa" stroke="#333333" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="610" y="618.25" font-size="12.5" text-anchor="middle" fill="#111">12. UBND cấp tỉnh: xem</text>
+<text x="610" y="633.75" font-size="12.5" text-anchor="middle" fill="#111">hồ sơ của Sở Tư pháp</text>
+<text x="610" y="649.25" font-size="12.5" text-anchor="middle" fill="#111">trực thuộc</text>
+<polygon points="850,355 920,390 850,425 780,390" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="850" y="393" font-size="11.5" text-anchor="middle" fill="#111">Loại trình?</text>
+<rect x="770" y="247" width="160" height="46" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="850" y="273.75" font-size="12.5" text-anchor="middle" fill="#111">Yêu cầu bổ sung</text>
+<rect x="770" y="487" width="160" height="46" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="850" y="513.75" font-size="12.5" text-anchor="middle" fill="#111">Không thụ lý (kết thúc)</text>
+<rect x="770" y="607" width="160" height="46" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="850" y="633.75" font-size="12.5" text-anchor="middle" fill="#111">Đã chuyển CQGQBT</text>
+<polygon points="1010,246.5 1156,246.5 1170,270 1156,293.5 1010,293.5" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="1084" y="266" font-size="12.5" text-anchor="middle" fill="#111">QT2.1 bước 11 Bổ sung</text>
+<text x="1084" y="281.5" font-size="12.5" text-anchor="middle" fill="#111">hồ sơ</text>
+<polygon points="1010,598.75 1156,598.75 1170,630 1156,661.25 1010,661.25" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="1084" y="618.25" font-size="12.5" text-anchor="middle" fill="#111">Tự động chuyển</text>
+<text x="1084" y="633.75" font-size="12.5" text-anchor="middle" fill="#111">CQGQBT: Tiếp nhận hồ</text>
+<text x="1084" y="649.25" font-size="12.5" text-anchor="middle" fill="#111">sơ của CQGQBT (QT1.2)</text>
+<rect x="479.96923828125" y="252" width="20.0615234375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="490" y="264" font-size="11" text-anchor="middle" fill="#1f4e79">Có</text>
+<rect x="373" y="382" width="37.8076171875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="391.90380859375" y="394" font-size="11" text-anchor="middle" fill="#1f4e79">Không</text>
+<rect x="613" y="205.875" width="33.54296875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="629.771484375" y="217.875" font-size="11" text-anchor="middle" fill="#1f4e79">Chưa</text>
+<rect x="613" y="328" width="20.0615234375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="623.03076171875" y="340" font-size="11" text-anchor="middle" fill="#1f4e79">Có</text>
+<rect x="439.281982421875" y="192" width="71.43603515625" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="475" y="204" font-size="11" text-anchor="middle" fill="#1f4e79">Cấp tiếp theo</text>
+<rect x="468.655029296875" y="132" width="42.68994140625" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="490" y="144" font-size="11" text-anchor="middle" fill="#1f4e79">Thu hồi</text>
+<rect x="133" y="382" width="45.3271484375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="155.66357421875" y="394" font-size="11" text-anchor="middle" fill="#1f4e79">Trình lại</text>
+<rect x="853" y="316" width="88.564453125" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="897.2822265625" y="328" font-size="11" text-anchor="middle" fill="#1f4e79">Yêu cầu bổ sung</text>
+<rect x="853" y="448" width="67.1552734375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="886.57763671875" y="460" font-size="11" text-anchor="middle" fill="#1f4e79">Không thụ lý</text>
+<rect x="859.05322265625" y="550" width="87.94677734375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="903.026611328125" y="562" font-size="11" text-anchor="middle" fill="#1f4e79">Kết quả xác định</text>
+</svg>

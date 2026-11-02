@@ -308,6 +308,7 @@
 
 ---
 
+<a id="mau-18"></a>
 ### 8. MẪU SỐ 18/BTNN: QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG
 - **Tên tệp template**: `Mau_18_BTNN_Template.docx`
 - **Mục đích**: Quyết định giải quyết bồi thường chính thức của cơ quan giải quyết bồi thường sau khi kết thúc thương lượng hoặc theo các trường hợp quy định tại khoản 1 Điều 47 Luật TNBTCNN.
@@ -344,6 +345,7 @@
 
 ---
 
+<a id="mau-20"></a>
 ### 9. MẪU SỐ 20/BTNN: QUYẾT ĐỊNH HỦY QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG
 - **Tên tệp template**: `Mau_20_BTNN_Template.docx`
 - **Mục đích**: Hủy quyết định giải quyết bồi thường đã ban hành khi có một trong các căn cứ theo Điều 48 Luật TNBTCNN (để đình chỉ giải quyết hoặc giải quyết lại vụ việc).
@@ -369,6 +371,7 @@
 
 ---
 
+<a id="mau-21"></a>
 ### 10. MẪU SỐ 21/BTNN: QUYẾT ĐỊNH SỬA CHỮA, BỔ SUNG QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG
 - **Tên tệp template**: `Mau_21_BTNN_Template.docx`
 - **Mục đích**: Sửa đổi, bổ sung lỗi kỹ thuật, sai sót số liệu, tài khoản ngân hàng hoặc nội dung câu chữ trong Quyết định GQBT mà không làm thay đổi bản chất vụ việc.
@@ -385,7 +388,7 @@
 | 3 | Điều 1 | `##SoQDDuocSuaDoiBoSung##` | Quyết định giải quyết bồi thường > Chi tiết Quyết định (Quyết định được sửa chữa, bổ sung) | Số quyết định | Số, ký hiệu của Quyết định giải quyết bồi thường được sửa chữa, bổ sung. | `18/QĐ-STP` |
 | 4 | Điều 1 | `##NgayBanHanhQDCu##` | Quyết định giải quyết bồi thường > Chi tiết Quyết định (Quyết định được sửa chữa, bổ sung) | Ngày ban hành | Định dạng `dd/mm/yyyy`. | `20/01/2026` |
 | 5 | Điều 1 | `##CoQuanBanHanhQDCu##` | Quyết định giải quyết bồi thường > Chi tiết Quyết định (Quyết định được sửa chữa, bổ sung) | Cơ quan ban hành | Tên cơ quan ban hành Quyết định giải quyết bồi thường được sửa chữa, bổ sung. | `Sở Tư pháp Thành phố Hà Nội` |
-| 6 | Điều 1 - đoạn (4), (5) | `##NoiDungSuaChuaBoSung##` | Quyết định giải quyết bồi thường > Popup Trình ký Quyết định Sửa chữa, Bổ sung Quyết định giải quyết bồi thường | Nội dung sửa chữa, bổ sung | Theo giá trị trường `Nội dung sửa chữa, bổ sung` trên giao diện.<br>- Mỗi dòng sinh 01 đoạn theo thứ tự nhập; bỏ dòng trống. | `Tại dòng thứ 5 trang 2 Điều 2 của Quyết định số 18/QĐ-STP đã ghi: số tài khoản 0123456789`<br>`Nay sửa chữa, bổ sung như sau: số tài khoản 0123456788` |
+| 6 | Điều 1 - đoạn (4), (5) | `##NoiDungSuaChuaBoSung##` | Quyết định giải quyết bồi thường > Màn hình Sửa chữa, bổ sung Quyết định giải quyết bồi thường (hiển thị chỉ đọc tại Popup Trình ký Quyết định Sửa chữa, Bổ sung Quyết định giải quyết bồi thường) | Nội dung sửa chữa, bổ sung | Theo giá trị trường `Nội dung sửa chữa, bổ sung` tại Màn hình Sửa chữa, bổ sung Quyết định giải quyết bồi thường (hệ thống sinh theo thông tin thay đổi, người dùng được sửa).<br>- Mỗi dòng sinh 01 đoạn theo thứ tự nhập; bỏ dòng trống. | `Sửa Mức bồi thường mục "Tài sản đã bị phát mại, bị mất" (nhóm I) từ 120.000.000 đồng thành 130.000.000 đồng.`<br>`Sửa Tên ngân hàng từ "Vietinbank" thành "BIDV".` |
 | 7 | Điều 2 | `##NgayCoHieuLuc##` | Quyết định giải quyết bồi thường > Popup Trình ký Quyết định Sửa chữa, Bổ sung Quyết định giải quyết bồi thường | Hiệu lực của Quyết định | Theo giá trị trường `Hiệu lực của Quyết định` (nhập text) trên giao diện.<br>- Mặc định: hiệu lực của Quyết định giải quyết bồi thường gốc; không có thì `60 ngày kể từ ngày người yêu cầu bồi thường nhận được quyết định`.<br>- Câu trong mẫu: `Quyết định này có hiệu lực ##NgayCoHieuLuc##.`; điền nguyên nội dung đã nhập, viết thường chữ cái đầu. | `kể từ ngày ký` |
 | 8 | Điều 3 - (6) | `##TenNguoiYeuCauBoiThuong##` | Quyết định giải quyết bồi thường > Chi tiết Quyết định (Quyết định được sửa chữa, bổ sung) | Người yêu cầu bồi thường | Họ và tên người yêu cầu bồi thường của Quyết định được sửa chữa, bổ sung. | `Trần Thị Mai` |
 | 9 | Nơi nhận | `##NoiNhan##` | Quyết định giải quyết bồi thường > Popup Trình ký Quyết định Sửa chữa, Bổ sung Quyết định giải quyết bồi thường | Nơi nhận | Theo giá trị trường `Nơi nhận` trên giao diện.<br>- Mỗi dòng 01 nơi nhận, in đúng thứ tự nhập; bỏ dòng trống. | `- Như Điều 3;`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Ông Vũ Đình Trọng;`<br>`- Lưu: VT, HSVV.` |

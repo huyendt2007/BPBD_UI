@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1460" height="940" viewBox="0 0 1460 940" font-family="Arial, Helvetica, sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f6fb0"/></marker></defs>
+<rect x="0" y="0" width="1460" height="940" fill="#ffffff"/>
+<rect x="10" y="10" width="1440" height="920" fill="#fff" stroke="#333333" stroke-width="1.2"/>
+<line x1="10" y1="50" x2="1450" y2="50" stroke="#333333"/>
+<text x="20" y="36" font-size="15" font-weight="bold" fill="#111">QT0.3. Trạng thái chính của vụ việc (Giải quyết YCBT)</text>
+<rect x="10" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="130" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Tiếp nhận hồ sơ</text>
+<rect x="250" y="50" width="720" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="610" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Giải quyết YCBT - thụ lý</text>
+<line x1="250" y1="50" x2="250" y2="930" stroke="#333333" stroke-width="0.8"/>
+<rect x="970" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="1090" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Giải quyết YCBT - giải quyết</text>
+<line x1="970" y1="50" x2="970" y2="930" stroke="#333333" stroke-width="0.8"/>
+<rect x="1210" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="1330" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Quyết định GQBT / Kinh phí</text>
+<line x1="1210" y1="50" x2="1210" y2="930" stroke="#333333" stroke-width="0.8"/>
+<polyline points="130,178 130,246.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,270 530,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="610,293 610,367" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="530,390 450,390" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="400,367 400,340 580,340 580,367" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="640,367 640,320 820,320 820,293" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="770,270 690,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="610,413 610,607" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="640,413 640,580 850,580 850,606.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="690,390 1010,390" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="1090,413.5 1090,487" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="1090,533 1090,607" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="1090,653 1090,727" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="1170,750 1250,750" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="1330,773 1330,847" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<circle cx="130" cy="150" r="28" fill="#fff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="153" font-size="11.5" text-anchor="middle" fill="#111">Bắt đầu</text>
+<rect x="50" y="246.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="266" font-size="12.5" text-anchor="middle" fill="#111">Chờ phân công / Đang</text>
+<text x="130" y="281.5" font-size="12.5" text-anchor="middle" fill="#111">phân công</text>
+<rect x="530" y="247" width="160" height="46" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="273.75" font-size="12.5" text-anchor="middle" fill="#111">Chờ tiếp nhận</text>
+<rect x="770" y="247" width="160" height="46" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="850" y="273.75" font-size="12.5" text-anchor="middle" fill="#111">Yêu cầu bổ sung</text>
+<rect x="290" y="367" width="160" height="46" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="393.75" font-size="12.5" text-anchor="middle" fill="#111">Bị trả lại</text>
+<rect x="530" y="367" width="160" height="46" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="393.75" font-size="12.5" text-anchor="middle" fill="#111">Chờ duyệt</text>
+<rect x="530" y="607" width="160" height="46" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="610" y="633.75" font-size="12.5" text-anchor="middle" fill="#111">Không thụ lý (kết thúc)</text>
+<rect x="770" y="606.5" width="160" height="47" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="850" y="626" font-size="12.5" text-anchor="middle" fill="#111">Đã chuyển CQGQBT (kết</text>
+<text x="850" y="641.5" font-size="12.5" text-anchor="middle" fill="#111">thúc)</text>
+<rect x="1010" y="366.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="1090" y="386" font-size="12.5" text-anchor="middle" fill="#111">Cử người giải quyết bồi</text>
+<text x="1090" y="401.5" font-size="12.5" text-anchor="middle" fill="#111">thường</text>
+<rect x="1010" y="487" width="160" height="46" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="1090" y="513.75" font-size="12.5" text-anchor="middle" fill="#111">Xác minh thiệt hại</text>
+<rect x="1010" y="607" width="160" height="46" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="1090" y="633.75" font-size="12.5" text-anchor="middle" fill="#111">Thương lượng</text>
+<rect x="1010" y="727" width="160" height="46" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="1090" y="753.75" font-size="12.5" text-anchor="middle" fill="#111">Chờ ban hành QĐ</text>
+<rect x="1250" y="727" width="160" height="46" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="1330" y="753.75" font-size="12.5" text-anchor="middle" fill="#111">Chờ chi trả</text>
+<rect x="1250" y="847" width="160" height="46" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="1330" y="873.75" font-size="12.5" text-anchor="middle" fill="#111">Hoàn thành (kết thúc)</text>
+<rect x="322.658935546875" y="252" width="94.68212890625" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="370" y="264" font-size="11" text-anchor="middle" fill="#1f4e79">Phân công cán bộ</text>
+<rect x="575.734375" y="322" width="31.265625" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="591.3671875" y="334" font-size="11" text-anchor="middle" fill="#1f4e79">Trình</text>
+<rect x="468.3408203125" y="372" width="43.318359375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="490" y="384" font-size="11" text-anchor="middle" fill="#1f4e79">Từ chối</text>
+<rect x="403" y="345.5" width="45.3271484375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="425.66357421875" y="357.5" font-size="11" text-anchor="middle" fill="#1f4e79">Trình lại</text>
+<rect x="643" y="335.5" width="120.35595703125" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="703.177978515625" y="347.5" font-size="11" text-anchor="middle" fill="#1f4e79">Duyệt Yêu cầu bổ sung</text>
+<rect x="695.095703125" y="239" width="69.80859375" height="29" fill="#ffffff" opacity="0.92"/>
+<text x="730" y="251" font-size="11" text-anchor="middle" fill="#1f4e79">Tiếp nhận bổ</text>
+<text x="730" y="264" font-size="11" text-anchor="middle" fill="#1f4e79">sung</text>
+<rect x="508.05322265625" y="502" width="98.94677734375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="557.526611328125" y="514" font-size="11" text-anchor="middle" fill="#1f4e79">Duyệt Không thụ lý</text>
+<rect x="643" y="475.5" width="95.28369140625" height="42" fill="#ffffff" opacity="0.92"/>
+<text x="690.641845703125" y="487.5" font-size="11" text-anchor="middle" fill="#1f4e79">Không thuộc thẩm</text>
+<text x="690.641845703125" y="500.5" font-size="11" text-anchor="middle" fill="#1f4e79">quyền / Chuyển</text>
+<text x="690.641845703125" y="513.5" font-size="11" text-anchor="middle" fill="#1f4e79">CQGQBT</text>
+<rect x="790.130859375" y="372" width="119.73828125" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="850" y="384" font-size="11" text-anchor="middle" fill="#1f4e79">Duyệt Thông báo thụ lý</text>
+<rect x="1093" y="435.75" width="72.6552734375" height="29" fill="#ffffff" opacity="0.92"/>
+<text x="1129.32763671875" y="447.75" font-size="11" text-anchor="middle" fill="#1f4e79">Ban hành QĐ</text>
+<text x="1129.32763671875" y="460.75" font-size="11" text-anchor="middle" fill="#1f4e79">cử người</text>
+<rect x="1093" y="562" width="109.9521484375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="1147.97607421875" y="574" font-size="11" text-anchor="middle" fill="#1f4e79">Hoàn thành xác minh</text>
+<rect x="1093" y="675.5" width="103.78076171875" height="29" fill="#ffffff" opacity="0.92"/>
+<text x="1144.890380859375" y="687.5" font-size="11" text-anchor="middle" fill="#1f4e79">Lưu kết quả thương</text>
+<text x="1144.890380859375" y="700.5" font-size="11" text-anchor="middle" fill="#1f4e79">lượng</text>
+<rect x="1173.67236328125" y="719" width="72.6552734375" height="29" fill="#ffffff" opacity="0.92"/>
+<text x="1210" y="731" font-size="11" text-anchor="middle" fill="#1f4e79">Ban hành QĐ</text>
+<text x="1210" y="744" font-size="11" text-anchor="middle" fill="#1f4e79">GQBT</text>
+<rect x="1333" y="795.5" width="104.6455078125" height="29" fill="#ffffff" opacity="0.92"/>
+<text x="1385.32275390625" y="807.5" font-size="11" text-anchor="middle" fill="#1f4e79">Chi đủ / Trả lại ngân</text>
+<text x="1385.32275390625" y="820.5" font-size="11" text-anchor="middle" fill="#1f4e79">sách</text>
+</svg>

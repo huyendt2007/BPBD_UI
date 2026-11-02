@@ -340,6 +340,18 @@
                 nbth: { type: T_CA_NHAN, name: 'Trần Văn Lộc', dob: '', docType: '', docNo: '', phone: '', email: '', country: VN, city: '', ward: '', address: '' },
                 hanhVi: 'Tạm giữ trái pháp luật.',
                 receptionDocs: [{ name: FIXED_NAME, file: 'Van_ban_yeu_cau_boi_thuong_Tran_Thi_Hanh.pdf' }]
+            }),
+            // [kttr] Hồ sơ Chờ phân công tại Cục THADS tỉnh Lâm Đồng cùng số giấy tờ người bị thiệt hại với BT-2026-601 (Giải quyết YCBT):
+            // demo Danh sách hồ sơ cùng số giấy tờ người bị thiệt hại trước khi trình ký Thông báo thụ lý (cùng dữ liệu hồ sơ luồng tại quan_ly_boi_thuong_kttr.js)
+            base({
+                id: 'TN_KTTR1', code: 'VVBT-2026-951', maVuViec: 'VVBT-2026-951', fieldGroup: 'thi hành án dân sự',
+                date: '28/10/2026', receivedAt: '28/10/2026 09:00', receivedBy: 'Trịnh Thu Trang', rootUnitId: 'THADS-LD',
+                timeline: [{ title: 'Tiếp nhận hồ sơ', date: '28/10/2026', desc: 'Đã tiếp nhận thông tin ban đầu. Trạng thái: Chờ phân công.', status: 'completed' }],
+                nyc: 'Vương Thị Thu Trang', nycName: 'Vương Thị Thu Trang', nycType: T_CA_NHAN, nycDocType: 'CMND/CCCD/Chứng minh quân đội', nycDocNo: '001187006601',
+                nycRole: 'Người bị thiệt hại', nycDob: '08/05/1987', nycPhone: '0912601601',
+                nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: '', nycAddressDetail: 'Số 14 ngõ 4B Đặng Văn Ngữ', address: 'Số 14 ngõ 4B Đặng Văn Ngữ',
+                nbth: null, hanhVi: 'Kê biên tài sản không thuộc sở hữu của người phải thi hành án.',
+                receptionDocs: [{ name: FIXED_NAME, file: 'Don_yeu_cau_VVBT-2026-951.pdf' }]
             })
         ];
     }

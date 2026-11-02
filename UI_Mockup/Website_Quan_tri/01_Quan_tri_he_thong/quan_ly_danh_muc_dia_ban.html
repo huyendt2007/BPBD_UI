@@ -95,6 +95,12 @@
             gap: 8px;
         }
 
+        .sync-meta {
+            margin-top: 4px;
+            font-size: 12px;
+            color: #64748B;
+        }
+
         .header-actions {
             display: flex;
             align-items: center;
@@ -1023,25 +1029,17 @@
         <div class="page-header">
             <div class="header-title">
                 <h1>Quản lý Đơn vị hành chính</h1>
+                <div class="sync-meta"><i class="fa-solid fa-cloud-arrow-down"></i> Dữ liệu đồng bộ từ TTDLQG · Đồng bộ lần cuối: <span id="lastSyncTime">30/10/2026 08:00</span></div>
             </div>
             <div class="header-actions">
-                <button class="btn btn-primary" id="btnThemMoi" title="Thêm mới đơn vị hành chính">
-                    <i class="fa-solid fa-plus"></i> Thêm mới
-                </button>
-                <button class="btn" id="btnSua" disabled title="Chỉnh sửa đơn vị đang chọn">
-                    <i class="fa-regular fa-pen-to-square"></i> Sửa
+                <button class="btn btn-primary" id="btnDongBo" title="Đồng bộ danh mục Địa bàn hành chính từ TTDLQG">
+                    <i class="fa-solid fa-rotate"></i> Đồng bộ từ TTDLQG
                 </button>
                 <button class="btn" id="btnXuatExcel" title="Kết xuất danh sách ra file Excel">
                     <i class="fa-solid fa-file-excel" style="color: #10B981;"></i> Kết xuất Excel
                 </button>
                 <button class="btn" id="btnLamMoi" title="Xóa bộ lọc và tải lại danh sách">
                     <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
-                </button>
-                <button class="btn btn-danger-outline" id="btnXoa" disabled title="Xóa đơn vị đang chọn">
-                    <i class="fa-regular fa-trash-can"></i> Xóa
-                </button>
-                <button class="btn" id="btnNhanExcel" title="Nhận dữ liệu từ tệp Excel (Quy chuẩn 5.6)">
-                    <i class="fa-solid fa-file-import" style="color: #0284c7;"></i> Nhận Excel
                 </button>
             </div>
         </div>
@@ -2349,10 +2347,6 @@
                 row.classList.toggle('selected', row.dataset.id === unit.id);
             });
 
-            // Enable action buttons
-            document.getElementById('btnSua').disabled = false;
-            document.getElementById('btnXoa').disabled = false;
-
             // Show details
             document.getElementById('emptyState').style.display = 'none';
             document.getElementById('detailContainer').style.display = 'flex';
@@ -2529,7 +2523,7 @@
         }
 
         // Modal Open - Add Mode
-        document.getElementById('btnThemMoi').addEventListener('click', () => {
+        document.getElementById('btnThemMoi')?.addEventListener('click', () => {
             isEditMode = false;
             document.getElementById('modalUnitTitle').textContent = 'Thêm mới Đơn vị hành chính';
             document.getElementById('btnModalSave').textContent = 'Thêm mới';
@@ -2554,7 +2548,7 @@
         });
 
         // Modal Open - Edit Mode
-        document.getElementById('btnSua').addEventListener('click', () => {
+        document.getElementById('btnSua')?.addEventListener('click', () => {
             if (!selectedUnit) return;
             isEditMode = true;
             document.getElementById('modalUnitTitle').textContent = 'Chỉnh sửa Đơn vị hành chính';
@@ -2718,7 +2712,7 @@
         });
 
         // Delete Confirmation Modal (Rule 10 Compliance)
-        document.getElementById('btnXoa').addEventListener('click', () => {
+        document.getElementById('btnXoa')?.addEventListener('click', () => {
             if (!selectedUnit) return;
             document.getElementById('delUnitName').textContent = selectedUnit.name;
             document.getElementById('modalConfirmDelete').classList.add('show');
@@ -2751,8 +2745,6 @@
 
             // Reset selection
             selectedUnit = null;
-            document.getElementById('btnSua').disabled = true;
-            document.getElementById('btnXoa').disabled = true;
             document.getElementById('emptyState').style.display = 'flex';
             document.getElementById('detailContainer').style.display = 'none';
 
@@ -2805,7 +2797,7 @@
             btnSubmitNhanExcel.disabled = true;
         }
 
-        document.getElementById('btnNhanExcel').addEventListener('click', () => {
+        document.getElementById('btnNhanExcel')?.addEventListener('click', () => {
             resetImportModal();
             modalNhanExcel.classList.add('show');
         });
@@ -2908,6 +2900,23 @@
                 const filename = `${dateStr}_Danh_muc_Dia_ban.xlsx`;
                 showToast(`Đã tải xuống thành công tệp: ${filename}`, 'success');
             }, 1000);
+        });
+
+        // Đồng bộ từ TTDLQG: lấy toàn bộ danh mục Địa bàn hành chính qua LGSP, gửi đối soát tổng số bản ghi nhận được
+        document.getElementById('btnDongBo').addEventListener('click', () => {
+            const btn = document.getElementById('btnDongBo');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-rotate fa-spin"></i> Đang đồng bộ...';
+            setTimeout(() => {
+                const now = new Date();
+                const pad = n => String(n).padStart(2, '0');
+                document.getElementById('lastSyncTime').textContent = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-rotate"></i> Đồng bộ từ TTDLQG';
+                renderTree();
+                if (selectedUnit) selectUnitNode(findUnitById(selectedUnit.id) || selectedUnit);
+                showToast('Cập nhật dữ liệu thành công.', 'success');
+            }, 1200);
         });
 
         // Toast feedback function

@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1220" height="1060" viewBox="0 0 1220 1060" font-family="Arial, Helvetica, sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f6fb0"/></marker></defs>
+<rect x="0" y="0" width="1220" height="1060" fill="#ffffff"/>
+<rect x="10" y="10" width="1200" height="1040" fill="#fff" stroke="#333333" stroke-width="1.2"/>
+<line x1="10" y1="50" x2="1210" y2="50" stroke="#333333"/>
+<text x="20" y="36" font-size="15" font-weight="bold" fill="#111">QT5.1. Chi trả tiền bồi thường</text>
+<rect x="10" y="50" width="480" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="250" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Cán bộ xử lý</text>
+<rect x="490" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="610" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Lãnh đạo được giao</text>
+<line x1="490" y1="50" x2="490" y2="1050" stroke="#333333" stroke-width="0.8"/>
+<rect x="730" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="850" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Hệ thống</text>
+<line x1="730" y1="50" x2="730" y2="1050" stroke="#333333" stroke-width="0.8"/>
+<rect x="970" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="1090" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Phân hệ khác</text>
+<line x1="970" y1="50" x2="970" y2="1050" stroke="#333333" stroke-width="0.8"/>
+<polyline points="1010,150 930,150" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="1010,270 880,270 880,177.25" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="770,150 160,150 160,246.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,270 290,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="130,293.5 130,358.75" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="340,311.5 340,390 210,390" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="130,421.25 130,475" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="200,510 530,510" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="130,545 130,630 770,630" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="690,510 820,510 820,595" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="580,475 580,400 210,400" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="820,665 820,750 225,750" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="130,785 130,846.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="130,893.5 130,955" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="60,990 30,990 30,870 50,870" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="200,990 770,990" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="225,760 340,760 340,835" fill="none" stroke="#2f6fb0" stroke-width="1.4" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+<polygon points="1010,126.5 1156,126.5 1170,150 1156,173.5 1010,173.5" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="1084" y="146" font-size="12.5" text-anchor="middle" fill="#111">QT4.2: Quyết định Có</text>
+<text x="1084" y="161.5" font-size="12.5" text-anchor="middle" fill="#111">hiệu lực</text>
+<polygon points="1010,246.5 1156,246.5 1170,270 1156,293.5 1010,293.5" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="1084" y="266" font-size="12.5" text-anchor="middle" fill="#111">QT7.1: vụ việc tại Tòa án</text>
+<text x="1084" y="281.5" font-size="12.5" text-anchor="middle" fill="#111">Đã có bản án/QĐ</text>
+<rect x="50" y="246.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="266" font-size="12.5" text-anchor="middle" fill="#111">1. Mở bản ghi tự tạo</text>
+<text x="130" y="281.5" font-size="12.5" text-anchor="middle" fill="#111">(menu Chi trả, MH01)</text>
+<rect x="290" y="228.5" width="160" height="83" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="248" font-size="12.5" text-anchor="middle" fill="#111">2. Đề nghị cấp bổ sung</text>
+<text x="370" y="263.5" font-size="12.5" text-anchor="middle" fill="#111">kinh phí (MH08)</text>
+<rect x="301.928955078125" y="271.5" width="136.14208984375" height="32" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="370" y="283.5" font-size="11" text-anchor="middle" fill="#6b4e00">Đề nghị cấp bổ sung kinh</text>
+<text x="370" y="296.5" font-size="11" text-anchor="middle" fill="#6b4e00">phí</text>
+<rect x="50" y="358.75" width="160" height="62.5" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="378.25" font-size="12.5" text-anchor="middle" fill="#111">3. Trình thông báo chi trả</text>
+<text x="130" y="393.75" font-size="12.5" text-anchor="middle" fill="#111">Mẫu 32/BTNN (MH06 /</text>
+<text x="130" y="409.25" font-size="12.5" text-anchor="middle" fill="#111">MH24)</text>
+<polygon points="130,475 200,510 130,545 60,510" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="513" font-size="11.5" text-anchor="middle" fill="#111">Hình thức ký?</text>
+<rect x="35" y="715" width="190" height="70" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="734.5" font-size="12.5" text-anchor="middle" fill="#111">5. Nhập Số thông báo, Ngày</text>
+<text x="130" y="750" font-size="12.5" text-anchor="middle" fill="#111">nhận thông báo (01 lần)</text>
+<rect x="43.575927734375" y="758" width="172.84814453125" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="130" y="770" font-size="11" text-anchor="middle" fill="#6b4e00">Hạn nhận = ngày nhận + 03 năm</text>
+<rect x="50" y="846.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="866" font-size="12.5" text-anchor="middle" fill="#111">6. Cập nhật chi trả</text>
+<text x="130" y="881.5" font-size="12.5" text-anchor="middle" fill="#111">(MH03), có thể nhiều lần</text>
+<polygon points="130,955 200,990 130,1025 60,990" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="993" font-size="11.5" text-anchor="middle" fill="#111">Còn phải chi?</text>
+<rect x="275" y="835" width="190" height="70" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="854.5" font-size="12.5" text-anchor="middle" fill="#111">7. Trả lại ngân sách nhà nước</text>
+<text x="370" y="870" font-size="12.5" text-anchor="middle" fill="#111">(MH04) khi quá hạn 03 năm</text>
+<rect x="296.68408203125" y="878" width="146.6318359375" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="370" y="890" font-size="11" text-anchor="middle" fill="#6b4e00">Trả lại ngân sách nhà nước</text>
+<rect x="530" y="475" width="160" height="70" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="494.5" font-size="12.5" text-anchor="middle" fill="#111">4. Ký duyệt / Từ chối</text>
+<text x="610" y="510" font-size="12.5" text-anchor="middle" fill="#111">(MH07)</text>
+<rect x="578.3798828125" y="518" width="63.240234375" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="610" y="530" font-size="11" text-anchor="middle" fill="#6b4e00">Chờ duyệt</text>
+<rect x="770" y="122.75" width="160" height="54.5" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="850" y="142.25" font-size="12.5" text-anchor="middle" fill="#111">Tạo bản ghi Chi trả</text>
+<rect x="790.861083984375" y="150.25" width="118.27783203125" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="850" y="162.25" font-size="11" text-anchor="middle" fill="#6b4e00">Chờ thông báo chi trả</text>
+<rect x="770" y="595" width="160" height="70" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="850" y="614.5" font-size="12.5" text-anchor="middle" fill="#111">Ban hành Thông báo chi</text>
+<text x="850" y="630" font-size="12.5" text-anchor="middle" fill="#111">trả</text>
+<rect x="816.857177734375" y="638" width="66.28564453125" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="850" y="650" font-size="11" text-anchor="middle" fill="#6b4e00">Chờ chi trả</text>
+<rect x="770" y="966.5" width="160" height="47" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="850" y="986" font-size="12.5" text-anchor="middle" fill="#111">Bản ghi Hoàn thành; vụ</text>
+<text x="850" y="1001.5" font-size="12.5" text-anchor="middle" fill="#111">việc Hoàn thành</text>
+<rect x="348.24462890625" y="492" width="33.5107421875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="365" y="504" font-size="11" text-anchor="middle" fill="#1f4e79">Ký số</text>
+<rect x="133" y="579.5" width="48.8076171875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="157.40380859375" y="591.5" font-size="11" text-anchor="middle" fill="#1f4e79">Ký ngoài</text>
+<rect x="733.363525390625" y="492" width="95.27294921875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="781" y="504" font-size="11" text-anchor="middle" fill="#1f4e79">Cấp cuối Ký duyệt</text>
+<rect x="583" y="429.5" width="89.166015625" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="627.5830078125" y="441.5" font-size="11" text-anchor="middle" fill="#1f4e79">Từ chối: Bị trả lại</text>
+<rect x="33" y="922" width="57.12744140625" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="61.563720703125" y="934" font-size="11" text-anchor="middle" fill="#1f4e79">Lớn hơn 0</text>
+<rect x="350.568115234375" y="972" width="40.86376953125" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="371" y="984" font-size="11" text-anchor="middle" fill="#1f4e79">Bằng 0</text>
+<rect x="238.526611328125" y="762" width="87.94677734375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="282.5" y="774" font-size="11" text-anchor="middle" fill="#1f4e79">Quá hạn 03 năm</text>
+</svg>

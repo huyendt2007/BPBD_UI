@@ -317,7 +317,7 @@
 | Người yêu cầu đăng ký | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>Gồm:<br>+ Bên nhận bảo đảm<br>+ Bên bảo đảm<br>+ Quản tài viên; Doanh nghiệp quản lý, thanh lý tài sản<br>+ Người đại diện |
 | Họ và tên / Tên tổ chức | String(255) | Có | Trống | Control UI: Input text.<br>- Tự động chuyển chữ IN HOA khi nhập. |
 | Địa chỉ liên hệ | String(500) | Có | Trống | Control UI: Input text, chiếm 02 cột.<br>- Nhập theo cú pháp "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" theo [BR-VAL-015]. |
-| Loại giấy tờ | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>Gồm:<br>+ Chứng minh nhân dân, Căn cước công dân, Chứng minh quân đội<br>+ Hộ chiếu<br>+ Thẻ thường trú<br>+ Mã số thuế |
+| Loại giấy tờ | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>- Tham chiếu Danh mục Loại giấy tờ pháp lý [DM_10]. |
 | Số giấy tờ | String(50) | Có | Trống | Control UI: Input text.<br>- Loại giấy tờ là Mã số thuế và giá trị nhập là chữ số: Kiểm tra theo [BR-VAL-005]. |
 | Cơ quan cấp | String(255) | Không | Trống | Control UI: Input text. |
 | Ngày cấp | Date | Không | Trống | Control UI: Input text, định dạng dd/mm/yyyy.<br>- Không lớn hơn ngày hiện tại. |
@@ -333,7 +333,7 @@
 | STT | Integer(10) | - | Tự sinh | Số thứ tự tăng dần. |
 | Tên đầy đủ | String(255) | Có | Trống | Control UI: Input text.<br>- Tự động chuyển chữ IN HOA khi nhập. |
 | Địa chỉ | String(500) | Có | Trống | Control UI: Input text.<br>- Nhập theo cú pháp tại [BR-VAL-015]. |
-| Loại giấy tờ xác định tư cách pháp lý | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>- Danh sách như trường Loại giấy tờ của Người yêu cầu đăng ký. |
+| Loại giấy tờ xác định tư cách pháp lý | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>- Tham chiếu Danh mục Loại giấy tờ pháp lý [DM_10]. |
 | Số giấy tờ | String(50) | Có | Trống | Control UI: Input text. |
 | Cơ quan cấp | String(255) | Không | Trống | Control UI: Input text. |
 | Ngày cấp | Date | Không | Trống | Control UI: Input text, định dạng dd/mm/yyyy. |
@@ -346,7 +346,7 @@
 | STT | Integer(10) | - | Tự sinh | Số thứ tự tăng dần. |
 | Tên đầy đủ | String(255) | Có | Trống | Control UI: Input text.<br>- Tự động chuyển chữ IN HOA khi nhập. |
 | Địa chỉ | String(500) | Có | Trống | Control UI: Input text.<br>- Nhập theo cú pháp tại [BR-VAL-015]. |
-| Loại giấy tờ xác định tư cách pháp lý | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>- Danh sách như trường Loại giấy tờ của Người yêu cầu đăng ký. |
+| Loại giấy tờ xác định tư cách pháp lý | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>- Tham chiếu Danh mục Loại giấy tờ pháp lý [DM_10]. |
 | Số giấy tờ | String(50) | Có | Trống | Control UI: Input text. |
 | Cơ quan cấp | String(255) | Không | Trống | Control UI: Input text. |
 | Ngày cấp | Date | Không | Trống | Control UI: Input text, định dạng dd/mm/yyyy. |
@@ -434,7 +434,7 @@
 | 11 | Người yêu cầu đăng ký | 1.2 | Enum(String(100)) | Có | Danh sách:<br>+ Bên nhận bảo đảm<br>+ Bên bảo đảm<br>+ Quản tài viên; Doanh nghiệp quản lý, thanh lý tài sản<br>+ Người đại diện |
 | 12 | Họ và tên / Tên tổ chức | Full name | String(255) | Có | Viết chữ IN HOA. |
 | 13 | Địa chỉ liên hệ | Address | String(500) | Có | Theo cú pháp "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" tại [BR-VAL-015]. |
-| 14 | Loại giấy tờ | - | Enum(String(100)) | Có | Danh sách:<br>+ Chứng minh nhân dân, Căn cước công dân, Chứng minh quân đội<br>+ Hộ chiếu<br>+ Thẻ thường trú<br>+ Mã số thuế |
+| 14 | Loại giấy tờ | - | Enum(String(100)) | Có | Tham chiếu Danh mục Loại giấy tờ pháp lý [DM_10]. |
 | 15 | Số giấy tờ | No. | String(50) | Có | Nhập dạng văn bản, giữ số 0 ở đầu. |
 | 16 | Cơ quan cấp | Issued by | String(255) | Không | |
 | 17 | Ngày cấp | Date | Date | Không | dd/mm/yyyy. |

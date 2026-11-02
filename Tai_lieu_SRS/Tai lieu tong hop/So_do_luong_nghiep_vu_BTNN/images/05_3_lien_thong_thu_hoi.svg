@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="820" viewBox="0 0 980 820" font-family="Arial, Helvetica, sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f6fb0"/></marker></defs>
+<rect x="0" y="0" width="980" height="820" fill="#ffffff"/>
+<rect x="10" y="10" width="960" height="800" fill="#fff" stroke="#333333" stroke-width="1.2"/>
+<line x1="10" y1="50" x2="970" y2="50" stroke="#333333"/>
+<text x="20" y="36" font-size="15" font-weight="bold" fill="#111">QT5.3. Liên thông tự động và thu hồi kinh phí</text>
+<rect x="10" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="130" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Phân hệ khác</text>
+<rect x="250" y="50" width="480" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="490" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Hệ thống</text>
+<line x1="250" y1="50" x2="250" y2="810" stroke="#333333" stroke-width="0.8"/>
+<rect x="730" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="850" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Cán bộ xử lý</text>
+<line x1="730" y1="50" x2="730" y2="810" stroke="#333333" stroke-width="0.8"/>
+<polyline points="210,270 300,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,390 370,390 370,305" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="370,235 370,181.25" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="440,270 540,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="610,305 610,482.75" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="610,235 610,181.25" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,630 300,630" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="370,665 370,707.25" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="440,630 530,630" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="610,591 610,537.25" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="690,510 770,510" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="850,541.25 850,595" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="948,630 960,630 960,510 930,510" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="850,665 850,715" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polygon points="50,246.5 196,246.5 210,270 196,293.5 50,293.5" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="124" y="266" font-size="12.5" text-anchor="middle" fill="#111">QT3.3: Đình chỉ / Dừng</text>
+<text x="124" y="281.5" font-size="12.5" text-anchor="middle" fill="#111">giải quyết được ban hành</text>
+<polygon points="50,366.5 196,366.5 210,390 196,413.5 50,413.5" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="124" y="386" font-size="12.5" text-anchor="middle" fill="#111">QT4.2: Hủy QĐ được ban</text>
+<text x="124" y="401.5" font-size="12.5" text-anchor="middle" fill="#111">hành (Bảng C)</text>
+<polygon points="50,598.75 196,598.75 210,630 196,661.25 50,661.25" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="124" y="618.25" font-size="12.5" text-anchor="middle" fill="#111">QT4.2: Sửa chữa, bổ</text>
+<text x="124" y="633.75" font-size="12.5" text-anchor="middle" fill="#111">sung QĐ được ban hành</text>
+<text x="124" y="649.25" font-size="12.5" text-anchor="middle" fill="#111">(Bảng A, B)</text>
+<polygon points="370,235 440,270 370,305 300,270" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="273" font-size="11.5" text-anchor="middle" fill="#111">Bản ghi đã chi?</text>
+<rect x="290" y="118.75" width="160" height="62.5" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="370" y="138.25" font-size="12.5" text-anchor="middle" fill="#111">Bản ghi chưa chi: Đã hủy,</text>
+<text x="370" y="153.75" font-size="12.5" text-anchor="middle" fill="#111">hủy phiếu trình Chờ</text>
+<text x="370" y="169.25" font-size="12.5" text-anchor="middle" fill="#111">duyệt</text>
+<polygon points="610,235 680,270 610,305 540,270" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="266" font-size="11.5" text-anchor="middle" fill="#111">Thu hồi kinh</text>
+<text x="610" y="280" font-size="11.5" text-anchor="middle" fill="#111">phí đã chi?</text>
+<rect x="530" y="118.75" width="160" height="62.5" rx="8" fill="#fafafa" stroke="#333333" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="610" y="138.25" font-size="12.5" text-anchor="middle" fill="#111">Không thu hồi (Đình chỉ /</text>
+<text x="610" y="153.75" font-size="12.5" text-anchor="middle" fill="#111">Dừng): giữ trạng thái, ghi</text>
+<text x="610" y="169.25" font-size="12.5" text-anchor="middle" fill="#111">lịch sử</text>
+<polygon points="370,595 440,630 370,665 300,630" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="626" font-size="11.5" text-anchor="middle" fill="#111">Chênh lệch số</text>
+<text x="370" y="640" font-size="11.5" text-anchor="middle" fill="#111">tiền?</text>
+<rect x="290" y="707.25" width="160" height="85.5" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="370" y="726.75" font-size="12.5" text-anchor="middle" fill="#111">Thiếu tiền: cập nhật bản</text>
+<text x="370" y="742.25" font-size="12.5" text-anchor="middle" fill="#111">ghi chưa chi hoặc tạo bản</text>
+<text x="370" y="757.75" font-size="12.5" text-anchor="middle" fill="#111">ghi chi trả thêm</text>
+<rect x="310.861083984375" y="765.75" width="118.27783203125" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="370" y="777.75" font-size="11" text-anchor="middle" fill="#6b4e00">Chờ thông báo chi trả</text>
+<rect x="530" y="591" width="160" height="78" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="610" y="610.5" font-size="12.5" text-anchor="middle" fill="#111">Thừa tiền: hủy bản ghi</text>
+<text x="610" y="626" font-size="12.5" text-anchor="middle" fill="#111">chưa chi; giảm / Hoàn</text>
+<text x="610" y="641.5" font-size="12.5" text-anchor="middle" fill="#111">thành / thu hồi bản ghi đã</text>
+<text x="610" y="657" font-size="12.5" text-anchor="middle" fill="#111">chi</text>
+<rect x="530" y="482.75" width="160" height="54.5" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="610" y="502.25" font-size="12.5" text-anchor="middle" fill="#111">Bản ghi đã chi</text>
+<rect x="575.321044921875" y="510.25" width="69.35791015625" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="610" y="522.25" font-size="11" text-anchor="middle" fill="#6b4e00">Chờ thu hồi</text>
+<rect x="770" y="478.75" width="160" height="62.5" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="850" y="498.25" font-size="12.5" text-anchor="middle" fill="#111">10. Cập nhật thu hồi</text>
+<text x="850" y="513.75" font-size="12.5" text-anchor="middle" fill="#111">(MH23 / MH10), lưu</text>
+<text x="850" y="529.25" font-size="12.5" text-anchor="middle" fill="#111">nhiều lần</text>
+<polygon points="850,595 948,630 850,665 752,630" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="850" y="626" font-size="11.5" text-anchor="middle" fill="#111">Lũy kế bằng Số</text>
+<text x="850" y="640" font-size="11.5" text-anchor="middle" fill="#111">tiền phải thu hồi?</text>
+<rect x="770" y="715" width="160" height="70" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="850" y="734.5" font-size="12.5" text-anchor="middle" fill="#111">Hoàn thành thu hồi (bước</text>
+<text x="850" y="750" font-size="12.5" text-anchor="middle" fill="#111">10)</text>
+<rect x="818.927734375" y="758" width="62.14453125" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="850" y="770" font-size="11" text-anchor="middle" fill="#6b4e00">Đã thu hồi</text>
+<rect x="373" y="200.125" width="37.8076171875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="391.90380859375" y="212.125" font-size="11" text-anchor="middle" fill="#1f4e79">Không</text>
+<rect x="479.96923828125" y="252" width="20.0615234375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="490" y="264" font-size="11" text-anchor="middle" fill="#1f4e79">Có</text>
+<rect x="613" y="379.375" width="115.43603515625" height="29" fill="#ffffff" opacity="0.92"/>
+<text x="670.718017578125" y="391.375" font-size="11" text-anchor="middle" fill="#1f4e79">Thu hồi (Hủy QĐ: luôn</text>
+<text x="670.718017578125" y="404.375" font-size="11" text-anchor="middle" fill="#1f4e79">thu hồi)</text>
+<rect x="613" y="200.125" width="73.890625" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="649.9453125" y="212.125" font-size="11" text-anchor="middle" fill="#1f4e79">Không thu hồi</text>
+<rect x="373" y="678.125" width="33.51611328125" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="389.758056640625" y="690.125" font-size="11" text-anchor="middle" fill="#1f4e79">Thiếu</text>
+<rect x="468.8408203125" y="612" width="32.318359375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="485" y="624" font-size="11" text-anchor="middle" fill="#1f4e79">Thừa</text>
+<rect x="613" y="556.125" width="89.810546875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="657.9052734375" y="568.125" font-size="11" text-anchor="middle" fill="#1f4e79">Phần thừa đã chi</text>
+<rect x="923.45703125" y="562" width="33.54296875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="940.228515625" y="574" font-size="11" text-anchor="middle" fill="#1f4e79">Chưa</text>
+<rect x="853" y="682" width="20.0615234375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="863.03076171875" y="694" font-size="11" text-anchor="middle" fill="#1f4e79">Có</text>
+</svg>

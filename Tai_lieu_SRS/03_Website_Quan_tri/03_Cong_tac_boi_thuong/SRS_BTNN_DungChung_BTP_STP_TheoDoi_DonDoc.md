@@ -37,6 +37,7 @@
 ---
 
 ##### 4.3.3.8.2. Sơ đồ luồng nghiệp vụ theo giao diện
+- Sơ đồ luồng các bước cho kiểm thử: [Nghiệp vụ dùng chung BTP và STP - Sơ đồ luồng nghiệp vụ BTNN - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/So_do_luong_nghiep_vu_BTNN/10_Nghiep_vu_dung_chung_BTP_STP.md)
 
 ```mermaid
 flowchart TD
@@ -169,7 +170,7 @@ flowchart TD
 | Hạn phản hồi | Date | Có điều kiện | Trống | Control UI: DatePicker, cùng vị trí với `Hạn báo cáo`.<br>- Hiển thị khi `Nhóm nghiệp vụ` là `Đôn đốc công tác BTNN`; bắt buộc (`*`).<br>- Placeholder: "dd/mm/yyyy".<br>- Không nhỏ hơn ngày văn bản theo [BR-VAL-007]. |
 | Căn cứ pháp luật | String(500) | Có điều kiện | Trống | Control UI: Text input.<br>- Hiển thị khi `Nhóm nghiệp vụ` là `Đôn đốc công tác BTNN`; bắt buộc (`*`).<br>- Placeholder: "Nhập căn cứ pháp luật...".<br>- Văn bản đôn đốc phải nêu rõ căn cứ pháp luật (khoản 1, khoản 3 Điều 15). |
 | Mã vụ việc liên quan | String(50) | Không | Trống | Control UI: Text input kèm nút `Tìm kiếm` và `Tìm kiếm nâng cao`.<br>- Luôn hiển thị.<br>- Placeholder: "Nhập mã vụ việc (VVBT-yyyy-xxx)...".<br>- Chỉ lưu vụ việc được chọn từ kết quả tìm kiếm, thuộc phạm vi dữ liệu theo cấp của người dùng; khi người dùng gõ tay hoặc sửa nội dung ô, hệ thống bỏ liên kết đã chọn. |
-| Liên kết hồ sơ vụ việc | Link | Không | Ẩn | Control UI: Text link.<br>- Hiển thị sau khi chọn vụ việc, dạng `Liên kết hồ sơ vụ việc: [Mã vụ việc] - [Họ và tên người yêu cầu bồi thường]`.<br>- Khi click, hệ thống mở [MH05 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường - SRS Giải quyết yêu cầu bồi thường - Giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43317-mh05---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) tại tab trình duyệt mới. |
+| Liên kết hồ sơ vụ việc | Link | Không | Ẩn | Control UI: Text link.<br>- Hiển thị sau khi chọn vụ việc, dạng `Liên kết hồ sơ vụ việc: [Mã vụ việc] - [Họ và tên người yêu cầu bồi thường]`.<br>- Khi click, hệ thống mở [MH04 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường - SRS Giải quyết yêu cầu bồi thường - Giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43316-mh04---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) tại tab trình duyệt mới. |
 | Nội dung cần theo dõi | Text(4000) | Có điều kiện | Trống | Control UI: Textarea.<br>- Hiển thị khi `Nhóm nghiệp vụ` là `Theo dõi công tác BTNN`; bắt buộc (`*`).<br>- Placeholder: "Nhập nội dung cần theo dõi...". |
 | Nội dung chi tiết yêu cầu báo cáo | Text(4000) | Có điều kiện | Trống | Control UI: Textarea, cùng vị trí với `Nội dung cần theo dõi`.<br>- Hiển thị khi `Nhóm nghiệp vụ` là `Yêu cầu báo cáo`; bắt buộc (`*`).<br>- Placeholder: "Nhập nội dung chi tiết yêu cầu báo cáo...". |
 | Nhiệm vụ công tác bồi thường nhà nước phải thực hiện | Text(4000) | Có điều kiện | Trống | Control UI: Textarea, cùng vị trí với `Nội dung cần theo dõi`.<br>- Hiển thị khi `Nhóm nghiệp vụ` là `Đôn đốc công tác BTNN`; bắt buộc (`*`).<br>- Placeholder: "Nhập nhiệm vụ công tác bồi thường nhà nước phải thực hiện...". |
@@ -193,8 +194,8 @@ flowchart TD
 |  |  |  | **TH3 - Mã vụ việc chưa được chọn từ kết quả tìm kiếm**: Xử lý như TH2 của `Lưu theo dõi`. |
 |  |  |  | **TH4 - Hợp lệ**: Hệ thống lưu hồ sơ ở trạng thái `Chờ phản hồi` (Thêm mới) hoặc cập nhật hồ sơ (Sửa), ghi lịch sử xử lý kèm cơ quan nhận văn bản, đóng màn hình và hiển thị [MSG-SUC-SYS-003]. Hệ thống không gửi văn bản tới cơ quan nhận. |
 | 3 | Hoàn thành | Button | Hiển thị khi mở hồ sơ theo dõi bằng thao tác `Hoàn thành`. Hệ thống kiểm tra như `Lưu theo dõi`, đồng thời bắt buộc `Kết quả theo dõi`; nếu hợp lệ, chuyển hồ sơ sang `Hoàn thành` và ghi lịch sử xử lý. |
-| 4 | Tìm kiếm (Mã vụ việc liên quan) | Button | Hệ thống tìm theo Mã vụ việc đã nhập trong phạm vi dữ liệu theo cấp của người dùng:<br>- **TH Khớp đúng 01 vụ việc**: Hệ thống chọn vụ việc và hiển thị `Liên kết hồ sơ vụ việc`.<br>- **TH Còn lại**: Hệ thống mở [Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan - SRS Giải quyết yêu cầu bồi thường - Giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#433110-popup-chuẩn-tìm-kiếm-vụ-việchồ-sơ-gốc-liên-quan) với Mã vụ việc đã nhập. |
-| 5 | Tìm kiếm nâng cao | Button | Hệ thống mở [Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan - SRS Giải quyết yêu cầu bồi thường - Giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#433110-popup-chuẩn-tìm-kiếm-vụ-việchồ-sơ-gốc-liên-quan); khi chọn vụ việc, hệ thống điền Mã vụ việc và hiển thị `Liên kết hồ sơ vụ việc`. |
+| 4 | Tìm kiếm (Mã vụ việc liên quan) | Button | Hệ thống tìm theo Mã vụ việc đã nhập trong phạm vi dữ liệu theo cấp của người dùng:<br>- **TH Khớp đúng 01 vụ việc**: Hệ thống chọn vụ việc và hiển thị `Liên kết hồ sơ vụ việc`.<br>- **TH Còn lại**: Hệ thống mở [Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan - SRS Giải quyết yêu cầu bồi thường - Giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43319-popup-chuẩn-tìm-kiếm-vụ-việchồ-sơ-gốc-liên-quan) với Mã vụ việc đã nhập. |
+| 5 | Tìm kiếm nâng cao | Button | Hệ thống mở [Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan - SRS Giải quyết yêu cầu bồi thường - Giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43319-popup-chuẩn-tìm-kiếm-vụ-việchồ-sơ-gốc-liên-quan); khi chọn vụ việc, hệ thống điền Mã vụ việc và hiển thị `Liên kết hồ sơ vụ việc`. |
 | 6 | Tải lên | Button | Hệ thống mở trình chọn file cho dòng tài liệu tương ứng. |
 | 7 | Xem file | Link | Hệ thống mở file của dòng tài liệu tại một tab trình duyệt mới. |
 | 8 | Xóa | Icon button | Hệ thống xóa dòng tài liệu khỏi bảng ngay, không hiển thị popup xác nhận. |
@@ -234,7 +235,7 @@ flowchart TD
 |  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Vi phạm [BR-VAL-001]. Hệ thống viền đỏ các ô lỗi, hiển thị "Đây là trường bắt buộc" và không cho lưu. |
 |  |  |  | **TH2 - Hợp lệ**: Hệ thống lưu phản hồi kèm cán bộ cập nhật, chuyển hồ sơ sang `Đã có phản hồi`, ghi lịch sử xử lý, đóng màn hình và hiển thị [MSG-SUC-SYS-002]. |
 | 3 | Hoàn thành | Button | Hiển thị ở chế độ xem với hồ sơ do đơn vị của người dùng lập, khi trạng thái `Đã có phản hồi`. Hệ thống mở [Popup Xác nhận](#43386-popup-xác-nhận); nếu chọn `Đồng ý`, chuyển hồ sơ sang `Hoàn thành`. |
-| 4 | Liên kết hồ sơ vụ việc | Link | Hệ thống mở [MH05 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường - SRS Giải quyết yêu cầu bồi thường - Giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43317-mh05---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) tại tab trình duyệt mới. |
+| 4 | Liên kết hồ sơ vụ việc | Link | Hệ thống mở [MH04 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường - SRS Giải quyết yêu cầu bồi thường - Giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43316-mh04---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) tại tab trình duyệt mới. |
 | 5 | Xem file | Link | Hệ thống mở file của dòng tài liệu tại một tab trình duyệt mới. |
 | 6 | Đóng / Hủy bỏ | Button | Hệ thống đóng màn hình, không lưu dữ liệu đang nhập và quay lại [MH01 - Màn hình Danh sách theo dõi, đôn đốc công tác BTNN](#43383-mh01---màn-hình-danh-sách-theo-dõi-đôn-đốc-công-tác-btnn). |
 

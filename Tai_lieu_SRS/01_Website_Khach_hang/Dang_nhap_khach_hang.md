@@ -241,8 +241,8 @@
 | Số giấy tờ | String(255) | Có | Lấy từ VNeID | Chỉ đọc. |
 | Họ và tên | String(255) | Có | Lấy từ VNeID | Chỉ đọc. |
 | Ngày sinh | Date | Không | Lấy từ VNeID | Lấy từ VNeID nếu có, cho phép nhập nếu trống. |
-| Giới tính | Enum(String(50)) | Không | Lấy từ VNeID | Lấy từ VNeID nếu có, cho phép chọn nếu trống. |
-| Quốc tịch | Enum(String(100)) | Có | Lấy từ VNeID | Control UI: Hộp chọn. |
+| Giới tính | Enum(String(50)) | Không | Lấy từ VNeID | Control UI: Hộp chọn.<br>- Tham chiếu Danh mục Giới tính [DM_23].<br>- Lấy từ VNeID nếu có, cho phép chọn nếu trống. |
+| Quốc tịch | Enum(String(100)) | Có | Lấy từ VNeID | Control UI: Hộp chọn.<br>- Tham chiếu Danh mục Quốc tịch / Quốc gia [DM_09]. |
 | Số điện thoại | String(20) | Không | Lấy từ VNeID | Cho phép bổ sung/cập nhật. |
 | Phân loại khách hàng | Enum(String(50)) | Có | Theo Quốc tịch | Tự động gợi ý: `Trong nước` (nếu Quốc tịch Việt Nam) hoặc `Nước ngoài`. |
 | Tỉnh/Thành phố | Enum(String(100)) | Có | Lấy từ VNeID nếu có | Tham chiếu Danh mục địa bàn (cấp Tỉnh/Thành phố). |
@@ -259,7 +259,7 @@
 | Email tổ chức (Tên đăng nhập) | String(255) | Có điều kiện | Theo Email VNeID nếu có | Áp dụng [BR-VAL-002] và [BR-VAL-009]. |
 | Mật khẩu đăng nhập | Password | Có điều kiện | Trống | Control UI: Ô nhập mật khẩu.<br>- Áp dụng [BR-VAL-006].<br>- Có biểu tượng con mắt để ẩn/hiện ký tự đã nhập. |
 | Nhập lại mật khẩu | Password | Có điều kiện | Trống | Control UI: Ô nhập lại mật khẩu.<br>- Phải trùng khớp với Mật khẩu đăng nhập.<br>- Có biểu tượng con mắt để ẩn/hiện ký tự đã nhập. |
-| Quốc gia đăng ký | Enum(String(100)) | Có | Lấy từ VNeID | Control UI: Hộp chọn. |
+| Quốc gia đăng ký | Enum(String(100)) | Có | Lấy từ VNeID | Control UI: Hộp chọn.<br>- Tham chiếu Danh mục Quốc tịch / Quốc gia [DM_09]. |
 | Phân loại khách hàng | Enum(String(50)) | Có | Theo Quốc gia đăng ký | Gồm `Trong nước` hoặc `Nước ngoài`. |
 | Tỉnh/Thành phố | Enum(String(100)) | Có | Lấy từ VNeID nếu có | Tham chiếu Danh mục địa bàn (cấp Tỉnh/Thành phố). |
 | Phường/Xã | Enum(String(100)) | Có | Lấy từ VNeID nếu có | Tham chiếu Danh mục địa bàn (cấp Phường/Xã). |

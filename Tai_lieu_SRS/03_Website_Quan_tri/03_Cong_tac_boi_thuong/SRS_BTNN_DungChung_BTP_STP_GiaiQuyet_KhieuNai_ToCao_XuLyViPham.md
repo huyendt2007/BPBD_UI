@@ -29,6 +29,7 @@
 \- Nội dung tiếp nhận thuộc nhóm khiếu nại, tố cáo, phản ánh, kiến nghị hoặc xử lý vi phạm liên quan đến giải quyết bồi thường, cấp kinh phí/chi trả, xác định trách nhiệm hoàn trả, xử lý kỷ luật, quản lý nhà nước về công tác BTNN.
 
 ##### 4.3.3.10.2. Sơ đồ luồng nghiệp vụ theo giao diện
+- Sơ đồ luồng các bước cho kiểm thử: [Nghiệp vụ dùng chung BTP và STP - Sơ đồ luồng nghiệp vụ BTNN - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/So_do_luong_nghiep_vu_BTNN/10_Nghiep_vu_dung_chung_BTP_STP.md)
 
 ```mermaid
 flowchart TD

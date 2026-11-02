@@ -233,6 +233,7 @@ Cho phép quản lý toàn diện tiến trình xem xét, xác định và thự
 - Trường `Trạng thái` của bộ lọc chỉ gồm các trạng thái chung của tab đang chọn.
 
 #### 4.3.3.5.2. Sơ đồ luồng nghiệp vụ theo giao diện
+- Sơ đồ luồng các bước cho kiểm thử: [Xem xét hoàn trả - Sơ đồ luồng nghiệp vụ BTNN - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/So_do_luong_nghiep_vu_BTNN/06_Xem_xet_hoan_tra.md)
 
 
 ```mermaid
@@ -491,7 +492,7 @@ flowchart TD
 
 ![Popup Thành lập Hội đồng xem xét trách nhiệm hoàn trả](images/UC_Xem_Xet_Hoan_Tra_MH04.png)
 
-Popup mở khi Cán bộ xử lý click `Thành lập hội đồng` tại Bước 1 (hồ sơ chưa thành lập Hội đồng - mới khởi tạo, chưa có trạng thái; Ký số trên hệ thống: trình Lãnh đạo -> `Chờ duyệt` (Loại trình `Thành lập hội đồng`); Ký ngoài: ban hành -> `Họp hội đồng`) hoặc `Trình ký` (hồ sơ `Bị trả lại` (Loại trình `Thành lập hội đồng`)). Bố cục như [Popup Không thụ lý hồ sơ - SRS Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#433115-popup-không-thụ-lý-hồ-sơ).
+Popup mở khi Cán bộ xử lý click `Thành lập hội đồng` tại Bước 1 (hồ sơ chưa thành lập Hội đồng - mới khởi tạo, chưa có trạng thái; Ký số trên hệ thống: trình Lãnh đạo -> `Chờ duyệt` (Loại trình `Thành lập hội đồng`); Ký ngoài: ban hành -> `Họp hội đồng`) hoặc `Trình ký` (hồ sơ `Bị trả lại` (Loại trình `Thành lập hội đồng`)). Bố cục như [Popup Không thụ lý hồ sơ - SRS Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#433114-popup-không-thụ-lý-hồ-sơ).
 - Thanh Stepper 2 bước chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`; ẩn khi `Ký ngoài`.
 - Ký số trên hệ thống: Wizard 2 bước; Bước 1 có 02 khối `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo` dưới khối tệp văn bản.
   + **Bước 1 - Nhập thông tin**: thứ tự khối `Hình thức ký` (đầu form), `Tệp văn bản trình ký` (nguồn tệp; Số quyết định, Ngày quyết định, Bảng danh sách thành viên trong hội đồng khi Sinh văn bản theo mẫu 33/BTNN).
@@ -643,7 +644,7 @@ Popup mở khi Cán bộ xử lý click `Thành lập hội đồng` tại Bư�
 | Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại | String(255) | Có | Trống | Control UI: Combobox có tìm kiếm.<br>- Placeholder: `-- Chọn hoặc tìm kiếm đơn vị công tác --`.<br>- Ô tìm kiếm: placeholder `Tìm theo mã hoặc tên đơn vị...`.<br>- Danh sách: cơ quan, đơn vị trên hệ thống, hiển thị `[Mã đơn vị] - [Tên đơn vị]`.<br>- Là thông tin của cán bộ; không là căn cứ phân tách phần đơn vị, không là căn cứ xác định đơn vị ban hành Quyết định hoàn trả. |
 | Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương | String(255) | Có | Theo `Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại` | Control UI: Combobox có tìm kiếm.<br>- Placeholder: `-- Chọn hoặc tìm kiếm cơ quan, tổ chức --`.<br>- Ô tìm kiếm, danh sách: như trường `Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại`.<br>- Tự điền theo `Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại` khi chọn cơ quan đó, nếu người dùng chưa chọn lại trường này; cho phép chọn lại.<br>- Là đơn vị nhận Quyết định hoàn trả và thực hiện Thu tiền hoàn trả đối với cán bộ.<br>- Lĩnh vực tố tụng hình sự: là Đơn vị ban hành Quyết định hoàn trả và căn cứ phân tách cán bộ về phần đơn vị khi hoàn thành Bước 2. |
 | **II. Ý kiến của Hội đồng** | Section | - | - | Control UI: Section. |
-| Mức độ lỗi | Enum(String(50)) | Có | `Vô ý` | Control UI: Combobox.<br>Gồm:<br>+ `Vô ý`<br>+ `Cố ý nhưng không bị truy cứu trách nhiệm hình sự`<br>+ `Cố ý mà có bản án đã có hiệu lực pháp luật tuyên phạm tội`<br>+ `Khác`<br>- Chọn `Khác`: hiển thị ô `Nội dung mức độ lỗi` bên dưới. |
+| Mức độ lỗi | Enum(String(50)) | Có | `Vô ý` | Control UI: Combobox.<br>- Tham chiếu Danh mục Mức độ lỗi của người thi hành công vụ gây thiệt hại [DM_48].<br>- Chọn `Khác`: hiển thị ô `Nội dung mức độ lỗi` bên dưới. |
 | Nội dung mức độ lỗi | Text(2000) | Có (khi hiển thị) | Trống | Control UI: Textarea.<br>- Placeholder: `Nhập nội dung mức độ lỗi`.<br>- Chỉ hiển thị khi `Mức độ lỗi` là `Khác`; chọn giá trị khác `Khác` thì ẩn và xóa nội dung đã nhập. |
 | Số tiền cần hoàn trả (đ) | Decimal(18,0) | Có | Trống | Control UI: Input text.<br>- Placeholder: `Nhập số tiền cần hoàn trả`.<br>- Số tiền phải hoàn trả đầy đủ theo kết luận của Hội đồng; lớn hơn 0.<br>- Căn lề phải, định dạng phân cách hàng nghìn bằng dấu chấm khi nhập.<br>- Dưới ô hiển thị số tiền bằng chữ; chưa nhập: `Chưa nhập số tiền`. |
 | Giảm/Miễn hoàn trả | Enum(String(50)) | Không | Không chọn | Control UI: Checkbox.<br>Gồm:<br>+ Giảm mức hoàn trả<br>+ Miễn hoàn trả<br>- Không bắt buộc; chọn tối đa 01 giá trị.<br>- Không chọn (không giảm, không miễn), hiển thị:<br>+ Phương thức hoàn trả<br>- `Giảm mức hoàn trả`, hiển thị:<br>+ Số tiền sau giảm (đ)<br>+ Lý do giảm<br>+ Phương thức hoàn trả<br>- `Miễn hoàn trả`, hiển thị:<br>+ Lý do miễn hoàn trả |
@@ -807,7 +808,7 @@ Popup có 02 chế độ theo [Quy tắc đình chỉ - Xem xét trách nhiệm 
 - Chế độ cả hồ sơ: mở khi Cán bộ xử lý thuộc đơn vị tạo Hội đồng click `Đình chỉ` tại thanh nút chân trang (hồ sơ `Chờ duyệt` / `Bị trả lại` (Loại trình `Thành lập hội đồng`), `Họp hội đồng`) hoặc `Trình ký` (hồ sơ `Bị trả lại` (Loại trình `QĐ đình chỉ`)); đơn vị ban hành là đơn vị tạo Hội đồng.
 - Chế độ cấp cán bộ: mở khi người dùng thuộc Đơn vị ban hành Quyết định hoàn trả của phần đơn vị chọn cán bộ rồi click `Trình ký QĐ đình chỉ` tại Bước 3 (Quyết định hoàn trả của phần đơn vị chưa ban hành), hoặc `Trình ký` tại khối `Quyết định đình chỉ (Mẫu 39/BTNN)`; đơn vị ban hành là Đơn vị ban hành Quyết định hoàn trả của phần đơn vị; có thêm khối `Cán bộ được đình chỉ` đặt ngay dưới khối `Hình thức ký` (hiển thị với cả 02 hình thức ký); các trường `Căn cứ`, `Văn bản làm căn cứ yêu cầu bồi thường`, `Nơi nhận` thuộc khối `Thông tin điền vào Mẫu 39/BTNN` như chế độ cả hồ sơ.
 
-Bố cục như [Popup Không thụ lý hồ sơ - SRS Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#433115-popup-không-thụ-lý-hồ-sơ).
+Bố cục như [Popup Không thụ lý hồ sơ - SRS Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#433114-popup-không-thụ-lý-hồ-sơ).
 - Áp dụng khi văn bản làm căn cứ yêu cầu bồi thường bị thu hồi, thay thế, hủy bỏ (khoản 2 Điều 69 Luật Trách nhiệm bồi thường của Nhà nước).
 - Bố cục Bước 1 theo thứ tự: khối `Hình thức ký` (đầu form), khối `Cán bộ được đình chỉ` (chế độ cấp cán bộ), khối tệp văn bản theo hình thức ký, 02 khối `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo` (`Ký ngoài` chỉ có khối `Tài liệu ban hành kèm theo`).
 - Thanh Stepper 2 bước chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`; ẩn khi `Ký ngoài`.

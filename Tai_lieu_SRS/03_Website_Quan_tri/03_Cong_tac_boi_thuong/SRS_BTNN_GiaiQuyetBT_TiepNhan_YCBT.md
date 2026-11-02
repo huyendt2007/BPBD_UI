@@ -396,7 +396,7 @@ k. Hồ sơ nguồn Dịch vụ công
 | **Thông tin người yêu cầu** | - | - | - | Control UI: Section header.<br>-  nhãn khối `Thông tin người yêu cầu`.|
 | Loại người yêu cầu | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
 | Tư cách người yêu cầu bồi thường | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
-| Trạng thái người bị thiệt hại | - | - | Theo bản ghi | Control UI: Label.<br>- Chỉ hiển thị khi người bị thiệt hại là cá nhân:<br>+ `Tư cách người yêu cầu bồi thường` = `Người bị thiệt hại` và `Loại người yêu cầu` = `Cá nhân`; hoặc<br>+ Khối `Thông tin người bị thiệt hại` hiển thị và `Loại người bị thiệt hại` = `Cá nhân`.<br>- Theo dữ liệu bản ghi: `Còn sống` hoặc `Đã mất`.<br>- Không có dữ liệu: hiển thị `---`. |
+| Trạng thái người bị thiệt hại | - | - | Theo bản ghi | Control UI: Label.<br>- Chỉ hiển thị khi người bị thiệt hại là cá nhân:<br>+ `Tư cách người yêu cầu bồi thường` = `Người bị thiệt hại` và `Loại người yêu cầu` = `Cá nhân`; hoặc<br>+ Khối `Thông tin người bị thiệt hại` hiển thị và `Loại người bị thiệt hại` = `Cá nhân`.<br>- Theo dữ liệu bản ghi.<br>- Không có dữ liệu: hiển thị `---`. |
 | Họ và tên / Tên tổ chức | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
 | Ngày sinh | - | - | Theo bản ghi | Control UI: Label.<br>- Chỉ hiển thị khi `Loại người yêu cầu` = `Cá nhân`.<br>- Theo dữ liệu bản ghi, định dạng `dd/mm/yyyy`.<br>- Không có dữ liệu: hiển thị `---`. |
 | Mã số tổ chức | - | - | Theo bản ghi | Control UI: Label.<br>- Chỉ hiển thị khi `Loại người yêu cầu` = `Tổ chức`.<br>- Theo dữ liệu bản ghi.<br>- Không có dữ liệu: hiển thị `---`. |

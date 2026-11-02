@@ -12,14 +12,15 @@ STT trường theo bảng III của `EForm_DVC_YeuCauBoiThuong.md`.
 | :-- | :--- | :--- | :--- |
 | 1 | DM_09 | [Quốc tịch / Quốc gia](#kn-dm-09) | Quốc gia (STT 23, 42, 48) |
 | 2 | DM_10 | [Loại giấy tờ pháp lý](#kn-dm-10) | Loại giấy tờ thân nhân (STT 13, 32) |
-| 3 | - | [Danh mục địa bàn](#kn-dia-ban) | Tỉnh/Thành phố (STT 4, 24, 43, 49), Phường/Xã (STT 25, 44, 50) |
-| 4 | DM_22 | [Lĩnh vực phát sinh thiệt hại](#kn-dm-22) | Lĩnh vực phát sinh thiệt hại (STT 2) |
-| 5 | DM_25 | [Hình thức tiếp nhận hồ sơ bồi thường](#kn-dm-25) | Không hiển thị trên E-Form; hệ thống gán cố định `Dịch vụ công` |
-| 6 | DM_26 | [Tư cách người yêu cầu bồi thường](#kn-dm-26) | Tư cách người yêu cầu bồi thường (STT 7) |
-| 7 | DM_27 | [Loại thiệt hại yêu cầu bồi thường](#kn-dm-27) | Bảng thiệt hại yêu cầu bồi thường (STT 56 đến STT 63) |
-| 8 | DM_28 | [Phương thức nhận tiền bồi thường/tạm ứng](#kn-dm-28) | Phương thức nhận tiền (STT 71) |
-| 9 | RESOLUTION_SCOPE | [Loại yêu cầu giải quyết bồi thường](#kn-resolution-scope) | Loại yêu cầu giải quyết bồi thường (STT 1) |
-| 10 | - | [Cơ quan giải quyết bồi thường](#kn-co-quan-gqbt) (Module Quản lý Cơ cấu tổ chức) | Cơ quan giải quyết bồi thường (STT 5) |
+| 3 | DM_59 | [Trạng thái của công dân](#kn-dm-59) | Trạng thái người bị thiệt hại (STT 10) |
+| 4 | - | [Danh mục địa bàn](#kn-dia-ban) | Tỉnh/Thành phố (STT 4, 24, 43, 49), Phường/Xã (STT 25, 44, 50) |
+| 5 | DM_22 | [Lĩnh vực phát sinh thiệt hại](#kn-dm-22) | Lĩnh vực phát sinh thiệt hại (STT 2) |
+| 6 | DM_25 | [Hình thức tiếp nhận hồ sơ bồi thường](#kn-dm-25) | Không hiển thị trên E-Form; hệ thống gán cố định `Dịch vụ công` |
+| 7 | DM_26 | [Tư cách người yêu cầu bồi thường](#kn-dm-26) | Tư cách người yêu cầu bồi thường (STT 7) |
+| 8 | DM_27 | [Loại thiệt hại yêu cầu bồi thường](#kn-dm-27) | Bảng thiệt hại yêu cầu bồi thường (STT 56 đến STT 63) |
+| 9 | DM_28 | [Phương thức nhận tiền bồi thường/tạm ứng](#kn-dm-28) | Phương thức nhận tiền (STT 71) |
+| 10 | RESOLUTION_SCOPE | [Loại yêu cầu giải quyết bồi thường](#kn-resolution-scope) | Loại yêu cầu giải quyết bồi thường (STT 1) |
+| 11 | - | [Cơ quan giải quyết bồi thường](#kn-co-quan-gqbt) (Module Quản lý Cơ cấu tổ chức) | Cơ quan giải quyết bồi thường (STT 5) |
 
 ---
 
@@ -28,25 +29,27 @@ STT trường theo bảng III của `EForm_DVC_YeuCauBoiThuong.md`.
 <a id="kn-dm-09"></a>
 ### Quốc tịch / Quốc gia (DM_09)
 
-- Chia sẻ qua API danh mục; nguồn: danh sách quốc gia theo chuẩn ISO 3166 (mã giá trị là mã quốc gia, VD `VN` - Việt Nam).
+- Chia sẻ qua API danh mục.
+- Giá trị đồng bộ từ TTDLQG theo [Danh mục đồng bộ - Kết nối, chia sẻ dữ liệu với TTDLQG - Tài liệu tích hợp C12 Trung tâm dữ liệu quốc gia](../2.%20C12_Trung%20tam%20DL%20quoc%20gia/Ket_noi_chia_se_TTDLQG.md#ttdlqg-danh-muc).
 
 <a id="kn-dm-10"></a>
 ### Loại giấy tờ pháp lý (DM_10)
 
-| Mã | Giá trị |
-| :--- | :--- |
-| CCCD | CMND/CCCD/Chứng minh quân đội |
-| HO_CHIEU | Hộ chiếu |
-| THE_THUONG_TRU | Thẻ thường trú |
-| MA_SO_THUE | Mã số thuế |
-| GIAY_TO_DI_LAI_QUOC_TE | Giấy tờ đi lại có giá trị quốc tế |
+- Chia sẻ qua API danh mục.
+- Giá trị đồng bộ từ TTDLQG theo [Danh mục đồng bộ - Kết nối, chia sẻ dữ liệu với TTDLQG - Tài liệu tích hợp C12 Trung tâm dữ liệu quốc gia](../2.%20C12_Trung%20tam%20DL%20quoc%20gia/Ket_noi_chia_se_TTDLQG.md#ttdlqg-danh-muc).
+- Giá trị bổ sung của hệ thống (không đồng bộ): `Mã số thuế` (mã `MA_SO_THUE`); E-Form không dùng giá trị này.
 
-- E-Form không dùng giá trị `MA_SO_THUE`.
+<a id="kn-dm-59"></a>
+### Trạng thái của công dân (DM_59)
+
+- Chia sẻ qua API danh mục.
+- Giá trị đồng bộ từ TTDLQG theo [Danh mục đồng bộ - Kết nối, chia sẻ dữ liệu với TTDLQG - Tài liệu tích hợp C12 Trung tâm dữ liệu quốc gia](../2.%20C12_Trung%20tam%20DL%20quoc%20gia/Ket_noi_chia_se_TTDLQG.md#ttdlqg-danh-muc).
 
 <a id="kn-dia-ban"></a>
 ### Danh mục địa bàn
 
 - Chia sẻ qua API danh mục.
+- Giá trị đồng bộ từ TTDLQG theo [Danh mục đồng bộ - Kết nối, chia sẻ dữ liệu với TTDLQG - Tài liệu tích hợp C12 Trung tâm dữ liệu quốc gia](../2.%20C12_Trung%20tam%20DL%20quoc%20gia/Ket_noi_chia_se_TTDLQG.md#ttdlqg-danh-muc).
 - Gồm cấp Tỉnh/Thành phố và cấp Phường/Xã.
 - Phường/Xã lọc theo mã Tỉnh/Thành phố.
 

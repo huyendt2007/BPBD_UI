@@ -2394,9 +2394,7 @@
                         <div
                             style="font-weight: 600; color: var(--primary-color); margin-bottom: 4px; font-size: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
                             <i class="fa-solid fa-user" style="color: var(--primary-color);"></i> Thông tin cá nhân
-                            & Liên hệ <span class="verdict-group-label"
-                                style="display:none; color: #ea580c; font-size: 13px; font-weight: normal; margin-left: 8px;">(Nhóm
-                                1: Theo bản án)</span>
+                            & Liên hệ 
                         </div>
 
                         <!-- Loại người yêu cầu: Cá nhân / Tổ chức (mặc định Cá nhân), đứng trước Tư cách -->
@@ -2420,19 +2418,14 @@
 
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label"><span id="claimNYCNameLabel">Họ và tên</span><span
-                                    class="required">*</span><span class="verdict-sub-label"
-                                    style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
-                                    chiếu theo bản án đính kèm)</span></span>
+                                    class="required">*</span></span>
                             <input type="text" class="form-control" id="claimNYCName" placeholder="Nhập họ và tên...">
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
 
                         <!-- Ngày sinh: chỉ hiển thị với Cá nhân -->
                         <div class="form-group nyc-canhan-only" style="margin-bottom: 0;">
-                            <span class="form-label">Ngày sinh<span class="required">*</span><span
-                                    class="verdict-sub-label"
-                                    style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
-                                    chiếu theo bản án đính kèm)</span></span>
+                            <span class="form-label">Ngày sinh<span class="required">*</span></span>
                             <input type="text" class="form-control" id="claimNYCBirth" placeholder="dd/mm/yyyy">
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
@@ -2458,10 +2451,7 @@
 
                         <!-- Trạng thái người bị thiệt hại (căn cứ Điều 57.6): áp dụng với người bị thiệt hại là cá nhân -->
                         <div class="form-group" id="claimVictimAliveGroup" style="margin-bottom: 0;">
-                            <span class="form-label">Trạng thái người bị thiệt hại <span class="required">*</span><span
-                                    class="verdict-sub-label"
-                                    style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
-                                    chiếu theo bản án đính kèm)</span></span>
+                            <span class="form-label">Trạng thái người bị thiệt hại <span class="required">*</span></span>
                             <div
                                 style="display: flex; gap: 20px; align-items: center; height: 38px; padding-left: 5px;">
                                 <label
@@ -2498,9 +2488,7 @@
                         <div
                             style="font-weight: 600; color: var(--primary-color); margin-bottom: 4px; font-size: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
                             <i class="fa-solid fa-address-book" style="color: var(--primary-color);"></i> Giấy tờ
-                            pháp lý & Địa chỉ <span class="verdict-group-label"
-                                style="display:none; color: #ea580c; font-size: 13px; font-weight: normal; margin-left: 8px;">(Nhóm
-                                2: Bổ sung ngoài bản án)</span>
+                            pháp lý & Địa chỉ 
                         </div>
 
                         <!-- Tổ chức: Giấy tờ thành lập/đăng ký (không bắt buộc) -->
@@ -2586,10 +2574,7 @@
                                 <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Địa chỉ chi tiết<span class="required">*</span><span
-                                        class="verdict-sub-label"
-                                        style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
-                                        chiếu theo bản án đính kèm)</span></span>
+                                <span class="form-label">Địa chỉ chi tiết<span class="required">*</span></span>
                                 <textarea class="form-control" id="claimNYCAddress" rows="2" style="width: 100%; min-height: 64px; resize: vertical;"
                                     placeholder="Nhập số nhà, tên đường/phố, thôn/xóm/ấp..."></textarea>
                                 <div class="error-message">Đây là trường bắt buộc</div>
@@ -9153,104 +9138,6 @@
             return el ? el.value.trim() : '';
         }
 
-        function collectVerdictFormData() {
-            // Form nhập liệu không còn khối "Tình trạng pháp lý"/thông tin bản án: không ghi đè thông tin bản án của hồ sơ cũ (dữ liệu mẫu) khi lưu lại.
-            if (!document.querySelector('input[name="claimHasVerdictRadio"]')) {
-                return {};
-            }
-            const hasVerdictRadio = document.querySelector('input[name="claimHasVerdictRadio"]:checked');
-            const hasVerdict = hasVerdictRadio && hasVerdictRadio.value === 'true';
-            const noOriginClaim = !!(document.getElementById('verdictNoOriginClaim') && document.getElementById('verdictNoOriginClaim').checked);
-
-            return {
-                hasVerdict: hasVerdict,
-                verdictSource: getInputValue('verdictSource'),
-                verdictLawsuitCase: getInputValue('verdictLawsuitCase'),
-                originClaimCode: noOriginClaim ? '' : getInputValue('verdictOriginClaim'),
-                noOriginClaim: noOriginClaim,
-                originDocNo: noOriginClaim ? getInputValue('verdictOriginDocNo') : '',
-                originDocDate: noOriginClaim ? getInputValue('verdictOriginDocDate') : '',
-                originAgency: noOriginClaim ? getInputValue('verdictOriginAgency') : '',
-                verdictNumber: getInputValue('verdictNumber'),
-                verdictEffectiveDate: getInputValue('verdictEffectiveDate')
-            };
-        }
-
-        function markVerdictFieldInvalid(id) {
-            const el = document.getElementById(id);
-            if (el) {
-                el.classList.add('is-invalid');
-                return el;
-            }
-            return null;
-        }
-
-        function validateVerdictFormData(verdictInfo) {
-            if (!verdictInfo || !verdictInfo.hasVerdict) return null;
-
-            const requiredFields = [];
-            if (verdictInfo.verdictSource === 'Điều 52' && verdictInfo.verdictLawsuitCase === 'diem-b') {
-                if (verdictInfo.noOriginClaim) {
-                    requiredFields.push(['verdictOriginDocNo', verdictInfo.originDocNo, 'Vui lòng nhập Số quyết định/biên bản/đơn xin rút yêu cầu gốc!']);
-                    requiredFields.push(['verdictOriginDocDate', verdictInfo.originDocDate, 'Vui lòng nhập Ngày ban hành (hồ sơ gốc)!']);
-                    requiredFields.push(['verdictOriginAgency', verdictInfo.originAgency, 'Vui lòng nhập Cơ quan đã giải quyết trước đó!']);
-                } else {
-                    requiredFields.push(['verdictOriginClaim', verdictInfo.originClaimCode, 'Vui lòng nhập hoặc chọn Vụ việc yêu cầu bồi thường gốc liên quan!']);
-                }
-            }
-
-            requiredFields.push(['verdictNumber', verdictInfo.verdictNumber, 'Vui lòng nhập Số Bản án/Quyết định!']);
-            requiredFields.push(['verdictEffectiveDate', verdictInfo.verdictEffectiveDate, 'Vui lòng nhập Ngày Bản án/Quyết định có hiệu lực!']);
-
-            for (const [id, value, message] of requiredFields) {
-                if (!value) {
-                    showToast(message, "error");
-                    return markVerdictFieldInvalid(id);
-                }
-            }
-
-            return null;
-        }
-
-        function applyVerdictFormData(claim = {}) {
-            const hasVerdict = !!claim.hasVerdict;
-            const radios = document.getElementsByName('claimHasVerdictRadio');
-            radios.forEach(r => {
-                r.checked = (r.value === (hasVerdict ? 'true' : 'false'));
-            });
-            toggleVerdictFields(hasVerdict);
-
-            setInputValue('verdictSource', claim.verdictSource || 'Điều 52');
-            setInputValue('verdictLawsuitCase', claim.verdictLawsuitCase || 'diem-b');
-            setInputValue('verdictOriginClaim', claim.originClaimCode || '');
-            setInputValue('verdictOriginDocNo', claim.originDocNo || '');
-            setInputValue('verdictOriginDocDate', claim.originDocDate || '');
-            setInputValue('verdictOriginAgency', claim.originAgency || '');
-            setInputValue('verdictNumber', claim.verdictNumber || '');
-            setInputValue('verdictEffectiveDate', claim.verdictEffectiveDate || '');
-
-            const noOriginCheckbox = document.getElementById('verdictNoOriginClaim');
-            if (noOriginCheckbox) {
-                noOriginCheckbox.checked = !!claim.noOriginClaim;
-                toggleNoOriginClaim(noOriginCheckbox.checked);
-            }
-
-            toggleVerdictSource(getInputValue('verdictSource') || 'Điều 52');
-
-            const linkedOrigin = claim.originClaimCode ? getOriginClaimCandidates().find(item => item.code === claim.originClaimCode) : null;
-            const originWrapper = document.getElementById('mockOriginLinkWrapper');
-            if (originWrapper && linkedOrigin && !claim.noOriginClaim) {
-                originWrapper.style.display = 'block';
-                originWrapper.innerHTML = `<a href="javascript:void(0)" onclick="openMockOriginClaim('${linkedOrigin.id}')"
-                    style="font-size:13px; font-weight:700; color:#b45309; text-decoration:none; background:#fef3c7; border:1px solid #fde68a; padding:8px 12px; border-radius:4px; display:inline-flex; align-items:center; gap:8px;">
-                    <i class="fa-solid fa-up-right-from-square"></i> ${linkedOrigin.code} - ${getClaimRequesterName(linkedOrigin)}
-                </a>`;
-            } else if (originWrapper && !claim.noOriginClaim) {
-                originWrapper.style.display = 'none';
-                originWrapper.innerHTML = '';
-            }
-        }
-
         function getClaimReport(claim) {
             const report = claim.reporting || {};
             return {
@@ -9868,8 +9755,6 @@
             fillClaimCountrySelect('claimNbthCountry');
             updateClaimWardOptions(false);
             initRequestDocDatePickers();
-            flatpickr("#verdictOriginDocDate", { dateFormat: "d/m/Y", allowInput: true });
-            flatpickr("#verdictEffectiveDate", { dateFormat: "d/m/Y", allowInput: true });
 
             flatpickr("#decDateInput", { dateFormat: "d/m/Y", allowInput: true });
             flatpickr("#thucthiDateInput", { dateFormat: "d/m/Y", allowInput: true });
@@ -10848,7 +10733,6 @@
             const cqNhan = document.getElementById('claimCqNhan').value.trim();
             const role = document.getElementById('claimNYCRole').value;
             const reporting = collectClaimReportFromForm();
-            const verdictInfo = collectVerdictFormData();
 
             const name = document.getElementById('claimNYCName').value.trim();
             const birth = document.getElementById('claimNYCBirth').value.trim();
@@ -10923,8 +10807,6 @@
             const nbthInvalid = validateNbthForm(role);
             if (nbthInvalid && !firstInvalid) firstInvalid = nbthInvalid;
 
-            const verdictInvalid = validateVerdictFormData(verdictInfo);
-            if (verdictInvalid && !firstInvalid) firstInvalid = verdictInvalid;
 
             if (firstInvalid) {
                 firstInvalid.focus();
@@ -10985,7 +10867,6 @@
             claim.nhanQua = nhanQua;
             claim.agency = cqNhan || "Chưa phân công";
             claim.totalNum = total;
-            Object.assign(claim, verdictInfo);
             claim.vanBanCanCu = collectVanBanCanCuRows();
 
             const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : 'Nguyễn Văn Chuyên Viên (Cán bộ thụ lý)';
@@ -11227,7 +11108,6 @@
                 setClaimNotifyMethodOnForm(claim.notifyMethod || NOTIFY_METHOD_DEFAULT_CLAIM, claim.notifyAddress || '');
                 document.getElementById('claimCqNhan').value = claim.agency || '';
                 populateClaimReportForm(claim);
-                applyVerdictFormData(claim);
 
                 const needAdv = claim.advanceNum > 0;
                 document.getElementById('claimNeedAdvance').checked = needAdv;
@@ -11304,7 +11184,6 @@
                 // Hiển thị đúng Tên tài liệu đã nhập (title); dữ liệu cũ chỉ có tên file: giữ nhãn "Tài liệu chứng minh"
                 currentDocsList = gqFilesToDocs(claim.files, "Tài liệu chứng minh");
                 renderDocsTable();
-                if (claim.hasVerdict) addVerdictDocumentRow();
 
                 // Populate officers
                 if (claim.officers) {
@@ -11357,7 +11236,6 @@
                 setClaimNotifyMethodOnForm(NOTIFY_METHOD_DEFAULT_CLAIM, '');
                 document.getElementById('claimCqNhan').value = '';
                 populateClaimReportForm({});
-                applyVerdictFormData({});
 
                 document.getElementById('claimNeedAdvance').checked = false;
                 document.getElementById('claimAdvancePanel').style.display = 'none';
@@ -11480,16 +11358,7 @@
         // Toggle advance panel visibility by fieldGroup
         function toggleAdvanceByLinhVuc(linhVuc) {
             const section = document.getElementById('advancePaymentSection');
-            const hasVerdictRadio = document.querySelector('input[name="claimHasVerdictRadio"]:checked');
-            const hasVerdict = hasVerdictRadio && hasVerdictRadio.value === 'true';
-
-            if (section) {
-                if (hasVerdict) {
-                    section.style.display = 'none';
-                } else {
-                    section.style.display = 'block';
-                }
-            }
+            if (section) section.style.display = 'block';
         }
 
         // MH05 chức năng 13: điều hướng sang màn Xem chi tiết đề nghị cấp kinh phí
@@ -12213,7 +12082,6 @@
             const role = document.getElementById('claimNYCRole').value;
             const nbth = collectNbthFromForm(role);
             const reporting = collectClaimReportFromForm();
-            const verdictInfo = collectVerdictFormData();
 
             const name = document.getElementById('claimNYCName').value.trim();
             // Loại người yêu cầu: Cá nhân bắt buộc Ngày sinh + giấy tờ thân nhân; Tổ chức kiểm tra riêng (validateNycOrgForm)
@@ -12327,8 +12195,6 @@
             const nbthInvalid = validateNbthForm(role);
             if (nbthInvalid && !firstInvalid) firstInvalid = nbthInvalid;
 
-            const verdictInvalid = validateVerdictFormData(verdictInfo);
-            if (verdictInvalid && !firstInvalid) firstInvalid = verdictInvalid;
 
             // Không chọn Lãnh đạo trên form nhập liệu: Lãnh đạo từng cấp chọn tại Popup Trình duyệt tiếp nhận hồ sơ (openTndModal)
             gqFormNotice('');
@@ -12492,7 +12358,6 @@
                     claim.nyc = name || "(Chưa nhập)";
                     claim.nycRole = role;
                     claim.nbth = nbth;
-                    if (verdictInfo.hasVerdict) claim.canBoChuDongNhap = true;
                     claim.nycCountry = country;
                     claim.nycTinhThanh = city;
                     claim.nycAddressDetail = address;
@@ -12565,7 +12430,6 @@
                     claim.requestType = requestType;
                     claim.victimAlive = victimAlive;
                     claim.otherRestore = document.getElementById('claimNeedOtherRestore').checked ? document.getElementById('claimOtherRestore').value.trim() : '';
-                    Object.assign(claim, verdictInfo);
                     claim.vanBanCanCu = collectVanBanCanCuRows();
 
                     claim.officers = JSON.parse(JSON.stringify(currentClaimOfficers));
@@ -12665,7 +12529,6 @@
                 agency: cqNhan || "Chưa phân công",
                 nguonHoSo: nguonHoSo,
                 hinhThucTiepNhan: hinhThucTiepNhan,
-                canBoChuDongNhap: !!verdictInfo.hasVerdict,
                 nbth: nbth,
                 requestDocDate: requestDocDate,
                 applicableLaw: applicableLaw,
@@ -12691,7 +12554,6 @@
                 requestType: requestType,
                 victimAlive: victimAlive,
                 otherRestore: document.getElementById('claimNeedOtherRestore').checked ? document.getElementById('claimOtherRestore').value.trim() : '',
-                ...verdictInfo,
                 vanBanCanCu: collectVanBanCanCuRows(),
                 officers: JSON.parse(JSON.stringify(currentClaimOfficers)),
                 officerName: currentClaimOfficers.length > 0 ? currentClaimOfficers[0].name : "",
@@ -13308,22 +13170,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     </div>
                 `;
             }
-            let extraBlockHtml = '';
             if (claim.canBoChuDongNhap && claim.status === 'Chờ chi trả') {
                 advanceSectionHtml = '';
-                extraBlockHtml = `
-                    <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px;">
-                        <div style="font-weight:700; color:var(--primary-color); font-size:13.5px; border-bottom:2.5px solid #F1F5F9; padding-bottom:8px; margin-bottom:12px;">
-                            <i class="fa-solid fa-gavel"></i> THÔNG TIN BẢN ÁN GỐC
-                        </div>
-                        <div class="grid-4-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
-                            <div><strong style="color:var(--text-muted);">Nguồn phát sinh bản án:</strong> <br><span style="font-weight:600; color:var(--text-main);">Tòa án nhân dân</span></div>
-                            <div><strong style="color:var(--text-muted);">Hồ sơ bồi thường gốc:</strong> <br><a href="#" style="color:var(--primary-color); font-weight:600; text-decoration:underline;">BT-2025-010</a></div>
-                            <div><strong style="color:var(--text-muted);">Số bản án/Quyết định:</strong> <br><span style="font-weight:600; color:var(--text-main);">15/2026/QĐST-HNGĐ</span></div>
-                            <div><strong style="color:var(--text-muted);">Ngày có hiệu lực:</strong> <br><span style="font-weight:600; color:var(--text-main);">10/05/2026</span></div>
-                        </div>
-                    </div>
-                `;
             }
 
             const nguonHoSoBadge = renderNguonHoSoBadge(claim.nguonHoSo, claim);
@@ -13409,8 +13257,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 ${relatedClaimBannerHtml(claim)}
 
                 ${renderSupplementRequestInfoHtml(claim, 'detail')}
-
-                ${extraBlockHtml}
 
                 <!-- Section 1: Thông tin người yêu cầu -->
                 <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px;">
@@ -20581,13 +20427,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             showToast("Đã chọn vụ việc gốc liên quan và tự động điền dữ liệu vào form!", "success");
         }
 
-        function toggleVerdictLawsuitCase(value) {
-            const originGroup = document.getElementById('verdictOriginClaimGroup');
-            if (originGroup) {
-                originGroup.style.display = value === 'diem-b' ? 'block' : 'none';
-            }
-        }
-
         function toggleNoOriginClaim(isChecked) {
             const searchGroup = document.getElementById('verdictOriginClaimSearchGroup');
             const fields = document.getElementById('verdictNoOriginFields');
@@ -20658,64 +20497,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 if (typeof toggleNewsPortalUrl === 'function') toggleNewsPortalUrl(portalChecked);
             };
         });
-        // ======== NEW LOGIC FOR VERDICT (BẢN ÁN) ========
-        function toggleVerdictFields(isChecked) {
-            const verdictBlock = document.getElementById('verdictFieldsBlock');
-            const advanceSection = document.getElementById('advancePaymentSection');
-            const labels1 = document.querySelectorAll('.verdict-group-label');
-            const labels2 = document.querySelectorAll('.verdict-sub-label');
-            const officerBlock = document.getElementById('claimOfficerContainerForm');
-
-            if (isChecked) {
-                if (verdictBlock) verdictBlock.style.display = 'block';
-                if (advanceSection) advanceSection.style.display = 'none';
-
-                labels1.forEach(l => l.style.display = 'inline');
-                labels2.forEach(l => l.style.display = 'inline');
-
-                if (officerBlock) officerBlock.style.display = 'block';
-
-                addVerdictDocumentRow();
-            } else {
-                if (verdictBlock) verdictBlock.style.display = 'none';
-                if (advanceSection) advanceSection.style.display = 'block';
-
-                labels1.forEach(l => l.style.display = 'none');
-                labels2.forEach(l => l.style.display = 'none');
-
-                if (officerBlock) officerBlock.style.display = 'none';
-
-                removeVerdictDocumentRow();
-            }
-        }
-
-        function toggleVerdictSource(source) {
-            const lawsuitGroup = document.getElementById('verdictLawsuitCaseGroup');
-            const originGroup = document.getElementById('verdictOriginClaimGroup');
-            if (source === 'Điều 52') {
-                if (lawsuitGroup) lawsuitGroup.style.display = 'block';
-                toggleVerdictLawsuitCase(getInputValue('verdictLawsuitCase') || 'diem-b');
-            } else {
-                if (lawsuitGroup) lawsuitGroup.style.display = 'none';
-                if (originGroup) originGroup.style.display = 'none';
-            }
-        }
-
-        function handleVerdictOriginChange(value) {
-            if (!value) return;
-            const found = getOriginClaimCandidates().find(claim => normalizeStatusText(claim.code) === normalizeStatusText(value));
-            if (found) {
-                applyOriginClaimToForm(found);
-                showToast("Đã tự động điền dữ liệu từ vụ việc gốc liên quan!", "success");
-                return;
-            }
-            const linkWrapper = document.getElementById('mockOriginLinkWrapper');
-            if (linkWrapper) {
-                linkWrapper.style.display = 'none';
-                linkWrapper.innerHTML = '';
-            }
-        }
-
         function openMockOriginClaim(id) {
             const found = claimsList.find(claim => claim.id === id);
             if (!found) {
@@ -20733,50 +20514,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             }
 
             window.location.href = `quan_ly_boi_thuong.html?id=${encodeURIComponent(found.code || id)}&returnUrl=${encodeURIComponent('quan_ly_boi_thuong.html?v=1')}&returnActiveUrl=${encodeURIComponent('quan_ly_boi_thuong.html?v=1')}`;
-        }
-
-        function addVerdictDocumentRow() {
-            if (!Array.isArray(currentDocsList)) currentDocsList = [];
-            const exists = currentDocsList.some(doc => doc.docType === 'verdict'
-                || normalizeStatusText(doc.name) === normalizeStatusText('Bản án/Quyết định của Tòa án'));
-            if (!exists) {
-                currentDocsList.unshift({
-                    name: "Bản án/Quyết định của Tòa án",
-                    required: true,
-                    file: null,
-                    isCustom: false,
-                    docType: 'verdict'
-                });
-            }
-            renderDocsTable();
-        }
-
-        function removeVerdictDocumentRow() {
-            if (!Array.isArray(currentDocsList)) return;
-            currentDocsList = currentDocsList.filter(doc => doc.docType !== 'verdict'
-                && normalizeStatusText(doc.name) !== normalizeStatusText('Bản án/Quyết định của Tòa án'));
-            renderDocsTable();
-        }
-
-        function handleVerdictDocUpload(input) {
-            const container = document.getElementById('verdictFilesContainer');
-            const files = input.files;
-            if (files.length === 0) return;
-
-            const tr = document.getElementById('docRowVerdict');
-            if (tr) tr.querySelector('.badge').className = 'badge badge-success';
-            if (tr) tr.querySelector('.badge').innerText = files.length + ' tệp đính kèm';
-
-            let html = '';
-            for (let i = 0; i < files.length; i++) {
-                html += `<div style="font-size: 12px; margin-top: 3px;">
-            <i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> ${files[i].name} 
-            <a href="#" style="color:var(--primary-color); margin-left: 5px;">Xem file</a>
-            <a href="#" style="color:var(--danger-color); margin-left: 5px;" onclick="this.parentElement.remove(); return false;">Xóa</a>
-        </div>`;
-            }
-            container.innerHTML = html;
-            showToast("Đã tải lên tệp tin bản án thành công!", "success");
         }
 
         // --- OFFICER CRUD LOGIC CHO QUAN_LY_BOI_THUONG ---
@@ -25922,6 +25659,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="quan_ly_boi_thuong_tptl.js?v=20261030s2"></script>
     <!-- [nbth] Người bị thiệt hại Cá nhân/Tổ chức, địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại; bắt buộc khi trình Thông báo thụ lý (đặt trước cdpd) -->
     <script src="quan_ly_boi_thuong_nbth.js?v=20261030lnyc1"></script>
+    <!-- [kttr] Trước Popup Trình duyệt Thông báo thụ lý: Danh sách hồ sơ giải quyết bồi thường cùng số giấy tờ người bị thiệt hại (chỉ khi có hồ sơ trùng; đặt sau nbth, trước cdpd) -->
+    <script src="quan_ly_boi_thuong_kttr.js?v=20261102kt1"></script>
     <!-- [cdpd] Tạo yêu cầu - Cán bộ chủ động phục hồi danh dự khi có đủ thông tin: form tối thiểu, trình Thông báo tổ chức thực hiện phục hồi danh dự (chỉ Tải lên từ máy / Ký ngoài) -->
     <script src="btnn_lanh_dao_actions.js?v=20261030s2"></script>
     <script src="quan_ly_boi_thuong_cdpd.js?v=20261030cdpd6"></script>

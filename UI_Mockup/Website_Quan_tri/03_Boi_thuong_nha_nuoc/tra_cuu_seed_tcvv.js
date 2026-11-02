@@ -98,6 +98,15 @@
         ['Hà Nội', 'Sở Tư pháp Thành phố Hà Nội', 'Trần Văn Lợi', 'CN', R_NBTH, '', HC, 'Đã chuyển CQGQBT', TN, 'money', 'Ngô Thị Lan', '', 'Xử phạt vi phạm hành chính không đúng thẩm quyền, chuyển cơ quan có thẩm quyền.', 45000000, { ktlReasonCode: 'KTL_01', rejectType: 'Không thụ lý' }]
     ];
 
+    // Hồ sơ cùng số giấy tờ người bị thiệt hại với BT-2026-601 (Vương Thị Thu Trang, 001187006601) - demo Danh sách hồ sơ cùng số giấy tờ
+    // người bị thiệt hại trước khi trình ký Thông báo thụ lý (quan_ly_boi_thuong_kttr.js): cùng đơn vị Sở Tư pháp Thành phố Hà Nội, đơn vị khác
+    const KTTR_DOC = '001187006601';
+    const KTTR_ROWS = [
+        ['Hà Nội', 'Sở Tư pháp Thành phố Hà Nội', 'Vương Thị Thu Trang', 'CN', R_NBTH, '', HC, 'Hoàn thành', TN, 'money', 'Ngô Thị Lan', '', 'Xử phạt vi phạm hành chính trong lĩnh vực hộ tịch không đúng thẩm quyền.', 35000000, { cardNo: KTTR_DOC, nycCardNo: KTTR_DOC }],
+        ['Lâm Đồng', 'Tòa án nhân dân tỉnh Lâm Đồng', 'Vương Thị Thu Trang', 'CN', R_NBTH, '', DS, 'Thương lượng', DVC, 'money', 'Hà Minh Tâm', '', 'Áp dụng biện pháp khẩn cấp tạm thời phong tỏa tài khoản không đúng quy định.', 140000000, { cardNo: KTTR_DOC, nycCardNo: KTTR_DOC }],
+        ['Hà Nội', 'UBND phường Cầu Giấy, Thành phố Hà Nội', 'Vương Văn Hòa', 'CN', R_DD, 'Vương Thị Thu Trang', HC, 'Chờ tiếp nhận', TN, 'money', '', '', 'Cưỡng chế tháo dỡ quầy hàng khi chưa có quyết định cưỡng chế.', 25000000, { nbth: { name: 'Vương Thị Thu Trang', docNo: KTTR_DOC } }]
+    ];
+
     // Văn bản làm căn cứ bồi thường theo Lĩnh vực (dữ liệu giả lập)
     const VBCC = {
         [HC]: ['Quyết định hủy quyết định hành chính số {n}/QĐ-UBND', 'Kết luận thanh tra số {n}/KL-TTr', 'Quyết định giải quyết khiếu nại số {n}/QĐ-GQKN'],
@@ -182,6 +191,12 @@
         EARLY_ROWS.forEach((r, k) => {
             const d = new Date(today.getTime()); d.setDate(d.getDate() - (k % 20));
             list.push(build(r, base2 + k, d, base2 + k + 1));
+        });
+        // Thêm sau EARLY_ROWS để không đổi Mã hồ sơ GQBT của các dòng đã có
+        const base3 = base2 + EARLY_ROWS.length;
+        KTTR_ROWS.forEach((r, k) => {
+            const d = new Date(today.getTime()); d.setDate(d.getDate() - 20 - k * 15);
+            list.push(build(r, base3 + k, d, base3 + k + 1));
         });
         return list;
     }

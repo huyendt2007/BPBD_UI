@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1220" height="700" viewBox="0 0 1220 700" font-family="Arial, Helvetica, sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f6fb0"/></marker></defs>
+<rect x="0" y="0" width="1220" height="700" fill="#ffffff"/>
+<rect x="10" y="10" width="1200" height="680" fill="#fff" stroke="#333333" stroke-width="1.2"/>
+<line x1="10" y1="50" x2="1210" y2="50" stroke="#333333"/>
+<text x="20" y="36" font-size="15" font-weight="bold" fill="#111">QT1.2. Nhận hồ sơ, Phân công và Thu hồi</text>
+<rect x="10" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="130" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Hệ thống ngoài / Phân hệ khác</text>
+<rect x="250" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="370" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Hệ thống</text>
+<line x1="250" y1="50" x2="250" y2="690" stroke="#333333" stroke-width="0.8"/>
+<rect x="490" y="50" width="480" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="730" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Lãnh đạo đơn vị đang phân công</text>
+<line x1="490" y1="50" x2="490" y2="690" stroke="#333333" stroke-width="0.8"/>
+<rect x="970" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="1090" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Cán bộ chủ trì</text>
+<line x1="970" y1="50" x2="970" y2="690" stroke="#333333" stroke-width="0.8"/>
+<polyline points="210,150 340,150 340,242.75" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,270 290,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,390 340,390 340,297.25" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="160,486.5 160,430 370,430 370,297.25" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="450,270 540,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="680,270 770,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="610,305 610,355" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="820,235 820,210 610,210 610,235" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="690,390 1010,390" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="850,305 850,486.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+<polyline points="640,425 640,510 770,510" fill="none" stroke="#2f6fb0" stroke-width="1.4" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+<polyline points="850,533.5 850,595" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="780,630 450,630" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="850,665 850,680 470,680 470,510 450,510" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="400,468.5 400,297.25" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polygon points="50,127 196,127 210,150 196,173 50,173" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="124" y="153.75" font-size="12.5" text-anchor="middle" fill="#111">Dịch vụ công gửi hồ sơ</text>
+<polygon points="50,238.75 196,238.75 210,270 196,301.25 50,301.25" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="124" y="258.25" font-size="12.5" text-anchor="middle" fill="#111">Giải quyết YCBT: Chuyển</text>
+<text x="124" y="273.75" font-size="12.5" text-anchor="middle" fill="#111">CQGQBT / Không thụ lý</text>
+<text x="124" y="289.25" font-size="12.5" text-anchor="middle" fill="#111">không thuộc thẩm quyền</text>
+<polygon points="50,358.75 196,358.75 210,390 196,421.25 50,421.25" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="124" y="378.25" font-size="12.5" text-anchor="middle" fill="#111">Xác định CQGQBT: Kết</text>
+<text x="124" y="393.75" font-size="12.5" text-anchor="middle" fill="#111">quả xác định được ban</text>
+<text x="124" y="409.25" font-size="12.5" text-anchor="middle" fill="#111">hành</text>
+<polygon points="50,486.5 196,486.5 210,510 196,533.5 50,533.5" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="124" y="506" font-size="12.5" text-anchor="middle" fill="#111">Từ QT1.1: Phiếu tiếp</text>
+<text x="124" y="521.5" font-size="12.5" text-anchor="middle" fill="#111">nhận đã ban hành</text>
+<rect x="290" y="242.75" width="160" height="54.5" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="370" y="262.25" font-size="12.5" text-anchor="middle" fill="#111">Hồ sơ tại đơn vị gốc</text>
+<rect x="326.14453125" y="270.25" width="87.7109375" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="370" y="282.25" font-size="11" text-anchor="middle" fill="#6b4e00">Chờ phân công</text>
+<polygon points="610,235 680,270 610,305 540,270" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="266" font-size="11.5" text-anchor="middle" fill="#111">Hình thức phân</text>
+<text x="610" y="280" font-size="11.5" text-anchor="middle" fill="#111">công? (MH05)</text>
+<rect x="770" y="235" width="160" height="70" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="850" y="254.5" font-size="12.5" text-anchor="middle" fill="#111">8. Chuyển đơn vị cấp</text>
+<text x="850" y="270" font-size="12.5" text-anchor="middle" fill="#111">dưới</text>
+<rect x="803.633544921875" y="278" width="92.73291015625" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="850" y="290" font-size="11" text-anchor="middle" fill="#6b4e00">Đang phân công</text>
+<rect x="530" y="355" width="160" height="70" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="374.5" font-size="12.5" text-anchor="middle" fill="#111">9. Phân công cán bộ chủ</text>
+<text x="610" y="390" font-size="12.5" text-anchor="middle" fill="#111">trì</text>
+<rect x="569.203369140625" y="398" width="81.59326171875" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="610" y="410" font-size="11" text-anchor="middle" fill="#6b4e00">Chờ tiếp nhận</text>
+<rect x="770" y="486.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="850" y="506" font-size="12.5" text-anchor="middle" fill="#111">10. Thu hồi lượt chuyển</text>
+<text x="850" y="521.5" font-size="12.5" text-anchor="middle" fill="#111">gần nhất (MH06)</text>
+<polygon points="850,595 920,630 850,665 780,630" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="850" y="626" font-size="11.5" text-anchor="middle" fill="#111">Bên nhận đã</text>
+<text x="850" y="640" font-size="11.5" text-anchor="middle" fill="#111">xử lý?</text>
+<rect x="290" y="468.5" width="160" height="83" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="488" font-size="12.5" text-anchor="middle" fill="#111">Xóa lượt chuyển gần</text>
+<text x="370" y="503.5" font-size="12.5" text-anchor="middle" fill="#111">nhất</text>
+<rect x="308.411865234375" y="511.5" width="123.17626953125" height="32" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="370" y="523.5" font-size="11" text-anchor="middle" fill="#6b4e00">Đang phân công / Chờ</text>
+<text x="370" y="536.5" font-size="11" text-anchor="middle" fill="#6b4e00">phân công</text>
+<rect x="290" y="598.75" width="160" height="62.5" rx="8" fill="#fafafa" stroke="#333333" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="370" y="618.25" font-size="12.5" text-anchor="middle" fill="#111">Báo</text>
+<text x="370" y="633.75" font-size="12.5" text-anchor="middle" fill="#111">MSG-ERR-BTNN-LXL-00</text>
+<text x="370" y="649.25" font-size="12.5" text-anchor="middle" fill="#111">4, tải lại danh sách</text>
+<polygon points="1010,366.5 1156,366.5 1170,390 1156,413.5 1010,413.5" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="1084" y="386" font-size="12.5" text-anchor="middle" fill="#111">Sang phân hệ xử lý theo</text>
+<text x="1084" y="401.5" font-size="12.5" text-anchor="middle" fill="#111">Loại hồ sơ (QT2 / QT3)</text>
+<rect x="686.290283203125" y="252" width="77.41943359375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="725" y="264" font-size="11" text-anchor="middle" fill="#1f4e79">Chuyển đơn vị</text>
+<rect x="613" y="322" width="94.68212890625" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="660.341064453125" y="334" font-size="11" text-anchor="middle" fill="#1f4e79">Phân công cán bộ</text>
+<rect x="823" y="214.5" width="112.91162109375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="879.455810546875" y="226.5" font-size="11" text-anchor="middle" fill="#1f4e79">Lãnh đạo đơn vị nhận</text>
+<rect x="853" y="351.45" width="42.68994140625" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="874.344970703125" y="363.45" font-size="11" text-anchor="middle" fill="#1f4e79">Thu hồi</text>
+<rect x="643" y="459.5" width="42.68994140625" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="664.344970703125" y="471.5" font-size="11" text-anchor="middle" fill="#1f4e79">Thu hồi</text>
+<rect x="604.96923828125" y="612" width="20.0615234375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="615" y="624" font-size="11" text-anchor="middle" fill="#1f4e79">Có</text>
+<rect x="641.09619140625" y="662" width="37.8076171875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="660" y="674" font-size="11" text-anchor="middle" fill="#1f4e79">Không</text>
+<rect x="403" y="374.875" width="66.88134765625" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="436.440673828125" y="386.875" font-size="11" text-anchor="middle" fill="#1f4e79">Hồ sơ trở lại</text>
+</svg>

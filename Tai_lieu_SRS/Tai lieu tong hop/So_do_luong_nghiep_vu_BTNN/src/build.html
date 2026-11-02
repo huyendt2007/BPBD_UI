@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8"><title>build swimlane</title>
+<script>window.SPECS = [];</script>
+<script src="render.js"></script>
+<script src="_bundle.js"></script>
+</head><body>
+<pre id="OUT">PENDING</pre>
+<script>
+(function () {
+  var only = new URLSearchParams(location.search).get('only');
+  var res = [];
+  window.SPECS.forEach(function (s) {
+    if (only && s.id.indexOf(only) !== 0) return;
+    try { res.push(SWIM.render(s)); } catch (e) { res.push({ id: s.id, error: String(e && e.stack || e) }); }
+  });
+  document.getElementById('OUT').textContent = JSON.stringify(res);
+})();
+</script></body></html>

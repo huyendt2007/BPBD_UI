@@ -673,6 +673,9 @@
         .up-chip { background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px 8px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px; }
         .up-chip i { cursor: pointer; color: #64748b; }
         .up-chip.more { cursor: pointer; color: var(--primary-color); }
+        /* Đồng bộ từ TTDLQG (Loại danh mục DM_09, DM_10, DM_23, DM_59) */
+        .list-actions { display: flex; align-items: center; gap: 10px; }
+        .sync-meta { font-size: 12px; font-weight: 400; color: #64748B; }
     </style>
 </head>
 <body>
@@ -722,9 +725,16 @@
             <div class="section-title">
                 <!-- Removed "Danh mục Master Data", replaced with standard "Danh sách danh mục" -->
                 <span>Danh sách danh mục</span>
-                <button class="btn btn-primary" onclick="openAddModal()">
-                    <i class="fa fa-plus"></i> Thêm mới
-                </button>
+                <div class="list-actions">
+                    <!-- Chỉ hiển thị khi ô Loại danh mục tại bộ lọc trùng đúng tên 01 Loại danh mục đồng bộ từ TTDLQG -->
+                    <span class="sync-meta" id="syncMeta" style="display:none;"><i class="fa-solid fa-cloud-arrow-down"></i> Dữ liệu đồng bộ từ TTDLQG · Đồng bộ lần cuối: <span id="lastSyncTime"></span></span>
+                    <button class="btn btn-primary" id="btnDongBo" style="display:none;" onclick="syncFromTTDLQG()">
+                        <i class="fa-solid fa-rotate"></i> Đồng bộ từ TTDLQG
+                    </button>
+                    <button class="btn btn-primary" id="btnThemMoi" onclick="openAddModal()">
+                        <i class="fa fa-plus"></i> Thêm mới
+                    </button>
+                </div>
             </div>
 
             <div class="table-container">
@@ -1017,13 +1027,15 @@
             { code: "DM_19", name: "Danh mục Căn cứ xóa đăng ký", status: "Đang hoạt động" },
             { code: "DM_20", name: "Danh mục Căn cứ hủy đăng ký", status: "Đang hoạt động" },
             { code: "DM_21", name: "Loại văn bản quy phạm pháp luật", status: "Đang hoạt động" },
+            { code: "DM_23", name: "Giới tính", status: "Đang hoạt động" },
             { code: "DM_25", name: "Hình thức tiếp nhận", description: "Dùng cho phân hệ Bồi thường nhà nước", status: "Đang hoạt động" },
             { code: "DM_26", name: "Tư cách người yêu cầu bồi thường", status: "Đang hoạt động" },
             { code: "DM_54", name: "Loại hồ sơ", status: "Đang hoạt động", phanQuyenDonVi: true },
             { code: "DM_55", name: "Lý do không thụ lý hồ sơ yêu cầu bồi thường", status: "Đang hoạt động" },
             { code: "DM_56", name: "Loại CSDL nguồn", status: "Đang hoạt động" },
             { code: "DM_57", name: "Loại cơ quan", parentTypeCode: "", status: "Đang hoạt động" },
-            { code: "DM_58", name: "Chức vụ", parentTypeCode: "DM_57", status: "Đang hoạt động" }
+            { code: "DM_58", name: "Chức vụ", parentTypeCode: "DM_57", status: "Đang hoạt động" },
+            { code: "DM_59", name: "Trạng thái của công dân", status: "Đang hoạt động" }
         ];
 
         // All simulated categories containing full values from 04_Danh_muc_va_Phu_luc.md (Table 5 & Table 6)
@@ -1098,8 +1110,16 @@
             { typeCode: "DM_10", code: "GT_01", name: "CMND/CCCD/Chứng minh quân đội", nameEn: "ID Card/Citizen ID/Military ID", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_10", code: "GT_02", name: "Hộ chiếu", nameEn: "Passport", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_10", code: "GT_03", name: "Thẻ thường trú", nameEn: "Permanent Residence Card", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
-            { typeCode: "DM_10", code: "GT_04", name: "Mã số thuế", nameEn: "Tax Identification Number", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_10", code: "GT_04", name: "Mã số thuế", nameEn: "Tax Identification Number", val: "", valEn: "", parentCode: "", notes: "Giá trị bổ sung của hệ thống, không đồng bộ từ TTDLQG", status: "Hoạt động" },
             { typeCode: "DM_10", code: "GT_05", name: "Giấy tờ đi lại có giá trị quốc tế", nameEn: "International Travel Document", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_23 (Giới tính) - dữ liệu minh họa, đồng bộ từ TTDLQG
+            { typeCode: "DM_23", code: "1", name: "Nam", nameEn: "Male", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_23", code: "2", name: "Nữ", nameEn: "Female", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_59 (Trạng thái của công dân) - dữ liệu minh họa, đồng bộ từ TTDLQG
+            { typeCode: "DM_59", code: "TTCD_01", name: "Còn sống", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_59", code: "TTCD_02", name: "Đã chết", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
 
             // DM_11 (Loại hình tổ chức)
             { typeCode: "DM_11", code: "TC_01", name: "Tổ chức nước ngoài", nameEn: "Foreign organization", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
@@ -1538,7 +1558,7 @@
                 const idx02 = savedCats.findIndex(s => s.typeCode === 'DM_26' && s.code === 'TCNYC_02');
                 if (tc06) savedCats.splice(idx02 >= 0 ? idx02 + 1 : savedCats.length, 0, JSON.parse(JSON.stringify(tc06)));
             }
-            INITIAL_CATEGORIES.filter(d => ['DM_10', 'DM_25', 'DM_26','DM_54', 'DM_55', 'DM_56', 'DM_57', 'DM_58'].includes(d.typeCode) && !savedCats.some(s => s.typeCode === d.typeCode && s.code === d.code)).forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
+            INITIAL_CATEGORIES.filter(d => ['DM_10', 'DM_23', 'DM_59', 'DM_25', 'DM_26','DM_54', 'DM_55', 'DM_56', 'DM_57', 'DM_58'].includes(d.typeCode) && !savedCats.some(s => s.typeCode === d.typeCode && s.code === d.code)).forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
             // Bổ sung các đơn vị gốc mới vào Đơn vị áp dụng của Yêu cầu bồi thường (dữ liệu lưu từ phiên bản trước)
             const lyc02 = savedCats.find(c => c.typeCode === 'DM_54' && c.code === 'LYC_02');
             if (lyc02 && !lyc02.donViApDungV2) { lyc02.donViApDung = BTNN_WF.getRootUnits().map(u => u.id); lyc02.donViApDungV2 = true; }
@@ -1569,6 +1589,9 @@
                 INITIAL_CATEGORIES.filter(d => d.typeCode === 'DM_57' || d.typeCode === 'DM_58').forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
                 localStorage.setItem('dmLoaiCoQuanSeedV', 'v4');
             }
+            // Mã số thuế (DM_10): giá trị bổ sung của hệ thống, không đồng bộ từ TTDLQG
+            const mst = savedCats.find(c => c.typeCode === 'DM_10' && c.code === 'GT_04');
+            if (mst && !mst.notes) mst.notes = 'Giá trị bổ sung của hệ thống, không đồng bộ từ TTDLQG';
             // Phân quyền theo đơn vị (cấu hình tại Quản lý loại danh mục): Loại hồ sơ (DM_54) mặc định Mở
             savedTypes.forEach(t => { if (t.phanQuyenDonVi === undefined) t.phanQuyenDonVi = t.code === 'DM_54'; });
             localStorage.setItem('categoryTypes', JSON.stringify(savedTypes));
@@ -1591,6 +1614,48 @@
         function unitNames(item) {
             if (!hasUnitScope(item.typeCode)) return '';
             return (item.donViApDung || []).map(u => BTNN_WF.unitName(u)).join('; ');
+        }
+
+        // Loại danh mục đồng bộ từ TTDLQG: giá trị chỉ xem (không Thêm mới, Sửa, Xóa, đổi trạng thái)
+        // Ngoại lệ: Mã số thuế (DM_10 - GT_04) là giá trị bổ sung của hệ thống, quản lý như cũ
+        const SYNC_TYPES = ['DM_09', 'DM_10', 'DM_23', 'DM_59'];
+        function isSyncedItem(item) {
+            return SYNC_TYPES.includes(item.typeCode) && !(item.typeCode === 'DM_10' && item.code === 'GT_04');
+        }
+        // Loại danh mục đồng bộ có tên trùng đúng nội dung ô Loại danh mục tại bộ lọc
+        function syncTypeFromFilter() {
+            const text = document.getElementById('filterTypeInput').value.trim().toLowerCase();
+            const t = text ? allTypes.find(x => SYNC_TYPES.includes(x.code) && x.name.toLowerCase() === text) : null;
+            return t ? t.code : '';
+        }
+        function syncTimes() {
+            try { return JSON.parse(localStorage.getItem('dmSyncTTDLQG') || '{}'); } catch (e) { return {}; }
+        }
+        function renderSyncBar() {
+            const code = syncTypeFromFilter();
+            document.getElementById('syncMeta').style.display = code ? '' : 'none';
+            document.getElementById('btnDongBo').style.display = code ? '' : 'none';
+            document.getElementById('btnThemMoi').style.display = code ? 'none' : '';
+            if (code) document.getElementById('lastSyncTime').textContent = syncTimes()[code] || '30/10/2026 08:00';
+        }
+        // Đồng bộ từ TTDLQG: lấy toàn bộ giá trị qua API chia sẻ (LGSP), gửi tổng số bản ghi nhận được qua API đối soát
+        function syncFromTTDLQG() {
+            const code = syncTypeFromFilter();
+            if (!code) return;
+            const btn = document.getElementById('btnDongBo');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-rotate fa-spin"></i> Đang đồng bộ...';
+            setTimeout(() => {
+                const now = new Date();
+                const pad = n => String(n).padStart(2, '0');
+                const times = syncTimes();
+                times[code] = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+                try { localStorage.setItem('dmSyncTTDLQG', JSON.stringify(times)); } catch (e) {}
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-rotate"></i> Đồng bộ từ TTDLQG';
+                renderTable();
+                showToast('Cập nhật dữ liệu thành công.', 'success');
+            }, 1200);
         }
 
         function saveDataToStorage() {
@@ -1634,6 +1699,7 @@
             const keyword = document.getElementById('filterKeyword').value.trim().toLowerCase();
             const status = document.getElementById('filterStatus').value;
             const tableBody = document.getElementById('tableBody');
+            renderSyncBar();
 
             // Filter
             let filtered = catList.map((item, originalIndex) => {
@@ -1773,8 +1839,8 @@
                     <td style="text-align:center">
                         <div class="action-cell">
                             <button class="icon-btn view" title="Xem chi tiết" onclick="openDetailModal(${item.originalIndex})"><i class="fa-solid fa-eye"></i></button>
-                            <button class="icon-btn edit" title="Chỉnh sửa" onclick="openEditModal(${item.originalIndex})"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button class="icon-btn delete" title="Xóa" onclick="openConfirmDeleteModal(${item.originalIndex})"><i class="fa-solid fa-trash-can"></i></button>
+                            ${isSyncedItem(item) ? '' : `<button class="icon-btn edit" title="Chỉnh sửa" onclick="openEditModal(${item.originalIndex})"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="icon-btn delete" title="Xóa" onclick="openConfirmDeleteModal(${item.originalIndex})"><i class="fa-solid fa-trash-can"></i></button>`}
                         </div>
                     </td>
                 `;
@@ -2118,10 +2184,12 @@
             
             const inpType = document.getElementById('inpType');
             inpType.disabled = false;
+            // Không thêm mới giá trị cho Loại danh mục đồng bộ từ TTDLQG
+            Array.from(inpType.options).forEach(o => { o.hidden = SYNC_TYPES.includes(o.value); });
             
             // Điền sẵn Loại danh mục khi nội dung ô tìm kiếm Loại danh mục trùng đúng tên 01 loại danh mục
             const typeText = document.getElementById('filterTypeInput').value.trim().toLowerCase();
-            const matchedType = typeText ? typeList.find(t => t.name.toLowerCase() === typeText) : null;
+            const matchedType = typeText ? typeList.find(t => t.name.toLowerCase() === typeText && !SYNC_TYPES.includes(t.code)) : null;
             inpType.value = matchedType ? matchedType.code : '';
 
             document.getElementById('inpCode').value = '';
@@ -2156,6 +2224,7 @@
             document.getElementById('modalTitle').innerText = "Chỉnh sửa danh mục dùng chung";
             
             const inpType = document.getElementById('inpType');
+            Array.from(inpType.options).forEach(o => { o.hidden = false; });
             inpType.value = item.typeCode;
             inpType.disabled = true;
 

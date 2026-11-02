@@ -50,7 +50,7 @@ Màn hình cung cấp biểu mẫu nhập thông tin tiếp công dân chia làm
 | Họ và tên công dân | String(255) | Có | Trống | - Nhập đầy đủ họ tên cá nhân gửi đơn thư. |
 | Số CMND/CCCD/Hộ chiếu | String(50) | Có | Trống | - Nhập số giấy tờ định danh của cá nhân.<br>- Nếu là CCCD, kiểm tra đúng 12 chữ số. |
 | Ngày sinh | Date | Có | Trống | - Định dạng: dd/mm/yyyy. Validate nhỏ hơn ngày hiện tại. |
-| Giới tính | Enum(String(50)) | Có | Nam | Control UI: Hộp chọn.<br>- Gồm:<br>+ Nam<br>+ Nữ<br>+ Khác |
+| Giới tính | Enum(String(50)) | Có | Nam | Control UI: Hộp chọn.<br>- Tham chiếu Danh mục Giới tính [DM_23]. |
 | Ngày cấp định danh | Date | Không | Trống | - Định dạng: dd/mm/yyyy. Validate nhỏ hơn ngày hiện tại và lớn hơn Ngày sinh. |
 | **Nếu chọn đối tượng là: [Tổ chức]** | | | | |
 | Tên tổ chức/doanh nghiệp | String(255) | Có | Trống | - Nhập đầy đủ tên pháp nhân gửi đơn thư. |

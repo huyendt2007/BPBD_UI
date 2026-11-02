@@ -6,6 +6,7 @@ Cho phép quản lý danh mục dữ liệu dùng chung (Master Data) của hệ
 - Thêm mới, chỉnh sửa thông tin danh mục hỗ trợ cả cấu trúc danh mục phẳng (Flat List) và danh mục phân cấp đa cấp (Hierarchical Tree List).
 - Chuyển đổi trạng thái hoạt động (Hoạt động / Ngừng hoạt động) và xóa các bản ghi danh mục chưa phát sinh ràng buộc dữ liệu.
 - Khai báo Đơn vị áp dụng cho từng giá trị của các Loại danh mục có `Phân quyền theo đơn vị` = `Mở`, dùng để phân quyền giá trị danh mục theo đơn vị (xem [Phân quyền theo đơn vị và Đơn vị áp dụng - Quản lý danh mục dùng chung (Master Data) - Quản trị hệ thống (Website Quản trị)](#dm-don-vi-ap-dung)).
+- Đồng bộ từ TTDLQG giá trị của các Loại danh mục Quốc tịch / Quốc gia [DM_09], Loại giấy tờ pháp lý [DM_10], Giới tính [DM_23], Trạng thái của công dân [DM_59]; giá trị đồng bộ chỉ xem, không Thêm mới, Sửa, Xóa, đổi trạng thái, trừ giá trị `Mã số thuế` của [DM_10] là giá trị bổ sung của hệ thống (không đồng bộ). Chi tiết tích hợp tại [Các bước đồng bộ - Kết nối, chia sẻ dữ liệu với TTDLQG - Tài liệu tích hợp C12 Trung tâm dữ liệu quốc gia](../../../Tai_lieu_tich_hop/2.%20C12_Trung%20tam%20DL%20quoc%20gia/Ket_noi_chia_se_TTDLQG.md).
 - Quản lý Danh mục Chức vụ [DM_58] gắn với Danh mục Loại cơ quan [DM_57]: mỗi Chức vụ chọn 01 Loại cơ quan tại trường Loại cơ quan; danh sách giá trị và quy tắc tại [Danh mục Loại cơ quan và Danh mục Chức vụ - Danh mục Loại cơ quan và Danh mục Chức vụ - Quản trị hệ thống (Website Quản trị)](Danh%20m%E1%BB%A5c%20Lo%E1%BA%A1i%20c%C6%A1%20quan%20v%C3%A0%20Danh%20m%E1%BB%A5c%20Ch%E1%BB%A9c%20v%E1%BB%A5.md).
 
 *a. Phân quyền*
@@ -24,6 +25,8 @@ Cho phép quản lý danh mục dữ liệu dùng chung (Master Data) của hệ
 ![Màn hình Tra cứu danh mục dùng chung](images/MH_DanhMuc_01_Danh_sach.png)
 
 ![Màn hình Tra cứu danh mục dùng chung - Lọc Loại danh mục Loại hồ sơ](images/MH_DanhMuc_LoaiYeuCau_01_Danh_sach.png)
+
+![Màn hình Tra cứu danh mục dùng chung - Lọc Loại danh mục đồng bộ từ TTDLQG](images/MH_DanhMuc_04_Dong_bo_TTDLQG.png)
 
 ###### 4.3.1.5.2.2. Mô tả thông tin trên màn hình
 
@@ -47,8 +50,10 @@ Cho phép quản lý danh mục dữ liệu dùng chung (Master Data) của hệ
 | Đơn vị áp dụng | String(1000) | - | - | Control UI: Text hiển thị (Read-only).<br>- Tên các đơn vị đã chọn tại `Đơn vị áp dụng` của giá trị danh mục, mỗi đơn vị hiển thị trên 01 dòng.<br>- Hiển thị tối đa 02 đơn vị; nếu nhiều hơn 02 đơn vị thì dòng cuối hiển thị "+[Số đơn vị còn lại] đơn vị khác".<br>- Để trống với giá trị thuộc Loại danh mục có `Phân quyền theo đơn vị` = `Không`. |
 | Áp dụng theo danh mục cha | String(255) | - | - | Control UI: Text hiển thị (Read-only).<br>- Nằm trước cột Trạng thái.<br>- Thể hiện giá trị danh mục cha mà bản ghi hiện tại trực thuộc hoặc áp dụng theo (ví dụ: Chức vụ *Bộ trưởng* áp dụng cho Loại cơ quan là *Bộ*).<br>- Hiển thị thành 2 dòng:<br>+ Dòng 1: Tên giá trị danh mục cha đã chọn (ví dụ: *Bộ*, *Phòng/Ban*...) hoặc *Mọi giá trị của loại cha* (khi áp dụng cho toàn bộ các giá trị của loại danh mục cha đó).<br>+ Dòng 2: Tên Loại danh mục cha (màu nhạt, ví dụ: *Loại cơ quan*).<br>- Hiển thị dấu gạch ngang `-` đối với bản ghi thuộc Loại danh mục độc lập (không phụ thuộc loại cha nào). |
 | Trạng thái | Enum(String(50)) | - | - | Control UI: Badge/Tag hiển thị.<br>Gồm:<br>+ Hoạt động<br>+ Ngừng hoạt động |
-| Thao tác | String(255) | - | - | Control UI: Nhóm icon thao tác.<br>- `Xem chi tiết`: Luôn hiển thị.<br>- `Sửa`: Luôn hiển thị.<br>- `Xóa`: Luôn hiển thị. |
-| Thêm mới | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị phía trên bảng dữ liệu. |
+| Thao tác | String(255) | - | - | Control UI: Nhóm icon thao tác.<br>- `Xem chi tiết`: Luôn hiển thị.<br>- `Sửa`, `Xóa`: Không hiển thị với giá trị thuộc Loại danh mục [DM_09], [DM_10], [DM_23], [DM_59], trừ giá trị `Mã số thuế` của [DM_10]. |
+| Thêm mới | String(50) | - | - | Control UI: Button.<br>- Nằm phía trên bảng dữ liệu.<br>- Không hiển thị khi hiển thị nút `Đồng bộ từ TTDLQG`. |
+| Đồng bộ lần cuối | DateTime | - | Theo lần đồng bộ gần nhất | Control UI: Label.<br>- Chỉ hiển thị khi nội dung ô `Loại danh mục` tại bộ lọc trùng đúng tên 01 Loại danh mục đồng bộ từ TTDLQG (không phân biệt hoa thường): Quốc tịch / Quốc gia [DM_09], Loại giấy tờ pháp lý [DM_10], Giới tính [DM_23], Trạng thái của công dân [DM_59].<br>- Nằm phía trên bảng dữ liệu, bên trái nút `Đồng bộ từ TTDLQG`.<br>- Nội dung: `Dữ liệu đồng bộ từ TTDLQG · Đồng bộ lần cuối: dd/mm/yyyy HH:mm` theo Loại danh mục tại bộ lọc. |
+| Đồng bộ từ TTDLQG | String(50) | - | - | Control UI: Button.<br>- Chỉ hiển thị khi nội dung ô `Loại danh mục` tại bộ lọc trùng đúng tên 01 Loại danh mục đồng bộ từ TTDLQG (không phân biệt hoa thường): Quốc tịch / Quốc gia [DM_09], Loại giấy tờ pháp lý [DM_10], Giới tính [DM_23], Trạng thái của công dân [DM_59].<br>- Nằm phía trên bảng dữ liệu, thay vị trí nút `Thêm mới`. |
 
 ###### 4.3.1.5.2.3. Chức năng trên màn hình
 
@@ -61,6 +66,7 @@ Cho phép quản lý danh mục dữ liệu dùng chung (Master Data) của hệ
 | 5 | Sửa | Icon | Mở **MH02 - Popup Thêm mới / Cập nhật Danh mục** và tải toàn bộ dữ liệu hiện tại của bản ghi để chỉnh sửa. |
 | 6 | Xóa | Icon | Mở **[POPUP-CFM-001]** với `Loại thao tác` là `Xóa` kèm thông báo xác nhận [MSG-CFM-SYS-001]:<br>- **TH1 (Danh mục đang được sử dụng)**: Danh mục đã được sử dụng trong các hồ sơ, tài khoản hoặc đang làm Danh mục cha cho các danh mục con khác $\rightarrow$ Hệ thống chặn xóa, hiển thị cảnh báo lỗi yêu cầu chuyển trạng thái sang Ngừng hoạt động.<br>- **TH Hợp lệ**: Khi người dùng chọn "Xác nhận", hệ thống xóa bản ghi khỏi CSDL, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001] và làm mới danh sách bảng kết quả. |
 | 7 | Click dòng dữ liệu | Row Click | Mở **MH03 - Popup Xem chi tiết danh mục** tương tự thao tác Xem chi tiết. |
+| 8 | Đồng bộ từ TTDLQG | Button | Khi người dùng click nút:<br>- Hệ thống khóa nút, đổi nhãn thành `Đang đồng bộ...`.<br>- Hệ thống lấy toàn bộ giá trị của Loại danh mục tại bộ lọc từ TTDLQG theo link tại cột `API chia sẻ qua LGSP`, sheet `API chia sẻ & Đối soát` - [Danh sách API chia sẻ - Tài liệu tích hợp C12 Trung tâm dữ liệu quốc gia](../../../Tai_lieu_tich_hop/2.%20C12_Trung%20tam%20DL%20quoc%20gia/20261030_Danh%20s%C3%A1ch%20API%20chia%20s%E1%BA%BB.xlsx), dòng:<br>+ [DM_09]: `Danh mục Quốc Gia`.<br>+ [DM_10]: `Danh mục Loại giấy tờ tùy thân`.<br>+ [DM_23]: `Danh mục Giới tính`.<br>+ [DM_59]: `Trạng thái của công dân`.<br>- **TH1 - Lỗi kết nối hoặc TTDLQG trả về lỗi**: Hệ thống giữ nguyên dữ liệu hiện có, mở lại nút và hiển thị [MSG-ERR-SYS-002].<br>- **TH2 - Thành công**:<br>+ Thêm mới giá trị chưa có trên hệ thống; cập nhật giá trị đã có theo `Mã danh mục` (mã giá trị trên TTDLQG).<br>+ Giá trị không còn trong dữ liệu TTDLQG: không xóa, chuyển `Trạng thái` sang `Ngừng hoạt động`.<br>+ Không thay đổi giá trị `Mã số thuế` của [DM_10].<br>+ Gửi tổng số bản ghi nhận được về TTDLQG theo link tại cột `API đối soát qua LGSP` cùng dòng.<br>+ Cập nhật `Đồng bộ lần cuối`, ghi Audit Log, làm mới danh sách, mở lại nút và hiển thị [MSG-SUC-SYS-002].<br>- **TH3 - Cập nhật dữ liệu thành công, gửi đối soát lỗi**: Hệ thống giữ dữ liệu đã cập nhật, cập nhật `Đồng bộ lần cuối`, ghi Audit Log, mở lại nút và hiển thị [MSG-WRN-SYS-003]; người dùng bấm lại `Đồng bộ từ TTDLQG` để gửi lại đối soát.<br>- Chi tiết tích hợp tại [Các bước đồng bộ - Kết nối, chia sẻ dữ liệu với TTDLQG - Tài liệu tích hợp C12 Trung tâm dữ liệu quốc gia](../../../Tai_lieu_tich_hop/2.%20C12_Trung%20tam%20DL%20quoc%20gia/Ket_noi_chia_se_TTDLQG.md). |
 
 ---
 
@@ -78,7 +84,7 @@ Cho phép quản lý danh mục dữ liệu dùng chung (Master Data) của hệ
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **Form Danh mục** | - | - | - | Hiển thị dạng Popup Modal. |
-| Loại danh mục | Enum(String(50)) | Có | Lựa chọn hiện tại (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox.<br>- Danh sách lấy từ các Loại danh mục đang hoạt động.<br>- Khóa chỉ đọc (Read-only) khi ở chế độ Sửa. |
+| Loại danh mục | Enum(String(50)) | Có | Lựa chọn hiện tại (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox.<br>- Danh sách lấy từ các Loại danh mục đang hoạt động.<br>- Thêm mới: danh sách không gồm Loại danh mục đồng bộ từ TTDLQG [DM_09], [DM_10], [DM_23], [DM_59].<br>- Khóa chỉ đọc (Read-only) khi ở chế độ Sửa. |
 | Mã danh mục | String(50) | Có | Tự động sinh (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Text hiển thị (Read-only).<br>- Tự động sinh mã định danh duy nhất. Không cho phép sửa. |
 | Tên danh mục | String(255) | Có | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Input text.<br>- Nhập tên tiếng Việt của danh mục.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
 | Tên danh mục (EN) | String(255) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Input text.<br>- Nhập tên tiếng Anh của danh mục. |
@@ -132,7 +138,7 @@ Cho phép quản lý danh mục dữ liệu dùng chung (Master Data) của hệ
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Đóng | Button / Icon | Đóng Popup Modal Xem chi tiết và quay lại màn hình chính MH01. |
-| 2 | Cập nhật | Button | Chuyển trực tiếp từ Popup Xem chi tiết sang Popup Thêm mới / Cập nhật Danh mục (MH02) ở chế độ Chỉnh sửa dữ liệu của bản ghi hiện tại. |
+| 2 | Cập nhật | Button | Chuyển trực tiếp từ Popup Xem chi tiết sang Popup Thêm mới / Cập nhật Danh mục (MH02) ở chế độ Chỉnh sửa dữ liệu của bản ghi hiện tại.<br>- Không hiển thị với giá trị thuộc Loại danh mục [DM_09], [DM_10], [DM_23], [DM_59], trừ giá trị `Mã số thuế` của [DM_10]. |
 
 ---
 

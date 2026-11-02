@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="580" viewBox="0 0 740 580" font-family="Arial, Helvetica, sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f6fb0"/></marker></defs>
+<rect x="0" y="0" width="740" height="580" fill="#ffffff"/>
+<rect x="10" y="10" width="720" height="560" fill="#fff" stroke="#333333" stroke-width="1.2"/>
+<line x1="10" y1="50" x2="730" y2="50" stroke="#333333"/>
+<text x="20" y="36" font-size="15" font-weight="bold" fill="#111">QT10.1. Hướng dẫn nghiệp vụ; Giải quyết khiếu nại, tố cáo, xử lý vi phạm</text>
+<rect x="10" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="130" y="67" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Cán bộ Bộ Tư pháp / Cục / Sở Tư</text>
+<text x="130" y="81" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">pháp</text>
+<rect x="250" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="370" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Hệ thống</text>
+<line x1="250" y1="50" x2="250" y2="570" stroke="#333333" stroke-width="0.8"/>
+<rect x="490" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="610" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Người dùng chỉ xem</text>
+<line x1="490" y1="50" x2="490" y2="570" stroke="#333333" stroke-width="0.8"/>
+<polyline points="130,178 130,238.75" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,270 340,270 340,367" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,390 290,390" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="340,413 340,460 160,460 160,486.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,510 290,510" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<circle cx="130" cy="150" r="28" fill="#fff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="153" font-size="11.5" text-anchor="middle" fill="#111">Bắt đầu</text>
+<rect x="50" y="238.75" width="160" height="62.5" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="258.25" font-size="12.5" text-anchor="middle" fill="#111">1. Hướng dẫn nghiệp vụ:</text>
+<text x="130" y="273.75" font-size="12.5" text-anchor="middle" fill="#111">Thêm mới, Lưu thông tin</text>
+<text x="130" y="289.25" font-size="12.5" text-anchor="middle" fill="#111">xử lý</text>
+<rect x="50" y="366.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="386" font-size="12.5" text-anchor="middle" fill="#111">3. Khiếu nại, tố cáo:</text>
+<text x="130" y="401.5" font-size="12.5" text-anchor="middle" fill="#111">Thêm mới, Lưu và xử lý</text>
+<rect x="50" y="486.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="506" font-size="12.5" text-anchor="middle" fill="#111">2. Cập nhật kết quả,</text>
+<text x="130" y="521.5" font-size="12.5" text-anchor="middle" fill="#111">Hoàn thành</text>
+<rect x="290" y="367" width="160" height="46" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="370" y="393.75" font-size="12.5" text-anchor="middle" fill="#111">Đang xử lý</text>
+<rect x="290" y="487" width="160" height="46" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="370" y="513.75" font-size="12.5" text-anchor="middle" fill="#111">Hoàn thành</text>
+<rect x="530" y="238.75" width="160" height="62.5" rx="8" fill="#fafafa" stroke="#333333" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="610" y="258.25" font-size="12.5" text-anchor="middle" fill="#111">Bộ Tư pháp, Cục: xem hồ</text>
+<text x="610" y="273.75" font-size="12.5" text-anchor="middle" fill="#111">sơ của Sở, không thao</text>
+<text x="610" y="289.25" font-size="12.5" text-anchor="middle" fill="#111">tác</text>
+<rect x="530" y="366.5" width="160" height="47" rx="8" fill="#fafafa" stroke="#333333" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="610" y="386" font-size="12.5" text-anchor="middle" fill="#111">7. UBND cấp tỉnh: chỉ</text>
+<text x="610" y="401.5" font-size="12.5" text-anchor="middle" fill="#111">xem Sở trực thuộc</text>
+</svg>

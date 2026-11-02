@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="820" viewBox="0 0 740 820" font-family="Arial, Helvetica, sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f6fb0"/></marker></defs>
+<rect x="0" y="0" width="740" height="820" fill="#ffffff"/>
+<rect x="10" y="10" width="720" height="800" fill="#fff" stroke="#333333" stroke-width="1.2"/>
+<line x1="10" y1="50" x2="730" y2="50" stroke="#333333"/>
+<text x="20" y="36" font-size="15" font-weight="bold" fill="#111">QT8.1. Tra cứu vụ việc</text>
+<rect x="10" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="130" y="67" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Người dùng có quyền Tra cứu vụ</text>
+<text x="130" y="81" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">việc</text>
+<rect x="250" y="50" width="480" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="490" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Hệ thống</text>
+<line x1="250" y1="50" x2="250" y2="810" stroke="#333333" stroke-width="0.8"/>
+<polyline points="130,178 130,246.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,270 290,270" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,390 370,390 370,475" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,510 300,510" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,630 280,630 280,510 300,510" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="440,510 530,510" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="370,545 370,606.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,750 290,750" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<circle cx="130" cy="150" r="28" fill="#fff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="153" font-size="11.5" text-anchor="middle" fill="#111">Bắt đầu</text>
+<rect x="50" y="246.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="266" font-size="12.5" text-anchor="middle" fill="#111">1. Nhập điều kiện, Tìm</text>
+<text x="130" y="281.5" font-size="12.5" text-anchor="middle" fill="#111">kiếm (MH01)</text>
+<rect x="50" y="366.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="386" font-size="12.5" text-anchor="middle" fill="#111">2. Click Mã hồ sơ GQBT</text>
+<text x="130" y="401.5" font-size="12.5" text-anchor="middle" fill="#111">của cơ quan khác</text>
+<rect x="50" y="478.75" width="160" height="62.5" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="498.25" font-size="12.5" text-anchor="middle" fill="#111">3. Sở Tư pháp: click hồ</text>
+<text x="130" y="513.75" font-size="12.5" text-anchor="middle" fill="#111">sơ cơ quan địa phương</text>
+<text x="130" y="529.25" font-size="12.5" text-anchor="middle" fill="#111">cùng tỉnh</text>
+<rect x="50" y="606.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="626" font-size="12.5" text-anchor="middle" fill="#111">4. Bộ Tư pháp / Cục: click</text>
+<text x="130" y="641.5" font-size="12.5" text-anchor="middle" fill="#111">hồ sơ bất kỳ</text>
+<rect x="50" y="727" width="160" height="46" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="753.75" font-size="12.5" text-anchor="middle" fill="#111">5. Kết xuất Excel</text>
+<rect x="290" y="246.5" width="160" height="47" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="370" y="266" font-size="12.5" text-anchor="middle" fill="#111">Danh sách mọi cơ quan,</text>
+<text x="370" y="281.5" font-size="12.5" text-anchor="middle" fill="#111">từ Chờ tiếp nhận trở đi</text>
+<polygon points="370,475 440,510 370,545 300,510" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="506" font-size="11.5" text-anchor="middle" fill="#111">Được xem chi</text>
+<text x="370" y="520" font-size="11.5" text-anchor="middle" fill="#111">tiết?</text>
+<rect x="530" y="486.5" width="160" height="47" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="610" y="506" font-size="12.5" text-anchor="middle" fill="#111">Mở chi tiết toàn trình, chỉ</text>
+<text x="610" y="521.5" font-size="12.5" text-anchor="middle" fill="#111">xem</text>
+<rect x="290" y="606.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="626" font-size="12.5" text-anchor="middle" fill="#111">Không mở; tooltip giới</text>
+<text x="370" y="641.5" font-size="12.5" text-anchor="middle" fill="#111">hạn quyền</text>
+<rect x="290" y="726.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="746" font-size="12.5" text-anchor="middle" fill="#111">Tệp Excel theo bộ lọc</text>
+<text x="370" y="761.5" font-size="12.5" text-anchor="middle" fill="#111">hiện tại</text>
+<rect x="474.96923828125" y="492" width="20.0615234375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="485" y="504" font-size="11" text-anchor="middle" fill="#1f4e79">Có</text>
+<rect x="373" y="567.75" width="37.8076171875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="391.90380859375" y="579.75" font-size="11" text-anchor="middle" fill="#1f4e79">Không</text>
+</svg>

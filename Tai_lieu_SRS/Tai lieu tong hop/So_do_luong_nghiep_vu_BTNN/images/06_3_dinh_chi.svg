@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="580" viewBox="0 0 980 580" font-family="Arial, Helvetica, sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f6fb0"/></marker></defs>
+<rect x="0" y="0" width="980" height="580" fill="#ffffff"/>
+<rect x="10" y="10" width="960" height="560" fill="#fff" stroke="#333333" stroke-width="1.2"/>
+<line x1="10" y1="50" x2="970" y2="50" stroke="#333333"/>
+<text x="20" y="36" font-size="15" font-weight="bold" fill="#111">QT6.3. Xem xét hoàn trả - đình chỉ hồ sơ / đình chỉ cán bộ</text>
+<rect x="10" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="130" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Đơn vị tạo Hội đồng</text>
+<rect x="250" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="370" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Đơn vị ban hành QĐ hoàn trả</text>
+<line x1="250" y1="50" x2="250" y2="570" stroke="#333333" stroke-width="0.8"/>
+<rect x="490" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="610" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Lãnh đạo được giao</text>
+<line x1="490" y1="50" x2="490" y2="570" stroke="#333333" stroke-width="0.8"/>
+<rect x="730" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="850" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Hệ thống</text>
+<line x1="730" y1="50" x2="730" y2="570" stroke="#333333" stroke-width="0.8"/>
+<polyline points="130,181.25 130,238.75" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="370,181.25 370,238.75" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="160,301.25 160,390 512,390" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="400,301.25 400,320 610,320 610,343" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="610,437 610,486.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="708,390 780,390" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="850,355 850,293.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="850,425 850,486.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polygon points="50,118.75 196,118.75 210,150 196,181.25 50,181.25" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="124" y="138.25" font-size="12.5" text-anchor="middle" fill="#111">Từ QT6.1: Chờ duyệt / Bị</text>
+<text x="124" y="153.75" font-size="12.5" text-anchor="middle" fill="#111">trả lại QĐ thành lập HĐ,</text>
+<text x="124" y="169.25" font-size="12.5" text-anchor="middle" fill="#111">Họp hội đồng</text>
+<rect x="50" y="238.75" width="160" height="62.5" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="258.25" font-size="12.5" text-anchor="middle" fill="#111">5. Đình chỉ cả hồ sơ / một</text>
+<text x="130" y="273.75" font-size="12.5" text-anchor="middle" fill="#111">phần cán bộ, trình QĐ</text>
+<text x="130" y="289.25" font-size="12.5" text-anchor="middle" fill="#111">đình chỉ (Mẫu 39/BTNN)</text>
+<polygon points="290,118.75 436,118.75 450,150 436,181.25 290,181.25" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="364" y="138.25" font-size="12.5" text-anchor="middle" fill="#111">Từ QT6.1: phần đơn vị</text>
+<text x="364" y="153.75" font-size="12.5" text-anchor="middle" fill="#111">chưa ban hành QĐ hoàn</text>
+<text x="364" y="169.25" font-size="12.5" text-anchor="middle" fill="#111">trả</text>
+<rect x="290" y="238.75" width="160" height="62.5" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="258.25" font-size="12.5" text-anchor="middle" fill="#111">10. Đình chỉ cấp cán bộ:</text>
+<text x="370" y="273.75" font-size="12.5" text-anchor="middle" fill="#111">chọn cán bộ, trình QĐ</text>
+<text x="370" y="289.25" font-size="12.5" text-anchor="middle" fill="#111">đình chỉ</text>
+<polygon points="610,343 708,390 610,437 512,390" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="379" font-size="11.5" text-anchor="middle" fill="#111">Ký duyệt? (Ký</text>
+<text x="610" y="393" font-size="11.5" text-anchor="middle" fill="#111">ngoài: ban hành</text>
+<text x="610" y="407" font-size="11.5" text-anchor="middle" fill="#111">ngay)</text>
+<rect x="530" y="486.5" width="160" height="47" rx="8" fill="#fafafa" stroke="#333333" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="610" y="506" font-size="12.5" text-anchor="middle" fill="#111">Từ chối: Bị trả lại (QĐ</text>
+<text x="610" y="521.5" font-size="12.5" text-anchor="middle" fill="#111">đình chỉ), trình ký lại</text>
+<polygon points="850,355 920,390 850,425 780,390" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="850" y="386" font-size="11.5" text-anchor="middle" fill="#111">Đình chỉ cả hồ</text>
+<text x="850" y="400" font-size="11.5" text-anchor="middle" fill="#111">sơ?</text>
+<rect x="770" y="246.5" width="160" height="47" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="850" y="266" font-size="12.5" text-anchor="middle" fill="#111">Đình chỉ xem xét hoàn trả</text>
+<text x="850" y="281.5" font-size="12.5" text-anchor="middle" fill="#111">(kết thúc)</text>
+<rect x="770" y="486.5" width="160" height="47" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="850" y="506" font-size="12.5" text-anchor="middle" fill="#111">Cán bộ được chọn: Đình</text>
+<text x="850" y="521.5" font-size="12.5" text-anchor="middle" fill="#111">chỉ hoàn trả (kết thúc)</text>
+<rect x="613" y="453.75" width="43.318359375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="634.6591796875" y="465.75" font-size="11" text-anchor="middle" fill="#1f4e79">Từ chối</text>
+<rect x="743.1646484375" y="359" width="30.470703125" height="29" fill="#ffffff" opacity="0.92"/>
+<text x="758.4" y="371" font-size="11" text-anchor="middle" fill="#1f4e79">Ban</text>
+<text x="758.4" y="384" font-size="11" text-anchor="middle" fill="#1f4e79">hành</text>
+<rect x="853" y="316.25" width="20.0615234375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="863.03076171875" y="328.25" font-size="11" text-anchor="middle" fill="#1f4e79">Có</text>
+<rect x="853" y="447.75" width="37.8076171875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="871.90380859375" y="459.75" font-size="11" text-anchor="middle" fill="#1f4e79">Không</text>
+</svg>

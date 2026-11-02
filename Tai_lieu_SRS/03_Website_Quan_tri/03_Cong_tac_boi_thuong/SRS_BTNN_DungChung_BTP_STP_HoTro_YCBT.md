@@ -25,6 +25,7 @@
 ---
 
 ##### 4.3.3.9.2. Sơ đồ luồng nghiệp vụ theo giao diện
+- Sơ đồ luồng các bước cho kiểm thử: [Nghiệp vụ dùng cho STP - Sơ đồ luồng nghiệp vụ BTNN - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/So_do_luong_nghiep_vu_BTNN/09_Nghiep_vu_STP.md)
 
 ```mermaid
 flowchart TD

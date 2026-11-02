@@ -26,6 +26,7 @@ Cho phép Sở Tư pháp lập, trình ký số và gửi Bộ Tư pháp báo c�
 ---
 
 #### 2. Sơ đồ luồng nghiệp vụ theo giao diện
+- Sơ đồ luồng các bước cho kiểm thử: [Báo cáo Công tác BTNN - Sơ đồ luồng nghiệp vụ BTNN - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/So_do_luong_nghiep_vu_BTNN/12_Bao_cao_cong_tac_BTNN.md)
 
 ```mermaid
 flowchart TD

@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1460" height="1300" viewBox="0 0 1460 1300" font-family="Arial, Helvetica, sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f6fb0"/></marker></defs>
+<rect x="0" y="0" width="1460" height="1300" fill="#ffffff"/>
+<rect x="10" y="10" width="1440" height="1280" fill="#fff" stroke="#333333" stroke-width="1.2"/>
+<line x1="10" y1="50" x2="1450" y2="50" stroke="#333333"/>
+<text x="20" y="36" font-size="15" font-weight="bold" fill="#111">QT12.2. Báo cáo Công tác BTNN - phân công tại Bộ Tư pháp và yêu cầu điều chỉnh</text>
+<rect x="10" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="130" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Lãnh đạo Cục</text>
+<rect x="250" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="370" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Lãnh đạo Phòng (Cục)</text>
+<line x1="250" y1="50" x2="250" y2="1290" stroke="#333333" stroke-width="0.8"/>
+<rect x="490" y="50" width="480" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="730" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Chuyên viên (Cục)</text>
+<line x1="490" y1="50" x2="490" y2="1290" stroke="#333333" stroke-width="0.8"/>
+<rect x="970" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="1090" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Hệ thống</text>
+<line x1="970" y1="50" x2="970" y2="1290" stroke="#333333" stroke-width="0.8"/>
+<rect x="1210" y="50" width="240" height="40" fill="#f3f6fa" stroke="#333333" stroke-width="0.8"/>
+<text x="1330" y="74" font-size="12.5" font-weight="bold" text-anchor="middle" fill="#111">Luồng khác</text>
+<line x1="1210" y1="50" x2="1210" y2="1290" stroke="#333333" stroke-width="0.8"/>
+<polyline points="1250,150 1160,150" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="1090,185 1090,246.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="1020,150 640,150 640,598.75" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="1010,270 160,270 160,348.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,390 340,390 340,475" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="450,510 510,510 510,630 530,630" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="610,661.25 610,715" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="708,750 1250,750" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="610,785 610,835" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="530,870 400,870 400,966.5" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="290,990 160,990 160,1078.75" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="450,990 820,990 820,1067.25" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="210,1110 770,1110" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="160,1141.25 160,1230 1010,1230" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polyline points="850,1067.25 850,870 690,870" fill="none" stroke="#2f6fb0" stroke-width="1.4" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+<polyline points="1170,1230 1250,1230" fill="none" stroke="#2f6fb0" stroke-width="1.4" marker-end="url(#ah)"/>
+<polygon points="1250,126.5 1396,126.5 1410,150 1396,173.5 1250,173.5" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="1324" y="146" font-size="12.5" text-anchor="middle" fill="#111">Từ QT12.1: báo cáo Sở</text>
+<text x="1324" y="161.5" font-size="12.5" text-anchor="middle" fill="#111">Đã ban hành</text>
+<polygon points="1090,115 1160,150 1090,185 1020,150" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="1090" y="146" font-size="11.5" text-anchor="middle" fill="#111">Kỳ báo cáo đã</text>
+<text x="1090" y="160" font-size="11.5" text-anchor="middle" fill="#111">phân công?</text>
+<rect x="1010" y="246.5" width="160" height="47" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="1090" y="266" font-size="12.5" text-anchor="middle" fill="#111">Kỳ báo cáo (Năm + Loại</text>
+<text x="1090" y="281.5" font-size="12.5" text-anchor="middle" fill="#111">kỳ): Chờ phân công</text>
+<rect x="50" y="348.5" width="160" height="83" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="368" font-size="12.5" text-anchor="middle" fill="#111">6. Phân công Lãnh đạo</text>
+<text x="130" y="383.5" font-size="12.5" text-anchor="middle" fill="#111">Phòng cho kỳ báo cáo</text>
+<rect x="57.69921875" y="391.5" width="144.6015625" height="32" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="130" y="403.5" font-size="11" text-anchor="middle" fill="#6b4e00">Chờ Lãnh đạo Phòng phân</text>
+<text x="130" y="416.5" font-size="11" text-anchor="middle" fill="#6b4e00">công</text>
+<rect x="290" y="475" width="160" height="70" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="494.5" font-size="12.5" text-anchor="middle" fill="#111">7. Phân công Chuyên</text>
+<text x="370" y="510" font-size="12.5" text-anchor="middle" fill="#111">viên cho kỳ báo cáo</text>
+<rect x="329.751220703125" y="518" width="80.49755859375" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="370" y="530" font-size="11" text-anchor="middle" fill="#6b4e00">Đã phân công</text>
+<rect x="530" y="598.75" width="160" height="62.5" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="618.25" font-size="12.5" text-anchor="middle" fill="#111">8. Xem tình hình gửi, xem</text>
+<text x="610" y="633.75" font-size="12.5" text-anchor="middle" fill="#111">báo cáo các Sở (MH07,</text>
+<text x="610" y="649.25" font-size="12.5" text-anchor="middle" fill="#111">MH08)</text>
+<rect x="770" y="606.5" width="160" height="47" rx="8" fill="#fafafa" stroke="#333333" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="850" y="626" font-size="12.5" text-anchor="middle" fill="#111">Chuyên viên khác: chỉ</text>
+<text x="850" y="641.5" font-size="12.5" text-anchor="middle" fill="#111">xem</text>
+<polygon points="610,715 708,750 610,785 512,750" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="746" font-size="11.5" text-anchor="middle" fill="#111">Báo cáo của Sở</text>
+<text x="610" y="760" font-size="11.5" text-anchor="middle" fill="#111">cần điều chỉnh?</text>
+<rect x="530" y="835" width="160" height="70" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="610" y="854.5" font-size="12.5" text-anchor="middle" fill="#111">9. Nhập Nội dung yêu</text>
+<text x="610" y="870" font-size="12.5" text-anchor="middle" fill="#111">cầu điều chỉnh, trình</text>
+<rect x="578.3798828125" y="878" width="63.240234375" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="610" y="890" font-size="11" text-anchor="middle" fill="#6b4e00">Chờ duyệt</text>
+<rect x="1010" y="846.5" width="160" height="47" rx="8" fill="#fafafa" stroke="#333333" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="1090" y="866" font-size="12.5" text-anchor="middle" fill="#111">Chờ duyệt yêu cầu: báo</text>
+<text x="1090" y="881.5" font-size="12.5" text-anchor="middle" fill="#111">cáo Sở vẫn Đã ban hành</text>
+<rect x="290" y="966.5" width="160" height="47" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="370" y="986" font-size="12.5" text-anchor="middle" fill="#111">10. Cấp 1: Duyệt / Từ</text>
+<text x="370" y="1001.5" font-size="12.5" text-anchor="middle" fill="#111">chối yêu cầu điều chỉnh</text>
+<rect x="50" y="1078.75" width="160" height="62.5" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="130" y="1098.25" font-size="12.5" text-anchor="middle" fill="#111">11. Cấp 2: Duyệt cấp cuối</text>
+<text x="130" y="1113.75" font-size="12.5" text-anchor="middle" fill="#111">/ Từ chối yêu cầu điều</text>
+<text x="130" y="1129.25" font-size="12.5" text-anchor="middle" fill="#111">chỉnh</text>
+<rect x="770" y="1067.25" width="160" height="85.5" rx="1" fill="#ffffff" stroke="#333333" stroke-width="1"/>
+<text x="850" y="1086.75" font-size="12.5" text-anchor="middle" fill="#111">12. Sửa yêu cầu, xem Lý</text>
+<text x="850" y="1102.25" font-size="12.5" text-anchor="middle" fill="#111">do bị trả lại, trình lại từ</text>
+<text x="850" y="1117.75" font-size="12.5" text-anchor="middle" fill="#111">cấp 1</text>
+<rect x="824.13232421875" y="1125.75" width="51.7353515625" height="19" rx="9" fill="#fff3c4" stroke="#c99a06" stroke-width="0.8"/>
+<text x="850" y="1137.75" font-size="11" text-anchor="middle" fill="#6b4e00">Bị trả lại</text>
+<rect x="1010" y="1191" width="160" height="78" rx="1" fill="#c9f1f5" stroke="#333333" stroke-width="1"/>
+<text x="1090" y="1210.5" font-size="12.5" text-anchor="middle" fill="#111">Gửi Sở: báo cáo Sở Bị</text>
+<text x="1090" y="1226" font-size="12.5" text-anchor="middle" fill="#111">trả lại - Bộ Tư pháp yêu</text>
+<text x="1090" y="1241.5" font-size="12.5" text-anchor="middle" fill="#111">cầu điều chỉnh; không</text>
+<text x="1090" y="1257" font-size="12.5" text-anchor="middle" fill="#111">tính Đã gửi</text>
+<polygon points="1250,726.5 1396,726.5 1410,750 1396,773.5 1250,773.5" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="1324" y="746" font-size="12.5" text-anchor="middle" fill="#111">QT12.3. Báo cáo tổng</text>
+<text x="1324" y="761.5" font-size="12.5" text-anchor="middle" fill="#111">hợp của Bộ</text>
+<polygon points="1250,1206.5 1396,1206.5 1410,1230 1396,1253.5 1250,1253.5" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.2"/>
+<text x="1324" y="1226" font-size="12.5" text-anchor="middle" fill="#111">QT12.1 bước 5: Sở điều</text>
+<text x="1324" y="1241.5" font-size="12.5" text-anchor="middle" fill="#111">chỉnh, gửi lại</text>
+<rect x="1093" y="207.75" width="37.8076171875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="1111.90380859375" y="219.75" font-size="11" text-anchor="middle" fill="#1f4e79">Không</text>
+<rect x="778.6923828125" y="119" width="102.615234375" height="29" fill="#ffffff" opacity="0.92"/>
+<text x="830" y="131" font-size="11" text-anchor="middle" fill="#1f4e79">Có: Chuyên viên đã</text>
+<text x="830" y="144" font-size="11" text-anchor="middle" fill="#1f4e79">được phân công</text>
+<rect x="851.69619140625" y="732" width="37.8076171875" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="870.6" y="744" font-size="11" text-anchor="middle" fill="#1f4e79">Không</text>
+<rect x="613" y="802" width="20.0615234375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="623.03076171875" y="814" font-size="11" text-anchor="middle" fill="#1f4e79">Có</text>
+<rect x="207.63232421875" y="972" width="34.7353515625" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="225" y="984" font-size="11" text-anchor="middle" fill="#1f4e79">Duyệt</text>
+<rect x="613.3408203125" y="972" width="43.318359375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="635" y="984" font-size="11" text-anchor="middle" fill="#1f4e79">Từ chối</text>
+<rect x="356.3408203125" y="1092" width="43.318359375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="378" y="1104" font-size="11" text-anchor="middle" fill="#1f4e79">Từ chối</text>
+<rect x="163" y="1177.625" width="78.76220703125" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="202.381103515625" y="1189.625" font-size="11" text-anchor="middle" fill="#1f4e79">Duyệt cấp cuối</text>
+<rect x="853" y="960.625" width="45.3271484375" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="875.66357421875" y="972.625" font-size="11" text-anchor="middle" fill="#1f4e79">Trình lại</text>
+</svg>
