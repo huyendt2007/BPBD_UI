@@ -24,17 +24,17 @@
     const canPay = o => { const s = A().scope(); return s === 'stp' || (s !== 'lanh_dao' && (isOwner() || A().payUnitOf(o) === A().myUnit())); };
 
     // ===== Bước 4: hiển thị theo phần đơn vị =====
-    // Nút thao tác: màu nền theo thao tác; khóa: nền xám, icon xám đậm (không ẩn), tooltip tên nút kèm lý do khóa
+    // Nút thao tác: màu nền theo thao tác; chỉ dựng khi được phép (không hiển thị dạng khóa mờ)
     const COLOR = { 'fa-clock-rotate-left': '#0284c7', 'fa-eye': '#0284c7', 'fa-money-bill-transfer': '#16a34a', 'fa-hand-holding-dollar': '#d97706', 'fa-shield-halved': '#7c3aed', 'fa-arrow-down-wide-short': '#2563eb', 'fa-file-signature': '#16a34a', 'fa-ban': '#dc2626' };
-    function act(onclick, icon, title, enabled, tip) {
+    function act(onclick, icon, title) {
         const c = COLOR[(icon.split(' ').find(x => COLOR[x])) || ''] || '#2563eb';
         const base = 'width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; ';
-        return enabled
-            ? '<button type="button" data-admin-icon-normalized="1" class="btn-action-square" title="' + title + '" style="' + base + 'background:' + c + '; color:#fff; border:1px solid ' + c + ';" onclick="' + onclick + '"><i class="' + icon + '"></i></button>'
-            : '<button type="button" data-admin-icon-normalized="1" class="btn-action-square" title="' + title + (tip ? ' - ' + tip : '') + '" style="' + base + 'background:#e2e8f0; color:#64748b; border:1px solid #cbd5e1; cursor:not-allowed;" disabled><i class="' + icon + '"></i></button>';
+        return '<button type="button" data-admin-icon-normalized="1" class="btn-action-square" title="' + title + '" style="' + base + 'background:' + c + '; color:#fff; border:1px solid ' + c + ';" onclick="' + onclick + '"><i class="' + icon + '"></i></button>';
     }
-    // Cột Thao tác Bước 4: Xem chi tiết | Ghi nhận nộp tiền / Ghi nhận trả lại tiền. Trình QĐ miễn / giảm bổ sung: chọn cán bộ, nút trên bảng
-    // Nút không được phép: hiển thị mờ, tooltip "[Tên nút] - [Lý do]"
+    // Ô giữ chỗ vô hình cùng kích thước nút (không bấm được, không tooltip): giữ vị trí cố định của các nút giữa các dòng
+    const gap = m => '<span class="ht-act-gap" aria-hidden="true" style="display:inline-block; width:32px; height:32px; margin:0 ' + m + 'px; vertical-align:middle; visibility:hidden;"></span>';
+    // Cột Thao tác Bước 4: vị trí cố định Xem chi tiết | Ghi nhận nộp tiền / Ghi nhận trả lại tiền (cùng 1 vị trí). Trình QĐ miễn / giảm bổ sung: chọn cán bộ, nút trên bảng
+    // Nút không được phép: ẩn, giữ chỗ bằng ô vô hình
     function payTip(o) {
         if (/^CD_DC$/.test(o.trinh || '')) return 'Quyết định đình chỉ đang chờ Lãnh đạo ký duyệt';
         // QĐ đình chỉ Bị trả lại: vẫn cho phép Ghi nhận nộp tiền (chỉ giữ khóa Trình QĐ miễn / giảm bổ sung)
@@ -50,16 +50,18 @@
         const view = window.htViewOfficerBtn(idx, 'ht4OpenHistory');
         if (s === 'lanh_dao') {
             // Lượt trình 01 cán bộ (dữ liệu cũ); QĐ chung: Ký duyệt / Từ chối tại khối Quyết định miễn / giảm mức hoàn trả bổ sung
+            // Vị trí cố định: Xem chi tiết | Ký duyệt | Từ chối; dòng không có lượt trình: giữ chỗ vô hình
             return /^CD_(MIEN|GIAM)$/.test(o.trinh || '') && o.mgKey == null && o.qd3
-                ? view + ' ' + act('ht3Approve(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-file-signature', 'Ký duyệt', true) + ' ' + act('ht3Reject(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-ban', 'Từ chối', true)
-                : view;
+                ? view + ' ' + act('ht3Approve(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-file-signature', 'Ký duyệt') + ' ' + act('ht3Reject(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-ban', 'Từ chối')
+                : view + ' ' + gap(4) + ' ' + gap(4);
         }
         const own = canPay(o);
         // Nút 2 đổi chế độ theo tình trạng: có số tiền cần trả lại -> Ghi nhận trả lại tiền; còn lại -> Ghi nhận nộp tiền
         let h = view + ' ';
-        // Nút chỉ hiển thị khi được phép thực hiện (không hiển thị dạng khóa mờ)
-        if ((o.refund || 0) > 0) { if (own) h += B('fa-solid fa-hand-holding-dollar', 'Ghi nhận trả lại tiền', 'ht4OpenRefund(' + idx + ')', true, '', '#d97706'); }
-        else if (own && !payTip(o)) h += B('fa-solid fa-money-bill-transfer', 'Ghi nhận nộp tiền', 'ht4OpenPay(' + idx + ')', true, '', '#16a34a');
+        // Nút chỉ hiển thị khi được phép thực hiện (không hiển thị dạng khóa mờ); không được phép: giữ chỗ vô hình
+        if ((o.refund || 0) > 0 && own) h += B('fa-solid fa-hand-holding-dollar', 'Ghi nhận trả lại tiền', 'ht4OpenRefund(' + idx + ')', true, '', '#d97706');
+        else if (!((o.refund || 0) > 0) && own && !payTip(o)) h += B('fa-solid fa-money-bill-transfer', 'Ghi nhận nộp tiền', 'ht4OpenPay(' + idx + ')', true, '', '#16a34a');
+        else h += gap(2);
         return h;
     }
     function methodCell(o) {
@@ -98,7 +100,7 @@
             const tong = list.reduce((s, x) => s + (x.o.ct === 'MIEN' ? (x.o.paid || 0) : (x.o.total || 0)), 0), daThu = list.reduce((s, x) => s + (x.o.paid || 0), 0);
             h += '<div class="card" style="' + a.unitCardStyle(u) + '">' + a.unitHeader(u, 4, a.unitBadge(u)) + '<div class="card-body"' + (a.unitCollapsed(4, u) ? ' style="display:none;"' : '') + '>'
                 + '<div style="font-size:13px; margin-bottom:10px;">Cán bộ ở giai đoạn thu tiền: <strong>' + list.length + '</strong> • Tổng phải thu: <strong>' + a.money(tong) + ' đ</strong> • Đã thu: <strong>' + a.money(daThu) + ' đ</strong> • Còn phải thu: <strong>' + a.money(Math.max(0, list.reduce((s, x) => s + (x.o.ct === 'THU' ? conLai(x.o) : 0), 0))) + ' đ</strong></div>'
-                + a.mgToolbar(u, ui, list) + '<table class="dense-table" style="width:100%;"><thead><tr>' + a.mgHeadCell(u, ui, list) + '<th style="width:45px; text-align:center;">STT</th><th>Họ và tên</th><th style="width:90px;">Mức độ lỗi</th><th style="width:100px;">Phương thức hoàn trả</th><th style="width:130px; text-align:right;">Số tiền phải hoàn trả (đ)</th><th style="width:120px; text-align:right;">Đã nộp (đ)</th><th style="width:120px; text-align:right;">Còn phải thu (đ)</th><th style="width:220px;">Trạng thái</th><th style="min-width:160px; text-align:center; white-space:nowrap;">Thao tác</th></tr></thead><tbody>'
+                + a.mgToolbar(u, ui, list) + '<table class="dense-table" style="width:100%;"><thead><tr>' + a.mgHeadCell(u, ui, list) + '<th style="width:45px; text-align:center;">STT</th><th style="width:200px;">Họ và tên</th><th style="width:210px;">Mức độ lỗi</th><th style="width:100px;">Phương thức hoàn trả</th><th style="width:130px; text-align:right;">Số tiền phải hoàn trả (đ)</th><th style="width:120px; text-align:right;">Đã nộp (đ)</th><th style="width:130px; text-align:right; white-space:nowrap !important;">Còn phải thu (đ)</th><th style="width:220px;">Trạng thái</th><th style="min-width:160px; text-align:center; white-space:nowrap;">Thao tác</th></tr></thead><tbody>'
                 + list.map((x, k) => '<tr>' + a.mgCheckCell(x.o, x.idx, u, ui) + '<td style="text-align:center;">' + (k + 1) + '</td><td><strong>' + a.esc(x.o.name) + '</strong><div style="font-size:12px; color:var(--text-muted);">' + a.esc(x.o.role || '') + '</div></td><td>' + a.esc(x.o.loi === 'Khác' ? (x.o.ykhdLoiKhac || 'Khác') : (x.o.loi || '-')) + '</td>' + methodCell(x.o)
                     + '<td style="text-align:right;">' + a.money(x.o.ct === 'MIEN' ? 0 : x.o.total) + '</td><td style="text-align:right;">' + a.money(x.o.paid) + '</td><td style="text-align:right; font-weight:700;">' + a.money(x.o.ct === 'THU' ? conLai(x.o) : 0) + '</td>'
                     + '<td>' + statusCell(x.o) + '</td><td class="ht-act-cell">' + actions(x.o, x.idx) + '</td></tr>').join('')
