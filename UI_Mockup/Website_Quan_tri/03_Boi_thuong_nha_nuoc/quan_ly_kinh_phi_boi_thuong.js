@@ -1844,7 +1844,7 @@ function renderNoticeTrackingFile(readOnly = false) {
                 <span style="font-weight:600; color:var(--text-color);">${file}</span>
                 <span style="font-weight:600; font-size:12px; white-space:nowrap;">
                     <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem file</a>
-                    ${readOnly ? '' : `<span style="color:#CBD5E1; margin:0 5px;">|</span><a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="removeNoticeTrackingFile(${index})"><i class="fa-regular fa-trash-can"></i> Xóa</a>`}
+                    ${readOnly ? '' : `<span style="color:#CBD5E1; margin:0 5px;">|</span><a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="removeNoticeTrackingFile(${index})"><i class="fa-regular fa-trash"></i> Xóa</a>`}
                 </span>
             </div>
         `).join('');
@@ -2063,7 +2063,7 @@ function renderTreasuryFile(readOnly = false) {
                 <span style="font-weight:600; color:var(--text-color);">${file}</span>
                 <span style="font-weight:600; font-size:12px; white-space:nowrap;">
                     <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem file</a>
-                    ${readOnly ? '' : `<span style="color:#CBD5E1; margin:0 5px;">|</span><a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="removeTreasuryFile(${index})"><i class="fa-regular fa-trash-can"></i> Xóa</a>`}
+                    ${readOnly ? '' : `<span style="color:#CBD5E1; margin:0 5px;">|</span><a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="removeTreasuryFile(${index})"><i class="fa-regular fa-trash"></i> Xóa</a>`}
                 </span>
             </div>
         `).join('');
@@ -2527,11 +2527,11 @@ function renderProposalsTable() {
             let updateBtn = `<button class="icon-btn edit" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ cập nhật đề xuất ở trạng thái Bị trả lại"><i class="fa-solid fa-pen-to-square"></i></button>`;
             let payBtn = `<button class="icon-btn accept" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ thực hiện chi trả ở trạng thái Chờ chi trả"><i class="fa-solid fa-hand-holding-dollar"></i></button>`;
             let treasuryBtn = `<button class="icon-btn" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chưa đủ điều kiện trả lại ngân sách nhà nước"><i class="fa-solid fa-building-columns"></i></button>`;
-            let deleteBtn = `<button class="icon-btn delete" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ xóa được tờ trình ở trạng thái Chờ lập đề nghị"><i class="fa-regular fa-trash-can"></i></button>`;
+            let deleteBtn = `<button class="icon-btn delete" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ xóa được tờ trình ở trạng thái Chờ lập đề nghị"><i class="fa-regular fa-trash"></i></button>`;
 
             if (item.status === 'Chờ lập đề nghị') {
                 fillBtn = `<button class="icon-btn edit" title="Lập đề nghị kinh phí" onclick="fillProposalDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
-                deleteBtn = `<button class="icon-btn delete" title="Xóa tờ trình" onclick="event.stopPropagation(); deleteProposal('${item.id}')"><i class="fa-regular fa-trash-can"></i></button>`;
+                deleteBtn = `<button class="icon-btn delete" title="Xóa tờ trình" onclick="event.stopPropagation(); deleteProposal('${item.id}')"><i class="fa-regular fa-trash"></i></button>`;
             } else if (item.status === 'Bị trả lại') {
                 updateBtn = `<button class="icon-btn edit" title="Cập nhật đề nghị" onclick="updateProposalDirect('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
             } else if (item.status === 'Chờ chi trả') {
@@ -3104,7 +3104,7 @@ function handleClaimSelected(code) {
                         <div style="display:flex; justify-content:center; gap:8px; font-weight:600; font-size:12px; white-space:nowrap;">
                             <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem</a>
                             <span style="color:#CBD5E1;">|</span>
-                            <a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="clearClaimFile('TinhThan')"><i class="fa-regular fa-trash-can"></i> Xóa</a>
+                            <a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="clearClaimFile('TinhThan')"><i class="fa-regular fa-trash"></i> Xóa</a>
                         </div>
                     `;
                 } else {
@@ -3121,7 +3121,7 @@ function handleClaimSelected(code) {
                         <div style="display:flex; justify-content:center; gap:8px; font-weight:600; font-size:12px; white-space:nowrap;">
                             <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem</a>
                             <span style="color:#CBD5E1;">|</span>
-                            <a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="clearClaimFile('Khac')"><i class="fa-regular fa-trash-can"></i> Xóa</a>
+                            <a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="clearClaimFile('Khac')"><i class="fa-regular fa-trash"></i> Xóa</a>
                         </div>
                     `;
                 } else {
@@ -4865,7 +4865,7 @@ function handlePayoutFileChange(input) {
             <span style="margin-left: 10px; font-weight:600; font-size:12px;">
                 <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem file</a>
                 <span style="color:#CBD5E1; margin:0 5px;">|</span>
-                <a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="removePayoutFile()"><i class="fa-regular fa-trash-can"></i> Xóa</a>
+                <a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="removePayoutFile()"><i class="fa-regular fa-trash"></i> Xóa</a>
             </span>
         `;
     }

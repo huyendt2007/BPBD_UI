@@ -1075,158 +1075,6 @@
             transform: scale(1);
         }
 
-        /* --- Custom Officer Modal Style sync --- */
-        #claimOfficerModal .confirm-modal-container {
-            max-width: 850px !important;
-            width: 90% !important;
-            border-radius: 12px !important;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
-            border: none !important;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            max-height: 90vh !important;
-        }
-
-        #claimOfficerModal .modal-content {
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            max-height: 90vh !important;
-            overflow: hidden;
-        }
-
-        #claimOfficerModal .modal-header {
-            border-bottom: 1px solid #e2e8f0 !important;
-            padding: 24px 24px 16px 24px !important;
-            margin-bottom: 0 !important;
-            background: #fff;
-            flex-shrink: 0;
-        }
-
-        #claimOfficerModal .modal-header h3 {
-            font-size: 16px !important;
-            color: #1e3a8a !important;
-            font-weight: 700 !important;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        #claimOfficerModal .modal-header span {
-            color: #64748b !important;
-            transition: color 0.15s;
-        }
-
-        #claimOfficerModal .modal-header span:hover {
-            color: #0f172a !important;
-        }
-
-        #claimOfficerModal .modal-body {
-            padding: 24px !important;
-            background: #fff;
-            overflow-y: auto;
-            flex: 1;
-            min-height: 250px;
-        }
-
-        #claimOfficerModal .form-group {
-            margin-bottom: 18px !important;
-        }
-
-        #claimOfficerModal .form-label {
-            font-size: 13px !important;
-            font-weight: 600 !important;
-            color: #334155 !important;
-            margin-bottom: 8px !important;
-            display: block !important;
-        }
-
-        #claimOfficerModal .form-control {
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 6px !important;
-            padding: 10px 14px !important;
-            font-size: 13.5px !important;
-            width: 100% !important;
-            height: auto !important;
-            box-sizing: border-box !important;
-            color: #1e293b !important;
-            transition: all 0.15s ease-in-out !important;
-        }
-
-        #claimOfficerModal .form-control::placeholder {
-            font-style: italic !important;
-            color: #94a3b8 !important;
-        }
-
-        #claimOfficerModal .form-control:focus {
-            border-color: #1e3a8a !important;
-            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1) !important;
-            outline: none !important;
-        }
-
-        #claimOfficerModal .form-control.is-invalid {
-            border-color: #ef4444 !important;
-            background-color: #fef2f2 !important;
-        }
-
-        #claimOfficerModal select.form-control {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
-            background-position: right 12px center !important;
-            background-repeat: no-repeat !important;
-            background-size: 20px 20px !important;
-            padding-right: 40px !important;
-            appearance: none !important;
-            -webkit-appearance: none !important;
-            -moz-appearance: none !important;
-        }
-
-        #claimOfficerModal .modal-footer {
-            border-top: 1px solid #e2e8f0 !important;
-            padding: 16px 24px 24px 24px !important;
-            text-align: right !important;
-            background: #fff;
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-        }
-
-        #claimOfficerModal .btn-secondary {
-            background-color: #fff !important;
-            border: 1px solid #cbd5e1 !important;
-            color: #475569 !important;
-            padding: 9px 20px !important;
-            border-radius: 6px !important;
-            font-size: 13.5px !important;
-            font-weight: 500 !important;
-            cursor: pointer !important;
-            transition: all 0.15s !important;
-        }
-
-        #claimOfficerModal .btn-secondary:hover {
-            background-color: #f8fafc !important;
-            border-color: #94a3b8 !important;
-            color: #1e293b !important;
-        }
-
-        #claimOfficerModal .btn-primary {
-            background-color: #1e3a8a !important;
-            border: 1px solid #1e3a8a !important;
-            color: #fff !important;
-            padding: 9px 24px !important;
-            border-radius: 6px !important;
-            font-size: 13.5px !important;
-            font-weight: 600 !important;
-            cursor: pointer !important;
-            transition: all 0.15s !important;
-        }
-
-        #claimOfficerModal .btn-primary:hover {
-            background-color: #1d4ed8 !important;
-            border-color: #1d4ed8 !important;
-        }
-
         .confirm-modal-header {
             padding: 16px 20px;
             background-color: #f8fafc;
@@ -2772,53 +2620,6 @@
                     </div>
                 </div>
 
-                <!-- ADDED: THÔNG TIN NGƯỜI THI HÀNH CÔNG VỤ GÂY THIỆT HẠI -->
-                <div id="claimOfficerContainerForm" style="display: none;">
-                    <div
-                        style="font-size: 13.5px; font-weight: 700; color: #334155; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 16px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
-                        <span>THÔNG TIN NGƯỜI THI HÀNH CÔNG VỤ GÂY THIỆT HẠI</span>
-                        <button class="btn btn-secondary btn-sm" type="button" onclick="openClaimOfficerModal()">
-                            <i class="fa-solid fa-plus"></i> Thêm cán bộ
-                        </button>
-                    </div>
-
-                    <div class="table-container" style="margin-bottom: 20px;">
-                        <table class="custom-table" id="claimOfficerTable">
-                            <thead>
-                                <tr>
-                                    <th style="width: 50px; text-align: center;">STT</th>
-                                    <th style="min-width: 150px;">Họ và tên</th>
-                                    <th style="min-width: 150px;">Chức vụ lúc gây thiệt hại</th>
-                                    <th style="min-width: 180px;">Cơ quan lúc gây thiệt hại</th>
-                                    <th style="min-width: 150px;">Tình trạng hiện tại</th>
-                                    <th style="min-width: 150px;">Chức vụ hiện tại</th>
-                                    <th style="min-width: 180px;">Đơn vị hiện tại</th>
-                                    <th style="width: 100px; text-align: center; min-width: 100px;">Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody id="claimOfficerTableBody">
-                                <tr>
-                                    <td colspan="8"
-                                        style="text-align: center; color: var(--text-muted); font-style: italic;">
-                                        Chưa có dữ liệu cán bộ.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <script>
-                    function toggleClaimOfficerCurrentStatus() {
-                        const status = document.getElementById('claimOfficerStatusForm').value;
-                        const group = document.getElementById('claimOfficerCurrentGroupForm');
-                        if (status === 'Đã chuyển công tác') {
-                            group.style.display = 'grid';
-                        } else {
-                            group.style.display = 'none';
-                        }
-                    }
-                </script>
-
                 <!-- II. THIỆT HẠI YÊU CẦU BỒI THƯỜNG -->
                 <div id="claimMoneySection">
                     <div class="info-group-title">Thiệt hại yêu cầu bồi thường</div>
@@ -3486,10 +3287,6 @@
                                         <span class="form-label">Lãnh đạo ký ban hành *</span>
                                         <input type="text" class="form-control" id="specialStatusDigitalSigner" value="Ngô Anh Tuấn - Giám đốc Sở Tư pháp Hà Nội">
                                     </div>
-                                    <div class="form-group" id="specialStatusExternalSignerGroup" style="display:none;">
-                                        <span class="form-label">Người ký / Chức vụ *</span>
-                                        <input type="text" class="form-control" id="specialStatusExternalSigner" placeholder="Nhập người ký, chức vụ...">
-                                    </div>
                                 </div>
 
                                 <div class="grid-3-cols" style="margin-bottom: 12px;">
@@ -3737,11 +3534,7 @@
                                     <input type="text" class="form-control" id="editPhddStep1Signer"
                                         placeholder="Họ tên người ký">
                                 </div>
-                                <div class="form-group">
-                                    <span class="form-label">Chức vụ *</span>
-                                    <input type="text" class="form-control" id="editPhddStep1Position"
-                                        placeholder="Ví dụ: Giám đốc Sở">
-                                </div>
+                                <div></div>
                                 <div></div>
                             </div>
 
@@ -4001,7 +3794,7 @@
                                 style="display: none; align-items: center; gap: 8px; padding: 10px 14px; background-color: #FFFBEB; border: 1px solid #FBBF24; border-radius: 6px; color: #B45309; font-size: 13px; margin-bottom: 12px;">
                                 <i class="fa-solid fa-circle-exclamation"></i>
                                 <span>Người bị thiệt hại đã chết. Bỏ qua bước lấy ý kiến phản hồi và thực hiện hình thức
-                                    Đăng báo xin lỗi cải chính công khai.</span>
+                                    Đăng báo xin lỗi và cải chính công khai.</span>
                             </div>
 
                             <div id="phddStep2FormContent">
@@ -4364,7 +4157,7 @@
     </div>
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
-    <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261104cv"></script>
     <script src="btnn_dvc_sync.js?v=20261030dvc1"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
@@ -4606,7 +4399,7 @@
                 box.innerHTML = file
                     ? `<i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i><span style="font-weight:600; color:#1e3a8a; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${ycEsc(file)}">${ycEsc(file)}</span>
                        <a href="javascript:void(0)" onclick="viewPhddMockFile('${ycEsc(file)}')" style="color:#1e40af; font-weight:600; text-decoration:none; font-size:12px;">Xem file</a>
-                       <a href="javascript:void(0)" onclick="removeXmRequiredDoc('${key}')" style="color:#dc2626; font-weight:600; text-decoration:none; font-size:12px;"><i class="fa-solid fa-trash-can"></i> Xóa</a>`
+                       <a href="javascript:void(0)" onclick="removeXmRequiredDoc('${key}')" style="color:#dc2626; font-weight:600; text-decoration:none; font-size:12px;"><i class="fa-solid fa-trash"></i> Xóa</a>`
                     : `<button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('xmReqDocInput_${key}').click()"><i class="fa-solid fa-paperclip"></i> Chọn file</button>
                        <span style="font-size:12px; color:#64748b;">Chưa đính kèm</span>`;
             });
@@ -5641,7 +5434,7 @@
                 slaStatus: "normal",
                 slaText: "Đang tiến hành xác minh thiệt hại",
                 restoreHonor: true,
-                phddForm: "Đăng báo xin lỗi, cải chính công khai",
+                phddForm: "Đăng báo xin lỗi và cải chính công khai",
                 agency: "Tòa án nhân dân TP. Hà Nội",
                 deadline: "30/08/2026",
                 files: [
@@ -8003,8 +7796,8 @@
             'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành', 'Đang phục hồi danh dự', 'Hoãn phục hồi danh dự', 'Từ chối phục hồi danh dự',
             'Hoãn giải quyết', 'Tạm đình chỉ', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Đã chuyển CQGQBT', 'Không thụ lý', 'Yêu cầu bổ sung'
         ];
-        // Chuyển CQGQBT: các Trạng thái vụ việc được phép
-        const GQ_TRANSFER_CASE_STATES = ['Yêu cầu bổ sung', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Đang phục hồi danh dự', 'Hoãn giải quyết'];
+        // Chuyển CQGQBT: các Trạng thái vụ việc được phép (Yêu cầu bổ sung là chưa thụ lý: không được Chuyển CQGQBT)
+        const GQ_TRANSFER_CASE_STATES = ['Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Đang phục hồi danh dự', 'Hoãn giải quyết'];
         // Chuẩn hóa giá trị trạng thái khi đọc dữ liệu (dữ liệu cũ trong localStorage -> 17 Trạng thái vụ việc).
         // Bảng ánh xạ chỉ dùng để đọc dữ liệu cũ, viết dạng không dấu; mọi chỗ ghi/so sánh trạng thái chỉ dùng tên mới.
         const GQ_LEGACY_STATUS = {
@@ -9375,7 +9168,7 @@
         }
         function phddFormText(forms) {
             if (forms.apology && forms.news) return 'Cả hai hình thức (Trực tiếp xin lỗi và Đăng báo)';
-            return forms.news ? 'Đăng báo xin lỗi, cải chính công khai' : 'Trực tiếp xin lỗi, cải chính công khai';
+            return forms.news ? 'Đăng báo xin lỗi và cải chính công khai' : 'Trực tiếp xin lỗi, cải chính công khai';
         }
         // Trạng thái Phục hồi danh dự suy ra từ tiến trình đã ghi nhận (dữ liệu mẫu chưa có phddStatus)
         function phddDeriveStatus(c) {
@@ -9824,6 +9617,8 @@
             // Mã vụ việc VVBT- cho mọi hồ sơ (dữ liệu mẫu, hồ sơ cũ, vụ việc Chỉ PHDD): cùng một Mã hồ sơ BT- luôn ra cùng Mã vụ việc
             ensureClaimsVuViec();
             phddPersistStore();
+            // Nơi thụ lý: hồ sơ Giải quyết YCBT (mọi nguồn) được hệ thống gán "Thụ lý tại CQGQBT" (hồ sơ cũ chưa có giá trị: gán khi tải trang)
+            if (window.BTNN_NTL) claimsList.forEach(c => BTNN_NTL.assign(c, false));
             // Bộ nhớ localStorage đầy (QuotaExceededError): vẫn vẽ danh sách từ dữ liệu trong trang, không dừng hàm khởi tạo
             try { localStorage.setItem('claimsList', JSON.stringify(claimsList)); } catch (e) { console.warn('[BTNN] Không lưu được claimsList vào localStorage:', e && e.name); }
 
@@ -10110,7 +9905,7 @@
         // Các hằng / hàm dưới đây là phương án dự phòng khi khối gqld chưa nạp.
         const CLAIM_LIST_ACTIONS = {
             accept: { icon: 'fa-solid fa-check-to-slot', cls: 'accept', title: 'Tiếp nhận' },
-            supplement: { icon: 'fa-solid fa-circle-question', cls: 'supplement', title: 'Yêu cầu bổ sung' },
+            supplement: { icon: 'fa-solid fa-file-circle-question', cls: 'supplement', title: 'Yêu cầu bổ sung' },
             reject: { icon: 'fa-solid fa-ban', cls: 'reject', title: 'Không thụ lý' },
             update: { icon: 'fa-solid fa-pen-to-square', cls: 'edit', title: 'Cập nhật' },
             transfer: { icon: 'fa-solid fa-right-left', cls: 'transfer', title: 'Chuyển cơ quan giải quyết bồi thường' }
@@ -10499,6 +10294,8 @@
         // Save claimsList to localStorage
         function saveClaimsToLocal() {
             if (typeof gqPushClaimStatuses === 'function') gqPushClaimStatuses();
+            // Nơi thụ lý: hồ sơ mới tạo (Tiếp nhận mới, Dịch vụ công, Chuyển CQGQBT, Xác định CQGQBT, cán bộ chủ động phục hồi danh dự) -> "Thụ lý tại CQGQBT"
+            if (window.BTNN_NTL) claimsList.forEach(c => BTNN_NTL.assign(c, false));
             localStorage.setItem('claimsList', JSON.stringify(claimsList));
             // Vụ việc PHDD- (tiến trình phục hồi danh dự) giữ khi tải lại trang
             if (typeof phddPersistStore === 'function') phddPersistStore();
@@ -11200,7 +10997,6 @@
                 } else {
                     currentClaimOfficers = [];
                 }
-                renderClaimOfficerTable();
 
             } else {
                 document.getElementById('editFormBosungAlertBlock').style.display = 'none';
@@ -11301,7 +11097,6 @@
                 toggleDocsByRole("Người bị thiệt hại");
 
                 currentClaimOfficers = [];
-                renderClaimOfficerTable();
             }
             loadVanBanCanCuRows(claim ? claim.vanBanCanCu : null);
             toggleAdvanceByLinhVuc(document.getElementById('claimFieldGroup').value);
@@ -12907,7 +12702,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     if (currentRole === 'chuyen-vien') {
                         buttonsHtml = `
                             <button class="btn btn-success" onclick="openInlineClaimForm('${claim.id}')"><i class="fa-solid fa-check-to-slot"></i> Tiếp nhận</button>
-                            <button class="btn btn-warning" style="background-color: var(--warning-color); color: white;" onclick="triggerRequireAdditionClaim('${claim.id}')"><i class="fa-solid fa-circle-question"></i> Yêu cầu bổ sung</button>
+                            <button class="btn btn-warning" style="background-color: var(--warning-color); color: white;" onclick="triggerRequireAdditionClaim('${claim.id}')"><i class="fa-solid fa-file-circle-question"></i> Yêu cầu bổ sung</button>
                             <button class="btn btn-danger" onclick="triggerRejectClaim('${claim.id}')"><i class="fa-solid fa-ban"></i> Không thụ lý</button>
                             ${transferActionBtnHtml}
                         `;
@@ -12922,7 +12717,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 case 'bi tra lai':
                     if (currentRole === 'chuyen-vien') {
                         buttonsHtml = `<button class="btn btn-primary" onclick="gqUpdateReturned('${claim.id}')" title="Cập nhật hồ sơ bị trả lại để trình lại"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>
-                            <button class="btn btn-warning" style="background-color: var(--warning-color); color: white;" onclick="triggerRequireAdditionClaim('${claim.id}')"><i class="fa-solid fa-circle-question"></i> Yêu cầu bổ sung</button>
+                            <button class="btn btn-warning" style="background-color: var(--warning-color); color: white;" onclick="triggerRequireAdditionClaim('${claim.id}')"><i class="fa-solid fa-file-circle-question"></i> Yêu cầu bổ sung</button>
                             <button class="btn btn-danger" onclick="triggerRejectClaim('${claim.id}')"><i class="fa-solid fa-ban"></i> Không thụ lý</button>`;
                     }
                     break;
@@ -12961,7 +12756,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         showCloseButton = false;
                     } else {
                         buttonsHtml = `
-                            <button class="btn btn-primary" onclick="switchToEditMode('thuongluong')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật kết quả thương lượng</button>
+                            <button class="btn btn-primary" onclick="switchToEditMode('thuongluong')"><i class="fa-solid fa-clipboard-check"></i> Cập nhật kết quả thương lượng</button>
                             ${transferActionBtnHtml}
                             ${pauseActionBtnHtml}
                             ${suspendActionBtnHtml}
@@ -12998,7 +12793,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         showCloseButton = false;
                     } else {
                         buttonsHtml = `
-                            <button class="btn btn-primary" onclick="switchToEditMode('thucthi')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật kết quả chi trả</button>
+                            <button class="btn btn-primary" onclick="switchToEditMode('thucthi')"><i class="fa-solid fa-clipboard-check"></i> Cập nhật kết quả chi trả</button>
                         `;
                     }
                     break;
@@ -13853,7 +13648,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     ? `<a href="javascript:void(0)" onclick="qdttOpenQdDetail('${claim.id}')" title="Mở Chi tiết Quyết định giải quyết bồi thường trong tab mới" style="font-weight:700; color:#1D4ED8; text-decoration:underline; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> ${displayNo}</a>`
                     : `<span style="font-weight:700; color:#475569;">${displayNo}</span>`;
 
-                // SRS §4.3.3.1.5.2 TH3: Alert Box màu đỏ khi Quyết định giải quyết bồi thường đã bị hủy
+                // SRS §4.3.3.1.4.2 TH3: Alert Box màu đỏ khi Quyết định giải quyết bồi thường đã bị hủy
                 let alertDaHuyHtml = '';
                 if (isDaHuy) {
                     alertDaHuyHtml = `
@@ -14240,7 +14035,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                                 <a href="javascript:void(0)" onclick="viewPhddMockFile('${file.name}')" style="color: #2563eb; font-weight: 600; font-size: 12.5px; text-decoration: none;">Xem file</a>
                                 ${(!isLocked && isDetailEditMode) ? `
                                     <span style="color: #cbd5e1;">|</span>
-                                    <a href="javascript:void(0)" onclick="removePhddStepFiles(${step}, ${idx})" style="color: #ef4444; font-weight: 600; font-size: 12.5px; text-decoration: none;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
+                                    <a href="javascript:void(0)" onclick="removePhddStepFiles(${step}, ${idx})" style="color: #ef4444; font-weight: 600; font-size: 12.5px; text-decoration: none;"><i class="fa-solid fa-trash"></i> Xóa</a>
                                 ` : ''}
                             </div>
                         </div>
@@ -14278,7 +14073,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             document.getElementById('editPhddStep1No').value = claim.phddStep1No || "";
             document.getElementById('editPhddStep1Date').value = claim.phddStep1Date || "";
             document.getElementById('editPhddStep1Signer').value = claim.phddStep1Signer || "";
-            document.getElementById('editPhddStep1Position').value = claim.phddStep1Position || "";
             document.getElementById('editPhddStep1SendDate').value = claim.phddStep1SendDate || "";
             phddFillStep1Expected(claim);
 
@@ -14298,7 +14092,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             toggleRecipientOtherFields(!!claim.phddStep1Recipient_other);
 
             // Clear validation errors
-            const fields = ['editPhddStep1No', 'editPhddStep1Date', 'editPhddStep1Signer', 'editPhddStep1Position', 'editPhddStep1SendDate', 'editPhddStep1CommuneName', 'editPhddStep1CommuneAddress', 'editPhddStep1RecipientAgencyName', 'editPhddStep1RecipientOtherText'];
+            const fields = ['editPhddStep1No', 'editPhddStep1Date', 'editPhddStep1Signer', 'editPhddStep1SendDate', 'editPhddStep1CommuneName', 'editPhddStep1CommuneAddress', 'editPhddStep1RecipientAgencyName', 'editPhddStep1RecipientOtherText'];
             fields.forEach(id => validatePhddInput(id, false));
             validatePhddFile(1, false);
 
@@ -14459,7 +14253,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                             <a href="javascript:void(0)" onclick="viewPhddMockFile('${file.name}')" style="color: #2563eb; font-weight: 600; font-size: 13px; text-decoration: none;">Xem file</a>
                             ${(!isCompleted && isDetailEditMode) ? `
                             <span style="color: #cbd5e1;">|</span>
-                            <a href="javascript:void(0)" onclick="removePhddUploadedFile(${idx})" style="color: #ef4444; font-weight: 600; font-size: 13px; text-decoration: none;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
+                            <a href="javascript:void(0)" onclick="removePhddUploadedFile(${idx})" style="color: #ef4444; font-weight: 600; font-size: 13px; text-decoration: none;"><i class="fa-solid fa-trash"></i> Xóa</a>
                             ` : ''}
                         </div>
                     </div>
@@ -14991,7 +14785,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 claim.phddStep1No = document.getElementById('editPhddStep1No').value.trim();
                 claim.phddStep1Date = document.getElementById('editPhddStep1Date').value.trim();
                 claim.phddStep1Signer = document.getElementById('editPhddStep1Signer').value.trim();
-                claim.phddStep1Position = document.getElementById('editPhddStep1Position').value.trim();
                 claim.phddStep1SendDate = document.getElementById('editPhddStep1SendDate').value.trim();
                 claim.phddStep1Recipient_victim = document.getElementById('phddStep1Recipient_victim').checked;
                 claim.phddStep1Recipient_commune = document.getElementById('phddStep1Recipient_commune').checked;
@@ -15014,7 +14807,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (!claim) return;
 
             // Clear old errors
-            const fields = ['editPhddStep1No', 'editPhddStep1Date', 'editPhddStep1Signer', 'editPhddStep1Position', 'editPhddStep1SendDate'];
+            const fields = ['editPhddStep1No', 'editPhddStep1Date', 'editPhddStep1Signer', 'editPhddStep1SendDate'];
             fields.forEach(id => validatePhddInput(id, false));
             validatePhddInput('editPhddStep1CommuneName', false);
             validatePhddInput('editPhddStep1CommuneAddress', false);
@@ -15099,7 +14892,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             claim.phddStep1No = document.getElementById('editPhddStep1No').value.trim();
             claim.phddStep1Date = document.getElementById('editPhddStep1Date').value.trim();
             claim.phddStep1Signer = document.getElementById('editPhddStep1Signer').value.trim();
-            claim.phddStep1Position = document.getElementById('editPhddStep1Position').value.trim();
             claim.phddStep1SendDate = document.getElementById('editPhddStep1SendDate').value.trim();
             claim.phddStep1Recipient_victim = document.getElementById('phddStep1Recipient_victim').checked;
             claim.phddStep1Recipient_commune = document.getElementById('phddStep1Recipient_commune').checked;
@@ -15419,6 +15211,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 claim.phddStep3NewsNameCentral = document.getElementById('editPhddStep3NewsNameCentral').value.trim();
                 claim.phddStep3NewsNameLocal = document.getElementById('editPhddStep3NewsNameLocal').value.trim();
                 claim.phddStep3NewsNameProvince = document.getElementById('editPhddStep3NewsNameProvince').value.trim();
+                // Không lưu tên báo không áp dụng theo Cấp cơ quan quản lý
+                if (claim.phddStep3NewsLevel === 'Trung ương') claim.phddStep3NewsNameProvince = ''; else { claim.phddStep3NewsNameCentral = ''; claim.phddStep3NewsNameLocal = ''; }
                 claim.phddStep3NewsPortalCheck = document.getElementById('phddStep3NewsPortalCheck').checked;
                 claim.editPhddStep3NewsPortalUrl = document.getElementById('editPhddStep3NewsPortalUrl').value.trim();
                 claim.phddStep3CommunePostingCheck = document.getElementById('phddStep3CommunePostingCheck').checked;
@@ -15437,8 +15231,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (!claim.phddTimeline) claim.phddTimeline = [];
             claim.phddTimeline.push({
                 title: "Lưu thông tin tổ chức thực hiện phục hồi danh dự",
-                date: claim.phddStep3DateExp || new Date().toLocaleDateString('vi-VN'),
-                desc: `Ghi nhận kết quả tổ chức thực hiện phục hồi danh dự bằng hình thức: ${claim.phddForm}.`
+                date: new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+                officer: (typeof getCurrentSimulatedOfficer === 'function' && getCurrentSimulatedOfficer()) || claim.assignedOfficer || '',
+                desc: phddStep3TimelineDesc(claim, hasNews)
             });
 
             saveClaimsToLocal();
@@ -15637,7 +15432,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         function setSection3InputsDisabled(disabled) {
             const sec3 = document.getElementById('phddSection3');
             if (!sec3) return;
-            const elements = sec3.querySelectorAll('input[type="text"], input[type="date"], select, textarea');
+            // Chế độ xem: gồm cả ô số (Số số báo phát hành liên tiếp); trường không áp dụng nằm trong nhóm đang ẩn nên không hiển thị
+            const elements = sec3.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], select, textarea');
             elements.forEach(el => {
                 const formGroup = el.closest('.form-group');
                 const label = formGroup ? formGroup.querySelector('.form-label') : null;
@@ -15686,6 +15482,37 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 if (disabled) label.style.display = 'none';
                 else label.style.display = '';
             });
+
+            // Chế độ xem: Cấp cơ quan quản lý và Đăng tải lên Cổng thông tin điện tử hiển thị dạng chữ (ô chọn bị ẩn)
+            const flatChoice = (anchorEl, flatId, tag, html) => {
+                if (!anchorEl) return;
+                let fl = document.getElementById(flatId);
+                if (!disabled) { if (fl) fl.style.display = 'none'; return; }
+                if (!fl) {
+                    fl = document.createElement(tag);
+                    fl.id = flatId;
+                    fl.className = 'readonly-flat-text';
+                    anchorEl.parentNode.insertBefore(fl, anchorEl.nextSibling);
+                }
+                fl.innerHTML = html;
+                fl.style.display = tag === 'span' ? 'inline-block' : 'block';
+            };
+            const levelEl = sec3.querySelector('input[name="editPhddStep3NewsLevel"]:checked');
+            const levelGroup = levelEl ? levelEl.closest('.form-group') : null;
+            const levelLabel = levelGroup ? levelGroup.querySelector('.form-label') : null;
+            if (levelLabel) { levelLabel.style.display = disabled ? 'inline-block' : ''; levelLabel.style.margin = disabled ? '0' : ''; }
+            flatChoice(levelLabel, 'phddStep3NewsLevelFlat', 'span', `<b style="color:#1e293b; margin-left:6px;">${levelEl && levelEl.value === 'Địa phương' ? 'Cơ quan ở Địa phương' : 'Cơ quan ở Trung ương'}</b>`);
+            const portalCb = document.getElementById('phddStep3NewsPortalCheck');
+            flatChoice(portalCb ? portalCb.closest('label') : null, 'phddStep3NewsPortalFlat', 'div',
+                `<span class="form-label" style="display:inline-block; margin:0;">Đăng tải lên Cổng thông tin điện tử</span> <b style="color:#1e293b; margin-left:6px;">${portalCb && portalCb.checked ? 'Có' : 'Không'}</b>`);
+            // Nhóm ô tích + Đường dẫn: xếp dọc (không dàn hàng như trường chữ); Đường dẫn chỉ hiển thị khi đã tích
+            const portalGroup = portalCb ? portalCb.closest('.form-group') : null;
+            const portalUrlGroup = document.getElementById('phddStep3NewsPortalUrlGroup');
+            if (portalGroup) portalGroup.style.display = 'block';
+            if (portalUrlGroup && portalUrlGroup.style.display !== 'none') {
+                portalUrlGroup.style.display = disabled ? 'flex' : '';
+                portalUrlGroup.style.alignItems = 'baseline';
+            }
 
             const memberGroup3 = document.getElementById('phddStep3Member_totung');
             if (memberGroup3) {
@@ -15890,6 +15717,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     claim.phddStep3NewsNameCentral = document.getElementById('editPhddStep3NewsNameCentral').value.trim();
                     claim.phddStep3NewsNameLocal = document.getElementById('editPhddStep3NewsNameLocal').value.trim();
                     claim.phddStep3NewsNameProvince = document.getElementById('editPhddStep3NewsNameProvince').value.trim();
+                    // Không lưu tên báo không áp dụng theo Cấp cơ quan quản lý
+                    if (claim.phddStep3NewsLevel === 'Trung ương') claim.phddStep3NewsNameProvince = ''; else { claim.phddStep3NewsNameCentral = ''; claim.phddStep3NewsNameLocal = ''; }
                     claim.phddStep3NewsPortalCheck = document.getElementById('phddStep3NewsPortalCheck').checked;
                     claim.editPhddStep3NewsPortalUrl = document.getElementById('editPhddStep3NewsPortalUrl').value.trim();
                     claim.phddStep3CommunePostingCheck = document.getElementById('phddStep3CommunePostingCheck').checked;
@@ -15901,10 +15730,26 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 }
                 claim.phddUploadedFiles = [...phddUploadedFiles];
 
+                if (!claim.phddTimeline) claim.phddTimeline = [];
+                claim.phddTimeline.push({
+                    title: "Cập nhật thông tin tổ chức thực hiện phục hồi danh dự",
+                    date: new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+                    officer: (typeof getCurrentSimulatedOfficer === 'function' && getCurrentSimulatedOfficer()) || claim.assignedOfficer || '',
+                    desc: phddStep3TimelineDesc(claim, hasNews)
+                });
+
                 saveClaimsToLocal();
                 showToast("Cập nhật thông tin thực hiện thành công!", "success");
                 renderHonorRestorationTab(claim);
             }
+        }
+
+        // Nội dung mốc Lưu / Cập nhật thông tin tổ chức thực hiện phục hồi danh dự: hình thức đăng báo ghi thêm Đơn vị nhận, Ngày nhận (Gửi cho UBND cấp xã)
+        function phddStep3TimelineDesc(claim, hasNews) {
+            const esc = v => String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            let desc = `Ghi nhận kết quả tổ chức thực hiện phục hồi danh dự bằng hình thức: ${esc(claim.HinhThucPhucHoi || claim.phddForm || '')}.`;
+            if (hasNews) desc += `<br>Gửi cho UBND cấp xã nơi người bị thiệt hại cư trú: Đơn vị nhận: ${esc(claim.phddStep3CommuneUnit || '-')}; Ngày nhận: ${esc(claim.editPhddStep3CommunePostingSendDate || '-')}.`;
+            return desc;
         }
 
         function renderPhddTimeline(claim) {
@@ -15938,6 +15783,21 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     date: claim.phddStep2ReceiveDate,
                     desc: `Ý kiến phản hồi: <strong>${claim.phddStep2Opinion === 'Đề nghị tạm hoãn' ? 'Đề nghị chưa thực hiện' : claim.phddStep2Opinion}</strong>.`,
                     officer: claim.nyc || "Người bị thiệt hại"
+                });
+            }
+
+            // Event 3b: Section 3 - Lưu / Cập nhật thông tin tổ chức thực hiện (dữ liệu mẫu chưa có mốc: dựng 01 mốc theo dữ liệu đã lưu)
+            const step3Logs = (claim.phddTimeline || []).filter(t => t && /^(Lưu|Cập nhật) thông tin tổ chức thực hiện phục hồi danh dự$/.test(t.title || ''));
+            if (step3Logs.length) {
+                step3Logs.forEach(t => events.push({ title: t.title, date: t.date || '--', desc: t.desc || '', officer: t.officer || claim.assignedOfficer || '--' }));
+            } else if (claim.phddStep3Saved) {
+                const ft = claim.HinhThucPhucHoi || claim.phddForm || '';
+                const ftApology = ft.includes("Trực tiếp xin lỗi") || ft.includes("Cả hai hình thức");
+                events.push({
+                    title: "Lưu thông tin tổ chức thực hiện phục hồi danh dự",
+                    date: claim.phddStep4DateAct || (ftApology ? claim.phddStep3DateExp : claim.editPhddStep3CommunePostingSendDate) || '--',
+                    desc: phddStep3TimelineDesc(claim, ft.includes("Đăng báo") || ft.includes("Cả hai hình thức")),
+                    officer: claim.assignedOfficer || '--'
                 });
             }
 
@@ -16017,7 +15877,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             document.getElementById('editPhddStep1No').value = claim.phddStep1No || "";
             document.getElementById('editPhddStep1Date').value = claim.phddStep1Date || "";
             document.getElementById('editPhddStep1Signer').value = claim.phddStep1Signer || "";
-            document.getElementById('editPhddStep1Position').value = claim.phddStep1Position || "";
             document.getElementById('editPhddStep1SendDate').value = claim.phddStep1SendDate || "";
             phddFillStep1Expected(claim);
 
@@ -17549,9 +17408,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const mode = document.getElementById('specialStatusSignMode')?.value || 'Ký duyệt trên hệ thống';
             const external = mode === 'Ký bên ngoài';
             const digitalGroup = document.getElementById('specialStatusDigitalSignerGroup');
-            const externalGroup = document.getElementById('specialStatusExternalSignerGroup');
             if (digitalGroup) digitalGroup.style.display = external ? 'none' : 'block';
-            if (externalGroup) externalGroup.style.display = external ? 'block' : 'none';
         }
 
         // Kết xuất Excel: theo Quy chuẩn Kết xuất Excel dùng chung (04_Danh_muc_va_Phu_luc.md #quy-chuan-ket-xuat-excel)
@@ -17724,9 +17581,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             }
 
             const requiredIds = ['specialStatusIssuingUnit', 'specialStatusDocumentBook', 'specialStatusSignMode', 'specialStatusDocNo', 'specialStatusDate', 'specialStatusStartDate', 'specialStatusReason'];
-            if ((document.getElementById('specialStatusSignMode')?.value || '') === 'Ký bên ngoài') {
-                requiredIds.push('specialStatusExternalSigner');
-            }
             const validationResults = requiredIds.map(validateSpecialStatusField);
             const isValid = validationResults.every(Boolean);
             if (!isValid) {
@@ -17750,7 +17604,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 documentBook: document.getElementById('specialStatusDocumentBook')?.value || '',
                 signMode: document.getElementById('specialStatusSignMode')?.value || 'Ký duyệt trên hệ thống',
                 signer: (document.getElementById('specialStatusSignMode')?.value || '') === 'Ký bên ngoài'
-                    ? (document.getElementById('specialStatusExternalSigner')?.value || '')
+                    ? ''
                     : (document.getElementById('specialStatusDigitalSigner')?.value || ''),
                 startDate: document.getElementById('specialStatusStartDate').value.trim(),
                 endDate: type === 'Đình chỉ giải quyết' ? '' : document.getElementById('specialStatusEndDate').value.trim(),
@@ -18018,7 +17872,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <td><input type="text" class="form-control" id="appointOfficerEmail_${idx}" value="${info ? info.email : ''}" readonly disabled></td>
                         <td><input type="text" class="form-control" id="appointOfficerUnit_${idx}" value="${info ? info.unit : ''}" readonly disabled></td>
                         <td style="text-align:center;">
-                            <button type="button" class="icon-btn reject" title="${canDelete ? 'Xóa dòng' : 'Phải cử tối thiểu 01 cán bộ'}" ${canDelete ? `onclick="removeAppointOfficerRow(${idx})"` : 'disabled style="opacity:0.35; cursor:not-allowed;"'}><i class="fa-solid fa-trash-can"></i></button>
+                            <button type="button" class="icon-btn reject" title="${canDelete ? 'Xóa dòng' : 'Phải cử tối thiểu 01 cán bộ'}" ${canDelete ? `onclick="removeAppointOfficerRow(${idx})"` : 'disabled style="opacity:0.35; cursor:not-allowed;"'}><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>`;
             }).join('');
@@ -18118,7 +17972,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     </div>
                     <div style="display:flex; gap:12px; align-items:center; flex-shrink:0;">
                         <a href="javascript:void(0)" onclick="viewRejectionFile('${escapeHtml(file.name)}')" style="color:#2563eb; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-eye"></i> Xem file</a>
-                        <a href="javascript:void(0)" onclick="removeRejectionFile(${idx})" style="color:#dc2626; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
+                        <a href="javascript:void(0)" onclick="removeRejectionFile(${idx})" style="color:#dc2626; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-trash"></i> Xóa file</a>
                     </div>
                 </div>
             `).join('');
@@ -18363,7 +18217,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     <div class="supplement-no-print" style="display:flex; gap:12px; align-items:center;">
                         <a href="javascript:void(0)" onclick="viewSupplementFile('${escapeHtml(file.name)}')" style="color:#2563eb; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-eye"></i> Xem file</a>
                         <a href="javascript:void(0)" onclick="downloadSupplementFile('${escapeHtml(file.name)}')" style="color:#059669; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-download"></i> Tải file về</a>
-                        <a href="javascript:void(0)" onclick="removeSupplementFile(${idx})" style="color:#dc2626; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
+                        <a href="javascript:void(0)" onclick="removeSupplementFile(${idx})" style="color:#dc2626; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-trash"></i> Xóa file</a>
                     </div>
                 </div>
             `).join('');
@@ -20516,324 +20370,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             window.location.href = `quan_ly_boi_thuong.html?id=${encodeURIComponent(found.code || id)}&returnUrl=${encodeURIComponent('quan_ly_boi_thuong.html?v=1')}&returnActiveUrl=${encodeURIComponent('quan_ly_boi_thuong.html?v=1')}`;
         }
 
-        // --- OFFICER CRUD LOGIC CHO QUAN_LY_BOI_THUONG ---
-        let activeOfficerTableId = 'claimOfficerTableBody';
-
-        function renderClaimOfficerTable() {
-            activeOfficerTableId = 'claimOfficerTableBody';
-            _renderAnyOfficerTable('claimOfficerTableBody');
-        }
-
-        function renderXmOfficerTable() {
-            activeOfficerTableId = 'xmOfficerTableBody';
-            _renderAnyOfficerTable('xmOfficerTableBody');
-        }
-
-        function _renderAnyOfficerTable(tbodyId) {
-            const tbody = document.getElementById(tbodyId);
-            if (!tbody) return;
-
-            if (typeof currentClaimOfficers === 'undefined' || currentClaimOfficers.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); font-style: italic;">Chưa có dữ liệu cán bộ gây thiệt hại. Bấm "Thêm cán bộ" để thêm mới.</td></tr>`;
-                return;
-            }
-
-            let html = '';
-            currentClaimOfficers.forEach((off, idx) => {
-                html += `
-        <tr>
-            <td style="text-align: center;">${idx + 1}</td>
-            <td style="font-weight: 600;">${off.name}</td>
-            <td>${off.position}</td>
-            <td>${off.agency}</td>
-            <td>
-                ${off.status}
-            </td>
-            <td>${off.currentPosition || ''}</td>
-            <td>${off.currentAgency || ''}</td>
-            <td style="text-align: center;">
-                <button type="button" class="icon-btn edit" onclick="editClaimOfficer(${idx})" title="Sửa"><i class="fa-solid fa-pen-to-square"></i></button>
-                <button type="button" class="icon-btn delete" onclick="confirmDeleteClaimOfficer(${idx})" title="Xóa"><i class="fa-solid fa-trash-can"></i></button>
-            </td>
-        </tr>
-        `;
-            });
-            tbody.innerHTML = html;
-        }
-
-        function openClaimOfficerModal() {
-            activeOfficerTableId = 'claimOfficerTableBody';
-            _openOfficerModal();
-        }
-
-        function openEditXmOfficerModal() {
-            activeOfficerTableId = 'xmOfficerTableBody';
-            _openOfficerModal();
-        }
-
-        function _openOfficerModal() {
-            document.getElementById('modalClaimOfficerId').value = '';
-            document.getElementById('modalClaimOfficerName').value = '';
-            document.getElementById('modalClaimOfficerPosition').value = '';
-            document.getElementById('modalClaimOfficerAgency').value = '';
-            document.getElementById('modalClaimOfficerStatus').value = 'Vẫn công tác tại đơn vị cũ';
-            document.getElementById('modalClaimOfficerCurrentAgency').value = '';
-            document.getElementById('modalClaimOfficerCurrentPosition').value = '';
-            clearModalClaimOfficerValidation();
-            toggleModalClaimOfficerStatus();
-
-            const modal = document.getElementById('claimOfficerModal');
-            modal.style.display = 'flex';
-            setTimeout(() => {
-                modal.classList.add('visible');
-            }, 10);
-        }
-
-        function editClaimOfficer(index) {
-            activeOfficerTableId = 'claimOfficerTableBody';
-            const off = currentClaimOfficers[index];
-            document.getElementById('modalClaimOfficerId').value = index;
-            document.getElementById('modalClaimOfficerName').value = off.name;
-            document.getElementById('modalClaimOfficerPosition').value = off.position;
-            document.getElementById('modalClaimOfficerAgency').value = off.agency;
-            document.getElementById('modalClaimOfficerStatus').value = off.status;
-            document.getElementById('modalClaimOfficerCurrentAgency').value = off.currentAgency || '';
-            document.getElementById('modalClaimOfficerCurrentPosition').value = off.currentPosition || '';
-            clearModalClaimOfficerValidation();
-            toggleModalClaimOfficerStatus();
-
-            const modal = document.getElementById('claimOfficerModal');
-            modal.style.display = 'flex';
-            setTimeout(() => {
-                modal.classList.add('visible');
-            }, 10);
-        }
-
-        function closeClaimOfficerModal() {
-            const modal = document.getElementById('claimOfficerModal');
-            modal.classList.remove('visible');
-            setTimeout(() => {
-                modal.style.display = 'none';
-                clearModalClaimOfficerValidation();
-            }, 200);
-        }
-
-        function toggleModalClaimOfficerStatus() {
-            const status = document.getElementById('modalClaimOfficerStatus').value;
-            const group = document.getElementById('modalClaimOfficerCurrentGroup');
-            if (status === 'Đã chuyển công tác') {
-                if (group) group.style.display = 'grid';
-            } else {
-                if (group) group.style.display = 'none';
-                document.getElementById('modalClaimOfficerCurrentAgency').value = '';
-                document.getElementById('modalClaimOfficerCurrentPosition').value = '';
-            }
-        }
-
-        function clearModalClaimOfficerValidation() {
-            const inputs = [
-                'modalClaimOfficerName',
-                'modalClaimOfficerPosition',
-                'modalClaimOfficerAgency',
-                'modalClaimOfficerCurrentAgency',
-                'modalClaimOfficerCurrentPosition'
-            ];
-            inputs.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.classList.remove('is-invalid');
-                    const parent = el.closest('.form-group');
-                    if (parent) {
-                        const errMsg = parent.querySelector('.error-message');
-                        if (errMsg) errMsg.style.display = 'none';
-                    }
-                }
-            });
-        }
-
-        function saveClaimOfficerModal() {
-            clearModalClaimOfficerValidation();
-
-            const name = document.getElementById('modalClaimOfficerName').value.trim();
-            const position = document.getElementById('modalClaimOfficerPosition').value.trim();
-            const agency = document.getElementById('modalClaimOfficerAgency').value.trim();
-            const status = document.getElementById('modalClaimOfficerStatus').value;
-            const currentAgency = document.getElementById('modalClaimOfficerCurrentAgency').value.trim();
-            const currentPosition = document.getElementById('modalClaimOfficerCurrentPosition').value.trim();
-
-            let firstInvalid = null;
-
-            if (!name) {
-                const el = document.getElementById('modalClaimOfficerName');
-                el.classList.add('is-invalid');
-                const parent = el.closest('.form-group');
-                if (parent) {
-                    const errMsg = parent.querySelector('.error-message');
-                    if (errMsg) errMsg.style.display = 'block';
-                }
-                if (!firstInvalid) firstInvalid = el;
-            }
-
-            if (!position) {
-                const el = document.getElementById('modalClaimOfficerPosition');
-                el.classList.add('is-invalid');
-                const parent = el.closest('.form-group');
-                if (parent) {
-                    const errMsg = parent.querySelector('.error-message');
-                    if (errMsg) errMsg.style.display = 'block';
-                }
-                if (!firstInvalid) firstInvalid = el;
-            }
-
-            if (!agency) {
-                const el = document.getElementById('modalClaimOfficerAgency');
-                el.classList.add('is-invalid');
-                const parent = el.closest('.form-group');
-                if (parent) {
-                    const errMsg = parent.querySelector('.error-message');
-                    if (errMsg) errMsg.style.display = 'block';
-                }
-                if (!firstInvalid) firstInvalid = el;
-            }
-
-            if (status === 'Đã chuyển công tác') {
-                if (!currentAgency) {
-                    const el = document.getElementById('modalClaimOfficerCurrentAgency');
-                    el.classList.add('is-invalid');
-                    const parent = el.closest('.form-group');
-                    if (parent) {
-                        const errMsg = parent.querySelector('.error-message');
-                        if (errMsg) errMsg.style.display = 'block';
-                    }
-                    if (!firstInvalid) firstInvalid = el;
-                }
-
-                if (!currentPosition) {
-                    const el = document.getElementById('modalClaimOfficerCurrentPosition');
-                    el.classList.add('is-invalid');
-                    const parent = el.closest('.form-group');
-                    if (parent) {
-                        const errMsg = parent.querySelector('.error-message');
-                        if (errMsg) errMsg.style.display = 'block';
-                    }
-                    if (!firstInvalid) firstInvalid = el;
-                }
-            }
-
-            if (firstInvalid) {
-                firstInvalid.focus();
-                return;
-            }
-
-            const off = { name, position, agency, status, currentAgency, currentPosition };
-            const idx = document.getElementById('modalClaimOfficerId').value;
-
-            if (idx !== '') {
-                currentClaimOfficers[parseInt(idx)] = off;
-            } else {
-                if (typeof currentClaimOfficers === 'undefined') {
-                    window.currentClaimOfficers = [];
-                }
-                currentClaimOfficers.push(off);
-            }
-
-            _renderAnyOfficerTable(activeOfficerTableId);
-            closeClaimOfficerModal();
-        }
-
-        function confirmDeleteClaimOfficer(index) {
-            showConfirmModal("Bạn có chắc chắn muốn xóa cán bộ này khỏi danh sách?", () => {
-                currentClaimOfficers.splice(index, 1);
-                _renderAnyOfficerTable(activeOfficerTableId);
-                showToast("Đã xóa cán bộ thành công", "success");
-            });
-        }
     </script>
-
-    <!-- Custom Officer Modal HTML -->
-    <div id="claimOfficerModal" class="confirm-modal-overlay">
-        <div class="confirm-modal-container"
-            style="max-width: 850px; width: 90%; max-height: 90vh; display: flex; flex-direction: column;">
-            <div class="modal-content"
-                style="display: flex; flex-direction: column; height: 100%; max-height: 90vh; overflow: hidden;">
-                <div class="modal-header"
-                    style="border-bottom: 1px solid var(--border-color); padding: 24px 24px 16px 24px; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; flex-shrink: 0;">
-                    <h3 style="margin: 0; font-size: 16px; color: var(--primary-color);">
-                        <i class="fa-solid fa-user-shield"></i> Thông tin Người thi hành công vụ gây thiệt hại
-                    </h3>
-                    <span onclick="closeClaimOfficerModal()"
-                        style="cursor: pointer; font-size: 18px; color: var(--text-muted);"><i
-                            class="fa-solid fa-xmark"></i></span>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="modalClaimOfficerId">
-                    <div class="grid-2" style="margin-bottom: 15px;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Họ và tên cán bộ gây thiệt hại<span
-                                    class="required">*</span></span>
-                            <input type="text" class="form-control" id="modalClaimOfficerName"
-                                placeholder="Nhập họ và tên cán bộ...">
-                            <div class="error-message"
-                                style="color: var(--danger-color); font-size: 11px; margin-top: 4px; display: none;">Đây
-                                là trường bắt buộc</div>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Chức vụ tại thời điểm gây thiệt hại<span
-                                    class="required">*</span></span>
-                            <input type="text" class="form-control" id="modalClaimOfficerPosition"
-                                placeholder="Ví dụ: Điều tra viên sơ cấp...">
-                            <div class="error-message"
-                                style="color: var(--danger-color); font-size: 11px; margin-top: 4px; display: none;">Đây
-                                là trường bắt buộc</div>
-                        </div>
-                    </div>
-                    <div class="grid-2" style="margin-bottom: 15px;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Cơ quan công tác tại thời điểm gây thiệt hại<span
-                                    class="required">*</span></span>
-                            <input type="text" class="form-control" id="modalClaimOfficerAgency"
-                                placeholder="Nhập cơ quan công tác...">
-                            <div class="error-message"
-                                style="color: var(--danger-color); font-size: 11px; margin-top: 4px; display: none;">Đây
-                                là trường bắt buộc</div>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Tình trạng công tác hiện tại</span>
-                            <select class="form-control" id="modalClaimOfficerStatus"
-                                onchange="toggleModalClaimOfficerStatus()">
-                                <option value="Vẫn công tác tại đơn vị cũ">Vẫn công tác tại đơn vị cũ</option>
-                                <option value="Đã chuyển công tác">Đã chuyển công tác</option>
-                                <option value="Đã nghỉ hưu / nghỉ việc">Đã nghỉ hưu / nghỉ việc</option>
-                                <option value="Không rõ">Không rõ</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="grid-2" id="modalClaimOfficerCurrentGroup" style="display: none; margin-bottom: 0;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Cơ quan công tác hiện tại<span class="required">*</span></span>
-                            <input type="text" class="form-control" id="modalClaimOfficerCurrentAgency"
-                                placeholder="Nhập cơ quan hiện tại...">
-                            <div class="error-message"
-                                style="color: var(--danger-color); font-size: 11px; margin-top: 4px; display: none;">Đây
-                                là trường bắt buộc</div>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Chức vụ hiện tại<span class="required">*</span></span>
-                            <input type="text" class="form-control" id="modalClaimOfficerCurrentPosition"
-                                placeholder="Nhập chức vụ hiện tại...">
-                            <div class="error-message"
-                                style="color: var(--danger-color); font-size: 11px; margin-top: 4px; display: none;">Đây
-                                là trường bắt buộc</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" onclick="closeClaimOfficerModal()">Hủy bỏ</button>
-                    <button class="btn btn-primary" onclick="saveClaimOfficerModal()">Lưu</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- GQ YCBT: Trình duyệt Tiếp nhận / Yêu cầu bổ sung (Mẫu 03/BTNN) - Phát hành / Không thụ lý (Mẫu 04/BTNN) / Chuyển CQGQBT
          Trình phê duyệt nhiều cấp qua luồng dùng chung BTNN_WF; trạng thái vụ việc đồng bộ từ kho luồng. -->
     <style>
@@ -20911,6 +20448,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             // Chuyển CQGQBT theo Trạng thái vụ việc: Cử người giải quyết bồi thường, Xác minh thiệt hại, Thương lượng, Chờ ban hành QĐ, Đang phục hồi danh dự, Hoãn giải quyết
             if (typeof GQ_TRANSFER_CASE_STATES !== 'undefined') {
                 const cs = caseStatusLabel(claim);
+                // Chưa thụ lý (Chờ tiếp nhận / Yêu cầu bổ sung): chuyển cơ quan qua Không thụ lý
+                if (cs === 'Chờ tiếp nhận' || cs === 'Yêu cầu bổ sung') return `Không áp dụng ở trạng thái ${cs} (hồ sơ chưa thụ lý): chuyển cơ quan qua thao tác Không thụ lý`;
                 return GQ_TRANSFER_CASE_STATES.includes(cs) ? '' : `Không áp dụng ở trạng thái ${cs}`;
             }
             const st = canonicalClaimStatus(claim.status);
@@ -22214,7 +21753,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             cngRows[i].userId = a.id;
             if (a.title) cngRows[i].position = a.title;
             const inp = cngEl('cngOfficer' + i); if (inp) inp.value = a.name;
-            const pos = cngEl('cngPosition' + i); if (pos) pos.value = cngRows[i].position || '';
+            const pos = cngEl('cngPosition' + i); const W = gqW();
+            if (pos && W && cngClaim) pos.innerHTML = W.chucVuOptionsHtml(cngLoginUnitName(cngClaim), cngRows[i].position || '');
             cngClearErr('cngOfficer' + i);
             if (cngRows[i].position) cngClearErr('cngPosition' + i);
             cngCbxSyncTag(i);
@@ -22238,7 +21778,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             }
         }
         function cngCbxBlur(i) { setTimeout(() => { if (cngCbx.row === i && document.activeElement !== cngEl('cngOfficer' + i)) cngCbxClose(); }, 120); }
-        // Bảng cán bộ giải quyết: Họ và tên cán bộ (Combobox tìm kiếm, cho nhập tự do) | Chức vụ (Input text) | Đơn vị (Text Label: cơ quan, đơn vị của người đăng nhập)
+        // Bảng cán bộ giải quyết: Họ và tên cán bộ (Combobox tìm kiếm, cho nhập tự do) | Chức vụ (Combobox DM_58 theo Loại cơ quan của Đơn vị) | Đơn vị (Text Label: cơ quan, đơn vị của người đăng nhập)
         function cngRenderOfficers() {
             const W = gqW();
             const body = cngEl('cngOfficerRows');
@@ -22250,7 +21790,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 return `<tr>
                     <td style="padding:6px 8px; text-align:center; vertical-align:top; padding-top:14px;">${i + 1}</td>
                     <td style="padding:6px 8px; vertical-align:top;"><div class="cng-cbx"><input type="text" id="cngOfficer${i}" class="form-control" maxlength="100" autocomplete="off" role="combobox" aria-autocomplete="list" placeholder="Chọn hoặc nhập họ và tên cán bộ" value="${gqE(r.name || '')}" oninput="cngCbxInput(${i}, this.value)" onfocus="cngCbxOpen(${i})" onclick="cngCbxOpen(${i})" onblur="cngCbxBlur(${i})" onkeydown="cngCbxKey(event, ${i})"><i class="fa-solid fa-chevron-down cng-cbx-caret" onmousedown="event.preventDefault(); const x = document.getElementById('cngOfficer${i}'); x.focus(); cngCbxOpen(${i});"></i></div><div id="cngOfficer${i}Tag" class="cng-tag-wrap">${cngCbxTagHtml(r)}</div><div id="cngOfficer${i}Err" class="gqx-err">Đây là trường bắt buộc</div></td>
-                    <td style="padding:6px 8px; vertical-align:top;"><input type="text" id="cngPosition${i}" class="form-control" maxlength="255" placeholder="Nhập chức vụ" value="${gqE(r.position || '')}" oninput="cngRows[${i}].position = this.value; cngClearErr('cngPosition${i}')"><div id="cngPosition${i}Err" class="gqx-err">Đây là trường bắt buộc</div></td>
+                    <td style="padding:6px 8px; vertical-align:top;"><select id="cngPosition${i}" class="form-control" onchange="cngRows[${i}].position = this.value; cngClearErr('cngPosition${i}')">${W.chucVuOptionsHtml(unit, r.position || '')}</select><div id="cngPosition${i}Err" class="gqx-err">Đây là trường bắt buộc</div></td>
                     <td style="padding:6px 8px; vertical-align:top; padding-top:14px;"><span class="gqnl-unit-label" style="color:#334155;">${gqE(unit) || '--'}</span></td>
                     <td style="width:72px; padding:6px 4px; vertical-align:top; text-align:center;">${cngRows.length > 1 ? `<button type="button" class="btn btn-secondary btn-sm gqx-danger" title="Xóa cán bộ" onclick="cngRemoveOfficerRow(${i})"><i class="fa-solid fa-trash"></i></button>` : ''}</td>
                 </tr>`;
@@ -25308,10 +24848,10 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 st,
                 main: [
                     { key: 'accept', cls: 'accept', icon: 'fa-solid fa-check-to-slot', label: 'Tiếp nhận', allowed: st === 'Chờ tiếp nhận' || st === 'Yêu cầu bổ sung', fn: `openInlineClaimForm('${id}');` + fl },
-                    { key: 'supplement', cls: 'supplement', icon: 'fa-solid fa-circle-question', label: 'Yêu cầu bổ sung', allowed: ycbsKtl, fn: `triggerRequireAdditionClaim('${id}');` + fl },
+                    { key: 'supplement', cls: 'supplement', icon: 'fa-solid fa-file-circle-question', label: 'Yêu cầu bổ sung', allowed: ycbsKtl, fn: `triggerRequireAdditionClaim('${id}');` + fl },
                     { key: 'reject', cls: 'reject', icon: 'fa-solid fa-ban', label: 'Không thụ lý', allowed: ycbsKtl || st === 'Yêu cầu bổ sung', fn: `triggerRejectClaim('${id}');` + fl },
                     { key: 'appoint', cls: 'accept', icon: 'fa-solid fa-user-plus', label: 'Cử người giải quyết', allowed: st === 'Cử người giải quyết bồi thường' && cngOk, fn: `openCngModal('${id}');` + fl },
-                    { key: 'update', cls: 'edit', icon: 'fa-solid fa-pen-to-square', label: upd.label, allowed: upd.allowed, fn: upd.fn + fl, edit: upd.edit || '' }
+                    { key: 'update', cls: 'edit', icon: upd.label.includes('kết quả') ? 'fa-solid fa-clipboard-check' : 'fa-solid fa-pen-to-square', label: upd.label, allowed: upd.allowed, fn: upd.fn + fl, edit: upd.edit || '' }
                 ],
                 leader: [
                     // Icon chuẩn (đồng nhất màn Xác định cơ quan GQBT): lưới Ký duyệt fa-file-signature / Từ chối fa-ban; thanh nút Từ chối fa-circle-xmark (barIcon)
@@ -25656,10 +25196,12 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <!-- [ktlc] Không thụ lý KTL_01: Chuyển hồ sơ cho theo cấp đơn vị / số lần chuyển, tự tạo hồ sơ Xác định CQGQBT -->
     <script src="quan_ly_boi_thuong_ktlc.js?v=20261030k3"></script>
     <!-- [tptl] Thành phần tham gia thương lượng: 1. Cơ quan, tổ chức (thành phần bắt buộc theo Cấp đơn vị / Lĩnh vực, Không tham gia + Lý do; thành phần khác), 2. Người yêu cầu bồi thường / người đại diện / người bảo vệ quyền lợi ích hợp pháp (đặt sau lth, ktlc) -->
-    <script src="quan_ly_boi_thuong_tptl.js?v=20261030s2"></script>
+    <script src="quan_ly_boi_thuong_tptl.js?v=20261104cv"></script>
     <!-- [nbth] Người bị thiệt hại Cá nhân/Tổ chức, địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại; bắt buộc khi trình Thông báo thụ lý (đặt trước cdpd) -->
     <script src="quan_ly_boi_thuong_nbth.js?v=20261030lnyc1"></script>
-    <!-- [kttr] Trước Popup Trình duyệt Thông báo thụ lý: Danh sách hồ sơ giải quyết bồi thường cùng số giấy tờ người bị thiệt hại (chỉ khi có hồ sơ trùng; đặt sau nbth, trước cdpd) -->
+    <!-- [kttr] Trước Popup Trình duyệt Thông báo thụ lý: Danh sách vụ việc của Người bị thiệt hại (chỉ khi có hồ sơ trùng; đặt sau nbth, trước cdpd) -->
+    <!-- Nơi thụ lý (Thụ lý tại CQGQBT / Thụ lý tại Tòa án) + vụ việc tại Tòa án cho kiểm tra cùng số giấy tờ người bị thiệt hại (kttr) -->
+    <script src="btnn_noi_thu_ly.js?v=20261104ntl1"></script>
     <script src="quan_ly_boi_thuong_kttr.js?v=20261102kt1"></script>
     <!-- [cdpd] Tạo yêu cầu - Cán bộ chủ động phục hồi danh dự khi có đủ thông tin: form tối thiểu, trình Thông báo tổ chức thực hiện phục hồi danh dự (chỉ Tải lên từ máy / Ký ngoài) -->
     <script src="btnn_lanh_dao_actions.js?v=20261030s2"></script>
@@ -25670,6 +25212,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="quan_ly_boi_thuong_mh05.js?v=20261030m3"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
+    <script src="btnn_tieu_de_man.js?v=20261103td2"></script>
 </body>
 
 </html>

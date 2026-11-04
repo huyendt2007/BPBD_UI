@@ -411,13 +411,12 @@
     const unitCardStyle = u => 'margin-bottom:20px;' + (hasOwnUnit() && isOwnUnit(u) ? ' border:2px solid #2563eb; box-shadow:0 0 0 3px rgba(37,99,235,.12);' : '');
     function unitHeader(u, step, badgeHtml) {
         const key = unitKey(step, u), col = unitCollapsed(step, u);
-        const own = hasOwnUnit() && isOwnUnit(u), viewOnly = scope() !== 'lanh_dao' && !canActUnit(u);
+        const viewOnly = scope() !== 'lanh_dao' && !canActUnit(u);
         return '<div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">'
             + '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;"><button type="button" data-admin-icon-normalized="1" title="Thu gọn / Mở rộng" onclick="htToggleUnit(\'' + esc(key).replace(/'/g, '&#39;') + '\', this)" style="border:1px solid var(--border-color); background:#fff; border-radius:6px; width:28px; height:28px; cursor:pointer;"><i class="fa-solid ' + (col ? 'fa-chevron-right' : 'fa-chevron-down') + '"></i></button>'
             // Tố tụng hình sự: Phần đơn vị theo Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương; lĩnh vực khác: 01 khối cho toàn bộ cán bộ của hồ sơ
             + '<div class="card-title" style="margin-bottom:0;"><i class="fa-solid fa-sitemap"></i> ' + (isTths() ? 'Phần đơn vị: ' + esc(u.unit) : 'Toàn bộ cán bộ của hồ sơ') + '</div>' + badgeHtml
             + '<span style="font-size:11.5px; color:#475569; white-space:nowrap;">Đơn vị ban hành QĐ hoàn trả: ' + esc(issuerOf(u)) + '</span>'
-            + (own ? '<span style="font-size:11px; padding:2px 8px; border-radius:999px; background:#eff6ff; color:#1d4ed8; font-weight:600; white-space:nowrap;">Đơn vị của bạn (Trực tiếp xử lý)</span>' : '')
             + (viewOnly ? '<span style="font-size:11px; padding:2px 8px; border-radius:999px; background:#eff6ff; color:#1d4ed8; font-weight:500; white-space:nowrap;">' + (hasOwnUnit() ? 'Chỉ xem (Đơn vị phối hợp)' : 'Chỉ xem') + '</span>' : '') + '</div>'
             + '<div style="font-size:13px; color:#334155;">' + unitSummary(u) + '</div></div>';
     }

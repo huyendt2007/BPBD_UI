@@ -893,7 +893,7 @@
                         <i class="fa-solid fa-pen-to-square"></i> Cập nhật
                     </button>
                     <button class="btn btn-danger" id="btnFormDelete" style="display:none;" onclick="confirmDeleteCase(editingId)">
-                        <i class="fa-solid fa-trash-can"></i> Xóa
+                        <i class="fa-solid fa-trash"></i> Xóa
                     </button>
                     <button class="btn btn-primary" id="btnFormSave" onclick="saveCase()">
                         <i class="fa-solid fa-floppy-disk"></i> Lưu thông tin
@@ -919,6 +919,8 @@
     </div>
 
     <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
+    <!-- Nơi thụ lý (Thụ lý tại Tòa án / Thụ lý tại CQGQBT): vụ việc của phân hệ được tự gán "Thụ lý tại Tòa án" -->
+    <script src="btnn_noi_thu_ly.js?v=20261104ntl1"></script>
     <!-- [th2c] Danh mục / bảng thiệt hại 2 cấp dùng chung (window.BTNN_TH) -->
     <script src="btnn_thiet_hai.js?v=20261030dm28"></script>
     <style>#damageTreeWrap.dmg-ro tr.bth-kadd, #damageTreeWrap.dmg-ro .bth-kdel { display: none !important; }</style>
@@ -1015,6 +1017,14 @@
             if (caseId || code) {
                 const rec = (caseId && cases.find(c => c.id === caseId && !c.deleted)) || (code && cases.find(c => c.code === code && !c.deleted));
                 if (rec) openCaseForm(rec.id, true);
+                // Mở từ Tra cứu vụ việc (readonly=1): chỉ xem, ẩn Cập nhật / Xóa; Quay lại: đóng tab (newtab=1) hoặc về Tra cứu vụ việc
+                if (rec && params.get("readonly") === "1") {
+                    const st = document.createElement("style");
+                    st.textContent = "#btnFormEdit, #btnFormDelete { display: none !important; }";
+                    document.head.appendChild(st);
+                    const back = document.getElementById("btnFormBack");
+                    if (back) back.onclick = () => { if (params.get("newtab") === "1" && window.opener) window.close(); else location.href = "tra_cuu_ho_so_boi_thuong.html"; };
+                }
             }
         });
 
@@ -1058,6 +1068,8 @@
                 try { localStorage.setItem(SEED_KEY, SEED_VERSION); } catch (e) { /* bỏ qua */ }
             }
             cases = list;
+            // Nơi thụ lý = "Thụ lý tại Tòa án" (dữ liệu cũ chưa có) + vụ việc mẫu trùng số giấy tờ người bị thiệt hại với hồ sơ GQBT (window.BTNN_NTL)
+            if (window.BTNN_NTL && BTNN_NTL.migrateCourtCases(cases)) writeJson(STORE_KEY, cases);
             cases.forEach(r => { if (r) normDamages(r.damages); });
             mergeSplitCases();
         }
@@ -1294,7 +1306,7 @@
                             <td style="text-align:center;">
                                 <div class="action-flex">
                                     <button class="icon-btn edit${dis}" title="${editable ? "Cập nhật" : escapeAttr(reason)}" onclick="event.stopPropagation(); openCaseForm('${escapeAttr(r.id)}', false)"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="icon-btn delete${dis}" title="${editable ? "Xóa" : escapeAttr(reason)}" onclick="event.stopPropagation(); confirmDeleteCase('${escapeAttr(r.id)}')"><i class="fa-solid fa-trash-can"></i></button>
+                                    <button class="icon-btn delete${dis}" title="${editable ? "Xóa" : escapeAttr(reason)}" onclick="event.stopPropagation(); confirmDeleteCase('${escapeAttr(r.id)}')"><i class="fa-solid fa-trash"></i></button>
                                 </div>
                             </td>
                         </tr>`;
@@ -1756,6 +1768,8 @@
                 const r = Object.assign({
                     id: newCaseId(code),
                     code,
+                    // Nơi thụ lý: hệ thống tự gán, người dùng không nhập
+                    noiThuLy: (window.BTNN_NTL && BTNN_NTL.TOA_AN) || "Thụ lý tại Tòa án",
                     requestKind: kind,
                     originalKind: kind,
                     rootUnitId: CURRENT_ROOT_UNIT,
@@ -2120,9 +2134,10 @@
     <!-- [tdta] Vụ việc liên kết (Tìm kiếm / Tìm kiếm nâng cao), khối Người yêu cầu Cá nhân/Tổ chức, lưới + bộ lọc theo cột -->
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="tra_cuu_seed_tcvv.js?v=20261030s2"></script>
-    <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261030s2"></script>
+    <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261104ic1"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_grid_toolbar.js?v=20261030gt1"></script>
+    <script src="btnn_tieu_de_man.js?v=20261103td2"></script>
 </body>
 
 </html>

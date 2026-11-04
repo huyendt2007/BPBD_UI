@@ -1284,14 +1284,10 @@
     }
 
     // ---------------- Thu hồi ----------------
-    // Thu hồi lượt chuyển gần nhất khi bên nhận chưa xử lý; việc xem hồ sơ không tính là đã xử lý
+    // Thu hồi lượt phân công / chuyển đơn vị gần nhất khi bên nhận chưa xử lý; việc xem hồ sơ không tính là đã xử lý.
+    // Luồng trình ký - ký duyệt không có Thu hồi: Lãnh đạo đã Ký duyệt chuyển cấp tiếp theo thì không lấy lại được.
     function getRecallInfo(rec, userId) {
-        if (!rec) return null;
-        if (rec.status === STATUS.CHO_PHE_DUYET && rec.approval && rec.approval.level > 0) {
-            const last = rec.approval.steps[rec.approval.steps.length - 1];
-            if (last && last.userId === userId) return { kind: 'approval', step: last };
-            return null;
-        }
+        if (!rec || rec.status === STATUS.CHO_PHE_DUYET) return null;
         const r = latestRoute(rec);
         if (!r || r.state !== 'Chưa xử lý' || !isLeaderOf(userId, r.fromUnitId, recFt(rec))) return null;
         if (r.type === 'unit' && rec.status === STATUS.DANG_PHAN_CONG && rec.currentUnitId === r.toUnitId) return { kind: 'route', route: r };
@@ -1303,20 +1299,13 @@
         const me = getCurrentUserId();
         const info = getRecallInfo(rec, me);
         if (!info) return { ok: false, message: 'Không thể thu hồi: bên nhận đã xử lý hồ sơ.' };
-        if (info.kind === 'approval') {
-            rec.approval.steps.pop();
-            rec.approval.level -= 1;
-            rec.approval.pending = { since: nowText() };
-            addHistory(rec, 'Thu hồi phê duyệt', `Thu hồi kết quả phê duyệt đã chuyển ${unitName(rec.approval.path[rec.approval.level + 1])}.`, null, { kind: rec.approval.kind });
-        } else {
-            const r = rec.routes.pop();
-            rec.currentUnitId = r.fromUnitId;
-            if (r.type === 'officer') { rec.chuTri = null; }
-            const prev = latestRoute(rec);
-            if (prev) prev.state = 'Chưa xử lý';
-            rec.status = rec.routes.length ? STATUS.DANG_PHAN_CONG : STATUS.CHO_PHAN_CONG;
-            addHistory(rec, 'Thu hồi', r.type === 'unit' ? `Thu hồi hồ sơ đã chuyển ${unitName(r.toUnitId)}.` : `Thu hồi phân công cán bộ ${userName(r.chuTri)}.`);
-        }
+        const r = rec.routes.pop();
+        rec.currentUnitId = r.fromUnitId;
+        if (r.type === 'officer') { rec.chuTri = null; }
+        const prev = latestRoute(rec);
+        if (prev) prev.state = 'Chưa xử lý';
+        rec.status = rec.routes.length ? STATUS.DANG_PHAN_CONG : STATUS.CHO_PHAN_CONG;
+        addHistory(rec, 'Thu hồi', r.type === 'unit' ? `Thu hồi hồ sơ đã chuyển ${unitName(r.toUnitId)}.` : `Thu hồi phân công cán bộ ${userName(r.chuTri)}.`);
         upsertRecord(rec);
         return { ok: true, record: rec };
     }
@@ -2204,7 +2193,7 @@
                 if (h.userId !== me) return;
                 let type = '';
                 if (['Chuyển đơn vị', 'Phân công cán bộ', 'Thu hồi', 'Chuyển đơn vị phục hồi danh dự', 'Phân công phục hồi danh dự'].includes(h.action)) type = WORK_TYPES.PHAN_CONG;
-                else if (['Phê duyệt', 'Ký duyệt', 'Từ chối phê duyệt', 'Thu hồi phê duyệt'].includes(h.action)) type = workTypeOfKind(historyKind(rec, h));
+                else if (['Phê duyệt', 'Ký duyệt', 'Từ chối phê duyệt'].includes(h.action)) type = workTypeOfKind(historyKind(rec, h));
                 else if (['Thụ lý', 'Không thụ lý', KIND_CU_NGUOI].includes(h.action)) type = WORK_TYPES.THU_LY;
                 if (!type) return;
                 const kind = type === WORK_TYPES.PHAN_CONG || type === WORK_TYPES.THU_LY ? '' : historyKind(rec, h);
@@ -3410,6 +3399,50 @@
         try { document.addEventListener('DOMContentLoaded', install); } catch (e) { /* mockup */ }
     })();
 
+    // ===== Chức vụ cán bộ theo Đơn vị: Danh mục Chức vụ [DM_58] thuộc Loại cơ quan [DM_57] của đơn vị (như Quản lý tài khoản cán bộ) =====
+    // Yêu cầu nạp ../01_Quan_tri_he_thong/dm_loai_co_quan.js (DM_LCQ). Đơn vị: mã đơn vị hoặc tên đơn vị.
+    // Loại cơ quan lấy theo thuộc tính loaiCoQuan của đơn vị trên Cơ cấu tổ chức; đơn vị không có trên Cơ cấu tổ chức giả lập: mockup suy theo tên.
+    const LCQ_BY_NAME = [
+        [/^Phòng\s/i, 'LDV_08'], [/^Sở\s/i, 'LDV_35'], [/^(UBND|Ủy ban nhân dân)\s+(phường|xã)(?=\s|$)/i, 'LDV_37'], [/^(UBND|Ủy ban nhân dân)\s/i, 'LDV_36'],
+        [/^Bộ\s/i, 'LDV_01'], [/^(Văn phòng Chính phủ|Thanh tra Chính phủ|Ngân hàng Nhà nước)/i, 'LDV_02'], [/^Chi cục\s/i, 'LDV_07'], [/^Cục\s/i, 'LDV_06'],
+        [/^Trung tâm\s/i, 'LDV_12'], [/^Tòa án nhân dân tối cao/i, 'LDV_14'], [/^Tòa án nhân dân (tỉnh|thành phố)\s/i, 'LDV_17'], [/^Tòa án nhân dân\s/i, 'LDV_18'],
+        [/^Viện kiểm sát nhân dân tối cao/i, 'LDV_25'], [/^Viện kiểm sát nhân dân (tỉnh|thành phố)\s/i, 'LDV_29'], [/^Viện kiểm sát nhân dân\s/i, 'LDV_30']
+    ];
+    function unitOfRef(ref) {
+        const v = String(ref || '').trim();
+        if (!v) return null;
+        const f = foldText(v).replace(/\s+/g, ' ').trim();
+        return getUnit(v) || ORG_UNITS.find(u => foldText(u.name).replace(/\s+/g, ' ').trim() === f) || getUnit(resolveAgencyUnit(v)) || null;
+    }
+    function loaiCoQuanCodeOf(ref) {
+        const u = unitOfRef(ref);
+        const lcq = global.DM_LCQ;
+        if (u && u.loaiCoQuan) {
+            if (/^LDV_/.test(u.loaiCoQuan)) return u.loaiCoQuan;
+            const l = lcq ? lcq.loaiCoQuanList().find(x => x.name === u.loaiCoQuan) : null;
+            if (l) return l.code;
+        }
+        const name = u ? u.name : String(ref || '').trim();
+        const hit = LCQ_BY_NAME.find(p => p[0].test(name));
+        return hit ? hit[1] : '';
+    }
+    function chucVuOfUnit(ref) {
+        const code = loaiCoQuanCodeOf(ref);
+        try { return code && global.DM_LCQ ? global.DM_LCQ.chucVuOf(code) : []; } catch (e) { return []; }
+    }
+    // Option của Combobox Chức vụ (giá trị lưu: tên chức vụ). Chưa có Đơn vị: chỉ có dòng hướng dẫn.
+    // Giá trị đã lưu không thuộc danh sách (dữ liệu cũ nhập tự do / chức vụ theo tài khoản): giữ thành 01 lựa chọn đầu danh sách.
+    function chucVuOptionsHtml(ref, value, opts) {
+        const o = opts || {};
+        const val = String(value || '').trim();
+        if (!String(ref || '').trim()) return '<option value="">' + esc(o.noUnitText || '-- Chọn Đơn vị trước --') + '</option>';
+        const list = chucVuOfUnit(ref);
+        let html = '<option value="">-- Chọn chức vụ --</option>';
+        if (val && !list.some(c => c.name === val)) html += '<option value="' + esc(val) + '" selected>' + esc(val) + '</option>';
+        return html + list.map(c => '<option value="' + esc(c.name) + '"' + (c.name === val ? ' selected' : '') + '>' + esc(c.name) + '</option>').join('');
+    }
+    function chucVuValid(ref, value) { return chucVuOfUnit(ref).some(c => c.name === value); }
+
     global.BTNN_WF = {
         KEYS: { RECORDS: KEY_RECORDS, FLOW: KEY_FLOW, USER: KEY_USER, RECEPTION_CLAIMS: KEY_RECEPTION_CLAIMS },
         receptionPendingItems, receptionPendingCount, receptionSeeded,
@@ -3434,6 +3467,7 @@
         statusBadge, routeText, routeStateText, renderRoutesHtml, renderHistoryHtml, renderApprovalHtml,
         docHeaderHtml, docPageHtml, openDocTab, downloadDocWord,
         draftDocName, draftBaseName, submittedDraftName, buildSupplementDraftHtml, previewDraftDoc, downloadDraftDoc, downloadSelectHtml, previewDraftDocByCode, downloadDraftDocByCode, renderDraftDocHtml, previewSubmittedDraft, downloadSubmittedDraft,
+        loaiCoQuanCodeOf, chucVuOfUnit, chucVuOptionsHtml, chucVuValid,
         mountUserSwitcher, nowText, dateText, esc, shiftSeedDates
     };
 })(window);

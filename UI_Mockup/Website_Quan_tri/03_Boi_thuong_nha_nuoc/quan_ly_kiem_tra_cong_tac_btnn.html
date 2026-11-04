@@ -853,7 +853,7 @@
                 <td><input class="form-control m-position" value="${esc(m.position)}" placeholder="Nhập chức vụ..."></td>
                 <td><div class="m-unit" id="munit_${i}"></div></td>
                 <td>${selectCtl(`role_${i}`, ROLES, m.role || ROLES[1]).replace('class="form-control"', 'class="form-control m-role"')}</td>
-                <td style="text-align:center;" class="edit-only"><button type="button" class="icon-btn delete" title="Xóa thành viên" onclick="removeMember(${i})"><i class="fa-solid fa-trash-can"></i></button></td>
+                <td style="text-align:center;" class="edit-only"><button type="button" class="icon-btn delete" title="Xóa thành viên" onclick="removeMember(${i})"><i class="fa-solid fa-trash"></i></button></td>
             </tr>`).join('');
             list.forEach((m, i) => { memberTrees[i] = W.mountUnitTree(document.getElementById(`munit_${i}`), { value: m.unitId || '', placeholder: '-- Chọn đơn vị --' }); });
             document.querySelectorAll('#planBlock .edit-only').forEach(el => { el.style.display = edit ? '' : 'none'; });
@@ -1017,6 +1017,7 @@
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_grid_toolbar.js?v=20261030gt1"></script>
+    <script src="btnn_tieu_de_man.js?v=20261103td2"></script>
 </body>
 
 </html>

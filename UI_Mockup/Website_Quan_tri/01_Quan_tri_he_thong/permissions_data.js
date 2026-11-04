@@ -3394,18 +3394,18 @@ const systemPermissions = [
                                                                    },
                                                                    {
                                                                        "id":  "WebAdmin-26-01-02",
-                                                                        "name":  "Ban hành văn bản, biểu mẫu, sổ sách về công tác BTNN theo thẩm quyền",
+                                                                        "name":  "Biểu mẫu, sổ sách về công tác BTNN",
                                                                        "children":  [
                                                                                         {
                                                                                             "id":  "WebAdmin-26-01-02-01",
-                                                                                            "name":  "Nhập thông tin ban hành văn bản, biểu mẫu, sổ sách về công tác BTNN theo thẩm quyền",
+                                                                                            "name":  "Nhập thông tin biểu mẫu, sổ sách về công tác BTNN",
                                                                                             "children":  [
 
                                                                                                          ]
                                                                                         },
                                                                                         {
                                                                                             "id":  "WebAdmin-26-01-02-02",
-                                                                                            "name":  "Tra cứu thông tin ban hành văn bản, biểu mẫu, sổ sách về công tác BTNN theo thẩm quyền",
+                                                                                            "name":  "Tra cứu thông tin biểu mẫu, sổ sách về công tác BTNN",
                                                                                             "children":  [
 
                                                                                                          ]
@@ -3566,18 +3566,18 @@ const systemPermissions = [
                                                   "children":  [
                                                                    {
                                                                        "id":  "WebAdmin-26-03-01",
-                                                                       "name":  "Hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục YCBT",
+                                                                       "name":  "Hỗ trợ người bị thiệt hại thực hiện quyền yêu cầu bồi thường",
                                                                        "children":  [
                                                                                         {
                                                                                             "id":  "WebAdmin-26-03-01-01",
-                                                                                            "name":  "Nhập thông tin hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục YCBT",
+                                                                                            "name":  "Nhập thông tin hỗ trợ người bị thiệt hại thực hiện quyền yêu cầu bồi thường",
                                                                                             "children":  [
 
                                                                                                          ]
                                                                                         },
                                                                                         {
                                                                                             "id":  "WebAdmin-26-03-01-02",
-                                                                                            "name":  "Tra cứu thông tin hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục YCBT",
+                                                                                            "name":  "Tra cứu thông tin hỗ trợ người bị thiệt hại thực hiện quyền yêu cầu bồi thường",
                                                                                             "children":  [
 
                                                                                                          ]

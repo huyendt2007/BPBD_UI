@@ -1,5 +1,5 @@
 /**
- * Phục hồi danh dự - Khối 3 (Tổ chức thực hiện), hình thức Đăng báo xin lỗi, cải chính công khai:
+ * Phục hồi danh dự - Khối 3 (Tổ chức thực hiện), hình thức Đăng báo xin lỗi và cải chính công khai:
  * khối "Gửi cho UBND cấp xã nơi người bị thiệt hại cư trú" gồm Đơn vị nhận *, Ngày nhận * (inline trong trang)
  * và Tài liệu đính kèm (file này): nhập khi khối 3 đang mở, chỉ xem khi khối 3 đã khóa.
  * Dữ liệu: claim.phddStep3CommuneUnit, claim.editPhddStep3CommunePostingSendDate (Ngày nhận), claim.phddStep3CommuneFiles.

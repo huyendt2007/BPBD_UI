@@ -2207,10 +2207,6 @@
                             <span class="form-label">Người ký <span class="required" style="color:red;">*</span></span>
                             <input type="text" class="form-control" id="issueQdSignerName" placeholder="Họ và tên người ký">
                         </div>
-                        <div class="form-group">
-                            <span class="form-label">Chức vụ người ký <span class="required" style="color:red;">*</span></span>
-                            <input type="text" class="form-control" id="issueQdSignerRole" placeholder="Ví dụ: Giám đốc Sở">
-                        </div>
                     </div>
                     <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
                         <div class="form-group">
@@ -2383,7 +2379,7 @@
                         </div>
                         <div class="form-group">
                             <span class="form-label">Chức vụ <span style="color:red;">*</span></span>
-                            <input type="text" class="form-control" id="oRole" placeholder="Nhập chức vụ" required>
+                            <select class="form-control" id="oRole" required disabled onchange="if (window.ht2ClearErr) ht2ClearErr('oRole')"><option value="">-- Chọn Cơ quan trực tiếp quản lý trước --</option></select>
                             <span class="invalid-feedback" id="oRoleError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                         </div>
                     </div>
@@ -2713,7 +2709,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
 
-        <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
+        <script src="btnn_luong_xu_ly.js?v=20261104cv"></script>
         <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
         <script>
             // Xem xét trách nhiệm hoàn trả: đơn vị người xem theo vai trò giả lập (htMockScope); Lãnh đạo (ký duyệt) xem được mọi khối.
@@ -5425,7 +5421,7 @@
                                 actionColHtml = `
                                     <td style="text-align: center; white-space:nowrap;">
                                         <button class="btn-action-square btn-primary" title="Sửa cán bộ/mức hoàn trả" onclick="event.stopPropagation(); editOfficerInStep2(${index}); return false;"><i class="fa-solid fa-pen-to-square"></i></button>
-                                        <button class="btn-action-square btn-danger" title="Xóa cán bộ khỏi danh sách dự thảo" onclick="event.stopPropagation(); deleteOfficerInStep2(${index}); return false;"><i class="fa-solid fa-trash-can"></i></button>
+                                        <button class="btn-action-square btn-danger" title="Xóa cán bộ khỏi danh sách dự thảo" onclick="event.stopPropagation(); deleteOfficerInStep2(${index}); return false;"><i class="fa-solid fa-trash"></i></button>
                                     </td>
                                 `;
                             }
@@ -6048,7 +6044,7 @@
                         </div>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <a class="action-link" href="#" onclick="viewPayUploadedFile(${idx}); return false;"><i class="fa-solid fa-eye"></i> Xem file</a>
-                            <a class="action-link delete-link" href="#" onclick="confirmRemovePayFile(${idx}); return false;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
+                            <a class="action-link delete-link" href="#" onclick="confirmRemovePayFile(${idx}); return false;"><i class="fa-solid fa-trash"></i> Xóa</a>
                         </div>
                     `;
                     container.appendChild(row);
@@ -7658,7 +7654,7 @@
                 let actions = `<button type="button" class="btn-action-square btn-info" title="Xem chi tiết cán bộ" onclick="viewOfficerInStep2(${index})"><i class="fa-solid fa-eye"></i></button>`;
                 if (canEdit) {
                     actions += ` <button type="button" class="btn-action-square btn-primary" title="Cập nhật ý kiến đối với cán bộ" onclick="editOfficerInStep2(${index})"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                    actions += ` <button type="button" class="btn-action-square btn-danger" title="Xóa cán bộ" onclick="deleteOfficerInStep2(${index})"><i class="fa-solid fa-trash-can"></i></button>`;
+                    actions += ` <button type="button" class="btn-action-square btn-danger" title="Xóa cán bộ" onclick="deleteOfficerInStep2(${index})"><i class="fa-solid fa-trash"></i></button>`;
                 }
                 const row = (label, valueHtml) => `
                     <div style="color:var(--text-muted); font-size:13px;">${label}</div>
@@ -7910,7 +7906,6 @@
                 delete effEl.dataset.manuallyEdited;
                 document.getElementById('issueQdSummary').value = activeDossier.qdSummary || document.getElementById('s3DraftSummary').value.trim();
                 document.getElementById('issueQdSignerName').value = '';
-                document.getElementById('issueQdSignerRole').value = '';
                 toggleIssueQdSignMode(document.getElementById('issueQdSignMode').value);
                 const qdErr = document.getElementById('issueQdFileErr'); if (qdErr) qdErr.style.display = 'none';
                 htxRenderIssueQdFile();
@@ -7966,13 +7961,13 @@
                 const isDigitalIssue = qdSignMode === 'Ký số trên hệ thống';
                 const qdSigner = isDigitalIssue
                     ? document.getElementById('issueQdSigner').value.trim()
-                    : `${document.getElementById('issueQdSignerName').value.trim()} - ${document.getElementById('issueQdSignerRole').value.trim()}`;
+                    : document.getElementById('issueQdSignerName').value.trim();
                 const fileInput = document.getElementById('issueQdFile');
                 const file = issuedDecisionFile || (fileInput.files && fileInput.files[0]);
                 let valid = true;
 
                 const requiredIds = ['issueQdIssuingUnit', 'issueQdDocumentBook', 'issueQdSignMode', 'issueQdNo', 'issueQdDate', 'issueQdEffectiveDate']
-                    .concat(isDigitalIssue ? ['issueQdSigner'] : ['issueQdSignerName', 'issueQdSignerRole']);
+                    .concat(isDigitalIssue ? ['issueQdSigner'] : ['issueQdSignerName']);
                 requiredIds.forEach(id => {
                     const el = document.getElementById(id);
                     if (!el.value.trim()) { el.classList.add('is-invalid'); valid = false; }
@@ -8031,7 +8026,7 @@
     <!-- Dữ liệu mẫu bổ sung phủ các trạng thái của Ma trận chuyển trạng thái (dùng chung màn Danh sách) -->
     <script src="ht_du_lieu_mau.js?v=20261030dc1"></script>
     <!-- Bước 1 / Bước 2 Ý kiến của Hội đồng, Stepper 04 bước, phạm vi người xem theo đơn vị -->
-    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261030s2"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261104m1"></script>
     <!-- Bước 3: trình ký 02 tầng tại đơn vị (QĐ hoàn trả Mẫu 36; QĐ miễn Mẫu 38 / QĐ giảm Mẫu 37; QĐ đình chỉ Mẫu 39 cấp cán bộ) -->
     <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261030xl1"></script>
     <!-- Bước 4: thu tiền hoàn trả theo phần đơn vị (nộp tiền nhiều đợt, miễn / giảm bổ sung, trả lại tiền) -->

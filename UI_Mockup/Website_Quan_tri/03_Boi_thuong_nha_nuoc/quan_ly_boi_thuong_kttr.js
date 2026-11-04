@@ -1,24 +1,26 @@
 /*
  * [kttr] Giải quyết YCBT (quan_ly_boi_thuong.html) - Kiểm tra hồ sơ cùng số giấy tờ người bị thiệt hại trước khi trình ký Thông báo thụ lý
  * - Bọc openTndModal (mọi đường mở Popup Trình duyệt Thông báo thụ lý: Trình duyệt tại MH02 khi Tiếp nhận / tạo mới / Cập nhật hồ sơ Bị trả lại).
- * - Có >= 01 hồ sơ khác cùng số giấy tờ người bị thiệt hại trên toàn hệ thống: mở Popup "Danh sách hồ sơ giải quyết bồi thường cùng số giấy tờ
- *   người bị thiệt hại"; "Xác nhận trình ký" -> mở Popup Trình duyệt Thông báo thụ lý như hiện tại; "Đóng" -> đóng, không trình.
+ * - Có >= 01 hồ sơ khác cùng số giấy tờ người bị thiệt hại trên toàn hệ thống: mở Popup "Danh sách vụ việc của Người bị thiệt hại";
+ *   "Xác nhận trình ký" -> mở Popup Trình duyệt Thông báo thụ lý như hiện tại; "Đóng" -> đóng, không trình.
  * - Không có hồ sơ trùng: mở thẳng Popup Trình duyệt Thông báo thụ lý.
  * - Số giấy tờ người bị thiệt hại: cá nhân -> Số giấy tờ thân nhân; tổ chức (kể cả tổ chức bị thiệt hại
  *   đã chấm dứt tồn tại) -> Mã số tổ chức (cùng quy tắc cột Số giấy tờ người bị thiệt hại của Tra cứu vụ việc). Tư cách = Người bị thiệt hại: theo người yêu cầu. So khớp chính xác, bỏ hồ sơ hiện tại.
- * - Phạm vi: mọi hồ sơ Giải quyết YCBT (mọi trạng thái, kể cả Chờ tiếp nhận) + hồ sơ Giải quyết YCBT đang ở Tiếp nhận hồ sơ
- *   (Chờ phân công / Đang phân công - kho luồng BTNN_WF; Chờ duyệt tiếp nhận / Bị trả lại - danh sách Tiếp nhận hồ sơ).
- * - Cột và quyền xem chi tiết như Tra cứu vụ việc (tra_cuu_ho_so_boi_thuong.html); hồ sơ đang ở Tiếp nhận hồ sơ: chỉ xem trên danh sách.
- * - Dữ liệu mẫu: BT-2026-601 (Vương Thị Thu Trang, 001187006601) trùng hồ sơ tra_cuu_seed_tcvv.js (KTTR_ROWS) và hồ sơ Chờ phân công VVBT-2026-951.
+ * - Phạm vi (mọi trạng thái, toàn hệ thống): mọi hồ sơ Giải quyết YCBT (kể cả Chờ tiếp nhận) + hồ sơ Giải quyết YCBT tại Tiếp nhận hồ sơ
+ *   (kho luồng BTNN_WF, danh sách Tiếp nhận hồ sơ) + vụ việc tại Tòa án (Theo dõi vụ việc tại Tòa án, BTNN_NTL - Nơi thụ lý "Thụ lý tại Tòa án").
+ * - Cột và quyền xem chi tiết như Tra cứu vụ việc (tra_cuu_ho_so_boi_thuong.html), thêm cột Nơi thụ lý; hồ sơ đang ở Tiếp nhận hồ sơ: chỉ xem trên danh sách;
+ *   vụ việc tại Tòa án: xem chi tiết (chỉ xem) theo phạm vi xem của Theo dõi vụ việc tại Tòa án.
+ * - Dữ liệu mẫu: BT-2026-601 (Vương Thị Thu Trang, 001187006601) trùng hồ sơ tra_cuu_seed_tcvv.js (KTTR_ROWS), hồ sơ Chờ phân công VVBT-2026-951
+ *   và vụ việc tại Tòa án TA-NTL-001 (btnn_noi_thu_ly.js).
  * Nạp sau quan_ly_boi_thuong_nbth.js (kiểm tra thiếu thông tin người bị thiệt hại chạy trước) và trước quan_ly_boi_thuong_cdpd.js.
  */
 (function () {
     'use strict';
     var R_NBTH = 'Người bị thiệt hại', T_TC = 'Tổ chức', YCBT = 'Giải quyết yêu cầu bồi thường';
-    var TN_STATUSES = ['Chờ phân công', 'Đang phân công'];
-    var TN_ITEM_STATUSES = ['Chờ duyệt tiếp nhận', 'Bị trả lại', 'Chờ phân công', 'Đang phân công'];
+    var NTL_TOA_AN = 'Thụ lý tại Tòa án', NTL_CQGQBT = 'Thụ lý tại CQGQBT';
     var NO_DETAIL_MSG = 'Chỉ Cơ quan giải quyết, Sở Tư pháp quản lý Cơ quan giải quyết, Bộ Tư pháp và Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước được xem chi tiết';
     var TN_NO_DETAIL_MSG = 'Hồ sơ đang ở bước Tiếp nhận hồ sơ, chỉ xem trên danh sách';
+    var TA_NO_DETAIL_MSG = 'Chỉ Cơ quan bị khởi kiện và Bộ Tư pháp được xem chi tiết vụ việc tại Tòa án';
     var FIELD = { 'hành chính': 'Quản lý hành chính', 'hình sự': 'Tố tụng hình sự', 'dân sự': 'Tố tụng dân sự', 'tố tụng hành chính': 'Tố tụng hành chính', 'thi hành án hình sự': 'Thi hành án hình sự', 'thi hành án dân sự': 'Thi hành án dân sự' };
     var st = { rows: [], page: 1, size: 20, go: null };
 
@@ -90,7 +92,21 @@
             nyc: o.nyc || o.nycName || '', nycDocNo: nycDocNo(o), victimName: victimName(o), victimDocNo: victimDocNo(o), vbcc: vbcc(o),
             field: FIELD[o.fieldGroup] || o.fieldGroup || '--', agencyUnitId: uid, agencyName: uid && w ? w.unitName(uid) : (o.agency || ''),
             agencyStp: uid && w && w.stpOfUnit ? (w.stpOfUnit(uid) || '') : '', tinh: a.tinh || '', phuong: String(a.phuong || '').replace(/^\d+\s*-\s*/, ''),
-            hasPhdd: kind(o) !== 'money', status: caseStatus(o)
+            hasPhdd: kind(o) !== 'money', status: caseStatus(o), noiThuLy: NTL_CQGQBT
+        };
+    }
+    // Vụ việc tại Tòa án (Theo dõi vụ việc tại Tòa án): không có Mã hồ sơ GQBT, không có Yêu cầu phục hồi danh dự
+    function fromCourt(rec) {
+        var N = window.BTNN_NTL;
+        var o = N.courtClaimLike(rec);
+        var ag = N.courtAgency(rec);
+        var a = addrOf(ag.id || ag.name);
+        return {
+            src: 'ta', rec: rec, code: '', maVuViec: rec.code || '', date: rec.acceptDate || '',
+            nyc: o.nyc, nycDocNo: nycDocNo(o), victimName: victimName(o), victimDocNo: victimDocNo(o), vbcc: vbcc(o),
+            field: FIELD[rec.fieldGroup] || rec.fieldGroup || '--', agencyUnitId: ag.id, agencyName: ag.name, agencyStp: '',
+            tinh: a.tinh || '', phuong: String(a.phuong || '').replace(/^\d+\s*-\s*/, ''),
+            hasPhdd: null, status: rec.status || '', noiThuLy: N.of(rec, true)
         };
     }
     // Hồ sơ đang ở Tiếp nhận hồ sơ (kho luồng / danh sách Tiếp nhận): chưa có Mã hồ sơ GQBT khi mã là VVBT-
@@ -106,7 +122,7 @@
             nyc: o.nyc, nycDocNo: nycDocNo(o), victimName: victimName(o), victimDocNo: victimDocNo(o), vbcc: vbcc(o),
             field: fg ? FIELD[fg] : (r.linhVuc ? String(r.linhVuc).replace(/^TRONG HOẠT ĐỘNG\s*/i, '') : '--'),
             agencyUnitId: uid, agencyName: uid && w ? w.unitName(uid) : '', agencyStp: '', tinh: a.tinh || '', phuong: String(a.phuong || '').replace(/^\d+\s*-\s*/, ''),
-            hasPhdd: /danh dự/i.test(String(r.requestKind || '')), status: r.status || 'Chờ phân công'
+            hasPhdd: /danh dự/i.test(String(r.requestKind || '')), status: r.status || 'Chờ phân công', noiThuLy: NTL_CQGQBT
         };
     }
 
@@ -115,23 +131,30 @@
         var key = victimKey(claim);
         if (!key) return [];
         var seen = {};
+        var seenVv = {};
         var out = [];
         var self = function (o) { return o === claim || (o.id && o.id === claim.id) || (o.code && o.code === claim.code); };
         var push = function (o, row) { var k = o.code || ('id:' + o.id); if (seen[k]) return; seen[k] = 1; if (!self(o) && victimKey(o) === key) out.push(row(o)); };
         // 1. Hồ sơ Giải quyết YCBT (mọi trạng thái): dữ liệu của phân hệ + dữ liệu bổ sung của Tra cứu vụ việc
-        (typeof claimsList !== 'undefined' && Array.isArray(claimsList) ? claimsList : []).forEach(function (c) { if (c && !c.deleted) push(c, function (x) { return fromClaim(x, false); }); });
+        var gq = function (c) { if (c.maVuViec) seenVv[c.maVuViec] = 1; return c; };
+        (typeof claimsList !== 'undefined' && Array.isArray(claimsList) ? claimsList : []).forEach(function (c) { if (c && !c.deleted) push(gq(c), function (x) { return fromClaim(x, false); }); });
         var extra = [];
         try { extra = typeof window.tcvvExtraClaims === 'function' ? window.tcvvExtraClaims() : []; } catch (e) { extra = []; }
-        extra.forEach(function (c) { push(c, function (x) { return fromClaim(x, true); }); });
-        // 2. Hồ sơ Giải quyết YCBT đang ở Tiếp nhận hồ sơ: Chờ phân công / Đang phân công
+        extra.forEach(function (c) { push(gq(c), function (x) { return fromClaim(x, true); }); });
+        // 2. Hồ sơ Giải quyết YCBT tại Tiếp nhận hồ sơ (mọi trạng thái); hồ sơ chưa có Mã hồ sơ GQBT mà Mã vụ việc đã có hồ sơ GQBT: không lặp dòng
+        var tnDup = function (r) { return /^VVBT-/.test(r.code || '') && seenVv[r.maVuViec || r.code]; };
         var w = W();
         var recs = [];
         try { recs = w && w.loadRecords ? w.loadRecords() : []; } catch (e) { recs = []; }
-        recs.forEach(function (r) { if (r && r.loaiYeuCau === YCBT && TN_STATUSES.indexOf(r.status) >= 0) push(r, fromReception); });
-        // 3. Danh sách Tiếp nhận hồ sơ (Chờ duyệt tiếp nhận / Bị trả lại Phiếu tiếp nhận, chưa có hồ sơ luồng)
+        recs.forEach(function (r) { if (r && !r.deleted && r.loaiYeuCau === YCBT && !tnDup(r)) push(r, fromReception); });
+        // 3. Danh sách Tiếp nhận hồ sơ (Phiếu tiếp nhận chưa có hồ sơ luồng), mọi trạng thái
         var tn = [];
         try { tn = JSON.parse(localStorage.getItem('receptionClaimsList_v2026') || '[]') || []; } catch (e) { tn = []; }
-        tn.forEach(function (r) { if (r && !r.deleted && (r.requestType === YCBT || !r.requestType) && r.code && TN_ITEM_STATUSES.indexOf(r.status || 'Chờ phân công') >= 0) push(r, fromReception); });
+        tn.forEach(function (r) { if (r && !r.deleted && (r.requestType === YCBT || !r.requestType) && r.code && !tnDup(r)) push(r, fromReception); });
+        // 4. Vụ việc tại Tòa án (Theo dõi vụ việc tại Tòa án), mọi trạng thái, toàn hệ thống
+        var courts = [];
+        try { courts = window.BTNN_NTL ? window.BTNN_NTL.loadCourtCases() : []; } catch (e) { courts = []; }
+        courts.forEach(function (r) { var o = window.BTNN_NTL.courtClaimLike(r); if (victimKey(o) === key) out.push(fromCourt(r)); });
         var d = function (s) { var m = String(s || '').match(/^(\d{2})\/(\d{2})\/(\d{4})/); return m ? new Date(+m[3], +m[2] - 1, +m[1]).getTime() : 0; };
         return out.sort(function (a, b) { return d(b.date) - d(a.date); });
     }
@@ -151,12 +174,14 @@
         });
     }
     function canView(row) {
+        if (row && row.src === 'ta') return !!window.BTNN_NTL && window.BTNN_NTL.canViewCourt(row.rec);
         if (!row || row.src !== 'gq' || !row.code) return false;
         var root = rootUnit(); if (!root) return false;
         if (row.agencyUnitId && row.agencyUnitId === root) return true;
         if (isStp(root) && row.agencyStp === root) return true;
         return isBtpOrCuc();
     }
+    function noDetailMsg(row) { return row && row.src === 'tn' ? TN_NO_DETAIL_MSG : row && row.src === 'ta' ? TA_NO_DETAIL_MSG : NO_DETAIL_MSG; }
     function detailUrl(row) {
         var p = new URLSearchParams({ id: row.code, returnUrl: 'tra_cuu_ho_so_boi_thuong.html?v=1', returnActiveUrl: 'tra_cuu_ho_so_boi_thuong.html?v=1', readonly: '1', mode: 'detail' });
         if (['Đang phục hồi danh dự', 'Hoãn phục hồi danh dự'].indexOf(row.status) >= 0) p.set('focusTab', 'phdd');
@@ -164,8 +189,9 @@
     }
     window.kttrOpenDetail = function (i) {
         var row = st.rows[i];
-        if (!canView(row)) { if (typeof showToast === 'function') showToast(row && row.src === 'tn' ? TN_NO_DETAIL_MSG : NO_DETAIL_MSG, 'warning'); return; }
-        window.open(detailUrl(row), '_blank');
+        if (!canView(row)) { if (typeof showToast === 'function') showToast(noDetailMsg(row), 'warning'); return; }
+        // Vụ việc tại Tòa án: Xem chi tiết vụ việc của Theo dõi vụ việc tại Tòa án, chế độ chỉ xem
+        window.open(row.src === 'ta' ? window.BTNN_NTL.courtDetailUrl(row.rec) : detailUrl(row), '_blank');
     };
 
     // ---------- Popup ----------
@@ -176,6 +202,10 @@
         else if (['Yêu cầu bổ sung', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoãn giải quyết', 'Tạm đình chỉ', 'Hoãn phục hồi danh dự'].indexOf(s) >= 0) c = 'badge-warning';
         else if (s === 'Bị trả lại') c = 'badge-tra-lai';
         else if (['Không thụ lý', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Từ chối phục hồi danh dự'].indexOf(s) >= 0) c = 'badge-danger';
+        // Trạng thái vụ việc tại Tòa án
+        else if (s === 'Đang giải quyết') c = 'badge-warning';
+        else if (s === 'Đã có bản án/QĐ') c = 'badge-success';
+        else if (s === 'Trả lại đơn khởi kiện') c = 'badge-danger';
         return '<span class="badge ' + c + '">' + esc(s) + '</span>';
     }
     function vbCell(names) {
@@ -190,7 +220,7 @@
             + '#kttrOverlay .gq-modal-body{padding:16px 20px;}'
             + '.kttr-info{background:#fffbeb;border:1px solid #fde68a;border-left:4px solid #f59e0b;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:#92400e;line-height:1.6;}'
             + '.kttr-wrap{overflow-x:auto;border:1px solid var(--border-color,#e2e8f0);border-radius:8px;}'
-            + '#kttrTable{min-width:1680px;} #kttrTable th,#kttrTable td{padding:9px 12px;vertical-align:middle;}'
+            + '#kttrTable{min-width:1830px;} #kttrTable th,#kttrTable td{padding:9px 12px;vertical-align:middle;}'
             + '#kttrTable tr.kttr-row-view{cursor:pointer;} #kttrTable tr.kttr-row-view:hover{background:#f8fafc;}'
             + '.kttr-link{color:var(--primary-light,#2563eb);font-weight:600;text-decoration:underline;cursor:pointer;white-space:nowrap;}'
             + '.kttr-plain{white-space:nowrap;cursor:default;} .kttr-code{color:var(--primary-light,#2563eb);font-weight:700;text-align:center;white-space:nowrap;}'
@@ -207,9 +237,12 @@
         var start = (st.page - 1) * st.size, end = Math.min(start + st.size, total);
         body.innerHTML = st.rows.slice(start, end).map(function (r, k) {
             var i = start + k, ok = canView(r);
-            var code = ok ? '<a class="kttr-link" href="javascript:void(0)" onclick="event.stopPropagation(); kttrOpenDetail(' + i + ')">' + esc(r.code) + '</a>'
-                : (r.code ? '<span class="kttr-plain" title="' + esc(r.src === 'tn' ? TN_NO_DETAIL_MSG : NO_DETAIL_MSG) + '">' + esc(r.code) + '</span>' : '-');
-            return '<tr class="' + (ok ? 'kttr-row-view' : 'kttr-row-locked') + '"' + (ok ? ' onclick="kttrOpenDetail(' + i + ')"' : '') + '>'
+            // Vụ việc tại Tòa án: không có Mã hồ sơ GQBT (-); xem chi tiết bằng click dòng
+            var code = r.src === 'ta' ? '-' : ok ? '<a class="kttr-link" href="javascript:void(0)" onclick="event.stopPropagation(); kttrOpenDetail(' + i + ')">' + esc(r.code) + '</a>'
+                : (r.code ? '<span class="kttr-plain" title="' + esc(noDetailMsg(r)) + '">' + esc(r.code) + '</span>' : '-');
+            var tip = r.src === 'ta' ? ' title="' + esc(ok ? 'Xem chi tiết vụ việc tại Tòa án' : TA_NO_DETAIL_MSG) + '"' : '';
+            var ntl = window.BTNN_NTL ? window.BTNN_NTL.badge(r.noiThuLy) : esc(r.noiThuLy);
+            return '<tr class="' + (ok ? 'kttr-row-view' : 'kttr-row-locked') + '"' + tip + (ok ? ' onclick="kttrOpenDetail(' + i + ')"' : '') + '>'
                 + '<td style="text-align:center;">' + (i + 1) + '</td>'
                 + '<td class="kttr-code">' + esc(r.maVuViec || '-') + '</td>'
                 + '<td style="text-align:center;">' + code + '</td>'
@@ -222,7 +255,8 @@
                 + '<td>' + esc(r.agencyName || '-') + '</td>'
                 + '<td>' + esc(r.tinh || '---') + '</td>'
                 + '<td>' + esc(r.phuong || '---') + '</td>'
-                + '<td style="text-align:center;"><input type="checkbox" class="kttr-check" disabled ' + (r.hasPhdd ? 'checked' : '') + ' aria-label="Yêu cầu phục hồi danh dự"></td>'
+                + '<td style="text-align:center;">' + (r.hasPhdd === null ? '-' : '<input type="checkbox" class="kttr-check" disabled ' + (r.hasPhdd ? 'checked' : '') + ' aria-label="Yêu cầu phục hồi danh dự">') + '</td>'
+                + '<td style="text-align:center;">' + ntl + '</td>'
                 + '<td style="text-align:center;">' + badge(r.status || '-') + '</td></tr>';
         }).join('');
         document.getElementById('kttrRange').innerText = total ? (start + 1) + '-' + end : '0-0';
@@ -257,15 +291,15 @@
         st.rows = rows; st.page = 1; st.size = 20; st.go = go;
         if (typeof gqFrameFull === 'function') gqFrameFull(true);
         var vv = typeof claimVvCode === 'function' ? claimVvCode(claim) : (claim.maVuViec || claim.code);
-        var ths = ['STT', 'Mã vụ việc', 'Mã hồ sơ GQBT', 'Tên cá nhân/Tổ chức yêu cầu', 'Số giấy tờ người yêu cầu', 'Tên cá nhân/Tổ chức bị thiệt hại', 'Số giấy tờ người bị thiệt hại', 'Văn bản làm căn cứ bồi thường', 'Lĩnh vực phát sinh thiệt hại', 'Cơ quan giải quyết', 'Tỉnh/Thành phố', 'Phường/Xã', 'Yêu cầu phục hồi danh dự', 'Trạng thái'];
-        var center = [0, 1, 2, 4, 6, 12, 13];
+        var ths = ['STT', 'Mã vụ việc', 'Mã hồ sơ GQBT', 'Tên cá nhân/Tổ chức yêu cầu', 'Số giấy tờ người yêu cầu', 'Tên cá nhân/Tổ chức bị thiệt hại', 'Số giấy tờ người bị thiệt hại', 'Văn bản làm căn cứ bồi thường', 'Lĩnh vực phát sinh thiệt hại', 'Cơ quan giải quyết', 'Tỉnh/Thành phố', 'Phường/Xã', 'Yêu cầu phục hồi danh dự', 'Nơi thụ lý', 'Trạng thái'];
+        var center = [0, 1, 2, 4, 6, 12, 13, 14];
         var ov = document.createElement('div');
         ov.className = 'gq-modal-overlay'; ov.id = 'kttrOverlay';
         ov.innerHTML = '<div class="gq-modal" role="dialog" aria-modal="true" aria-labelledby="kttrTitle">'
-            + '<div class="gq-modal-header"><h3 id="kttrTitle"><i class="fa-solid fa-list-check"></i> Danh sách hồ sơ giải quyết bồi thường cùng số giấy tờ người bị thiệt hại</h3><button type="button" class="gq-modal-x" aria-label="Đóng" onclick="kttrClose()">&times;</button></div>'
+            + '<div class="gq-modal-header"><h3 id="kttrTitle"><i class="fa-solid fa-list-check"></i> Danh sách vụ việc của Người bị thiệt hại</h3><button type="button" class="gq-modal-x" aria-label="Đóng" onclick="kttrClose()">&times;</button></div>'
             + '<div class="gq-modal-body">'
             + '<div class="kttr-info"><i class="fa-solid fa-triangle-exclamation"></i> Hồ sơ: <strong>' + esc(vv || '--') + '</strong> • Người bị thiệt hại: <strong>' + esc(victimName(claim) || '--') + '</strong> • Số giấy tờ: <strong>' + esc(victimKeyRaw(claim) || '--') + '</strong><br>'
-            + 'Có <strong>' + rows.length + '</strong> hồ sơ giải quyết bồi thường khác cùng số giấy tờ của người bị thiệt hại trên toàn hệ thống. Vui lòng kiểm tra trước khi trình ký Thông báo thụ lý.</div>'
+            + 'Có <strong>' + rows.length + '</strong> hồ sơ, vụ việc khác cùng số giấy tờ của người bị thiệt hại trên toàn hệ thống (gồm vụ việc thụ lý tại Tòa án). Vui lòng kiểm tra trước khi trình ký Thông báo thụ lý.</div>'
             + '<div class="kttr-wrap"><table class="custom-table" id="kttrTable"><thead><tr>'
             + ths.map(function (t, i) { return '<th' + (center.indexOf(i) >= 0 ? ' style="text-align:center;"' : '') + '>' + t + '</th>'; }).join('')
             + '</tr></thead><tbody id="kttrBody"></tbody></table></div>'

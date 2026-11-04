@@ -342,7 +342,7 @@
                 receptionDocs: [{ name: FIXED_NAME, file: 'Van_ban_yeu_cau_boi_thuong_Tran_Thi_Hanh.pdf' }]
             }),
             // [kttr] Hồ sơ Chờ phân công tại Cục THADS tỉnh Lâm Đồng cùng số giấy tờ người bị thiệt hại với BT-2026-601 (Giải quyết YCBT):
-            // demo Danh sách hồ sơ cùng số giấy tờ người bị thiệt hại trước khi trình ký Thông báo thụ lý (cùng dữ liệu hồ sơ luồng tại quan_ly_boi_thuong_kttr.js)
+            // demo Popup Danh sách vụ việc của Người bị thiệt hại trước khi trình ký Thông báo thụ lý (cùng dữ liệu hồ sơ luồng tại quan_ly_boi_thuong_kttr.js)
             base({
                 id: 'TN_KTTR1', code: 'VVBT-2026-951', maVuViec: 'VVBT-2026-951', fieldGroup: 'thi hành án dân sự',
                 date: '28/10/2026', receivedAt: '28/10/2026 09:00', receivedBy: 'Trịnh Thu Trang', rootUnitId: 'THADS-LD',

@@ -354,7 +354,7 @@ function sdxClaims() {
         files: [{ name: 'Van_ban_yeu_cau_boi_thuong_BT-2026-406.pdf', url: '#' }]
     });
     sdxXm(c6, '07/10/2026');
-    sdxNeg(c6, '12/10/2026', null, 'Đăng báo xin lỗi, cải chính công khai.');
+    sdxNeg(c6, '12/10/2026', null, 'Đăng báo xin lỗi và cải chính công khai.');
     sdxDec(c6, '76/QĐ-THADS', '15/10/2026', 'Phạm Đức Toàn', 'Thủ trưởng cơ quan thi hành án dân sự');
     c6.fundRequests = [sdxFund('KP-2026-406', 'Cấp kinh phí bồi thường', c6.xmTotalAmount, '16/10/2026', '21/10/2026', c6, 'Chi trả tiền mặt tại trụ sở cơ quan giải quyết bồi thường.')];
     c6.thucthiDate = '21/10/2026';

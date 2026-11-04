@@ -129,13 +129,9 @@
             </div>
             </div>
 
-            <!-- GRID ACTION TOOLBAR -->
+            <!-- Hồ sơ Xác định CQGQBT chỉ đến từ Tiếp nhận hồ sơ (sau phân công): không có nút Tạo hồ sơ -->
             <div id="xdScopeNotice" style="display:none; margin-top:16px; padding:12px 16px; border-radius:8px; background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; font-size:13px;"></div>
-            <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 12px; margin-top: 16px;">
-                <button class="btn btn-primary" id="btnCreateRequest" onclick="showFormScreen(null)">
-                    <i class="fa-solid fa-plus"></i> Tạo hồ sơ
-                </button>
-            </div>
+            <div style="margin-top: 16px;"></div>
 
             <!-- DATA TABLE -->
             <div class="table-container">
@@ -186,7 +182,7 @@
         <!-- ============================================== -->
         <div id="screenForm" class="card-section" style="display: none;">
             <div class="section-title">
-                <span id="formScreenTitle"><i class="fa-solid fa-file-signature"></i> THÊM MỚI YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG</span>
+                <span id="formScreenTitle"><i class="fa-solid fa-file-signature"></i> TIẾP NHẬN YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG</span>
             </div>
 
             <!-- Khối THÔNG TIN HỒ SƠ BỊ TRẢ LẠI (hồ sơ đang Bị trả lại hoặc từng bị trả lại; nội dung dựng bằng JS) -->
@@ -1227,7 +1223,7 @@
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261030s2"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261030s2"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261104m1"></script>
     <script src="quan_ly_boi_thuong_ktlc.js?v=20261030k3"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
@@ -1261,5 +1257,6 @@
         })();
     </script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
+    <script src="btnn_tieu_de_man.js?v=20261103td2"></script>
 </body>
 </html>

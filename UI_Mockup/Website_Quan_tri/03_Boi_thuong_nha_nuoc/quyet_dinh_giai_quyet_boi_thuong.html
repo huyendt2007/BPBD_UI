@@ -1678,7 +1678,7 @@
                                 <span id="qdDraftFileName" style="font-size:12.5px; color:var(--text-muted);">Chưa chọn tệp</span>
                                 <span id="qdDraftFileActions" style="display:none; gap:8px; align-items:center;">
                                     <a href="javascript:void(0)" class="action-link view-link" onclick="previewUploadedFile()" style="font-size:12px;"><i class="fa-solid fa-eye"></i> Xem file</a>
-                                    <a href="javascript:void(0)" class="action-link delete-link" onclick="removeUploadedFile()" style="font-size:12px;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
+                                    <a href="javascript:void(0)" class="action-link delete-link" onclick="removeUploadedFile()" style="font-size:12px;"><i class="fa-solid fa-trash"></i> Xóa</a>
                                 </span>
                                 <input type="file" id="qdDraftFile" accept=".doc,.docx,.pdf" style="display:none;" onchange="onFormDraftFile(this)">
                             </div>
@@ -2906,9 +2906,9 @@
             else if (returnedReq) out.push(on('edit', 'fa-pen-to-square', 'Sửa', `openRequest('${d.id}','${d.wfKind === KIND_HUY ? 'cancel' : 'amend'}')`));
             else out.push(off('edit', 'fa-pen-to-square', 'Sửa'));
             // Xóa: dự thảo Quyết định bị trả lại (xóa) / yêu cầu Hủy, Sửa chữa bị trả lại (rút yêu cầu)
-            if (returnedQd) out.push(on('delete', 'fa-trash-can', 'Xóa', `confirmDelete('${d.id}')`));
-            else if (returnedReq) out.push(on('delete', 'fa-trash-can', 'Xóa (rút yêu cầu)', `confirmWithdraw('${d.id}')`));
-            else out.push(off('delete', 'fa-trash-can', 'Xóa'));
+            if (returnedQd) out.push(on('delete', 'fa-trash', 'Xóa', `confirmDelete('${d.id}')`));
+            else if (returnedReq) out.push(on('delete', 'fa-trash', 'Xóa (rút yêu cầu)', `confirmWithdraw('${d.id}')`));
+            else out.push(off('delete', 'fa-trash', 'Xóa'));
             }
             if (d.status === ST.DA_BH) {
                 out.push(on('edit', 'fa-file-pen', 'Sửa chữa, bổ sung QĐ', `openRequest('${d.id}','amend')`), on('reject', 'fa-file-circle-xmark', 'Hủy QĐ', `openRequest('${d.id}','cancel')`));
@@ -3316,11 +3316,11 @@
                 }
             } else {
                 if (d.status === ST.TRA_LAI && d.wfKind === KIND_QD) {
-                    btns.push(`<button class="btn btn-danger" onclick="confirmDelete('${d.id}')"><i class="fa-solid fa-trash-can"></i> Xóa</button>`);
+                    btns.push(`<button class="btn btn-danger" onclick="confirmDelete('${d.id}')"><i class="fa-solid fa-trash"></i> Xóa</button>`);
                     btns.push(`<button class="btn btn-primary" onclick="openForm('${d.id}')"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>`);
                 }
                 if (d.status === ST.TRA_LAI && d.wfKind && d.wfKind !== KIND_QD) {
-                    btns.push(`<button class="btn btn-secondary" onclick="confirmWithdraw('${d.id}')"><i class="fa-solid fa-trash-can"></i> Xóa (rút yêu cầu)</button>`);
+                    btns.push(`<button class="btn btn-secondary" onclick="confirmWithdraw('${d.id}')"><i class="fa-solid fa-trash"></i> Xóa (rút yêu cầu)</button>`);
                     btns.push(`<button class="btn btn-primary" onclick="openRequest('${d.id}','${d.wfKind === KIND_HUY ? 'cancel' : 'amend'}')"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>`);
                 }
                 if (d.status === ST.DA_BH) {
@@ -5177,5 +5177,6 @@
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
     <script src="filter_toggle_auto.js?v=20261012"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
+    <script src="btnn_tieu_de_man.js?v=20261103td2"></script>
 </body>
 </html>

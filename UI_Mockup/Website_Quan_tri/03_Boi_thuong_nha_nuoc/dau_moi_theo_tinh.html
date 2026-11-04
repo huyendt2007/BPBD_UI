@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin đầu mối thực hiện công tác BTNN</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #1E3A8A;     /* Navy Blue */
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;   /* Light Blue */
+            --accent-color: #F59E0B;      /* Gold */
+            --accent-hover: #D97706;
+            
+            --success-color: #10B981;     /* Green */
+            --danger-color: #EF4444;      /* Red */
+            --warning-color: #F59E0B;     /* Orange/Yellow */
+            --info-color: #3B82F6;        /* Info Blue */
+            
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: var(--base-size);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Header Styling */
+        .page-header {
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+            padding: 20px;
+            border-radius: var(--border-radius-lg);
+            color: white;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .page-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .page-header p {
+            opacity: 0.9;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* Role switcher toggle panel */
+        .role-switch-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: var(--border-radius-md);
+            font-size: 13px;
+        }
+        .role-switch-container select {
+            background-color: white;
+            color: var(--text-main);
+            border: none;
+            outline: none;
+            padding: 4px 8px;
+            border-radius: var(--border-radius-sm);
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Card Section Styling */
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .section-title {
+            color: var(--primary-color);
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* KPI Quick Stats Row */
+        .stats-badge-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .stat-badge-btn {
+            background-color: #E2E8F0;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stat-badge-btn:hover {
+            background-color: #CBD5E1;
+        }
+        .stat-badge-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .stat-badge-btn .count {
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .stat-badge-btn.active .count {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Search Filter layout rules */
+        .search-filters-box {
+            background-color: #FAFAFA;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius-md);
+        }
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-label {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+        .form-control, .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 13.5px;
+            outline: none;
+            transition: all 0.15s;
+            font-family: var(--font-family);
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.15);
+        }
+        .date-input-container {
+            position: relative;
+        }
+        .date-input-container i {
+            position: absolute;
+            right: 12px;
+            top: 11px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        /* Filter Action row */
+        .filter-actions {
+            margin-top: 15px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            font-family: var(--font-family);
+            outline: none;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+        .btn-outline-primary {
+            background-color: transparent;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .btn-outline-primary:hover {
+            background-color: rgba(30, 58, 138, 0.05);
+        }
+        .btn-outline-success {
+            background-color: transparent;
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+        .btn-outline-success:hover {
+            background-color: rgba(16, 185, 129, 0.05);
+        }
+        .btn-secondary {
+            background-color: #E2E8F0;
+            color: var(--text-main);
+            border-color: #CBD5E1;
+        }
+        .btn-secondary:hover {
+            background-color: #CBD5E1;
+        }
+
+        /* Action Toolbar above table */
+        .action-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 12px;
+            margin-top: 12px;
+        }
+
+        /* Table design and header cells alignment rule */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background-color: white;
+        }
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+            text-align: left;
+        }
+        .custom-table th {
+            background-color: var(--table-header-bg);
+            color: #475569;
+            font-weight: 600;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+            user-select: none;
+        }
+        .custom-table th.sortable {
+            cursor: pointer;
+        }
+        .custom-table th.sortable:hover {
+            background-color: #E2E8F0;
+        }
+        .custom-table th.sortable i {
+            margin-left: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .custom-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+        .custom-table tr:hover {
+            background-color: #F0F9FF; /* Blue tint Row hover anchor */
+            transition: background 0.15s;
+        }
+
+        /* Specific Cell Alignments */
+        .cell-center {
+            text-align: center;
+        }
+        .cell-left {
+            text-align: left;
+        }
+        .cell-right {
+            text-align: right;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-secondary {
+            background-color: #E2E8F0;
+            color: #475569;
+        }
+        .badge-warning {
+            background-color: #FEF3C7;
+            color: #D97706;
+        }
+        .badge-success {
+            background-color: #D1FAE5;
+            color: #047857;
+        }
+        .badge-danger {
+            background-color: #FEE2E2;
+            color: #B91C1C;
+        }
+
+        /* Action columns styling (Fixed-Slot - Colored Circular Action Buttons) */
+        .action-flex {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        .icon-btn {
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            margin: 0 4px;
+        }
+
+        /* 1. Tác vụ Xem chi tiết (Màu xanh dương) */
+        .icon-btn.view {
+            background-color: #EFF6FF;
+            color: #2563EB;
+        }
+        .icon-btn.view:hover {
+            background-color: #DBEAFE;
+            color: #1D4ED8;
+            transform: translateY(-1px);
+        }
+
+        /* 2. Tác vụ Chỉnh sửa / Cập nhật (Màu cam) */
+        .icon-btn.edit {
+            background-color: #FFF7ED;
+            color: #F59E0B;
+        }
+        .icon-btn.edit:hover {
+            background-color: #FFEDD5;
+            color: #B45309;
+            transform: translateY(-1px);
+        }
+
+        /* 3. Tác vụ thành công (Màu xanh lá) */
+        .icon-btn.send, .icon-btn.accept, .icon-btn.success {
+            background-color: #ECFDF5;
+            color: #10B981;
+        }
+        .icon-btn.send:hover, .icon-btn.accept:hover, .icon-btn.success:hover {
+            background-color: #D1FAE5;
+            color: #047857;
+            transform: translateY(-1px);
+        }
+
+        /* 4. Tác vụ Xóa (Màu đỏ) */
+        .icon-btn.delete, .icon-btn.reject {
+            background-color: #FEF2F2;
+            color: #EF4444;
+        }
+        .icon-btn.delete:hover, .icon-btn.reject:hover {
+            background-color: #FEE2E2;
+            color: #B91C1C;
+            transform: translateY(-1px);
+        }
+
+        /* Trạng thái Vô hiệu hóa (Disabled State) */
+        .icon-btn.disabled, .icon-btn[disabled] {
+            background-color: #F1F5F9 !important;
+            color: #94A3B8 !important;
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Pagination container design */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+            font-size: 13px;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .pagination-buttons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .page-btn {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .page-btn:hover:not(:disabled) {
+            background-color: #F1F5F9;
+            border-color: var(--text-muted);
+        }
+        .page-btn.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+        .page-btn:disabled {
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        /* Sticky Modal Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh; /* Keep the height within viewport boundaries */
+            overflow: hidden; /* Prevent container scrolling */
+            background-color: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: scale(0.95);
+            transition: transform 0.2s;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #F8FAFC;
+        }
+        .modal-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        .modal-close-btn:hover {
+            color: var(--danger-color);
+        }
+        .modal-body {
+            overflow-y: auto; /* Enable independent vertical scrolling */
+            flex: 1; /* Allow body to grow and fill available space */
+            padding: 24px;
+        }
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background-color: #F8FAFC;
+        }
+
+        /* Stepper-like sections in Modal Body */
+        .form-section {
+            margin-bottom: 24px;
+        }
+        .form-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            padding-bottom: 4px;
+            border-bottom: 1px dashed var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Upload Area styling */
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 20px;
+            background-color: #FAFAFA;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+            height: 130px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: #F0F9FF;
+        }
+        .upload-area i {
+            font-size: 28px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .upload-area p {
+            font-size: 13px;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+        .upload-area span {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* Attachment List Item styling */
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            background-color: transparent;
+            border: none;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .attachment-item-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+        }
+        .attachment-item-info i {
+            color: #0284C7;
+        }
+        .attachment-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .attachment-actions a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .attachment-actions a:hover {
+            text-decoration: underline;
+        }
+        .attachment-actions button {
+            background: none;
+            border: none;
+            color: var(--danger-color);
+            cursor: pointer;
+            font-weight: 500;
+            font-family: var(--font-family);
+        }
+        .attachment-actions button:hover {
+            text-decoration: underline;
+        }
+
+        /* Progress Bar mock */
+        .progress-container {
+            width: 100%;
+            background-color: #E2E8F0;
+            border-radius: var(--border-radius-sm);
+            height: 6px;
+            overflow: hidden;
+            margin-top: 5px;
+            display: none;
+        }
+        .progress-bar-fill {
+            background-color: var(--primary-color);
+            width: 0%;
+            height: 100%;
+            transition: width 0.2s;
+        }
+
+        /* Rich Text Editor Mock */
+        .rich-text-mock {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+        }
+        .rich-text-toolbar {
+            background-color: #F8FAFC;
+            border-bottom: 1px solid var(--border-color);
+            padding: 6px 10px;
+            display: flex;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .rich-text-toolbar i {
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .rich-text-toolbar i:hover {
+            background-color: #CBD5E1;
+            color: var(--text-main);
+        }
+        .rich-text-body {
+            min-height: 120px;
+            padding: 10px;
+            outline: none;
+            background-color: white;
+            font-size: 13.5px;
+        }
+
+        /* Field Error styling */
+        .field-error-text {
+            color: var(--danger-color);
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+        .is-invalid {
+            border-color: var(--danger-color) !important;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #1E293B;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+        .toast.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.success i {
+            color: #10B981;
+        }
+        .toast.error i {
+            color: #EF4444;
+        }
+        .toast.warning i {
+            color: #F59E0B;
+        }
+            /* Chế độ xem chi tiết: chỉ hiển thị thông tin, ẩn vùng tải lên, thanh định dạng và dấu bắt buộc */
+        .modal-content.view-mode .upload-area, .modal-content.view-mode .rich-text-toolbar, .modal-content.view-mode .form-label > span[style*="danger"] { display: none !important; }
+    </style>
+</head>
+<body>
+    <style>
+        .dm-pos { margin-bottom: 18px; }
+        .dm-pos-title { display: flex; align-items: center; justify-content: space-between; font-weight: 600; color: #1e3a8a; margin-bottom: 8px; }
+        .dm-pos-title .cnt { font-weight: 500; color: var(--text-muted); font-size: 12px; margin-left: 6px; }
+        .dm-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .dm-table th { background: #f1f5f9; text-align: left; padding: 8px; border: 1px solid #e2e8f0; font-weight: 600; }
+        .dm-table td { padding: 6px 8px; border: 1px solid #e2e8f0; vertical-align: middle; }
+        .dm-table td .form-control { padding: 6px 8px; font-size: 13px; min-width: 0; }
+        .dm-table tr.stopped td { color: #94a3b8; background: #f8fafc; }
+        .dm-table tr.stopped td .form-control { background: #f1f5f9; color: #94a3b8; }
+        .dm-table tr.is-new td { background: #f0fdf4; }
+        .dm-empty { color: var(--text-muted); font-style: italic; font-size: 13px; padding: 8px 0; }
+        .dm-kv { display: grid; grid-template-columns: 180px 1fr; gap: 6px 12px; font-size: 14px; margin-bottom: 14px; }
+        .dm-kv .k { color: var(--text-muted); }
+        .dm-change { margin: 0; padding-left: 18px; font-size: 13px; }
+        .dm-change li.add { color: #166534; }
+        .dm-change li.stop { color: #b91c1c; }
+        .dm-change li.edit { color: #92400e; }
+        .badge-info { background: #dbeafe; color: #1e40af; }
+        /* Nút Lịch sử: không dùng lớp .view (admin-ui-standardizer.js gỡ nút Xem chi tiết khỏi cột Thao tác) */
+        .icon-btn.history { color: #7c3aed; background: #f5f3ff; border-color: #ddd6fe; }
+        .dm-link { color: var(--primary-color); cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; font: inherit; }
+    </style>
+
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1>Thông tin đầu mối thực hiện công tác BTNN</h1>
+                <p>Đầu mối Lãnh đạo Sở, Lãnh đạo Phòng, Chuyên viên thực hiện công tác bồi thường nhà nước của 34 Tỉnh/Thành phố</p>
+            </div>
+        </div>
+
+
+        <!-- Filter Panel -->
+        <div class="card-section search-filters-box" data-bpbd-filter>
+            <div class="grid-layout" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="form-group">
+                    <label class="form-label">Tỉnh/Thành phố</label>
+                    <select id="filterProvince" class="form-select"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Họ tên, số điện thoại đầu mối</label>
+                    <input type="text" id="filterPerson" class="form-control" placeholder="Nhập họ tên hoặc số điện thoại...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tình trạng cập nhật</label>
+                    <select id="filterState" class="form-select">
+                        <option value="">Tất cả</option>
+                        <option value="Đã cập nhật">Đã cập nhật</option>
+                        <option value="Chưa cập nhật">Chưa cập nhật</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-outline-primary" onclick="clearFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                <button class="btn btn-primary" onclick="searchData()"><i class="fa fa-search"></i> Tìm kiếm</button>
+            </div>
+        </div>
+
+        <div class="card-section" style="padding: 15px 20px; border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                <div class="stats-badge-row">
+                    <button class="stat-badge-btn active" id="kpiAll" onclick="filterByKpi('')">Tất cả <span class="count" id="countAll">0</span></button>
+                    <button class="stat-badge-btn" id="kpiDone" onclick="filterByKpi('Đã cập nhật')">Đã cập nhật <span class="count" id="countDone">0</span></button>
+                    <button class="stat-badge-btn" id="kpiTodo" onclick="filterByKpi('Chưa cập nhật')">Chưa cập nhật <span class="count" id="countTodo">0</span></button>
+                </div>
+                <div class="action-toolbar" style="margin-top: 0; margin-bottom: 0;">
+                    <button class="btn btn-outline-success" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="custom-table" id="docTable">
+                <thead>
+                    <tr>
+                        <th class="cell-center" style="width: 50px;">STT</th>
+                        <th style="width: 170px;">Tỉnh/Thành phố</th>
+                        <th>Lãnh đạo Sở</th>
+                        <th>Lãnh đạo Phòng</th>
+                        <th>Chuyên viên</th>
+                        <th style="width: 190px;">Cập nhật lần cuối</th>
+                        <th class="cell-center" style="width: 130px;">Tình trạng</th>
+                        <th class="cell-center" style="width: 140px; min-width: 140px;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="pagination-container" id="paginationBox">
+            <div id="pageInfo">Hiển thị 0-0 của 0 bản ghi</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <span>Số bản ghi:</span>
+                    <select id="pageSizeSelector" class="form-select" style="width: 70px; padding: 4px;" onchange="changePageSize()">
+                        <option value="10">10</option>
+                        <option value="20" selected>20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div class="pagination-buttons" id="paginationBtns"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MH02 Chi tiết đầu mối của tỉnh / MH03 Cập nhật -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content" style="max-width: 1100px;">
+            <div class="modal-header">
+                <h3 id="detailTitle"></h3>
+                <button class="modal-close-btn" onclick="closeModal('detailModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="detailBody"></div>
+            <div class="modal-footer" id="detailFooter"></div>
+        </div>
+    </div>
+
+    <!-- MH04 Lịch sử thay đổi -->
+    <div class="modal-overlay" id="historyModal" style="z-index: 2500;">
+        <div class="modal-content" style="max-width: 1000px;">
+            <div class="modal-header">
+                <h3 id="historyTitle"></h3>
+                <button class="modal-close-btn" onclick="closeModal('historyModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="historyBody"></div>
+            <div class="modal-footer" id="historyFooter"><button class="btn btn-secondary" onclick="closeModal('historyModal')">Đóng</button></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="confirmModal" style="z-index: 3000;">
+        <div class="modal-content" style="max-width: 480px;">
+            <div class="modal-header">
+                <h3 id="confirmTitle">Xác nhận</h3>
+                <button class="modal-close-btn" onclick="closeConfirm()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 24px;">
+                <p id="confirmMessage" style="margin: 0; font-size: 14px; line-height: 1.6; white-space: pre-line;"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeConfirm()">Hủy</button>
+                <button class="btn btn-primary" id="confirmOkBtn">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <i class="fa-solid"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
+    <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
+    <script>
+        // Thông tin đầu mối thực hiện công tác BTNN (góp ý khách hàng số 2)
+        // - Cập nhật theo tỉnh: mỗi Tỉnh/Thành phố 01 hồ sơ, gồm nhiều người theo 03 vị trí Lãnh đạo Sở, Lãnh đạo Phòng, Chuyên viên
+        // - Sở Tư pháp tự cập nhật hồ sơ của tỉnh mình; Bộ Tư pháp xem 34 tỉnh, kết xuất Excel; UBND cấp tỉnh xem tỉnh của mình
+        // - Mỗi lần lưu tạo 01 phiên bản (lịch sử thay đổi); thôi làm đầu mối thì "Ngừng phụ trách", không xóa
+        // Chưa chốt với khách hàng: giới hạn số người mỗi vị trí, Bộ Tư pháp có được sửa thay không, có cần Bộ Tư pháp duyệt không
+        const W = window.BTNN_WF || null;
+        const PV = window.BTNN_PHAMVI || null;
+
+        // 34 Tỉnh/Thành phố sau sắp xếp đơn vị hành chính năm 2025
+        const PROVINCES = ['Thành phố Hà Nội', 'Thành phố Huế', 'Thành phố Hải Phòng', 'Thành phố Đà Nẵng', 'Thành phố Hồ Chí Minh', 'Thành phố Cần Thơ',
+            'Tỉnh Lai Châu', 'Tỉnh Điện Biên', 'Tỉnh Sơn La', 'Tỉnh Lạng Sơn', 'Tỉnh Quảng Ninh', 'Tỉnh Thanh Hóa', 'Tỉnh Nghệ An', 'Tỉnh Hà Tĩnh', 'Tỉnh Cao Bằng',
+            'Tỉnh Tuyên Quang', 'Tỉnh Lào Cai', 'Tỉnh Thái Nguyên', 'Tỉnh Phú Thọ', 'Tỉnh Bắc Ninh', 'Tỉnh Hưng Yên', 'Tỉnh Ninh Bình', 'Tỉnh Quảng Trị',
+            'Tỉnh Quảng Ngãi', 'Tỉnh Gia Lai', 'Tỉnh Khánh Hòa', 'Tỉnh Lâm Đồng', 'Tỉnh Đắk Lắk', 'Tỉnh Đồng Nai', 'Tỉnh Tây Ninh', 'Tỉnh Vĩnh Long',
+            'Tỉnh Đồng Tháp', 'Tỉnh Cà Mau', 'Tỉnh An Giang'];
+        const POS = [
+            { key: 'LD_SO', label: 'Lãnh đạo Sở' },
+            { key: 'LD_PHONG', label: 'Lãnh đạo Phòng' },
+            { key: 'CV', label: 'Chuyên viên' }
+        ];
+        const POS_LABEL = Object.fromEntries(POS.map(p => [p.key, p.label]));
+        const ACTIVE = 'Đang phụ trách', STOPPED = 'Ngừng phụ trách';
+        const stpNameOf = prov => 'Sở Tư pháp ' + prov;
+
+        // PHẠM VI DỮ LIỆU theo người dùng giả lập
+        const me = () => (W ? W.getCurrentUser() : null) || { id: 'canbonv', name: 'Nguyễn Văn Cán Bộ', unitId: 'PLN-02', title: 'Chuyên viên' };
+        const level = () => (PV ? PV.level() : 'BTP');
+        const unitName = id => (PV && PV.unitName(id)) || '';
+        // Tỉnh của Sở Tư pháp: tên đơn vị "Sở Tư pháp <Tỉnh/Thành phố>"
+        const provinceOfStp = stpId => { const n = unitName(stpId); return PROVINCES.find(p => n === stpNameOf(p)) || ''; };
+        function myProvinces() {
+            const lv = level();
+            if (lv === 'BTP') return PROVINCES;
+            if (lv === 'STP') return [provinceOfStp(PV.root())].filter(Boolean);
+            if (lv === 'UBND_TINH') return PV.managedStps(PV.root()).map(provinceOfStp).filter(Boolean);
+            return [];
+        }
+        const canEditProvince = prov => level() === 'STP' && provinceOfStp(PV.root()) === prov;
+
+        // MOCK DATA
+        const p2 = x => String(x).padStart(2, '0');
+        const fmtDate = d => `${p2(d.getDate())}/${p2(d.getMonth() + 1)}/${d.getFullYear()}`;
+        const fmtTime = d => `${p2(d.getHours())}:${p2(d.getMinutes())} ${fmtDate(d)}`;
+        const ago = (days, h) => { const d = new Date(); d.setDate(d.getDate() - days); d.setHours(h || 9, 0, 0, 0); return d; };
+        let pid = 0;
+        const P = (position, fullName, title, phone, email, start, status, end) => ({ id: ++pid, position, fullName, title, phone, email: email || '', startDate: start, status: status || ACTIVE, endDate: end || '' });
+        const clone = o => JSON.parse(JSON.stringify(o));
+        function buildSeed() {
+            const data = {};
+            const put = (prov, versions) => { data[prov] = { province: prov, versions }; };
+            // Thành phố Hà Nội: 03 lần cập nhật (lần 3 thay Chuyên viên, đổi số điện thoại Lãnh đạo Phòng)
+            const hn1 = [P('LD_SO', 'Phạm Quang Huy', 'Giám đốc Sở', '0912000111', 'huypq@sotuphap.hanoi.gov.vn', '01/01/2025'),
+                P('LD_PHONG', 'Vũ Thị Thanh', 'Trưởng phòng Hành chính tư pháp', '0912000222', 'thanhvt@sotuphap.hanoi.gov.vn', '01/01/2025'),
+                P('CV', 'Đặng Đình Khoa', 'Chuyên viên', '0982567890', 'khoadd@sotuphap.hanoi.gov.vn', '01/01/2025')];
+            const hn2 = clone(hn1).concat([P('CV', 'Đỗ Văn Chung', 'Chuyên viên', '0912000333', 'chungdv@sotuphap.hanoi.gov.vn', '15/03/2026')]);
+            const hn3 = clone(hn2);
+            hn3[1].phone = '0912000999';
+            hn3[2].status = STOPPED; hn3[2].endDate = fmtDate(ago(12));
+            hn3.push(P('CV', 'Ngô Thị Lan', 'Chuyên viên', '0912000444', 'lannt@sotuphap.hanoi.gov.vn', fmtDate(ago(12))));
+            put('Thành phố Hà Nội', [
+                { no: 1, at: fmtTime(ago(300, 9)), by: 'Đỗ Văn Chung', note: 'Cập nhật đầu mối lần đầu', changes: [{ t: 'add', s: 'Thêm Lãnh đạo Sở: Phạm Quang Huy' }, { t: 'add', s: 'Thêm Lãnh đạo Phòng: Vũ Thị Thanh' }, { t: 'add', s: 'Thêm Chuyên viên: Đặng Đình Khoa' }], people: hn1 },
+                { no: 2, at: fmtTime(ago(230, 14)), by: 'Đỗ Văn Chung', note: 'Bổ sung chuyên viên đầu mối', changes: [{ t: 'add', s: 'Thêm Chuyên viên: Đỗ Văn Chung' }], people: hn2 },
+                { no: 3, at: fmtTime(ago(12, 10)), by: 'Đỗ Văn Chung', note: 'Ông Đặng Đình Khoa chuyển công tác', changes: [{ t: 'edit', s: 'Vũ Thị Thanh (Lãnh đạo Phòng): Số điện thoại 0912000222 → 0912000999' }, { t: 'stop', s: 'Ngừng phụ trách Chuyên viên: Đặng Đình Khoa' }, { t: 'add', s: 'Thêm Chuyên viên: Ngô Thị Lan' }], people: hn3 }
+            ]);
+            const hcm = [P('LD_SO', 'Lý Thanh Sơn', 'Giám đốc Sở', '0903112244', 'sonlt@stp.hochiminhcity.gov.vn', '01/06/2025'),
+                P('LD_PHONG', 'Vũ Thị Hoa', 'Phó Trưởng phòng Hành chính tư pháp', '0908223344', 'hoavt@stp.hochiminhcity.gov.vn', '01/06/2025'),
+                P('CV', 'Châu Ngọc Ánh', 'Chuyên viên', '0908334455', 'anhcn@stp.hochiminhcity.gov.vn', '01/06/2025')];
+            put('Thành phố Hồ Chí Minh', [{ no: 1, at: fmtTime(ago(40, 15)), by: 'Châu Ngọc Ánh', note: 'Cập nhật đầu mối lần đầu', changes: [{ t: 'add', s: 'Thêm Lãnh đạo Sở: Lý Thanh Sơn' }, { t: 'add', s: 'Thêm Lãnh đạo Phòng: Vũ Thị Hoa' }, { t: 'add', s: 'Thêm Chuyên viên: Châu Ngọc Ánh' }], people: hcm }]);
+            const hp1 = [P('LD_SO', 'Bạch Văn Hải', 'Giám đốc Sở', '0904123456', 'haibv@stp.haiphong.gov.vn', '01/07/2025'),
+                P('CV', 'Tăng Thị Diệu', 'Chuyên viên', '0914234567', 'dieutt@stp.haiphong.gov.vn', '01/07/2025')];
+            const hp2 = clone(hp1).concat([P('LD_PHONG', 'Nguyễn Thúy Hằng', 'Trưởng phòng Hành chính tư pháp', '0914111222', 'hangnt@stp.haiphong.gov.vn', fmtDate(ago(60))),
+                P('CV', 'Quách Minh Tuấn', 'Chuyên viên', '0914333444', 'tuanqm@stp.haiphong.gov.vn', fmtDate(ago(60)))]);
+            put('Thành phố Hải Phòng', [
+                { no: 1, at: fmtTime(ago(120, 9)), by: 'Tăng Thị Diệu', note: 'Cập nhật đầu mối lần đầu', changes: [{ t: 'add', s: 'Thêm Lãnh đạo Sở: Bạch Văn Hải' }, { t: 'add', s: 'Thêm Chuyên viên: Tăng Thị Diệu' }], people: hp1 },
+                { no: 2, at: fmtTime(ago(60, 16)), by: 'Tăng Thị Diệu', note: 'Bổ sung Lãnh đạo Phòng và chuyên viên', changes: [{ t: 'add', s: 'Thêm Lãnh đạo Phòng: Nguyễn Thúy Hằng' }, { t: 'add', s: 'Thêm Chuyên viên: Quách Minh Tuấn' }], people: hp2 }
+            ]);
+            // Một số tỉnh khác (người dùng giả lập chưa có tài khoản Sở Tư pháp) - dữ liệu mẫu
+            [['Thành phố Đà Nẵng', 'Hoàng Tuấn Long', 'Phó Giám đốc Sở', '0913556677', 'Đỗ Mai Trang', '0983667788', 25],
+             ['Tỉnh Lâm Đồng', 'Vũ Đình Toàn', 'Phó Giám đốc Sở', '0918345678', 'Phan Thị Nga', '0979456789', 70],
+             ['Tỉnh Nghệ An', 'Trần Quốc Việt', 'Phó Giám đốc Sở', '0915222333', 'Lê Thu Hà', '0975111222', 15],
+             ['Tỉnh Quảng Ninh', 'Nguyễn Hữu Thắng', 'Phó Giám đốc Sở', '0916777888', 'Bùi Thị Hạnh', '0976888999', 90],
+             ['Thành phố Cần Thơ', 'Lâm Văn Phước', 'Phó Giám đốc Sở', '0917999000', 'Trịnh Ngọc Mai', '0977000111', 33]
+            ].forEach(([prov, ld, ldTitle, ldPhone, cv, cvPhone, days]) => {
+                const people = [P('LD_SO', ld, ldTitle, ldPhone, '', '01/01/2026'), P('CV', cv, 'Chuyên viên', cvPhone, '', '01/01/2026')];
+                put(prov, [{ no: 1, at: fmtTime(ago(days, 10)), by: 'Cán bộ ' + stpNameOf(prov), note: 'Cập nhật đầu mối lần đầu', changes: [{ t: 'add', s: 'Thêm Lãnh đạo Sở: ' + ld }, { t: 'add', s: 'Thêm Chuyên viên: ' + cv }], people }]);
+            });
+            return data;
+        }
+
+        const DB_KEY = 'btnn_dau_moi_theo_tinh';
+        const DB_VERSION = 'v1';
+        let data = {};
+        function loadData() {
+            try { if (localStorage.getItem(DB_KEY + '_version') === DB_VERSION) data = JSON.parse(localStorage.getItem(DB_KEY) || '{}'); } catch (e) { data = {}; }
+            if (!Object.keys(data).length) { data = buildSeed(); saveData(); }
+            pid = Math.max(0, ...Object.values(data).flatMap(r => r.versions.flatMap(v => v.people.map(p => p.id))));
+        }
+        function saveData() { try { localStorage.setItem(DB_KEY, JSON.stringify(data)); localStorage.setItem(DB_KEY + '_version', DB_VERSION); } catch (e) { /* mockup */ } }
+        const latest = prov => { const r = data[prov]; return r && r.versions.length ? r.versions[r.versions.length - 1] : null; };
+        const activePeople = (prov, pos) => { const v = latest(prov); return v ? v.people.filter(p => p.status === ACTIVE && (!pos || p.position === pos)) : []; };
+        const stateOf = prov => latest(prov) ? 'Đã cập nhật' : 'Chưa cập nhật';
+        const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const fold = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+
+        let kpi = '', currentPage = 1, pageSize = 20;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            const provs = myProvinces();
+            document.getElementById('filterProvince').innerHTML = '<option value="">-- Tất cả --</option>' + provs.map(p => `<option value="${p}">${p}</option>`).join('');
+            refreshTable();
+            if (W && W.mountUserSwitcher) W.mountUserSwitcher();
+        });
+
+        // MH01 DANH SÁCH THEO TỈNH
+        function filteredList() {
+            let list = myProvinces().slice();
+            const prov = document.getElementById('filterProvince').value;
+            const person = fold(document.getElementById('filterPerson').value.trim());
+            const state = document.getElementById('filterState').value;
+            if (prov) list = list.filter(p => p === prov);
+            if (person) list = list.filter(p => activePeople(p).some(x => fold(x.fullName).includes(person) || x.phone.includes(person)));
+            if (state) list = list.filter(p => stateOf(p) === state);
+            return list;
+        }
+        const namesOf = (prov, pos) => {
+            const ps = activePeople(prov, pos);
+            return ps.length ? ps.map(p => `<div>${esc(p.fullName)}</div><div style="color: var(--text-muted); font-size: 12px;">${esc(p.title)} - ${esc(p.phone)}</div>`).join('') : '<span style="color: var(--text-muted);">—</span>';
+        };
+        function refreshTable() {
+            const base = filteredList();
+            document.getElementById('countAll').innerText = base.length;
+            document.getElementById('countDone').innerText = base.filter(p => stateOf(p) === 'Đã cập nhật').length;
+            document.getElementById('countTodo').innerText = base.filter(p => stateOf(p) === 'Chưa cập nhật').length;
+            const list = kpi ? base.filter(p => stateOf(p) === kpi) : base;
+            const tbody = document.getElementById('tableBody');
+            if (level() === 'OTHER') { tbody.innerHTML = PV ? PV.denyRow(8) : ''; document.getElementById('paginationBox').style.display = 'none'; return; }
+            const total = list.length, totalPages = Math.ceil(total / pageSize) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            const start = (currentPage - 1) * pageSize, end = Math.min(start + pageSize, total);
+            if (!total) {
+                tbody.innerHTML = '<tr><td colspan="8" class="cell-center" style="color: var(--text-muted); padding: 30px; font-style: italic;">Không có dữ liệu phù hợp.</td></tr>';
+                document.getElementById('paginationBox').style.display = 'none';
+                return;
+            }
+            document.getElementById('paginationBox').style.display = 'flex';
+            document.getElementById('pageInfo').innerText = `Hiển thị ${start + 1} - ${end} của ${total} bản ghi`;
+            tbody.innerHTML = list.slice(start, end).map((prov, i) => {
+                const v = latest(prov), st = stateOf(prov);
+                // Cột Thao tác: bộ nút cố định (Cập nhật, Lịch sử thay đổi); nút không được thao tác hiển thị mờ
+                const editBtn = canEditProvince(prov)
+                    ? `<button data-admin-icon-normalized="1" class="icon-btn edit" title="Cập nhật" onclick="event.stopPropagation(); openEdit('${prov}')"><i class="fa-solid fa-pen-to-square"></i></button>`
+                    : `<button data-admin-icon-normalized="1" class="icon-btn edit disabled" title="Chỉ Sở Tư pháp của tỉnh được cập nhật" disabled><i class="fa-solid fa-pen-to-square"></i></button>`;
+                const histBtn = v
+                    ? `<button data-admin-icon-normalized="1" class="icon-btn history" title="Lịch sử thay đổi" onclick="event.stopPropagation(); openHistory('${prov}')"><i class="fa-solid fa-clock-rotate-left"></i></button>`
+                    : `<button data-admin-icon-normalized="1" class="icon-btn history disabled" title="Chưa có lịch sử thay đổi" disabled><i class="fa-solid fa-clock-rotate-left"></i></button>`;
+                return `<tr style="cursor: pointer;" onclick="openDetail('${prov}')">
+                    <td class="cell-center">${start + i + 1}</td>
+                    <td><div style="font-weight: 600;">${esc(prov)}</div><div style="color: var(--text-muted); font-size: 12px;">${esc(stpNameOf(prov))}</div></td>
+                    <td>${namesOf(prov, 'LD_SO')}</td>
+                    <td>${namesOf(prov, 'LD_PHONG')}</td>
+                    <td>${namesOf(prov, 'CV')}</td>
+                    <td>${v ? `<div>${esc(v.at)}</div><div style="color: var(--text-muted); font-size: 12px;">${esc(v.by)} (lần ${v.no})</div>` : '<span style="color: var(--text-muted);">—</span>'}</td>
+                    <td class="cell-center"><span class="badge ${st === 'Đã cập nhật' ? 'badge-success' : 'badge-warning'}">${st}</span></td>
+                    <td class="cell-center"><div class="action-flex">${editBtn}${histBtn}</div></td>
+                </tr>`;
+            }).join('');
+            renderPagination(totalPages);
+        }
+        function renderPagination(totalPages) {
+            const c = document.getElementById('paginationBtns');
+            c.innerHTML = '';
+            const add = (html, disabled, go, active) => {
+                const b = document.createElement('button');
+                b.className = 'page-btn' + (active ? ' active' : '');
+                b.innerHTML = html; b.disabled = disabled;
+                b.onclick = () => { currentPage = go; refreshTable(); };
+                c.appendChild(b);
+            };
+            add('<i class="fa-solid fa-angles-left"></i>', currentPage === 1, 1);
+            add('<i class="fa-solid fa-angle-left"></i>', currentPage === 1, currentPage - 1);
+            for (let i = 1; i <= totalPages; i++) add(String(i), false, i, i === currentPage);
+            add('<i class="fa-solid fa-angle-right"></i>', currentPage === totalPages, currentPage + 1);
+            add('<i class="fa-solid fa-angles-right"></i>', currentPage === totalPages, totalPages);
+        }
+        function changePageSize() { pageSize = parseInt(document.getElementById('pageSizeSelector').value); currentPage = 1; refreshTable(); }
+        function filterByKpi(v) {
+            kpi = v;
+            document.getElementById('kpiAll').classList.toggle('active', v === '');
+            document.getElementById('kpiDone').classList.toggle('active', v === 'Đã cập nhật');
+            document.getElementById('kpiTodo').classList.toggle('active', v === 'Chưa cập nhật');
+            currentPage = 1; refreshTable();
+        }
+        function clearFilters() {
+            ['filterProvince', 'filterPerson', 'filterState'].forEach(id => { document.getElementById(id).value = ''; });
+            filterByKpi('');
+        }
+        function searchData() { currentPage = 1; refreshTable(); }
+
+        // Kết xuất Excel: bảng tổng hợp đầu mối (mỗi người đang phụ trách 01 dòng, nhóm theo tỉnh)
+        function exportExcel() {
+            const provs = filteredList().filter(p => !kpi || stateOf(p) === kpi);
+            const rows = [];
+            provs.forEach(prov => {
+                const ps = activePeople(prov);
+                if (!ps.length) rows.push([prov, stpNameOf(prov), '', 'Chưa cập nhật', '', '', '', '']);
+                POS.forEach(pos => ps.filter(p => p.position === pos.key).forEach(p => rows.push([prov, stpNameOf(prov), pos.label, p.fullName, p.title, p.phone, p.email, p.startDate])));
+            });
+            if (!rows.length) { showToast('Không có dữ liệu để kết xuất Excel.', 'error'); return; }
+            const headers = ['STT', 'Tỉnh/Thành phố', 'Sở Tư pháp', 'Vị trí', 'Họ và tên', 'Chức vụ', 'Số điện thoại', 'Email', 'Ngày bắt đầu phụ trách'];
+            const now = new Date(), font = "font-family:'Times New Roman';", n = headers.length;
+            const html = '<meta charset="UTF-8"><table border="1">'
+                + `<tr><td colspan="${n}" style="${font}font-size:15pt;font-weight:bold;text-align:center;border:none;">BẢNG TỔNG HỢP ĐẦU MỐI THỰC HIỆN CÔNG TÁC BỒI THƯỜNG NHÀ NƯỚC</td></tr>`
+                + `<tr><td colspan="${n}" style="${font}font-size:11pt;font-style:italic;text-align:center;border:none;">Số Tỉnh/Thành phố: ${provs.length}; thời điểm xuất: ${fmtTime(now)}</td></tr>`
+                + '<tr>' + headers.map(h => `<th style="${font}font-size:12pt;background:#e5e7eb;">${esc(h)}</th>`).join('') + '</tr>'
+                + rows.map((r, i) => '<tr>' + [i + 1, ...r].map(v => `<td style="${font}font-size:12pt;mso-number-format:'\\@';">${esc(v)}</td>`).join('') + '</tr>').join('')
+                + `<tr><td colspan="${n}" style="${font}font-size:10pt;font-style:italic;text-align:right;border:none;">Xuất ngày ${fmtTime(now)} bởi ${esc(me().name)}</td></tr></table>`;
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob(['﻿' + html], { type: 'application/vnd.ms-excel;charset=utf-8' }));
+            // Mockup sinh bảng HTML nên dùng đuôi .xls; hệ thống thật xuất .xlsx theo quy chuẩn
+            a.download = `${now.getFullYear()}${p2(now.getMonth() + 1)}${p2(now.getDate())}_Tong_hop_dau_moi_cong_tac_BTNN.xls`;
+            document.body.appendChild(a); a.click();
+            setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+            showToast(`Đã kết xuất ${rows.length} dòng của ${provs.length} Tỉnh/Thành phố.`, 'success');
+        }
+
+        // MH02 CHI TIẾT ĐẦU MỐI CỦA TỈNH
+        function peopleTable(people, opts) {
+            const o = opts || {};
+            if (!people.length) return '<div class="dm-empty">Chưa có đầu mối.</div>';
+            return `<table class="dm-table"><thead><tr><th style="width: 40px;">STT</th><th>Họ và tên</th><th>Chức vụ</th><th style="width: 120px;">Số điện thoại</th><th>Email</th><th style="width: 120px;">Ngày bắt đầu</th><th style="width: 140px;">Trạng thái</th></tr></thead><tbody>`
+                + people.map((p, i) => `<tr class="${p.status === STOPPED ? 'stopped' : ''}"><td style="text-align: center;">${i + 1}</td><td>${esc(p.fullName)}</td><td>${esc(p.title)}</td><td>${esc(p.phone)}</td><td>${esc(p.email || '-')}</td><td>${esc(p.startDate)}</td>
+                    <td>${p.status === STOPPED ? `<span class="badge badge-secondary">${STOPPED}</span><div style="font-size: 11px;">từ ${esc(p.endDate)}</div>` : `<span class="badge badge-success">${ACTIVE}</span>`}</td></tr>`).join('')
+                + '</tbody></table>';
+        }
+        function peopleByPosHtml(people, showStopped) {
+            return POS.map(pos => {
+                const list = people.filter(p => p.position === pos.key && (showStopped || p.status === ACTIVE));
+                const nActive = people.filter(p => p.position === pos.key && p.status === ACTIVE).length;
+                return `<div class="dm-pos"><div class="dm-pos-title"><span>${pos.label}<span class="cnt">(${nActive} người đang phụ trách)</span></span></div>${peopleTable(list)}</div>`;
+            }).join('');
+        }
+        let showStoppedFlag = false;
+        function openDetail(prov) {
+            if (!myProvinces().includes(prov)) return;
+            const v = latest(prov);
+            document.getElementById('detailTitle').innerText = `Thông tin đầu mối - ${prov}`;
+            const kv = (k, val) => `<div class="k">${k}</div><div>${val}</div>`;
+            let html = `<div class="dm-kv">${kv('Tỉnh/Thành phố', esc(prov))}${kv('Sở Tư pháp', esc(stpNameOf(prov)))}${kv('Tình trạng', `<span class="badge ${v ? 'badge-success' : 'badge-warning'}">${stateOf(prov)}</span>`)}
+                ${kv('Cập nhật lần cuối', v ? `${esc(v.at)} - ${esc(v.by)} (lần ${v.no})` : '—')}</div>`;
+            if (v) {
+                html += `<label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; margin-bottom: 12px; cursor: pointer;"><input type="checkbox" ${showStoppedFlag ? 'checked' : ''} onchange="showStoppedFlag = this.checked; openDetail('${prov}')"> Hiển thị cả người đã ngừng phụ trách</label>`
+                    + peopleByPosHtml(v.people, showStoppedFlag);
+            } else {
+                html += '<div class="dm-empty">Sở Tư pháp chưa cập nhật thông tin đầu mối.</div>';
+            }
+            document.getElementById('detailBody').innerHTML = html;
+            let foot = '<button class="btn btn-secondary" onclick="closeModal(\'detailModal\')">Đóng</button>';
+            if (v) foot += `<button class="btn btn-outline-primary" onclick="openHistory('${prov}')"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử thay đổi</button>`;
+            if (canEditProvince(prov)) foot += `<button class="btn btn-primary" onclick="openEdit('${prov}')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>`;
+            document.getElementById('detailFooter').innerHTML = foot;
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        // MH03 CẬP NHẬT ĐẦU MỐI CỦA TỈNH (Sở Tư pháp)
+        let editProv = '', draft = [];
+        function openEdit(prov) {
+            if (!canEditProvince(prov)) return;
+            editProv = prov;
+            const v = latest(prov);
+            draft = v ? clone(v.people) : [];
+            renderEdit();
+            document.getElementById('detailModal').classList.add('active');
+        }
+        function renderEdit() {
+            document.getElementById('detailTitle').innerText = `Cập nhật thông tin đầu mối - ${editProv}`;
+            const inp = (p, f, ph, extra) => `<input class="form-control" id="f_${p.id}_${f}" value="${esc(p[f])}" placeholder="${ph}" ${p.status === STOPPED ? 'disabled' : ''} oninput="setField(${p.id}, '${f}', this.value)" ${extra || ''}>`;
+            const body = POS.map(pos => {
+                const list = draft.filter(p => p.position === pos.key);
+                const rows = list.map((p, i) => `<tr class="${p.status === STOPPED ? 'stopped' : ''} ${p.isNew ? 'is-new' : ''}">
+                    <td style="text-align: center;">${i + 1}</td>
+                    <td>${inp(p, 'fullName', 'Họ và tên *')}<span class="field-error-text" id="e_${p.id}_fullName">Đây là trường bắt buộc</span></td>
+                    <td>${inp(p, 'title', 'Chức vụ *')}<span class="field-error-text" id="e_${p.id}_title">Đây là trường bắt buộc</span></td>
+                    <td>${inp(p, 'phone', 'Số điện thoại *', 'maxlength="11"')}<span class="field-error-text" id="e_${p.id}_phone">Đây là trường bắt buộc</span></td>
+                    <td>${inp(p, 'email', 'Email')}<span class="field-error-text" id="e_${p.id}_email">Email không đúng định dạng</span></td>
+                    <td>${inp(p, 'startDate', 'dd/mm/yyyy *', 'maxlength="10"')}<span class="field-error-text" id="e_${p.id}_startDate">Đây là trường bắt buộc</span></td>
+                    <td style="text-align: center; white-space: nowrap;">${p.isNew
+                        ? `<button type="button" class="btn btn-outline-danger btn-sm" onclick="removeRow(${p.id})"><i class="fa-solid fa-trash"></i> Xóa dòng</button>`
+                        : p.status === STOPPED
+                            ? `<button type="button" class="btn btn-outline-primary btn-sm" onclick="toggleStop(${p.id})"><i class="fa-solid fa-rotate-left"></i> Phụ trách lại</button>`
+                            : `<button type="button" class="btn btn-outline-danger btn-sm" onclick="toggleStop(${p.id})"><i class="fa-solid fa-user-slash"></i> Ngừng phụ trách</button>`}</td>
+                </tr>`).join('');
+                return `<div class="dm-pos"><div class="dm-pos-title"><span>${pos.label}</span>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addRow('${pos.key}')"><i class="fa-solid fa-plus"></i> Thêm ${pos.label}</button></div>
+                    ${list.length ? `<table class="dm-table"><thead><tr><th style="width: 40px;">STT</th><th>Họ và tên <span style="color: var(--danger-color);">*</span></th><th>Chức vụ <span style="color: var(--danger-color);">*</span></th><th style="width: 130px;">Số điện thoại <span style="color: var(--danger-color);">*</span></th><th>Email</th><th style="width: 120px;">Ngày bắt đầu <span style="color: var(--danger-color);">*</span></th><th style="width: 150px;">Thao tác</th></tr></thead><tbody>${rows}</tbody></table>` : '<div class="dm-empty">Chưa có đầu mối. Bấm "Thêm" để bổ sung.</div>'}
+                </div>`;
+            }).join('');
+            document.getElementById('detailBody').innerHTML = `<div style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;"><i class="fa-solid fa-circle-info"></i> Người thôi làm đầu mối: chọn "Ngừng phụ trách" (không xóa) để giữ lịch sử. Mỗi lần lưu, hệ thống ghi nhận 01 phiên bản trong Lịch sử thay đổi.</div>`
+                + body
+                + `<div class="form-group" style="margin-top: 6px;"><label class="form-label">Nội dung thay đổi / ghi chú</label><textarea id="editNote" class="form-control" rows="2" maxlength="1000" placeholder="Ví dụ: Ông A chuyển công tác, bổ sung Bà B làm chuyên viên đầu mối"></textarea></div>`;
+            document.getElementById('detailFooter').innerHTML = `<button class="btn btn-secondary" onclick="cancelEdit()">Hủy</button>
+                <button class="btn btn-primary" onclick="saveEdit()"><i class="fa-solid fa-floppy-disk"></i> Lưu thông tin</button>`;
+        }
+        function setField(id, f, val) { const p = draft.find(x => x.id === id); if (p) p[f] = val; }
+        function addRow(pos) {
+            keepNote(() => draft.push({ id: ++pid, position: pos, fullName: '', title: '', phone: '', email: '', startDate: fmtDate(new Date()), status: ACTIVE, endDate: '', isNew: true }));
+        }
+        function removeRow(id) { keepNote(() => { draft = draft.filter(p => p.id !== id); }); }
+        function toggleStop(id) {
+            const p = draft.find(x => x.id === id);
+            if (!p) return;
+            if (p.status === ACTIVE) {
+                openConfirm(`Chuyển "${p.fullName}" (${POS_LABEL[p.position]}) sang Ngừng phụ trách?`, () => keepNote(() => { p.status = STOPPED; p.endDate = fmtDate(new Date()); }), 'Xác nhận ngừng phụ trách');
+            } else keepNote(() => { p.status = ACTIVE; p.endDate = ''; });
+        }
+        // Giữ nội dung ghi chú khi vẽ lại form
+        function keepNote(fn) { const n = (document.getElementById('editNote') || {}).value || ''; fn(); renderEdit(); document.getElementById('editNote').value = n; }
+        function cancelEdit() { closeModal('detailModal'); }
+
+        function validDate(s) {
+            const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(s || '');
+            if (!m) return null;
+            const d = new Date(+m[3], +m[2] - 1, +m[1]);
+            return d.getDate() === +m[1] && d.getMonth() === +m[2] - 1 ? d : null;
+        }
+        function saveEdit() {
+            document.querySelectorAll('#detailBody .field-error-text').forEach(e => { e.style.display = 'none'; });
+            document.querySelectorAll('#detailBody .is-invalid').forEach(e => e.classList.remove('is-invalid'));
+            let first = null;
+            const mark = (p, f, msg) => {
+                const el = document.getElementById(`f_${p.id}_${f}`), er = document.getElementById(`e_${p.id}_${f}`);
+                el.classList.add('is-invalid'); if (msg) er.innerText = msg; er.style.display = 'block'; first = first || el;
+            };
+            draft.filter(p => p.status === ACTIVE).forEach(p => {
+                p.fullName = p.fullName.trim(); p.title = p.title.trim(); p.phone = p.phone.trim(); p.email = (p.email || '').trim();
+                if (!p.fullName) mark(p, 'fullName');
+                if (!p.title) mark(p, 'title');
+                if (!p.phone) mark(p, 'phone', 'Đây là trường bắt buộc');
+                else if (!/^0\d{9,10}$/.test(p.phone)) mark(p, 'phone', 'Số điện thoại không đúng định dạng');
+                if (p.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email)) mark(p, 'email');
+                const sd = validDate(p.startDate);
+                if (!p.startDate) mark(p, 'startDate', 'Đây là trường bắt buộc');
+                else if (!sd || sd > new Date()) mark(p, 'startDate', 'Ngày không hợp lệ hoặc lớn hơn ngày hiện tại');
+            });
+            if (first) { first.focus(); return; }
+
+            // So sánh với phiên bản trước để ghi nội dung thay đổi
+            const prev = latest(editProv);
+            const before = prev ? prev.people : [];
+            const FIELDS = { fullName: 'Họ và tên', title: 'Chức vụ', phone: 'Số điện thoại', email: 'Email', startDate: 'Ngày bắt đầu' };
+            const changes = [];
+            draft.forEach(p => {
+                const o = before.find(x => x.id === p.id);
+                const who = `${POS_LABEL[p.position]}: ${p.fullName}`;
+                if (!o) { changes.push({ t: 'add', s: 'Thêm ' + who }); return; }
+                if (o.status !== p.status) changes.push(p.status === STOPPED ? { t: 'stop', s: 'Ngừng phụ trách ' + who } : { t: 'add', s: 'Phụ trách lại ' + who });
+                const diff = Object.keys(FIELDS).filter(f => (o[f] || '') !== (p[f] || '')).map(f => `${FIELDS[f]} ${o[f] || '(trống)'} → ${p[f] || '(trống)'}`);
+                if (diff.length) changes.push({ t: 'edit', s: `${o.fullName} (${POS_LABEL[p.position]}): ${diff.join('; ')}` });
+            });
+            if (!changes.length) { showToast('Không có thay đổi để lưu.', 'warning'); return; }
+            const rec = data[editProv] || (data[editProv] = { province: editProv, versions: [] });
+            rec.versions.push({
+                no: rec.versions.length + 1, at: fmtTime(new Date()), by: me().name, note: document.getElementById('editNote').value.trim(),
+                changes, people: draft.map(p => { const c = clone(p); delete c.isNew; return c; })
+            });
+            saveData();
+            closeModal('detailModal');
+            refreshTable();
+            showToast(`Đã lưu thông tin đầu mối ${editProv} (lần ${rec.versions.length})`, 'success');
+        }
+
+        // MH04 LỊCH SỬ THAY ĐỔI CỦA TỈNH
+        function openHistory(prov) {
+            const r = data[prov];
+            if (!r || !myProvinces().includes(prov)) return;
+            document.getElementById('historyTitle').innerText = `Lịch sử thay đổi đầu mối - ${prov}`;
+            const rows = r.versions.slice().reverse().map(v => `<tr>
+                <td style="text-align: center;">${v.no}</td>
+                <td>${esc(v.at)}</td>
+                <td>${esc(v.by)}</td>
+                <td><ul class="dm-change">${v.changes.map(c => `<li class="${c.t}">${esc(c.s)}</li>`).join('')}</ul>${v.note ? `<div style="margin-top: 4px; font-size: 12px; color: var(--text-muted);">Ghi chú: ${esc(v.note)}</div>` : ''}</td>
+                <td style="text-align: center;"><button class="dm-link" onclick="openSnapshot('${prov}', ${v.no})">Xem danh sách</button></td>
+            </tr>`).join('');
+            document.getElementById('historyBody').innerHTML = `<table class="dm-table"><thead><tr><th style="width: 50px;">Lần</th><th style="width: 140px;">Thời điểm</th><th style="width: 160px;">Người cập nhật</th><th>Nội dung thay đổi</th><th style="width: 120px;">Đầu mối tại thời điểm</th></tr></thead><tbody>${rows}</tbody></table>`;
+            document.getElementById('historyFooter').innerHTML = '<button class="btn btn-secondary" onclick="closeModal(\'historyModal\')">Đóng</button>';
+            document.getElementById('historyModal').classList.add('active');
+        }
+        function openSnapshot(prov, no) {
+            const v = data[prov].versions.find(x => x.no === no);
+            document.getElementById('historyTitle').innerText = `Đầu mối ${prov} - lần cập nhật ${no} (${v.at})`;
+            document.getElementById('historyBody').innerHTML = `<div style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Người cập nhật: ${esc(v.by)}${v.note ? ' - Ghi chú: ' + esc(v.note) : ''}</div>` + peopleByPosHtml(v.people, true);
+            document.getElementById('historyFooter').innerHTML = `<button class="btn btn-secondary" onclick="closeModal('historyModal')">Đóng</button>
+                <button class="btn btn-outline-primary" onclick="openHistory('${prov}')"><i class="fa-solid fa-arrow-left"></i> Quay lại lịch sử</button>`;
+        }
+
+        // HELPERS
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        let confirmCallback = null;
+        function openConfirm(message, onOk, title) {
+            document.getElementById('confirmTitle').innerText = title || 'Xác nhận';
+            document.getElementById('confirmMessage').innerText = message;
+            confirmCallback = onOk;
+            document.getElementById('confirmOkBtn').onclick = () => { const cb = confirmCallback; closeConfirm(); if (cb) cb(); };
+            document.getElementById('confirmModal').classList.add('active');
+        }
+        function closeConfirm() { confirmCallback = null; document.getElementById('confirmModal').classList.remove('active'); }
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.className = 'toast ' + type;
+            document.getElementById('toastMessage').innerText = message;
+            toast.querySelector('i').className = 'fa-solid ' + (type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info');
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 3000);
+        }
+    </script>
+    <script src="bpbd_filter_toggle.js?v=20261013"></script>
+    <script src="admin-ui-standardizer.js?v=20261013"></script>
+    <script src="../../Common/grid_align.js?v=20261030s2"></script>
+    <script src="btnn_tieu_de_man.js?v=20261103td2"></script>
+    <script src="btnn_form_trang.js?v=20261104ft1" data-pages="detailModal"></script>
+</body>
+</html>

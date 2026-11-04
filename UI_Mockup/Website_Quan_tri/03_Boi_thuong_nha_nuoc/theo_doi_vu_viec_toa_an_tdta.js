@@ -560,8 +560,8 @@
                     ? `<button class="icon-btn edit" title="Cập nhật" onclick="event.stopPropagation(); openCaseForm('${id}', false)"><i class="fa-solid fa-pen-to-square"></i></button>`
                     : `<button type="button" class="icon-btn edit disabled-action" aria-disabled="true" title="Cập nhật${why}" onclick="event.stopPropagation();"><i class="fa-solid fa-pen-to-square"></i></button>`;
                 const actDel = ok
-                    ? `<button class="icon-btn delete" title="Xóa" onclick="event.stopPropagation(); confirmDeleteCase('${id}')"><i class="fa-solid fa-trash-can"></i></button>`
-                    : `<button type="button" class="icon-btn delete disabled-action" aria-disabled="true" title="Xóa${why}" onclick="event.stopPropagation();"><i class="fa-solid fa-trash-can"></i></button>`;
+                    ? `<button class="icon-btn delete" title="Xóa" onclick="event.stopPropagation(); confirmDeleteCase('${id}')"><i class="fa-solid fa-trash"></i></button>`
+                    : `<button type="button" class="icon-btn delete disabled-action" aria-disabled="true" title="Xóa${why}" onclick="event.stopPropagation();"><i class="fa-solid fa-trash"></i></button>`;
                 return `
                     <tr onclick="openCaseForm('${id}', true)">
                         <td style="text-align:center;">${start + idx + 1}</td>

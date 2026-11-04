@@ -862,7 +862,7 @@
                         <i class="fa-solid fa-pen-to-square"></i> Sửa
                     </button>
                     <button class="btn btn-danger" id="btnFormDelete" style="display:none; background-color:#ef4444; color:#fff; border:none;" onclick="deleteCurrentReception()">
-                        <i class="fa-solid fa-trash-can"></i> Xóa
+                        <i class="fa-solid fa-trash"></i> Xóa
                     </button>
                     <button class="btn btn-primary" id="btnFormAssign" style="display:none;" onclick="assignFromDetail()">
                         <i class="fa-solid fa-diagram-project"></i> Phân công
@@ -2043,7 +2043,7 @@
                     const deleteStyle = editable ? "" : offStyle;
 
                     const editBtn = `<button class="icon-btn edit${editDisabled ? ' disabled-action' : ''}" title="${editTitle}" style="${editStyle}" onclick="event.stopPropagation(); openReceptionForm('${escapeAttr(item.id)}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                    const deleteBtn = `<button class="icon-btn delete${deleteDisabled ? ' disabled-action' : ''}" title="${deleteTitle}" style="${deleteStyle}" onclick="event.stopPropagation(); confirmDeleteReception('${escapeAttr(item.id)}')"><i class="fa-solid fa-trash-can"></i></button>`;
+                    const deleteBtn = `<button class="icon-btn delete${deleteDisabled ? ' disabled-action' : ''}" title="${deleteTitle}" style="${deleteStyle}" onclick="event.stopPropagation(); confirmDeleteReception('${escapeAttr(item.id)}')"><i class="fa-solid fa-trash"></i></button>`;
                     // [ldtn] Lãnh đạo (thuộc Nhóm lãnh đạo): chỉ Ký duyệt, Từ chối, Phân công, Thu hồi; không hiển thị Trình ký Phiếu tiếp nhận, Sửa, Xóa.
                     // [tnld2] Lãnh đạo, cả 02 tab: Ký duyệt | Từ chối | Phân công luôn hiển thị, cố định vị trí (không đủ điều kiện hiển thị mờ); tab Đã xử lý thêm Thu hồi.
                     // Cán bộ: Sửa, Xóa (không thỏa điều kiện hiển thị mờ)
@@ -3057,6 +3057,7 @@
     <script src="tiep_nhan_dvc.js?v=20261030s2"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_grid_toolbar.js?v=20261030gt1"></script>
+    <script src="btnn_tieu_de_man.js?v=20261103td2"></script>
 </body>
 
 </html>

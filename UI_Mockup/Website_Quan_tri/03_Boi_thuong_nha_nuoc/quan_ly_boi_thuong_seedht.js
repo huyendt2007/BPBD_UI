@@ -1,7 +1,7 @@
 /**
  * Dữ liệu mẫu bổ sung: vụ việc Hoàn thành có đủ thông tin Phục hồi danh dự.
  * - BT-2026-416: Yêu cầu cả hai, Trực tiếp xin lỗi và cải chính công khai (Hoàn thành cả 2 nhánh).
- * - BT-2026-417: Yêu cầu cả hai, Trực tiếp xin lỗi + Đăng báo xin lỗi, cải chính công khai (Hoàn thành cả 2 nhánh).
+ * - BT-2026-417: Yêu cầu cả hai, Trực tiếp xin lỗi + Đăng báo xin lỗi và cải chính công khai (Hoàn thành cả 2 nhánh).
  * - Hồ sơ mẫu Hoàn thành có Phục hồi danh dự nhưng chưa có thông tin các bước (BT-2026-008, 012, 066, 067):
  *   bổ sung Thông báo Mẫu 26, ý kiến phản hồi, tổ chức thực hiện, kết quả (chỉ hồ sơ mẫu, không đụng hồ sơ người dùng tạo).
  * Nạp kèm quan_ly_boi_thuong_seedx.js (dùng các hàm sdx*), đặt sau seedx.
@@ -109,7 +109,7 @@
         });
         L.push(a);
 
-        // ===== Hoàn thành - Cả hai, Trực tiếp xin lỗi + Đăng báo xin lỗi, cải chính công khai (tố tụng hình sự) =====
+        // ===== Hoàn thành - Cả hai, Trực tiếp xin lỗi + Đăng báo xin lỗi và cải chính công khai (tố tụng hình sự) =====
         var b = sdxBase({
             id: 'SDX_HT5', code: 'BT-2026-417', maVuViec: 'VVBT-2026-417', requestType: 'both',
             fieldGroup: 'hình sự', date: '02/10/2026', deadline: '01/12/2026', requestDocDate: '29/09/2026',

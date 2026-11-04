@@ -1,6 +1,6 @@
 /*
  * Badge số lượng tab "Chờ xử lý" dùng chung cho 06 phân hệ BTNN và badge tương ứng tại LeftMenu (Trang chủ).
- * - Phân hệ: Tiếp nhận hồ sơ, Xác định CQGQBT, Giải quyết YCBT, Quyết định GQBT, Kinh phí (02 menu con: Tạm ứng kinh phí - kpTamUng, Chi trả tiền bồi thường - kpChiTra), Xem xét hoàn trả; thêm Báo cáo Công tác BTNN (bctt).
+ * - Phân hệ: Tiếp nhận hồ sơ, Xác định CQGQBT, Giải quyết YCBT, Quyết định GQBT, Kinh phí (02 menu con: Tạm ứng kinh phí - kpTamUng, Chi trả tiền bồi thường - kpChiTra), Xem xét hoàn trả; thêm Báo cáo công tác BTNN (bctt).
  * - Trang phân hệ: gọi BDG.report(module, số lượng, phần tử badge tab) mỗi khi tính lại tab Chờ xử lý.
  *   Badge tab: class bdg-tab-count, ẩn khi bằng 0. Số lượng lưu localStorage (bdg_cho_xu_ly_v1) kèm ngữ cảnh người dùng/vai trò giả lập.
  * - Trang chủ: BDG.mountMenu() hiển thị badge menu (data-badge-key="bdg_<module>") = số đã lưu của đúng ngữ cảnh hiện tại;
@@ -21,7 +21,9 @@
         kpTamUng: { title: 'Tạm ứng kinh phí', page: 'quan_ly_kinh_phi_boi_thuong.html', menu: 'tam-ung', url: 'quan_ly_kinh_phi_boi_thuong.html?v=1&menu=tam-ung' },
         kpChiTra: { title: 'Chi trả tiền bồi thường', page: 'quan_ly_kinh_phi_boi_thuong.html', menu: 'chi-tra', url: 'quan_ly_kinh_phi_boi_thuong.html?v=1&menu=chi-tra' },
         hoanTra: { title: 'Xem xét trách nhiệm hoàn trả', page: 'xem_xet_trach_nhiem_hoan_tra.html', url: 'xem_xet_trach_nhiem_hoan_tra.html' },
-        bctt: { title: 'Báo cáo Công tác BTNN', page: 'bao_cao_cong_tac_btnn.html', url: 'bao_cao_cong_tac_btnn.html' }
+        bctt: { title: 'Báo cáo công tác BTNN', page: 'bao_cao_cong_tac_btnn.html', url: 'bao_cao_cong_tac_btnn.html' },
+        // 03/11/2026: Xử lý báo cáo Công tác BTNN của Bộ Tư pháp (bctt_bo_xu_ly.js báo số lượng; vai trò giả lập riêng bctt_role_v1_bo)
+        bctt_bo: { title: 'Xử lý báo cáo Công tác BTNN', page: 'xu_ly_bao_cao_cong_tac_btnn.html', url: 'xu_ly_bao_cao_cong_tac_btnn.html' }
     };
     const MODULE_IDS = Object.keys(MODULES);
 
@@ -40,6 +42,7 @@
         // Hoàn trả: vai trò giả lập riêng của phân hệ (htMockScope - thanh Người dùng giả lập), không dùng mockUserRole chung của các phân hệ khác
         if (module === 'hoanTra') return u + '|' + (ssGet('htMockScope') || 'don_vi_chu');
         if (module === 'bctt') return u + '|' + (lsGet('bctt_role_v1') || 'cb_stp');
+        if (module === 'bctt_bo') return u + '|' + (lsGet('bctt_role_v1_bo') || 'ld_cuc');
         if (module === 'kpTamUng' || module === 'kpChiTra') return u + '|' + (lsGet('kp_role_v1') || 'chuyen-vien');
         return u;
     }
@@ -109,7 +112,7 @@
             });
         }
         // Badge nhóm menu = tổng badge các mục con: "Giải quyết bồi thường" (02 mục con), "Kinh phí" (02 menu con)
-        const GROUPS = { gqGroup: ['gqYcbt', 'qdGqbt'], kpGroup: ['kpTamUng', 'kpChiTra'] };
+        const GROUPS = { gqGroup: ['gqYcbt', 'qdGqbt'], kpGroup: ['kpTamUng', 'kpChiTra'], bcttGroup: ['bctt', 'bctt_bo'] };
         function setMenuBadge(module, n) {
             shown[module] = Number(n) || 0;
             paint(module, shown[module]);

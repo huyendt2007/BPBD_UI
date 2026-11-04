@@ -286,10 +286,20 @@
     };
     window.htPaySelect = function (name) { setPayUnit(name, true); };
     // Chọn Cơ quan trực tiếp quản lý: điền mặc định Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương khi người dùng chưa chọn lại
+    // Chức vụ: Danh mục Chức vụ [DM_58] theo Loại cơ quan [DM_57] của Cơ quan trực tiếp quản lý đã chọn (BTNN_WF.chucVuOptionsHtml).
+    // Đổi cơ quan: giữ giá trị nếu còn hợp lệ, không thì xóa; keepLegacy: giữ giá trị cũ ngoài danh mục (mở bản ghi đã lưu)
+    function htRoleRefresh(agency, value, keepLegacy) {
+        const s = el('oRole'); const W = window.BTNN_WF;
+        if (!s || s.tagName !== 'SELECT' || !W || !W.chucVuOptionsHtml) return;
+        const v = keepLegacy || W.chucVuValid(agency, value) ? value : '';
+        s.innerHTML = W.chucVuOptionsHtml(agency, v, { noUnitText: '-- Chọn Cơ quan trực tiếp quản lý trước --' });
+        s.disabled = !agency;
+    }
     const baseSelectAgency = window.selectAgency;
     if (typeof baseSelectAgency === 'function') {
         window.selectAgency = function (name) {
             baseSelectAgency.apply(this, arguments);
+            htRoleRefresh(name, el('oRole') ? el('oRole').value : '', false);
             if (payAuto || !el('oPayUnit') || !el('oPayUnit').value) setPayUnit(name, false);
         };
     }
@@ -342,7 +352,7 @@
             const dcb = o.dcPre ? ' <span class="badge" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; font-size:10.5px;">Đình chỉ hoàn trả</span>' : '';
             const acts = x.i < 0 ? '-' : htViewOfficerBtn(x.i)
                 + (canEdit && !o.dcPre ? ' <button type="button" class="btn-action-square btn-primary" title="Sửa cán bộ" onclick="editOfficerInStep2(' + x.i + ')"><i class="fa-solid fa-pen-to-square"></i></button>'
-                    + ' <button type="button" class="btn-action-square btn-danger" title="Xóa cán bộ" onclick="deleteOfficerInStep2(' + x.i + ')"><i class="fa-solid fa-trash-can"></i></button>' : '');
+                    + ' <button type="button" class="btn-action-square btn-danger" title="Xóa cán bộ" onclick="deleteOfficerInStep2(' + x.i + ')"><i class="fa-solid fa-trash"></i></button>' : '');
             // Giảm/Miễn hoàn trả: không giảm, không miễn hiển thị "-"; Giảm / Miễn kèm lý do
             const lyDo = xl === 'Giảm mức hoàn trả' && o.lyDoGiam ? '<div class="ht-note-i">Lý do giảm: ' + esc(o.lyDoGiam) + '</div>' : (xl === 'Miễn hoàn trả' && o.lyDoMien ? '<div class="ht-note-i">Lý do miễn: ' + esc(o.lyDoMien) + '</div>' : '');
             const stText = o.dcPre ? 'Đình chỉ hoàn trả' : officerStatusText(o);
@@ -509,6 +519,7 @@
         baseOpenAdd();
         setPayUnit('', false);
         setModalReadonly(false);
+        htRoleRefresh('', '', false);
         document.querySelectorAll('input[name="ht2Xl"]').forEach(x => { x.checked = false; });
         el('oMethod').value = '';
         ht2OnXlChange();
@@ -524,6 +535,7 @@
         el('oRole').value = o.role || '';
         ensurePayField();
         if (o.agency) selectAgency(o.agency);
+        htRoleRefresh(o.agency || '', o.role || '', true);
         setPayUnit(o.payUnit || o.agency || '', false);
         payAuto = !o.payUnit || o.payUnit === o.agency;
         el('oLoi').value = LOI_LIST.includes(loiNorm(o.loi)) ? loiNorm(o.loi) : 'Vô ý';

@@ -48,6 +48,7 @@
     </main>
 
     <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
+    <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script>
         const WF = BTNN_WF;
         const WT = WF.WORK_TYPES;
@@ -58,7 +59,7 @@
             { code: 'HT-2026-014', status: 'Chờ duyệt QĐ thành lập', claimCode: 'BT-2026-008' },
             { code: 'HT-2026-021', status: 'Chờ duyệt QĐ hoàn trả', claimCode: 'BT-2026-001' }
         ];
-        // 07 khối Chờ xử lý (Kinh phí: 02 khối theo 02 menu con); click khối mở tab Chờ xử lý của phân hệ tương ứng ở vai trò Lãnh đạo
+        // 08 khối Chờ xử lý (Kinh phí: 02 khối theo 02 menu con); click khối mở tab Chờ xử lý của phân hệ tương ứng ở vai trò Lãnh đạo
         const BLOCKS = [
             { key: 'pc', title: 'Chờ phân công', module: 'Tiếp nhận hồ sơ', icon: 'fa-diagram-project', color: '#0369a1', bg: '#e0f2fe',
               leaf: 'tiep_nhan_ycbt.html?v=3', url: 'tiep_nhan_ycbt.html?v=3&tab=pending' },
@@ -74,8 +75,43 @@
             { key: 'kpc', title: 'Chờ duyệt Thông báo chi trả', module: 'Kinh phí - Chi trả tiền bồi thường', icon: 'fa-hand-holding-dollar', color: '#be123c', bg: '#ffe4e6',
               leaf: 'quan_ly_kinh_phi_boi_thuong.html?v=1&menu=chi-tra', url: 'quan_ly_kinh_phi_boi_thuong.html?v=1&menu=chi-tra&role=lanh-dao&tab=pending' },
             { key: 'ht', title: 'Chờ duyệt Xem xét hoàn trả', module: 'Xem xét trách nhiệm hoàn trả', icon: 'fa-rotate-left', color: '#334155', bg: '#e2e8f0',
-              leaf: 'xem_xet_trach_nhiem_hoan_tra.html', url: 'xem_xet_trach_nhiem_hoan_tra.html?role=lanh_dao&tab=pending' }
+              leaf: 'xem_xet_trach_nhiem_hoan_tra.html', url: 'xem_xet_trach_nhiem_hoan_tra.html?role=lanh_dao&tab=pending' },
+            // Hỏi đáp nghiệp vụ: màn mở mặc định tab Chờ xử lý
+            { key: 'hd', title: 'Chờ xử lý Hỏi đáp nghiệp vụ', module: 'Hỏi đáp nghiệp vụ', icon: 'fa-circle-question', color: '#0f766e', bg: '#ccfbf1',
+              leaf: 'hoi_dap_nghiep_vu.html', url: 'hoi_dap_nghiep_vu.html' }
         ];
+
+        // Hỏi đáp nghiệp vụ: câu hỏi chờ Lãnh đạo đang đăng nhập xử lý (cùng quy tắc isMyTask của hoi_dap_nghiep_vu.html)
+        // LĐ Phòng (Sở) duyệt, LĐ Sở duyệt gửi Bộ, LĐ Cục phân công LĐ Phòng, LĐ Phòng (Bộ) phân công Chuyên viên
+        const HD = { WAIT_PHONG_SO: 'Chờ Lãnh đạo Phòng duyệt', WAIT_SO: 'Chờ Lãnh đạo Sở duyệt', WAIT_CUC: 'Chờ Lãnh đạo Cục phân công', WAIT_PHONG: 'Chờ Lãnh đạo Phòng phân công' };
+        const HD_KEY = 'btnn_hoi_dap_nghiep_vu', HD_VERSION = 'v2';
+        // Dữ liệu mẫu câu hỏi đang chờ Lãnh đạo (dùng khi phân hệ Hỏi đáp chưa mở lần nào), khớp buildSeed của hoi_dap_nghiep_vu.html
+        function hdFallback() {
+            const y = new Date().getFullYear();
+            return [
+                { code: `HD-${y}-003`, unit: 'STP-HP', status: HD.WAIT_PHONG, phongLead: 'tpbt', title: 'Xác định mức hoàn trả khi nhiều người thi hành công vụ cùng gây thiệt hại' },
+                { code: `HD-${y}-004`, unit: 'STP-HN', status: HD.WAIT_CUC, title: 'Cách thống kê vụ việc chuyển tiếp từ kỳ báo cáo trước' },
+                { code: `HD-${y}-005`, unit: 'STP-HN', status: HD.WAIT_SO, title: 'Tiếp nhận hồ sơ yêu cầu bồi thường gửi qua dịch vụ bưu chính thiếu thành phần' },
+                { code: `HD-${y}-008`, unit: 'STP-HN', status: HD.WAIT_PHONG_SO, title: 'Thương lượng khi người yêu cầu bồi thường ủy quyền cho luật sư' }
+            ];
+        }
+        function hdItems() {
+            const PV = window.BTNN_PHAMVI;
+            if (!PV) return [];
+            let qs = null;
+            try { if (localStorage.getItem(HD_KEY + '_version') === HD_VERSION) qs = JSON.parse(localStorage.getItem(HD_KEY) || 'null'); } catch (e) { qs = null; }
+            const u = WF.getCurrentUser(), lv = PV.level(), stp = PV.stpOf(u.unitId);
+            const mine = q => {
+                if (lv === 'STP') return q.unit === stp && ((q.status === HD.WAIT_PHONG_SO && /Trưởng phòng/i.test(u.title)) || (q.status === HD.WAIT_SO && /Giám đốc/i.test(u.title)));
+                if (lv !== 'BTP') return false;
+                if (q.status === HD.WAIT_CUC) return u.unitId === 'CĐK-01';
+                return q.status === HD.WAIT_PHONG && u.unitId === 'PLN-02' && /Trưởng phòng/i.test(u.title) && q.phongLead === u.id;
+            };
+            const lastAt = q => Math.max(0, ...((q.history || []).map(h => timeOf(h.at))));
+            return ((qs && qs.length) ? qs : hdFallback()).filter(mine)
+                .sort((a, b) => lastAt(b) - lastAt(a))
+                .map(q => row(q.code, `${/duyệt$/.test(q.status) ? 'Chờ duyệt' : 'Chờ phân công'}: ${q.title}`, '', PV.unitName(q.unit)));
+        }
 
         // Công việc của Lãnh đạo đang đăng nhập theo từng khối
         // Mỗi dòng: Mã hồ sơ + "Nội dung tóm tắt - Mã vụ việc" (Mã hồ sơ trùng Mã vụ việc: không lặp lại Mã vụ việc)
@@ -110,7 +146,8 @@
                 kpc: kp(false),
                 // Hoàn trả: hồ sơ chờ Lãnh đạo duyệt trình người dùng đang đăng nhập (chưa lưu người ký: Lãnh đạo cơ quan giải quyết bồi thường của vụ việc - caseLeaders);
                 // sắp theo mốc thời gian cập nhật gần nhất của hồ sơ (trình ký, ký duyệt/từ chối, quyết định, tạo)
-                ht: ((ht && ht.pendingApproval) || HT_FALLBACK).filter(x => { try { return WF.caseLeaders(x.claimCode, x.agency || '').includes(me); } catch (e) { return false; } }).map((x, i) => ({ x, i, t: Math.max(0, ...(x.times || []).map(timeOf)) })).sort((a, b) => (b.t - a.t) || (a.i - b.i)).map(o => o.x).map(x => row(x.code, x.status, x.maVuViec || vuViec(x.claimCode)))
+                ht: ((ht && ht.pendingApproval) || HT_FALLBACK).filter(x => { try { return WF.caseLeaders(x.claimCode, x.agency || '').includes(me); } catch (e) { return false; } }).map((x, i) => ({ x, i, t: Math.max(0, ...(x.times || []).map(timeOf)) })).sort((a, b) => (b.t - a.t) || (a.i - b.i)).map(o => o.x).map(x => row(x.code, x.status, x.maVuViec || vuViec(x.claimCode))),
+                hd: hdItems()
             };
         }
 
@@ -156,6 +193,7 @@
     </script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
+    <script src="btnn_tieu_de_man.js?v=20261103td2"></script>
 </body>
 
 </html>

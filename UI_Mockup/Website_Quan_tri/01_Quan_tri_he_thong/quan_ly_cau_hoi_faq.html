@@ -1000,7 +1000,7 @@
                             <i class="fa-solid fa-file-arrow-up"></i> <span id="uploadSectionTitle">Tài liệu hướng dẫn đi kèm</span>
                         </div>
                         
-                        <div class="grid-layout" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px;">
+                        <div class="grid-layout" id="uploadGrid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px;">
                             <div style="min-width: 0;">
                                 <label class="form-label" style="font-weight: 600;">File tài liệu đính kèm (PDF, JPG, PNG)</label>
                                 <div class="upload-area" onclick="triggerFileInput('docFileInput')">
@@ -1015,7 +1015,7 @@
                                 <div id="docFilesList" style="margin-top: 10px;"></div>
                             </div>
                             
-                            <div style="min-width: 0;">
+                            <div style="min-width: 0;" id="mediaUploadBlock">
                                 <label class="form-label" style="font-weight: 600;">File hướng dẫn media (MP4, MP3)</label>
                                 <div class="upload-area" onclick="triggerFileInput('mediaFileInput')">
                                     <i class="fa-solid fa-photo-film"></i>
@@ -1165,6 +1165,14 @@
         const urlParams = new URLSearchParams(window.location.search);
         let currentSystem = (urlParams.get('system') || 'btnn').toLowerCase();
         if (currentSystem !== 'bpbd' && currentSystem !== 'btnn') currentSystem = 'btnn';
+        // Mở từ menu Bồi thường nhà nước (?system=btnn): ẩn thanh chuyển phân hệ BTNN / BPBD và ô tải File hướng dẫn media
+        if ((urlParams.get('system') || '').toLowerCase() === 'btnn') {
+            document.addEventListener('DOMContentLoaded', () => {
+                const el = document.getElementById('systemTabsContainer'); if (el) el.style.display = 'none';
+                const media = document.getElementById('mediaUploadBlock'); if (media) media.style.display = 'none';
+                const grid = document.getElementById('uploadGrid'); if (grid) grid.style.gridTemplateColumns = 'minmax(0, 1fr)';
+            });
+        }
 
         // MOCK DATA INITIALIZATION - BPBD (20 records with topics & approval flow)
         const initialMockFaqsBpbd = [
@@ -1298,8 +1306,8 @@
             const titleEl = document.getElementById('pageMainTitle');
             const subTitleEl = document.getElementById('pageSubTitle');
             if (isBtnn) {
-                document.title = "Quản lý câu hỏi và trả lời thường gặp (FAQ) - Bồi thường nhà nước";
-                if (titleEl) titleEl.innerText = "Quản lý câu hỏi và trả lời thường gặp (FAQ) - Bồi thường nhà nước";
+                document.title = "Câu hỏi và trả lời thường gặp";
+                if (titleEl) titleEl.innerText = "Câu hỏi và trả lời thường gặp";
                 if (subTitleEl) subTitleEl.innerText = "Biên tập, quản lý và tra cứu các câu hỏi thường gặp về nghiệp vụ bồi thường của Nhà nước.";
             } else {
                 document.title = "Quản lý câu hỏi và trả lời thường gặp (FAQ) - Đăng ký BPBĐ";
@@ -1346,6 +1354,11 @@
             // Tiêu đề khối tệp: BTNN dùng "Tài liệu đính kèm"; BPBD giữ nguyên
             const uploadSectionTitle = document.getElementById('uploadSectionTitle');
             if (uploadSectionTitle) uploadSectionTitle.textContent = isBtnn ? 'Tài liệu đính kèm' : 'Tài liệu hướng dẫn đi kèm';
+            // BTNN: không có File hướng dẫn media; khối tệp 01 cột
+            const mediaUploadCol = document.getElementById('mediaUploadBlock');
+            if (mediaUploadCol) mediaUploadCol.style.display = isBtnn ? 'none' : '';
+            const uploadGrid = document.getElementById('uploadGrid');
+            if (uploadGrid) uploadGrid.style.gridTemplateColumns = isBtnn ? 'minmax(0, 1fr)' : 'repeat(2, minmax(0, 1fr))';
 
             const modalMetaGrid = document.getElementById('modalMetaGrid');
             if (modalMetaGrid) {
@@ -2478,5 +2491,6 @@
     <script src="bpbd_filter_toggle.js"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
+    <script src="../03_Boi_thuong_nha_nuoc/btnn_tieu_de_man.js?v=20261103td2"></script>
 </body>
 </html>

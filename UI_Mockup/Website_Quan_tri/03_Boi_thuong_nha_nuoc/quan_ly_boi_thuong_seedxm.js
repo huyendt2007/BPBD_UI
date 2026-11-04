@@ -88,7 +88,7 @@ function sxmBuild(o) {
     (o.bs || []).forEach(function (b) { c.thietHaiList.push(sxmBs(b, reach >= 3 ? sxmD(k[2]) : '')); });
     if (who.nycType === 'Tổ chức') { c.nycCardNo = ''; c.cardNo = ''; }
     if (c.requestType === 'both') {
-        Object.assign(c, { phddStatus: 'Đang thực hiện', phddForm: 'Tổ chức trực tiếp xin lỗi và cải chính công khai', phddFormApology: true, phddFormNews: false });
+        Object.assign(c, { phddStatus: 'Đang thực hiện', phddForm: 'Trực tiếp xin lỗi và cải chính công khai', phddFormApology: true, phddFormNews: false });
     }
     var vt = c.nycType === 'Tổ chức' ? 'Tổ chức nộp' : 'Tiếp nhận';
     c.timeline = [sdxT('Tiếp nhận hồ sơ', d0, vt + ' văn bản yêu cầu bồi thường ' + (c.hinhThucTiepNhan === 'Trực tiếp' ? 'trực tiếp' : String(c.hinhThucTiepNhan).toLowerCase()) + '.', 'Hệ thống / Người nộp đơn')];

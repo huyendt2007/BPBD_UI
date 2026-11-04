@@ -1486,11 +1486,6 @@
                             <input type="text" class="form-control" id="uStep1Signer" placeholder="Ví dụ: Giám đốc Sở...">
                             <div class="invalid-feedback-text" id="err_uStep1Signer">Đây là trường bắt buộc</div>
                         </div>
-                        <div class="form-group">
-                            <span class="form-label">Chức vụ *</span>
-                            <input type="text" class="form-control" id="uStep1Position" placeholder="Ví dụ: Giám đốc / Phó Giám đốc">
-                            <div class="invalid-feedback-text" id="err_uStep1Position">Đây là trường bắt buộc</div>
-                        </div>
                     </div>
 
                     <!-- KẾ HOẠCH DỰ KIẾN TỔ CHỨC -->
@@ -2611,7 +2606,6 @@
             document.getElementById('uStep1Date').value = item.docDate || formatDateVi(new Date());
             document.getElementById('uStep1SendDate').value = item.docDate || formatDateVi(new Date());
             document.getElementById('uStep1Signer').value = item.signer || "Trần Văn Quản Lý";
-            document.getElementById('uStep1Position').value = "Giám đốc";
             document.getElementById('uStep1ExpectedDate').value = "25/10/2026";
             document.getElementById('uStep1ExpectedVenue').value = "Hội trường UBND Phường Dịch Vọng, Quận Cầu Giấy";
             document.getElementById('uStep1ExpectedNewsCentral').value = "Báo Nhân Dân";
@@ -2677,14 +2671,12 @@
             const date = document.getElementById('uStep1Date').value.trim();
             const sendDate = document.getElementById('uStep1SendDate').value.trim();
             const signer = document.getElementById('uStep1Signer').value.trim();
-            const pos = document.getElementById('uStep1Position').value.trim();
 
             let hasErr = false;
             if (!no) { document.getElementById('uStep1No').classList.add('is-invalid'); document.getElementById('err_uStep1No').classList.add('show'); hasErr = true; }
             if (!date) { document.getElementById('uStep1Date').classList.add('is-invalid'); document.getElementById('err_uStep1Date').classList.add('show'); hasErr = true; }
             if (!sendDate) { document.getElementById('uStep1SendDate').classList.add('is-invalid'); document.getElementById('err_uStep1SendDate').classList.add('show'); hasErr = true; }
             if (!signer) { document.getElementById('uStep1Signer').classList.add('is-invalid'); document.getElementById('err_uStep1Signer').classList.add('show'); hasErr = true; }
-            if (!pos) { document.getElementById('uStep1Position').classList.add('is-invalid'); document.getElementById('err_uStep1Position').classList.add('show'); hasErr = true; }
 
             if (hasErr) return;
 

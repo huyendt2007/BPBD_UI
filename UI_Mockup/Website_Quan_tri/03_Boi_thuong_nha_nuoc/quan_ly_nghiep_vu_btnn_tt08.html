@@ -614,6 +614,8 @@
                 </div>
             </div>
         </form>
+        <!-- Phản hồi của cơ quan được hướng dẫn (chỉ module Hướng dẫn nghiệp vụ) -->
+        <div id="feedbackBlock"></div>
 
         <div class="section-title" id="docSectionTitle" style="margin:10px 0 12px 0;"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</div>
         <div class="table-wrap" id="docTableWrap">
@@ -675,7 +677,7 @@
 
         const moduleConfigs = {
             huong_dan: {
-                title: 'Hướng dẫn, bồi dưỡng kỹ năng, nghiệp vụ',
+                title: 'Hướng dẫn nghiệp vụ',
                 subtitle: 'Tiếp nhận, cập nhật và theo dõi hồ sơ hướng dẫn nghiệp vụ, giải đáp vướng mắc, bồi dưỡng kỹ năng, nghiệp vụ và truyền thông pháp luật về trách nhiệm bồi thường của Nhà nước.',
                 icon: 'fa-comments',
                 codeLabel: 'Mã hồ sơ',
@@ -833,7 +835,7 @@
                 ]
             },
             khieu_nai: {
-                title: 'Giải quyết khiếu nại, tố cáo, xử lý vi phạm',
+                title: 'Khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN',
                 subtitle: 'Quản lý thông tin khiếu nại, tố cáo, phản ánh, kiến nghị và kết quả xử lý vi phạm liên quan công tác bồi thường nhà nước.',
                 icon: 'fa-scale-balanced',
                 codeLabel: 'Mã hồ sơ',
@@ -1096,6 +1098,7 @@
                     <button data-admin-icon-normalized="1" class="icon-btn edit ${canEdit ? '' : 'disabled'}" title="Sửa" onclick="event.stopPropagation(); openForm('edit', '${row[0]}')"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button data-admin-icon-normalized="1" class="icon-btn submit ${canUpdate ? '' : 'disabled'}" title="${moduleKey === 'khieu_nai' ? 'Cập nhật kết quả' : moduleKey === 'theo_doi_don_doc' ? 'Cập nhật phản hồi' : 'Cập nhật kết quả'}" onclick="event.stopPropagation(); openForm('update', '${row[0]}')"><i class="fa-solid fa-clipboard-check"></i></button>
                     <button data-admin-icon-normalized="1" class="icon-btn sign ${canFinish ? '' : 'disabled'}" title="Hoàn thành" onclick="event.stopPropagation(); finishRow('${row[0]}')"><i class="fa-solid fa-circle-check"></i></button>
+                    ${moduleKey === 'huong_dan' ? `<button data-admin-icon-normalized="1" class="icon-btn submit ${own && status === 'Hoàn thành' ? '' : 'disabled'}" title="Cập nhật phản hồi" onclick="event.stopPropagation(); openForm('feedback', '${row[0]}')"><i class="fa-solid fa-reply"></i></button>` : ''}
                 </div>
             `;
         }
@@ -1414,7 +1417,7 @@
             const row = workingRows.find(item => item[0] === code);
             const isNew = mode === 'new';
             document.getElementById('detailPanel').classList.add('visible');
-            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${isNew ? 'Thêm mới' : mode === 'view' ? 'Xem chi tiết' : mode === 'update' ? (moduleKey === 'theo_doi_don_doc' ? 'Cập nhật phản hồi' : 'Cập nhật kết quả') : 'Sửa'} ${currentConfig.title.charAt(0).toLowerCase() + currentConfig.title.slice(1)}`;
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${isNew ? 'Thêm mới' : mode === 'view' ? 'Xem chi tiết' : mode === 'feedback' ? 'Cập nhật phản hồi' : mode === 'update' ? (moduleKey === 'theo_doi_don_doc' ? 'Cập nhật phản hồi' : 'Cập nhật kết quả') : 'Sửa'} ${currentConfig.title.charAt(0).toLowerCase() + currentConfig.title.slice(1)}`;
             document.getElementById('codeLabel').innerText = currentConfig.codeLabel;
             document.getElementById('formCode').innerText = isNew ? 'Hệ thống tự sinh' : code;
             document.getElementById('formStatus').innerText = row ? row[row.length - 1] : 'Đang nhập';
@@ -1470,19 +1473,88 @@
                 }
             }
             bindFieldRules();
-            // Chế độ xem chi tiết: khóa toàn bộ trường, chỉ hiển thị nút Đóng
+            // Chế độ xem chi tiết / cập nhật phản hồi: khóa toàn bộ trường hồ sơ
+            const locked = mode === 'view' || mode === 'feedback';
             document.querySelectorAll('#businessForm input, #businessForm select, #businessForm textarea').forEach(el => {
-                if (el.id !== 'historyContent') el.disabled = mode === 'view';
+                if (el.id !== 'historyContent') el.disabled = locked;
             });
-            document.querySelectorAll('#businessForm .case-btn').forEach(btn => { btn.disabled = mode === 'view'; });
+            document.querySelectorAll('#businessForm .case-btn').forEach(btn => { btn.disabled = locked; });
+            renderFeedback(code, mode);
             if (mode === 'view') {
                 document.getElementById('formActions').innerHTML = `<button type="button" class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>`;
+            }
+            if (mode === 'feedback') {
+                document.getElementById('formActions').innerHTML = `<button type="button" class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                    <button type="button" class="btn btn-primary" onclick="saveFeedback('${code}')"><i class="fa-solid fa-floppy-disk"></i> Lưu phản hồi</button>`;
             }
             document.getElementById('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function closeForm() {
             document.getElementById('detailPanel').classList.remove('visible');
+        }
+
+        // ===== Phản hồi của cơ quan được hướng dẫn (góp ý khách hàng số 5) =====
+        // Cán bộ đơn vị lập hồ sơ nhập theo văn bản/ý kiến nhận được sau khi đã hướng dẫn (hồ sơ Hoàn thành); nhập nhiều lần, lưu lịch sử
+        const FEEDBACK_KEY = 'btnn_hd_feedback_v1';
+        let feedbackStore = null;
+        function loadFeedback() {
+            if (feedbackStore) return feedbackStore;
+            try { feedbackStore = JSON.parse(localStorage.getItem(FEEDBACK_KEY)) || null; } catch (e) { feedbackStore = null; }
+            if (!feedbackStore) {
+                feedbackStore = {
+                    'HD-BTNN-2026-004': [{ date: '05/08/2026', docNo: '2310/STP-HCTP', content: 'Sở Tư pháp đã triển khai nội dung hướng dẫn tới các cơ quan giải quyết bồi thường trên địa bàn Thành phố.', by: 'Phạm Minh Đức', at: '09:00 06/08/2026' }],
+                    'HD-BTNN-2026-006': [
+                        { date: '25/07/2026', docNo: '', content: 'Sở Tư pháp báo cáo đã áp dụng hướng dẫn trong vụ việc tại UBND phường Hồng Gai.', by: 'Nguyễn Văn Cán Bộ', at: '10:30 25/07/2026' },
+                        { date: '20/08/2026', docNo: '645/STP-HCTP', content: 'Báo cáo kết quả: vụ việc đã ban hành quyết định giải quyết bồi thường, đề nghị hướng dẫn thêm về chi trả.', by: 'Nguyễn Văn Cán Bộ', at: '14:00 21/08/2026' }
+                    ]
+                };
+                saveFeedbackStore();
+            }
+            return feedbackStore;
+        }
+        function saveFeedbackStore() { try { localStorage.setItem(FEEDBACK_KEY, JSON.stringify(feedbackStore)); } catch (e) { /* bỏ qua */ } }
+        function renderFeedback(code, mode) {
+            const box = document.getElementById('feedbackBlock');
+            if (moduleKey !== 'huong_dan' || !code) { box.innerHTML = ''; return; }
+            const list = loadFeedback()[code] || [];
+            const cell = 'padding:6px 8px; border:1px solid #e2e8f0;';
+            const table = list.length
+                ? `<table style="width:100%; border-collapse:collapse; font-size:13px; margin-bottom:8px;"><thead><tr style="background:#f1f5f9;"><th style="${cell} width:44px;">Lần</th><th style="${cell} width:110px;">Ngày nhận</th><th style="${cell} width:140px;">Số văn bản</th><th style="${cell}">Nội dung phản hồi</th><th style="${cell} width:150px;">Cán bộ cập nhật</th></tr></thead><tbody>`
+                  + list.map((x, i) => `<tr><td style="${cell} text-align:center;">${i + 1}</td><td style="${cell}">${escDoc(x.date)}</td><td style="${cell}">${escDoc(x.docNo || '-')}</td><td style="${cell}">${escDoc(x.content)}</td><td style="${cell}">${escDoc(x.by)}<div style="font-size:12px; color:#64748b;">${escDoc(x.at)}</div></td></tr>`).join('')
+                  + '</tbody></table>'
+                : '<div style="color:#64748b; font-size:13px; font-style:italic; margin-bottom:8px;">Chưa có phản hồi.</div>';
+            const form = mode === 'feedback' ? `
+                <div style="font-weight:700; color:var(--primary-color); margin:10px 0 8px;"><i class="fa-solid fa-plus"></i> Phản hồi lần ${list.length + 1}</div>
+                <div class="grid-3">
+                    <div class="form-group" id="fg_fbDate"><span class="form-label">Ngày nhận phản hồi<span class="required">*</span></span><input class="form-control" id="fbDate" placeholder="dd/mm/yyyy"></div>
+                    <div class="form-group"><span class="form-label">Số văn bản phản hồi</span><input class="form-control" id="fbDocNo" placeholder="Nhập số văn bản phản hồi..."></div>
+                </div>
+                <div class="form-group" id="fg_fbContent"><span class="form-label">Nội dung phản hồi, báo cáo<span class="required">*</span></span><textarea class="form-control" id="fbContent" placeholder="Nhập nội dung phản hồi, báo cáo của cơ quan được hướng dẫn..."></textarea></div>` : '';
+            box.innerHTML = `<div class="section-title" style="margin:10px 0 12px 0;"><i class="fa-solid fa-reply"></i> Phản hồi của cơ quan được hướng dẫn</div>${table}${form}`;
+            if (mode === 'feedback') {
+                const d = new Date();
+                document.getElementById('fbDate').value = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+                initDatePickers(box);
+            }
+        }
+        function saveFeedback(code) {
+            const date = document.getElementById('fbDate').value.trim(), content = document.getElementById('fbContent').value.trim();
+            let first = null;
+            [['fbDate', date], ['fbContent', content]].forEach(([id, v]) => {
+                const el = document.getElementById(id);
+                el.classList.toggle('is-invalid', !v);
+                const g = document.getElementById('fg_' + id), old = g.querySelector('.invalid-feedback');
+                if (old) old.remove();
+                if (!v) { const e = document.createElement('div'); e.className = 'invalid-feedback'; e.style.display = 'block'; e.innerText = 'Đây là trường bắt buộc'; g.appendChild(e); first = first || el; }
+            });
+            if (first) { first.focus(); return; }
+            const d = new Date(), p2 = n => String(n).padStart(2, '0');
+            const store = loadFeedback();
+            store[code] = [...(store[code] || []), { date, docNo: document.getElementById('fbDocNo').value.trim(), content, by: PV.creatorOf(null), at: `${p2(d.getHours())}:${p2(d.getMinutes())} ${p2(d.getDate())}/${p2(d.getMonth() + 1)}/${d.getFullYear()}` }];
+            saveFeedbackStore();
+            closeForm();
+            showToast(`Lưu phản hồi lần ${store[code].length} thành công.`);
         }
 
         function renderFormActions(status) {
@@ -1598,6 +1670,7 @@
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_grid_toolbar.js?v=20261030gt1"></script>
+    <script src="btnn_tieu_de_man.js?v=20261103td2"></script>
 </body>
 
 </html>

@@ -10,7 +10,7 @@
 var NKDV_SEED_VER = '20261030dvc4';
 var NKDV_KEY = 'btnn_dvc_sync_log';
 var NKDV_KEY_VER = 'btnn_dvc_sync_log_ver';
-// 16 bước theo Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.2 (thứ tự theo luồng)
+// 19 bước theo Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.1 (thứ tự theo luồng)
 var NKDV_STEPS = [
     ['YEU_CAU_BO_SUNG', 'Thông báo về việc yêu cầu bổ sung hồ sơ yêu cầu bồi thường (Mẫu 03/BTNN)'],
     ['THONG_BAO_KHONG_THU_LY', 'Thông báo không thụ lý hồ sơ yêu cầu bồi thường (Mẫu 04/BTNN)'],
@@ -27,13 +27,16 @@ var NKDV_STEPS = [
     ['QUYET_DINH_DINH_CHI', 'Quyết định đình chỉ giải quyết yêu cầu bồi thường (Mẫu 25/BTNN)'],
     ['THONG_BAO_DUNG_GIAI_QUYET', 'Thông báo về việc dừng giải quyết yêu cầu bồi thường (Mẫu 05/BTNN)'],
     ['THONG_BAO_PHUC_HOI_DANH_DU', 'Thông báo về việc tổ chức thực hiện phục hồi danh dự (Mẫu 26/BTNN)'],
-    ['THONG_BAO_CHI_TRA', 'Thông báo về việc chi trả tiền bồi thường (Mẫu 32/BTNN)']
+    ['THONG_BAO_CHI_TRA', 'Thông báo về việc chi trả tiền bồi thường (Mẫu 32/BTNN)'],
+    ['Y_KIEN_TU_CHOI_PHUC_HOI_DANH_DU', 'Ý kiến từ chối phục hồi danh dự (vụ việc chỉ yêu cầu phục hồi danh dự)'],
+    ['Y_KIEN_DE_NGHI_CHUA_THUC_HIEN_PHDD', 'Ý kiến đề nghị chưa thực hiện phục hồi danh dự (vụ việc chỉ yêu cầu phục hồi danh dự)'],
+    ['VU_VIEC_HOAN_THANH', 'Vụ việc chuyển Hoàn thành']
 ];
 var NKDV_CASE = {
     CU_NGUOI_GIAI_QUYET: 'Cử người giải quyết bồi thường', XAC_MINH_THIET_HAI: 'Xác minh thiệt hại', THUONG_LUONG: 'Thương lượng',
     CHO_BAN_HANH_QD: 'Chờ ban hành QĐ', CHO_CHI_TRA: 'Chờ chi trả', HOAN_THANH: 'Hoàn thành', DANG_PHUC_HOI_DANH_DU: 'Đang phục hồi danh dự',
     HOAN_GIAI_QUYET: 'Hoãn giải quyết', TAM_DINH_CHI: 'Tạm đình chỉ', DINH_CHI_GIAI_QUYET: 'Đình chỉ giải quyết', DUNG_GIAI_QUYET: 'Dừng giải quyết',
-    KHONG_THU_LY: 'Không thụ lý', YEU_CAU_BO_SUNG: 'Yêu cầu bổ sung'
+    KHONG_THU_LY: 'Không thụ lý', YEU_CAU_BO_SUNG: 'Yêu cầu bổ sung', TU_CHOI_PHUC_HOI_DANH_DU: 'Từ chối phục hồi danh dự', HOAN_PHUC_HOI_DANH_DU: 'Hoãn phục hồi danh dự'
 };
 var NKDV_RESULT = { SUCCESS: 'Thành công', FAILED: 'Lỗi', RETRYING: 'Đang gửi lại' };
 var NKDV_RETRY_MIN = [1, 5, 15, 60, 240];

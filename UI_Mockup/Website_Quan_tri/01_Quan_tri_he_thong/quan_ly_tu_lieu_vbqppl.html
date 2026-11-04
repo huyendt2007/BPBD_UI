@@ -1039,6 +1039,12 @@
         // Trang dùng chung BPBĐ/BTNN: menu BTNN mở kèm ?system=btnn; BTNN dùng nhãn thao tác 'Sửa', BPBĐ giữ 'Chỉnh sửa'
         const VBQPPL_SYSTEM = (new URLSearchParams(window.location.search).get('system') || 'bpbd').toLowerCase();
         const EDIT_LABEL = VBQPPL_SYSTEM === 'btnn' ? 'Sửa' : 'Chỉnh sửa';
+        // Menu BTNN: tiêu đề màn hình theo tên mục Menu "Văn bản quy phạm pháp luật"; BPBĐ giữ tiêu đề cũ
+        if (VBQPPL_SYSTEM === 'btnn') {
+            document.title = 'Văn bản quy phạm pháp luật';
+            const pageTitleEl = document.querySelector('.page-header h1');
+            if (pageTitleEl) pageTitleEl.innerText = 'Văn bản quy phạm pháp luật';
+        }
         // MOCK DATA INITIALIZATION - 20 văn bản mẫu; tinhTrang: Còn hiệu lực | Hết hiệu lực | Bị sửa đổi bổ sung
         let initialMockDocs = [
             { id: 1, tenVanban: "Nghị định về đăng ký biện pháp bảo đảm", soHieu: "99/2022/NĐ-CP", loaiVanban: "Nghị định", coquanBanhanh: "Chính phủ", ngayBanhanh: "30/11/2022", ngayCoHieuLuc: "15/01/2023", tomTat: "Quy định chi tiết quy trình đăng ký biện pháp bảo đảm bằng tài sản...", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "30/11/2022", files: ["Nghidinh_99_2022_BPBD.pdf"], isDeleted: 0 },
@@ -1949,5 +1955,15 @@
     <script src="bpbd_filter_toggle.js?v=20261013"></script>
     <script src="admin-ui-standardizer.js?v=20261013"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
+    <script src="../03_Boi_thuong_nha_nuoc/btnn_tieu_de_man.js?v=20261103td2"></script>
+    <!-- Menu BTNN (?system=btnn): Chi tiết / Thêm mới / Sửa hiển thị dạng trang (btnn_form_trang.js); BPBĐ giữ dạng popup -->
+    <script>
+        if (VBQPPL_SYSTEM === 'btnn') {
+            const formTrang = document.createElement('script');
+            formTrang.src = '../03_Boi_thuong_nha_nuoc/btnn_form_trang.js?v=20261104ft1';
+            formTrang.dataset.pages = 'docModal';
+            document.body.appendChild(formTrang);
+        }
+    </script>
 </body>
 </html>

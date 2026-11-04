@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Báo cáo Công tác BTNN</title>
+<title>Báo cáo công tác BTNN</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -30,9 +30,10 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: var(--font-family); background-color: var(--bg-body); color: var(--text-main); font-size: var(--base-size); line-height: 1.5; padding: 20px; }
     .container { max-width: 100%; margin: 0 auto; }
-    .page-header { margin-bottom: 20px; background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%); padding: 20px; border-radius: var(--border-radius-lg); color: white; box-shadow: var(--box-shadow); display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
-    .page-header h1 { font-size: 19px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-    .page-header p { opacity: 0.9; font-size: 13px; margin-top: 4px; }
+    /* 03/11/2026: thanh tiêu đề nền trắng như đa số trang BTNN (quan_ly_boi_thuong.html), thay nền gradient xanh */
+    .page-header { margin-bottom: 12px; background: #fff; padding: 16px 24px; border-radius: var(--border-radius-md); border: 1px solid var(--border-color); box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .page-header h1 { font-size: 20px; font-weight: 700; color: #1e3a8a; display: flex; align-items: center; gap: 10px; }
+    .page-header p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
     .role-switch { background: rgba(255,255,255,0.15); border-radius: var(--border-radius-md); padding: 10px 14px; min-width: 260px; }
     .role-switch label { font-size: 11.5px; font-weight: 700; opacity: 0.9; display: block; margin-bottom: 4px; }
     .role-switch select { width: 100%; padding: 6px 8px; border-radius: var(--border-radius-sm); border: none; font-size: 13px; font-family: inherit; font-weight: 600; }
@@ -197,8 +198,6 @@
     .toast.error { border-left-color: var(--danger-color); }
     .toast.warning { border-left-color: var(--warning-color); }
     @keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    /* Tiêu đề trang nằm trên nền gradient: chữ trắng (ưu tiên hơn quy tắc màu tiêu đề dùng chung của btnn_uxu_dong_bo.js) */
-    body .page-header [data-uxu-title] { color: #fff !important; }
 </style>
 </head>
 <body>
@@ -206,7 +205,7 @@
 
     <div class="page-header">
         <div>
-            <h1 data-uxu-title>Báo cáo Công tác BTNN</h1>
+            <h1 data-uxu-title>Báo cáo công tác BTNN</h1>
         </div>
         <div class="role-switch" data-btnn-gl="label">
             <!-- Vai trò mô phỏng: bctt_bao_cao.js dựng combobox -->
@@ -222,12 +221,13 @@
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261103mau1"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="btnn_cot_thao_tac.js?v=20261026bctt"></script>
-    <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
-    <script src="bctt_bao_cao.js?v=20261030s12"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261103bo2"></script>
+    <script src="bctt_bao_cao.js?v=20261103s18"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
+    <script src="btnn_tieu_de_man.js?v=20261103td2"></script>
 </body>
 </html>

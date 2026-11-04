@@ -6,7 +6,7 @@
  *      + Bộ Tư pháp (Cấp đơn vị = Trung ương) / Sở Tư pháp cùng Tỉnh/Thành phố (Cấp đơn vị = Địa phương).
  *      + Lĩnh vực phát sinh thiệt hại = Trong hoạt động tố tụng hình sự: thêm Viện kiểm sát nhân dân tối cao (Trung ương) / Viện kiểm sát nhân dân Tỉnh/Thành phố (Địa phương).
  *      + Cơ quan giải quyết trùng Bộ Tư pháp / Sở Tư pháp / Viện kiểm sát cần có: gộp 01 dòng, ghi đủ vai trò.
- *      + Mỗi dòng: nhập Họ và tên + Chức vụ, hoặc tích Không tham gia -> khóa Họ và tên, Chức vụ; bắt buộc Lý do không tham gia.
+ *      + Mỗi dòng: nhập Họ và tên + chọn Chức vụ (DM_58 theo Loại cơ quan của Đơn vị của dòng), hoặc tích Không tham gia -> khóa Họ và tên, Chức vụ; bắt buộc Lý do không tham gia.
  *    - Thành phần khác (không bắt buộc): nút Thêm thành phần; dòng trống bỏ qua khi lưu; dòng đã nhập bắt buộc Đơn vị + Họ và tên.
  * 2. Người yêu cầu bồi thường / người đại diện / người bảo vệ quyền lợi ích hợp pháp (Họ và tên, Số giấy tờ, Địa chỉ): dùng bảng tlpt* hiện có.
  * Lưu: negotiation.tlParticipants = { capDonVi, toTungHinhSu, agencies: [...], requesters: [...], seed? };
@@ -169,6 +169,15 @@
             if (rs) a.absentReason = rs.value.trim();
         });
     }
+    // Chức vụ: dòng thành phần bắt buộc chọn từ Danh mục Chức vụ [DM_58] theo Loại cơ quan [DM_57] của Đơn vị của dòng (BTNN_WF.chucVuOptionsHtml);
+    // dòng Thành phần khác (Đơn vị nhập tự do): giữ ô nhập
+    function posHtml(a, i, dis) {
+        var w = W(), val = a.absent ? '' : a.position;
+        if (a.required && w && w.chucVuOptionsHtml) {
+            return '<select class="form-control form-control-sm" id="tptlPos_' + i + '" onchange="ptClearErr(this)"' + dis + '>' + w.chucVuOptionsHtml(a.unitId || a.unit, val) + '</select>';
+        }
+        return '<input type="text" class="form-control form-control-sm" id="tptlPos_' + i + '" value="' + E(val) + '" placeholder="Nhập chức vụ..." oninput="ptClearErr(this)"' + dis + '>';
+    }
     function rowHtml(a, i, stt) {
         var dis = a.absent ? ' disabled' : '';
         var unit = a.required
@@ -184,7 +193,7 @@
             + '<td>' + roleChips(a) + '</td>'
             + '<td>' + unit + '</td>'
             + '<td><input type="text" class="form-control form-control-sm" id="tptlName_' + i + '" value="' + E(a.absent ? '' : a.name) + '" placeholder="Nhập họ và tên..." oninput="ptClearErr(this)"' + dis + '>' + ERR + '</td>'
-            + '<td><input type="text" class="form-control form-control-sm" id="tptlPos_' + i + '" value="' + E(a.absent ? '' : a.position) + '" placeholder="Nhập chức vụ..." oninput="ptClearErr(this)"' + dis + '>' + ERR + '</td>'
+            + '<td>' + posHtml(a, i, dis) + ERR + '</td>'
             + '<td>' + abs + '</td>'
             + '<td style="text-align:center;">' + act + '</td></tr>';
     }

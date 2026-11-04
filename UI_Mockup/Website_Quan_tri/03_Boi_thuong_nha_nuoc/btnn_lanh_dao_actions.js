@@ -2,7 +2,7 @@
  * Thao tác của Lãnh đạo dùng chung tại các phân hệ BTNN (thay cho màn Hồ sơ trình Lãnh đạo đã bỏ):
  * - Phân công (Chuyển đơn vị / Phân công cán bộ) - phân hệ Tiếp nhận hồ sơ
  * - Phê duyệt / Từ chối phê duyệt phiếu trình - phân hệ Xác định cơ quan giải quyết bồi thường
- * - Thu hồi (khi bên nhận chưa xử lý)
+ * - Thu hồi phân công / chuyển đơn vị (khi bên nhận chưa xử lý); luồng ký duyệt không có Thu hồi
  * Phụ thuộc: btnn_luong_xu_ly.js (BTNN_WF).
  */
 (function (global) {
@@ -256,7 +256,7 @@
         const re = pattern || /Chuyển đơn vị|Phân công cán bộ|Phê duyệt|Từ chối phê duyệt|Ký duyệt/;
         return (rec.history || []).some(h => h.userId === userId && re.test(h.action || ''));
     }
-    // Thu hồi chỉ áp dụng cho lần xử lý gần nhất của Lãnh đạo khi bên nhận chưa xử lý
+    // Thu hồi chỉ áp dụng cho lần phân công / chuyển đơn vị gần nhất của Lãnh đạo khi bên nhận chưa xử lý (không áp dụng luồng ký duyệt)
     function canRecall(rec, userId) { return !!(rec && WF.getRecallInfo(rec, userId)); }
 
     function setUnitValue(val) {

@@ -98,8 +98,8 @@
         ['Hà Nội', 'Sở Tư pháp Thành phố Hà Nội', 'Trần Văn Lợi', 'CN', R_NBTH, '', HC, 'Đã chuyển CQGQBT', TN, 'money', 'Ngô Thị Lan', '', 'Xử phạt vi phạm hành chính không đúng thẩm quyền, chuyển cơ quan có thẩm quyền.', 45000000, { ktlReasonCode: 'KTL_01', rejectType: 'Không thụ lý' }]
     ];
 
-    // Hồ sơ cùng số giấy tờ người bị thiệt hại với BT-2026-601 (Vương Thị Thu Trang, 001187006601) - demo Danh sách hồ sơ cùng số giấy tờ
-    // người bị thiệt hại trước khi trình ký Thông báo thụ lý (quan_ly_boi_thuong_kttr.js): cùng đơn vị Sở Tư pháp Thành phố Hà Nội, đơn vị khác
+    // Hồ sơ cùng số giấy tờ người bị thiệt hại với BT-2026-601 (Vương Thị Thu Trang, 001187006601) - demo Popup Danh sách vụ việc của Người bị thiệt hại
+    // trước khi trình ký Thông báo thụ lý (quan_ly_boi_thuong_kttr.js): cùng đơn vị Sở Tư pháp Thành phố Hà Nội, đơn vị khác
     const KTTR_DOC = '001187006601';
     const KTTR_ROWS = [
         ['Hà Nội', 'Sở Tư pháp Thành phố Hà Nội', 'Vương Thị Thu Trang', 'CN', R_NBTH, '', HC, 'Hoàn thành', TN, 'money', 'Ngô Thị Lan', '', 'Xử phạt vi phạm hành chính trong lĩnh vực hộ tịch không đúng thẩm quyền.', 35000000, { cardNo: KTTR_DOC, nycCardNo: KTTR_DOC }],

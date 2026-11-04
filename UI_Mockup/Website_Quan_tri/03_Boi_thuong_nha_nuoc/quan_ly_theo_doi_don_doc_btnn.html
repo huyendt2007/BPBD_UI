@@ -715,6 +715,109 @@
         // Cơ quan nhận văn bản (văn bản ban hành, gửi ngoài hệ thống): Yêu cầu báo cáo, Đôn đốc trực tiếp -> cơ quan đối tượng; Đề nghị đôn đốc -> cơ quan được đề nghị
         const receiverOf = r => r.group === G.TD ? '' : (r.group === G.DD && r.form === DD_FORMS[1] ? r.proposedId : r.targetId);
 
+        // ===== Địa phương / Bộ, ngành của cơ quan (góp ý khách hàng số 4): hệ thống tự xác định theo Cơ cấu tổ chức =====
+        // Cơ quan trung ương (TANDTC, VKSNDTC, các Bộ...) không gắn địa phương; cơ quan ngành dọc ở địa phương gắn cả ngành và địa phương
+        const PROVINCES_34 = ['Thành phố Hà Nội', 'Thành phố Huế', 'Thành phố Hải Phòng', 'Thành phố Đà Nẵng', 'Thành phố Hồ Chí Minh', 'Thành phố Cần Thơ',
+            'Tỉnh Lai Châu', 'Tỉnh Điện Biên', 'Tỉnh Sơn La', 'Tỉnh Lạng Sơn', 'Tỉnh Quảng Ninh', 'Tỉnh Thanh Hóa', 'Tỉnh Nghệ An', 'Tỉnh Hà Tĩnh', 'Tỉnh Cao Bằng',
+            'Tỉnh Tuyên Quang', 'Tỉnh Lào Cai', 'Tỉnh Thái Nguyên', 'Tỉnh Phú Thọ', 'Tỉnh Bắc Ninh', 'Tỉnh Hưng Yên', 'Tỉnh Ninh Bình', 'Tỉnh Quảng Trị',
+            'Tỉnh Quảng Ngãi', 'Tỉnh Gia Lai', 'Tỉnh Khánh Hòa', 'Tỉnh Lâm Đồng', 'Tỉnh Đắk Lắk', 'Tỉnh Đồng Nai', 'Tỉnh Tây Ninh', 'Tỉnh Vĩnh Long',
+            'Tỉnh Đồng Tháp', 'Tỉnh Cà Mau', 'Tỉnh An Giang'];
+        const SECTORS = [['Ngành Tòa án', /^Tòa án/], ['Ngành Kiểm sát', /^Viện kiểm sát/], ['Bộ Công an', /^Công an/], ['Bộ Tư pháp (Thi hành án dân sự)', /Thi hành án dân sự/],
+            ['Văn phòng Chính phủ', /^Văn phòng Chính phủ/], ['Thanh tra Chính phủ', /^Thanh tra Chính phủ/], ['Bộ Tài chính', /^Bộ Tài chính/]];
+        const CITY_SHORT = ['Hà Nội', 'Hồ Chí Minh', 'Hải Phòng', 'Đà Nẵng', 'Cần Thơ', 'Huế'];
+        // Dữ liệu mẫu còn địa chỉ theo tỉnh cũ: quy về tỉnh sau sắp xếp đơn vị hành chính năm 2025
+        const MERGED_2025 = { 'Bình Định': 'Gia Lai' };
+        function provinceOf(id) {
+            if (!id || TW_IDS.includes(id) || W.getRootId(id) === 'BTP-01') return '';
+            const a = W.agencyAddress ? W.agencyAddress(id) : null;
+            let t = String((a && a.tinh) || '').replace(/^TP\.\s*/, '').trim();
+            if (!t) return '';
+            t = MERGED_2025[t] || t;
+            return (CITY_SHORT.includes(t) ? 'Thành phố ' : 'Tỉnh ') + t;
+        }
+        const sectorOf = id => { const n = unitName(id); const s = SECTORS.find(x => x[1].test(n)); return s ? s[0] : ''; };
+        const areasOf = id => [sectorOf(id), provinceOf(id)].filter(Boolean);
+        const areaCell = id => esc(areasOf(id).join('; ') || '-');
+        // Bộ lọc: chọn nhiều; khớp khi cơ quan đối tượng hoặc cơ quan được đề nghị đôn đốc thuộc giá trị đã chọn
+        const AREA_SEP = '|';
+        const areaSelected = () => (document.getElementById('filter_area')?.value || '').split(AREA_SEP).filter(Boolean);
+        function areaFilterHtml() {
+            const opt = v => `<label class="pvdv-opt" data-area="${esc(v)}"><input type="checkbox" value="${esc(v)}" onchange="areaSync()"> <span>${esc(v)}</span></label>`;
+            return `<div class="form-group"><span class="form-label">Địa phương / Bộ, ngành</span>
+                <input type="hidden" id="filter_area" value="">
+                <div class="pvdv-box">
+                    <input class="form-control pvdv-input" id="filter_area_text" value="Tất cả" readonly onclick="areaOpen()">
+                    <i class="fa-solid fa-chevron-down pvdv-caret"></i>
+                    <div class="pvdv-list" id="filter_area_list">
+                        <input class="form-control pvdv-search" id="filter_area_q" placeholder="Nhập tên địa phương, Bộ, ngành..." autocomplete="off" oninput="areaSearch()">
+                        <div class="pvdv-tools"><label class="pvdv-opt pvdv-all"><input type="checkbox" data-role="all" onchange="areaAll(this)"> <span>Tất cả</span></label></div>
+                        <div style="font-size: 12px; font-weight: 600; color: #64748b; padding: 4px 6px;">Bộ, ngành Trung ương</div>
+                        ${SECTORS.map(s => opt(s[0])).join('')}
+                        <div style="font-size: 12px; font-weight: 600; color: #64748b; padding: 4px 6px; border-top: 1px solid #e2e8f0; margin-top: 4px;">Địa phương</div>
+                        ${PROVINCES_34.map(opt).join('')}
+                    </div>
+                </div></div>`;
+        }
+        function areaOpen() { const l = document.getElementById('filter_area_list'); l.style.display = l.style.display === 'block' ? 'none' : 'block'; if (l.style.display === 'block') document.getElementById('filter_area_q').focus(); }
+        function areaSync() {
+            const list = document.getElementById('filter_area_list');
+            const sel = [...list.querySelectorAll('input[type=checkbox]:not([data-role])')].filter(c => c.checked).map(c => c.value);
+            document.getElementById('filter_area').value = sel.join(AREA_SEP);
+            list.querySelector('input[data-role="all"]').checked = !sel.length;
+            document.getElementById('filter_area_text').value = !sel.length ? 'Tất cả' : sel.length === 1 ? sel[0] : `Đã chọn ${sel.length} địa phương, Bộ, ngành`;
+            agencyRender();
+        }
+        // Cơ quan: chọn sau Địa phương / Bộ, ngành; danh sách lọc theo giá trị đã chọn, có ô tìm theo tên
+        const fold = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+        function agencyCandidates() {
+            const sel = areaSelected();
+            return W.ORG_UNITS.filter(u => !u.parentId && u.id !== 'BTP-01' && !W.isStpUnit(u.id) && areasOf(u.id).length)
+                .filter(u => !sel.length || areasOf(u.id).some(a => sel.includes(a)))
+                .sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+        }
+        function agencyFilterHtml(label) {
+            return `<div class="form-group"><span class="form-label">${label}</span>
+                <input type="hidden" id="filter_agencyId" value="">
+                <div class="pvdv-box">
+                    <input class="form-control pvdv-input" id="filter_agency_text" value="Tất cả" readonly onclick="agencyOpen()">
+                    <i class="fa-solid fa-chevron-down pvdv-caret"></i>
+                    <div class="pvdv-list" id="filter_agency_list">
+                        <input class="form-control pvdv-search" id="filter_agency_q" placeholder="Nhập tên cơ quan để tìm kiếm..." autocomplete="off" oninput="agencyRender()">
+                        <div id="filter_agency_opts"></div>
+                    </div>
+                </div></div>`;
+        }
+        function agencyOpen() { const l = document.getElementById('filter_agency_list'); l.style.display = l.style.display === 'block' ? 'none' : 'block'; if (l.style.display === 'block') { agencyRender(); document.getElementById('filter_agency_q').focus(); } }
+        function agencyRender() {
+            const box = document.getElementById('filter_agency_opts');
+            if (!box) return;
+            const list = agencyCandidates();
+            const cur = document.getElementById('filter_agencyId').value;
+            // Cơ quan đang chọn không còn thuộc Địa phương / Bộ, ngành đã chọn: bỏ chọn
+            if (cur && !list.some(u => u.id === cur)) agencyPick('');
+            const q = fold(document.getElementById('filter_agency_q').value.trim());
+            const shown = list.filter(u => !q || fold(u.name).includes(q));
+            box.innerHTML = `<div class="pvdv-opt pvdv-all" onclick="agencyPick('')">Tất cả</div>`
+                + (shown.length ? shown.map(u => `<div class="pvdv-opt" style="${u.id === document.getElementById('filter_agencyId').value ? 'background:#eff6ff; font-weight:600;' : ''}" onclick="agencyPick('${esc(u.id)}')">${esc(u.name)}</div>`).join('')
+                    : '<div style="padding: 6px; font-size: 13px; color: #94a3b8; font-style: italic;">Không có cơ quan phù hợp.</div>');
+        }
+        function agencyPick(id) {
+            document.getElementById('filter_agencyId').value = id;
+            document.getElementById('filter_agency_text').value = id ? unitName(id) : 'Tất cả';
+            const l = document.getElementById('filter_agency_list');
+            if (l && id) l.style.display = 'none';
+        }
+        function areaAll(cb) { if (cb.checked) document.querySelectorAll('#filter_area_list input[type=checkbox]:not([data-role])').forEach(c => { c.checked = false; }); areaSync(); }
+        function areaSearch() {
+            const q = document.getElementById('filter_area_q').value.trim().toLowerCase();
+            document.querySelectorAll('#filter_area_list label[data-area]').forEach(l => { l.style.display = !q || l.dataset.area.toLowerCase().includes(q) ? '' : 'none'; });
+        }
+        function matchArea(r) {
+            const sel = areaSelected();
+            if (!sel.length) return true;
+            return [r.targetId, r.proposedId].filter(Boolean).some(id => areasOf(id).some(a => sel.includes(a)));
+        }
+
         // ===== Dữ liệu =====
         const today = () => { const d = new Date(); return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; };
         const parseDate = s => { const p = String(s || '').split('/'); return p.length === 3 ? new Date(p[2], p[1] - 1, p[0]) : null; };
@@ -764,7 +867,8 @@
             const txt = (id, label, ph) => `<div class="form-group"><span class="form-label">${label}</span><input class="form-control" id="filter_${id}" placeholder="${ph}"></div>`;
             document.getElementById('filterGrid').innerHTML = [
                 txt('code', 'Mã hồ sơ', 'Nhập mã hồ sơ...'),
-                txt('agency', agencyLabel, `Nhập ${agencyLabel.toLowerCase()}...`),
+                areaFilterHtml(),
+                agencyFilterHtml(agencyLabel),
                 PV.filterHtml({ label: 'Đơn vị thực hiện', includeBtp: true }),
                 sel('content', currentTab === G.TD ? 'Nội dung theo dõi' : currentTab === G.YC ? 'Nội dung yêu cầu báo cáo' : 'Nội dung đôn đốc', contentOpts),
                 currentTab === G.DD ? sel('form', 'Hình thức đôn đốc', DD_FORMS) : '',
@@ -793,16 +897,17 @@
             return list;
         }
         function baseColumns(code, status, content, doc) {
-            if (currentTab === G.TD) return [code, { h: 'Cơ quan được theo dõi', v: r => esc(unitName(r.targetId)) }, { h: 'Nội dung theo dõi', v: content.v }, { h: 'Căn cứ theo dõi', v: r => esc(r.basis) }, { h: 'Ngày lập', v: r => esc(r.createdAt) }, { h: 'Cán bộ xử lý', v: r => esc(r.officer) }, status];
-            if (currentTab === G.YC) return [code, { h: 'Cơ quan được yêu cầu báo cáo', v: r => esc(unitName(r.targetId)) }, { h: 'Nội dung yêu cầu báo cáo', v: content.v }, doc, { h: 'Ngày văn bản', v: r => esc(r.docDate) }, { h: 'Hạn báo cáo', v: deadlineCell }, status];
-            if (currentTab === G.DD) return [code, { h: 'Hình thức đôn đốc', v: r => esc(r.form) }, { h: 'Cơ quan nhận văn bản', v: r => esc(unitName(receiverOf(r))) }, { h: 'Cơ quan được đôn đốc', v: r => esc(unitName(r.targetId)) }, { h: 'Nội dung đôn đốc', v: content.v }, { h: 'Hạn phản hồi', v: deadlineCell }, status];
+            const area = { h: 'Địa phương / Bộ, ngành', v: r => areaCell(r.targetId) };
+            if (currentTab === G.TD) return [code, { h: 'Cơ quan được theo dõi', v: r => esc(unitName(r.targetId)) }, area, { h: 'Nội dung theo dõi', v: content.v }, { h: 'Căn cứ theo dõi', v: r => esc(r.basis) }, { h: 'Ngày lập', v: r => esc(r.createdAt) }, { h: 'Cán bộ xử lý', v: r => esc(r.officer) }, status];
+            if (currentTab === G.YC) return [code, { h: 'Cơ quan được yêu cầu báo cáo', v: r => esc(unitName(r.targetId)) }, area, { h: 'Nội dung yêu cầu báo cáo', v: content.v }, doc, { h: 'Ngày văn bản', v: r => esc(r.docDate) }, { h: 'Hạn báo cáo', v: deadlineCell }, status];
+            if (currentTab === G.DD) return [code, { h: 'Hình thức đôn đốc', v: r => esc(r.form) }, { h: 'Cơ quan nhận văn bản', v: r => esc(unitName(receiverOf(r))) }, { h: 'Cơ quan được đôn đốc', v: r => esc(unitName(r.targetId)) }, area, { h: 'Nội dung đôn đốc', v: content.v }, { h: 'Hạn phản hồi', v: deadlineCell }, status];
         }
         function statusClass(s) { return s === ST.DONE ? 'done' : s === ST.REPLIED ? 'pending' : 'active'; }
         function actionButtons(r) {
             // Hồ sơ của đơn vị khác (Bộ Tư pháp/Cục xem hồ sơ của Sở Tư pháp): mọi nút mờ, chỉ xem chi tiết bằng click dòng
             const own = isOwn(r);
             const btn = (cls, icon, title, on, call) => `<button class="icon-btn ${cls} ${on && own ? '' : 'disabled'}" title="${title}" onclick="event.stopPropagation(); ${call}"><i class="fa-solid ${icon}"></i></button>`;
-            if (r.group === G.TD) return `<div class="row-actions">${btn('edit', 'fa-pen-to-square', 'Sửa', r.status !== ST.DONE, `openForm('edit','${r.code}')`)}${btn('sign', 'fa-circle-check', 'Hoàn thành', r.status !== ST.DONE, `openForm('finish','${r.code}')`)}</div>`;
+            if (r.group === G.TD) return `<div class="row-actions">${btn('edit', 'fa-pen-to-square', 'Sửa', r.status !== ST.DONE, `openForm('edit','${r.code}')`)}${btn('submit', 'fa-reply', 'Cập nhật phản hồi', canRespond(r), `openForm('respond','${r.code}')`)}${btn('sign', 'fa-circle-check', 'Hoàn thành', r.status !== ST.DONE, `openForm('finish','${r.code}')`)}</div>`;
             return `<div class="row-actions">${btn('edit', 'fa-pen-to-square', 'Sửa', r.status === ST.SENT, `openForm('edit','${r.code}')`)}${btn('submit', 'fa-reply', 'Cập nhật phản hồi', [ST.SENT, ST.REPLIED].includes(r.status), `openForm('respond','${r.code}')`)}${btn('sign', 'fa-circle-check', 'Hoàn thành', r.status === ST.REPLIED, `finishSent('${r.code}')`)}</div>`;
         }
         function filtered() {
@@ -811,8 +916,10 @@
             return listOf(currentTab).filter(r => {
                 if (v('code') && !r.code.toLowerCase().includes(v('code'))) return false;
                 if (!PV.matchFilter(r.senderId, r.officer)) return false;
-                const ag = unitName(r.targetId) + ' ' + unitName(r.proposedId);
-                if (v('agency') && !ag.toLowerCase().includes(v('agency'))) return false;
+                if (!matchArea(r)) return false;
+                // Cơ quan đã chọn: cơ quan đối tượng hoặc cơ quan được đề nghị đôn đốc
+                const agencyId = document.getElementById('filter_agencyId')?.value || '';
+                if (agencyId && r.targetId !== agencyId && r.proposedId !== agencyId) return false;
                 if (v('content') && !(r.content || []).some(c => c.toLowerCase() === v('content'))) return false;
                 if (v('form') && (r.form || '').toLowerCase() !== v('form')) return false;
                 if (v('status') && r.status.toLowerCase() !== v('status')) return false;
@@ -960,14 +1067,38 @@
             document.getElementById('detailPanel').classList.add('view-mode');
         }
         // Khối phản hồi: bên nhận nhập khi Cập nhật phản hồi; bên gửi và chế độ xem chỉ đọc
+        // Phản hồi, báo cáo của địa phương (góp ý khách hàng số 5): cán bộ đơn vị lập hồ sơ nhập theo văn bản nhận được, nhập nhiều lần, lưu lịch sử
+        // Dữ liệu cũ có 01 phản hồi (response) được đọc như lần phản hồi thứ nhất
+        const respList = r => r.responses || (r.response ? [r.response] : []);
+        const canRespond = r => r.group === G.TD ? r.status === ST.TRACKING : [ST.SENT, ST.REPLIED].includes(r.status);
+        function responseTitle(r) {
+            const proposal = r.group === G.DD && r.form === DD_FORMS[1];
+            if (r.group === G.TD) return `Phản hồi, báo cáo nhận được từ ${esc(unitName(r.targetId))}`;
+            return r.group === G.YC ? `Báo cáo nhận được từ ${esc(unitName(r.targetId))}` : proposal ? `Trả lời đề nghị đôn đốc nhận được từ ${esc(unitName(r.proposedId))}` : `Phản hồi nhận được từ ${esc(unitName(r.targetId))}`;
+        }
+        function responseHistoryHtml(r) {
+            const list = respList(r);
+            if (!list.length) return '<div class="muted">Chưa có phản hồi.</div>';
+            return `<table style="width:100%; border-collapse:collapse; font-size:13px; margin-bottom:8px;"><thead><tr style="background:#f1f5f9;">
+                <th style="padding:6px 8px; border:1px solid #e2e8f0; width:44px;">Lần</th><th style="padding:6px 8px; border:1px solid #e2e8f0; width:110px;">Ngày nhận</th>
+                <th style="padding:6px 8px; border:1px solid #e2e8f0; width:140px;">Số văn bản</th><th style="padding:6px 8px; border:1px solid #e2e8f0;">Nội dung</th>
+                <th style="padding:6px 8px; border:1px solid #e2e8f0; width:150px;">Cán bộ cập nhật</th></tr></thead><tbody>`
+                + list.map((x, i) => `<tr><td style="padding:6px 8px; border:1px solid #e2e8f0; text-align:center;">${i + 1}</td><td style="padding:6px 8px; border:1px solid #e2e8f0;">${esc(x.date)}</td>
+                    <td style="padding:6px 8px; border:1px solid #e2e8f0;">${esc(x.docNo || '-')}</td>
+                    <td style="padding:6px 8px; border:1px solid #e2e8f0;">${x.result ? `<b>${esc(x.result)}</b>${x.issuedDocNo ? ` (văn bản ${esc(x.issuedDocNo)} ngày ${esc(x.issuedDocDate)})` : ''}<br>` : ''}${esc(x.content)}</td>
+                    <td style="padding:6px 8px; border:1px solid #e2e8f0;">${esc(x.by || '')}${x.at ? `<div class="muted" style="font-size:12px;">${esc(x.at)}</div>` : ''}</td></tr>`).join('')
+                + '</tbody></table>';
+        }
         function renderResponse(r) {
             const box = document.getElementById('responseBlock');
-            if (r.group === G.TD || !r.status || r.status === 'Đang nhập') { box.innerHTML = ''; return; }
-            const resp = r.response || {};
+            if (!r.status || r.status === 'Đang nhập') { box.innerHTML = ''; return; }
             const proposal = r.group === G.DD && r.form === DD_FORMS[1];
             const edit = formMode === 'respond';
-            const title = r.group === G.YC ? `Báo cáo nhận được từ ${esc(unitName(r.targetId))}` : proposal ? `Trả lời đề nghị đôn đốc nhận được từ ${esc(unitName(r.proposedId))}` : `Phản hồi nhận được từ ${esc(unitName(r.targetId))}`;
-            if (!edit && !r.response) { box.innerHTML = `<div class="response-box"><div class="response-title"><i class="fa-solid fa-reply"></i> ${title}</div><div class="muted">Chưa có phản hồi.</div></div>`; return; }
+            const title = responseTitle(r);
+            const historyHtml = responseHistoryHtml(r);
+            if (!edit) { box.innerHTML = `<div class="response-box"><div class="response-title"><i class="fa-solid fa-reply"></i> ${title}</div>${historyHtml}</div>`; return; }
+            // Chế độ Thêm phản hồi: bảng các lần đã nhận + form lần mới
+            const resp = r.draftResp || {};
             const f = [];
             f.push(fg('respDate', 'Ngày nhận phản hồi', true, dateCtl('respDate', resp.date || (edit ? today() : ''))));
             f.push(fg('respDocNo', 'Số văn bản phản hồi', false, textCtl('respDocNo', resp.docNo, 'Nhập số văn bản phản hồi...')));
@@ -980,12 +1111,13 @@
                 }
             }
             const contentLabel = r.group === G.YC ? 'Nội dung báo cáo' : proposal && resp.result === PROPOSAL_RESULTS[1] ? 'Lý do không thống nhất' : 'Nội dung phản hồi';
-            box.innerHTML = `<div class="response-box"><div class="response-title"><i class="fa-solid fa-reply"></i> ${title}${resp.by ? ` <span class="muted">- Cán bộ cập nhật: ${esc(resp.by)}</span>` : ''}</div><div class="grid-3">${f.join('')}</div>${fg('respContent', contentLabel, true, areaCtl('respContent', resp.content, `Nhập ${contentLabel.toLowerCase()}...`))}</div>`;
+            const n = respList(r).length + 1;
+            box.innerHTML = `<div class="response-box"><div class="response-title"><i class="fa-solid fa-reply"></i> ${title}</div>${historyHtml}
+                <div class="response-title" style="margin-top:10px;"><i class="fa-solid fa-plus"></i> Phản hồi lần ${n}</div>
+                <div class="grid-3">${f.join('')}</div>${fg('respContent', contentLabel, true, areaCtl('respContent', resp.content, `Nhập ${contentLabel.toLowerCase()}...`))}</div>`;
             initDatePickers(box);
-            if (edit) {
-                const rs = document.getElementById('f_respResult');
-                if (rs) rs.addEventListener('change', () => { formRec.response = Object.assign(readResponse(), { result: rs.value }); renderResponse(formRec); });
-            } else box.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = true; });
+            const rs = document.getElementById('f_respResult');
+            if (rs) rs.addEventListener('change', () => { formRec.draftResp = Object.assign(readResponse(), { result: rs.value }); renderResponse(formRec); });
         }
         function readResponse() {
             const v = id => document.getElementById(`f_${id}`)?.value?.trim() || '';
@@ -1025,7 +1157,7 @@
             if (formMode === 'respond') a.push(`<button type="button" class="btn btn-primary" onclick="saveResponse()"><i class="fa-solid fa-floppy-disk"></i> Lưu phản hồi</button>`);
             // Xem chi tiết hồ sơ của đơn vị khác: chỉ có nút Đóng
             if (formMode === 'view' && !isOwn(r)) { document.getElementById('formActions').innerHTML = a.join(''); return; }
-            if (formMode === 'view' && r.group !== G.TD && [ST.SENT, ST.REPLIED].includes(r.status)) a.push(`<button type="button" class="btn btn-primary" onclick="openForm('respond','${r.code}')"><i class="fa-solid fa-reply"></i> Cập nhật phản hồi</button>`);
+            if (formMode === 'view' && canRespond(r)) a.push(`<button type="button" class="btn btn-primary" onclick="openForm('respond','${r.code}')"><i class="fa-solid fa-reply"></i> Cập nhật phản hồi</button>`);
             if (formMode === 'view' && r.group !== G.TD && r.status === ST.REPLIED) a.push(`<button type="button" class="btn btn-success" onclick="finishSent('${r.code}')"><i class="fa-solid fa-circle-check"></i> Hoàn thành</button>`);
             document.getElementById('formActions').innerHTML = a.join('');
         }
@@ -1094,10 +1226,13 @@
             const errs = extra.filter(x => !x[1]).map(x => markErr(x[0])).filter(Boolean);
             if (errs.length) { errs[0].scrollIntoView({ block: 'center' }); return; }
             const rec = findRec(r.code);
-            rec.response = Object.assign(resp, { by: myUser().name });
-            rec.status = ST.REPLIED;
-            rec.history = [...(rec.history || []), hist(nowText(), rec.response.by, 'Cập nhật phản hồi', resp.result || '')];
-            save(); closeForm(); renderTabs(); renderTable(); showToast('Lưu phản hồi thành công. [MSG-SUC-SYS-002]');
+            const entry = Object.assign(resp, { by: myUser().name, at: nowText() });
+            rec.responses = [...respList(rec), entry];
+            delete rec.response;
+            // Theo dõi: giữ trạng thái Đang theo dõi; Yêu cầu báo cáo, Đôn đốc: Đã có phản hồi
+            if (rec.group !== G.TD) rec.status = ST.REPLIED;
+            rec.history = [...(rec.history || []), hist(nowText(), entry.by, `Cập nhật phản hồi lần ${rec.responses.length}`, resp.result || '')];
+            save(); closeForm(); renderTabs(); renderTable(); showToast(`Lưu phản hồi lần ${rec.responses.length} thành công. [MSG-SUC-SYS-002]`);
         }
         function finishSent(code) {
             const rec = findRec(code);
@@ -1171,6 +1306,7 @@
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_grid_toolbar.js?v=20261030gt1"></script>
+    <script src="btnn_tieu_de_man.js?v=20261103td2"></script>
 </body>
 
 </html>
