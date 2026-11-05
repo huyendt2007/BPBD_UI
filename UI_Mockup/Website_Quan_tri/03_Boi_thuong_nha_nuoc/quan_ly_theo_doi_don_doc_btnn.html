@@ -649,7 +649,7 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script>
@@ -951,7 +951,10 @@
                     <td style="text-align:center;">${actionButtons(r)}</td>
                 </tr>`).join('') : (PV.level() === 'OTHER' ? PV.denyRow(cols.length + 2) : `<tr><td colspan="${cols.length + 2}" style="text-align:center; color:var(--text-muted); font-style:italic; padding:26px;">Không tìm thấy dữ liệu phù hợp. [MSG-INF-SYS-001]</td></tr>`);
             renderPaginationPages(maxPages);
-            document.getElementById('btnAddNew').style.display = canCreate() ? '' : 'none';
+            { // setProperty important: btnn_uxu_dong_bo.js đặt display !important cho nút thanh công cụ
+                const addBtn = document.getElementById('btnAddNew');
+                if (canCreate()) addBtn.style.removeProperty('display'); else addBtn.style.setProperty('display', 'none', 'important');
+            }
         }
         function renderPaginationPages(maxPages) {
             const item = (label, on, call, active) => `<span class="page-item ${active ? 'active' : ''} ${on ? '' : 'disabled'}" onclick="${on ? call : ''}">${label}</span>`;

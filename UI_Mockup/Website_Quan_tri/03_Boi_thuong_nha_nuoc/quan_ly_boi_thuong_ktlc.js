@@ -182,9 +182,6 @@ function ktlcCurrentClaim(o) {
         var blk = container.closest ? container.closest('#ktlTransferBlock') : null;
         var tt = blk ? blk.querySelector('.gqx-transfer-title') : null;
         if (tt) tt.innerHTML = '<i class="fa-solid fa-right-left"></i> Chuyển hồ sơ cho <span class="gqx-req" style="color:#dc2626;">*</span>';
-        // Popup Từ chối - Không thụ lý của Lãnh đạo: nhãn trường
-        var lbl = container.parentElement ? container.parentElement.querySelector('.gq-label') : null;
-        if (lbl && /Chuyển cơ quan tiếp nhận mới/.test(lbl.textContent)) lbl.innerHTML = 'Chuyển hồ sơ cho <span class="gq-req">*</span>';
         // Chỉ 01 lựa chọn (bắt buộc): chọn sẵn
         if (rule.modes.length === 1) {
             var only = container.querySelector('input[type=radio][name="' + o.name + '"][value="' + rule.modes[0] + '"]');
@@ -366,37 +363,6 @@ function ktlcDoTransfer(code, transfer, o) {
                 if (r.ok) res.record = r.record;
             } catch (e) { console.warn('ktlc approve', e); }
         }
-        return res;
-    };
-    // Lãnh đạo Từ chối (Không thụ lý) tại bước Cử người giải quyết bồi thường: ghi nhận số lần chuyển trên hồ sơ mới
-    var orj = W.rejectCase;
-    W.rejectCase = function (code, reasonCode, detail, transfer) {
-        var claim = ktlcFindClaim(code);
-        var rec0 = W.getRecord(code);
-        var rule = rec0 ? ktlcRule(claim, rec0, ktlcRoot(rec0.rootUnitId)) : null;
-        // Chặn lựa chọn ngoài quy tắc (gọi trực tiếp, dữ liệu cũ chỉ có targetUnitId được hiểu là Cơ quan giải quyết bồi thường khác)
-        if (rule && rule.applies && reasonCode === 'KTL_01' && !(transfer && (transfer.mode || transfer.targetUnitId))) return { ok: false, transferError: true, message: 'Vui lòng chọn Chuyển hồ sơ cho.' };
-        if (rule && reasonCode === 'KTL_01' && transfer && (transfer.mode || transfer.targetUnitId)) {
-            var m0 = transfer.mode || 'CQ';
-            if (rule.modes.indexOf(m0) < 0) return { ok: false, transferError: true, message: 'Chuyển hồ sơ cho chỉ được chọn: ' + rule.modes.map(function (m) { return ktlcModeLabel(m, rule); }).join(' hoặc ') + '.' };
-        }
-        var res = orj.apply(this, arguments);
-        try {
-            var t = res && res.ok && res.record ? res.record.transferTo : null;
-            if (t && t.code && rule) {
-                var lanMoi = (rule.applies ? rule.lan : 0) + 1;
-                t.ktlcLan = lanMoi; t.ktlcAuto = rule.forced; t.ktlcApplies = rule.applies;
-                if (rule.forced) W.addHistory(res.record, 'Chuyển xác định CQGQBT', 'Hệ thống tự tạo hồ sơ Xác định CQGQBT ' + t.code + ' tại ' + W.unitName(t.targetUnitId) + ' (lần chuyển thứ ' + lanMoi + ').');
-                W.upsertRecord(res.record);
-                var nr = W.getRecord(t.code);
-                if (nr) {
-                    nr.ktlcLan = rule.applies ? lanMoi : 0; nr.ktlcNguonGoc = rule.applies ? rule.goc : '';
-                    nr.ktlcFrom = { code: code, maVuViec: res.record.maVuViec || '', unitId: ktlcRoot(res.record.rootUnitId), mode: t.mode, lan: lanMoi, auto: rule.forced, applies: rule.applies, reason: 'Không thuộc thẩm quyền (KTL_01)', content: t.content || '', at: t.at };
-                    ktlcInherit(nr, claim, res.record);
-                    W.upsertRecord(nr);
-                }
-            }
-        } catch (e) { console.warn('ktlc rejectCase', e); }
         return res;
     };
 })();

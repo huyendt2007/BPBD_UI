@@ -653,7 +653,7 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script>
@@ -1073,9 +1073,21 @@
             showToast(`Đã thực hiện thao tác ${label}.`);
         }
 
+        // Hoàn thành: kiểm tra trường bắt buộc khi Hoàn thành, popup xác nhận, chuyển hồ sơ sang Hoàn thành
         function submitFinish() {
             if (!validateBusinessForm(true)) return;
-            showToast('Đã hoàn thành hồ sơ.');
+            const code = currentFormCode;
+            document.getElementById('confirmText').innerText = code
+                ? `Bạn có chắc chắn muốn hoàn thành hồ sơ ${code}? Sau khi hoàn thành, hồ sơ không được sửa.`
+                : 'Bạn có chắc chắn muốn hoàn thành hồ sơ? Sau khi hoàn thành, hồ sơ không được sửa.';
+            confirmCallback = () => {
+                const row = workingRows.find(item => item[0] === code);
+                if (row) row[row.length - 1] = 'Hoàn thành';
+                closeForm();
+                renderTable();
+                showToast(code ? `Đã hoàn thành hồ sơ ${code}.` : 'Đã hoàn thành hồ sơ.');
+            };
+            document.getElementById('confirmModal').classList.add('visible');
         }
 
         function statusClass(status) {
@@ -1184,6 +1196,22 @@
             const agency = (document.getElementById('filter_agency')?.value || '').trim().toLowerCase();
             const content = (document.getElementById('filter_content')?.value || '').trim();
             const status = document.getElementById('filter_status')?.value || '';
+            // Hướng dẫn nghiệp vụ, Khiếu nại: lọc thêm Loại nội dung, Hình thức thực hiện / Nhóm nghiệp vụ liên quan, khoảng Ngày tiếp nhận
+            const colIdx = name => currentConfig.columns.indexOf(name);
+            const typeF = (document.getElementById('filter_type')?.value || '').trim();
+            const methodF = (document.getElementById('filter_method')?.value || '').trim();
+            const dateNum = s => { const m = String(s || '').trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/); return m ? +(m[3] + m[2] + m[1]) : null; };
+            const fromEl = document.getElementById('filter_fromDate'), toEl = document.getElementById('filter_toDate');
+            const fromN = fromEl ? dateNum(fromEl.value) : null, toN = toEl ? dateNum(toEl.value) : null;
+            if (toEl) {
+                // [BR-VAL-007] Từ ngày lớn hơn Đến ngày: [MSG-ERR-VAL-007] dưới ô Đến ngày, không tìm kiếm
+                let err = document.getElementById('filterDateErr');
+                if (!err) { err = document.createElement('div'); err.id = 'filterDateErr'; err.style.cssText = 'display:none; color:#dc2626; font-size:12px; margin-top:4px;'; err.textContent = 'Từ ngày không được lớn hơn Đến ngày'; toEl.parentElement.appendChild(err); }
+                const bad = fromN !== null && toN !== null && fromN > toN;
+                err.style.display = bad ? 'block' : 'none';
+                [fromEl, toEl].forEach(el => el && (el.style.borderColor = bad ? '#dc2626' : ''));
+                if (bad) { fromEl.focus(); return; }
+            }
             let filtered = workingRows.filter(row => {
                 if (!PV.canSee(PV.ownerOf(row)) || !PV.matchFilter(PV.ownerOf(row), row[officerIndex()])) return false;
                 if (keyword && !String(row[0] || '').toLowerCase().includes(keyword)) return false;
@@ -1193,6 +1221,14 @@
                     if (content && row[3] !== content) return false;
                 } else {
                     if (agency && !String(row[1] || '').toLowerCase().includes(agency)) return false;
+                    if (typeF && colIdx('Loại nội dung') >= 0 && row[colIdx('Loại nội dung')] !== typeF) return false;
+                    if (methodF && colIdx('Hình thức thực hiện') >= 0 && row[colIdx('Hình thức thực hiện')] !== methodF) return false;
+                    if (content && colIdx('Nhóm nghiệp vụ liên quan') >= 0 && row[colIdx('Nhóm nghiệp vụ liên quan')] !== content) return false;
+                    const dIdx = colIdx('Ngày tiếp nhận');
+                    if (dIdx >= 0 && (fromN !== null || toN !== null)) {
+                        const d = dateNum(row[dIdx]);
+                        if (d === null || (fromN !== null && d < fromN) || (toN !== null && d > toN)) return false;
+                    }
                 }
                 if (status && row[row.length - 1] !== status) return false;
                 return true;
@@ -1413,7 +1449,9 @@
             BTNN_CASE.open({ title: 'Tìm kiếm vụ việc BTNN liên quan', prefill: quick ? code : '', onSelect: item => { setCase(id, item); showToast('Đã chọn vụ việc liên quan.'); } });
         }
 
+        let currentFormCode = '';
         function openForm(mode, code = '') {
+            currentFormCode = code;
             const row = workingRows.find(item => item[0] === code);
             const isNew = mode === 'new';
             document.getElementById('detailPanel').classList.add('visible');
@@ -1581,13 +1619,11 @@
             `;
         }
 
+        // Icon Hoàn thành trên lưới: mở form Cập nhật kết quả, kiểm tra và xác nhận như nút Hoàn thành của form (không chuyển trạng thái ngay)
         function finishRow(code) {
-            const row = workingRows.find(item => item[0] === code);
-            if (row) {
-                row[row.length - 1] = 'Hoàn thành';
-                renderTable();
-                showToast(`Đã hoàn thành hồ sơ ${code}.`);
-            }
+            if (!workingRows.find(item => item[0] === code)) return;
+            openForm('update', code);
+            submitFinish();
         }
 
         // Kết xuất Excel dùng chung các module (Hướng dẫn nghiệp vụ, Khiếu nại/tố cáo/xử lý vi phạm): toàn bộ bản ghi theo bộ lọc hiện tại, đúng các cột của lưới (bỏ Thao tác)
@@ -1640,7 +1676,10 @@
             initDatePickers(document.getElementById('filterGrid'));
             const units = currentConfig.units || {};
             workingRows = currentConfig.rows.map(row => { const r = [...row]; r.unit = units[row[0]] || PV.BTP; return r; });
-            document.getElementById('btnAddNew').style.display = PV.canCreate(false) ? '' : 'none';
+            { // setProperty important: btnn_uxu_dong_bo.js đặt display !important cho nút thanh công cụ
+                const addBtn = document.getElementById('btnAddNew');
+                if (PV.canCreate(false)) addBtn.style.removeProperty('display'); else addBtn.style.setProperty('display', 'none', 'important');
+            }
 
             const tabs = document.getElementById('moduleTabs');
             if (currentConfig.tabs && currentConfig.tabs.length > 0) {

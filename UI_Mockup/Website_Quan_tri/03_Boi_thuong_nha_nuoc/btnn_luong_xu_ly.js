@@ -97,18 +97,16 @@
 
     // Nguồn hồ sơ và Hình thức tiếp nhận tại Tiếp nhận hồ sơ
     const SOURCES = { TIEP_NHAN: 'Tiếp nhận mới', DVC: 'Dịch vụ công', CHUYEN: 'Chuyển CQGQBT', XDCQ: 'Xác định CQGQBT' };
-    // Hình thức tiếp nhận: Danh mục dùng chung DM_25 (04 giá trị); form Tiếp nhận mới chỉ gồm Trực tiếp, Qua dịch vụ bưu chính
+    // Hình thức tiếp nhận: Danh mục dùng chung DM_25 (03 giá trị cho lựa chọn: Dịch vụ công, Trực tiếp, Qua dịch vụ bưu chính; đã bỏ Bộ phận Một cửa); form Tiếp nhận mới chỉ gồm Trực tiếp, Qua dịch vụ bưu chính
     const RECEIVE_METHOD_CATALOG = 'DM_25';
-    const RECEIVE_METHODS = { MOI_TRUONG_SO: 'Dịch vụ công', TRUC_TIEP: 'Trực tiếp', MOT_CUA: 'Bộ phận Một cửa', BUU_CHINH: 'Qua dịch vụ bưu chính' };
+    const RECEIVE_METHODS = { MOI_TRUONG_SO: 'Dịch vụ công', TRUC_TIEP: 'Trực tiếp', BUU_CHINH: 'Qua dịch vụ bưu chính' };
     RECEIVE_METHODS.DVC = RECEIVE_METHODS.MOI_TRUONG_SO; // tên cũ, giữ để các trang đang dùng không lỗi
-    // [cdpd] Giá trị DM_25 do hệ thống gán (không có trong lựa chọn của form): Xác định CQGQBT, Cán bộ chủ động phục hồi danh dự, Cán bộ chủ động nhập
-    RECEIVE_METHODS.XAC_DINH_CQGQBT = 'Xác định CQGQBT';
+    // [cdpd] Giá trị DM_25 do hệ thống gán (không có trong lựa chọn của form): Cán bộ chủ động phục hồi danh dự
     RECEIVE_METHODS.CAN_BO_PHUC_HOI_DANH_DU = 'Cán bộ chủ động phục hồi danh dự khi có đủ thông tin';
-    RECEIVE_METHODS.CAN_BO_NHAP = 'Cán bộ chủ động nhập theo tố tụng/thi hành án';
-    const RECEIVE_METHOD_ORDER = [RECEIVE_METHODS.MOI_TRUONG_SO, RECEIVE_METHODS.TRUC_TIEP, RECEIVE_METHODS.MOT_CUA, RECEIVE_METHODS.BUU_CHINH];
+    const RECEIVE_METHOD_ORDER = [RECEIVE_METHODS.MOI_TRUONG_SO, RECEIVE_METHODS.TRUC_TIEP, RECEIVE_METHODS.BUU_CHINH];
     const FORM_RECEIVE_METHODS = [RECEIVE_METHODS.TRUC_TIEP, RECEIVE_METHODS.BUU_CHINH];
-    // [cdpd] Đủ 07 giá trị DM_25 theo thứ tự trên hệ thống (hiển thị/lọc); RECEIVE_METHOD_ORDER giữ 04 giá trị cho lựa chọn trên form
-    const RECEIVE_METHOD_ALL = [RECEIVE_METHODS.MOT_CUA, RECEIVE_METHODS.XAC_DINH_CQGQBT, RECEIVE_METHODS.CAN_BO_PHUC_HOI_DANH_DU, RECEIVE_METHODS.MOI_TRUONG_SO, RECEIVE_METHODS.TRUC_TIEP, RECEIVE_METHODS.BUU_CHINH, RECEIVE_METHODS.CAN_BO_NHAP];
+    // [cdpd] Đủ 04 giá trị DM_25 theo thứ tự trên hệ thống (hiển thị/lọc); RECEIVE_METHOD_ORDER giữ 03 giá trị cho lựa chọn trên form
+    const RECEIVE_METHOD_ALL = [RECEIVE_METHODS.MOI_TRUONG_SO, RECEIVE_METHODS.TRUC_TIEP, RECEIVE_METHODS.BUU_CHINH, RECEIVE_METHODS.CAN_BO_PHUC_HOI_DANH_DU];
 
     const STATUS = {
         CHO_PHAN_CONG: 'Chờ phân công',
@@ -180,6 +178,8 @@
         { id: 'THADS-LD', name: 'Cục Thi hành án dân sự tỉnh Lâm Đồng', parentId: null, loaiCoQuan: 'Cục' },
         { id: 'THADS-LD-NV', name: 'Phòng Nghiệp vụ và Tổ chức thi hành án - Cục THADS tỉnh Lâm Đồng', parentId: 'THADS-LD', loaiCoQuan: 'Phòng / Ban' },
         { id: 'UBND-HK', name: 'UBND phường Hoàn Kiếm, Thành phố Hà Nội', parentId: null, loaiCoQuan: 'UBND cấp Phường/Xã' },
+        // Cơ quan giải quyết bồi thường của dữ liệu mẫu (BT-2026-088, hồ sơ hoàn trả): tên kèm Tỉnh/Thành phố để xác định Sở Tư pháp quản lý địa bàn
+        { id: 'UBND-BD', name: 'UBND phường Ba Đình, Thành phố Hà Nội', parentId: null, loaiCoQuan: 'UBND cấp Phường/Xã' },
         { id: 'TAND-LD', name: 'Tòa án nhân dân tỉnh Lâm Đồng', parentId: null, loaiCoQuan: 'TAND cấp tỉnh' },
         // Cơ quan giải quyết bồi thường của dữ liệu mẫu Giải quyết yêu cầu bồi thường (phục vụ chọn cán bộ được cử giải quyết)
         { id: 'UBND-HM', name: 'UBND phường Bạch Mai, Thành phố Hà Nội', parentId: null, loaiCoQuan: 'UBND cấp Phường/Xã' },
@@ -334,6 +334,10 @@
     // UBND cấp tỉnh chỉ xem hồ sơ Xác định CQGQBT của Sở Tư pháp trực thuộc (Sở Tư pháp là đơn vị con của UBND cấp tỉnh trên cây Cơ cấu tổ chức).
     // Mockup giữ Sở Tư pháp là đơn vị gốc của luồng, quan hệ trực thuộc khai báo tại bảng này.
     const UBND_TINH_STP = { 'UBND-HN': ['STP-HN'], 'UBND-LD': [] };
+    // Luồng Xác định CQGQBT - Sở Tư pháp: Nhóm lãnh đạo của UBND cấp tỉnh (cấp ký duyệt cuối, không tham gia phân công), cấu hình trong luồng của Sở Tư pháp trực thuộc
+    const DEFAULT_XD_STP_UBND = { 'STP-HN': { 'UBND-HN': { leaders: ['ct_ubndhn'], allowUnit: false, units: [], allowOfficer: false, officers: [], approveOnly: true } } };
+    // UBND cấp tỉnh quản lý Sở Tư pháp (cây Cơ cấu tổ chức)
+    function ubndTinhOfStp(stpId) { return Object.keys(UBND_TINH_STP).find(k => (UBND_TINH_STP[k] || []).includes(stpId)) || ''; }
 
     // Danh mục Loại hồ sơ (DM_54) - Đơn vị áp dụng; chọn đơn vị cha thì áp dụng cho toàn bộ đơn vị con
     const DEFAULT_REQUEST_TYPES = [
@@ -343,16 +347,33 @@
     ];
 
     // ---------------- Tiện ích ----------------
+    // 03/11/2026: một lượt tải trang gọi readJson hàng trăm lần trên cùng dữ liệu (hồ sơ ~340 KB) làm trang đứng khi F5.
+    // Trong cùng một lượt chạy (đến setTimeout 0), chuỗi lưu trữ không đổi thì dùng lại kết quả JSON.parse lần trước.
+    const JSON_CACHE = new Map();
+    let jsonCacheHen = false;
     function readJson(key, fallback) {
         try {
+            // Hồ sơ (KEY_RECORDS) chỉ được ghi qua writeJson của tệp này: trong cùng lượt chạy dùng lại bản đã đọc, không đọc lại chuỗi ~340 KB
+            if (key === KEY_RECORDS && JSON_CACHE.has(key)) return JSON_CACHE.get(key).val;
             const raw = localStorage.getItem(key);
-            return raw ? JSON.parse(raw) : fallback;
+            if (!raw) return fallback;
+            const c = JSON_CACHE.get(key);
+            if (c && c.raw === raw) return c.val;
+            const val = JSON.parse(raw);
+            JSON_CACHE.set(key, { raw, val });
+            if (!jsonCacheHen) { jsonCacheHen = true; setTimeout(() => { JSON_CACHE.clear(); jsonCacheHen = false; }, 0); }
+            return val;
         } catch (e) {
             return fallback;
         }
     }
     function writeJson(key, value) {
-        try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* bỏ qua khi trình duyệt chặn lưu trữ */ }
+        try {
+            const raw = JSON.stringify(value);
+            localStorage.setItem(key, raw);
+            JSON_CACHE.set(key, { raw, val: value });
+            if (!jsonCacheHen) { jsonCacheHen = true; setTimeout(() => { JSON_CACHE.clear(); jsonCacheHen = false; }, 0); }
+        } catch (e) { JSON_CACHE.delete(key); /* bỏ qua khi trình duyệt chặn lưu trữ */ }
     }
     function pad(n) { return String(n).padStart(2, '0'); }
     function nowText(d) {
@@ -414,7 +435,7 @@
     // Địa chỉ trụ sở của đơn vị gốc (đơn vị con lấy theo đơn vị gốc): [Tỉnh/Thành phố, Phường/Xã ('' = chưa có trong danh mục giả lập)]
     const UNIT_ADDR = {
         'BTP-01': ['Hà Nội', '00001 - Phường Ba Đình'], 'STP-HN': ['Hà Nội', '00007 - Phường Cầu Giấy'], 'STP-HCM': ['TP. Hồ Chí Minh', '26737 - Phường Sài Gòn'],
-        'UBND-CG': ['Hà Nội', '00007 - Phường Cầu Giấy'], 'THADS-LD': ['Lâm Đồng', '24778 - Phường Xuân Hương - Đà Lạt'], 'UBND-HK': ['Hà Nội', '00004 - Phường Hoàn Kiếm'],
+        'UBND-CG': ['Hà Nội', '00007 - Phường Cầu Giấy'], 'THADS-LD': ['Lâm Đồng', '24778 - Phường Xuân Hương - Đà Lạt'], 'UBND-HK': ['Hà Nội', '00004 - Phường Hoàn Kiếm'], 'UBND-BD': ['Hà Nội', '00001 - Phường Ba Đình'],
         'TAND-LD': ['Lâm Đồng', '24778 - Phường Xuân Hương - Đà Lạt'], 'UBND-HM': ['Hà Nội', '00260 - Phường Bạch Mai'], 'CA-TX': ['Hà Nội', '00010 - Phường Thanh Xuân'],
         'TAND-HN': ['Hà Nội', '00004 - Phường Hoàn Kiếm'], 'TAND-HK': ['Hà Nội', '00004 - Phường Hoàn Kiếm'], 'STP-HP': ['Hải Phòng', '11359 - Phường Hồng Bàng'],
         'THADS-HP': ['Hải Phòng', '11362 - Phường Ngô Quyền'], 'UBND-LD': ['Lâm Đồng', '24778 - Phường Xuân Hương - Đà Lạt'], 'UBND-DD': ['Hà Nội', '00210 - Phường Văn Miếu - Quốc Tử Giám'],
@@ -486,7 +507,9 @@
     function defaultFlowAll(base) {
         const src = base || DEFAULT_FLOW;
         const pick = ids => { const o = {}; ids.forEach(id => { if (src[id]) o[id] = JSON.parse(JSON.stringify(src[id])); }); return o; };
-        return { XD_BTP: pick(flowRootIds(FLOW_TYPES.XD_BTP)), XD_STP: pick(flowRootIds(FLOW_TYPES.XD_STP)), GQ: JSON.parse(JSON.stringify(src)) };
+        const stp = pick(flowRootIds(FLOW_TYPES.XD_STP));
+        Object.keys(stp).forEach(id => Object.assign(stp[id], JSON.parse(JSON.stringify(DEFAULT_XD_STP_UBND[id] || {}))));
+        return { XD_BTP: pick(flowRootIds(FLOW_TYPES.XD_BTP)), XD_STP: stp, GQ: JSON.parse(JSON.stringify(src)) };
     }
     // Mỗi nút chỉ có 01 hình thức phân công: nút cũ bật cả Chuyển đơn vị và Phân công cán bộ -> giữ Chuyển đơn vị, bỏ Phân công cán bộ
     function normalizeFlowDirections(all) {
@@ -511,6 +534,11 @@
             if (!all[ft]) { all[ft] = def[ft]; changed = true; return; }
             Object.keys(def[ft]).forEach(root => { if (!all[ft][root]) { all[ft][root] = def[ft][root]; changed = true; } });
         });
+        // Cấu hình đã lưu trước khi bổ sung cấp ký duyệt cuối UBND cấp tỉnh (luồng Xác định CQGQBT - Sở Tư pháp)
+        Object.keys(all.XD_STP || {}).forEach(stp => {
+            const ub = ubndTinhOfStp(stp);
+            if (ub && all.XD_STP[stp] && !all.XD_STP[stp][ub]) { all.XD_STP[stp][ub] = JSON.parse(JSON.stringify(((DEFAULT_XD_STP_UBND[stp] || {})[ub]) || { leaders: [], allowUnit: false, units: [], allowOfficer: false, officers: [], approveOnly: true })); changed = true; }
+        });
         if (changed) writeJson(KEY_FLOW, all);
         return all;
     }
@@ -520,6 +548,11 @@
     function getNodeConfig(unitId, ft) {
         const rootId = getRootId(unitId);
         const cfg = getFlowConfig(ft);
+        // Luồng Xác định CQGQBT - Sở Tư pháp: nút UBND cấp tỉnh lưu trong cấu hình của Sở Tư pháp trực thuộc
+        if (ft === FLOW_TYPES.XD_STP && Object.prototype.hasOwnProperty.call(UBND_TINH_STP, rootId)) {
+            const stp = (UBND_TINH_STP[rootId] || []).find(s => cfg[s] && cfg[s][unitId]);
+            return stp ? cfg[stp][unitId] : null;
+        }
         return (cfg[rootId] && cfg[rootId][unitId]) || null;
     }
     function getLeaders(unitId, ft) {
@@ -731,8 +764,13 @@
         });
         return changed;
     }
+    // 03/11/2026: bước chuẩn hóa dữ liệu cũ (JSON.stringify + biểu thức chính quy trên toàn bộ hồ sơ) chỉ chạy lại khi dữ liệu đổi
+    let recordsDaChuanHoa = null;
     function loadRecords() {
         ensureSeed();
+        const cc = JSON_CACHE.get(KEY_RECORDS);
+        if (cc && recordsDaChuanHoa && cc.raw === recordsDaChuanHoa) return cc.val;
+        try { const raw0 = localStorage.getItem(KEY_RECORDS); if (raw0 && raw0 === recordsDaChuanHoa) return readJson(KEY_RECORDS, []); } catch (e) { /* bỏ qua */ }
         let list = readJson(KEY_RECORDS, []);
         // Chuẩn hóa dữ liệu cũ: Nội dung trình "Sửa chữa, đính chính QĐ" -> "Sửa chữa, bổ sung QĐ"
         if (/[Ss]ửa chữa, đính chính/.test(JSON.stringify(list))) { list = JSON.parse(JSON.stringify(list).replace(/Sửa chữa, đính chính/g, "Sửa chữa, bổ sung").replace(/sửa chữa, đính chính/g, "sửa chữa, bổ sung")); writeJson(KEY_RECORDS, list); }
@@ -762,8 +800,12 @@
             if (r.nbth && r.nbth.docType && normalizePersonalDocType(r.nbth.docType) !== r.nbth.docType) { r.nbth.docType = normalizePersonalDocType(r.nbth.docType); changed = true; }
             if (r.approval && OLD_KQXD.includes(r.approval.kind)) { r.approval.kind = KIND_KQXD; changed = true; }
             if (r.returned && OLD_KQXD.includes(r.returned.kind)) { r.returned.kind = KIND_KQXD; changed = true; }
-            // Chuẩn hóa luồng phê duyệt: chỉ tới Cục Đăng ký giao dịch bảo đảm và BTNN, không gửi đến Bộ Tư pháp
-            if (r.approval && Array.isArray(r.approval.path) && r.approval.path.includes('CĐK-01') && r.approval.path.includes('BTP-01')) {
+            // Xác định CQGQBT: phiếu trình còn cấp chưa giao đích danh Lãnh đạo (dữ liệu mẫu, phiếu cũ) -> giao theo xdFillAssignees
+            if (r.module === 'XD' && xdFillAssignees(r)) changed = true;
+            // Xác định CQGQBT: bổ sung cấp ký duyệt cuối (Lãnh đạo Bộ Tư pháp / Lãnh đạo UBND cấp tỉnh) cho phiếu trình theo luồng cũ
+            if (r.module === 'XD' && xdExtendApproval(r)) changed = true;
+            // Phân hệ khác: luồng phê duyệt chỉ tới Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước, không gửi đến Bộ Tư pháp
+            else if (r.module !== 'XD' && r.approval && Array.isArray(r.approval.path) && r.approval.path.includes('CĐK-01') && r.approval.path.includes('BTP-01')) {
                 r.approval.path = r.approval.path.filter(u => u !== 'BTP-01');
                 if (Array.isArray(r.approval.steps)) {
                     r.approval.steps = r.approval.steps.filter(s => s.unitId !== 'BTP-01');
@@ -783,6 +825,17 @@
         list.slice().forEach(r => { if (isXdRec(r) && migrateXdRecord(r, list)) changed = true; });
         // Giải quyết YCBT: chuẩn hóa trạng thái cũ của hồ sơ luồng về 17 Trạng thái vụ việc
         list.forEach(r => { if (r && r.module === 'YCBT' && migrateYcbtRecord(r)) changed = true; });
+        // Hồ sơ mẫu nguồn Dịch vụ công đã phân công cán bộ (dữ liệu cũ dùng Mã hồ sơ = Mã vụ việc): sinh Mã hồ sơ BT-, giữ Mã vụ việc
+        list.forEach(r => {
+            if (!r || r.module !== 'YCBT' || !/^TN-DVC-/.test(r.seedKey || '') || !isVuViecCode(r.code) || [STATUS.CHO_PHAN_CONG, STATUS.DANG_PHAN_CONG].includes(r.status)) return;
+            const vv = r.maVuViec || r.code;
+            let nc = nextCode('BT');
+            const bump = c => c.replace(/(\d+)$/, d => String(Number(d) + 1).padStart(d.length, '0'));
+            while (list.some(x => x && x.code === nc)) nc = bump(nc);
+            r.code = nc; r.id = 'WF-' + nc; r.maVuViec = vv;
+            linkVuViec(nc, vv);
+            changed = true;
+        });
         // Mã vụ việc toàn trình: hồ sơ chưa có thì lấy theo sổ đăng ký (Mã hồ sơ hoặc Mã hồ sơ GQBT sinh ra) hoặc cấp mới;
         // hồ sơ XD- và hồ sơ BT- sinh ra khi Chuyển CQGQBT luôn dùng chung 01 Mã vụ việc
         list.forEach(r => {
@@ -799,6 +852,8 @@
         // trang Giải quyết YCBT lấy lại Ngày tiếp nhận, trạng thái từ kho luồng -> mọi hồ sơ của kho phải cùng độ dời
         try { if (shiftSeedDates(list)) changed = true; } catch (e) { /* mockup */ }
         if (changed) writeJson(KEY_RECORDS, list);
+        const cw = JSON_CACHE.get(KEY_RECORDS);
+        if (cw) recordsDaChuanHoa = cw.raw; else { try { recordsDaChuanHoa = localStorage.getItem(KEY_RECORDS); } catch (e) { recordsDaChuanHoa = null; } }
         return list;
     }
     // ---------------- Xác định CQGQBT: trạng thái mới, tự động chuyển CQGQBT ----------------
@@ -957,7 +1012,11 @@
         return rec;
     }
     function saveRecords(list) { writeJson(KEY_RECORDS, list); }
-    function getRecord(code) { return loadRecords().find(r => r.code === code) || null; }
+    // Tìm theo Mã hồ sơ; hồ sơ tiếp nhận đã vào phân hệ (Mã hồ sơ XD- / BT-) vẫn tìm được theo mã tại Tiếp nhận hồ sơ (receptionCode)
+    function getRecord(code) {
+        const list = loadRecords();
+        return list.find(r => r.code === code) || (code ? list.find(r => r.receptionCode === code) : null) || null;
+    }
     function upsertRecord(rec) {
         const list = loadRecords();
         const idx = list.findIndex(r => r.code === rec.code);
@@ -972,14 +1031,15 @@
         const uidv = userId || getCurrentUserId();
         rec.history.push(Object.assign({ at: nowText(), userId: uidv, userName: userName(uidv), action, note: note || '' }, extra || {}));
     }
-    // Hình thức tiếp nhận: chuẩn hóa giá trị cũ về 04 giá trị của Danh mục DM_25
+    // Hình thức tiếp nhận: chuẩn hóa giá trị cũ về 03 giá trị của Danh mục DM_25
     function normalizeReceiveMethod(v) {
         const s = String(v || '').trim();
         if (!s || RECEIVE_METHOD_ORDER.includes(s)) return s;
         if (/bưu/i.test(s)) return RECEIVE_METHODS.BUU_CHINH;
         // Giá trị cũ có "Dịch vụ công" (VD bản trước của Hình thức tiếp nhận): hồ sơ gửi qua Dịch vụ công
         if (/dịch vụ công|môi trường số|dvc/i.test(s)) return RECEIVE_METHODS.MOI_TRUONG_SO;
-        if (/một cửa/i.test(s)) return RECEIVE_METHODS.MOT_CUA;
+        // Giá trị cũ Bộ phận Một cửa (đã bỏ khỏi DM_25): hồ sơ nộp trực tiếp
+        if (/một cửa/i.test(s)) return RECEIVE_METHODS.TRUC_TIEP;
         if (/trực tiếp/i.test(s)) return RECEIVE_METHODS.TRUC_TIEP;
         return s;
     }
@@ -1278,9 +1338,32 @@
         rec.status = STATUS.CHO_TIEP_NHAN;
         // Hồ sơ nguồn khác Tiếp nhận mới: người phân công đầu tiên tại Tiếp nhận hồ sơ là Cán bộ tiếp nhận
         if (!rec.receivedBy) rec.receivedBy = userName(me);
-        addHistory(rec, 'Phân công cán bộ', `Chủ trì: ${userName(chuTri)}.${note ? ' Ý kiến chỉ đạo: ' + note : ''}`);
-        upsertRecord(rec);
+        // Hồ sơ vào phân hệ (mọi Nguồn hồ sơ): hồ sơ còn mang Mã vụ việc được sinh Mã hồ sơ theo Loại hồ sơ (XD- / BT-), giữ nguyên Mã vụ việc
+        const oldCode = rec.code;
+        const newCode = assignHoSoCode(rec);
+        addHistory(rec, 'Phân công cán bộ', `Chủ trì: ${userName(chuTri)}.${newCode ? ` Mã hồ sơ: ${newCode}.` : ''}${note ? ' Ý kiến chỉ đạo: ' + note : ''}`);
+        if (newCode) replaceRecord(oldCode, rec); else upsertRecord(rec);
         return { ok: true, record: rec };
+    }
+    // Sinh Mã hồ sơ của phân hệ cho hồ sơ đang mang Mã vụ việc (VVBT-): Xác định CQGQBT -> XD-, Giải quyết YCBT -> BT-.
+    // Lưu mã tại Tiếp nhận hồ sơ (receptionCode) để Tiếp nhận hồ sơ, Phiếu tiếp nhận vẫn tra được hồ sơ; trả về Mã hồ sơ mới hoặc ''.
+    function assignHoSoCode(rec) {
+        if (!rec || !isVuViecCode(rec.code)) return '';
+        const oldCode = rec.code;
+        const newCode = nextCode(isXdRec(rec) ? 'XD' : 'BT');
+        if (!rec.maVuViec) rec.maVuViec = oldCode;
+        rec.receptionCode = oldCode;
+        rec.code = newCode;
+        linkVuViec(newCode, rec.maVuViec);
+        return newCode;
+    }
+    // Ghi hồ sơ đã đổi Mã hồ sơ vào đúng vị trí bản ghi cũ
+    function replaceRecord(oldCode, rec) {
+        const list = loadRecords();
+        const idx = list.findIndex(r => r.code === oldCode);
+        if (idx >= 0) list[idx] = rec; else list.unshift(rec);
+        saveRecords(list);
+        return rec;
     }
 
     // ---------------- Thu hồi ----------------
@@ -1320,11 +1403,89 @@
             path = cb ? getAncestors(cb.unitId).filter(u => getLeaders(u, recFt(rec)).length) : [];
         }
         path = path.filter((u, i) => path.indexOf(u) === i);
-        // UI giả định: Luồng phê duyệt qua Cục Đăng ký giao dịch bảo đảm và BTNN chỉ tới Cục, không gửi đến Bộ Tư pháp
+        // Xác định CQGQBT (chốt 2026-10-28): Bộ Tư pháp: Cán bộ → Lãnh đạo Phòng/Ban → Lãnh đạo Cục → Lãnh đạo Bộ;
+        // Sở Tư pháp: Cán bộ → Lãnh đạo Phòng → Lãnh đạo Sở → Lãnh đạo UBND cấp tỉnh (cấp ký duyệt cuối, không tham gia phân công)
+        const ft = recFt(rec);
+        if (ft === FLOW_TYPES.XD_BTP || ft === FLOW_TYPES.XD_STP) return xdFinalLevels(path, ft, rec);
+        // Phân hệ khác: luồng phê duyệt qua Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước chỉ tới Cục, không gửi đến Bộ Tư pháp
         if (path.includes('CĐK-01')) {
             path = path.filter(u => u !== 'BTP-01');
         }
         return path;
+    }
+    // Bổ sung cấp ký duyệt cuối của luồng Xác định CQGQBT: đơn vị gốc (Bộ Tư pháp / Sở Tư pháp) và UBND cấp tỉnh quản lý Sở Tư pháp
+    function xdFinalLevels(path, ft, rec) {
+        const out = path.slice();
+        const root = getRootId(out[out.length - 1] || (rec && rec.rootUnitId) || '') || (rec && rec.rootUnitId) || '';
+        if (root && !out.includes(root) && getLeaders(root, ft).length) out.push(root);
+        if (ft === FLOW_TYPES.XD_STP) {
+            const ub = ubndTinhOfStp(root);
+            if (ub && !out.includes(ub) && getLeaders(ub, ft).length) out.push(ub);
+        }
+        return out;
+    }
+    // Phiếu trình Xác định CQGQBT: mỗi cấp giao đích danh 01 Lãnh đạo thuộc Nhóm lãnh đạo của cấp đó (chỉ người được chọn mới Ký duyệt được).
+    // Thứ tự lấy Lãnh đạo của từng cấp:
+    //   (1) Lãnh đạo đã chọn khi trình (approval.assignees) nếu thuộc Nhóm lãnh đạo của cấp;
+    //   (2) Lãnh đạo đã ký duyệt / từ chối ở cấp đó (approval.steps) - dữ liệu đã thao tác của phiếu;
+    //   (3) Chỉ khi phiếu không có dữ liệu chọn (dữ liệu mẫu, phiếu trình theo luồng cũ): giá trị khởi tạo là Lãnh đạo đầu tiên của Nhóm lãnh đạo cấp đó.
+    // Trả về true nếu có thay đổi.
+    function xdFillAssignees(r) {
+        const a = r && r.approval;
+        if (!a || !Array.isArray(a.path) || !a.path.length) return false;
+        const ft = recFt(r);
+        const steps = Array.isArray(a.steps) ? a.steps : [];
+        const old = Array.isArray(a.assignees) ? a.assignees : [];
+        const next = a.path.map((u, i) => {
+            const lv = getLeaders(u, ft);
+            const cur = old[i] || '';
+            if (!lv.length || lv.includes(cur)) return cur;
+            const acted = steps.filter(s => s && s.unitId === u && lv.includes(s.userId)).map(s => s.userId).pop();
+            return acted || lv[0];
+        });
+        const changed = next.length !== old.length || next.some((v, i) => v !== old[i]);
+        if (changed) a.assignees = next;
+        return changed;
+    }
+    // Hồ sơ Xác định CQGQBT đã trình theo luồng cũ (kết thúc ở Cục / Sở): bổ sung cấp ký duyệt cuối vào phiếu trình.
+    // Phiếu đã ký duyệt xong: ghi thêm lượt Ký duyệt các cấp bổ sung của Lãnh đạo giao theo xdFillAssignees (dữ liệu mẫu).
+    function xdExtendApproval(r) {
+        const a = r && r.approval;
+        if (!a || !Array.isArray(a.path) || !a.path.length || r.module !== 'XD') return false;
+        const ft = recFt(r);
+        if (ft !== FLOW_TYPES.XD_BTP && ft !== FLOW_TYPES.XD_STP) return false;
+        const full = xdFinalLevels(a.path, ft, r);
+        if (full.length === a.path.length) return false;
+        const oldLen = a.path.length;
+        const lastStep = (a.steps || [])[(a.steps || []).length - 1];
+        const signed = !!a.done && lastStep && /Ký duyệt|Phê duyệt/.test(lastStep.action || '') && lastStep.unitId === a.path[oldLen - 1];
+        a.path = full;
+        // Lãnh đạo từng cấp theo dữ liệu đã chọn khi trình / đã ký; cấp bổ sung chưa có dữ liệu chọn: giá trị khởi tạo (xdFillAssignees)
+        xdFillAssignees(r);
+        if (!signed) return true;
+        // Thời điểm ký cấp bổ sung: sau lượt ký trước 01 giờ
+        const plus1h = at => { const m = /^(\d{2}):(\d{2}) (.*)$/.exec(at || ''); return m ? `${pad(Math.min(23, Number(m[1]) + 1))}:${m[2]} ${m[3]}` : at; };
+        let at = lastStep.at;
+        const doc = a.signDoc || {};
+        const hist = r.history || [];
+        const hIdx = hist.map(x => x && x.userId === lastStep.userId && /Ký duyệt|Phê duyệt/.test(x.action || '')).lastIndexOf(true);
+        const oldNote = hIdx >= 0 ? hist[hIdx].note || '' : '';
+        if (hIdx >= 0) hist[hIdx].note = `Ký duyệt cấp ${unitName(a.path[oldLen - 1])}; chuyển ${userName(a.assignees[oldLen])} - ${unitName(full[oldLen])}.`;
+        lastStep.action = 'Ký duyệt';
+        let hPos = hIdx >= 0 ? hIdx + 1 : hist.length;
+        for (let i = oldLen; i < full.length; i++) {
+            at = plus1h(at);
+            const uidv = a.assignees[i];
+            const last = i === full.length - 1;
+            a.steps.push({ unitId: full[i], userId: uidv, action: 'Ký duyệt', note: '', at });
+            const note = last ? (oldNote.replace(unitName(a.path[oldLen - 1]), unitName(full[i])) || `Ký duyệt cấp cuối (${unitName(full[i])}).`) : `Ký duyệt cấp ${unitName(full[i])}; chuyển ${userName(a.assignees[i + 1])} - ${unitName(full[i + 1])}.`;
+            hist.splice(hPos++, 0, Object.assign({ at, userId: uidv, userName: userName(uidv), action: 'Ký duyệt', note }, hIdx >= 0 && hist[hIdx].kind ? { kind: hist[hIdx].kind } : {}));
+        }
+        a.level = full.length - 1;
+        if (doc.signedBy) { doc.signedBy = a.assignees[full.length - 1]; doc.signedAt = at; }
+        (r.supplementHistory || []).forEach(s => { if (s && s.by === lastStep.userId) { s.by = a.assignees[full.length - 1]; s.unitId = full[full.length - 1]; s.at = at; } });
+        r.history = hist;
+        return true;
     }
     // extra.draftDoc: { generatedName, uploadedName } - văn bản dự thảo trình kèm (VD Thông báo yêu cầu bổ sung)
     // extra: { assignee: Lãnh đạo phê duyệt cấp 1 (bắt buộc khi cấp 1 có nhóm lãnh đạo), draftDoc: văn bản dự thảo/đính kèm trình,
@@ -2066,7 +2227,7 @@
     // Tên cơ quan giải quyết bồi thường -> đơn vị gốc trên Cơ cấu tổ chức (dữ liệu mẫu ghi tên cơ quan dạng rút gọn)
     const AGENCY_ALIASES = {
         'so tu phap ha noi': 'STP-HN', 'so tu phap tp. ha noi': 'STP-HN', 'so tu phap thanh pho ha noi': 'STP-HN',
-        'ubnd phuong cau giay': 'UBND-CG', 'ubnd phuong bach mai': 'UBND-HM', 'cong an phuong thanh xuan': 'CA-TX',
+        'ubnd phuong cau giay': 'UBND-CG', 'ubnd phuong ba dinh': 'UBND-BD', 'ubnd phuong bach mai': 'UBND-HM', 'cong an phuong thanh xuan': 'CA-TX',
         'toa an nhan dan tp. ha noi': 'TAND-HN', 'toa an nhan dan thanh pho ha noi': 'TAND-HN', 'toa an nhan dan quan hoan kiem': 'TAND-HK',
         'so tu phap hai phong': 'STP-HP', 'ubnd tinh lam dong': 'UBND-LD', 'ubnd phuong van mieu - quoc tu giam': 'UBND-DD',
         'cuc thi hanh an dan su ha noi': 'THADS-HN', 'ubnd thanh pho ha noi': 'UBND-HN', 'chi cuc thi hanh an dan su cau giay': 'CCTHADS-CG',
@@ -2106,7 +2267,6 @@
         { id: 'P3', code: 'KP-2026-003', type: 'Cấp kinh phí bồi thường', ycbtCode: 'BT-2026-005', nycName: 'Lê Văn D', amount: 200000000, user: 'Lê Văn Nam', date: '14/09/2026', status: 'Chờ duyệt', source: 'Ngân sách địa phương (Dự phòng)', cqCap: 'Sở Tài chính Hà Nội', notes: 'Đề nghị cấp phát kinh phí bồi thường chính thức 250.000.000 đ theo quyết định bồi thường số 104/QD-BT, trừ tạm ứng đã nhận 50 triệu.', files: [{ name: 'Tờ trình Lê Văn D', file: 'To_trinh_cap_KP_LeVanD.pdf' }], agencyName: 'Sở Tư pháp Hải Phòng' },
         { id: 'P4', code: 'KP-2026-004', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-002', nycName: 'Trần Thị B', amount: 50000000, user: 'Lê Văn Nam', date: '16/09/2026', status: 'Chờ duyệt', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Đề nghị cấp tạm ứng bồi thường cho bà Trần Thị B.', files: [{ name: 'Đề xuất tạm ứng Trần Thị B', file: 'De_xuat_tam_ung_B.pdf' }], agencyName: 'Tòa án nhân dân TP. Hà Nội' },
         { id: 'P21', code: 'KP-2026-021', type: 'Cấp kinh phí bồi thường', ycbtCode: 'BT-2026-002', nycName: 'Trần Thị B', amount: 180000000, user: 'Lê Văn Nam', date: '18/09/2026', status: 'Chờ duyệt', source: 'Ngân sách địa phương (Dự phòng)', cqCap: 'Sở Tài chính Hà Nội', notes: 'Tờ trình đề nghị cấp phát kinh phí bồi thường tổn thất tài sản và thu nhập thực tế.', files: [{ name: 'Tờ trình cấp kinh phí Trần Thị B', file: 'To_trinh_KP_TranThiB.pdf' }], agencyName: 'Tòa án nhân dân TP. Hà Nội' },
-        { id: 'P22', code: 'KP-2026-022', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-055', nycName: 'Lê Minh Tuấn', amount: 70000000, user: 'Nguyễn Văn Thụ', date: '19/09/2026', status: 'Chờ duyệt', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Tờ trình đề xuất tạm ứng kinh phí bồi thường cho ông Lê Minh Tuấn.', files: [{ name: 'Tờ trình đề xuất tạm ứng Lê Minh Tuấn', file: 'To_trinh_tam_ung_LeMinhTuan.pdf' }], agencyName: 'UBND phường Văn Miếu - Quốc Tử Giám' },
         { id: 'P2', code: 'KP-2026-002', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-002', nycName: 'Trần Thị B', amount: 100000000, user: 'Nguyễn Văn Thụ', date: '04/09/2026', status: 'Chờ chi trả', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Cấp tạm ứng bồi thường thiệt hại cho bà Trần Thị B.', files: [{ name: 'Tờ trình đề xuất cấp kinh phí', file: 'De_xuat_tam_ung_B.pdf' }], leaderOpinion: 'Đồng ý cấp tạm ứng kinh phí bồi thường cho bà Trần Thị B.', approvedDate: '05/09/2026 09:15', approvedLeader: 'Lãnh đạo cơ quan', agencyName: 'Tòa án nhân dân TP. Hà Nội' },
         { id: 'P7', code: 'KP-2026-007', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-002', nycName: 'Trần Thị B', amount: 80000000, user: 'Lê Văn Nam', date: '08/09/2026', status: 'Bị trả lại', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Đề nghị cấp tạm ứng bồi thường bị trả lại do thiếu tài liệu y tế chứng minh.', files: [], leaderOpinion: 'Từ chối do hồ sơ chưa đính kèm báo cáo giám định sức khỏe của bệnh viện cấp tỉnh.', approvedDate: '09/09/2026 10:30', approvedLeader: 'Lãnh đạo cơ quan', agencyName: 'Tòa án nhân dân TP. Hà Nội' }
     ];
@@ -3010,7 +3170,7 @@
                 ],
                 attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-111.pdf' }],
                 routes: btpRoutes('canbonv', 'Chưa xử lý'),
-                history: [h('Tiếp nhận yêu cầu', 'canbonv', '08:15 08/10/2026', 'Tiếp nhận hồ sơ trực tiếp tại Bộ phận một cửa.'), h('Chuyển đơn vị', 'oanhdh', '09:00 08/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN.'), h('Chuyển đơn vị', 'cuctruong', '13:30 08/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '15:00 08/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
+                history: [h('Tiếp nhận yêu cầu', 'canbonv', '08:15 08/10/2026', 'Tiếp nhận hồ sơ trực tiếp tại Bộ phận một cửa.'), h('Chuyển đơn vị', 'oanhdh', '09:00 08/10/2026', 'Giao Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.'), h('Chuyển đơn vị', 'cuctruong', '13:30 08/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '15:00 08/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
             })),
             base('XD-2026-112', Object.assign(person('Nguyễn Phương Thảo', '24/11/1991', '001191008822', '0983456789', 'thao.np@outlook.com', 'Thành phố Hà Nội', '00004 - Phường Hoàn Kiếm', 'Số 16 Hàng Bông'), {
                 status: STATUS.CHO_TIEP_NHAN, date: '07/10/2026', receivedAt: '09:30 07/10/2026', chuTri: 'canbonv',
@@ -3023,7 +3183,7 @@
                 ],
                 attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-112.pdf' }],
                 routes: btpRoutes('canbonv', 'Chưa xử lý'),
-                history: [h('Tiếp nhận yêu cầu', 'canbonv', '09:30 07/10/2026', 'Tiếp nhận hồ sơ trực tiếp.'), h('Chuyển đơn vị', 'oanhdh', '10:15 07/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN xử lý.'), h('Chuyển đơn vị', 'cuctruong', '14:20 07/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '16:00 07/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
+                history: [h('Tiếp nhận yêu cầu', 'canbonv', '09:30 07/10/2026', 'Tiếp nhận hồ sơ trực tiếp.'), h('Chuyển đơn vị', 'oanhdh', '10:15 07/10/2026', 'Giao Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước xử lý.'), h('Chuyển đơn vị', 'cuctruong', '14:20 07/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '16:00 07/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
             })),
             base('XD-2026-113', Object.assign(person('Lê Hoàng Long', '12/08/1976', '001076004455', '0904556677', 'long.lh@fecon.vn', 'Tỉnh Lâm Đồng', '24778 - Phường Xuân Hương - Đà Lạt', 'Số 58 đường Trần Phú'), {
                 status: STATUS.CHO_TIEP_NHAN, date: '06/10/2026', receivedAt: '10:00 06/10/2026', chuTri: 'canbonv',
@@ -3034,7 +3194,7 @@
                 ],
                 attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-113.pdf' }],
                 routes: btpRoutes('canbonv', 'Chưa xử lý'),
-                history: [h('Tiếp nhận yêu cầu', 'canbonv', '10:00 06/10/2026', 'Tiếp nhận qua dịch vụ bưu chính.'), h('Chuyển đơn vị', 'oanhdh', '11:00 06/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN.'), h('Chuyển đơn vị', 'cuctruong', '15:10 06/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '17:00 06/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
+                history: [h('Tiếp nhận yêu cầu', 'canbonv', '10:00 06/10/2026', 'Tiếp nhận qua dịch vụ bưu chính.'), h('Chuyển đơn vị', 'oanhdh', '11:00 06/10/2026', 'Giao Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.'), h('Chuyển đơn vị', 'cuctruong', '15:10 06/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '17:00 06/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
             })),
             base('XD-2026-114', Object.assign(person('Phạm Quốc Bảo', '03/04/1988', '001088009911', '0978990011', 'baopq@vingroup.net', 'Thành phố Hà Nội', '00001 - Phường Ba Đình', 'Số 88 đường Liễu Giai'), {
                 status: STATUS.CHO_TIEP_NHAN, date: '05/10/2026', receivedAt: '14:20 05/10/2026', chuTri: 'canbonv',
@@ -3047,7 +3207,7 @@
                 ],
                 attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-114.pdf' }],
                 routes: btpRoutes('canbonv', 'Chưa xử lý'),
-                history: [h('Tiếp nhận yêu cầu', 'canbonv', '14:20 05/10/2026', 'Tiếp nhận yêu cầu trực tiếp.'), h('Chuyển đơn vị', 'oanhdh', '15:30 05/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN.'), h('Chuyển đơn vị', 'cuctruong', '08:30 06/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '09:00 06/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
+                history: [h('Tiếp nhận yêu cầu', 'canbonv', '14:20 05/10/2026', 'Tiếp nhận yêu cầu trực tiếp.'), h('Chuyển đơn vị', 'oanhdh', '15:30 05/10/2026', 'Giao Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.'), h('Chuyển đơn vị', 'cuctruong', '08:30 06/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '09:00 06/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
             })),
             base('XD-2026-104', Object.assign(person('Vũ Đức Anh', '15/06/1985', '001085002934', '0912000104', 'anh.vd@gmail.com', 'Thành phố Hà Nội', '00001 - Phường Ba Đình', 'Số 15 Kim Mã'), {
                 status: STATUS.DANG_THUC_HIEN, date: '01/09/2026', receivedAt: '09:00 01/09/2026', chuTri: 'canbonv',
@@ -3447,7 +3607,7 @@
         KEYS: { RECORDS: KEY_RECORDS, FLOW: KEY_FLOW, USER: KEY_USER, RECEPTION_CLAIMS: KEY_RECEPTION_CLAIMS },
         receptionPendingItems, receptionPendingCount, receptionSeeded,
         CATALOG_TYPE, STATUS, SUBMIT_KINDS, APPROVAL_KINDS, KTL_CATALOG_TYPE, DEFAULT_KTL_REASONS, XD_AUTHORITY_UNITS, REQUEST_TYPE_XD, REQUEST_TYPE_YCBT,
-        FLOW_TYPES, FLOW_TYPE_NAMES, FLOW_TYPE_ORDER, SOURCES, RECEIVE_METHODS, RECEIVE_METHOD_CATALOG, RECEIVE_METHOD_ORDER, RECEIVE_METHOD_ALL, FORM_RECEIVE_METHODS, UBND_TINH_STP,
+        FLOW_TYPES, FLOW_TYPE_NAMES, FLOW_TYPE_ORDER, SOURCES, RECEIVE_METHODS, RECEIVE_METHOD_CATALOG, RECEIVE_METHOD_ORDER, RECEIVE_METHOD_ALL, FORM_RECEIVE_METHODS, UBND_TINH_STP, ubndTinhOfStp,
         flowRootIds, flowTypeOf, normalizeReceiveMethod, normalizeSource, nextVuViecCode, uniqueVuViecFor, isVuViecCode, linkVuViec, unlinkVuViec, vuViecOf, listVuViec, xdViewOnlyStpRoots, isXdViewOnlyUser,
         ORG_UNITS, USERS, DEFAULT_REQUEST_TYPES, KIND_KP_TB, KIND_KP_QDTU,
         getUnit, unitName, isStpUnit, ADDR_WARDS, agencyAddress, getChildren, getRootId, getAncestors, getDescendants, getRootUnits, unitTreeLabel, searchUnits, mountUnitTree,

@@ -227,6 +227,23 @@ function kptbSeed() {
                 it.kptbHistory.push({ at: '10:05 17/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Trình ký', note: `${KPTB_KIND}. Trình ${kptbUserName(assignees[0])} - ${kptbUnitName(levels[0].unitId)}. Nội dung: Kính trình Lãnh đạo ký Thông báo chi trả tiền bồi thường.` });
             }
         }
+        // KPTB-S2: Thông báo chi trả Bị trả lại (Lãnh đạo cấp 1 Từ chối) - thử Cập nhật, trình lại từ cấp 1
+        if (dec.decId === 'KPTB-S2') {
+            const levels = kptbLevels(dec.claimCode);
+            if (levels.length) {
+                const assignees = levels.map(lv => lv.leaders[0] || '');
+                const reason = 'Thông tin tài khoản nhận tiền chưa khớp Quyết định giải quyết bồi thường; đề nghị rà soát, trình lại.';
+                it.kptbNotice = { signMethod: 'Ký số', docNo: '36/TB-STP', docDate: '27/10/2026', time: '', place: '', assignees, docFile: { name: `Mau_32_BTNN_Thong_bao_chi_tra_${dec.claimCode}.doc`, generated: true } };
+                it.kptbApproval = { kind: KPTB_KIND, path: levels.map(l => l.unitId), assignees, level: 0, steps: [], content: 'Kính trình Lãnh đạo ký Thông báo chi trả tiền bồi thường.', submittedBy: 'canbonv', submittedAt: '09:00 27/10/2026', pending: false, prevStatus: KPTB_ST.WAIT };
+                it.status = KPTB_ST.REJECT;
+                it.user = 'Nguyễn Văn Cán Bộ';
+                it.kptbReturned = { by: assignees[0], at: '15:30 27/10/2026', reason };
+                it.leaderOpinion = reason; it.approvedDate = '15:30 27/10/2026'; it.approvedLeader = kptbUserName(assignees[0]); it.approvedLeaderId = assignees[0];
+                it.rejectHistory = [{ date: '15:30 27/10/2026', leader: kptbUserName(assignees[0]), opinion: reason }];
+                it.kptbHistory.push({ at: '09:00 27/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Trình ký', note: `${KPTB_KIND}. Trình ${kptbUserName(assignees[0])} - ${kptbUnitName(levels[0].unitId)}.` });
+                it.kptbHistory.push({ at: '15:30 27/10/2026', userId: assignees[0], userName: kptbUserName(assignees[0]), action: 'Từ chối', note: `${KPTB_KIND}: từ chối tại cấp ${kptbUnitName(levels[0].unitId)}. Lý do: ${reason}` });
+            }
+        }
         if (dec.decId === 'KPTB-S5') {
             it.status = KPTB_ST.PAY;
             it.user = 'Nguyễn Văn Cán Bộ';

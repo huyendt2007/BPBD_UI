@@ -32,6 +32,13 @@ var dcgqOnlineFile = null;
 var dcgqOfflineFile = null;
 var dcgqAdvance = null;
 
+// Trạng thái nhánh Giải quyết YCBT (Đình chỉ / Dừng giải quyết chỉ dừng nhánh Giải quyết bồi thường thiệt hại; nhánh Phục hồi danh dự giữ nguyên):
+// vụ việc có yêu cầu bồi thường thiệt hại -> Trạng thái Giải quyết YCBT; vụ việc Chỉ yêu cầu phục hồi danh dự -> Trạng thái vụ việc
+function gqBranchStatus(c) {
+    if (!c) return '';
+    if (typeof isPhddClaim === 'function' && isPhddClaim(c)) return typeof gqldCaseStatus === 'function' ? gqldCaseStatus(c) : c.status;
+    return typeof canonicalClaimStatus === 'function' ? canonicalClaimStatus(c.status) : c.status;
+}
 function dcgqEl(id) { return document.getElementById(id); }
 function dcgqIsOffline() { var r = dcgqEl('dcgqSigningMethodOffline'); return !!(r && r.checked); }
 function dcgqClearErr(id) { var el = dcgqEl(id); if (el) el.classList.remove('is-invalid'); var er = dcgqEl(id + 'Err'); if (er) er.style.display = 'none'; }
@@ -322,7 +329,7 @@ function openDcgqModal(claimId) {
     var claim = gqClaim(claimId);
     if (!claim) return;
     var rec0 = gqRecord(claim);
-    var st0 = typeof gqldCaseStatus === 'function' ? gqldCaseStatus(claim) : claim.status;
+    var st0 = gqBranchStatus(claim);
     var isRet = !!(rec0 && rec0.status === 'Bị trả lại' && rec0.approval && rec0.approval.kind === DCGQ_KIND);
     if (!isRet && DCGQ_SOURCE.indexOf(st0) < 0) { showToast('Trạng thái hồ sơ hiện tại không cho phép Đình chỉ giải quyết.', 'error'); return; }
     dcgqEnsureModal();
@@ -546,7 +553,7 @@ function dcgqGoStep2() {
 // Thương lượng, Chờ ban hành QĐ, Chờ chi trả, Hoàn thành; dữ liệu cũ: Yêu cầu bổ sung, Hoãn giải quyết); trình lại sau "Bị trả lại": giữ trạng thái trước của lần trình đầu
 var DCGQ_STEP_SOURCE = ['Yêu cầu bổ sung', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành'];
 function dcgqPrevStatus(claim) {
-    var st = typeof gqldCaseStatus === 'function' ? gqldCaseStatus(claim) : claim.status;
+    var st = gqBranchStatus(claim);
     if (DCGQ_STEP_SOURCE.indexOf(st) >= 0 || st === 'Hoãn giải quyết') return st;
     return (claim.dinhChi && claim.dinhChi.previousStatus) || claim.hgqPrevStatus || '';
 }

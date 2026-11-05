@@ -435,14 +435,14 @@ function hdcvInit() {
     }
 }
 if (document.readyState === 'complete') setTimeout(hdcvInit, 0); else window.addEventListener('load', function () { setTimeout(hdcvInit, 0); });
-// Màn Ký duyệt / Từ chối (gqld): Thông tin tổng quan hiển thị Thu hồi kinh phí bồi thường đã chi + Lý do không thu hồi của phiếu trình Đình chỉ / Dừng giải quyết
+// Màn Ký duyệt / Từ chối (gqld): Thông tin tổng quan hiển thị Thu hồi kinh phí bồi thường đã chi + Lý do không thu hồi của phiếu trình Đình chỉ giải quyết
 (function () {
     if (typeof window.gqldSummaryHtml !== 'function') return;
     var orig = window.gqldSummaryHtml;
     window.gqldSummaryHtml = function (W, rec) {
         var h = orig.apply(this, arguments);
         var a = (rec && rec.approval) || {}, sd = a.signDoc || {};
-        if ([HDCV_TYPES.dc.kind, 'Dừng giải quyết bồi thường'].indexOf(a.kind) < 0 || !sd.thuHoi || h.slice(-6) !== '</div>') return h;
+        if (a.kind !== HDCV_TYPES.dc.kind || !sd.thuHoi || h.slice(-6) !== '</div>') return h;
         var row = function (k, v) { return '<div class="gqld-row"><span>' + k + '</span><span>' + hdcvE(v) + '</span></div>'; };
         return h.slice(0, -6) + row('Thu hồi kinh phí bồi thường đã chi', sd.thuHoi) + (sd.thuHoi === 'Không thu hồi' ? row('Lý do không thu hồi', sd.thuHoiReason || '-') : '') + '</div>';
     };

@@ -6,8 +6,8 @@
  *   Tệp văn bản trình ký (Sinh văn bản theo mẫu 05/BTNN | Tải lên từ máy), Tài liệu ban hành / không ban hành kèm theo (tlktMount).
  * - Trình: Loại trình "Dừng giải quyết bồi thường" -> Chờ duyệt; Lãnh đạo Từ chối -> Bị trả lại (Cập nhật: điền lại dữ liệu lần trình trước);
  *   cấp cuối Ký duyệt / Ký ngoài ban hành -> "Dừng giải quyết" (trạng thái kết thúc, tab Vụ việc đã xử lý).
- * - Thu hồi kinh phí bồi thường đã chi (Thu hồi | Không thu hồi + Lý do): dùng chung gqth* (quan_ly_boi_thuong_dcgq.js), lưu dungGiaiQuyet / phiếu trình;
- *   liên thông Kinh phí theo lựa chọn (quan_ly_kinh_phi_kpdc.js, nguồn dungGiaiQuyet).
+ * - Tạm ứng kinh phí đã chi (chỉ đọc, không có lựa chọn Thu hồi / Không thu hồi): liệt kê khoản tạm ứng đã chi (chuyển Chờ thu hồi khi ban hành)
+ *   và khoản tạm ứng chưa chi (tự hủy khi ban hành); liên thông Kinh phí chỉ xét bản ghi Tạm ứng (quan_ly_kinh_phi_kpdc.js, nguồn dungGiaiQuyet).
  * - Chỉ dừng nhánh Giải quyết bồi thường thiệt hại; nhánh Phục hồi danh dự giữ nguyên (như Đình chỉ giải quyết).
  * - Khối xem chi tiết "Thông tin dừng giải quyết": mở rộng quan_ly_boi_thuong_hdcv.js (HDCV_TYPES.dgq, hdcvEntries, hdcvEntryHtml).
  * - Dữ liệu mẫu: BT-2026-541 (Chờ duyệt), BT-2026-542 (Bị trả lại), BT-2026-543 (Dừng giải quyết - Ký số), BT-2026-544 (Dừng giải quyết - Ký ngoài);
@@ -21,7 +21,7 @@ var DGQ_DOC_TITLE = 'Thông báo về việc dừng giải quyết yêu cầu b�
 var DGQ_SOURCE = ['Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ'];
 var DGQ_CONTENT_DEFAULT = 'Kính trình Lãnh đạo xem xét, ký duyệt Thông báo về việc dừng giải quyết yêu cầu bồi thường.';
 var DGQ_OFF_MSG = 'Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.';
-var DGQ_SEED_VER = '20261027dgth';
+var DGQ_SEED_VER = '20261104kt2';
 var DGQ_SEED_KEY = 'btnn_dgq_seed_v';
 // Căn cứ dừng giải quyết: điểm b, c, d, đ, e, g khoản 2 Điều 43 (nội dung theo DM_55) -> trả lại hồ sơ; khoản 4 Điều 43 -> chuyển hồ sơ
 // (theo Bảng mapping Mẫu 05/BTNN; nội dung khoản 4 Điều 43 cần user xác nhận)
@@ -44,7 +44,8 @@ function dgqClearErr(id) { var el = dgqEl(id); if (el) el.classList.remove('is-i
 function dgqSetErr(id, msg) { var el = dgqEl(id); if (el) el.classList.add('is-invalid'); var bx = dgqEl(id + 'Box'); if (bx) { bx.classList.add('is-invalid'); el = bx.querySelector('.wf-utree-display') || el; } var er = dgqEl(id + 'Err'); if (er) { er.textContent = msg || 'Đây là trường bắt buộc'; er.style.display = 'block'; } return el; }
 function dgqToday() { var d = new Date(), p2 = function (n) { return String(n).padStart(2, '0'); }; return p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + '/' + d.getFullYear(); }
 function dgqVvCode(claim) { return (typeof claimVvCode === 'function' && claimVvCode(claim)) || claim.code; }
-function dgqCaseStatus(claim) { return typeof gqldCaseStatus === 'function' ? gqldCaseStatus(claim) : claim.status; }
+// Xét theo trạng thái nhánh Giải quyết YCBT (gqBranchStatus - quan_ly_boi_thuong_dcgq.js): nhánh Phục hồi danh dự không ảnh hưởng
+function dgqCaseStatus(claim) { return typeof gqBranchStatus === 'function' ? gqBranchStatus(claim) : (typeof gqldCaseStatus === 'function' ? gqldCaseStatus(claim) : claim.status); }
 function dgqCanCuOf(code) { return DGQ_CAN_CU.filter(function (x) { return x.code === code; })[0] || null; }
 // Lý do mặc định theo căn cứ: nội dung căn cứ bỏ phần (điểm, khoản), chữ đầu viết thường; khoản 4 Điều 43: cán bộ tự nhập
 function dgqDefaultLyDo(code) {
@@ -132,9 +133,28 @@ function dgqFormData() {
     return {
         canCuCode: code, canCuText: c ? c.name : '', canCu: c ? c.canCu : '', bienPhap: c ? c.bp : '',
         lyDo: dgqEl('dgqLyDo').value.trim(), coQuanNhanId: c && c.bp === 'chuyen' ? dgqCqId() : '', coQuanNhan: c && c.bp === 'chuyen' ? dgqCqName(dgqCqId()) : '',
-        docNumber: dgqEl('dgqDocNumber').value.trim(), docDate: dgqEl('dgqDocDate').value.trim(), thuLy: dgqClaim ? dgqThuLy(dgqClaim) : {},
-        thuHoi: typeof gqthData === 'function' ? gqthData('dgq').thuHoi : '', thuHoiReason: typeof gqthData === 'function' ? gqthData('dgq').thuHoiReason : ''
+        docNumber: dgqEl('dgqDocNumber').value.trim(), docDate: dgqEl('dgqDocDate').value.trim(), thuLy: dgqClaim ? dgqThuLy(dgqClaim) : {}
     };
+}
+// Khoản Tạm ứng kinh phí của vụ việc đang hiệu lực (chưa Đã hủy / Chờ thu hồi / Đã thu hồi / Trả lại ngân sách nhà nước): đã chi / chưa chi
+var DGQ_TU_NONE = 'Vụ việc chưa có khoản tạm ứng kinh phí đã chi, không phát sinh thu hồi.';
+function dgqRenderTu(claim) {
+    var box = dgqEl('dgqTuInfo'); if (!box) return;
+    var act = typeof dcgqActiveList === 'function' ? dcgqActiveList(claim) : [];
+    act = act.filter(function (p) { return typeof kpdcIsAdv === 'function' ? kpdcIsAdv(p) : (p.type === 'Cấp tạm ứng' || p.type === 'Đề nghị tạm ứng'); });
+    var isPaid = function (p) { return typeof dcgqIsPaidItem === 'function' ? dcgqIsPaidItem(p) : p.status === 'Hoàn thành'; };
+    var paid = act.filter(isPaid), unpaid = act.filter(function (p) { return !isPaid(p); });
+    var codes = function (l, withAmt) {
+        return l.map(function (x) {
+            var amt = withAmt && typeof kpdcPaidAmount === 'function' ? kpdcPaidAmount(x) : 0;
+            return '<b>' + dgqE(x.code || '') + '</b>' + (amt ? ' (' + amt.toLocaleString('vi-VN') + ' đồng)' : '');
+        }).join(', ');
+    };
+    box.style.fontStyle = act.length ? '' : 'italic';
+    box.style.color = act.length ? '#334155' : '#64748b';
+    box.innerHTML = !act.length ? DGQ_TU_NONE
+        : (paid.length ? 'Khoản tạm ứng đã chi (chuyển Chờ thu hồi khi ban hành văn bản): ' + codes(paid, true) : 'Khoản tạm ứng đã chi: chưa có')
+          + (unpaid.length ? '<br>Khoản tạm ứng chưa chi (tự hủy khi ban hành văn bản): ' + codes(unpaid, false) : '');
 }
 function dgqBuildDoc() { return dgqClaim ? { html: dgqBuildMau05(dgqClaim, dgqFormData()), base: dgqDocBaseName(dgqClaim) } : null; }
 function dgqBienPhapFull(x) { return x.bienPhap === 'chuyen' ? DGQ_BP_LABEL.chuyen + (x.coQuanNhan ? ': ' + x.coQuanNhan : '') : (x.bienPhap ? DGQ_BP_LABEL.tra : ''); }
@@ -157,8 +177,8 @@ function dgqEnsureModal() {
         + '<div class="gqx-field"><label class="form-label">Biện pháp xử lý hồ sơ</label><div id="dgqBienPhap" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:8px 12px; font-size:13px; color:#334155;"></div></div>'
         + dgqField('dgqCoQuanNhan', 'Cơ quan có thẩm quyền giải quyết bồi thường', true, '<div id="dgqCoQuanNhanBox"></div>', 'display:none;')
         + '<div class="gqx-field" style="margin-bottom:0;"><label class="form-label">Thông báo thụ lý hồ sơ yêu cầu bồi thường</label><div id="dgqThuLyInfo" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:8px 12px; font-size:13px; color:#334155;"></div></div>'
-        // Thu hồi kinh phí bồi thường đã chi: chỉ hiển thị khi vụ việc có khoản kinh phí đã chi (dùng chung với Đình chỉ - quan_ly_boi_thuong_dcgq.js)
-        + (typeof gqthHtml === 'function' ? gqthHtml('dgq') : '');
+        // Tạm ứng kinh phí đã chi (chỉ đọc): khoản đã chi chuyển Chờ thu hồi, khoản chưa chi tự hủy khi ban hành văn bản
+        + '<div id="dgqTuBlock" class="gqx-field" style="margin:14px 0 0;"><label class="form-label">Tạm ứng kinh phí đã chi</label><div id="dgqTuInfo" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:8px 12px; font-size:13px; color:#334155;"></div></div>';
     var wrap = document.createElement('div');
     wrap.innerHTML = '<div id="modalDgq" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15, 23, 42, 0.65); backdrop-filter:blur(2px); z-index:9999; justify-content:center; align-items:center;">'
         + '<div id="dgqContainer" class="sticky-modal-container" style="background:#fff; width:850px; max-width:96%; border-radius:10px; display:flex; flex-direction:column; max-height:94vh; overflow:hidden; box-shadow:0 20px 45px rgba(0,0,0,0.3);">'
@@ -256,7 +276,7 @@ function openDgqModal(claimId) {
     dgqCqMount(claim, sd.coQuanNhanId || dgqCqIdOfName(sd.coQuanNhan));
     dgqOnCanCu(true);
     dgqRenderThuLy();
-    if (typeof gqthRender === 'function') gqthRender('dgq', claim, prev ? sd : null);
+    dgqRenderTu(claim);
     var today = dgqToday();
     dgqEl('dgqDocNumber').value = '     /TB-';
     dgqEl('dgqDocDate').value = today;
@@ -338,8 +358,7 @@ function dgqValidateInfo() {
     mark('dgqCanCu', !c);
     mark('dgqLyDo', !dgqEl('dgqLyDo').value.trim());
     mark('dgqCoQuanNhan', !!c && c.bp === 'chuyen' && !dgqCqId());
-    var thErr = typeof gqthValidate === 'function' ? gqthValidate('dgq') : null;
-    return first || thErr;
+    return first;
 }
 function dgqValidateStep1() {
     var first = dgqValidateInfo();
@@ -459,7 +478,7 @@ function dgqPrevStatus(claim) {
     return (claim.dungGiaiQuyet && claim.dungGiaiQuyet.previousStatus) || '';
 }
 function dgqData(x) {
-    return { canCuCode: x.canCuCode, canCuText: x.canCuText, canCu: x.canCu, lyDo: x.lyDo, bienPhap: x.bienPhap, bienPhapText: dgqBienPhapFull(x), coQuanNhan: x.coQuanNhan, coQuanNhanId: x.coQuanNhanId || '', thuLyNo: x.thuLy.no || '', thuLyDate: x.thuLy.date || '', thuHoi: x.thuHoi || '', thuHoiReason: x.thuHoiReason || '' };
+    return { canCuCode: x.canCuCode, canCuText: x.canCuText, canCu: x.canCu, lyDo: x.lyDo, bienPhap: x.bienPhap, bienPhapText: dgqBienPhapFull(x), coQuanNhan: x.coQuanNhan, coQuanNhanId: x.coQuanNhanId || '', thuLyNo: x.thuLy.no || '', thuLyDate: x.thuLy.date || '' };
 }
 // Ký số: trình Lãnh đạo Loại trình "Dừng giải quyết" -> "Chờ duyệt"; cấp cuối Ký duyệt -> "Dừng giải quyết" (dgqOnApplied)
 function dgqSubmitOnline() {
@@ -522,19 +541,18 @@ function dgqIssueOffline() {
     var file = dgqOfflineFile.name;
     var prevSt = dgqPrevStatus(claim);
     var title = 'Ban hành Thông báo dừng giải quyết yêu cầu bồi thường (Ký ngoài)';
-    var thText = typeof dcgqThuHoiText === 'function' ? dcgqThuHoiText(x) : '';
     claim.status = DGQ_RESULT;
     claim.wfReturned = null;
     claim.slaStatus = 'danger';
     claim.slaText = 'Vụ việc đã dừng giải quyết';
     if (!Array.isArray(claim.timeline)) claim.timeline = [];
-    claim.timeline.push({ title: title, date: gqToday(), desc: 'Ban hành văn bản Mẫu 05/BTNN - ' + DGQ_DOC_TITLE + ' đã ký ngoài hệ thống (' + file + '). ' + dgqReasonFull(x) + '.' + (thText ? ' ' + thText : '') + ' Hồ sơ chuyển từ [' + prevSt + '] sang trạng thái [' + DGQ_RESULT + '].', status: 'completed' });
+    claim.timeline.push({ title: title, date: gqToday(), desc: 'Ban hành văn bản Mẫu 05/BTNN - ' + DGQ_DOC_TITLE + ' đã ký ngoài hệ thống (' + file + '). ' + dgqReasonFull(x) + '. Hồ sơ chuyển từ [' + prevSt + '] sang trạng thái [' + DGQ_RESULT + '].', status: 'completed' });
     try {
         var rec = gqEnsureRecord(claim) || gqRecord(claim);
-        if (rec && W) { rec.status = DGQ_RESULT; W.addHistory(rec, title, dgqReasonFull(x) + '. Văn bản đã ký: ' + file + '.' + (thText ? ' ' + thText : '')); W.upsertRecord(rec); }
+        if (rec && W) { rec.status = DGQ_RESULT; W.addHistory(rec, title, dgqReasonFull(x) + '. Văn bản đã ký: ' + file + '.'); W.upsertRecord(rec); }
     } catch (e) { /* mockup: bỏ qua lỗi luồng */ }
     gqSaveData(claim, { status: DGQ_RESULT, dungGiaiQuyet: Object.assign({ fileName: file, signedFile: file, formNo: DGQ_FORM, signingMethod: 'Ký ngoài', previousStatus: prevSt, issuedAt: gqNow(), attachments: typeof tlktGet === 'function' ? tlktGet('dgq') : [] }, dgqData(x)) });
-    // Liên thông Tạm ứng kinh phí / Chi trả: xử lý như Đình chỉ giải quyết (quan_ly_kinh_phi_kpdc.js)
+    // Liên thông Tạm ứng kinh phí (chỉ bản ghi Tạm ứng): đã chi -> Chờ thu hồi, chưa chi -> Đã hủy (quan_ly_kinh_phi_kpdc.js)
     if (typeof kpdcApplyStored === 'function') { try { kpdcApplyStored(claim, gqRecord(claim), 'dungGiaiQuyet'); } catch (e) { /* mockup */ } }
     closeDgqModal();
     saveClaimsToLocal();
@@ -572,7 +590,7 @@ function dgqEntry(claim) {
         var signed = d.signedFile || (method === 'Ký số' && typeof hdcvSignedName === 'function' ? hdcvSignedName(sd.file || d.fileName) : d.fileName);
         return {
             t: 'dgq', state: 'issued', signMode: method, docNo: d.docNumber || sd.docNumber || '', docDate: d.docDate || sd.docDate || '',
-            canCu: d.canCuText || '', lyDo: d.lyDo || '', bienPhap: d.bienPhapText || '', thuHoi: d.thuHoi || sd.thuHoi || '', thuHoiReason: d.thuHoiReason || sd.thuHoiReason || '',
+            canCu: d.canCuText || '', lyDo: d.lyDo || '', bienPhap: d.bienPhapText || '',
             file: signed ? { name: signed, size: '', fileId: '', bodyHtml: method === 'Ký số' ? (d.bodyHtml || (a && a.kind === DGQ_KIND && a.draftDoc ? a.draftDoc.bodyHtml : '') || '') : '' } : null,
             docs: hdcvRows(d.attachments || sd.attachments || [])
         };
@@ -585,7 +603,7 @@ function dgqEntry(claim) {
     var draftName = (dd.source === 'uploaded' ? dd.uploadedName : dd.generatedName) || (s.docFileMeta && s.docFileMeta.name) || s.file || '';
     return {
         t: 'dgq', state: pend ? 'pending' : 'rejected', signMode: 'Ký số', docNo: s.docNumber || '', docDate: s.docDate || '',
-        canCu: s.canCuText || '', lyDo: s.lyDo || '', bienPhap: s.bienPhapText || '', thuHoi: s.thuHoi || '', thuHoiReason: s.thuHoiReason || '',
+        canCu: s.canCuText || '', lyDo: s.lyDo || '', bienPhap: s.bienPhapText || '',
         file: draftName ? { name: draftName, size: (s.docFileMeta && s.docFileMeta.size) || '', fileId: (s.docFileMeta && s.docFileMeta.keepId) || '', bodyHtml: dd.source === 'generated' ? (dd.bodyHtml || '') : '', draft: true } : null,
         docs: hdcvRows(s.attachments || []),
         rejectReason: rej ? rec.returned.reason || '' : ''
@@ -598,8 +616,6 @@ function dgqEntryHtml(e, withTitle) {
     if (withTitle || e.state !== 'issued') h += '<div class="hdcv-sub">Dừng giải quyết yêu cầu bồi thường<small>(' + hdcvE(stTxt) + ')</small></div>';
     h += '<div class="hdcv-grid">' + hdcvField('Số văn bản', e.docNo) + hdcvField('Ngày văn bản', e.docDate) + hdcvField('Hình thức ký', e.signMode === 'Ký ngoài' ? 'Ký ngoài (Ban hành trực tiếp)' : (e.signMode ? 'Ký số trên hệ thống' : ''))
         + hdcvField('Căn cứ dừng giải quyết', e.canCu, true) + hdcvField('Lý do dừng giải quyết', e.lyDo, true) + hdcvField('Biện pháp xử lý hồ sơ', e.bienPhap, true);
-    // Thu hồi kinh phí bồi thường đã chi: chỉ khi có lựa chọn (vụ việc có khoản kinh phí đã chi lúc trình / ban hành)
-    if (e.thuHoi) h += hdcvField('Thu hồi kinh phí bồi thường đã chi', e.thuHoi) + (e.thuHoi === 'Không thu hồi' ? hdcvField('Lý do không thu hồi', e.thuHoiReason, true) : '');
     if (e.state === 'rejected') h += hdcvField('Lý do bị trả lại', e.rejectReason, true);
     h += '<div class="hdcv-f hdcv-full"><span class="hdcv-l">File Thông báo dừng giải quyết</span>' + hdcvFileHtml(e.file) + '</div>';
     h += typeof tlktSplitRender === 'function'
@@ -609,13 +625,13 @@ function dgqEntryHtml(e, withTitle) {
 }
 
 // =====================================================================
-// Dữ liệu mẫu: BT-2026-541 Chờ duyệt (Thu hồi) | BT-2026-542 Bị trả lại | BT-2026-543 Dừng giải quyết (Ký số, Thu hồi) | BT-2026-544 Dừng giải quyết (Ký ngoài, Không thu hồi)
+// Dữ liệu mẫu: BT-2026-541 Chờ duyệt (có tạm ứng đã chi) | BT-2026-542 Bị trả lại | BT-2026-543 Dừng giải quyết (Ký số, tạm ứng Chờ thu hồi) | BT-2026-544 Dừng giải quyết (Ký ngoài, từ Cử người giải quyết bồi thường, chưa có kinh phí)
 // =====================================================================
 var DGQ_SEEDS = [
-    { id: 'DGQ_CD', code: 'BT-2026-541', nyc: 'Tạ Quang Vinh', mode: 'submit', canCu: 'DGQ_B', prev: 'Xác minh thiệt hại', thuHoi: 'Thu hồi' },
+    { id: 'DGQ_CD', code: 'BT-2026-541', nyc: 'Tạ Quang Vinh', mode: 'submit', canCu: 'DGQ_B', prev: 'Xác minh thiệt hại' },
     { id: 'DGQ_TC', code: 'BT-2026-542', nyc: 'Mai Thị Thanh Hương', mode: 'reject', canCu: 'DGQ_C', prev: 'Thương lượng', rejectReason: 'Đề nghị nêu rõ hành vi của người thi hành công vụ không thuộc phạm vi trách nhiệm bồi thường tại Chương II của Luật.' },
-    { id: 'DGQ_KS', code: 'BT-2026-543', nyc: 'Lục Văn Thành', mode: 'approve', canCu: 'DGQ_D', prev: 'Chờ ban hành QĐ', thuHoi: 'Thu hồi' },
-    { id: 'DGQ_KN', code: 'BT-2026-544', nyc: 'Công ty TNHH Thương mại Hòa Bình', mode: 'offline', canCu: 'DGQ_K4', prev: 'Cử người giải quyết bồi thường', coQuanId: 'UBND-HN', thuHoi: 'Không thu hồi', thuHoiReason: 'Khoản tạm ứng đã được chi cho thiệt hại có thật và sẽ được cơ quan có thẩm quyền giải quyết bồi thường xem xét khấu trừ.' }
+    { id: 'DGQ_KS', code: 'BT-2026-543', nyc: 'Lục Văn Thành', mode: 'approve', canCu: 'DGQ_D', prev: 'Chờ ban hành QĐ' },
+    { id: 'DGQ_KN', code: 'BT-2026-544', nyc: 'Công ty TNHH Thương mại Hòa Bình', mode: 'offline', canCu: 'DGQ_K4', prev: 'Cử người giải quyết bồi thường', coQuanId: 'UBND-HN' }
 ];
 function dgqSeedClaim(s, tpl) {
     var c = JSON.parse(JSON.stringify(tpl));
@@ -635,7 +651,7 @@ function dgqSeedClaim(s, tpl) {
 function dgqSeedX(s, c) {
     var cc = dgqCanCuOf(s.canCu);
     var lyDo = s.canCu === 'DGQ_K4' ? 'yêu cầu bồi thường thuộc thẩm quyền giải quyết của cơ quan khác' : dgqDefaultLyDo(s.canCu);
-    return { canCuCode: s.canCu, canCuText: cc.name, canCu: cc.canCu, bienPhap: cc.bp, lyDo: lyDo, coQuanNhanId: s.coQuanId || '', coQuanNhan: s.coQuanId ? dgqCqName(s.coQuanId) : '', docNumber: s.mode === 'offline' ? '' : s.code.replace(/^BT-2026-/, '') + '/TB-STP', docDate: s.mode === 'offline' ? '' : dgqToday(), thuLy: dgqThuLy(c), thuHoi: s.thuHoi || '', thuHoiReason: s.thuHoiReason || '' };
+    return { canCuCode: s.canCu, canCuText: cc.name, canCu: cc.canCu, bienPhap: cc.bp, lyDo: lyDo, coQuanNhanId: s.coQuanId || '', coQuanNhan: s.coQuanId ? dgqCqName(s.coQuanId) : '', docNumber: s.mode === 'offline' ? '' : s.code.replace(/^BT-2026-/, '') + '/TB-STP', docDate: s.mode === 'offline' ? '' : dgqToday(), thuLy: dgqThuLy(c) };
 }
 function dgqSeed() {
     var W = typeof gqW === 'function' ? gqW() : null;

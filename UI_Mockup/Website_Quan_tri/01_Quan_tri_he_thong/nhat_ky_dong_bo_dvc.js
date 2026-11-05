@@ -10,7 +10,7 @@
 var NKDV_SEED_VER = '20261030dvc4';
 var NKDV_KEY = 'btnn_dvc_sync_log';
 var NKDV_KEY_VER = 'btnn_dvc_sync_log_ver';
-// 19 bước theo Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.1 (thứ tự theo luồng)
+// 20 bước theo Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.1 (thứ tự theo luồng)
 var NKDV_STEPS = [
     ['YEU_CAU_BO_SUNG', 'Thông báo về việc yêu cầu bổ sung hồ sơ yêu cầu bồi thường (Mẫu 03/BTNN)'],
     ['THONG_BAO_KHONG_THU_LY', 'Thông báo không thụ lý hồ sơ yêu cầu bồi thường (Mẫu 04/BTNN)'],
@@ -30,7 +30,8 @@ var NKDV_STEPS = [
     ['THONG_BAO_CHI_TRA', 'Thông báo về việc chi trả tiền bồi thường (Mẫu 32/BTNN)'],
     ['Y_KIEN_TU_CHOI_PHUC_HOI_DANH_DU', 'Ý kiến từ chối phục hồi danh dự (vụ việc chỉ yêu cầu phục hồi danh dự)'],
     ['Y_KIEN_DE_NGHI_CHUA_THUC_HIEN_PHDD', 'Ý kiến đề nghị chưa thực hiện phục hồi danh dự (vụ việc chỉ yêu cầu phục hồi danh dự)'],
-    ['VU_VIEC_HOAN_THANH', 'Vụ việc chuyển Hoàn thành']
+    ['VU_VIEC_HOAN_THANH', 'Vụ việc chuyển Hoàn thành'],
+    ['GIAI_QUYET_LAI', 'Giải quyết lại (gửi trạng thái vụ việc sau giải quyết lại, không gửi tệp)']
 ];
 var NKDV_CASE = {
     CU_NGUOI_GIAI_QUYET: 'Cử người giải quyết bồi thường', XAC_MINH_THIET_HAI: 'Xác minh thiệt hại', THUONG_LUONG: 'Thương lượng',

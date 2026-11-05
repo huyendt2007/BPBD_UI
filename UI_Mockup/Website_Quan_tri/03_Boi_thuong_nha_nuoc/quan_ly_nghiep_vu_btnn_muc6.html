@@ -907,7 +907,7 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script>
         const PV = window.BTNN_PHAMVI;
@@ -1555,7 +1555,11 @@
         const showUnitCol = () => stpScope && PV.isBtp();
         // Dữ liệu mẫu: dòng 1-6 của Sở Tư pháp Thành phố Hà Nội, dòng 7-10 của Sở Tư pháp Thành phố Hồ Chí Minh, dòng 11-14 của Sở Tư pháp Thành phố Hải Phòng
         const seedUnitOf = i => i < 6 ? 'STP-HN' : i < 10 ? 'STP-HCM' : 'STP-HP';
-        const isOwnRow = row => !stpScope || PV.canEdit(PV.ownerOf(row));
+        // Nhóm "Nghiệp vụ dùng cho BTP": chỉ cán bộ Bộ Tư pháp (Cục) được thêm mới, sửa, xóa; đơn vị khác chỉ xem
+        const BTP_ONLY_MODULES = ['hop_tac_quoc_te', 'phoi_hop_tand_vksnd', 'csdl_lien_quan_btnn'];
+        const btpOnlyLocked = BTP_ONLY_MODULES.includes(moduleKey) && !PV.isBtp();
+        const lockReason = btpOnlyLocked ? 'Chỉ cán bộ Bộ Tư pháp được thao tác' : 'Bản ghi của đơn vị khác';
+        const isOwnRow = row => !btpOnlyLocked && (!stpScope || PV.canEdit(PV.ownerOf(row)));
         // Cán bộ xử lý: cán bộ đã nhập bản ghi (người tạo). Module có sẵn cột Cán bộ xử lý trong dữ liệu (Hỗ trợ người bị thiệt hại) lấy theo cột đó;
         // module khác hiển thị thêm cột Cán bộ xử lý trước cột trạng thái (không có trạng thái: trước cột Thao tác)
         const OFFICER_COL = 'Cán bộ xử lý';
@@ -2000,9 +2004,9 @@
                 return `
                     <div style="display:flex; gap:6px; justify-content:center;">
                         ${config.simple ? `<button data-admin-icon-normalized="1" class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); openForm('view', ${index})"><i class="fa-solid fa-eye"></i></button>` : ''}
-                        ${off('edit', 'fa-pen-to-square', 'Bản ghi của đơn vị khác, không được sửa')}
-                        ${off('delete', 'fa-trash', 'Bản ghi của đơn vị khác, không được xóa')}
-                        ${config.simple ? '' : off('sign', 'fa-reply', 'Bản ghi của đơn vị khác, không được cập nhật phản hồi')}
+                        ${off('edit', 'fa-pen-to-square', `${lockReason}, không được sửa`)}
+                        ${off('delete', 'fa-trash', `${lockReason}, không được xóa`)}
+                        ${config.simple ? '' : off('sign', 'fa-reply', `${lockReason}, không được cập nhật phản hồi`)}
                     </div>
                 `;
             }
@@ -2473,7 +2477,7 @@
             const actions = document.getElementById('formActions');
             if (mode === 'view') {
                 // Module kiến nghị/yêu cầu: chỉ cho Sửa, Xóa khi bản ghi chưa có phản hồi; bản ghi của đơn vị khác: chỉ có nút Đóng
-                if (stpScope && !isOwnRow(rows[selectedRowIndex])) {
+                if ((stpScope || btpOnlyLocked) && !isOwnRow(rows[selectedRowIndex])) {
                     actions.innerHTML = `<button class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>`;
                     return;
                 }
@@ -2909,23 +2913,32 @@
             okBtn.innerHTML = 'Đồng ý';
         }
 
+        // Xóa mềm [BR-DEL-001]: không xóa vật lý; bản ghi chuyển sang kho đã xóa kèm Người xóa, Thời điểm xóa, dữ liệu giữ nguyên (mockup)
+        const deletedRows = [];
+        function softDeleteRow(index) {
+            const row = rows[index];
+            if (!row) return;
+            const W = window.BTNN_WF;
+            deletedRows.push({ module: moduleKey, row: row.slice(), isDeleted: 1, deletedBy: W ? W.getCurrentUserId() : '', deletedByName: W ? W.userName(W.getCurrentUserId()) : '', deletedAt: W ? W.nowText() : new Date().toLocaleString('vi-VN') });
+            rows.splice(index, 1);
+        }
         function confirmDelete(index) {
             if (currentFeature === 'giai_dap_vuong_mac') {
                 confirmCallback = () => {
-                    rows.splice(index, 1);
+                    softDeleteRow(index);
                     renderTable();
                     showToast('Xóa bản ghi giải đáp vướng mắc thành công. [MSG-SUC-SYS-002]');
                 };
-                document.getElementById('confirmText').innerText = 'Bạn có chắc chắn muốn xóa vĩnh viễn bản ghi giải đáp vướng mắc này không? [MSG-CFM-SYS-001]';
+                document.getElementById('confirmText').innerText = 'Bạn có chắc chắn muốn xóa bản ghi giải đáp vướng mắc này không? [MSG-CFM-SYS-001]';
                 document.getElementById('confirmModal').classList.add('visible');
                 return;
             }
             confirmCallback = () => {
-                rows.splice(index, 1);
+                softDeleteRow(index);
                 renderTable();
                 showToast('Đã xóa bản ghi.');
             };
-            document.getElementById('confirmText').innerText = 'Bạn có chắc chắn muốn xóa vĩnh viễn bản ghi này không?';
+            document.getElementById('confirmText').innerText = 'Bạn có chắc chắn muốn xóa bản ghi này không?';
             document.getElementById('confirmModal').classList.add('visible');
         }
 
@@ -3166,6 +3179,7 @@
                 if (PV.canCreate(true)) addBtn.style.removeProperty('display');
                 else addBtn.style.setProperty('display', 'none', 'important');
             }
+            if (btpOnlyLocked) document.getElementById('btnAddNew').style.setProperty('display', 'none', 'important');
             currentPage = 1;
             renderTable();
         }

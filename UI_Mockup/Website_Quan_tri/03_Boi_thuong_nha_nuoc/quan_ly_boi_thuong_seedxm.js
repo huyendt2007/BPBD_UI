@@ -278,13 +278,9 @@ var SXM_WF = [
     { id: 'SXM_TC_HGQ', code: 'BT-2026-516', who: 'p10', k: [12, 10], base: 'xac-minh', kind: 'Hoãn giải quyết bồi thường', result: 'Hoãn giải quyết', mode: 'reject', t: 'hgq', rejectReason: 'Thời hạn hoãn đề nghị chưa có căn cứ; bổ sung văn bản của tổ chức thẩm định giá.' },
     { id: 'SXM_CD_CN', code: 'BT-2026-511', who: 'p11', k: [13], base: 'cu-nguoi', kind: 'Cử người giải quyết bồi thường', result: 'Xác minh thiệt hại', mode: 'submit', t: 'cn' },
     { id: 'SXM_TC_CN', code: 'BT-2026-517', who: 'p12', k: [13], base: 'cu-nguoi', kind: 'Cử người giải quyết bồi thường', result: 'Xác minh thiệt hại', mode: 'reject', t: 'cn', rejectReason: 'Đề nghị cử thêm 01 cán bộ có chuyên môn thẩm định giá tham gia giải quyết.' },
-    { id: 'SXM_TC_QD', code: 'BT-2026-518', who: 'p13', k: [14, 13, 10, 7], base: 'cho-qd', kind: 'Quyết định GQBT', result: 'Chờ chi trả', mode: 'reject', t: 'qd', rejectReason: 'Số tiền bồi thường tại dự thảo chưa khớp Biên bản thương lượng; đề nghị rà soát lại.' },
     { id: 'SXM_TC_CQ', code: 'BT-2026-519', who: 'p14', k: [15, 14], base: 'xac-minh', kind: 'Chuyển CQGQBT', result: '', mode: 'reject', t: 'cq', rejectReason: 'Chưa đủ căn cứ xác định cơ quan giải quyết bồi thường khác; đề nghị làm rõ cơ quan quản lý người thi hành công vụ.' },
-    { id: 'SXM_CD_HUY', code: 'BT-2026-512', who: 'p15', k: [15, 14, 11, 8, 5], base: 'cho-thuc-thi', kind: 'Hủy QĐ', result: 'Chờ ban hành QĐ', mode: 'submit', t: 'huy' },
-    { id: 'SXM_CD_SUA', code: 'BT-2026-513', who: 'p16', k: [16, 15, 12, 9, 6], base: 'cho-thuc-thi', kind: 'Sửa chữa, bổ sung QĐ', result: 'Chờ chi trả', mode: 'submit', t: 'sua' },
+    // Bỏ BT-2026-512 (Chờ duyệt Hủy QĐ), BT-2026-513 (Chờ duyệt Sửa chữa, bổ sung QĐ); bỏ BT-2026-518 (Bị trả lại Quyết định GQBT), BT-2026-521 (Bị trả lại Hủy QĐ), BT-2026-522 (Bị trả lại Sửa chữa, bổ sung QĐ): Lãnh đạo không ký duyệt Loại trình Quyết định GQBT / Hủy QĐ / Sửa chữa tại phân hệ Giải quyết YCBT
     { id: 'SXM_TC_TTGQ', code: 'BT-2026-520', who: 'p17', k: [16, 15, 12], base: 'thuong-luong', pause: ['tdc', 8], kind: 'Tiếp tục giải quyết bồi thường', result: 'Thương lượng', mode: 'reject', t: 'ttgq', rejectReason: 'Chưa có văn bản của Tòa án về kết quả giải quyết vụ án hành chính có liên quan.' },
-    { id: 'SXM_TC_HUY', code: 'BT-2026-521', who: 'p18', k: [17, 16, 13, 10, 7], base: 'cho-thuc-thi', kind: 'Hủy QĐ', result: 'Chờ ban hành QĐ', mode: 'reject', t: 'huy', rejectReason: 'Căn cứ hủy Quyết định chưa rõ; đề nghị bổ sung văn bản của cơ quan có thẩm quyền.' },
-    { id: 'SXM_TC_SUA', code: 'BT-2026-522', who: 'p19', k: [17, 16, 13, 10, 7], base: 'cho-thuc-thi', kind: 'Sửa chữa, bổ sung QĐ', result: 'Chờ chi trả', mode: 'reject', t: 'sua', rejectReason: 'Nội dung sửa chữa chưa nêu rõ điều khoản được sửa đổi.' }
 ];
 var SXM_WF_TEXT = {
     hgq: { title: 'Quyết định hoãn giải quyết bồi thường', form: 'Mẫu số 22/BTNN', reason: 'Chờ kết quả định giá tài sản của tổ chức thẩm định giá.', file: 'Du_thao_QD_hoan_giai_quyet_' },
@@ -405,8 +401,9 @@ function sxmSeedSubmit() {
             }
             var rec = gqEnsureRecord(c);
             if (!rec) return;
-            // Hồ sơ luồng Cử người tự tạo với cán bộ chủ trì mặc định của đơn vị gốc: gán cán bộ giả lập mặc định (cùng luồng phê duyệt các hồ sơ mẫu khác)
-            var acting = gqActingUserId();
+            // Hồ sơ luồng Cử người tự tạo với cán bộ chủ trì mặc định của đơn vị gốc: gán cán bộ giả lập mặc định nếu thuộc cơ quan giải quyết của hồ sơ;
+            // khác đơn vị gốc: cán bộ thụ lý của cơ quan giải quyết (luồng trình ký theo đúng đơn vị)
+            var acting = typeof gqOfficerInRoot === 'function' ? gqOfficerInRoot(gqActingUserId(), rec.rootUnitId) : gqActingUserId();
             if (acting && rec.chuTri !== acting && typeof W.loadRecords === 'function' && typeof W.saveRecords === 'function') {
                 var all = W.loadRecords() || [];
                 var r = all.find(function (x) { return x && x.code === c.code; });

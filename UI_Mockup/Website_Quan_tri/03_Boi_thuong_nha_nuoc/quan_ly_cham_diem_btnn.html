@@ -1084,6 +1084,7 @@
                         <input type="text" class="form-control" id="filterToDate" placeholder="dd/mm/yyyy">
                         <i class="fa-regular fa-calendar-days"></i>
                     </div>
+                    <div id="filterDateErr" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Từ ngày không được lớn hơn Đến ngày</div>
                 </div>
             </div>
 
@@ -1769,20 +1770,17 @@
             // Initialize flatpickr DatePickers
             let fpFrom, fpTo;
             try {
+                // Hạn nộp từ/đến: mặc định trống (hạn nộp của kỳ là 08/12, mặc định theo tháng hiện tại sẽ ẩn các kỳ)
                 fpFrom = flatpickr("#filterFromDate", {
                     dateFormat: "d/m/Y",
-                    defaultDate: defaultFromDateStr,
                     allowInput: true
                 });
                 fpTo = flatpickr("#filterToDate", {
                     dateFormat: "d/m/Y",
-                    defaultDate: defaultToDateStr,
                     allowInput: true
                 });
             } catch (e) {
                 console.warn("flatpickr library is not loaded:", e);
-                document.getElementById('filterFromDate').value = defaultFromDateStr;
-                document.getElementById('filterToDate').value = defaultToDateStr;
             }
 
             // Add calendar click handler to trigger flatpickr
@@ -2017,6 +2015,14 @@
             const stpVal = (tsStp && typeof tsStp.getValue === "function") ? tsStp.getValue() : document.getElementById('filterStp').value;
             const statusVal = document.getElementById('filterStatus').value;
             const gradeVal = document.getElementById('filterGrade').value;
+            // Hạn nộp từ/đến ngày: [BR-VAL-007] Từ ngày lớn hơn Đến ngày -> [MSG-ERR-VAL-007] inline, không tìm kiếm
+            const dateNum = s => { const m = String(s || '').trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/); return m ? +(m[3] + m[2] + m[1]) : null; };
+            const fromEl = document.getElementById('filterFromDate'), toEl = document.getElementById('filterToDate');
+            const fromN = dateNum(fromEl.value), toN = dateNum(toEl.value);
+            const dateErr = fromN !== null && toN !== null && fromN > toN;
+            document.getElementById('filterDateErr').style.display = dateErr ? 'block' : 'none';
+            [fromEl, toEl].forEach(el => el.style.borderColor = dateErr ? '#dc2626' : '');
+            if (dateErr) { fromEl.focus(); return; }
 
             let allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5')) || [];
 
@@ -2025,6 +2031,9 @@
                 if (stpVal && item.unit !== stpVal) return false;
                 if (statusVal && item.status !== statusVal) return false;
                 if (gradeVal && item.grade !== gradeVal) return false;
+                const dl = dateNum(item.deadline);
+                if (fromN !== null && (dl === null || dl < fromN)) return false;
+                if (toN !== null && (dl === null || dl > toN)) return false;
                 return true;
             });
 
@@ -2161,6 +2170,8 @@
 
             document.getElementById('filterStatus').value = "";
             document.getElementById('filterGrade').value = "";
+            ['filterFromDate', 'filterToDate'].forEach(id => { const el = document.getElementById(id); if (el._flatpickr) el._flatpickr.clear(); else el.value = ""; el.style.borderColor = ''; });
+            document.getElementById('filterDateErr').style.display = 'none';
 
             if (activeRole !== 'stp') {
                 if (tsStp && typeof tsStp.setValue === "function") tsStp.setValue("");

@@ -9,7 +9,7 @@
  * - Lãnh đạo cấp cuối Ký duyệt / Ký ngoài ban hành: áp nội dung Form vào Quyết định (Số, Ngày, File giữ của Quyết định gốc);
  *   có thay đổi Số tiền / người nhận / phương thức chi trả: ghi sự kiện liên thông 'btnn_kpqd_events_v1' (phân hệ Kinh phí xử lý khi tải trang,
  *   quan_ly_kinh_phi_kpqd.js). Không có thay đổi: không tác động kinh phí.
- * - Hủy QĐ (Ký duyệt cấp cuối / Ký ngoài): ghi sự kiện liên thông Hủy QĐ.
+ * - Hủy QĐ: không liên thông Kinh phí (không ghi sự kiện).
  * - Danh sách / Chi tiết: Số tiền, người nhận theo nội dung hiện hành, nhãn "Theo QĐ sửa chữa, bổ sung lần n".
  */
 var SCBF_EVT_KEY = 'btnn_kpqd_events_v1';
@@ -265,12 +265,6 @@ function scbfEvent(ev) {
     q.push(ev);
     scbfWrite(SCBF_EVT_KEY, q);
 }
-function scbfCancelEvent(d) {
-    var c = d.cancel || {}, sd = c.signDoc || {};
-    scbfEvent({ kind: 'huy', id: d.id + ':huy', decId: d.id, claimCode: d.claimCode, decNo: d.decNo || '', decDate: d.issueDate || '',
-        docNo: sd.docNo && sd.docNo.replace(/\s+/g, '') !== '/QĐ-' ? sd.docNo.trim() : '', docDate: sd.docDate || String(c.at || '').split(' ').pop(), signMethod: c.signMethod || 'Ký số',
-        file: c.signedFile || (c.draftDoc ? (c.draftDoc.uploadedName || c.draftDoc.generatedName || '') : ''), content: c.content || '', at: c.at || W.nowText() });
-}
 
 // ---------- Bọc chức năng sẵn có ----------
 (function () {
@@ -316,24 +310,16 @@ function scbfCancelEvent(d) {
         }
         return r;
     };
-    var origHqdOff = hqdIssueOffline;
-    hqdIssueOffline = function () {
-        var id = hqd && hqd.id; var r = origHqdOff.apply(this, arguments);
-        var d = id ? getDec(id) : null;
-        if (d && d.status === ST.DA_HUY) scbfCancelEvent(d);
-        return r;
-    };
     // Lãnh đạo cấp cuối Ký duyệt (đồng bộ từ hồ sơ luồng)
     var origSync = syncFromWorkflow;
     syncFromWorkflow = function () {
         var pend = {};
-        (decisions || []).forEach(function (d) { if (d && d.status === ST.CHO_DUYET && (d.wfKind === KIND_SC || d.wfKind === KIND_HUY)) pend[d.id] = { kind: d.wfKind, len: (d.amendments || []).length }; });
+        (decisions || []).forEach(function (d) { if (d && d.status === ST.CHO_DUYET && d.wfKind === KIND_SC) pend[d.id] = { kind: d.wfKind, len: (d.amendments || []).length }; });
         var r = origSync.apply(this, arguments);
         var ch = false;
         Object.keys(pend).forEach(function (id) {
             var d = getDec(id); if (!d) return;
             if (pend[id].kind === KIND_SC && d.status !== ST.CHO_DUYET && (d.amendments || []).length > pend[id].len) { if (scbfApplyAmend(d, d.amendments[d.amendments.length - 1])) ch = true; }
-            if (pend[id].kind === KIND_HUY && d.status === ST.DA_HUY) { scbfCancelEvent(d); }
         });
         if (ch) saveDecisions();
         return r;

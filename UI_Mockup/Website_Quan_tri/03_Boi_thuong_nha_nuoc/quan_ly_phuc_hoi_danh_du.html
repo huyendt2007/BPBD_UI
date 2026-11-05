@@ -2398,7 +2398,7 @@
             const s = String(value || "").trim();
             if (/bưu/i.test(s)) return "Qua dịch vụ bưu chính";
             if (/dịch vụ công|môi trường số|dvc/i.test(s)) return "Dịch vụ công";
-            if (/một cửa/i.test(s)) return "Bộ phận Một cửa";
+            if (/một cửa/i.test(s)) return "Trực tiếp";
             return s || "Trực tiếp";
         }
         function openDetailPage(id) {

@@ -82,7 +82,7 @@ function sdxNeg(c, date, pay, rights) {
 function sdxDec(c, no, date, signer, position, content) {
     var amount = c.xmTotalAmount;
     return Object.assign(c, {
-        decStatus: 'Hoàn thành', decNo: no, decDate: date, decPublishDate: date, decEffectiveDate: date,
+        decStatus: 'Đã ban hành', decNo: no, decDate: date, decPublishDate: date, decEffectiveDate: date,
         decSigner: signer, decPosition: position, decAmount: amount,
         decContent: content || ('Bồi thường cho ' + c.nyc + ' số tiền ' + sdxMoney(amount) + ' đồng theo kết quả thương lượng.'),
         decFile: 'QD_GQBT_' + c.code + '_da_ky.pdf'

@@ -394,7 +394,6 @@
                             <option value="">Tất cả</option>
                             <option value="Dịch vụ công">Dịch vụ công</option>
                             <option value="Trực tiếp">Trực tiếp</option>
-                            <option value="Bộ phận Một cửa">Bộ phận Một cửa</option>
                             <option value="Qua dịch vụ bưu chính">Qua dịch vụ bưu chính</option>
                         </select>
                     </div>
@@ -893,8 +892,8 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261030s2"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261104mh1"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script>
         // Người dùng đăng nhập (giả lập) - cán bộ tiếp nhận
@@ -909,7 +908,7 @@
         const SEED_VERSION = "v8-20261030s2";
         // Các trạng thái hồ sơ thuộc phạm vi phân công của màn Tiếp nhận hồ sơ
         const RECEPTION_STATUSES = ["Chờ phân công", "Đang phân công"];
-        // Nguồn hồ sơ (04 giá trị) và Hình thức tiếp nhận (Danh mục DM_25, 04 giá trị)
+        // Nguồn hồ sơ (04 giá trị) và Hình thức tiếp nhận (Danh mục DM_25, 03 giá trị)
         const SOURCES = BTNN_WF.SOURCES;
         const RECEIVE_METHODS = BTNN_WF.RECEIVE_METHODS;
         let claimsList = [];
@@ -1446,7 +1445,7 @@
             if (!item) return SOURCES.TIEP_NHAN;
             return BTNN_LD.sourceOf({ nguonHoSo: item.nguonHoSo });
         }
-        // Hình thức tiếp nhận của hồ sơ luồng (DM_25, 04 giá trị); dữ liệu cũ lưu hình thức tại trường Nguồn hồ sơ
+        // Hình thức tiếp nhận của hồ sơ luồng (DM_25, 03 giá trị); dữ liệu cũ lưu hình thức tại trường Nguồn hồ sơ
         function getRecordReceiveMethod(rec) {
             const raw = rec.hinhThucTiepNhan || (Object.values(SOURCES).includes(rec.nguonHoSo) ? "" : rec.nguonHoSo);
             const m = BTNN_WF.normalizeReceiveMethod(raw);
@@ -1460,7 +1459,8 @@
         }
         // Dòng hiển thị từ hồ sơ luồng (hồ sơ không thuộc danh sách tiếp nhận của cán bộ đang đăng nhập)
         function rowFromRecord(rec) {
-            const claim = claimsList.find(item => item.code === rec.code && !item.deleted);
+            // Hồ sơ đã vào phân hệ (Mã hồ sơ XD- / BT-): dòng tiếp nhận theo mã tại Tiếp nhận hồ sơ (receptionCode)
+            const claim = claimsList.find(item => (item.code === rec.code || (rec.receptionCode && item.code === rec.receptionCode)) && !item.deleted);
             if (claim) return claim;
             return {
                 id: "WF:" + rec.code, code: rec.code, maVuViec: rec.maVuViec || "", nyc: rec.nycName, nycPhone: rec.nycPhone || "",
@@ -1548,7 +1548,7 @@
             toggleRequestKindGroup();
         }
 
-        // Hình thức tiếp nhận (DM_25): bộ lọc gồm Tất cả + 04 giá trị; form Tiếp nhận mới chỉ gồm Trực tiếp, Qua dịch vụ bưu chính
+        // Hình thức tiếp nhận (DM_25): bộ lọc gồm Tất cả + 03 giá trị; form Tiếp nhận mới chỉ gồm Trực tiếp, Qua dịch vụ bưu chính
         function initReceiveMethodOptions() {
             const toOpts = list => list.map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}</option>`).join("");
             document.getElementById("filterReceiveMethod").innerHTML = `<option value="">Tất cả</option>${toOpts(BTNN_WF.RECEIVE_METHOD_ORDER)}`;
@@ -2055,7 +2055,7 @@
                     return `
                         <tr onclick="handleRowClick('${escapeAttr(item.id)}')">
                             <td style="text-align:center;">${start + idx + 1}</td>
-                            <td class="code-cell">${escapeHtml(item.maVuViec || item.code || "--")}${item.maVuViec && item.code && item.maVuViec !== item.code ? `<div class="muted" style="font-weight:400;" title="Mã hồ sơ">${escapeHtml(item.code)}</div>` : ""}</td>
+                            <td class="code-cell">${escapeHtml(item.maVuViec || item.code || "--")}${(() => { const hs = rec && rec.code ? rec.code : item.code; return (item.maVuViec || item.code) && hs && (item.maVuViec || item.code) !== hs ? `<div class="muted" style="font-weight:400;" title="Mã hồ sơ">${escapeHtml(hs)}</div>` : ""; })()}</td>
                             <td><strong>${escapeHtml(item.nyc || "--")}</strong></td>
                             <td>${escapeHtml(item.requestType || REQUEST_TYPE_YCBT)}</td>
                             <td><span class="badge ${getSourceBadge(source)}">${escapeHtml(source)}</span></td>
@@ -2155,7 +2155,7 @@
             const opt = Array.from(document.querySelectorAll("#formFieldGroup option")).find(o => o.value && o.textContent.trim() === String(name).trim());
             return opt ? opt.value : name;
         }
-        // Ô chọn chỉ đọc: giá trị ngoài danh sách (VD Hình thức tiếp nhận Bộ phận Một cửa) thêm tạm để hiển thị đúng dữ liệu
+        // Ô chọn chỉ đọc: giá trị ngoài danh sách (VD Hình thức tiếp nhận do hệ thống gán) thêm tạm để hiển thị đúng dữ liệu
         function setSelectDisplay(id, value) {
             const el = document.getElementById(id);
             if (!el) return;
@@ -2773,7 +2773,6 @@
 
         function getReceiveMethodBadge(value) {
             if (value === RECEIVE_METHODS.MOI_TRUONG_SO) return "badge-success";
-            if (value === RECEIVE_METHODS.MOT_CUA) return "badge-info";
             if (value === RECEIVE_METHODS.BUU_CHINH) return "badge-warning";
             return "badge-draft";
         }
@@ -3051,10 +3050,10 @@
     <!-- [nbth] Văn bản yêu cầu bồi thường mặc định; Người bị thiệt hại Cá nhân/Tổ chức; địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại -->
     <script src="tiep_nhan_nbth.js?v=20261030s2"></script>
     <!-- Trình ký Phiếu tiếp nhận (Mẫu 02/BTNN): thay thao tác In Phiếu tiếp nhận -->
-    <script src="tiep_nhan_ptn.js?v=20261030s2"></script>
+    <script src="tiep_nhan_ptn.js?v=20261104mh2"></script>
     <!-- [dvc] Hồ sơ nguồn Dịch vụ công: Xem chi tiết đầy đủ theo bố cục Nhập liệu hồ sơ vụ việc; dữ liệu mẫu đầy đủ (bảng thiệt hại DM_27 dùng btnn_thiet_hai.js) -->
     <script src="btnn_thiet_hai.js?v=20261030dm28"></script>
-    <script src="tiep_nhan_dvc.js?v=20261030s2"></script>
+    <script src="tiep_nhan_dvc.js?v=20261104kt2"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_grid_toolbar.js?v=20261030gt1"></script>
     <script src="btnn_tieu_de_man.js?v=20261103td2"></script>

@@ -963,7 +963,7 @@
     <!-- CUSTOM FLOATING TOOLTIP -->
     <div id="customTooltip" class="custom-tooltip"></div>
 
-    <script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261030sd4"></script>
+    <script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261105mg1"></script>
     <script>
         // Custom Tooltip functions
         function showCellTooltip(event, text) {
@@ -1190,8 +1190,8 @@
             // DM_25 (Hình thức tiếp nhận) - Danh mục dùng chung phân hệ Bồi thường nhà nước; form Tiếp nhận mới chỉ cho chọn Trực tiếp, Qua dịch vụ bưu chính
             { typeCode: "DM_25", code: "HTTN_01", name: "Dịch vụ công", nameEn: "Public Service Portal", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_25", code: "HTTN_02", name: "Trực tiếp", nameEn: "In person", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
-            { typeCode: "DM_25", code: "HTTN_03", name: "Bộ phận Một cửa", nameEn: "One-stop shop", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_25", code: "HTTN_04", name: "Qua dịch vụ bưu chính", nameEn: "Via postal service", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_25", code: "HTTN_05", name: "Cán bộ chủ động phục hồi danh dự khi có đủ thông tin", nameEn: "Officer-initiated honor restoration", val: "", valEn: "", parentCode: "", notes: "Do hệ thống gán, không có trong lựa chọn của form", status: "Hoạt động" },
             // DM_26 (Tư cách người yêu cầu bồi thường) - Căn cứ Điều 5 Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14
             { typeCode: "DM_26", code: "TCNYC_01", name: "Người bị thiệt hại", nameEn: "Aggrieved person", val: "", valEn: "", parentCode: "", notes: "Người trực tiếp bị thiệt hại do người thi hành công vụ gây ra", status: "Hoạt động" },
             { typeCode: "DM_26", code: "TCNYC_02", name: "Người thừa kế của người bị thiệt hại", nameEn: "Heir of the aggrieved person", val: "", valEn: "", parentCode: "", notes: "Trường hợp người bị thiệt hại chết thì người thừa kế của họ có quyền yêu cầu bồi thường", status: "Hoạt động" },
@@ -1569,6 +1569,13 @@
             // Hình thức tiếp nhận (DM_25): HTTN_01 "Qua môi trường số (Dịch vụ Công)" đổi tên thành "Dịch vụ công"
             const httn01 = savedCats.find(c => c.typeCode === 'DM_25' && c.code === 'HTTN_01');
             if (httn01 && /môi trường số/i.test(httn01.name || '')) { httn01.name = 'Dịch vụ công'; httn01.nameEn = 'Public Service Portal'; }
+            // Hình thức tiếp nhận (DM_25): làm mới giá trị khởi tạo HTTN_xx theo tài liệu danh mục (04 giá trị; bỏ Bộ phận Một cửa, Xác định CQGQBT,
+            // Cán bộ chủ động nhập theo tố tụng/thi hành án); giữ giá trị do Quản trị viên thêm
+            if (localStorage.getItem('dmHttnSeedV') !== 'v2') {
+                for (let i = savedCats.length - 1; i >= 0; i--) { const c = savedCats[i]; if (c.typeCode === 'DM_25' && /^HTTN_\d{2}$/.test(c.code)) savedCats.splice(i, 1); }
+                INITIAL_CATEGORIES.filter(d => d.typeCode === 'DM_25').forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
+                localStorage.setItem('dmHttnSeedV', 'v2');
+            }
             const lyc01 = savedCats.find(c => c.typeCode === 'DM_54' && c.code === 'LYC_01');
             if (lyc01 && !lyc01.ubndTinhV2) {
                 lyc01.donViApDung = (lyc01.donViApDung || []).filter(u => !/^UBND/.test(u));

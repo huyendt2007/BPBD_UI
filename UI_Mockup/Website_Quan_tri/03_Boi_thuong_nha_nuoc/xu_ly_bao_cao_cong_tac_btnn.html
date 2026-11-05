@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xử lý báo cáo Công tác BTNN - Bồi thường nhà nước</title>
+    <title>Tổng hợp báo cáo Công tác BTNN - Bồi thường nhà nước</title>
     <!-- Sinh bởi skill /tao-ui ngày 03/11/2026 từ yêu cầu của nhanhl2 (tách phần Bộ Tư pháp khỏi bao_cao_cong_tac_btnn.html), việc cần làm «Module Báo cáo công tác BTNN» của BA lead (02/11/2026), phản hồi KH 27/10/2026 (TD_024), SRS_BTNN_BaoCao_CongTacBTNN.md MH07 - MH09. -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
-    <style data-ui-chuan="c055bde1">
-/* Bộ thành phần chuẩn c055bde1, nhúng từ btp_gdbd_kg/kg/ui-mau/ui-chuan.css. Không sửa tay khối này. */
+    <style data-ui-chuan="44c249fd">
+/* Bộ thành phần chuẩn 44c249fd, nhúng từ btp_gdbd_kg/kg/ui-mau/ui-chuan.css. Không sửa tay khối này. */
 /*
  * ui-chuan.css — Bộ thành phần giao diện chuẩn của Website Quản trị (BTNN, BPBĐ, Quản trị hệ thống).
  * Nguồn: Common/css.md + đo kiểu hiển thị thực tế của 77 trang mockup (kg/tools/ui_trich_xuat.py, 03/11/2026).
@@ -318,6 +318,20 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
   padding: 12px 16px; border-bottom: 2px solid var(--border-color); vertical-align: middle;
 }
 .custom-table th.sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+/* Tiêu đề cột luôn trên một dòng; bảng rộng hơn khung thì .table-container cuộn ngang.
+   Cột Thao tác (lớp cot-thao-tac, UI.luoi tự gắn) cố định bên phải khi cuộn, rộng cố định theo số nút nhiều nhất, các nút trên một dòng (người dùng chốt 04/11/2026) */
+.custom-table th { white-space: nowrap; }
+/* Script dùng chung BTNN btnn_cot_thao_tac.js gắn lớp uxu-fit và cho tiêu đề xuống dòng khi bảng tràn khung; trang theo bộ mẫu giữ tiêu đề một dòng và cuộn ngang */
+.custom-table.uxu-fit > thead > tr > th:not(.ui-cho-xuong-dong) { white-space: nowrap !important; }
+.custom-table .cot-thao-tac {
+  position: sticky; right: 0; z-index: 2; background: #fff; text-align: center; white-space: nowrap; box-sizing: border-box;
+  /* !important: admin-ui-standardizer.js đặt min-width: 100px !important cho ô thao tác, làm cột co giãn theo khung */
+  /* Tối thiểu 104px = rộng khi có 02 nút (2 × 36 + 32), kể cả bảng tự vẽ chưa đặt --rong-thao-tac */
+  width: var(--rong-thao-tac, 104px) !important; min-width: max(104px, var(--rong-thao-tac, 104px)) !important; max-width: max(104px, var(--rong-thao-tac, 104px)) !important;
+  box-shadow: inset 1px 0 0 var(--border-color);
+}
+.custom-table th.cot-thao-tac { background: var(--table-header-bg); z-index: 3; }
+.custom-table tbody tr:hover td.cot-thao-tac { background: var(--bg-subtle); }
 .custom-table th.sortable i { color: var(--text-disabled); margin-left: 6px; font-size: 11px; }
 .custom-table th.sortable.asc i, .custom-table th.sortable.desc i { color: var(--primary-color); }
 .custom-table td { padding: 12px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-main); vertical-align: middle; }
@@ -371,6 +385,33 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
 .badge-outline { background: #F8FAFC; color: var(--text-label); border: 1px solid var(--border-input); }
 .badge-sub { display: block; margin-top: 4px; color: var(--text-muted); font-size: 11.5px; }
 
+/* Thanh cuộn ngang nổi ở đáy màn hình (UI.cuonNoi, người dùng chọn 04/11/2026) cho bảng dài và rộng */
+.cuon-noi{position:sticky;z-index:15;overflow-x:auto;overflow-y:hidden;height:14px;background:#F1F5F9;border:1px solid #E2E8F0;border-top:0;border-radius:0 0 8px 8px;}
+.cuon-noi>div{height:1px;}.cuon-noi::-webkit-scrollbar{height:12px;}.cuon-noi::-webkit-scrollbar-track{background:#F1F5F9;}.cuon-noi::-webkit-scrollbar-thumb{background:#94A3B8;border-radius:6px;border:2px solid #F1F5F9;}.cuon-noi::-webkit-scrollbar-thumb:hover{background:#64748B;}
+.co-cuon-noi{scrollbar-width:none;}.co-cuon-noi::-webkit-scrollbar{height:0;display:none;}
+
+/* Lịch chọn ngày chuẩn (UI.lich, người dùng chốt 04/11/2026): ô chọn tháng và năm, nút Hôm nay và Xóa */
+.flatpickr-calendar.lich-chuan{width:304px;padding:10px 12px 8px;border:1px solid #E2E8F0;border-radius:10px;box-shadow:0 12px 32px rgba(15,23,42,.16);font-family:inherit;}
+.flatpickr-calendar.lich-chuan:before,.flatpickr-calendar.lich-chuan:after{display:none;}
+.lich-chuan .flatpickr-months{position:relative;align-items:center;height:40px;margin-bottom:4px;}
+.lich-chuan .flatpickr-months .flatpickr-month{height:40px;color:#1E293B;fill:#1E293B;overflow:visible;}
+.lich-chuan .flatpickr-current-month{left:0;width:100%;height:40px;padding:4px 0 0;display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;}
+.lich-chuan .flatpickr-current-month .flatpickr-monthDropdown-months,.lich-chuan .lich-nam{height:32px;margin:0;padding:0 26px 0 10px;border:1px solid #CBD5E1;border-radius:6px;background:#fff url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22%3E%3Cpath d=%22M1 1l4 4 4-4%22 stroke=%22%2364748B%22 stroke-width=%221.5%22 fill=%22none%22/%3E%3C/svg%3E") no-repeat right 9px center;-webkit-appearance:none;appearance:none;font-family:inherit;font-size:13.5px;font-weight:600;color:#1E293B;cursor:pointer;outline:none;}
+.lich-chuan .flatpickr-current-month .flatpickr-monthDropdown-months:hover,.lich-chuan .lich-nam:hover{border-color:#3B82F6;background-color:#fff;}
+.lich-chuan .flatpickr-current-month .flatpickr-monthDropdown-months:focus,.lich-chuan .lich-nam:focus{border-color:#3B82F6;box-shadow:0 0 0 2px rgba(59,130,246,.18);}
+.lich-chuan .numInputWrapper{display:none !important;}
+.lich-chuan .flatpickr-prev-month,.lich-chuan .flatpickr-next-month{top:4px;height:32px;width:32px;padding:9px;border-radius:6px;color:#475569;fill:#475569;}
+.lich-chuan .flatpickr-prev-month:hover,.lich-chuan .flatpickr-next-month:hover{background:#F1F5F9;}.lich-chuan .flatpickr-prev-month:hover svg,.lich-chuan .flatpickr-next-month:hover svg{fill:#1E3A8A;}
+.lich-chuan .flatpickr-weekdays{height:30px;}.lich-chuan span.flatpickr-weekday{color:#64748B;font-weight:600;font-size:12px;}
+.lich-chuan .flatpickr-days,.lich-chuan .dayContainer{width:280px;min-width:280px;max-width:280px;}
+.lich-chuan .flatpickr-day{height:36px;line-height:34px;max-width:40px;border-radius:8px;color:#1E293B;font-size:13px;}
+.lich-chuan .flatpickr-day:hover,.lich-chuan .flatpickr-day:focus{background:#EFF6FF;border-color:#EFF6FF;}
+.lich-chuan .flatpickr-day.today{border-color:#3B82F6;color:#1D4ED8;font-weight:600;}.lich-chuan .flatpickr-day.today:hover{background:#EFF6FF;color:#1D4ED8;}
+.lich-chuan .flatpickr-day.selected,.lich-chuan .flatpickr-day.selected:hover,.lich-chuan .flatpickr-day.selected.today{background:#1E3A8A;border-color:#1E3A8A;color:#fff;font-weight:600;}
+.lich-chuan .flatpickr-day.prevMonthDay,.lich-chuan .flatpickr-day.nextMonthDay{color:#CBD5E1;}
+.lich-chan{display:flex;justify-content:space-between;margin-top:6px;padding-top:8px;border-top:1px solid #E2E8F0;}
+.lich-chan button{border:0;background:none;padding:4px 10px;border-radius:6px;color:#2563EB;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;}.lich-chan button:hover{background:#EFF6FF;}.lich-chan button[data-l=xoa]{color:#64748B;}
+
 /* ===================================================================== 9. Popup */
 .modal-overlay {
   position: fixed; inset: 0; z-index: 1000; display: none; align-items: center; justify-content: center;
@@ -397,6 +438,25 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
   display: flex; justify-content: flex-end; align-items: center; gap: 10px;
   padding: 14px 20px; background: var(--bg-subtle); border-top: 1px solid var(--border-color);
 }
+/* Popup «Chi tiết các đơn vị» (mẫu 27, người dùng chốt 04/11/2026): rộng 1440px, cao cố định 94% khung nhìn;
+   bảng giãn hết chỗ còn lại, cuộn bên trong, tiêu đề cột đứng yên, thanh phân trang luôn ở đáy */
+.modal-content.chi-tiet-dv { max-width: min(1440px, 96vw); height: 94vh; max-height: 94vh; }
+.chi-tiet-dv .modal-body { display: flex; flex-direction: column; overflow: hidden; }
+.ctdv-phieu { flex: none; grid-template-columns: minmax(0, 2.6fr) minmax(0, 1.5fr) minmax(0, .7fr) minmax(0, .7fr); padding: 12px 14px; margin-bottom: 14px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); }
+.ctdv-muc { flex: none; padding: 10px 14px; margin-bottom: 14px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); background: var(--bg-subtle); font-family: "Times New Roman", serif; font-size: 14px; color: var(--text-main); line-height: 1.5; }
+.ctdv-muc .b { font-weight: 700; } .ctdv-muc .it { padding-left: 18px; }
+.ctdv-loc { flex: none; display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 12px; }
+.ctdv-loc .form-group { margin-bottom: 0; }
+.ctdv-bang { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.ctdv-bang .table-container { flex: 1; min-height: 120px; overflow: auto; }
+.ctdv-bang .pagination-bar { flex: none; }
+.ctdv-bang thead th { position: sticky; top: 0; z-index: 1; }
+.ctdv-bang td { vertical-align: top; }
+.ctdv-ten { font-weight: 600; } .ctdv-nd { white-space: pre-wrap; line-height: 1.55; } .ctdv-rong { color: var(--text-disabled); font-style: italic; }
+.ctdv-bang tr.admin-row-clickable:hover .ctdv-ten { color: var(--secondary-color); text-decoration: underline; }
+/* Dòng mở popup chi tiết dưới ô nhập liệu: chữ xanh ngay từ đầu, 11,5px, không khung, không icon */
+.link-chi-tiet { display: inline-block; margin-top: 4px; padding: 2px 0; border: 0; background: none; color: var(--secondary-color); font: inherit; font-size: 11.5px; cursor: pointer; text-align: left; }
+.link-chi-tiet:hover, .link-chi-tiet:focus-visible { color: var(--primary-color); text-decoration: underline; outline: none; }
 /* Popup xác nhận */
 .modal-content.confirm { max-width: 440px; }
 .confirm-body { display: flex; gap: 14px; align-items: flex-start; }
@@ -417,6 +477,12 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
   position: sticky; bottom: 0; z-index: 20; display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap;
   padding: 16px 24px; background: #FAFBFD; border-top: 1px solid var(--border-color);
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+}
+/* Thanh nút chức năng của trang chi tiết không dùng form-page (người dùng chốt 04/11/2026): luôn cố định dưới màn hình khi cuộn, như .form-page-footer */
+.page-actions {
+  position: sticky; bottom: 0; z-index: 20; display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap;
+  margin-top: 16px; padding: 14px 24px; background: #fff; border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg); box-shadow: 0 -2px 10px rgba(15, 23, 42, 0.06);
 }
 .meta-grid {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 12px; margin: 16px 0;
@@ -618,6 +684,10 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
         .pager-btn:hover:not(:disabled) {background: #F1F5F9;}
         .pager-btn:disabled {opacity: .4; cursor: not-allowed;}
         .page-item {min-width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0 6px; border: 1px solid var(--border-color); border-radius: 4px; background-color: #fff; color: var(--text-main); font-size: 12px; font-weight: 500; cursor: pointer; user-select: none; transition: all 0.2s;}
+        /* Nút trang: rê chuột, trang đang chọn, nút khóa (như trang Báo cáo công tác BTNN; bổ sung 04/11/2026) */
+        .page-item:hover:not(.disabled) {border-color: var(--primary-color); color: var(--primary-color); background-color: #eff6ff;}
+        .page-item.active {background-color: var(--primary-color); color: #fff; border-color: var(--primary-color);}
+        .page-item.disabled {color: #cbd5e1; background-color: #f8fafc; cursor: not-allowed; border-color: #e2e8f0; pointer-events: none;}
         .cell-input {width: 100%; min-width: 60px; padding: 4px 6px; border: 1px solid var(--border-color); border-radius: 3px; font-size: 12px; font-family: inherit; text-align: center;}
         .cell-input.text-left {text-align: left;}
         .cell-textarea {width: 100%; min-width: 140px; min-height: 34px; padding: 4px 6px; border: 1px solid var(--border-color); border-radius: 3px; font-size: 12px; font-family: inherit; text-align: left; resize: vertical; overflow: auto; white-space: pre-wrap; word-break: break-word;}
@@ -693,6 +763,35 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
         /* Màn Rà soát: khung xem 04 biểu mẫu cao tối đa 70% màn hình, cuộn bên trong, để khối Kết quả rà soát không bị đẩy quá xa */
         #boXemBM .bctt-view { max-height: 70vh; overflow: auto; border-radius: var(--border-radius-md); }
         #boXemBM .bctt-tabs { position: sticky; top: 0; z-index: 2; }
+        /* Thành phần mới (bộ mẫu chưa có thẻ số liệu): khối Tổng hợp tình hình gửi báo cáo. Số dùng màu chữ; màu trạng thái chỉ ở icon, thanh tiến độ và chú giải */
+        .th-tieu-de { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; font-weight: 700; color: var(--primary-color); font-size: 15px; }
+        .th-han { font-weight: 600; font-size: 12.5px; color: var(--text-muted); }
+        .th-the-hang { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+        @media (max-width: 900px) { .th-the-hang { grid-template-columns: minmax(0, 1fr); } }
+        .th-the { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); background: #fff; }
+        .th-icon { flex: 0 0 40px; height: 40px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 18px; }
+        .th-icon.trung { background: var(--st-neutral-bg); color: var(--st-neutral-fg); }
+        .th-icon.tot { background: var(--st-success-bg); color: var(--st-success-fg); }
+        .th-icon.canh { background: var(--st-warning-bg); color: var(--st-warning-fg); }
+        .th-icon.xau { background: var(--st-danger-bg); color: var(--st-danger-fg); }
+        .th-so { font-size: 26px; font-weight: 700; color: var(--text-main); line-height: 1.1; }
+        .th-so small { font-size: 14px; font-weight: 600; color: var(--text-muted); }
+        .th-nhan { font-size: 13px; font-weight: 600; color: var(--text-main); margin-top: 2px; }
+        .th-phu { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        /* Tab Tổng hợp báo cáo: cột Thao tác rộng cố định, các nút trên một dòng */
+        /* Văn bản yêu cầu điều chỉnh (04/11/2026): ô ký nháy góc dưới phải, chữ ký số tại vị trí ký, khung xem trong màn rà soát */
+        .yc-vb { padding-bottom: 96px; }
+        .yc-kn { position: absolute; right: 28px; bottom: 22px; padding: 4px 8px; border: 1px dashed #B45309; border-radius: 4px; background: #FFFBEB; color: #92400E; font-family: Inter, sans-serif; font-size: 10.5px; line-height: 1.4; text-align: center; }
+        .yc-kn.ok { border-style: solid; }
+        .yc-sigbox { display: block; width: fit-content; margin: 10px auto; padding: 6px 12px; border: 1.5px dashed #2563EB; border-radius: 4px; background: rgba(219, 234, 254, .55); color: #1E3A8A; font-family: Inter, sans-serif; font-size: 11px; line-height: 1.5; }
+        .yc-sigbox.ok { border-style: solid; border-color: #DC2626; background: rgba(254, 226, 226, .5); color: #991B1B; }
+        .yc-xem { max-height: 78vh; overflow: auto; padding: 20px; border-radius: 8px; background: #334155; margin-top: 8px; }
+        /* Tab Tình hình gửi báo cáo: dòng Sở đã gửi bấm được (xem tệp báo cáo), rê chuột thì tên Đơn vị báo cáo đổi màu */
+        #boThBang tbody tr.admin-row-clickable:hover .cell-strong { color: var(--secondary-color); text-decoration: underline; }
+        #bcttBtpList th { white-space: nowrap; }
+        #bcttBtpList .bctt-cot-tt { width: 104px; min-width: 104px; max-width: 104px; white-space: nowrap; text-align: center; position: sticky; right: 0; z-index: 2; background: #fff; box-shadow: inset 1px 0 0 var(--border-color); }
+        #bcttBtpList th.bctt-cot-tt { background: var(--table-header-bg); z-index: 3; }
+        #bcttBtpList tbody tr:hover td.bctt-cot-tt { background: var(--bg-subtle); }
         /* Ô chọn nhiều báo cáo để phân công */
         #boBang input[type=checkbox], #boChonHet { width: 16px; height: 16px; accent-color: var(--primary-color); cursor: pointer; }
     </style>
@@ -702,13 +801,13 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
 
     <section id="listView" data-trang>
         <div class="page-heading">
-            <div><h2 data-uxu-title>Xử lý báo cáo Công tác BTNN</h2></div>
+            <div><h2 data-uxu-title>Tổng hợp báo cáo Công tác BTNN</h2></div>
             <div class="role-switch" data-btnn-gl="label"><!-- bctt_bao_cao.js (chế độ Bộ) dựng ô chọn người dùng giả lập --></div>
         </div>
         <div class="tab-bar" id="boMainTabs">
-            <button type="button" class="tab-btn active" data-chinh="xl"><i class="fa-solid fa-inbox"></i> Xử lý báo cáo của các Sở <span class="tab-count" id="boDemChinh"></span></button>
+            <button type="button" class="tab-btn active" data-chinh="xl"><i class="fa-solid fa-inbox"></i> Xử lý báo cáo <span class="tab-count" id="boDemChinh"></span></button>
             <button type="button" class="tab-btn" data-chinh="th"><i class="fa-solid fa-chart-column"></i> Tình hình gửi báo cáo</button>
-            <button type="button" class="tab-btn" data-chinh="tong"><i class="fa-solid fa-layer-group"></i> Báo cáo tổng hợp của Bộ</button>
+            <button type="button" class="tab-btn" data-chinh="tong"><i class="fa-solid fa-layer-group"></i> Tổng hợp báo cáo <span class="tab-count" id="boDemTong"></span></button>
         </div>
         <div id="boPanel_xl"></div>
         <div id="boPanel_th" class="hidden"></div>
@@ -726,8 +825,8 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/vn.js"></script>
-<script data-ui-chuan="c055bde1">
-/* Bộ thành phần chuẩn c055bde1, nhúng từ btp_gdbd_kg/kg/ui-mau/ui-chuan.js. Không sửa tay khối này. */
+<script data-ui-chuan="44c249fd">
+/* Bộ thành phần chuẩn 44c249fd, nhúng từ btp_gdbd_kg/kg/ui-mau/ui-chuan.js. Không sửa tay khối này. */
 /*
  * ui-chuan.js — Hành vi dùng chung cho trang mockup do skill /tao-ui sinh ra (Website Quản trị).
  * Đi kèm ui-chuan.css. Bản gốc trong KG (kg/ui-mau/); skill /tao-ui nhúng nguyên nội dung vào khối <script data-ui-chuan> của từng trang.
@@ -739,6 +838,9 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
  *   - Ô ngày [data-ngay] (flatpickr nếu có, định dạng dd/mm/yyyy), ô tiền [data-tien], bộ đếm ký tự textarea[maxlength].
  *   - Kiểu dữ liệu [data-kieu="String(255)"] đặt maxlength; kiểm tra khi gọi UI.kiemTra(form).
  * API: UI.toast, UI.mo, UI.dong, UI.xacNhan, UI.luoi, UI.kiemTra, UI.xoaLoi, UI.combo, UI.taiTep, UI.giaLap, UI.trang, UI.dinhDangTien
+ *      UI.lich(ô, tùy chọn flatpickr) gắn lịch chọn ngày chuẩn (chọn tháng, năm, nút Hôm nay, Xóa); ô [data-ngay] tự gắn
+ *      UI.cuonNoi(khung .table-container) thêm thanh cuộn ngang nổi ở đáy màn hình cho bảng dài và rộng; khung có [data-cuon-noi] tự gắn
+ *      UI.nutThaoTac(mã, tùy chọn) vẽ nút cột Thao tác theo bộ icon chuẩn; UI.timIcon(nhãn) tra mục chuẩn của một nhãn nút
  */
 (function () {
   'use strict';
@@ -789,7 +891,7 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
       o.className = 'modal-overlay active';
       o.innerHTML = `<div class="modal-content confirm" role="dialog" aria-modal="true">
         <div class="modal-header"><h3>${esc(t.tieuDe)}</h3><button type="button" class="close-modal" data-x aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button></div>
-        <div class="modal-body"><div class="confirm-body"><span class="confirm-icon ${t.loai === 'danger' ? 'danger' : ''}"><i class="fa-solid ${t.loai === 'danger' ? 'fa-trash-can' : 'fa-circle-exclamation'}"></i></span><p>${esc(t.noiDung)}</p></div></div>
+        <div class="modal-body"><div class="confirm-body"><span class="confirm-icon ${t.loai === 'danger' ? 'danger' : ''}"><i class="fa-solid ${t.loai === 'danger' ? 'fa-trash' : 'fa-circle-exclamation'}"></i></span><p>${esc(t.noiDung)}</p></div></div>
         <div class="modal-footer"><button type="button" class="btn btn-secondary" data-x>${esc(t.nutHuy)}</button><button type="button" class="btn ${t.loai === 'danger' ? 'btn-danger' : 'btn-primary'}" data-ok>${esc(t.nutDongY)}</button></div></div>`;
       document.body.appendChild(o);
       moGanNhat.push(o);
@@ -819,11 +921,19 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
 
   /* ------------------------------------------------------------ Lưới dữ liệu có phân trang, sắp xếp */
   // UI.luoi({ bang: '#id', duLieu: [...], cot: [{ khoa, hien: (dong, stt) => html }], thaoTac: dong => html,
-  //           kichThuoc: 10, rong: 'Không có dữ liệu', locBoi: dong => true, khiBamDong: dong => {} })
+  //           kichThuoc: 10, rong: 'Không có dữ liệu', locBoi: dong => true, khiBamDong: dong => {}, soNutThaoTac: n })
+  // Cột Thao tác cố định bên phải, rộng theo soNutThaoTac (mặc định: số nút nhiều nhất của một dòng trong toàn bộ dữ liệu);
+  // tối thiểu bằng chiều rộng khi có 02 nút (104px), kể cả khi mọi dòng chỉ có 01 nút (người dùng chốt 04/11/2026)
   function luoi(tc) {
     const bang = typeof tc.bang === 'string' ? $(tc.bang) : tc.bang;
     const than = bang.tBodies[0] || bang.appendChild(document.createElement('tbody'));
     const st = { trang: 1, kich: tc.kichThuoc || 10, sx: null, chieu: 1 };
+    if (tc.thaoTac && bang.tHead) {
+      const hang = bang.tHead.rows[bang.tHead.rows.length - 1].cells;
+      hang[hang.length - 1].classList.add('cot-thao-tac');
+      const soNut = Math.max(2, tc.soNutThaoTac || 0, ...(tc.duLieu || []).map(d => (String(tc.thaoTac(d)).match(/<(button|a)\b/g) || []).length));
+      bang.style.setProperty('--rong-thao-tac', (soNut * 36 + 32) + 'px');
+    }
     let thanh = bang.closest('.table-container').nextElementSibling;
     if (!thanh || !thanh.classList.contains('pagination-bar')) {
       thanh = document.createElement('div'); thanh.className = 'pagination-bar';
@@ -846,7 +956,7 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
       const dau = (st.trang - 1) * st.kich, phan = ds.slice(dau, dau + st.kich);
       const soCot = (bang.tHead && bang.tHead.rows[bang.tHead.rows.length - 1].cells.length) || 1;
       than.innerHTML = phan.length ? phan.map((d, i) => '<tr>' + tc.cot.map(c => `<td>${c.hien ? c.hien(d, dau + i + 1) : esc(d[c.khoa])}</td>`).join('') +
-        (tc.thaoTac ? `<td><div class="action-flex">${tc.thaoTac(d)}</div></td>` : '') + '</tr>').join('')
+        (tc.thaoTac ? `<td class="cot-thao-tac"><div class="action-flex">${tc.thaoTac(d)}</div></td>` : '') + '</tr>').join('')
         : `<tr class="empty-row"><td colspan="${soCot}"><i class="fa-regular fa-folder-open"></i>${esc(tc.rong || 'Không có dữ liệu')}</td></tr>`;
       // admin-row-clickable: cùng lớp admin-ui-standardizer.js dùng cho dòng bấm được (con trỏ bàn tay, nền khi rê chuột)
       if (tc.khiBamDong) $$('tr', than).forEach((tr, i) => { if (!phan[i]) return; tr.classList.add('admin-row-clickable'); tr.addEventListener('click', e => { if (!e.target.closest('button, a, input, select')) tc.khiBamDong(phan[i]); }); });
@@ -916,13 +1026,66 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
     // Giữ chữ người dùng gõ: flatpickr tự đổi ngày sai (31/02 thành 03/03) hoặc xóa chữ không phải ngày khi rời ô
     el.addEventListener('input', e => { if (e.isTrusted) el._tho = el.value; });
     if (window.flatpickr) {
-      window.flatpickr(el, { dateFormat: 'd/m/Y', allowInput: true, locale: (window.flatpickr.l10ns && window.flatpickr.l10ns.vn) || 'default' });
+      lichChuan(el);
     }
     el.addEventListener('blur', () => setTimeout(() => {
       const tho = el._tho; el._tho = null;
       if (tho != null && tho.trim() && !ngayHopLe(tho.trim())) { el.value = tho; baoLoi(el, 'Ngày không hợp lệ (dd/mm/yyyy)'); }
       else if (!el.value || ngayHopLe(el.value.trim())) xoaLoi(el);
     }, 0));
+  }
+  // Lịch chọn ngày chuẩn (04/11/2026, nhanhl2; cùng mã với UI.lich của bộ mẫu kg/ui-mau): ô chọn «Tháng 1» - «Tháng 12» và ô chọn năm,
+  // nút «Hôm nay» và «Xóa», kiểu dáng lớp lich-chuan. tuyChon: tùy chọn flatpickr thêm (ví dụ onClose)
+  function lichChuan(el, tuyChon) {
+      var fp0 = window.flatpickr, vn = (fp0.l10ns && fp0.l10ns.vn) || {}, th = [];
+      for (var i = 1; i <= 12; i++) th.push('Tháng ' + i);
+      var loc = Object.assign({}, vn, { months: { shorthand: th.map(function (x, i) { return 'Th' + (i + 1); }), longhand: th } });
+      function dongBo(a, b, fp) {
+          var s = fp && fp._lichNam; if (!s) return;
+          var y = fp.currentYear, nay = new Date().getFullYear(), tu = Math.min(y, nay) - 20, den = Math.max(y, nay) + 5;
+          if (+s.getAttribute('data-tu') !== tu || +s.getAttribute('data-den') !== den) {
+              var h = ''; for (var n = den; n >= tu; n--) h += '<option value="' + n + '">' + n + '</option>';
+              s.innerHTML = h; s.setAttribute('data-tu', tu); s.setAttribute('data-den', den);
+          }
+          s.value = String(y);
+      }
+      return fp0(el, Object.assign({
+          dateFormat: 'd/m/Y', allowInput: true, disableMobile: true, monthSelectorType: 'dropdown', locale: loc,
+          onReady: function (a, b, fp) {
+              fp.calendarContainer.classList.add('lich-chuan');
+              var s = document.createElement('select'); s.className = 'lich-nam'; s.setAttribute('aria-label', 'Năm');
+              fp.calendarContainer.querySelector('.flatpickr-current-month').appendChild(s); fp._lichNam = s;
+              s.onchange = function () { fp.changeYear(+s.value); dongBo(null, null, fp); };
+              var f = document.createElement('div'); f.className = 'lich-chan';
+              f.innerHTML = '<button type="button" data-l="xoa">Xóa</button><button type="button" data-l="nay">Hôm nay</button>';
+              f.onclick = function (e) { var t = e.target.closest('[data-l]'); if (!t) return; if (t.getAttribute('data-l') === 'nay') fp.setDate(new Date(), true); else fp.clear(); fp.close(); };
+              fp.calendarContainer.appendChild(f);
+              dongBo(null, null, fp);
+          },
+          onOpen: dongBo, onMonthChange: dongBo, onYearChange: dongBo
+      }, tuyChon || {}));
+  }
+  // Thanh cuộn ngang nổi (04/11/2026, nhanhl2): bảng dài và rộng có thanh cuộn ngang «dính» ở đáy màn hình (trên thanh nút cố định) khi bảng đang hiện,
+  // về sát mép dưới bảng khi cuộn tới cuối bảng; đồng bộ hai chiều với khung bảng, thanh cuộn gốc của khung được ẩn. Shift + lăn chuột cuộn ngang sẵn có
+  function cuonNoi(khung, day) {
+      if (!khung || khung._cuonNoi) return;
+      var t = document.createElement('div'), ruot = document.createElement('div');
+      t.className = 'cuon-noi'; t.setAttribute('aria-hidden', 'true'); t.appendChild(ruot);
+      khung.parentNode.insertBefore(t, khung.nextSibling); khung.classList.add('co-cuon-noi'); khung._cuonNoi = t;
+      var dangDong = false;
+      function capNhat() {
+          var tran = khung.scrollWidth > khung.clientWidth + 1;
+          t.style.display = tran ? '' : 'none'; khung.classList.toggle('co-cuon-noi', tran);
+          t.style.width = khung.clientWidth + 'px'; ruot.style.width = khung.scrollWidth + 'px';
+          var nut = document.querySelector(day || '.form-page-footer, .page-actions');
+          t.style.bottom = (nut && nut.offsetParent ? nut.offsetHeight : 0) + 'px';
+          t.scrollLeft = khung.scrollLeft;
+      }
+      t.addEventListener('scroll', function () { if (dangDong) { dangDong = false; return; } dangDong = true; khung.scrollLeft = t.scrollLeft; });
+      khung.addEventListener('scroll', function () { if (dangDong) { dangDong = false; return; } dangDong = true; t.scrollLeft = khung.scrollLeft; });
+      if (window.ResizeObserver) { var ro = new ResizeObserver(capNhat); ro.observe(khung); if (khung.firstElementChild) ro.observe(khung.firstElementChild); }
+      window.addEventListener('resize', capNhat);
+      capNhat();
   }
   function dinhDangTien(v) {
     const so = String(v == null ? '' : v).replace(/[^\d]/g, '');
@@ -1024,8 +1187,81 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
     window.scrollTo({ top: 0 });
   }
 
+  /* ------------------------------------------------------------ Bộ icon thao tác chuẩn (kg/ui-mau/BO_ICON_THAO_TAC.md, nhanhl2 chốt 04/11/2026) */
+  // Mỗi thao tác một icon, mỗi icon một nghĩa. goi: cụm chữ đầu nhãn nút (thường, không dấu); nhãn khớp cụm dài nhất.
+  // Khối JSON giữa hai dấu mốc được ui_kiem_tra.py đọc lại, giữ đúng cú pháp JSON.
+  // ICON_THAO_TAC_BAT_DAU
+  const ICON_THAO_TAC = [
+    {"ma": "cap-nhat", "ten": "Cập nhật, Sửa, Chỉnh sửa, Nhập liệu", "goi": ["cap nhat", "sua", "chinh sua", "dieu chinh", "nhap lieu", "tu cham diem"], "icon": "fa-pen-to-square", "lop": "edit", "nhom": "cot"},
+    {"ma": "xoa", "ten": "Xóa, Gỡ", "goi": ["xoa", "go bo", "go khoi", "go vai tro"], "icon": "fa-trash", "lop": "delete", "nhom": "cot"},
+    {"ma": "trinh", "ten": "Trình ký, Trình duyệt, Gửi phê duyệt", "goi": ["trinh", "gui phe duyet", "gui duyet", "luu va trinh"], "icon": "fa-paper-plane", "lop": "submit", "nhom": "cot"},
+    {"ma": "ky-duyet", "ten": "Ký duyệt, Ký số, Phê duyệt, Duyệt", "goi": ["ky duyet", "ky so", "phe duyet", "duyet"], "icon": "fa-file-signature", "lop": "sign", "nhom": "cot"},
+    {"ma": "tu-choi", "ten": "Từ chối, Không thụ lý, Hủy hồ sơ", "goi": ["tu choi", "khong thu ly", "khong tiep nhan", "huy ho so", "huy ban ghi", "huy yeu cau"], "icon": "fa-ban", "lop": "reject", "nhom": "cot"},
+    {"ma": "tra-lai", "ten": "Trả lại (cho người trình hoặc cấp dưới)", "goi": ["tra lai"], "icon": "fa-reply", "lop": "reject", "nhom": "cot"},
+    {"ma": "thu-hoi", "ten": "Thu hồi (người trình lấy lại)", "goi": ["thu hoi"], "icon": "fa-rotate-left", "lop": "reject", "nhom": "cot"},
+    {"ma": "yeu-cau-bo-sung", "ten": "Yêu cầu bổ sung, Yêu cầu điều chỉnh", "goi": ["yeu cau bo sung", "yeu cau dieu chinh"], "icon": "fa-file-circle-question", "lop": "reject", "nhom": "cot"},
+    {"ma": "phan-cong", "ten": "Phân công, Phân công cán bộ, Cử người, Giao xử lý", "goi": ["phan cong", "cu nguoi", "giao xu ly", "giao viec"], "icon": "fa-diagram-project", "lop": "submit", "nhom": "cot"},
+    {"ma": "tiep-nhan", "ten": "Tiếp nhận, Thụ lý", "goi": ["tiep nhan", "thu ly"], "icon": "fa-check-to-slot", "lop": "edit", "nhom": "cot"},
+    {"ma": "ra-soat", "ten": "Rà soát, Đánh giá, Cập nhật kết quả", "goi": ["ra soat", "danh gia", "cap nhat ket qua", "cham diem"], "icon": "fa-clipboard-check", "lop": "edit", "nhom": "cot"},
+    {"ma": "xac-nhan", "ten": "Xác nhận", "goi": ["xac nhan"], "icon": "fa-check", "lop": "sign", "nhom": "cot"},
+    {"ma": "hoan-thanh", "ten": "Hoàn thành", "goi": ["hoan thanh"], "icon": "fa-circle-check", "lop": "edit", "nhom": "cot"},
+    {"ma": "chuyen", "ten": "Chuyển (cơ quan, đơn vị khác)", "goi": ["chuyen"], "icon": "fa-right-left", "lop": "submit", "nhom": "cot"},
+    {"ma": "phan-hoi", "ten": "Phản hồi, Trả lời, Cập nhật phản hồi", "goi": ["phan hoi", "tra loi", "cap nhat phan hoi"], "icon": "fa-comment-dots", "lop": "edit", "nhom": "cot"},
+    {"ma": "bo-sung-ho-so", "ten": "Bổ sung hồ sơ", "goi": ["bo sung ho so", "cap nhat bo sung"], "icon": "fa-file-circle-plus", "lop": "edit", "nhom": "cot"},
+    {"ma": "xem-tep", "ten": "Xem file, Xem văn bản", "goi": ["xem file", "xem tep", "xem van ban"], "icon": "fa-eye", "lop": "view", "nhom": "cot"},
+    {"ma": "tai-ve", "ten": "Tải file, Tải về, Tải xuống", "goi": ["tai file", "tai ve", "tai xuong", "tai tep"], "icon": "fa-download", "lop": "download", "nhom": "cot"},
+    {"ma": "in", "ten": "In phiếu, In biên lai", "goi": ["in"], "icon": "fa-print", "lop": "view", "nhom": "cot"},
+    {"ma": "lich-su", "ten": "Lịch sử", "goi": ["lich su"], "icon": "fa-clock-rotate-left", "lop": "view", "nhom": "cot"},
+    {"ma": "nhan-ban", "ten": "Nhân bản, Sao chép", "goi": ["nhan ban", "sao chep"], "icon": "fa-copy", "lop": "edit", "nhom": "cot"},
+    {"ma": "gui-lai", "ten": "Gửi lại, Đồng bộ lại", "goi": ["gui lai", "dong bo lai"], "icon": "fa-rotate-right", "lop": "submit", "nhom": "cot"},
+    {"ma": "khoa", "ten": "Khóa, Tạm khóa", "goi": ["khoa", "tam khoa"], "icon": "fa-lock", "lop": "reject", "nhom": "cot"},
+    {"ma": "mo-khoa", "ten": "Mở khóa", "goi": ["mo khoa"], "icon": "fa-lock-open", "lop": "edit", "nhom": "cot"},
+    {"ma": "dat-lai-mat-khau", "ten": "Đặt lại mật khẩu", "goi": ["dat lai mat khau"], "icon": "fa-key", "lop": "submit", "nhom": "cot"},
+    {"ma": "dong-tai-khoan", "ten": "Đóng tài khoản", "goi": ["dong tai khoan", "dong vinh vien"], "icon": "fa-user-slash", "lop": "delete", "nhom": "cot"},
+    {"ma": "thao-tac-khac", "ten": "Thao tác khác (mở menu)", "goi": ["thao tac khac"], "icon": "fa-ellipsis", "lop": "", "nhom": "cot"},
+    {"ma": "xem-cap-duoi", "ten": "Xem danh sách đơn vị con", "goi": ["xem danh sach don vi con", "xem don vi con"], "icon": "fa-chevron-right", "lop": "", "nhom": "cot"},
+    {"ma": "them-moi", "ten": "Thêm mới, Tạo, Lập, Tiếp nhận mới", "goi": ["them", "tao", "lap", "tiep nhan moi"], "icon": "fa-plus", "lop": "", "nhom": "nut"},
+    {"ma": "luu", "ten": "Lưu, Lưu nháp", "goi": ["luu"], "icon": "fa-floppy-disk", "lop": "", "nhom": "nut"},
+    {"ma": "huy-bo", "ten": "Hủy bỏ, Đóng (đóng popup, không lưu)", "goi": ["huy bo", "dong"], "icon": "fa-xmark", "lop": "", "nhom": "nut"},
+    {"ma": "tim-kiem", "ten": "Tìm kiếm", "goi": ["tim kiem"], "icon": "fa-magnifying-glass", "lop": "", "nhom": "nut"},
+    {"ma": "xoa-bo-loc", "ten": "Xóa bộ lọc", "goi": ["xoa bo loc"], "icon": "fa-filter-circle-xmark", "lop": "", "nhom": "nut"},
+    {"ma": "quay-lai", "ten": "Quay lại", "goi": ["quay lai"], "icon": "fa-arrow-left", "lop": "", "nhom": "nut"},
+    {"ma": "xuat-excel", "ten": "Kết xuất Excel", "goi": ["ket xuat excel", "xuat excel"], "icon": "fa-file-excel", "lop": "", "nhom": "nut"},
+    {"ma": "xuat-pdf", "ten": "Xuất PDF", "goi": ["ket xuat pdf", "xuat pdf"], "icon": "fa-file-pdf", "lop": "", "nhom": "nut"},
+    {"ma": "xuat-word", "ten": "Xuất Word", "goi": ["ket xuat word", "xuat word"], "icon": "fa-file-word", "lop": "", "nhom": "nut"},
+    {"ma": "tai-len", "ten": "Tải file lên, Đính kèm", "goi": ["tai file len", "tai len", "dinh kem"], "icon": "fa-cloud-arrow-up", "lop": "", "nhom": "nut"},
+    {"ma": "tai-file-mau", "ten": "Tải file mẫu", "goi": ["tai file mau", "tai mau"], "icon": "fa-file-arrow-down", "lop": "", "nhom": "nut"},
+    {"ma": "lam-moi", "ten": "Làm mới, Cập nhật số liệu", "goi": ["lam moi", "cap nhat so lieu", "dong bo"], "icon": "fa-rotate", "lop": "", "nhom": "nut"},
+    {"ma": "chi-tra", "ten": "Cập nhật chi trả, Cập nhật thu hồi kinh phí", "goi": ["cap nhat chi tra", "cap nhat thu hoi", "chi tra"], "icon": "fa-hand-holding-dollar", "lop": "edit", "nhom": "rieng"},
+    {"ma": "tra-lai-nsnn", "ten": "Trả lại ngân sách nhà nước", "goi": ["tra lai ngan sach", "hoan thanh tra lai ngan sach"], "icon": "fa-building-columns", "lop": "reject", "nhom": "rieng"},
+    {"ma": "de-nghi-cap-bo-sung", "ten": "Đề nghị cấp bổ sung kinh phí", "goi": ["de nghi cap bo sung kinh phi"], "icon": "fa-file-invoice-dollar", "lop": "submit", "nhom": "rieng"},
+    {"ma": "tham-muu-ket-qua", "ten": "Tham mưu kết quả", "goi": ["tham muu ket qua"], "icon": "fa-scale-balanced", "lop": "edit", "nhom": "rieng"},
+    {"ma": "in-tem", "ten": "In Tem hồ sơ", "goi": ["in tem"], "icon": "fa-tag", "lop": "view", "nhom": "rieng"},
+    {"ma": "danh-dau-da-ra-soat", "ten": "Đánh dấu đã rà soát", "goi": ["danh dau da ra soat"], "icon": "fa-check-double", "lop": "sign", "nhom": "rieng"},
+    {"ma": "lap-de-nghi-huy", "ten": "Lập đề nghị Hủy đăng ký", "goi": ["lap de nghi huy"], "icon": "fa-file-circle-xmark", "lop": "reject", "nhom": "rieng"},
+    {"ma": "bien-tap-bo-cuc", "ten": "Biên tập bố cục", "goi": ["bien tap bo cuc"], "icon": "fa-table-cells-large", "lop": "edit", "nhom": "rieng"}
+  ];
+  // ICON_THAO_TAC_KET_THUC
+  // Tìm mục chuẩn theo nhãn nút; bỏ phần lý do sau «:» hoặc « - » (nút bị khóa ghi lý do trong title)
+  function timIcon(nhan) {
+    const tu = boDau(String(nhan || '').split(/:| - /)[0]).replace(/[^a-z0-9]+/g, ' ').trim().split(' ');
+    let tot = null, dai = 0;
+    ICON_THAO_TAC.forEach(m => m.goi.forEach(g => { const k = g.split(' '); if (k.length > dai && k.every((w, i) => tu[i] === w)) { tot = m; dai = k.length; } }));
+    return tot;
+  }
+  // Nút của cột Thao tác theo chuẩn: UI.nutThaoTac('phan-cong', { title: 'Phân công cán bộ', tat: true, lyDo: '…', data: { act: 'pc', id: 1 } })
+  function nutThaoTac(ma, tc) {
+    const m = ICON_THAO_TAC.find(x => x.ma === ma);
+    if (!m) throw new Error('Chưa có thao tác «' + ma + '» trong bộ icon chuẩn (kg/ui-mau/BO_ICON_THAO_TAC.md)');
+    tc = tc || {};
+    const tieuDe = tc.title || m.ten.split(',')[0], goiY = tc.tat && tc.lyDo ? tieuDe + ' - ' + tc.lyDo : tieuDe;
+    const du = Object.entries(tc.data || {}).map(([k, v]) => ` data-${k}="${esc(v)}"`).join('');
+    return `<button type="button" data-admin-icon-normalized="1" class="icon-btn ${m.lop}${tc.tat ? ' disabled' : ''}" title="${esc(goiY)}" aria-label="${esc(tieuDe)}"${du}${tc.tat ? ' disabled' : ''}><i class="fa-solid ${m.icon}"></i></button>`;
+  }
+
   /* ------------------------------------------------------------ Gắn tự động */
   function gan(g) {
+    $$('.table-container[data-cuon-noi]', g).forEach(k => cuonNoi(k));
     ganTab(g);
     $$('[data-ngay]', g).forEach(ganNgay);
     $$('[data-tien]', g).forEach(ganTien);
@@ -1045,7 +1281,7 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
   });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => gan(document)); else gan(document);
 
-  window.UI = { toast, mo, dong, xacNhan, chonTab, luoi, kiemTra, xoaLoi, baoLoi, combo, taiTep, giaLap, trang, gan, dinhDangTien, ngayHopLe, esc };
+  window.UI = { toast, mo, dong, xacNhan, chonTab, luoi, kiemTra, xoaLoi, baoLoi, combo, taiTep, giaLap, trang, gan, dinhDangTien, ngayHopLe, esc, ICON_THAO_TAC, timIcon, nutThaoTac, lich: lichChuan, cuonNoi };
 })();
 
 </script>
@@ -1054,15 +1290,17 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
 <script src="filter_toggle_auto.js"></script>
 <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
 <script src="btnn_grid_toolbar.js"></script>
-<script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
+<script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
 <script src="btnn_tai_lieu_kem_theo.js?v=20261103mau1"></script>
-<script src="btnn_badge_cho_xu_ly.js?v=20261103bo2"></script>
+<script src="btnn_badge_cho_xu_ly.js?v=20261103nhanh"></script>
 <script>
     // Trang Bộ Tư pháp: engine bctt_bao_cao.js chạy chế độ 'bo' (chỉ vai trò Bộ; dữ liệu dùng chung với trang của Sở)
     window.BCTT_MODE = 'bo';
+    // Thông báo của engine bctt_bao_cao.js (cần #toastContainer hoặc window.showToast) hiển thị bằng UI.toast của bộ mẫu
+    window.showToast = function (msg, type) { UI.toast(msg, type || 'success'); };
 </script>
-<script src="bctt_bao_cao.js?v=20261103b1"></script>
-<script src="bctt_bo_xu_ly.js?v=20261103b2"></script>
+<script src="bctt_bao_cao.js?v=20261105mg1"></script>
+<script src="bctt_bo_xu_ly.js?v=20261104pc"></script>
 <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
 <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>

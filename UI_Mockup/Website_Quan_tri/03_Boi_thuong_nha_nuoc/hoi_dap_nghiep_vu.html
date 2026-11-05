@@ -583,87 +583,6 @@
             gap: 8px;
         }
 
-        /* Upload Area styling */
-        .upload-area {
-            border: 2px dashed var(--border-color);
-            border-radius: var(--border-radius-md);
-            padding: 20px;
-            background-color: #FAFAFA;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 10px;
-            height: 130px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .upload-area:hover {
-            border-color: var(--primary-color);
-            background-color: #F0F9FF;
-        }
-        .upload-area i {
-            font-size: 28px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-        .upload-area p {
-            font-size: 13px;
-            color: var(--text-main);
-            font-weight: 500;
-        }
-        .upload-area span {
-            font-size: 11px;
-            color: var(--text-muted);
-            display: block;
-            margin-top: 4px;
-        }
-
-        /* Attachment List Item styling */
-        .attachment-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 0;
-            background-color: transparent;
-            border: none;
-            margin-bottom: 6px;
-            font-size: 13px;
-        }
-        .attachment-item-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-main);
-        }
-        .attachment-item-info i {
-            color: #0284C7;
-        }
-        .attachment-actions {
-            display: flex;
-            gap: 12px;
-        }
-        .attachment-actions a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .attachment-actions a:hover {
-            text-decoration: underline;
-        }
-        .attachment-actions button {
-            background: none;
-            border: none;
-            color: var(--danger-color);
-            cursor: pointer;
-            font-weight: 500;
-            font-family: var(--font-family);
-        }
-        .attachment-actions button:hover {
-            text-decoration: underline;
-        }
-
         /* Progress Bar mock */
         .progress-container {
             width: 100%;
@@ -756,7 +675,7 @@
             color: #F59E0B;
         }
             /* Chế độ xem chi tiết: chỉ hiển thị thông tin, ẩn vùng tải lên, thanh định dạng và dấu bắt buộc */
-        .modal-content.view-mode .upload-area, .modal-content.view-mode .rich-text-toolbar, .modal-content.view-mode .form-label > span[style*="danger"] { display: none !important; }
+        .modal-content.view-mode .rich-text-toolbar, .modal-content.view-mode .form-label > span[style*="danger"] { display: none !important; }
     </style>
 </head>
 <body>
@@ -907,17 +826,8 @@
                             <input type="text" id="qLegal" class="form-control" maxlength="500" placeholder="Ví dụ: Điều 41 Luật Trách nhiệm bồi thường của Nhà nước">
                         </div>
                     </div>
-                    <div class="form-section">
-                        <div class="form-section-title"><i class="fa-solid fa-file-arrow-up"></i> Tài liệu đính kèm</div>
-                        <div class="upload-area" onclick="pickFiles('q')">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <p>Kéo thả hoặc Click để tải lên</p>
-                            <span>Định dạng .pdf, .doc, .docx (Tối đa 20MB/tệp, tối đa 10 tệp)</span>
-                        </div>
-                        <input type="file" id="qFileInput" style="display: none;" multiple accept=".pdf,.doc,.docx" onchange="addFiles(this, 'q')">
-                        <div id="qFilesList" style="margin-top: 10px;"></div>
-                        <span class="field-error-text" id="error_qFiles"></span>
-                    </div>
+                    <!-- Tài liệu đính kèm: bảng chuẩn BTNN (STT | Tên tài liệu, văn bản | File đính kèm | Thao tác) - btnn_tai_lieu_kem_theo.js dựng -->
+                    <div id="qTlkt"></div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -977,8 +887,9 @@
         <span id="toastMessage"></span>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script>
         // Hỏi đáp nghiệp vụ (góp ý khách hàng 02/11/2026)
         // Luồng: Chuyên viên STP soạn -> Lãnh đạo Phòng (Sở) duyệt -> Lãnh đạo Sở duyệt -> Lãnh đạo Cục phân công -> Lãnh đạo Phòng phân công -> Chuyên viên BTP trả lời
@@ -1295,36 +1206,30 @@
         }
 
         // ===== Thêm mới / Sửa câu hỏi =====
-        let tempFiles = { q: [], a: [] };
-        function pickFiles(t) { document.getElementById(t + 'FileInput').click(); }
-        function addFiles(input, t) {
-            const picked = Array.from(input.files);
-            const err = document.getElementById('error_' + t + 'Files');
-            let msg = '';
-            if (picked.find(f => !/\.(pdf|docx?)$/i.test(f.name))) msg = 'Định dạng tệp không hợp lệ. Chỉ nhận tệp .pdf, .doc, .docx.';
-            else if (picked.find(f => f.size > 20 * 1024 * 1024)) msg = 'Dung lượng tệp không được vượt quá 20MB.';
-            else if (tempFiles[t].length + picked.length > 10) msg = 'Hệ thống chỉ hỗ trợ tối đa 10 tệp.';
-            input.value = '';
-            if (msg) { err.innerText = msg; err.style.display = 'block'; return; }
-            err.style.display = 'none';
-            picked.forEach(f => tempFiles[t].push(f.name));
-            renderFiles(t);
+        // Tài liệu đính kèm: bảng chuẩn BTNN (btnn_tai_lieu_kem_theo.js). Dữ liệu mẫu cũ lưu tên tệp dạng chuỗi ('x.pdf');
+        // bản ghi lưu mới dạng [{ name, file: { id, name, size, type } }]. Quy đổi khi đọc, không đổi phiên bản localStorage.
+        const TLKT_EXTS = ['.pdf', '.doc', '.docx'];
+        const TLKT_MAX = 10;
+        const toDocRows = files => (files || []).map(f => typeof f === 'string'
+            ? { name: f.replace(/\.[^.]+$/, ''), file: { name: f } }
+            : { name: (f && f.name) || '', file: (f && f.file) || null }).filter(d => d.name || d.file);
+        function mountDocs(key, hostId, files, opts) {
+            if (typeof tlktMount !== 'function') return;
+            tlktMount(key, hostId, Object.assign({ split: false, noLeader: true, rows: toDocRows(files), title: 'Tài liệu đính kèm', exts: TLKT_EXTS, hint: `Tối đa ${TLKT_MAX} tài liệu.` }, opts || {}));
         }
-        function renderFiles(t) {
-            document.getElementById(t + 'FilesList').innerHTML = tempFiles[t].map((f, i) => `
-                <div class="attachment-item" style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-                    <div class="attachment-item-info" style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
-                        <i class="fa-regular ${/\.pdf$/i.test(f) ? 'fa-file-pdf' : 'fa-file-word'}"></i><span title="${esc(f)}">${esc(f)}</span>
-                    </div>
-                    <div class="attachment-actions"><a href="#" target="_blank">Xem file</a> <span style="color: var(--border-color); margin: 0 4px;">|</span> <button type="button" onclick="removeFile('${t}', ${i})">Xóa</button></div>
-                </div>`).join('');
+        // Kiểm tra bảng (dòng có dữ liệu phải đủ Tên + Tệp; định dạng do component kiểm tra) + giới hạn số tài liệu; trả về danh sách hoặc null nếu lỗi
+        function readDocs(key) {
+            if (typeof tlktGet !== 'function') return [];
+            if (typeof tlktValidate === 'function' && !tlktValidate(key)) return null;
+            const list = tlktGet(key);
+            if (list.length > TLKT_MAX) { showToast(`Hệ thống chỉ hỗ trợ tối đa ${TLKT_MAX} tài liệu.`, 'error'); return null; }
+            return list;
         }
-        function removeFile(t, i) {
-            openConfirm(`Bạn có chắc chắn muốn xóa tệp đính kèm "${tempFiles[t][i]}" không?`, () => { tempFiles[t].splice(i, 1); renderFiles(t); });
-        }
-        const filesHtml = files => (files && files.length)
-            ? files.map(f => `<div><i class="fa-regular ${/\.pdf$/i.test(f) ? 'fa-file-pdf' : 'fa-file-word'}"></i> ${esc(f)} - <a href="#" target="_blank">Xem file</a></div>`).join('')
-            : '<span style="color: var(--text-muted);">Không có</span>';
+        // Chế độ xem: bảng chỉ đọc (Xem file / Tải file); không có tài liệu thì không hiển thị khối (chuẩn component)
+        const docsView = (files, title) => {
+            const html = typeof tlktViewHtml === 'function' ? tlktViewHtml(toDocRows(files), { split: false, title }) : '';
+            return html ? `<div style="margin-top: 12px;">${html}</div>` : '';
+        };
 
         function clearErrors() {
             document.querySelectorAll('.field-error-text').forEach(t => { t.style.display = 'none'; });
@@ -1336,7 +1241,7 @@
             document.getElementById('qForm').reset();
             document.getElementById('qId').value = '';
             document.getElementById('qUnit').value = unitName(stpOfMe());
-            tempFiles.q = []; renderFiles('q');
+            mountDocs('hdq', 'qTlkt', [], { secClass: 'form-section', titleClass: 'form-section-title' });
             document.getElementById('formTitle').innerText = 'Thêm mới câu hỏi nghiệp vụ';
             document.getElementById('formModal').classList.add('active');
         }
@@ -1349,7 +1254,7 @@
             document.getElementById('qTitle').value = q.title;
             document.getElementById('qContent').value = q.content;
             document.getElementById('qLegal').value = q.legal || '';
-            tempFiles.q = [...(q.files || [])]; renderFiles('q');
+            mountDocs('hdq', 'qTlkt', q.files, { secClass: 'form-section', titleClass: 'form-section-title' });
             document.getElementById('formTitle').innerText = `Sửa câu hỏi nghiệp vụ ${q.code}`;
             closeModal('detailModal');
             document.getElementById('formModal').classList.add('active');
@@ -1360,10 +1265,12 @@
             const req = (id, err) => { const el = document.getElementById(id); if (!el.value.trim()) { el.classList.add('is-invalid'); document.getElementById(err).style.display = 'block'; first = first || el; } };
             req('qTitle', 'error_qTitle'); req('qContent', 'error_qContent');
             if (first) { first.focus(); return; }
+            const docs = readDocs('hdq');
+            if (!docs) return;
             const id = document.getElementById('qId').value;
             const fields = {
                 title: document.getElementById('qTitle').value.trim(),
-                content: document.getElementById('qContent').value.trim(), legal: document.getElementById('qLegal').value.trim(), files: [...tempFiles.q]
+                content: document.getElementById('qContent').value.trim(), legal: document.getElementById('qLegal').value.trim(), files: docs
             };
             let q;
             if (id) { q = questions.find(x => x.id === parseInt(id)); Object.assign(q, fields); }
@@ -1409,7 +1316,7 @@
                    ${kv('Ngày gửi Bộ Tư pháp', esc(q.sentAt || '—'))}${kv('Người xử lý hiện tại', esc(currentHandler(q)))}${kv('Căn cứ pháp lý', esc(q.legal || '—'))}</div>
                    <div style="font-weight: 600; margin-bottom: 6px;">${esc(q.title)}</div>
                    <div class="hd-question">${esc(q.content)}</div>
-                   <div style="margin-top: 10px;"><span class="form-label">Tài liệu đính kèm</span>${filesHtml(q.files)}</div></div>`;
+                   ${docsView(q.files, 'Tài liệu đính kèm')}</div>`;
             if (q.returnReason && q.status === ST.RETURNED) {
                 html += `<div class="form-section"><div class="form-section-title" style="color: var(--danger-color);"><i class="fa-solid fa-rotate-left"></i> Lý do trả lại</div><div class="hd-question">${esc(q.returnReason)}</div></div>`;
             }
@@ -1418,7 +1325,7 @@
                 html += `<div class="form-section"><div class="form-section-title" style="color: #166534;"><i class="fa-solid fa-comment-dots"></i> Câu trả lời của Bộ Tư pháp</div>
                     <div class="hd-kv">${kv('Người trả lời', esc(userName(q.answer.by)))}${kv('Thời điểm trả lời', esc(q.answer.at))}</div>
                     <div class="hd-answer">${esc(q.answer.content)}</div>
-                    <div style="margin-top: 10px;"><span class="form-label">Văn bản trả lời đính kèm</span>${filesHtml(q.answer.files)}</div></div>`;
+                    ${docsView(q.answer.files, 'Văn bản trả lời đính kèm')}</div>`;
             }
             html += `<div class="form-section"><div class="form-section-title"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử xử lý</div><ul class="hd-timeline">`
                 + q.history.slice().reverse().map(h => `<li><div><strong>${esc(h.action)}</strong> - ${esc(userName(h.by))}</div>${h.note ? `<div>${esc(h.note)}</div>` : ''}<div class="t">${esc(h.at)}</div></li>`).join('')
@@ -1507,22 +1414,21 @@
         }
         function openAnswer(id) {
             const q = questions.find(x => x.id === id);
-            tempFiles.a = [];
             openAct('Trả lời câu hỏi ' + q.code,
                 `<div class="hd-question" style="margin-bottom: 12px;"><strong>${esc(q.title)}</strong>\n${esc(q.content)}</div>
                  <div class="form-group"><label class="form-label">Nội dung trả lời <span style="color: var(--danger-color);">*</span></label>
                  <textarea id="actAnswer" class="form-control" rows="6" maxlength="4000"></textarea><span class="field-error-text" id="error_actAnswer">Đây là trường bắt buộc</span></div>
-                 <div class="form-group"><label class="form-label">Văn bản trả lời đính kèm</label>
-                 <div class="upload-area" onclick="pickFiles('a')"><i class="fa-solid fa-cloud-arrow-up"></i><p>Kéo thả hoặc Click để tải lên</p><span>Định dạng .pdf, .doc, .docx (Tối đa 20MB/tệp, tối đa 10 tệp)</span></div>
-                 <input type="file" id="aFileInput" style="display: none;" multiple accept=".pdf,.doc,.docx" onchange="addFiles(this, 'a')">
-                 <div id="aFilesList" style="margin-top: 10px;"></div><span class="field-error-text" id="error_aFiles"></span></div>`,
+                 <div id="aTlkt"></div>`,
                 '<i class="fa-solid fa-paper-plane"></i> Gửi trả lời', () => {
                     const v = document.getElementById('actAnswer').value.trim();
                     if (!v) { document.getElementById('actAnswer').classList.add('is-invalid'); document.getElementById('error_actAnswer').style.display = 'block'; document.getElementById('actAnswer').focus(); return false; }
-                    q.answer = { content: v, files: [...tempFiles.a], by: me().id, at: fmtTime(new Date()) };
+                    const docs = readDocs('hda');
+                    if (!docs) return false;
+                    q.answer = { content: v, files: docs, by: me().id, at: fmtTime(new Date()) };
                     q.status = ST.ANSWERED; addHistory(q, 'Gửi trả lời');
                     done(q, `Đã gửi trả lời câu hỏi ${q.code}`);
                 });
+            mountDocs('hda', 'aTlkt', [], { title: 'Văn bản trả lời đính kèm' });
         }
         function done(q, msg) {
             saveData(); closeModal('actModal'); closeModal('detailModal'); refreshTable(); showToast(msg, 'success');

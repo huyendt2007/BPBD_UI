@@ -667,7 +667,7 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script>
@@ -781,7 +781,10 @@
             const iSt = cols.findIndex(c => c[0] === 'Trạng thái');
             cols.splice(iSt, 0, ['Cán bộ xử lý', r => esc(r.officer)]);
             if (PV.isBtp()) cols.splice(iSt + 1, 0, ['Đơn vị thực hiện', r => esc(unitName(r.senderId))]);
-            document.getElementById('btnAddNew').style.display = PV.canCreate(false) ? '' : 'none';
+            { // setProperty important: btnn_uxu_dong_bo.js đặt display !important cho nút thanh công cụ
+                const addBtn = document.getElementById('btnAddNew');
+                if (PV.canCreate(false)) addBtn.style.removeProperty('display'); else addBtn.style.setProperty('display', 'none', 'important');
+            }
             document.getElementById('tableHead').innerHTML = `<tr><th style="width:56px; text-align:center;">STT</th>${cols.map(c => `<th>${c[0]}</th>`).join('')}<th style="width:110px; text-align:center;">Thao tác</th></tr>`;
             const list = filtered(), total = list.length, maxPages = Math.ceil(total / pageSize) || 1;
             lastGrid = { cols, list };

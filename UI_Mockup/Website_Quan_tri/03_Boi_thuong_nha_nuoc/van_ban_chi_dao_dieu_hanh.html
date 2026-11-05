@@ -971,25 +971,8 @@
                         </div>
                     </div>
 
-                    <div class="form-section" id="uploadSection">
-                        <div class="form-section-title">
-                            <i class="fa-solid fa-file-arrow-up"></i> Tài liệu đính kèm
-                        </div>
-                        <div style="min-width: 0;">
-                            <label class="form-label" style="font-weight: 600;">Tệp văn bản <span style="color: var(--danger-color);">*</span></label>
-                            <div class="upload-area" onclick="triggerFileInput('docFileInput')">
-                                <i class="fa-solid fa-cloud-arrow-up"></i>
-                                <p>Kéo thả hoặc Click để tải lên</p>
-                                <span>Định dạng .pdf, .doc, .docx (Tối đa 20MB/tệp, tối đa 10 tệp)</span>
-                            </div>
-                            <input type="file" id="docFileInput" style="display: none;" multiple accept=".pdf,.doc,.docx" onchange="handleFileSelected(this, 'doc')">
-                            <div class="progress-container" id="docProgressContainer">
-                                <div class="progress-bar-fill" id="docProgressBar"></div>
-                            </div>
-                            <div id="docFilesList" style="margin-top: 10px;"></div>
-                            <span class="field-error-text" id="error_docFiles">Đây là trường bắt buộc</span>
-                        </div>
-                    </div>
+                    <!-- Tài liệu đính kèm: bảng chuẩn BTNN (btnn_tai_lieu_kem_theo.js) -->
+                    <div id="docTlktHost" style="min-width: 0;"></div>
                 </form>
             </div>
 
@@ -1025,8 +1008,9 @@
         <span id="toastMessage"></span>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script>
         // Văn bản chỉ đạo, điều hành (góp ý khách hàng 02/11/2026): kho lưu trữ, tra cứu văn bản; không có luồng xử lý
         // 01 trang dùng chung 02 menu, phân biệt bằng tham số menu: tw = Trung ương ban hành, dp = Địa phương ban hành
@@ -1385,70 +1369,27 @@
             });
         }
 
-        // TỆP ĐÍNH KÈM
-        function triggerFileInput(inputId) {
-            const input = document.getElementById(inputId);
-            if (input && !input.disabled) input.click();
+        // TÀI LIỆU ĐÍNH KÈM: bảng chuẩn BTNN (btnn_tai_lieu_kem_theo.js)
+        // STT | Tên tài liệu, văn bản | File đính kèm | Thao tác; bắt buộc tối thiểu 01 dòng đủ Tên + Tệp; .pdf, .doc, .docx; tối đa 10 tài liệu
+        const TLKT_KEY = 'vbcd';
+        const TLKT_EXTS = ['.pdf', '.doc', '.docx'];
+        const TLKT_MAX = 10;
+        // Quy đổi dữ liệu: bản ghi cũ lưu files dạng mảng tên tệp ['a.pdf'] -> dòng bảng chuẩn [{ name, file: { name, size } }]
+        function toTlktRows(files) {
+            return (files || []).map(f => typeof f === 'string'
+                ? { name: f.replace(/\.[^.]+$/, ''), file: { name: f, size: '' } }
+                : { name: f.name || (f.file && f.file.name) || '', file: f.file || null }).filter(r => r.name || r.file);
         }
-        function handleFileSelected(input, type) {
-            if (!input.files.length) return;
-            // [BR-FILE-010]: .pdf, .doc, .docx; tối đa 20MB/tệp; tối đa 10 tệp
-            const errEl = document.getElementById('error_docFiles');
-            const picked = Array.from(input.files);
-            let fileErr = '';
-            if (picked.find(f => !/\.(pdf|docx?)$/i.test(f.name))) fileErr = 'Định dạng tệp không hợp lệ. Chỉ nhận tệp .pdf, .doc, .docx.';
-            else if (picked.find(f => f.size > 20 * 1024 * 1024)) fileErr = 'Dung lượng tệp không được vượt quá 20MB.';
-            else if (tempDocFiles.length + picked.length > 10) fileErr = 'Hệ thống chỉ hỗ trợ tối đa 10 tệp.';
-            if (fileErr) {
-                errEl.innerText = fileErr;
-                errEl.style.display = 'block';
-                input.value = '';
+        function renderAttachments(viewMode) {
+            const host = document.getElementById('docTlktHost');
+            if (viewMode) {
+                host.innerHTML = typeof tlktViewHtml === 'function'
+                    ? tlktViewHtml(tempDocFiles, { split: false, title: 'Tài liệu đính kèm', boxClass: 'form-section', titleClass: 'form-section-title' }) : '';
                 return;
             }
-            errEl.style.display = 'none';
-            errEl.innerText = 'Đây là trường bắt buộc';
-
-            const pc = document.getElementById(`${type}ProgressContainer`);
-            const pb = document.getElementById(`${type}ProgressBar`);
-            pc.style.display = 'block';
-            pb.style.width = '0%';
-            let width = 0;
-            const timer = setInterval(() => {
-                if (width >= 100) {
-                    clearInterval(timer);
-                    setTimeout(() => {
-                        pc.style.display = 'none';
-                        picked.forEach(f => tempDocFiles.push(f.name));
-                        input.value = '';
-                        renderUploadedFiles();
-                        showToast('Tải lên tệp thành công', 'success');
-                    }, 300);
-                } else {
-                    width += 20;
-                    pb.style.width = width + '%';
-                }
-            }, 100);
-        }
-        function renderUploadedFiles() {
-            const viewOnly = document.getElementById('docNum').disabled;
-            document.getElementById('docFilesList').innerHTML = tempDocFiles.map((file, index) => `
-                <div class="attachment-item" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; width: 100%;">
-                    <div class="attachment-item-info" style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
-                        <i class="fa-regular ${/\.pdf$/i.test(file) ? 'fa-file-pdf' : 'fa-file-word'}" style="flex-shrink: 0;"></i>
-                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%;" title="${esc(file)}">${esc(file)}</span>
-                    </div>
-                    <div class="attachment-actions" style="flex-shrink: 0; white-space: nowrap;">
-                        <a href="#" target="_blank">Xem file</a>
-                        ${!viewOnly ? ` <span style="color: var(--border-color); margin: 0 4px;">|</span> <button type="button" onclick="removeFile(${index})">Xóa</button>` : ''}
-                    </div>
-                </div>`).join('');
-        }
-        function removeFile(index) {
-            const name = tempDocFiles[index];
-            openConfirm(`Bạn có chắc chắn muốn xóa tệp đính kèm "${name}" không?`, () => {
-                tempDocFiles.splice(index, 1);
-                renderUploadedFiles();
-                showToast('Xóa tệp đính kèm thành công', 'success');
+            if (typeof tlktMount === 'function') tlktMount(TLKT_KEY, 'docTlktHost', {
+                split: false, noLeader: true, required: true, rows: tempDocFiles, exts: TLKT_EXTS,
+                title: 'Tài liệu đính kèm', secClass: 'form-section', titleClass: 'form-section-title', hint: 'Tối đa 10 tài liệu.'
             });
         }
 
@@ -1474,8 +1415,6 @@
             document.getElementById('modalTitle').innerText = title;
             clearErrors();
             FIELDS.forEach(id => { document.getElementById(id).disabled = viewMode; });
-            document.getElementById('docFileInput').disabled = viewMode;
-            document.getElementById('uploadSection').querySelector('.upload-area').style.display = viewMode ? 'none' : '';
             document.getElementById('modalTitle').closest('.modal-content').classList.toggle('view-mode', viewMode);
 
             const statusSel = document.getElementById('docStatus');
@@ -1496,7 +1435,7 @@
             document.getElementById('btnSave').style.display = viewMode ? 'none' : 'inline-flex';
             document.getElementById('btnDeleteInView').style.display = editable ? 'inline-flex' : 'none';
             document.getElementById('btnEditInView').style.display = editable ? 'inline-flex' : 'none';
-            renderUploadedFiles();
+            renderAttachments(viewMode);
             document.getElementById('docModal').classList.add('active');
         }
         function closeModal() { document.getElementById('docModal').classList.remove('active'); }
@@ -1517,7 +1456,7 @@
             document.getElementById('docStatus').value = doc ? (doc.tinhTrang || 'Còn hiệu lực') : 'Còn hiệu lực';
             document.getElementById('docSummary').value = doc ? doc.trichYeu : '';
             document.getElementById('docNote').value = doc ? (doc.ghiChu || '') : '';
-            tempDocFiles = doc ? [...(doc.files || [])] : [];
+            tempDocFiles = doc ? toTlktRows(doc.files) : [];
         }
         function openCreateModal() {
             if (!canCreate()) return;
@@ -1570,21 +1509,27 @@
             }
             if (!status) markErr('docStatus', 'error_docStatus');
             if (!summary) markErr('docSummary', 'error_docSummary');
-            if (!tempDocFiles.length) markErr('docFileInput', 'error_docFiles', 'Đây là trường bắt buộc');
-
             if (firstInvalid) {
-                const focusEl = firstInvalid.id === 'docFileInput' ? document.getElementById('error_docFiles') : firstInvalid;
-                if (focusEl.scrollIntoView) focusEl.scrollIntoView({ block: 'center' });
-                if (focusEl.focus) focusEl.focus();
+                if (typeof tlktValidate === 'function') tlktValidate(TLKT_KEY); // hiển thị lỗi bảng cùng lúc, focus về trường lỗi đầu tiên
+                if (firstInvalid.scrollIntoView) firstInvalid.scrollIntoView({ block: 'center' });
+                if (firstInvalid.focus) firstInvalid.focus();
                 return;
             }
+            // Tài liệu đính kèm: bắt buộc tối thiểu 01 dòng đủ Tên + Tệp; dòng có dữ liệu phải đủ Tên + Tệp
+            if (typeof tlktValidate === 'function' && !tlktValidate(TLKT_KEY)) {
+                const tlktErr = document.querySelector('#docTlktHost .is-invalid, #docTlktHost .tlkt-err.on');
+                if (tlktErr && tlktErr.scrollIntoView) tlktErr.scrollIntoView({ block: 'center' });
+                return;
+            }
+            const docFiles = typeof tlktGet === 'function' ? tlktGet(TLKT_KEY) : [];
+            if (docFiles.length > TLKT_MAX) { showToast(`Hệ thống chỉ hỗ trợ tối đa ${TLKT_MAX} tài liệu đính kèm.`, 'error'); return; }
 
             const id = document.getElementById('docId').value;
             const fields = {
                 soKyHieu: num, loaiVanban: type, coquanBanhanh: issuerSel === CQ_KHAC ? issuerOther : issuerSel,
                 ngayBanhanh: issueRaw, ngayCoHieuLuc: effectRaw,
                 nguoiKy: v('docSigner'), tinhTrang: status, trichYeu: summary, ghiChu: v('docNote'),
-                files: [...tempDocFiles], nguoiCapNhat: currentUserName(), ngayCapNhat: formatDateToString(new Date())
+                files: docFiles, nguoiCapNhat: currentUserName(), ngayCapNhat: formatDateToString(new Date())
             };
             const persist = () => {
                 if (id) Object.assign(documents.find(d => d.id === parseInt(id)), fields);

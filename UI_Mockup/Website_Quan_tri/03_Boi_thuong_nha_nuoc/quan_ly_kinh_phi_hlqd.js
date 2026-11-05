@@ -19,9 +19,16 @@
     var MAP_KEY = 'btnn_qd_hieu_luc_v1';
     var OFF = 'Không có hiệu lực';
     var PAY_TYPE = 'Chi trả tiền bồi thường';
+    var PAY_TYPES = [PAY_TYPE, 'Cấp kinh phí bồi thường'];
+    var HUY = 'Hủy quyết định';
+    var MSG_HUY = 'Quyết định giải quyết bồi thường đã bị hủy, không thực hiện chi trả.';
+    var LABEL_HUY = 'QĐ đã bị hủy';
     var MSG = 'Quyết định giải quyết bồi thường không có hiệu lực, không thực hiện chi trả.';
     var LABEL = 'QĐ không có hiệu lực';
     var MSG_PENDING = 'Quyết định giải quyết bồi thường chưa được cập nhật trạng thái Có hiệu lực, không thực hiện chi trả.';
+    // [schl] Quyết định sửa chữa, bổ sung đã ban hành, chờ cập nhật hiệu lực: tạm chặn Trình thông báo chi trả / Cập nhật chi trả (thu hồi không chặn)
+    var MSG_SC = 'Quyết định sửa chữa, bổ sung chưa được cập nhật hiệu lực, tạm dừng chi trả.';
+    var LABEL_SC = 'QĐ sửa chữa chờ hiệu lực';
     // Ký duyệt: Thông báo chi trả đang Chờ duyệt mà Quyết định chuyển Không có hiệu lực (Từ chối vẫn cho phép)
     var BLOCK_ACTS = ['Trình thông báo chi trả', 'Cập nhật chi trả', 'Ký duyệt'];
 
@@ -33,13 +40,15 @@
 
     // Thông tin hiệu lực Quyết định của bản ghi Chi trả tiền bồi thường: { decNo, hieuLuc, reason, at } | null
     function decInfo(item) {
-        if (!item || item.type !== PAY_TYPE) return null;
+        if (!item || PAY_TYPES.indexOf(item.type) < 0) return null;
         var decs = rj(QD_KEY, []);
         decs = Array.isArray(decs) ? decs : [];
         var d = (item.decId && decs.find(function (x) { return x && x.id === item.decId; }))
             || (!item.decId && item.ycbtCode && decs.find(function (x) { return x && x.claimCode === item.ycbtCode && x.status === 'Đã ban hành'; })) || null;
         if (d) {
             var h = (d.hieuLucHistory || [])[(d.hieuLucHistory || []).length - 1] || {};
+            if (d.status === HUY) { var cx = d.cancel || {}; return { decNo: d.decNo || '', status: HUY, hieuLuc: d.hieuLuc || '', cancelNo: cx.decNo || '', reason: cx.content || '', at: cx.at || '' }; }
+            if (d.status === 'Đã ban hành' && d.scPending) return { decNo: d.decNo || '', status: d.status, hieuLuc: '', scPending: true, scN: d.scPending.n, at: d.scPending.at || '' };
             return { decNo: d.decNo || '', status: d.status, hieuLuc: d.hieuLuc === OFF ? OFF : 'Có hiệu lực', reason: h.reason || '', at: h.at || '' };
         }
         var map = rj(MAP_KEY, {}) || {};
@@ -47,7 +56,14 @@
         var k = Object.keys(map).find(function (id) { return map[id] && map[id].claimCode === item.ycbtCode && map[id].status === 'Đã ban hành'; });
         return k ? map[k] : null;
     }
-    function blocked(item) { var i = decInfo(item); return !!i && ['Đã hủy', 'Hủy quyết định'].indexOf(i.status) < 0 && i.hieuLuc === OFF; }
+    // [gql] Quyết định Hủy quyết định: bản ghi Chi trả của Quyết định giữ trạng thái, bị chặn chi tiếp như Quyết định Không có hiệu lực (quy tắc 8)
+    function isHuy(i) { return !!i && (i.status === HUY || i.status === 'Đã hủy'); }
+    // [schl] Bản ghi Tạm ứng kinh phí chưa chi bị tạm dừng: số tạm ứng đã chi không nhỏ hơn Tổng số tiền bồi thường sau sửa chữa, bổ sung (quan_ly_kinh_phi_kpqd.js)
+    var MSG_ADV = 'Số tiền tạm ứng đã chi không nhỏ hơn Tổng số tiền bồi thường theo Quyết định sau sửa chữa, bổ sung, không chi tạm ứng tiếp.';
+    var LABEL_ADV = 'Tạm dừng chi tạm ứng';
+    function blocked(item) { if (item && item.kpqdAdvBlock) return true; var i = decInfo(item); return !!i && (isHuy(i) || i.hieuLuc === OFF || !!i.scPending); }
+    function msgOf(item) { if (item && item.kpqdAdvBlock) return MSG_ADV; var i = decInfo(item); return isHuy(i) ? MSG_HUY : (i && i.scPending ? MSG_SC : MSG); }
+    function labelOf(item) { if (item && item.kpqdAdvBlock) return LABEL_ADV; var i = decInfo(item); return isHuy(i) ? LABEL_HUY : (i && i.scPending ? LABEL_SC : LABEL); }
     window.kphlBlocked = blocked;
 
     function css() {
@@ -64,7 +80,7 @@
     }
     function guard(id) {
         var it = find(id);
-        if (it && blocked(it)) { if (typeof showToast === 'function') showToast(MSG, 'warning'); return true; }
+        if (it && blocked(it)) { if (typeof showToast === 'function') showToast(msgOf(it), 'warning'); return true; }
         return false;
     }
     // Bọc hàm mở Trình thông báo chi trả / Cập nhật chi trả (đánh dấu để không bọc lặp)
@@ -76,7 +92,7 @@
             if (name === 'kptbLdOpen') { if (x !== 'reject' && guard(id)) return; return f.apply(this, arguments); }
             if (name === 'openApproveModal') { if (guard(id)) return; return f.apply(this, arguments); }
             if (guard(id)) return;
-            if (x && typeof x === 'object' && blocked(x)) { if (typeof showToast === 'function') showToast(MSG, 'warning'); return; }
+            if (x && typeof x === 'object' && blocked(x)) { if (typeof showToast === 'function') showToast(msgOf(x), 'warning'); return; }
             return f.apply(this, arguments);
         };
         w.__kphl = true;
@@ -104,6 +120,7 @@
         var m = (rj(MAP_KEY, {}) || {})[d.id];
         var hl = d.hieuLuc || (m && m.hieuLuc) || "";
         if (hl === OFF) return MSG;
+        if (d.status === "Đã ban hành" && d.scPending) return MSG_SC;
         if (hl !== "Có hiệu lực" && d.status === "Đã ban hành" && (d.qdhlPending || (m && m.pending))) return MSG_PENDING;
         return "";
     }
@@ -221,10 +238,10 @@
                 b.onclick = function (e) { e.stopPropagation(); };
                 b.classList.add('is-off', 'kphl-off');
                 b.setAttribute('aria-disabled', 'true');
-                b.setAttribute('title', t + ': ' + MSG);
+                b.setAttribute('title', t + ': ' + msgOf(item));
             });
             var stCell = tr.cells[tr.cells.length - 2];
-            if (stCell && !stCell.querySelector('.kphl-sub')) stCell.insertAdjacentHTML('beforeend', '<div class="kphl-sub"><span class="badge">' + LABEL + '</span></div>');
+            if (stCell && !stCell.querySelector('.kphl-sub')) stCell.insertAdjacentHTML('beforeend', '<div class="kphl-sub"><span class="badge">' + labelOf(item) + '</span></div>');
         });
     }
     // Màn chi tiết: ẩn nút ở Footer + nhãn cạnh trạng thái + khối cảnh báo
@@ -234,9 +251,26 @@
         var foot = document.getElementById('kpdtFoot');
         if (foot) Array.prototype.forEach.call(foot.querySelectorAll('button'), function (b) { if (BLOCK_ACTS.indexOf((b.textContent || '').trim()) >= 0) b.remove(); });
         var hs = document.getElementById('kpdtHeadStatus');
-        if (hs && !hs.querySelector('.kphl-sub')) hs.insertAdjacentHTML('beforeend', '<span class="kphl-sub" style="margin-left:8px;"><span class="badge">' + LABEL + '</span></span>');
+        if (hs && !hs.querySelector('.kphl-sub')) hs.insertAdjacentHTML('beforeend', '<span class="kphl-sub" style="margin-left:8px;"><span class="badge">' + labelOf(item) + '</span></span>');
         var body = document.getElementById('kpdtBody');
         var info = decInfo(item) || {};
+        if (body && !body.querySelector('.kphl-alert') && item.kpqdAdvBlock) {
+            var ab = item.kpqdAdvBlock;
+            body.insertAdjacentHTML('afterbegin', '<div class="kphl-alert"><b><i class="fa-solid fa-circle-exclamation"></i> TẠM DỪNG CHI TẠM ỨNG KINH PHÍ</b><br>'
+                + 'Số tiền tạm ứng đã chi ' + Number(ab.advPaid || 0).toLocaleString('vi-VN') + ' đồng không nhỏ hơn Tổng số tiền bồi thường theo Quyết định sau sửa chữa, bổ sung ' + Number(ab.total || 0).toLocaleString('vi-VN') + ' đồng' + (ab.at ? ' (' + esc(ab.at) + ')' : '') + '.'
+                + '<br>Không thực hiện Cập nhật chi trả / Ký duyệt Quyết định tạm ứng của bản ghi.</div>');
+        }
+        if (body && !body.querySelector('.kphl-alert') && isHuy(info)) {
+            body.insertAdjacentHTML('afterbegin', '<div class="kphl-alert"><b><i class="fa-solid fa-circle-exclamation"></i> QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG ĐÃ BỊ HỦY</b><br>'
+                + 'Quyết định số ' + esc(info.decNo || item.baseDecisionNo || '-') + (info.cancelNo ? ' bị hủy theo Quyết định số ' + esc(info.cancelNo) : '') + (info.at ? ' - ' + esc(info.at) : '') + '.'
+                + (info.reason ? '<br>Lý do hủy: ' + esc(info.reason) : '')
+                + '<br>Bản ghi giữ nguyên trạng thái; không thực hiện Trình thông báo chi trả / Cập nhật chi trả.</div>');
+        }
+        if (body && !body.querySelector('.kphl-alert') && info.scPending) {
+            body.insertAdjacentHTML('afterbegin', '<div class="kphl-alert" style="background:#eff6ff;border-color:#bfdbfe;border-left-color:#2563eb;color:#1e3a8a;"><b style="color:#1d4ed8;"><i class="fa-solid fa-circle-info"></i> QUYẾT ĐỊNH SỬA CHỮA, BỔ SUNG CHỜ CẬP NHẬT HIỆU LỰC</b><br>'
+                + 'Quyết định số ' + esc(info.decNo || item.baseDecisionNo || '-') + ' có Quyết định sửa chữa, bổ sung lần ' + esc(info.scN || '') + ' đã ban hành' + (info.at ? ' lúc ' + esc(info.at) : '') + ', chưa cập nhật hiệu lực.'
+                + '<br>Tạm dừng Trình thông báo chi trả / Cập nhật chi trả; Có hiệu lực: hệ thống tính lại kinh phí theo Quyết định sau sửa chữa, bổ sung.</div>');
+        }
         if (body && !body.querySelector('.kphl-alert')) {
             body.insertAdjacentHTML('afterbegin', '<div class="kphl-alert"><b><i class="fa-solid fa-circle-exclamation"></i> QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG KHÔNG CÓ HIỆU LỰC</b><br>'
                 + 'Quyết định số ' + esc(info.decNo || item.baseDecisionNo || '-') + (info.at ? ' - cập nhật lúc ' + esc(info.at) : '') + '.'
@@ -262,6 +296,12 @@
             recipient: { name: 'Phạm Thị Ngọc Ánh', idNo: '001192007788', account: '0021009988112', bank: 'BIDV', branch: 'Chi nhánh Hoàn Kiếm' },
             payout: { method: 'Nhận qua chuyển khoản', accHolder: 'Phạm Thị Ngọc Ánh', account: '0021009988112', bank: 'BIDV', branch: 'Chi nhánh Hoàn Kiếm' }, at: '09:00 02/10/2026', hieuLuc: OFF,
             reason: 'Cơ quan có thẩm quyền yêu cầu tạm dừng thi hành Quyết định để xem xét lại.', hlAt: '14:00 21/10/2026' }
+    ];
+    var HUY_SEEDS = [
+        { decId: 'QD-07', code: 'KP-2026-012', claimCode: 'BT-2026-011', decNo: '26/QĐ-GQBT', cancelNo: '33/QĐ-HGQBT', at: '10:00 25/09/2026', reason: 'Hủy quyết định gốc do nội dung quyết định không còn phù hợp với kết quả xác minh bổ sung.' },
+        { decId: 'QD-GQL1', code: 'KP-2026-561', claimCode: 'BT-2026-561', decNo: '61/QĐ-STP', cancelNo: '72/QĐ-STP', at: '15:00 25/09/2026', reason: 'Kết quả xác minh thiệt hại làm căn cứ ban hành Quyết định chưa đầy đủ, cần xác minh lại giá trị tài sản bị xâm phạm.' },
+        { decId: 'QD-GQL3', code: '', claimCode: 'BT-2026-564', decNo: '64/QĐ-STP', cancelNo: '74/QĐ-STP', at: '10:00 15/09/2026', reason: 'Kết quả xác minh thiệt hại tài sản chưa chính xác, mức bồi thường tại Quyết định cao hơn thiệt hại thực tế.' },
+        { decId: 'QD-GQL2', code: 'KP-2026-562', claimCode: 'BT-2026-562', decNo: '62/QĐ-STP', cancelNo: '73/QĐ-STP', at: '09:00 20/09/2026', reason: 'Biên bản kết quả thương lượng có nội dung chưa đúng thỏa thuận về mức bồi thường thu nhập bị mất.' }
     ];
     function seed() {
         if (typeof kptbBuildRecord !== 'function') return;
@@ -300,6 +340,13 @@
             }
             arr.unshift(it);
             n++;
+        });
+        // [gql] Quyết định mẫu Hủy quyết định (khi màn Quyết định GQBT chưa mở): KP-2026-012 (QD-07), KP-2026-561 (QD-GQL1), KP-2026-562 (QD-GQL2)
+        HUY_SEEDS.forEach(function (s) {
+            if (!map[s.decId]) { map[s.decId] = { claimCode: s.claimCode, decNo: s.decNo, status: HUY, hieuLuc: 'Có hiệu lực', cancelNo: s.cancelNo, reason: s.reason, at: s.at }; mch = true; }
+            var p = s.code ? arr.find(function (x) { return x && x.code === s.code; }) : null;
+            if (p && !p.decId) { p.decId = s.decId; n++; }
+            if (p && p.decId === s.decId && p.baseDecisionNo !== s.decNo) { p.baseDecisionNo = s.decNo; if (p.kptbDec) p.kptbDec.decNo = s.decNo; n++; }
         });
         if (mch) wj(MAP_KEY, map);
         if (n && typeof saveProposalsToLocal === 'function') saveProposalsToLocal();

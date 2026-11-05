@@ -320,7 +320,7 @@
             <div id="listNotice" class="tdta-notice" role="status" style="display:none;"></div>
             <div id="noPermissionNotice" class="notice-box" style="display:none;">
                 <i class="fa-solid fa-triangle-exclamation"></i>
-                Đơn vị của bạn chưa được áp dụng Loại hồ sơ "Giải quyết yêu cầu bồi thường" nên không được thêm mới, cập nhật hoặc xóa vụ việc tại Tòa án.
+                Đơn vị của bạn chưa được áp dụng Loại hồ sơ "Giải quyết yêu cầu bồi thường" nên không được thêm mới vụ việc tại Tòa án.
             </div>
 
             <div class="filter-card">
@@ -918,7 +918,7 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
     <!-- Nơi thụ lý (Thụ lý tại Tòa án / Thụ lý tại CQGQBT): vụ việc của phân hệ được tự gán "Thụ lý tại Tòa án" -->
     <script src="btnn_noi_thu_ly.js?v=20261104ntl1"></script>
     <!-- [th2c] Danh mục / bảng thiệt hại 2 cấp dùng chung (window.BTNN_TH) -->
@@ -1711,7 +1711,9 @@
             if (rec && isTerminal(rec) && status !== rec.status) { notify("Vụ việc đã ở trạng thái kết thúc, không được thay đổi trạng thái!", "error"); return; }
             const doSave = () => persistCase(rec, status, cleanDocs);
             if (TERMINAL_STATUSES.includes(status) && !(rec && isTerminal(rec))) {
-                showConfirm(`Trạng thái "${status}" là trạng thái kết thúc. Sau khi lưu, vụ việc không được thay đổi sang trạng thái khác (vẫn được cập nhật thông tin và xóa). Bạn có chắc chắn muốn lưu?`, doSave, "Xác nhận lưu");
+                // Đã có bản án/QĐ: khóa Cập nhật, Xóa; Trả lại đơn khởi kiện: chỉ khóa Trạng thái
+                const lockNote = status === "Đã có bản án/QĐ" ? "không được cập nhật, xóa vụ việc" : "không được thay đổi sang trạng thái khác (vẫn được cập nhật thông tin khác và xóa)";
+                showConfirm(`Trạng thái "${status}" là trạng thái kết thúc. Sau khi lưu, ${lockNote}. Bạn có chắc chắn muốn lưu?`, doSave, "Xác nhận lưu");
             } else {
                 doSave();
             }
@@ -1813,10 +1815,19 @@
                 const fundList = readJson(FUNDING_KEY, null);
                 const fund = Array.isArray(fundList) ? fundList.find(p => fundingMatches(p, latest)) : null;
                 if (fund && ![FUNDING_STATUS_NEW, "Chờ nhập liệu"].includes(fund.status)) { notify(`Bản ghi kinh phí ${fund.code} đang ở trạng thái ${fund.status}, không được xóa vụ việc!`, "error"); return; }
-                if (fund) writeJson(FUNDING_KEY, fundList.filter(p => p !== fund));
+                // Xóa mềm [BR-DEL-001]: vụ việc và bản ghi kinh phí xóa theo đều lưu Người xóa, Thời điểm xóa (bản ghi kinh phí chuyển sang kho đã xóa - mockup)
+                const delAt = BTNN_WF.nowText(), delBy = BTNN_WF.getCurrentUserId();
+                if (fund) {
+                    const delKey = FUNDING_KEY + '_deleted';
+                    const deletedFunds = readJson(delKey, []);
+                    deletedFunds.push(Object.assign({}, fund, { isDeleted: 1, deletedBy: delBy, deletedByName: CURRENT_USER.name, deletedAt: delAt, deletedReason: `Xóa theo vụ việc tại Tòa án ${latest.code}` }));
+                    writeJson(delKey, deletedFunds);
+                    writeJson(FUNDING_KEY, fundList.filter(p => p !== fund));
+                }
                 latest.deleted = true;
-                latest.deletedAt = BTNN_WF.nowText();
-                latest.deletedBy = CURRENT_USER.name;
+                latest.deletedAt = delAt;
+                latest.deletedBy = delBy;
+                latest.deletedByName = CURRENT_USER.name;
                 const partner = latest.linkedCode ? cases.find(c => c.code === latest.linkedCode) : null;
                 if (partner) {
                     partner.linkedCode = null;

@@ -1108,7 +1108,7 @@
                 <div id="importDropzone" onclick="triggerImportFileInput()" style="border: 2px dashed #CBD5E1; border-radius: 10px; padding: 28px 20px; text-align: center; background: #FAFBFD; cursor: pointer; transition: all 0.2s; margin-bottom: 12px;">
                     <i class="fa-solid fa-cloud-arrow-up" style="font-size: 36px; color: var(--primary-color); margin-bottom: 8px; display: block;"></i>
                     <div style="font-size: 13.5px; font-weight: 600; color: var(--text-main);">Kéo thả tệp tin vào đây hoặc <span style="color: var(--primary-color); text-decoration: underline;">chọn tệp từ máy tính</span></div>
-                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Chỉ chấp nhận tệp định dạng .xlsx, .xls (Dung lượng tối đa 10MB)</div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Chỉ chấp nhận tệp định dạng .xlsx, .xls (Dung lượng tối đa 20MB)</div>
                     <input type="file" id="importFileInput" accept=".xls,.xlsx" style="display: none;" onchange="handleImportFileSelected(this)">
                 </div>
 
@@ -1874,7 +1874,11 @@
             if (index === -1) return;
             const faq = documents[index];
             openConfirm(`Bạn có chắc chắn muốn xóa câu hỏi "${faq.cauHoi}" không? [MSG-CFM-SYS-001]`, () => {
+                // Xóa mềm [BR-DEL-001]: lưu Người xóa, Thời điểm xóa
+                const p2 = n => String(n).padStart(2, '0'), now = new Date();
                 faq.isDeleted = 1;
+                faq.deletedBy = (window.BTNN_WF && BTNN_WF.getCurrentUserId && BTNN_WF.getCurrentUserId()) || 'Nguyễn Văn Cán Bộ';
+                faq.deletedAt = `${p2(now.getHours())}:${p2(now.getMinutes())} ${p2(now.getDate())}/${p2(now.getMonth() + 1)}/${now.getFullYear()}`;
                 saveSystemDocuments();
                 refreshTable();
                 showToast("Xóa câu hỏi FAQ thành công. [MSG-SUC-SYS-002]", "success");
@@ -2492,5 +2496,14 @@
     <script src="admin-ui-standardizer.js"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="../03_Boi_thuong_nha_nuoc/btnn_tieu_de_man.js?v=20261103td2"></script>
+    <!-- Menu BTNN (?system=btnn): Chi tiết / Thêm mới / Sửa hiển thị dạng trang (btnn_form_trang.js), đồng nhất với VBQPPL; BPBĐ giữ dạng popup -->
+    <script>
+        if (typeof currentSystem !== 'undefined' && currentSystem === 'btnn') {
+            const formTrang = document.createElement('script');
+            formTrang.src = '../03_Boi_thuong_nha_nuoc/btnn_form_trang.js?v=20261104ft1';
+            formTrang.dataset.pages = 'faqModal';
+            document.body.appendChild(formTrang);
+        }
+    </script>
 </body>
 </html>

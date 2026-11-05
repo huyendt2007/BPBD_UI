@@ -1605,8 +1605,43 @@ function qdtuSeed() {
     proposalsList.unshift(item);
     return true;
 }
+// Dữ liệu mẫu: 01 Quyết định tạm ứng Bị trả lại (Lãnh đạo cấp 1 Từ chối) - vụ việc BT-2026-173 Thương lượng, chưa có tạm ứng
+function qdtuSeedReturned() {
+    if (proposalsList.some(p => p && p.id === 'P_QDTU_S2')) return false;
+    const c = QDTU_SEED_CLAIMS.find(x => x.code === 'BT-2026-173');
+    if (!c) return false;
+    const unitId = qdtuClaimUnit(c);
+    const W = qdtuW();
+    const root = W ? (W.getRootId(unitId) || unitId) : unitId;
+    const form = { claimCode: c.code, unitId: root, unitName: qdtuUnitName(root), isOrg: false, nycRole: 'Người bị thiệt hại', nycName: c.nyc, nycIdNo: c.nycCardNo, nycAddress: qdtuClaimAddress(c),
+        tinhThan: c.advanceTinhThan, khac: c.advanceKhac, rate: 50, amount: 20000000, recName: c.nyc, recIdNo: c.nycCardNo, recAddress: qdtuClaimAddress(c), officer: c.officerName,
+        payMethod: QDTU_CASH, accHolder: '', account: '', bank: '', branch: '', cashPlace: qdtuUnitName(root) };
+    const levels = qdtuLevels(c.code);
+    if (!levels.length) return false;
+    const assignees = levels.map(lv => lv.leaders[0] || '');
+    const reason = 'Mức tạm ứng chưa có căn cứ xác định thiệt hại về tinh thần; đề nghị bổ sung tài liệu chứng minh, trình lại.';
+    const sign = { method: 'Ký số', docNo: '     /QĐ-STP', docDate: '24/10/2026', canCu: QDTU_CAN_CU_DEFAULT.join('\n'), noiNhan: qdtuNoiNhanDefault(form),
+        docFile: { name: qdtuDocBaseName(c.code) + '.doc', generated: true }, assignees };
+    const item = { id: 'P_QDTU_S2', code: nextKinhPhiCode(), type: QDTU_TYPE, origin: 'Tạo QĐ tạm ứng', date: '24/10/2026', files: [], notes: '', source: '', cqCap: '',
+        ycbtCode: c.code, nycName: c.nyc, nycRole: 'Người bị thiệt hại', amount: form.amount, agency: form.unitName, advApproveTinhThan: form.tinhThan, advApproveKhac: form.khac,
+        payoutMethod: 'Nhận tiền mặt', signMethod: 'Ký số', docNo: sign.docNo, docDate: sign.docDate, draftDoc: sign.docFile.name, signedFile: null, digitalSign: null,
+        user: 'Nguyễn Văn Cán Bộ', status: QDTU_ST.REJECT, qdtu: Object.assign({}, form, { sign }),
+        qdtuApproval: { kind: QDTU_KIND, path: levels.map(l => l.unitId), assignees, level: 0, steps: [], content: 'Kính trình Lãnh đạo ký Quyết định tạm ứng kinh phí.', submittedBy: 'canbonv', submittedAt: '09:30 24/10/2026', pending: false },
+        qdtuReturned: { by: assignees[0], at: '16:00 24/10/2026', reason },
+        leaderOpinion: reason, approvedDate: '16:00 24/10/2026', approvedLeader: qdtuUserName(assignees[0]), approvedLeaderId: assignees[0],
+        rejectHistory: [{ date: '16:00 24/10/2026', leader: qdtuUserName(assignees[0]), opinion: reason }],
+        qdtuHistory: [
+            { at: '09:20 24/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Tạo Quyết định tạm ứng', note: `Mã hồ sơ ${c.code}; số tiền tạm ứng 20.000.000 đồng.` },
+            { at: '09:30 24/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Trình ký', note: `${QDTU_KIND}. Trình ${qdtuUserName(assignees[0])} - ${qdtuUnitName(levels[0].unitId)}.` },
+            { at: '16:00 24/10/2026', userId: assignees[0], userName: qdtuUserName(assignees[0]), action: 'Từ chối', note: `${QDTU_KIND}: từ chối tại cấp ${qdtuUnitName(levels[0].unitId)}. Lý do: ${reason}` }
+        ] };
+    proposalsList.unshift(item);
+    return true;
+}
 function qdtuImportAndSeed() {
-    if (qdtuSeed()) saveProposalsToLocal();
+    const s1 = qdtuSeed();
+    const s2 = qdtuSeedReturned();
+    if (s1 || s2) saveProposalsToLocal();
     proposalsList.forEach(qdtuEnsureMockClaim);
 }
 

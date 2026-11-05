@@ -242,7 +242,7 @@ const PTN_EXTRA_CSS = [
 // ======================= Hằng số, lưu trữ =======================
 const KEY = 'btnnPhieuTiepNhan_v1';
 const SEED_KEY = 'btnnPtnSeedVersion';
-const PTN_SEED_VER = '20261029ptnxs1';
+const PTN_SEED_VER = '20261104ld1';
 const KIND = 'Phiếu tiếp nhận'; // Loại trình tại màn Việc chờ Lãnh đạo xử lý
 const ST = { REVIEW: 'Chờ duyệt', REJECT: 'Bị trả lại', DONE: 'Đã ban hành' };
 // [tnd] Trạng thái hồ sơ tiếp nhận theo Phiếu tiếp nhận (phiếu flow 'tn')
@@ -1279,6 +1279,28 @@ function ldDone() {
 function ldOpenWork(t, tab) { ldOpen(t.code, 'view', tab === 'done' ? 'done' : null); }
 
 // ======================= Dữ liệu mẫu (merge theo Mã hồ sơ) =======================
+// Phiếu tiếp nhận đang trình: mỗi cấp giao đích danh 01 Lãnh đạo thuộc Nhóm lãnh đạo của cấp đó. Thứ tự lấy Lãnh đạo của từng cấp:
+//   (1) Lãnh đạo đã chọn khi trình (approval.assignees) nếu thuộc Nhóm lãnh đạo của cấp;
+//   (2) Lãnh đạo đã ký duyệt / từ chối ở cấp đó (approval.steps);
+//   (3) Chỉ khi phiếu không có dữ liệu chọn (dữ liệu mẫu, phiếu tự trình cũ): giá trị khởi tạo là Lãnh đạo đầu tiên của Nhóm lãnh đạo cấp đó.
+function ptnFillAssignees(p) {
+    const a = p && p.approval;
+    if (!a || !Array.isArray(a.path) || !a.path.length) return false;
+    const old = Array.isArray(a.assignees) ? a.assignees : [];
+    const steps = Array.isArray(a.steps) ? a.steps : [];
+    const ft = W.flowTypeOf ? W.flowTypeOf(p.requestType || p.loaiYeuCau || W.REQUEST_TYPE_YCBT, p.rootUnitId) : undefined;
+    const next = a.path.map((u, i) => {
+        const grp = Array.isArray((a.leaders || [])[i]) && a.leaders[i].length ? a.leaders[i] : W.getLeaders(u, ft);
+        const cur = old[i] || '';
+        if (!grp.length || grp.indexOf(cur) >= 0) return cur;
+        const acted = steps.filter(s => s && (s.level === i || s.unitId === u) && grp.indexOf(s.userId) >= 0).map(s => s.userId).pop();
+        return acted || grp[0];
+    });
+    if (next.length === old.length && next.every((v, i) => v === old[i])) return false;
+    a.assignees = next;
+    p.assignees = next.slice();
+    return true;
+}
 function seed() {
     let ver = '';
     try { ver = localStorage.getItem(SEED_KEY) || ''; } catch (e) { ver = ''; }
@@ -1304,6 +1326,10 @@ function seed() {
     // Bản ghi mẫu đã có (phiên bản trước chưa có Thông tin điền vào Mẫu 02): bổ sung meta, sinh lại văn bản
     // [ptnxs] Phiếu mẫu Xác định CQGQBT phiên bản trước (chưa theo luồng Không thụ lý): thay bằng bản mới nếu chưa bị người dùng thao tác
     seeds.forEach(s => { const x = m[s.code]; if (s.xs && x && !x.xs && x.seed && (x.history || []).length <= 2) delete m[s.code]; });
+    // Phiếu mẫu Xác định CQGQBT trình theo luồng cũ (kết thúc ở Cục): thay bằng bản theo luồng trình ký đủ cấp (chốt 2026-10-28) nếu chưa bị người dùng thao tác
+    seeds.forEach(s => { const x = m[s.code]; if (s.xs && x && x.xs && x.seed && x.status === s.status && x.approval && s.approval && x.approval.path.length !== s.approval.path.length && (x.history || []).length <= (s.history || []).length) delete m[s.code]; });
+    // Phiếu đã lưu còn cấp chưa giao đích danh Lãnh đạo: giao theo ptnFillAssignees
+    Object.keys(m).forEach(code => ptnFillAssignees(m[code]));
     seeds.forEach(s => { if (!m[s.code]) m[s.code] = s; else if (s.meta && !m[s.code].meta && m[s.code].docSrc === 'gen') { m[s.code].meta = s.meta; m[s.code].docHtml = ''; } });
     saveAll(m);
     // Hồ sơ mẫu đã ký duyệt Phiếu tiếp nhận: tạo hồ sơ luồng Chờ phân công tại đơn vị gốc
@@ -1356,21 +1382,25 @@ function tndSeedTickets(d) {
         const path = lv.length ? lv.map(l => l.unitId) : ['PLN-02', 'CĐK-01'];
         const leaders = lv.length ? lv.map(l => l.leaders.slice()) : [['tpbt'], ['cuctruong', 'cucpho']];
         const l1 = leaders[0][0] || 'tpbt', l2 = (leaders[1] || [])[0] || 'cuctruong';
+        // Dữ liệu mẫu: phiếu mẫu không có dữ liệu chọn khi trình -> giá trị khởi tạo Lãnh đạo từng cấp là Lãnh đạo đầu tiên của Nhóm lãnh đạo cấp đó;
+        // từ đây phiếu giao đích danh, chỉ Lãnh đạo được giao ở cấp hiện hành mới Ký duyệt / Từ chối được
+        const asg = path.map((u, i) => (i === 0 ? l1 : ((leaders[i] || [])[0] || '')));
         const p = Object.assign(baseRecord({ code: c.code, maVuViec: c.code, nyc: c.nyc, nopKenh: c.nopKenh, requestType: c.requestType, rootUnitId: c.rootUnitId }, null), {
             flow: FLOW, seed: true, status: ST.REVIEW, method: 'Ký số', docSrc: 'gen', docFile: { name: docBaseName(c.code) + '.pdf', generated: true }, docHtml: '',
-            meta: { docNo: s.docNo, docDate: c.date, noiNhan: NN }, assignees: [], content: '', attachments: [], submittedBy: TND_OFFICER, submittedAt: at, reason: '',
-            wfData: tndWfData(c), returns: [], approval: { kind: KIND, path, assignees: [], leaders, level: 0, steps: [] },
+            meta: { docNo: s.docNo, docDate: c.date, noiNhan: NN }, assignees: asg.slice(), content: '', attachments: [], submittedBy: TND_OFFICER, submittedAt: at, reason: '',
+            wfData: tndWfData(c), returns: [], approval: { kind: KIND, path, assignees: asg.slice(), leaders, level: 0, steps: [] },
             history: [H('Trình ký Phiếu tiếp nhận', TND_OFFICER, `Hệ thống sinh Phiếu tiếp nhận (Dự thảo) theo Mẫu 02/BTNN, trình Lãnh đạo ký duyệt theo luồng đã cấu hình: ${pathText(path)}. Hồ sơ chuyển [${REC_ST.REVIEW}].`)]
         });
         // [ptnxd] Hồ sơ Xác định CQGQBT: tệp Phiếu tiếp nhận đính kèm khi trình (Ký số trên hệ thống), không sinh theo Mẫu 02/BTNN
-        // [ptnxs] Luồng trình như Không thụ lý - Xác định CQGQBT: Lãnh đạo cấp 1 / cấp cuối do cán bộ chọn, vị trí ô ký, lịch sử "Trình phê duyệt"
+        // [ptnxs] Luồng trình như Không thụ lý - Xác định CQGQBT: Lãnh đạo từng cấp do cán bộ chọn, vị trí ô ký, lịch sử "Trình phê duyệt"
         if (s.xd) {
-            const asg = path.map((u, i) => (i === 0 ? l1 : (i === path.length - 1 ? l2 : '')));
+            const sc = PTX_SIG();
+            path.slice(1, -1).forEach((u, k) => { sc['l' + (k + 1)] = PTX_MID_DEF(k + 1); });
             const content = 'Kính trình Lãnh đạo ký duyệt Phiếu tiếp nhận hồ sơ xác định cơ quan giải quyết bồi thường.';
             const nextText = path.length > 1 ? ' Lãnh đạo cấp tiếp theo: ' + path.slice(1).map((u, i) => (asg[i + 1] ? W.userName(asg[i + 1]) + ' - ' : '') + W.unitName(u)).join('; ') + '.' : '';
             Object.assign(p, {
                 xs: true, noTpl: true, docSrc: 'upload', docFile: { name: `Phieu_tiep_nhan_${c.code}.pdf`, generated: false, size: '245 KB', note: '', keepId: '' }, meta: null,
-                enableRoomSig: true, sigCoords: PTX_SIG(), assignees: asg.slice(), content,
+                enableRoomSig: true, sigCoords: sc, assignees: asg.slice(), content,
                 history: [H('Trình phê duyệt', TND_OFFICER, `${KIND}. Trình ${W.userName(l1)} - ${W.unitName(path[0])}.${nextText} Nội dung: ${content}`)]
             });
             p.approval.assignees = asg.slice();
@@ -1382,8 +1412,11 @@ function tndSeedTickets(d) {
         };
         if (s.state === 'review2' || s.state === 'done') { sign(l1, 0, path.length === 1); a.level = Math.min(1, path.length - 1); }
         if (s.state === 'done') {
-            if (path.length > 1) sign(l2, 1, true);
-            Object.assign(p, { status: ST.DONE, signedAt: at, signedBy: path.length > 1 ? l2 : l1, issuedAt: at });
+            // Ký duyệt lần lượt các cấp còn lại đến cấp cuối
+            const who = k => (a.assignees || [])[k] || (k === 1 ? l2 : ((leaders[k] || [])[0] || ''));
+            for (let k = 1; k < path.length; k++) sign(who(k), k, k === path.length - 1);
+            a.level = path.length - 1;
+            Object.assign(p, { status: ST.DONE, signedAt: at, signedBy: path.length > 1 ? who(path.length - 1) : l1, issuedAt: at });
         }
         if (s.state === 'reject') {
             Object.assign(p, { status: ST.REJECT, reason: TND_REJECT, rejectedBy: l1, rejectedAt: at });
@@ -1657,6 +1690,51 @@ function ptxFillLeaders(prev) {
     const fill = (id, list, ph, w) => { const s = el(id); s.innerHTML = list.length ? `<option value="">${ph}</option>` + list.map(u => `<option value="${esc(u)}">${esc(W.userLabel(u))}</option>`).join('') : ''; s.value = pick(list, w); };
     fill('ptxOfficerRoomSelect', one ? [] : ((lv[0] && lv[0].leaders) || []), '-- Chọn Lãnh đạo Phòng duyệt --', pv[0]);
     fill('ptxOfficerAgencySelect', (lv[lv.length - 1] && lv[lv.length - 1].leaders) || [], '-- Chọn Lãnh đạo Đơn vị ký số --', pv[path.length - 1]);
+    ptxRenderMids(pv, fill);
+}
+// Cấp trung gian (Cấp 2 .. Cấp n-1): mỗi cấp 01 thẻ "Cấp [n] - [Đơn vị]" (chọn Lãnh đạo, Đặt chữ ký) và 01 ô ký trên văn bản; khóa ô ký 'l[chỉ số cấp]'
+function ptxMidKeys() { return (X && X.mids || []).map(i => ['l' + i, 'L' + i, i]); }
+function ptxLevelKeys() { return [['room', 'Room', 0]].concat(ptxMidKeys(), [['agency', 'Agency', -1]]); }
+function PTX_MID_DEF(i) { return { x: 290, y: 860 + (i - 1) * 105, w: 180, h: 90 }; }
+function ptxRenderMids(pv, fill) {
+    const path = X.path;
+    X.mids = path.length > 2 ? path.slice(1, -1).map((u, k) => k + 1) : [];
+    let wrap = el('ptxPanelMidCards');
+    if (!wrap) {
+        const ag = el('ptxPanelAgencyCard');
+        wrap = document.createElement('div');
+        wrap.id = 'ptxPanelMidCards';
+        wrap.style.cssText = 'display:flex; flex-direction:column; gap:12px;';
+        ag.parentNode.insertBefore(wrap, ag);
+    }
+    const page = el('ptxA4Page');
+    page.querySelectorAll('.ptx-mid-sig').forEach(b => b.remove());
+    wrap.style.display = X.mids.length ? 'flex' : 'none';
+    wrap.innerHTML = X.mids.map(i => {
+        const u = path[i], d = PTX_MID_DEF(i);
+        const kn = W.isKyNhayUnit && W.isKyNhayUnit(u, ptxFt());
+        return `<div id="ptxPanelL${i}Card" style="background:#fff; border:1px solid #c7d2fe; border-left:4px solid #4f46e5; border-radius:8px; padding:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px;"><span style="font-size:12.5px; font-weight:700; color:#4338ca;">${esc('Cấp ' + (i + 1) + ' - ' + W.unitName(u))}</span><span class="badge" style="${kn ? '' : 'display:none; '}background:#dbeafe; color:#1e40af; font-size:10.5px; white-space:nowrap;">Ký nháy</span></div>
+            <div class="form-group" style="margin-bottom:8px;"><select id="ptxOfficerL${i}Select" class="form-control" style="font-size:13px;" onchange="PTN.x.syncNames(); PTN.x.clearSel(this)"></select><div class="error-message">Đây là trường bắt buộc</div></div>
+            <button type="button" class="btn btn-secondary btn-sm" id="ptxBtnPlaceL${i}" onclick="PTN.x.place('l${i}')" style="font-size:12px;"><i class="fa-solid fa-signature"></i> Đặt chữ ký</button><div id="ptxPlaceL${i}Err" class="error-message">Chưa đặt chữ ký</div>
+            <div id="ptxPanelL${i}Ctrls" style="display:none;"><div style="font-size:11px; color:#94a3b8; margin-bottom:6px;" id="ptxPanelL${i}Coord">Trang 1</div>
+                <div style="display:flex; gap:4px; align-items:center;"><button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="PTN.x.resize('l${i}', 160, 75)">Nhỏ</button><button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="PTN.x.resize('l${i}', 180, 90)">Vừa</button><button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="PTN.x.resize('l${i}', 240, 110)">Lớn</button><button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="PTN.x.move('l${i}', ${d.x}, ${d.y})"><i class="fa-solid fa-rotate-left"></i> Đặt lại</button></div></div>
+        </div>`;
+    }).join('');
+    X.mids.forEach(i => {
+        fill('ptxOfficerL' + i + 'Select', (X.levels[i] && X.levels[i].leaders) || [], '-- Chọn Lãnh đạo --', pv[i]);
+        if (!X.sigCoords['l' + i]) X.sigCoords['l' + i] = PTX_MID_DEF(i);
+        const box = document.createElement('div');
+        box.id = 'ptxSigBoxL' + i;
+        box.className = 'sig-drag-box ptx-mid-sig';
+        box.style.cssText = 'display:none; border:2px dashed #4f46e5; background:rgba(238, 242, 255, 0.94); box-shadow:0 4px 12px rgba(79,70,229,0.18);';
+        box.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:10.5px; font-weight:700; color:#3730a3;"><i class="fa-solid fa-pen-nib"></i> KÝ NHÁY</span><span class="badge" style="background:#4f46e5; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp ${i + 1}</span></div>
+            <div style="text-align:center; font-weight:700; color:#1e293b; font-size:12px;" id="ptxSigBoxL${i}Officer"></div>
+            <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>Chữ ký nháy</span><span id="ptxCoordL${i}Label"></span></div>
+            <div class="sig-resize-handle" title="Kéo chuột để co giãn khung chữ ký"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>`;
+        page.appendChild(box);
+        ptxBindBox(box.id, 'l' + i);
+    });
 }
 // Mở Popup Trình ký Phiếu tiếp nhận (hồ sơ Xác định CQGQBT): thêm mới (nw) / trình lại hồ sơ Bị trả lại
 function ptxOpen(id, c, nw) {
@@ -1669,7 +1747,7 @@ function ptxOpen(id, c, nw) {
     X = { id, claim: c, code: c.code, isNew, wfData: isNew ? nw.wfData : null, onSaved: nw ? nw.onSaved : null, prev, levels, path: levels.map(l => l.unitId),
         method: 'Ký số', file: '', fileObj: null, fileSize: '', fileNote: '', fileKeepId: '', step: 1, converting: false, convToken: 0,
         enableRoomSig: re && re.enableRoomSig !== undefined ? re.enableRoomSig : true,
-        sigCoords: hasSig ? JSON.parse(JSON.stringify(re.sigCoords)) : PTX_SIG(), placed: hasSig ? { room: true, agency: true } : {} };
+        sigCoords: hasSig ? JSON.parse(JSON.stringify(re.sigCoords)) : PTX_SIG(), placed: hasSig ? Object.fromEntries(Object.keys(re.sigCoords).map(k => [k, true])) : {} };
     // Trình lại: tệp văn bản trình ký, Lãnh đạo từng cấp, ký nháy, vị trí ô ký, Nội dung trình, Tài liệu đính kèm của lần trình trước
     const f = re && re.docFile;
     if (f && f.name && !f.generated) Object.assign(X, { file: f.name, fileKeepId: f.keepId || '', fileObj: (f.keepId && global.tlktBlob && global.tlktBlob(f.keepId)) || null, fileSize: f.size || '', fileNote: f.note || '' });
@@ -1776,15 +1854,18 @@ function ptxCollect(skipLeaders) {
     const roomOn = !skipLeaders && el('ptxOfficerRoomGroup').style.display !== 'none';
     const roomLeader = roomOn ? roomEl.value : '';
     if (roomOn && !roomLeader) first = ptxInvalid(roomEl, first);
+    // Lãnh đạo cấp trung gian (bắt buộc từng cấp)
+    const midLeaders = {};
+    if (!skipLeaders) ptxMidKeys().forEach(([, K, i]) => { const s = el('ptxOfficer' + K + 'Select'); midLeaders[i] = s ? s.value : ''; if (s && !s.value) first = ptxInvalid(s, first); });
     const agEl = skipLeaders ? null : el('ptxOfficerAgencySelect');
     const agencyLeader = agEl ? agEl.value : '';
     if (agEl && !agencyLeader) first = ptxInvalid(agEl, first);
-    // [ptnr1] Bắt buộc đặt chữ ký từng cấp (cấp 1 khi áp dụng ký nháy Lãnh đạo cấp 1)
-    if (!skipLeaders) [['room', 'Room', X.path.length > 1 && X.enableRoomSig], ['agency', 'Agency', true]].forEach(([k, K, need]) => { if (need && !X.placed[k]) { el('ptxPlace' + K + 'Err').style.display = 'block'; first = first || el('ptxBtnPlace' + K); } });
+    // [ptnr1] Bắt buộc đặt chữ ký từng cấp: cấp cuối, cấp trung gian; cấp 1 khi áp dụng ký nháy Lãnh đạo cấp 1
+    if (!skipLeaders) [['room', 'Room', X.path.length > 1 && X.enableRoomSig]].concat(ptxMidKeys().map(([k, K]) => [k, K, true]), [['agency', 'Agency', true]]).forEach(([k, K, need]) => { if (need && !X.placed[k]) { el('ptxPlace' + K + 'Err').style.display = 'block'; first = first || el('ptxBtnPlace' + K); } });
     if (typeof global.tlktValidate === 'function' && !global.tlktValidate('ptx') && !first) first = el('ptxTlkt');
     // [r5] Ký số: chỉ báo lỗi tại ô lỗi, không toast
     if (first) { if (first.focus) first.focus(); if (first.scrollIntoView) first.scrollIntoView({ block: 'center' }); return null; }
-    return { method: 'Ký số', content, roomLeader, agencyLeader };
+    return { method: 'Ký số', content, roomLeader, midLeaders, agencyLeader };
 }
 function ptxStep(step) {
     X.step = step;
@@ -1825,7 +1906,7 @@ function ptxNext() {
     ptxRefreshPlaced();
 }
 function ptxRefreshPlaced() {
-    [['room', 'Room'], ['agency', 'Agency']].forEach(([k, K]) => {
+    ptxLevelKeys().forEach(([k, K]) => {
         // [r5] Bỏ chọn Áp dụng ký nháy Lãnh đạo cấp 1: ẩn nút Đặt chữ ký, ô ký Cấp 1
         const off = k === 'room' && !X.enableRoomSig;
         const on = !off && !!X.placed[k] && (k !== 'room' || X.path.length > 1);
@@ -1834,16 +1915,17 @@ function ptxRefreshPlaced() {
         el('ptxBtnPlace' + K).style.display = on || off ? 'none' : '';
     });
 }
-function ptxPlace(k) { X.placed[k] = true; const pe = el('ptxPlace' + (k === 'room' ? 'Room' : 'Agency') + 'Err'); if (pe) pe.style.display = 'none'; ptxRefreshPlaced(); const b = el(k === 'room' ? 'ptxSigBoxRoom' : 'ptxSigBoxAgency'); if (b && b.scrollIntoView) b.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+function ptxPlace(k) { X.placed[k] = true; const K = k === 'room' ? 'Room' : (k === 'agency' ? 'Agency' : k.toUpperCase()); const pe = el('ptxPlace' + K + 'Err'); if (pe) pe.style.display = 'none'; ptxRefreshPlaced(); const b = el('ptxSigBox' + K); if (b && b.scrollIntoView) b.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
 function ptxSyncNames() {
     const nm = id => { const s = el(id); return s && s.selectedIndex >= 0 && s.value ? s.options[s.selectedIndex].text.split('-')[0].trim() : ''; };
     const room = nm('ptxOfficerRoomSelect'), agency = nm('ptxOfficerAgencySelect');
     el('ptxSigBoxRoomOfficer').textContent = room ? 'Cấp 1 - ' + room : 'Cấp 1';
+    ptxMidKeys().forEach(([, K, i]) => { const v = nm('ptxOfficer' + K + 'Select'); const o = el('ptxSigBox' + K + 'Officer'); if (o) o.textContent = v ? 'Cấp ' + (i + 1) + ' - ' + v : 'Cấp ' + (i + 1); });
     el('ptxSigBoxAgencyOfficer').textContent = agency ? 'Cấp cuối - ' + agency : 'Cấp cuối';
     el('ptxA4SignerName').textContent = (agency || '').toUpperCase();
 }
 function ptxApplyCoords() {
-    [['room', 'Room'], ['agency', 'Agency']].forEach(([k, K]) => {
+    ptxLevelKeys().forEach(([k, K]) => {
         const b = el('ptxSigBox' + K), c = X.sigCoords[k]; if (!b || !c) return;
         Object.assign(b.style, { left: c.x + 'px', top: c.y + 'px', width: c.w + 'px', height: c.h + 'px' });
         el('ptxCoord' + K + 'Label').textContent = `X: ${c.x}, Y: ${c.y}`;
@@ -1852,18 +1934,19 @@ function ptxApplyCoords() {
 }
 function ptxToggleRoom(on) { X.enableRoomSig = !!on; const ph = el('ptxA4RoomSigPlaceholder'); if (ph) ph.style.display = on ? 'block' : 'none'; const pe = el('ptxPlaceRoomErr'); if (pe) pe.style.display = 'none'; ptxRefreshPlaced(); }
 let ptxDrag = null;
-function ptxBindDrag() {
-    [['ptxSigBoxRoom', 'room'], ['ptxSigBoxAgency', 'agency']].forEach(([id, key]) => {
-        el(id).addEventListener('mousedown', e => {
-            if (e.button !== 0 || !X) return;
-            e.preventDefault();
-            const box = el(id);
-            if (e.target.closest('.sig-resize-handle')) { e.stopPropagation(); ptxDrag = { box, key, resize: true, sx: e.clientX, sy: e.clientY, w: X.sigCoords[key].w, h: X.sigCoords[key].h }; return; }
-            const r = box.getBoundingClientRect();
-            ptxDrag = { box, key, resize: false, ox: e.clientX - r.left, oy: e.clientY - r.top };
-            box.classList.add('dragging');
-        });
+function ptxBindBox(id, key) {
+    el(id).addEventListener('mousedown', e => {
+        if (e.button !== 0 || !X) return;
+        e.preventDefault();
+        const box = el(id);
+        if (e.target.closest('.sig-resize-handle')) { e.stopPropagation(); ptxDrag = { box, key, resize: true, sx: e.clientX, sy: e.clientY, w: X.sigCoords[key].w, h: X.sigCoords[key].h }; return; }
+        const r = box.getBoundingClientRect();
+        ptxDrag = { box, key, resize: false, ox: e.clientX - r.left, oy: e.clientY - r.top };
+        box.classList.add('dragging');
     });
+}
+function ptxBindDrag() {
+    [['ptxSigBoxRoom', 'room'], ['ptxSigBoxAgency', 'agency']].forEach(([id, key]) => ptxBindBox(id, key));
     document.addEventListener('mousemove', e => {
         if (!ptxDrag || !X) return;
         const page = el('ptxA4Page'); const c = X.sigCoords[ptxDrag.key];
@@ -1909,7 +1992,8 @@ function ptxSubmit(confirmed) {
         return;
     }
     const path = st.path;
-    const assignees = path.map((u, i) => (i === path.length - 1 ? data.agencyLeader : (i === 0 ? data.roomLeader : '')) || '');
+    // Lãnh đạo mọi cấp do cán bộ chọn tại thẻ cấp tương ứng
+    const assignees = path.map((u, i) => (i === path.length - 1 ? data.agencyLeader : (i === 0 ? data.roomLeader : (data.midLeaders || {})[i])) || '');
     if (!assignees[0]) { toast('Vui lòng chọn Lãnh đạo phê duyệt.', 'error'); return; }
     const content = data.content || 'Kính trình Lãnh đạo xem xét, phê duyệt.';
     const p = Object.assign(baseRecord(c, prev), flowData, {
@@ -1948,8 +2032,10 @@ function ptxLdEnsure() {
     document.body.appendChild(o);
 }
 function ptxLdPreview(p) {
-    const a = p.approval || {}, sc = (p.sigCoords && p.sigCoords.room) ? p.sigCoords : PTX_SIG();
+    const a = p.approval || {}, sc = Object.assign({}, (p.sigCoords && p.sigCoords.room) ? p.sigCoords : PTX_SIG());
     const path = a.path || [], asg = a.assignees || [], steps = a.steps || [], root = p.rootUnitId;
+    // Ô ký cấp trung gian: phiếu trình trước khi có thẻ cấp trung gian dùng vị trí mặc định
+    path.slice(1, -1).forEach((u, k) => { if (!sc['l' + (k + 1)]) sc['l' + (k + 1)] = PTX_MID_DEF(k + 1); });
     const box = (k, idx, cls, tag) => {
         const c = sc[k]; if (!c) return '';
         const uid = asg[idx] || ((a.leaders || [])[idx] || [])[0] || '';
@@ -1966,6 +2052,7 @@ function ptxLdPreview(p) {
             <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước năm 2017; xét yêu cầu xác định cơ quan giải quyết bồi thường (Mã vụ việc: <strong>${esc(p.maVuViec || p.code)}</strong>),</p>
             <p>${esc(W.unitName(root))} đã tiếp nhận hồ sơ yêu cầu xác định cơ quan giải quyết bồi thường của Ông/Bà.</p>
             ${path.length > 1 && p.enableRoomSig !== false ? box('room', 0, '', 'KÝ NHÁY') : ''}
+            ${path.slice(1, -1).map((u, k) => box('l' + (k + 1), k + 1, '', 'KÝ NHÁY')).join('')}
             ${box('agency', last, 'agency', 'KÝ SỐ & CON DẤU')}
         </div>`;
 }

@@ -139,12 +139,16 @@
         { id: 'P_KPUX_7', code: 'KP-2026-127', ycbt: 'BT-2026-087', vv: 'VVBT-2026-087', nyc: 'Lý Thị Hồng', amount: 83000000, date: '24/10/2026', st: 'Chờ chi trả', sign: 'Ký ngoài', docNo: '87/TB-STP', notice: '24/10/2026', rcv: '' },
         // dc: đã chi trả, vụ việc bị Đình chỉ giải quyết -> Chờ thu hồi (demo Cập nhật thu hồi tại menu Chi trả tiền bồi thường)
         { id: 'P_KPUX_8', code: 'KP-2026-128', ycbt: 'BT-2026-078', vv: 'VVBT-2026-078', nyc: 'Ngô Thị Lan', amount: 66000000, date: '06/10/2026', st: 'Chờ thu hồi', sign: 'Ký số', docNo: '88/TB-STP', notice: '08/10/2026', pay: '10/10/2026', dc: { no: '31/QĐ-STP', date: '21/10/2026', at: '21/10/2026 15:00' } },
-        // Dừng giải quyết -> Chờ thu hồi; đã thu hồi đủ qua 02 lần, chờ bấm Hoàn thành thu hồi (dữ liệu lần thu hồi: seedRc3)
-        { id: 'P_KPUX_9', code: 'KP-2026-129', ycbt: 'BT-2026-089', vv: 'VVBT-2026-089', nyc: 'Đỗ Minh Khôi', amount: 48000000, date: '07/10/2026', st: 'Chờ thu hồi', sign: 'Ký ngoài', docNo: '89/TB-STP', notice: '09/10/2026', pay: '11/10/2026', dc: { src: 'dungGiaiQuyet', no: '589/TB-STP', date: '16/10/2026', at: '16/10/2026 10:30' } },
+        // Đình chỉ giải quyết -> Chờ thu hồi; đã thu hồi đủ qua 02 lần, chờ bấm Hoàn thành thu hồi (dữ liệu lần thu hồi: seedRc3)
+        { id: 'P_KPUX_9', code: 'KP-2026-129', ycbt: 'BT-2026-089', vv: 'VVBT-2026-089', nyc: 'Đỗ Minh Khôi', amount: 48000000, date: '07/10/2026', st: 'Chờ thu hồi', sign: 'Ký ngoài', docNo: '89/TB-STP', notice: '09/10/2026', pay: '11/10/2026', dc: { no: '89/QĐ-STP', date: '16/10/2026', at: '16/10/2026 10:30' } },
         // Trả lại ngân sách nhà nước một phần: đã chi 60.000.000 (payAmt), phần còn lại 30.000.000 trả lại ngân sách nhà nước; Số tiền đã chi thực tế = 60.000.000
         { id: 'P_KPUX_10', code: 'KP-2026-130', ycbt: 'BT-2023-063', vv: 'VVBT-2023-063', nyc: 'Phùng Thị Xuân', amount: 90000000, date: '02/10/2026', st: 'Trả lại ngân sách nhà nước', sign: 'Ký số', docNo: '63/TB-STP', notice: '05/07/2023', rcv: '12/07/2023', created: '20/06/2023', pay: '15/03/2026', payAmt: 60000000, sq: '22/10/2026' },
-        // Chi trả nhiều lần: đã chi lần 1 40.000.000 / 100.000.000, còn phải chi 60.000.000 -> giữ Chờ chi trả (demo chi tiếp)
-        { id: 'P_KPUX_11', code: 'KP-2026-131', ycbt: 'BT-2026-097', vv: 'VVBT-2026-097', nyc: 'Tạ Thị Hòa', amount: 100000000, date: '12/10/2026', st: 'Chờ chi trả', sign: 'Ký số', docNo: '97/TB-STP', notice: '14/10/2026', pay: '20/10/2026', payAmt: 40000000 }
+        // Chi trả nhiều lần: đã chi lần 1 40.000.000 / 100.000.000, còn phải chi 60.000.000 -> giữ Chờ chi trả (demo chi tiếp); gắn Quyết định QD-HL5 (Có hiệu lực) để thử Sửa chữa, bổ sung giảm tiền
+        { id: 'P_KPUX_11', code: 'KP-2026-131', ycbt: 'BT-2026-097', vv: 'VVBT-2026-097', nyc: 'Tạ Thị Hòa', amount: 100000000, date: '12/10/2026', st: 'Chờ chi trả', sign: 'Ký số', docNo: '97/TB-STP', notice: '14/10/2026', pay: '20/10/2026', payAmt: 40000000, decId: 'QD-HL5' },
+        // [gql] Quyết định QD-GQL1 (BT-2026-561) Hủy quyết định: bản ghi Chờ chi trả đã chi một phần 80.000.000 / 200.000.000, giữ trạng thái, bị chặn chi tiếp
+        { id: 'P_GQL_1', code: 'KP-2026-561', ycbt: 'BT-2026-561', vv: 'VVBT-2026-561', nyc: 'Đỗ Minh Quân', amount: 200000000, date: '06/09/2026', st: 'Chờ chi trả', sign: 'Ký số', docNo: '61/TB-STP', notice: '10/09/2026', created: '05/09/2026', pay: '15/09/2026', payAmt: 80000000, decId: 'QD-GQL1' },
+        // [gql] Quyết định QD-GQL2 (BT-2026-562) Hủy quyết định: bản ghi Hoàn thành 150.000.000, giữ trạng thái
+        { id: 'P_GQL_2', code: 'KP-2026-562', ycbt: 'BT-2026-562', vv: 'VVBT-2026-562', nyc: 'Phan Thị Lụa', amount: 150000000, date: '03/08/2026', st: 'Hoàn thành', sign: 'Ký số', docNo: '62/TB-STP', notice: '05/08/2026', created: '02/08/2026', pay: '10/08/2026', payAmt: 150000000, decId: 'QD-GQL2' }
     ];
     function seedKpux() {
         var tpl = proposalsList.find(function (p) { return p && p.id === 'P_TB_KPTB-S5'; }) || proposalsList.find(function (p) { return isTb(p) && p.kptbDec; });
@@ -155,6 +159,9 @@
             var it = JSON.parse(JSON.stringify(tpl));
             ['kptbPayment', 'kptbApproval', 'kptbReturned', 'kptbSupp', 'noticeList', 'noticeNote', 'noticeFiles', 'payoutDate', 'payoutAmountReal', 'payoutFiles', 'payoutFile', 'treasuryForfeitDate', 'treasuryVoucherNo', 'treasuryAmount', 'treasuryReason', 'treasuryFile', 'recovery', 'statusBasis', 'statusChangeBasis'].forEach(function (k) { delete it[k]; });
             it.id = s.id; it.code = s.code; it.ycbtCode = s.ycbt; it.vvCode = s.vv; it.nycName = s.nyc; it.amount = s.amount; it.date = s.date; it.status = s.st;
+            // Liên thông Quyết định GQBT theo decId: bản ghi có Quyết định thật (decId) dùng mã đó; còn lại giữ theo bản ghi mẫu
+            if (s.decId) it.decId = s.decId;
+            if (s.decId && it.kptbDec) it.kptbDec.decId = s.decId;
             var dec = it.kptbDec || (it.kptbDec = {});
             dec.decNo = s.docNo.replace('/TB-STP', '/QĐ-GQBT'); dec.issueDate = s.created || s.date; dec.total = s.amount; dec.advance = 0;
             if (dec.recipient) dec.recipient.name = s.nyc;
@@ -228,7 +235,7 @@
         it.rcDateVer = RC_DATE_VER;
         return 1;
     }
-    // KP-2026-091 (Tạm ứng kinh phí, Chờ thu hồi do Quyết định hủy): dời mốc thời gian sang tháng 10 để hiển thị theo bộ lọc mặc định; chạy 01 lần
+    // KP-2026-091 (Tạm ứng kinh phí, Chờ thu hồi do Đình chỉ giải quyết): dời mốc thời gian sang tháng 10 để hiển thị theo bộ lọc mặc định; chạy 01 lần
     var RC_DATE_VER_TU = 'rcd_tu1_20261027';
     function seedRcDatesTu() {
         var it = proposalsList.find(function (p) { return p && p.code === 'KP-2026-091'; });
@@ -251,7 +258,7 @@
     // (c) đã thu đủ, chờ Hoàn thành thu hồi: KP-2026-905, KP-2026-129. Gộp theo mã; mỗi bản ghi chạy 01 lần (rcSeed3), chỉ khi còn Chờ thu hồi
     var RC_SEED3 = 'rc3_20261027';
     var RC3 = {
-        'KP-2026-091': { hist: [['12/10/2026', 10000000, 'Chuyển khoản', 'Nộp trả lần 1 theo Quyết định hủy.'], ['19/10/2026', 5000000, 'Tiền mặt', 'Nộp trả lần 2 tại cơ quan; tiếp tục đôn đốc phần còn lại.']] },
+        'KP-2026-091': { hist: [['19/10/2026', 10000000, 'Chuyển khoản', 'Nộp trả lần 1 theo Quyết định đình chỉ giải quyết bồi thường.'], ['26/10/2026', 5000000, 'Tiền mặt', 'Nộp trả lần 2 tại cơ quan; tiếp tục đôn đốc phần còn lại.']] },
         'KP-2026-025': { after: 30000000, hist: null },
         'KP-2026-905': { hist: [['23/10/2026', 20000000, 'Chuyển khoản', 'Nộp trả lần 1 vào tài khoản Kho bạc Nhà nước.'], ['26/10/2026', 10000000, 'Tiền mặt', 'Nộp trả lần 2, đủ số tiền phải thu hồi.']] },
         'KP-2026-129': { hist: [['18/10/2026', 30000000, 'Chuyển khoản', 'Nộp trả lần 1 vào tài khoản Kho bạc Nhà nước.'], ['24/10/2026', 18000000, 'Chuyển khoản', 'Nộp trả lần 2, đủ số tiền phải thu hồi.']] }
@@ -274,6 +281,21 @@
             it.rcSeed3 = RC_SEED3; n++;
         });
         return n;
+    }
+    // KP-2026-025 (Chờ thu hồi do QĐ sửa chữa, bổ sung giảm tiền): bổ sung căn cứ liên thông QĐ sửa chữa, bổ sung để hiển thị dòng phụ "Theo QĐ sửa chữa, bổ sung"; chạy 01 lần khi chưa có căn cứ
+    function seedRcScBasis() {
+        var it = proposalsList.find(function (p) { return p && p.code === 'KP-2026-025'; });
+        if (!it || it.kpqd || kpNormStatus(it.status) !== 'Chờ thu hồi') return 0;
+        var r = it.recovery || {};
+        it.kpqd = {
+            kind: 'sc', label: 'Theo QĐ sửa chữa, bổ sung', evId: 'SEED-KP-2026-025', decisionType: 'Quyết định sửa chữa, bổ sung Quyết định giải quyết bồi thường',
+            decisionNo: r.basisDecisionNo || '21/QĐ-SCBSGQBT', decisionDate: r.basisDecisionDate || '08/10/2026', file: 'QD_sua_chua_bo_sung_21_QD-SCBSGQBT.pdf', signMethod: 'Ký số',
+            baseDecNo: '64/QĐ-GQBT', baseDecDate: '25/09/2026', content: 'Sửa chữa Tổng số tiền bồi thường từ 90.000.000 đồng xuống 30.000.000 đồng.',
+            totalBefore: 90000000, totalAfter: 30000000, amountAfter: 30000000, recoverNeed: 60000000,
+            statusBefore: 'Hoàn thành', statusAfter: 'Chờ thu hồi', statusBeforeRecover: 'Hoàn thành', changedAt: '16:00 08/10/2026', claimCode: it.ycbtCode || 'BT-2026-064'
+        };
+        if (r.amountAfter == null) r.amountAfter = 30000000;
+        return 1;
     }
     // Lịch sử chi trả cho bản ghi mẫu đã lưu trước khi có chi nhiều lần (KP-2026-130: 01 lần chi 60.000.000 rồi trả lại ngân sách nhà nước); chạy 01 lần
     var PAY_SEED_VER = 'pay1_20261030';
@@ -305,6 +327,7 @@
         n += seedRcDates();
         n += seedRcDatesTu();
         n += seedRc3();
+        n += seedRcScBasis();
         proposalsList.forEach(function (p) { if (p && !kpIsAdv(p) && setLatest(p)) n++; });
         // Bỏ luồng "Chờ lập đề nghị": bản ghi Tạm ứng tạo tại Tạo QĐ tạm ứng, bản ghi Chi trả tạo tự động / Tạo thông báo chi trả
         var i = KP_PENDING_STATES.indexOf('Chờ lập đề nghị'); if (i >= 0) KP_PENDING_STATES.splice(i, 1);
@@ -739,21 +762,24 @@
     function rcBasis(item) { var r = item.recovery || {}; var b = item.statusChangeBasis || item.statusBasis || {}; return { no: r.basisDecisionNo || b.decisionNo || '', date: r.basisDecisionDate || b.decisionDate || '', type: b.decisionType || '' }; }
     function rcPaid(item) { return Number(item.payoutAmountReal) || Number((item.kptbPayment || {}).amount) || 0; }
     // Số tiền phải thu hồi: hệ thống tự tính theo căn cứ thu hồi
-    // - Đình chỉ giải quyết / Dừng giải quyết / Hủy Quyết định giải quyết: bằng Số tiền đã chi thực tế
-    // - Quyết định sửa chữa, bổ sung giảm số tiền: Số tiền đã chi thực tế trừ Số tiền theo Quyết định sau sửa chữa, bổ sung (phần chi thừa)
+    // - Đình chỉ giải quyết / Dừng giải quyết (khoản tạm ứng đã chi): bằng Số tiền đã chi thực tế
+    // - Quyết định sửa chữa, bổ sung: theo phần chênh lệch tại Bảng A / Bảng B (SRS Quyết định GQBT; quan_ly_kinh_phi_kpqd.js lưu recovery.amountAfter),
+    //   tối đa bằng Số tiền đã chi thực tế
     // - Căn cứ khác: Số tiền phải thu hồi đã ghi nhận theo căn cứ; chưa có thì bằng Số tiền đã chi thực tế
     function rcCalc(item) {
         var r = item.recovery || {}, sb = item.statusBasis || {}, cb = item.statusChangeBasis || {};
         var paid = rcPaid(item);
         var txt = (cb.decisionType || sb.decisionType || '') + ' ' + (r.basisDecisionNo || cb.decisionNo || sb.decisionNo || '');
-        var kind = sb.source === 'dinhChi' ? 'dinhChi' : (sb.source === 'dungGiaiQuyet' ? 'dungGQ' : (/sửa chữa|SCBS/i.test(txt) ? 'suaChua' : (/hủy|HQĐ/i.test(txt) ? 'huy' : 'khac')));
+        var kind = sb.source === 'dinhChi' ? 'dinhChi' : (sb.source === 'dungGiaiQuyet' ? 'dungGQ' : (/sửa chữa|SCBS|giải quyết lại/i.test(txt) ? 'suaChua' : 'khac'));
         if (kind === 'suaChua') {
             var after = r.amountAfter != null ? Number(r.amountAfter) : (cb.amountAfter != null ? Number(cb.amountAfter) : (r.amountToRecover != null ? Math.max(0, paid - Number(r.amountToRecover)) : 0));
             var need = Math.max(0, paid - after);
-            return { kind: kind, paid: paid, after: after, need: need, formula: 'Số tiền đã chi thực tế ' + fmt(paid) + ' − Số tiền theo Quyết định sau sửa chữa, bổ sung ' + fmt(after) + ' = ' + fmt(need) + ' đồng (phần chi thừa)' };
+            // [gql] Quyết định giải quyết bồi thường mới sau Giải quyết lại: phần thừa theo Bảng A / Bảng B như Quyết định sửa chữa, bổ sung
+            var src = /giải quyết lại/i.test(txt) ? 'Theo Quyết định giải quyết bồi thường mới sau Giải quyết lại' : 'Theo Quyết định sửa chữa, bổ sung';
+            return { kind: kind, paid: paid, after: after, need: need, formula: src + ' (phần chênh lệch, tối đa bằng Số tiền đã chi thực tế ' + fmt(paid) + ' đồng): ' + fmt(need) + ' đồng' };
         }
         if (kind === 'khac' && r.amountToRecover != null) return { kind: kind, paid: paid, need: Number(r.amountToRecover), formula: 'Theo căn cứ thu hồi: ' + fmt(r.amountToRecover) + ' đồng' };
-        var why = { dinhChi: 'đình chỉ giải quyết', dungGQ: 'dừng giải quyết', huy: 'hủy Quyết định giải quyết', khac: 'căn cứ thu hồi' }[kind];
+        var why = { dinhChi: 'đình chỉ giải quyết', dungGQ: 'dừng giải quyết', khac: 'căn cứ thu hồi' }[kind];
         return { kind: kind, paid: paid, need: paid, formula: 'Bằng Số tiền đã chi thực tế ' + fmt(paid) + ' đồng (thu hồi toàn bộ do ' + why + ')' };
     }
     function rcData(item) {
@@ -887,8 +913,13 @@
             item.status = 'Đã thu hồi';
             rcHist(item, 'Hoàn thành thu hồi', 'Số tiền phải thu hồi ' + fmt(d.need) + ' đồng; đã thu hồi lũy kế ' + fmt(total) + ' đồng.');
             saveProposalsToLocal();
+            // [gql] Thu hồi theo QĐ giải quyết lại xong: vụ việc Chờ chi trả không còn khoản Chi trả / thu hồi chưa xong -> Hoàn thành (quan_ly_kinh_phi_kpqd.js)
+            if (typeof kpqdGqlTryComplete === 'function' && item.kpqd && item.kpqd.kind === 'gql') kpqdGqlTryComplete(item.ycbtCode, 'Hoàn thành thu hồi ' + item.code + ' theo QĐ giải quyết lại');
+            // [schl] Thu hồi theo QĐ sửa chữa, bổ sung xong: vụ việc đã mở lại (Chờ chi trả) không còn khoản chưa hoàn tất -> Hoàn thành (quan_ly_kinh_phi_kpqd.js)
+            if (typeof kpqdScTryComplete === 'function' && item.kpqd && item.kpqd.kind === 'sc') kpqdScTryComplete(item.ycbtCode, 'Hoàn thành thu hồi ' + item.code + ' theo QĐ sửa chữa, bổ sung');
             rcEditId = null;
-            renderProposalsTable();
+            // Về màn hình danh sách (bản ghi chuyển tab Đã xử lý)
+            if (typeof kpdtIsOpen === 'function' && kpdtIsOpen()) kpdtClose(); else renderProposalsTable();
             window.scrollTo(0, 0);
             showToast('Hoàn thành thu hồi. Bản ghi ' + item.code + ' chuyển Đã thu hồi.', 'success');
         }, 'Xác nhận hoàn thành thu hồi');

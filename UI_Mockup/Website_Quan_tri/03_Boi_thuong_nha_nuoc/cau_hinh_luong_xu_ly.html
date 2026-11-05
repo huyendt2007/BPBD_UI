@@ -70,7 +70,7 @@
     </main>
     <div id="toast" class="toast-notif"></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261030sd4"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
     <script>
         const WF = BTNN_WF;
         let flowType = WF.FLOW_TYPE_ORDER[0]; // Loại luồng đang chọn
@@ -116,6 +116,8 @@
         }
 
         function blankNode() { return { leaders: [], allowUnit: false, units: [], allowOfficer: false, officers: [], kyNhay: false }; }
+        // Luồng Xác định CQGQBT - Sở Tư pháp: UBND cấp tỉnh quản lý Sở Tư pháp là cấp ký duyệt cuối (chỉ Nhóm lãnh đạo, không tham gia phân công)
+        function ubndOf() { return flowType === 'XD_STP' && selectedRoot && WF.ubndTinhOfStp ? WF.ubndTinhOfStp(selectedRoot) : ''; }
 
         function selectRoot(id) {
             selectedRoot = id;
@@ -131,6 +133,8 @@
                 if (n.allowUnit && n.allowOfficer) n.allowOfficer = false;
                 if (typeof n.kyNhay !== 'boolean') n.kyNhay = WF.isKyNhayUnit ? WF.isKyNhayUnit(u, flowType) : false;
             });
+            const ub = ubndOf();
+            if (ub && !draft[ub]) draft[ub] = Object.assign(blankNode(), { approveOnly: true });
             renderConfig();
         }
 
@@ -180,6 +184,20 @@
                     </div>
                 </div>`;
             }).join('');
+            const ub = ubndOf();
+            if (ub) {
+                const n = draft[ub];
+                const ubUsers = WF.USERS.filter(x => x.unitId === ub);
+                document.getElementById('nodeList').innerHTML += `<div class="node" style="border-style:dashed;">
+                    <div class="node-head"><i class="fa-solid fa-landmark" style="color:var(--primary-light);"></i> ${esc(WF.unitName(ub))} <span class="muted" style="font-weight:400;">- Cấp ký duyệt cuối, không tham gia phân công</span></div>
+                    <div class="node-body">
+                        <div>
+                            <div class="col-title"><i class="fa-solid fa-user-tie"></i> Nhóm lãnh đạo</div>
+                            <div class="check-list">${ubUsers.length ? ubUsers.map(x => `<label><input type="checkbox" ${n.leaders.includes(x.id) ? 'checked' : ''} onchange="toggleArr('${esc(ub)}','leaders','${esc(x.id)}',this.checked)"> ${esc(x.name)} <span class="muted">- ${esc(x.title)}</span></label>`).join('') : '<span class="muted">Đơn vị chưa có tài khoản cán bộ.</span>'}</div>
+                        </div>
+                    </div>
+                </div>`;
+            }
             renderPreview();
         }
 
@@ -195,7 +213,7 @@
                 else if (n.allowOfficer && n.officers.length) { lines.push(`${label} → Cán bộ`); branched = true; }
                 if (!branched) lines.push(`${label} <span style="color:#b91c1c;">(chưa cấu hình hình thức phân công)</span>`);
             })(selectedRoot, '', []);
-            document.getElementById('flowPreview').innerHTML = `<div style="font-weight:700; margin-bottom:4px;"><i class="fa-solid fa-route"></i> Các nhánh luồng phân công</div>${lines.map(l => `<div>• ${l}</div>`).join('')}<div class="muted" style="margin-top:6px;">Luồng phê duyệt đi ngược chiều luồng phân công thực tế của từng hồ sơ.</div>`;
+            document.getElementById('flowPreview').innerHTML = `<div style="font-weight:700; margin-bottom:4px;"><i class="fa-solid fa-route"></i> Các nhánh luồng phân công</div>${lines.map(l => `<div>• ${l}</div>`).join('')}<div class="muted" style="margin-top:6px;">Luồng phê duyệt đi ngược chiều luồng phân công thực tế của từng hồ sơ.</div>${ubndOf() ? `<div class="muted">Cấp ký duyệt cuối: Lãnh đạo ${esc(WF.unitName(ubndOf()))}${draft[ubndOf()] && draft[ubndOf()].leaders.length ? '' : ' (chưa chọn lãnh đạo)'}.</div>` : ''}`;
         }
 
         function toggleArr(unitId, field, value, on) {
@@ -218,6 +236,7 @@
             const errors = [];
             Object.keys(draft).forEach(u => {
                 const n = draft[u];
+                if (n.approveOnly) return;
                 const used = u === selectedRoot || Object.values(draft).some(p => p.allowUnit && p.units.includes(u));
                 if (!used) return;
                 if (!n.leaders.length) errors.push(`${WF.unitName(u)}: chưa chọn nhóm lãnh đạo.`);
@@ -226,6 +245,8 @@
                 if (n.allowOfficer && !n.officers.length) errors.push(`${WF.unitName(u)}: đã chọn hình thức "Phân công cán bộ" nhưng chưa chọn cán bộ.`);
                 if (!n.allowUnit && !n.allowOfficer) errors.push(`${WF.unitName(u)}: chưa chọn hình thức phân công (chuyển đơn vị hoặc phân công cán bộ).`);
             });
+            const ub = ubndOf();
+            if (ub && !(draft[ub] && draft[ub].leaders.length)) errors.push(`${WF.unitName(ub)}: chưa chọn nhóm lãnh đạo.`);
             return errors;
         }
 
@@ -238,6 +259,7 @@
             Object.keys(draft).forEach(u => {
                 const n = draft[u];
                 // Chỉ lưu danh sách của hình thức phân công đã chọn; danh sách của hình thức còn lại bị xóa
+                if (n.approveOnly) { clean[u] = { leaders: n.leaders.slice(), allowUnit: false, units: [], allowOfficer: false, officers: [], approveOnly: true }; return; }
                 const toUnit = !!n.allowUnit, toOfficer = !toUnit && !!n.allowOfficer;
                 if (n.leaders.length || toUnit || toOfficer) clean[u] = { leaders: n.leaders.slice(), allowUnit: toUnit, units: toUnit ? n.units.slice() : [], allowOfficer: toOfficer, officers: toOfficer ? n.officers.slice() : [], kyNhay: !!n.kyNhay };
             });

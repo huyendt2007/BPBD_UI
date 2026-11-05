@@ -24,7 +24,7 @@ var QDHL_SEED_KEY = 'btnn_qdhl_seed_v2';
 var QDHL_MODEL_KEY = 'btnn_qdhl_model_v2';
 var QDHL_QUEUE_KEY = 'btnn_kptb_qd_issued_v1';
 var QDHL_PAY_TYPE = 'Chi trả tiền bồi thường';
-var QDHL_SEED_IDS = ['QD-HL1', 'QD-HL2', 'QD-HL3', 'QD-HL4'];
+var QDHL_SEED_IDS = ['QD-HL1', 'QD-HL2', 'QD-HL3', 'QD-HL4', 'QD-HL5'];
 var qdhlCtx = null;
 var qdhlOrigNotify = null;
 
@@ -330,7 +330,19 @@ function qdhlSeedDefs() {
                 qdhlLog('08:00 03/10/2026', 'cv_hn1', BH, QDHL_ON),
                 { at: '08:00 03/10/2026', userId: 'cv_hn1', userName: W.userName('cv_hn1'), action: 'Tạo bản ghi Chi trả tiền bồi thường', note: 'Bản ghi Chi trả tiền bồi thường trạng thái [Chờ thông báo chi trả].' },
                 qdhlLog('14:00 21/10/2026', 'cv_hn1', QDHL_ON, QDHL_OFF, r4, d4)
-            ], createdBy: 'cv_hn1', updatedAt: '2026-10-21T14:00:00.000Z' })
+            ], createdBy: 'cv_hn1', updatedAt: '2026-10-21T14:00:00.000Z' }),
+        // Có hiệu lực; bản ghi Chi trả tiền bồi thường KP-2026-131 Chờ chi trả đã chi một phần (40.000.000 / 100.000.000): thử Sửa chữa, bổ sung giảm tiền (Thừa tiền)
+        seedDec({ id: 'QD-HL5', claimCode: 'BT-2026-097', nycName: 'Tạ Thị Hòa', nycAddress: 'Số 12 phố Đội Cấn, Phường Ba Đình, Thành phố Hà Nội', unitId: 'STP-HN', leaderId: 'tp_hctp_hn', approvedBy: 'gdso_hn', approvedAt: '15:00 08/10/2026',
+            status: BH, decNo: '97/QĐ-GQBT', issueDate: '08/10/2026', signedFile: 'QD_GQBT_BT-2026-097_ky_so.pdf', signMethod: 'Ký số', lastKind: 'Quyết định GQBT',
+            items: seedItems([['Tài sản bị xâm phạm', 110000000, 100000000, 100000000]]), recipient: { name: 'Tạ Thị Hòa', idNo: '001190009797', account: '045100013188', bank: 'Vietcombank', branch: 'Chi nhánh Hà Nội' },
+            hieuLuc: QDHL_ON,
+            hieuLucHistory: [qdhlH('08:00 10/10/2026', 'cv_hn1', BH, QDHL_ON)],
+            history: [
+                { at: '15:00 08/10/2026', userId: 'gdso_hn', userName: W.userName('gdso_hn'), action: 'Phê duyệt cấp cuối', note: 'Quyết định GQBT. Quyết định chuyển [Đã ban hành]. Số 97/QĐ-GQBT ngày 08/10/2026.' },
+                qdhlLog('08:00 10/10/2026', 'cv_hn1', BH, QDHL_ON),
+                { at: '08:00 10/10/2026', userId: 'cv_hn1', userName: W.userName('cv_hn1'), action: 'Tạo bản ghi Chi trả tiền bồi thường', note: 'Bản ghi Chi trả tiền bồi thường trạng thái [Chờ thông báo chi trả].' }
+            ], createdBy: 'cv_hn1', updatedAt: '2026-10-10T08:00:00.000Z' })
+
     ];
 }
 // Bổ sung bản ghi mẫu còn thiếu (theo Mã Quyết định), không xóa dữ liệu khác; bộ mẫu cũ (v1) QD-HL1..4 được thay theo bộ mẫu mới

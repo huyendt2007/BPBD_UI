@@ -322,7 +322,10 @@
         var h = function (action, userId, at, note) { return { at: at, userId: userId, userName: userId ? W.userName(userId) : 'Hệ thống', action: action, note: note || '' }; };
         ADD_SEEDS.forEach(function (s) {
             if (keys[s.key]) return;
-            var code = W.nextVuViecCode();
+            var vv = W.nextVuViecCode();
+            // Đã phân công cán bộ (hồ sơ vào phân hệ Giải quyết YCBT): sinh Mã hồ sơ BT-, giữ Mã vụ việc
+            var code = s.step >= 3 && W.nextCode ? W.nextCode('BT') : vv;
+            if (code !== vv && W.linkVuViec) W.linkVuViec(code, vv);
             var at = s.at;
             var routes = [{ id: 'R1', type: 'unit', fromUnitId: 'BTP-01', fromUserId: 'oanhdh', toUnitId: 'CĐK-01', note: 'Giao Cục xem xét, xử lý.', at: at[1], state: s.step > 1 ? 'Đã xử lý' : 'Chưa xử lý' }];
             var hist = [
@@ -339,7 +342,7 @@
             }
             var cur = s.step === 1 ? 'CĐK-01' : 'PLN-02';
             W.upsertRecord({
-                id: 'WF-' + code, code: code, maVuViec: code, seedKey: s.key, module: 'YCBT', loaiYeuCau: W.REQUEST_TYPE_YCBT || 'Giải quyết yêu cầu bồi thường',
+                id: 'WF-' + code, code: code, maVuViec: vv, seedKey: s.key, module: 'YCBT', loaiYeuCau: W.REQUEST_TYPE_YCBT || 'Giải quyết yêu cầu bồi thường',
                 nguonHoSo: DVC, hinhThucTiepNhan: W.RECEIVE_METHODS.MOI_TRUONG_SO,
                 rootUnitId: 'BTP-01', currentUnitId: cur, status: s.step >= 3 ? S.CHO_TIEP_NHAN : S.DANG_PHAN_CONG,
                 routes: routes, chuTri: s.step >= 3 ? s.chuTri : null, approval: null,

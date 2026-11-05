@@ -725,17 +725,8 @@
                     <textarea id="th-noidung" class="form-control" placeholder="Nhập tóm tắt nội dung kế hoạch..." maxlength="2000"></textarea>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Tài liệu đính kèm kế hoạch</label>
-                    <div class="file-upload-container" onclick="triggerFileUpload('th-upload-kh')">
-                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 24px; color: var(--text-muted); margin-bottom: 5px;"></i>
-                        <p style="font-size: 12px; color: var(--text-muted);">Tải lên các tệp kế hoạch đính kèm (.pdf, .docx, .xlsx, tối đa 20MB/file)</p>
-                        <input type="file" id="th-upload-kh" style="display: none;" onchange="handleFileSelected(this, 'th-kh-files-list')" multiple>
-                    </div>
-                    <div class="file-list" id="th-kh-files-list">
-                        <!-- Loaded dynamically -->
-                    </div>
-                </div>
+                <!-- Tài liệu đính kèm kế hoạch: bảng chuẩn btnn_tai_lieu_kem_theo.js (key thKh) -->
+                <div class="form-group" id="th-kh-tlkt"></div>
 
                 <!-- Tiến độ thực hiện thực tế -->
                 <div class="form-section-header" id="th-progress-header" style="display: none;">
@@ -795,17 +786,8 @@
                     <textarea id="th-baocao-kq" class="form-control" placeholder="Tóm tắt kết quả đạt được, kiến nghị rút kinh nghiệm..."></textarea>
                 </div>
 
-                <div class="form-group" id="th-result-row3" style="display: none;">
-                    <label class="form-label">Tài liệu kết quả / Kỷ yếu / Nghị quyết <span class="required">*</span></label>
-                    <div class="file-upload-container" onclick="triggerFileUpload('th-upload-kq')">
-                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 24px; color: var(--text-muted); margin-bottom: 5px;"></i>
-                        <p style="font-size: 12px; color: var(--text-muted);">Tải lên tài liệu phê duyệt kết quả, kỷ yếu, slide trình bày (.pdf, .docx, .xlsx)</p>
-                        <input type="file" id="th-upload-kq" style="display: none;" onchange="handleFileSelected(this, 'th-kq-files-list')" multiple>
-                    </div>
-                    <div class="file-list" id="th-kq-files-list">
-                        <!-- Loaded dynamically -->
-                    </div>
-                </div>
+                <!-- Tài liệu kết quả / Kỷ yếu / Nghị quyết (bắt buộc khi Đã hoàn thành): bảng chuẩn btnn_tai_lieu_kem_theo.js (key thKq) -->
+                <div class="form-group" id="th-result-row3" style="display: none;"></div>
 
                 <!-- Form actions -->
                 <div class="search-actions" style="margin-top: 20px;">
@@ -1384,6 +1366,7 @@
     </div>
 </div>
 
+<script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
 <script>
     // Global Mock Data - Tập huấn, Hội nghị, Hội thảo
     let thData = [
@@ -2226,7 +2209,9 @@
         const toast = document.getElementById("system-toast");
         const text = document.getElementById("toast-text");
         text.innerText = message;
-        toast.className = isError ? "toast toast-error active" : "toast toast-success active";
+        // btnn_tai_lieu_kem_theo.js gọi showToast(msg, 'info' | 'error'): chỉ true / 'error' / 'warning' là lỗi
+        const err = isError === true || isError === "error" || isError === "warning";
+        toast.className = err ? "toast toast-error active" : "toast toast-success active";
         setTimeout(() => {
             toast.className = "toast";
         }, 3000);
@@ -2548,6 +2533,32 @@
         }
     }
 
+    // ===== Tài liệu đính kèm (bảng chuẩn btnn_tai_lieu_kem_theo.js) =====
+    // Định dạng giữ như cũ: .pdf, .docx, .xlsx; dung lượng theo component (tối đa 50MB/tệp).
+    const TH_FILE_EXTS = [".pdf", ".docx", ".xlsx"];
+    function thSizeBytes(s) {
+        if (typeof s === "number") return s;
+        const m = String(s || "").match(/([\d.,]+)\s*(KB|MB|GB)?/i);
+        if (!m) return 0;
+        const n = parseFloat(m[1].replace(",", "."));
+        const u = (m[2] || "B").toUpperCase();
+        return Math.round(n * (u === "GB" ? 1073741824 : u === "MB" ? 1048576 : u === "KB" ? 1024 : 1));
+    }
+    // Dữ liệu cũ ("ten.pdf" | { name, size }) -> dòng component { name, file: { name, size } }; dòng đã đúng dạng giữ nguyên
+    function thToRows(list) {
+        return (list || []).map(f => {
+            if (!f) return null;
+            if (typeof f === "string") return { name: f.replace(/\.[^.]+$/, ""), file: { name: f, size: 0 } };
+            if (f.file !== undefined) return { name: f.name || "", file: f.file || null };
+            return { name: String(f.name || "").replace(/\.[^.]+$/, ""), file: f.name ? { name: f.name, size: thSizeBytes(f.size) } : null };
+        }).filter(Boolean);
+    }
+    function thMountFiles(th) {
+        if (typeof tlktMount !== "function") return;
+        tlktMount("thKh", "th-kh-tlkt", { split: false, noLeader: true, title: "Tài liệu đính kèm kế hoạch", exts: TH_FILE_EXTS, rows: thToRows(th && th.filesKh) });
+        tlktMount("thKq", "th-result-row3", { split: false, noLeader: true, required: true, title: "Tài liệu kết quả / Kỷ yếu / Nghị quyết", exts: TH_FILE_EXTS, rows: thToRows(th && th.filesKq) });
+    }
+
     function openCreateThForm() {
         document.getElementById("th-form-title").innerHTML = `<i class="fa-solid fa-circle-plus"></i> Tạo kế hoạch hoạt động mới`;
         document.getElementById("th-id").value = "";
@@ -2565,7 +2576,7 @@
         document.getElementById("th-batdau-dukien").value = "";
         document.getElementById("th-ketthuc-dukien").value = "";
         document.getElementById("th-noidung").value = "";
-        document.getElementById("th-kh-files-list").innerHTML = "";
+        thMountFiles(null);
 
         // Hide progress & result sections
         document.getElementById("th-progress-header").style.display = "none";
@@ -2599,23 +2610,8 @@
         document.getElementById("th-ketthuc-dukien").value = th.ketThucDukien;
         document.getElementById("th-noidung").value = th.noiDung;
 
-        // Render file list
-        const fileListContainer = document.getElementById("th-kh-files-list");
-        fileListContainer.innerHTML = "";
-        th.filesKh.forEach(f => {
-            fileListContainer.innerHTML += `
-                <div class="file-item">
-                    <div class="file-info">
-                        <i class="fa-solid fa-file-pdf"></i>
-                        <span class="file-name">${f.name}</span>
-                    </div>
-                    <div class="file-actions">
-                        <span class="file-action-link" onclick="previewPdf('${f.name}', 'Công văn kế hoạch đã duyệt.')">Xem file</span>
-                        <span class="file-action-link delete" onclick="deleteFormFile(this, 'th-upload-kh')">Xóa file</span>
-                    </div>
-                </div>
-            `;
-        });
+        // Tài liệu đính kèm kế hoạch + Tài liệu kết quả (bảng chuẩn)
+        thMountFiles(th);
 
         // Show progress section
         document.getElementById("th-progress-header").style.display = "block";
@@ -2633,23 +2629,6 @@
             document.getElementById("th-danhgia").value = th.danhGia || "";
             document.getElementById("th-thanhphan").value = th.thanhPhan || "";
             document.getElementById("th-baocao-kq").value = th.baocaoKq || "";
-            
-            const kqFileList = document.getElementById("th-kq-files-list");
-            kqFileList.innerHTML = "";
-            th.filesKq.forEach(f => {
-                kqFileList.innerHTML += `
-                    <div class="file-item">
-                        <div class="file-info">
-                            <i class="fa-solid fa-file-signature"></i>
-                            <span class="file-name">${f.name}</span>
-                        </div>
-                        <div class="file-actions">
-                            <span class="file-action-link" onclick="previewPdf('${f.name}', 'Tài liệu báo cáo kết quả và phụ lục.')">Xem file</span>
-                            <span class="file-action-link delete" onclick="deleteFormFile(this, 'th-upload-kq')">Xóa file</span>
-                        </div>
-                    </div>
-                `;
-            });
         }
 
         // Show export button
@@ -2687,11 +2666,12 @@
             return;
         }
 
-        // Collect files
-        const filesKh = [];
-        document.querySelectorAll("#th-kh-files-list .file-name").forEach(span => {
-            filesKh.push({ name: span.innerText });
-        });
+        // Tài liệu đính kèm kế hoạch: dòng có dữ liệu phải đủ Tên tài liệu + File
+        if (typeof tlktValidate === "function" && !tlktValidate("thKh")) {
+            showToast("Vui lòng nhập đầy đủ Tên tài liệu, văn bản và File đính kèm của Tài liệu đính kèm kế hoạch!", true);
+            return;
+        }
+        const filesKh = typeof tlktGet === "function" ? tlktGet("thKh") : [];
 
         const isNew = !id;
         
@@ -2720,13 +2700,12 @@
                     return;
                 }
 
-                document.querySelectorAll("#th-kq-files-list .file-name").forEach(span => {
-                    filesKq.push({ name: span.innerText });
-                });
-                if(filesKq.length === 0) {
+                // Bắt buộc tối thiểu 01 dòng đủ Tên tài liệu + File
+                if (typeof tlktValidate === "function" && !tlktValidate("thKq")) {
                     showToast("Vui lòng tải lên tài liệu kết quả/kỷ yếu sự kiện!", true);
                     return;
                 }
+                filesKq = typeof tlktGet === "function" ? tlktGet("thKq") : [];
             }
 
             // Update global data
@@ -2768,7 +2747,7 @@
                 batDauDukien: batdauDukien,
                 ketThucDukien: ketthucDukien,
                 noiDung: document.getElementById("th-noidung").value,
-                filesKh: filesKh.length > 0 ? filesKh : [{ name: "Ke_Hoach_Moi_Tao.pdf" }],
+                filesKh: filesKh,
                 tinhTrang: "Chưa thực hiện",
                 batDauThucte: "",
                 ketThucThucte: "",

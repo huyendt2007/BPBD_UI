@@ -1588,7 +1588,11 @@
             const doc = documents.find(d => d.id === id);
             if (!doc) return;
             openConfirm(`Bạn có chắc chắn muốn xóa văn bản "${doc.soHieu} - ${doc.tenVanban}" không?`, () => {
+                // Xóa mềm [BR-DEL-001]: lưu Người xóa, Thời điểm xóa
+                const p2 = n => String(n).padStart(2, '0'), now = new Date();
                 doc.isDeleted = 1;
+                doc.deletedBy = (window.BTNN_WF && BTNN_WF.getCurrentUserId && BTNN_WF.getCurrentUserId()) || 'Nguyễn Văn Cán Bộ';
+                doc.deletedAt = `${p2(now.getHours())}:${p2(now.getMinutes())} ${p2(now.getDate())}/${p2(now.getMonth() + 1)}/${now.getFullYear()}`;
                 localStorage.setItem('vbqppl_documents', JSON.stringify(documents));
                 refreshTable();
                 showToast("Xóa văn bản thành công", "success");

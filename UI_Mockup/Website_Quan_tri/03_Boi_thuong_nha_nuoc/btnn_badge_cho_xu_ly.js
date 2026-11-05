@@ -23,7 +23,7 @@
         hoanTra: { title: 'Xem xét trách nhiệm hoàn trả', page: 'xem_xet_trach_nhiem_hoan_tra.html', url: 'xem_xet_trach_nhiem_hoan_tra.html' },
         bctt: { title: 'Báo cáo công tác BTNN', page: 'bao_cao_cong_tac_btnn.html', url: 'bao_cao_cong_tac_btnn.html' },
         // 03/11/2026: Xử lý báo cáo Công tác BTNN của Bộ Tư pháp (bctt_bo_xu_ly.js báo số lượng; vai trò giả lập riêng bctt_role_v1_bo)
-        bctt_bo: { title: 'Xử lý báo cáo Công tác BTNN', page: 'xu_ly_bao_cao_cong_tac_btnn.html', url: 'xu_ly_bao_cao_cong_tac_btnn.html' }
+        bctt_bo: { title: 'Tổng hợp báo cáo Công tác BTNN', page: 'xu_ly_bao_cao_cong_tac_btnn.html', url: 'xu_ly_bao_cao_cong_tac_btnn.html' }
     };
     const MODULE_IDS = Object.keys(MODULES);
 
@@ -47,6 +47,16 @@
         return u;
     }
     // Dấu vân tay dữ liệu (bỏ qua khóa badge): thay đổi thì số lượng đã lưu được tính lại
+    // 03/11/2026: chỉ băm lại khóa có giá trị đổi (trước đây băm từng ký tự ~2,3 MB dữ liệu mỗi lần gọi, làm trang đứng khi F5)
+    const FP_CACHE = new Map();
+    function hashKey(k, v) {
+        const c = FP_CACHE.get(k);
+        if (c && c.v === v) return c.h;
+        const s = k + '=' + v; let h = 0;
+        for (let j = 0; j < s.length; j++) h = (h * 31 + s.charCodeAt(j)) | 0;
+        FP_CACHE.set(k, { v, h });
+        return h;
+    }
     function fingerprint() {
         let h = 0, n = 0;
         try {
@@ -57,9 +67,9 @@
                 if (k && !/^bdg_|^btnn_gq_pending_count$|^kths_menu_badges$|^kp_role_v1$|^btnn_hoantra_summary$|^btnn_ht_seed_ver$/.test(k)) keys.push(k);
             }
             keys.sort().forEach(k => {
-                const v = k + '=' + (localStorage.getItem(k) || '');
-                n += v.length;
-                for (let j = 0; j < v.length; j++) h = (h * 31 + v.charCodeAt(j)) | 0;
+                const v = localStorage.getItem(k) || '';
+                n += k.length + 1 + v.length;
+                h = (h * 31 + hashKey(k, v)) | 0;
             });
         } catch (e) { /* bỏ qua */ }
         return n + ':' + (h >>> 0).toString(36);

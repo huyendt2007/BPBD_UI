@@ -485,8 +485,10 @@
     function renderXdPreview(rec) {
         const a = rec.approval || {};
         const sd = a.signDoc || {};
-        const sc = sd.sigCoords || { room: { x: 60, y: 860, w: 220, h: 90 }, agency: { x: 480, y: 860, w: 245, h: 110 } };
+        const sc = Object.assign({}, sd.sigCoords || { room: { x: 60, y: 860, w: 220, h: 90 }, agency: { x: 480, y: 860, w: 245, h: 110 } });
         const path = a.path || [];
+        // Ô ký cấp trung gian: phiếu trình trước khi có thẻ cấp trung gian dùng vị trí mặc định
+        path.slice(1, -1).forEach((u, k) => { if (!sc['l' + (k + 1)]) sc['l' + (k + 1)] = { x: 290, y: 860 + k * 105, w: 180, h: 90 }; });
         const assignees = a.assignees || [];
         const steps = a.steps || [];
         const root = rec.rootUnitId;
@@ -509,6 +511,7 @@
                 <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước năm 2017; xét yêu cầu (Mã hồ sơ: <strong>${esc(rec.code)}</strong>),</p>
                 ${body}
                 ${path.length > 1 && sd.enableRoomSig !== false ? box('room', 0, '', 'KÝ NHÁY') : ''}
+                ${path.slice(1, -1).map((u, k) => box('l' + (k + 1), k + 1, '', 'KÝ NHÁY')).join('')}
                 ${box('agency', last, 'agency', 'KÝ SỐ & CON DẤU')}
             </div>`;
     }
