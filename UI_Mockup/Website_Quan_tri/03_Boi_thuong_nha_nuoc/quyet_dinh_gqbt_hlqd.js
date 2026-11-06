@@ -416,7 +416,8 @@ function qdhlMigrate() {
     // Tab (Cán bộ xử lý): Đã ban hành -> Chờ xử lý; Có hiệu lực / Không có hiệu lực -> Đã xử lý
     var origInTab = qdInTab;
     qdInTab = function (d, tab) {
-        if (qdRole() !== 'lanh-dao' && d && d.status === ST.DA_BH) return (qdhlState(d) === ST.DA_BH) === (tab === 'pending');
+        // [vt1] Giữ phạm vi Cán bộ xử lý (qdInMyScope: cơ quan giải quyết bồi thường của người dùng / cán bộ được cử)
+        if (qdRole() !== 'lanh-dao' && d && d.status === ST.DA_BH) return (qdhlState(d) === ST.DA_BH) === (tab === 'pending') && (typeof qdInMyScope !== 'function' || qdInMyScope(d));
         return origInTab.apply(this, arguments);
     };
     // Bộ lọc Trạng thái theo tab

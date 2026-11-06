@@ -632,6 +632,10 @@
             // Đồng bộ hồ sơ GQ YCBT BT-2026-030 (Người yêu cầu, Lĩnh vực, Hành vi gây thiệt hại)
             Object.assign(r302.nyc, { name: 'Bùi Văn Khánh', gender: 'Nam', birth: '14/03/1979', cardNo: '001092556677', city: 'Hà Nội', ward: 'Phường Định Công', address: 'Hoàng Mai' });
             Object.assign(r302, { fieldGroup: 'hình sự', hanhVi: 'Khởi tố, tạm giam 10 ngày đối với người không thực hiện hành vi phạm tội.' });
+            // Khởi kiện sau khi Công an phường Bạch Mai đã giải quyết (Khoản 2 Điều 52): bị đơn là Công an phường Bạch Mai, cán bộ của Công an phường nhập vụ việc
+            const BD = 'CA-HM', BD_USER = 'Bế Thị Lụa';
+            Object.assign(r302, { rootUnitId: BD, agency: unitName(BD), createdBy: 'cb_cahm1', createdByName: BD_USER, updatedByName: BD_USER });
+            (r302.history || []).forEach(x => { x.userName = BD_USER; });
         }
         const r308 = list.find(r => r.code === 'BT-2026-308');
         if (r308) {
@@ -700,6 +704,8 @@
         body.querySelectorAll('.is-invalid').forEach(el => out.push({ el, label: labelOf(el) }));
         const docsErr = $('docsError');
         if (docsErr && docsErr.style.display === 'block') out.push({ el: $('docsTableWrap') || docsErr, label: 'Tài liệu đính kèm - Vui lòng đính kèm ít nhất 01 tài liệu' });
+        const dmgErr = $('damageError');
+        if (dmgErr && dmgErr.style.display === 'block') out.push({ el: $('damageTreeWrap') || dmgErr, label: 'Thiệt hại yêu cầu bồi thường - ' + dmgErr.textContent.trim() });
         body.querySelectorAll('.tdta-row-err').forEach(e => {
             const tb = e.closest('tbody');
             out.push({ el: e.closest('tr') || e, label: (tb && tb.id === 'basisTableBody' ? 'Văn bản làm căn cứ yêu cầu bồi thường' : 'Tài liệu đính kèm') + ' - ' + e.textContent.trim() });
@@ -892,10 +898,15 @@
             '.tdta-err-summary a { color:#991b1b; text-decoration:underline; }',
             '#tdtaLinkedBlock input[readonly] { background:#f1f5f9; color:#334155; cursor:default; }',
             '#formView.readonly-mode .inline-form-footer > div { align-items:center; }',
-            '#formView.readonly-mode #btnFormDelete { order:-1; margin-right:auto; background-color:#fff !important; color:#DC2626 !important; border:1px solid #FCA5A5 !important; }',
+            // Form dạng trang: tiêu đề màn giữ nguyên, thân form không cuộn riêng; viền trên xanh như btnn_form_trang.js
+            '.tdta-page-hidden { display:none !important; }',
+            '#formView { border-top:3px solid #1E3A8A; }',
+            '#formView .inline-form-body { max-height:none !important; overflow:visible !important; }',
+            // Nút cuối màn Xem chi tiết: cùng bên phải, thứ tự Đóng, Xóa, Cập nhật (như Văn bản chỉ đạo, điều hành)
+            '#formView.readonly-mode #btnFormDelete { order:2; background-color:#fff !important; color:#DC2626 !important; border:1px solid #FCA5A5 !important; }',
             '#formView.readonly-mode #btnFormDelete:hover { background-color:#FEF2F2 !important; border-color:#F87171 !important; }',
             '#formView.readonly-mode #btnFormBack { order:1; }',
-            '#formView.readonly-mode #btnFormEdit { order:2; }',
+            '#formView.readonly-mode #btnFormEdit { order:3; }',
             '.tdta-modal { width:95vw !important; max-width:none !important; }',
             '.tdta-table th:last-child, .tdta-table td:last-child { position:sticky; right:0; z-index:1; box-shadow:-6px 0 8px -6px rgba(15,23,42,.2); }',
             '.tdta-table th:last-child { background:#f1f5f9; }',

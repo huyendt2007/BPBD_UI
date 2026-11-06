@@ -1949,8 +1949,6 @@
         <div id="inlineClaimFormPanel" class="inline-form-panel">
             <div class="inline-form-header">
                 <span class="inline-form-title"><i class="fa-solid fa-keyboard"></i> NHẬP HỒ SƠ VỤ VIỆC</span>
-                <button class="btn btn-secondary btn-sm" onclick="closeInlineClaimForm()"><i
-                        class="fa-solid fa-xmark"></i> Đóng</button>
             </div>
 
             <div class="inline-form-body">
@@ -9448,7 +9446,11 @@
             };
             const elFrom = document.getElementById('searchFromDate');
             const elTo = document.getElementById('searchToDate');
-            if (elFrom) elFrom.value = formatDate(firstDayOfMonth);
+            // [vt2] Tab Chờ xử lý: Tiếp nhận: Từ ngày trống (mọi vụ việc đang chờ đều hiển thị); tab Đã xử lý: ngày đầu tiên của tháng hiện tại
+            if (elFrom) {
+                elFrom.value = activeClaimsWorkflowTab === 'da-xu-ly' ? formatDate(firstDayOfMonth) : '';
+                if (elFrom._flatpickr) elFrom._flatpickr.setDate(elFrom.value || null, false, 'd/m/Y');
+            }
             if (elTo) elTo.value = formatDate(today);
         }
 
@@ -9860,7 +9862,9 @@
 
         function switchClaimsWorkflowTab(tab) {
             if (tab !== 'da-xu-ly') tab = 'cho-xu-ly';
+            const prevClaimsTab = activeClaimsWorkflowTab;
             activeClaimsWorkflowTab = tab;
+            if (prevClaimsTab !== tab) setDefaultClaimsSearchDates(); // [vt2] Từ ngày theo tab (chỉ khi đổi tab)
             const tabPending = document.getElementById('workflowTabChoXuLy');
             const tabDone = document.getElementById('workflowTabDaXuLy');
             if (tabPending) tabPending.classList.toggle('active', tab === 'cho-xu-ly');
@@ -24348,7 +24352,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         document.addEventListener('DOMContentLoaded', () => {
             const sel = document.getElementById('searchApprovalKind');
             const W = gqW();
-            if (sel && W && W.APPROVAL_KINDS) sel.innerHTML = '<option value="">Tất cả</option>' + W.APPROVAL_KINDS.YCBT.map(k => `<option value="${gqE(k)}">${gqE(k)}</option>`).join('');
+            // Giá trị lọc giữ khóa nội bộ; nhãn hiển thị theo tên Loại trình trong SRS (Thông báo thụ lý hồ sơ...)
+            if (sel && W && W.APPROVAL_KINDS) sel.innerHTML = '<option value="">Tất cả</option>' + W.APPROVAL_KINDS.YCBT.map(k => `<option value="${gqE(k)}">${gqE(W.kindDisplay ? W.kindDisplay(k, { module: 'YCBT' }) : k)}</option>`).join('');
             const st = document.getElementById('searchStatus');
             if (st) st.addEventListener('change', syncApprovalKindFilter);
             syncApprovalKindFilter();
@@ -24538,6 +24543,18 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         function gqldGateReason(item, currentRole, currentOfficer) {
             if (currentRole === 'thu-truong') return '';
             const why = 'Hồ sơ đã giao cán bộ khác giải quyết';
+            // [vt1] Phạm vi đơn vị: người dùng chỉ thấy hồ sơ của cơ quan giải quyết bồi thường thuộc cây đơn vị gốc của mình
+            // (cán bộ mẫu CB1/CB2/CB3 không có tài khoản trên Cơ cấu tổ chức: giữ như cũ)
+            const simU = typeof gqSimUserOf === 'function' ? gqSimUserOf(currentOfficer) : null;
+            const Wv = window.BTNN_WF;
+            if (simU && Wv) {
+                // Không dùng gqClaimUnitId (thiếu đơn vị thì lấy đơn vị người dùng): cơ quan không có trên Cơ cấu tổ chức = cơ quan khác
+                const rv = gqRecord(item);
+                const au = rv && rv.rootUnitId ? null : (typeof resolveClaimAgencyUnit === 'function' ? resolveClaimAgencyUnit(item.agency) : null);
+                const cu = rv && rv.rootUnitId ? rv.rootUnitId : (au ? au.id : '');
+                const cr = cu ? (Wv.getRootId(cu) || cu) : '';
+                if ((cr && cr !== (Wv.getRootId(simU.unitId) || simU.unitId)) || (!cr && item.agency)) return 'Hồ sơ thuộc cơ quan giải quyết bồi thường khác';
+            }
             if (gqldPreAppoint(item)) {
                 // Trước khi cử người: chỉ cán bộ được phân công xử lý hồ sơ (hồ sơ chưa phân công: không giới hạn)
                 const assigned = normalizeStatusText(item.assignedOfficer || '');
@@ -24677,7 +24694,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 + row('Mã vụ việc', `<strong>${gqldEsc(claimVvCode(claim))}</strong>`)
                 + row('Mã hồ sơ', gqldEsc(rec.code))
                 + row('Người yêu cầu', gqldEsc(getClaimRequesterName(claim)))
-                + row('Loại trình', gqldEsc(a.kind || '--'))
+                + row('Loại trình', gqldEsc((W.kindDisplay ? W.kindDisplay(a.kind, rec) : a.kind) || '--'))
                 + row('Cán bộ trình', `${gqldEsc(W.userName(a.submittedBy) || '--')}${a.submittedAt ? ` <span style="color:#64748b;">- ${gqldEsc(a.submittedAt)}</span>` : ''}`)
                 + row('Cấp phê duyệt', `${(a.level || 0) + 1}/${(a.path || []).length || 1} - ${gqldEsc(W.unitName((a.path || [])[a.level || 0]))}`)
                 + `</div>`;

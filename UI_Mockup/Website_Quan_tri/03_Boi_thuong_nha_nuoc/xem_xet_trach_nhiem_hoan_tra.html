@@ -907,7 +907,7 @@
             <div>
                 <span class="form-label">Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</span>
                 <select class="form-control" id="filterAgency" style="height:34px;">
-                    <option value="">Tất cả</option>
+                    <option value="">Tất cả đơn vị</option>
                 </select>
             </div>
             <div>
@@ -921,6 +921,7 @@
                     <option value="Miễn hoàn trả">Miễn hoàn trả</option>
                     <option value="Hoàn thành">Hoàn thành</option>
                     <option value="Đình chỉ xem xét hoàn trả">Đình chỉ xem xét hoàn trả</option>
+                    <option value="Chấm dứt hoàn trả">Chấm dứt hoàn trả</option>
                 </select>
             </div>
             <div>
@@ -1593,7 +1594,7 @@
     <!-- ============================================== -->
     <!-- JAVASCRIPT CONTROLLERS -->
     <!-- ============================================== -->
-    <script src="btnn_luong_xu_ly.js?v=20261105tn1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script>
         // Xem xét trách nhiệm hoàn trả: đơn vị người xem theo vai trò giả lập (htMockScope); Lãnh đạo (ký duyệt) xem được mọi khối.
@@ -1949,11 +1950,12 @@
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Đình chỉ xem xét hoàn trả",
+                status: "Chấm dứt hoàn trả",
                 dateCreated: "10/07/2026",
+                cdLyDo: "Người thi hành công vụ gây thiệt hại không có lỗi do chấp hành đúng quyết định của cấp trên.",
                 qdDate: "",
                 refundOfficers: [
-                    { name: "Lê Văn Hùng", loi: "Không có lỗi", total: 0, paid: 0, nextDate: "—", status: "Đình chỉ xem xét hoàn trả", progressClass: "secondary", agency: "Sở Tư pháp Hà Nội", role: "Chuyên viên" }
+                    { name: "Lê Văn Hùng", loi: "Không có lỗi", total: 0, paid: 0, nextDate: "—", status: "Chấm dứt hoàn trả", progressClass: "secondary", agency: "Sở Tư pháp Hà Nội", role: "Chuyên viên" }
                 ],
                 payments: []
             },
@@ -1974,11 +1976,12 @@
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Đình chỉ xem xét hoàn trả",
+                status: "Chờ duyệt QĐ chấm dứt",
                 dateCreated: "20/05/2026",
+                cdLyDo: "Người thi hành công vụ gây thiệt hại đã chết",
                 qdDate: "",
                 refundOfficers: [
-                    { name: "Nguyễn Văn Chết", loi: "Đã chết", total: 0, paid: 0, nextDate: "—", status: "Đình chỉ xem xét hoàn trả", progressClass: "secondary", agency: "Sở Tư pháp Hà Nội", role: "Chấp hành viên" }
+                    { name: "Nguyễn Văn Chết", loi: "Vô ý", daChet: true, trangThaiNguoi: "Đã chết", total: 20000000, paid: 0, nextDate: "—", status: "Chờ duyệt QĐ chấm dứt", progressClass: "secondary", agency: "Sở Tư pháp Hà Nội", role: "Chấp hành viên" }
                 ],
                 payments: []
             },
@@ -2161,7 +2164,7 @@
                 id: "HT-2026-020",
                 code: "HT-2026-020",
                 claimCode: "BT-2026-820",
-                claimSummary: "Cán bộ ban hành quyết định đã từ trần, cơ quan ban hành QĐ đình chỉ việc xem xét trách nhiệm hoàn trả theo Luật BTNN.",
+                claimSummary: "Cán bộ ban hành quyết định đã từ trần, đơn vị tạo Hội đồng trình ký QĐ chấm dứt việc xem xét trách nhiệm hoàn trả theo Luật BTNN.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 80000000,
                 claimDate: "22/05/2026",
@@ -2174,11 +2177,12 @@
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Đình chỉ xem xét hoàn trả",
+                status: "Bị trả lại QĐ chấm dứt",
                 dateCreated: "05/06/2026",
+                cdLyDo: "Người thi hành công vụ gây thiệt hại đã chết",
                 qdDate: "",
                 refundOfficers: [
-                    { name: "Dương Đình Nghệ", loi: "Đã qua đời", total: 0, paid: 0, nextDate: "—", status: "Đình chỉ xem xét hoàn trả", progressClass: "secondary", agency: "UBND Tỉnh Lâm Đồng", role: "Chuyên viên Phòng Tư pháp" }
+                    { name: "Dương Đình Nghệ", loi: "Vô ý", daChet: true, trangThaiNguoi: "Đã chết", total: 15000000, paid: 0, nextDate: "—", status: "Bị trả lại QĐ chấm dứt", progressClass: "secondary", agency: "UBND Tỉnh Lâm Đồng", role: "Chuyên viên Phòng Tư pháp" }
                 ],
                 payments: []
             },
@@ -2229,12 +2233,12 @@
         //   + Lãnh đạo phê duyệt: Chờ duyệt QĐ thành lập, Chờ duyệt thành lập hội đồng, Chờ duyệt QĐ hoàn trả.
         // - Đã xử lý: hồ sơ người dùng đã qua ít nhất 01 bước xử lý và không còn chờ người dùng thao tác
         //   (VD Lãnh đạo đã ký duyệt QĐ thành lập Hội đồng: hồ sơ ở tab Đã xử lý của Lãnh đạo, ở tab Chờ xử lý của Cán bộ).
-        const HT_APPROVAL_STATES = ['Chờ duyệt QĐ thành lập', 'Chờ duyệt thành lập hội đồng', 'Chờ duyệt QĐ hoàn trả', 'Chờ duyệt QĐ đình chỉ'];
-        const HT_CB_ACTION_STATES = ['Chờ thành lập hội đồng', 'Bị trả lại thành lập HĐ', 'Họp hội đồng', 'Chờ ban hành QĐ hoàn trả', 'Bị trả lại QĐ hoàn trả', 'Thu tiền hoàn trả', 'Hoãn hoàn trả', 'Miễn hoàn trả', 'Bị trả lại QĐ đình chỉ'];
+        const HT_APPROVAL_STATES = ['Chờ duyệt QĐ thành lập', 'Chờ duyệt thành lập hội đồng', 'Chờ duyệt QĐ hoàn trả', 'Chờ duyệt QĐ đình chỉ', 'Chờ duyệt QĐ chấm dứt'];
+        const HT_CB_ACTION_STATES = ['Chờ thành lập hội đồng', 'Bị trả lại thành lập HĐ', 'Họp hội đồng', 'Chờ ban hành QĐ hoàn trả', 'Bị trả lại QĐ hoàn trả', 'Thu tiền hoàn trả', 'Hoãn hoàn trả', 'Miễn hoàn trả', 'Bị trả lại QĐ đình chỉ', 'Chờ chấm dứt', 'Bị trả lại QĐ chấm dứt'];
         const HT_AFTER_COUNCIL = ['Chờ ban hành QĐ hoàn trả', 'Chờ duyệt QĐ hoàn trả', 'Bị trả lại QĐ hoàn trả', 'Thu tiền hoàn trả', 'Hoàn thành', 'Hoàn tất'];
         const HT_AFTER_REFUND_SUBMIT = ['Chờ duyệt QĐ hoàn trả', 'Bị trả lại QĐ hoàn trả', 'Thu tiền hoàn trả', 'Hoàn thành', 'Hoàn tất'];
         const HT_AFTER_REFUND_SIGN = ['Bị trả lại QĐ hoàn trả', 'Thu tiền hoàn trả', 'Hoàn thành', 'Hoàn tất'];
-        const HT_CLOSED = ['Hoàn thành', 'Hoàn tất', 'Đình chỉ xem xét hoàn trả'];
+        const HT_CLOSED = ['Hoàn thành', 'Hoàn tất', 'Đình chỉ xem xét hoàn trả', 'Chấm dứt hoàn trả'];
         // ===== Trạng thái hồ sơ hoàn trả (chốt 23/10): 9 trạng thái hiển thị; Chờ duyệt / Bị trả lại kèm Loại trình =====
         // Mã trạng thái nội bộ (điều khiển luồng) -> [Trạng thái hiển thị, Loại trình]
         const HT_ST_MAP = {
@@ -2242,6 +2246,7 @@
             'Bị trả lại thành lập HĐ': ['Bị trả lại', 'Thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị trả lại', 'Thành lập hội đồng'],
             'Chờ duyệt QĐ hoàn trả': ['Chờ duyệt', 'QĐ hoàn trả'], 'Bị trả lại QĐ hoàn trả': ['Bị trả lại', 'QĐ hoàn trả'],
             'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'QĐ đình chỉ'], 'Bị trả lại QĐ đình chỉ': ['Bị trả lại', 'QĐ đình chỉ'],
+            'Chờ duyệt QĐ chấm dứt': ['Chờ duyệt', 'QĐ chấm dứt'], 'Bị trả lại QĐ chấm dứt': ['Bị trả lại', 'QĐ chấm dứt'],
             'Đang họp hội đồng': ['Họp hội đồng', ''], 'Chờ ban hành QĐ': ['Chờ ban hành QĐ hoàn trả', ''], 'Đang thu hồi': ['Thu tiền hoàn trả', ''], 'Hoàn tất': ['Hoàn thành', ''],
             // Chốt 23/10: bỏ 2 trạng thái, dữ liệu cũ quy về Đình chỉ xem xét hoàn trả
             'Không xem xét trách nhiệm hoàn trả': ['Đình chỉ xem xét hoàn trả', ''], 'Chấm dứt thu hồi': ['Đình chỉ xem xét hoàn trả', '']
@@ -2249,11 +2254,11 @@
         // Hồ sơ chưa thành lập Hội đồng: mới khởi tạo, chưa trình/ban hành QĐ thành lập Hội đồng -> không có trạng thái (mã nội bộ giữ để điều khiển thao tác)
         const HT_ST_DRAFT = 'Chờ thành lập hội đồng';
         const HT_LOAI_CODE = {
-            'Chờ duyệt': { 'Thành lập hội đồng': 'Chờ duyệt QĐ thành lập', 'QĐ hoàn trả': 'Chờ duyệt QĐ hoàn trả', 'Đình chỉ xem xét hoàn trả': 'Chờ duyệt QĐ đình chỉ' },
-            'Bị trả lại': { 'Thành lập hội đồng': 'Bị trả lại thành lập HĐ', 'QĐ hoàn trả': 'Bị trả lại QĐ hoàn trả', 'Đình chỉ xem xét hoàn trả': 'Bị trả lại QĐ đình chỉ' }
+            'Chờ duyệt': { 'Thành lập hội đồng': 'Chờ duyệt QĐ thành lập', 'QĐ hoàn trả': 'Chờ duyệt QĐ hoàn trả', 'Đình chỉ xem xét hoàn trả': 'Chờ duyệt QĐ đình chỉ', 'QĐ đình chỉ': 'Chờ duyệt QĐ đình chỉ', 'QĐ chấm dứt': 'Chờ duyệt QĐ chấm dứt' },
+            'Bị trả lại': { 'Thành lập hội đồng': 'Bị trả lại thành lập HĐ', 'QĐ hoàn trả': 'Bị trả lại QĐ hoàn trả', 'Đình chỉ xem xét hoàn trả': 'Bị trả lại QĐ đình chỉ', 'QĐ đình chỉ': 'Bị trả lại QĐ đình chỉ', 'QĐ chấm dứt': 'Bị trả lại QĐ chấm dứt' }
         };
         // Thứ tự trạng thái hiển thị (bộ lọc)
-        const HT_ST_ORDER = ['Chờ duyệt', 'Bị trả lại', 'Họp hội đồng', 'Chờ ban hành QĐ hoàn trả', 'Hoãn hoàn trả', 'Miễn hoàn trả', 'Thu tiền hoàn trả', 'Hoàn thành', 'Đình chỉ xem xét hoàn trả'];
+        const HT_ST_ORDER = ['Chờ duyệt', 'Bị trả lại', 'Họp hội đồng', 'Chờ chấm dứt', 'Chờ ban hành QĐ hoàn trả', 'Hoãn hoàn trả', 'Miễn hoàn trả', 'Thu tiền hoàn trả', 'Hoàn thành', 'Đình chỉ xem xét hoàn trả', 'Chấm dứt hoàn trả'];
         function htStView(code) { const m = HT_ST_MAP[code]; return m ? { name: m[0], loai: m[1] } : { name: code || '', loai: '' }; }
         // Chuẩn hóa dữ liệu (dữ liệu cũ / dữ liệu theo tên mới kèm Loại trình) về mã trạng thái nội bộ
         function htStCode(status, loai) {
@@ -2264,7 +2269,8 @@
         function htStNormalize(d) { if (d && d.status) { d.status = htStCode(d.status, d.loaiTrinh); d.loaiTrinh = htStView(d.status).loai; } return d; }
         const HT_ST_STYLE = {
             'Chờ duyệt': 'review', 'Bị trả lại': 'tralai', 'Họp hội đồng': 'pending', 'Chờ ban hành QĐ hoàn trả': 'warning',
-            'Hoãn hoàn trả': 'wait', 'Thu tiền hoàn trả': 'info', 'Miễn hoàn trả': 'success', 'Hoàn thành': 'success', 'Đình chỉ xem xét hoàn trả': 'draft'
+            'Hoãn hoàn trả': 'wait', 'Thu tiền hoàn trả': 'info', 'Miễn hoàn trả': 'success', 'Hoàn thành': 'success', 'Đình chỉ xem xét hoàn trả': 'draft',
+            'Chờ chấm dứt': 'warning', 'Chấm dứt hoàn trả': 'draft'
         };
         // Badge trạng thái (đồng bộ màn Quyết định GQBT): pill không icon; Chờ duyệt / Bị trả lại có dòng phụ Loại trình; hồ sơ chưa thành lập Hội đồng không hiển thị trạng thái
         function htStBadgeHtml(code) {
@@ -3632,8 +3638,12 @@
         const HTKD_KIND = {
             'Thành lập hội đồng': { doc: 'Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả', mau: 'Mẫu số 33/BTNN', title: 'Thành lập Hội đồng xem xét trách nhiệm hoàn trả', gate: 'Ký duyệt QĐ thành lập Hội đồng', ok: 'Họp hội đồng' },
             'QĐ hoàn trả': { doc: 'Quyết định hoàn trả', mau: 'Mẫu số 21/BTNN', title: 'Về việc hoàn trả', gate: 'Ký duyệt QĐ hoàn trả', ok: 'Thu tiền hoàn trả' },
-            'Đình chỉ xem xét hoàn trả': { doc: 'Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả', mau: 'Mẫu số 39/BTNN', title: 'Đình chỉ việc xem xét trách nhiệm hoàn trả', gate: 'Ký duyệt QĐ đình chỉ', ok: 'Đình chỉ xem xét hoàn trả' }
+            'Đình chỉ xem xét hoàn trả': { doc: 'Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả', mau: 'Mẫu số 39/BTNN', title: 'Đình chỉ việc xem xét trách nhiệm hoàn trả', gate: 'Ký duyệt QĐ đình chỉ', ok: 'Đình chỉ xem xét hoàn trả' },
+            // Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả: Mẫu 39/BTNN ở chế độ chấm dứt, cả hồ sơ
+            'QĐ chấm dứt': { doc: 'Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả', mau: 'Mẫu số 39/BTNN', title: 'Chấm dứt việc xem xét trách nhiệm hoàn trả', gate: 'Ký duyệt QĐ chấm dứt', ok: 'Chấm dứt hoàn trả' }
         };
+        // Loại trình QĐ đình chỉ (mã trạng thái Chờ duyệt / Bị trả lại QĐ đình chỉ): cùng cấu hình Đình chỉ xem xét hoàn trả
+        HTKD_KIND['QĐ đình chỉ'] = HTKD_KIND['Đình chỉ xem xét hoàn trả'];
         let htkdCtx = null;
         function htkdE(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
         function htkdLoai(d) { return htStView(d.status).loai || 'Thành lập hội đồng'; }
@@ -3645,9 +3655,13 @@
                 const t = d.tlhd || {};
                 return { name: t.fileName || d.hdFileName || `Mau_33_BTNN_Quyet_dinh_thanh_lap_hoi_dong_${vv}.docx`, uploaded: t.docSrc === 'upload' };
             }
-            if (loai === 'Đình chỉ xem xét hoàn trả') {
+            if (loai === 'Đình chỉ xem xét hoàn trả' || loai === 'QĐ đình chỉ') {
                 const a = d.dcht || {};
                 return { name: a.fileName || `Mau_39_BTNN_Quyet_dinh_dinh_chi_xem_xet_hoan_tra_${vv}.docx`, uploaded: a.docSrc === 'upload' };
+            }
+            if (loai === 'QĐ chấm dứt') {
+                const a = d.dcht || {};
+                return { name: a.fileName || `Mau_39_BTNN_Quyet_dinh_cham_dut_xem_xet_hoan_tra_${vv}.docx`, uploaded: a.docSrc === 'upload' };
             }
             return { name: `Du_thao_Quyet_dinh_hoan_tra_${String(d.code || '').replace(/-/g, '_')}.docx`, uploaded: false };
         }
@@ -3667,6 +3681,8 @@
             } else if (loai === 'QĐ hoàn trả') {
                 dieu1 = `<p style="${p}"><strong>Điều 1.</strong> Người thi hành công vụ có trách nhiệm hoàn trả cho ngân sách nhà nước:</p>`
                     + officers.map((o, i) => `<p style="${p}">${i + 1}. Ông/Bà ${htkdE(o.name)} - ${htkdE(o.role || '')}, ${htkdE(o.agency || '')}: số tiền hoàn trả ${(o.total || 0).toLocaleString('vi-VN')} đồng; phương thức: ${htkdE(o.refundMethod || 'Một lần')}.</p>`).join('');
+            } else if (loai === 'QĐ chấm dứt') {
+                dieu1 = `<p style="${p}"><strong>Điều 1.</strong> Chấm dứt việc xem xét trách nhiệm hoàn trả trong vụ việc yêu cầu bồi thường (Mã hồ sơ: ${htkdE(d.code)}) vì ${htkdE(String((d.dcht && d.dcht.lyDo) || d.cdLyDo || '……').replace(/^./, c => c.toLowerCase()))}.</p>`;
             } else {
                 dieu1 = `<p style="${p}"><strong>Điều 1.</strong> Đình chỉ việc xem xét trách nhiệm hoàn trả đối với ${officers.map(o => 'Ông/Bà ' + htkdE(o.name)).join(', ') || '……'}.</p>`
                     + `<p style="${p}">Lý do đình chỉ: ${htkdE((d.dcht && d.dcht.lyDo) || '……')}</p>`;
@@ -3703,7 +3719,8 @@
         function htkdContent(d) {
             const loai = htkdLoai(d);
             if (loai === 'Thành lập hội đồng') return (d.tlhd && d.tlhd.content) || d.councilDraftSummary || `Trình ký Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả - hồ sơ ${d.code}.`;
-            if (loai === 'Đình chỉ xem xét hoàn trả') return (d.dcht && d.dcht.content) || `Trình ký Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả - hồ sơ ${d.code}.`;
+            if (loai === 'Đình chỉ xem xét hoàn trả' || loai === 'QĐ đình chỉ') return (d.dcht && d.dcht.content) || `Trình ký Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả - hồ sơ ${d.code}.`;
+            if (loai === 'QĐ chấm dứt') return (d.dcht && d.dcht.content) || 'Kính trình Lãnh đạo xem xét, ký duyệt Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả.';
             return d.qdSummary || `Trình ký Quyết định hoàn trả - hồ sơ ${d.code}.`;
         }
         function htkdSummaryHtml(d) {
@@ -3719,7 +3736,7 @@
         // Tài liệu đính kèm của lần trình (chỉ đọc; chỉ hiển thị khi có)
         function htkdTlktHtml(d) {
             const loai = htkdLoai(d);
-            const list = loai === 'QĐ hoàn trả' ? d.qdTlkt : (loai === 'Đình chỉ xem xét hoàn trả' ? (d.dcht && d.dcht.attachments) : (loai === 'Thành lập hội đồng' ? (d.tlhd && d.tlhd.attachments) : null));
+            const list = loai === 'QĐ hoàn trả' ? d.qdTlkt : (['Đình chỉ xem xét hoàn trả', 'QĐ đình chỉ', 'QĐ chấm dứt'].includes(loai) ? (d.dcht && d.dcht.attachments) : (loai === 'Thành lập hội đồng' ? (d.tlhd && d.tlhd.attachments) : null));
             return list && list.length && typeof tlktViewHtml === 'function' ? tlktViewHtml(list) : '';
         }
         // Lịch sử trình ký: giảm dần theo thời gian; lượt hiện hành: Lãnh đạo Chờ ký duyệt
@@ -3804,7 +3821,9 @@
                     if (loai === 'Thành lập hội đồng') { o.status = 'Họp hội đồng'; o.loi = 'Họp hội đồng'; o.progressClass = 'info'; }
                     else if (loai === 'QĐ hoàn trả') { o.status = 'Đang thu'; o.progressClass = 'primary'; }
                 });
-                showToast(`Ký duyệt thành công ${k.doc} - hồ sơ ${d.code}. Hồ sơ chuyển sang trạng thái [${htStView(d.status).name}].`, 'success');
+                // QĐ chấm dứt: [MSG-SUC-BTNN-HT-027]
+                if (loai === 'QĐ chấm dứt') showToast('Ban hành Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả thành công. Hồ sơ chuyển sang trạng thái [Chấm dứt hoàn trả].', 'success');
+                else showToast(`Ký duyệt thành công ${k.doc} - hồ sơ ${d.code}. Hồ sơ chuyển sang trạng thái [${htStView(d.status).name}].`, 'success');
             } else {
                 d.status = HT_LOAI_CODE['Bị trả lại'][loai];
                 (d.refundOfficers || []).forEach(o => {
@@ -3944,10 +3963,10 @@
         });
     </script>
     <!-- Phạm vi dữ liệu theo đơn vị + trạng thái 02 tầng (chi tiết / chung) của màn danh sách -->
-    <script src="ht_du_lieu_mau.js?v=20261030dc1"></script>
-    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261105tc1"></script>
+    <script src="ht_du_lieu_mau.js?v=20261106dc2"></script>
+    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261106vt2"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
-    <script src="ht_mock_role_bar.js?v=20261030s2"></script>
+    <script src="ht_mock_role_bar.js?v=20261105tc1"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>

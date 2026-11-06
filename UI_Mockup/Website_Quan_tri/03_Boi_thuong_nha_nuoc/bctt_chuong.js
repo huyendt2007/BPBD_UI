@@ -2,13 +2,11 @@
  * Tách khỏi HomePageBTNN.html để khi gộp nhánh main không xung đột: trang chủ chỉ cần một dòng <script src="bctt_chuong.js"> đặt cuối trang.
  * Đọc dữ liệu dùng chung của hai trang (localStorage bctt_bao_cao_v1) và vai trò giả lập đang chọn ở từng trang:
  * - Báo cáo công tác BTNN (bctt_role_v1):
- *   + Báo cáo bị Bộ Tư pháp trả lại: Lãnh đạo Sở (chờ phân công Phòng), Lãnh đạo Phòng (được phân công), Cán bộ được giao (điều chỉnh);
- *     Lãnh đạo UBND tỉnh nhận thông báo bị trả lại và đã gửi Bộ Tư pháp.
+ *   + Lãnh đạo UBND tỉnh nhận thông báo báo cáo đã gửi Bộ Tư pháp (06/11/2026: bỏ thông báo báo cáo bị Bộ Tư pháp trả lại vì không còn luồng trả lại).
  *   + Lãnh đạo Phòng, Lãnh đạo Sở: báo cáo đến lượt mình ký duyệt (kể cả khi Lãnh đạo cấp trên trả về).
- * - Tổng hợp báo cáo Công tác BTNN (bctt_role_v1_bo): Lãnh đạo Phòng được Lãnh đạo Cục phân công; Chuyên viên được phân công rà soát;
- *   Lãnh đạo đến lượt ký duyệt yêu cầu điều chỉnh. Báo cáo tổng hợp của Bộ không trình ký nên không có thông báo ký.
- *   Bổ sung 04/11/2026: Lãnh đạo Cục khi có báo cáo mới chờ phân công; Chuyên viên khi yêu cầu điều chỉnh bị Lãnh đạo từ chối, trả về rà soát lại.
- * Bấm thông báo mở thẳng báo cáo (?mo=) hoặc màn rà soát (?xl=); tối đa 10 thông báo, mới nhất trước; ba thông báo mẫu có sẵn giữ nguyên. */
+ * - Tổng hợp báo cáo Công tác BTNN (bctt_role_v1_bo): 06/11/2026 bỏ quy trình rà soát (phân công, rà soát, ký duyệt yêu cầu điều chỉnh) nên không còn thông báo;
+ *   báo cáo tổng hợp của Bộ không trình ký nên không có thông báo ký.
+ * Bấm thông báo mở thẳng báo cáo (?mo=); tối đa 10 thông báo, mới nhất trước; ba thông báo mẫu có sẵn giữ nguyên. */
 (function () {
     'use strict';
     var NOTIF_MAU = 3, NOTIF_TOI_DA = 10;
@@ -23,9 +21,9 @@
     function nam(r) { return 'năm <b style="color:var(--primary-color);">' + esc(r.year) + '</b> (' + esc(KY[r.period] || r.period) + ')'; }
     // Thời điểm đến lượt cấp hiện hành: lúc cấp trước duyệt; cấp đầu thì lúc trình
     function denLuot(t) { var i = t.current || 0; return (i > 0 && t.levels[i - 1].at) || t.at || ''; }
-    // Đang trong luồng ký: `Chờ duyệt`, hoặc `Yêu cầu điều chỉnh` do Lãnh đạo cấp trên trả về Lãnh đạo cấp dưới (reject.traVe)
-    function choKy(r) { return !!r.submit && Array.isArray(r.submit.levels) && (r.status === 'Chờ duyệt' || (r.status === 'Yêu cầu điều chỉnh' && !!r.reject && !!r.reject.traVe)); }
-    function biTraVe(r) { return r.status === 'Yêu cầu điều chỉnh' && !!r.reject && !!r.reject.traVe && r.submit.current + 1 < r.reject.level; }
+    // Đang trong luồng ký: `Chờ duyệt`, hoặc `Bị trả lại` (06/11/2026: trước là `Yêu cầu điều chỉnh`) do Lãnh đạo cấp trên trả về Lãnh đạo cấp dưới (reject.traVe)
+    function choKy(r) { return !!r.submit && Array.isArray(r.submit.levels) && (r.status === 'Chờ duyệt' || (r.status === 'Bị trả lại' && !!r.reject && !!r.reject.traVe)); }
+    function biTraVe(r) { return r.status === 'Bị trả lại' && !!r.reject && !!r.reject.traVe && r.submit.current + 1 < r.reject.level; }
 
     // Việc chờ của một vai trò ở hai trang (vt: vai trò trang Báo cáo công tác BTNN, vb: vai trò trang Tổng hợp báo cáo Công tác BTNN).
     // Dùng cho chuông thông báo của trang chủ và khối «Báo cáo công tác BTNN» của trang Bàn làm việc Lãnh đạo (05/11/2026).
@@ -46,11 +44,8 @@
                 var mo = 'mo=' + encodeURIComponent(r.id), pc = r.phanCongSo || {};
                 var ly = String((r.returned && r.returned.reason) || ''), ngan = ly.length > 90 ? ly.slice(0, 88) + '…' : ly;
                 var traBo = !!r.returned && !r.reject && ['Bị trả lại', 'Đang phân công', 'Yêu cầu điều chỉnh'].indexOf(r.status) >= 0;
-                if (traBo && vt === 'ld_ubnd') them('fa-reply', '#FEF2F2', '#DC2626', 'Báo cáo công tác BTNN ' + nam(r) + ' <b>bị Bộ Tư pháp trả lại</b>. Lý do: ' + esc(ngan), r.returned.at, SO, mo, 'Bị Bộ Tư pháp trả lại');
-                else if (traBo && r.status === 'Bị trả lại' && vt === 'ld_so') them('fa-reply', '#FEF2F2', '#DC2626', 'Báo cáo công tác BTNN ' + nam(r) + ' <b>bị Bộ Tư pháp trả lại</b>, chờ bạn phân công xử lý. Lý do: ' + esc(ngan), r.returned.at, SO, mo, 'Bị Bộ Tư pháp trả lại, chờ phân công xử lý');
-                else if (traBo && r.status === 'Đang phân công' && vt === 'ld_phong') them('fa-diagram-project', '#EFF6FF', '#1D4ED8', 'Bạn <b>được phân công xử lý</b> báo cáo công tác BTNN ' + nam(r) + ' bị Bộ Tư pháp trả lại.', pc.phong ? pc.phong.at : r.returned.at, SO, mo, 'Được phân công xử lý báo cáo bị trả lại');
-                else if (traBo && r.status === 'Yêu cầu điều chỉnh' && vt === 'cb_stp' && pc.canBo && pc.canBo.id === UID_SO.cb_stp) them('fa-diagram-project', '#EFF6FF', '#1D4ED8', 'Bạn <b>được phân công điều chỉnh</b> báo cáo công tác BTNN ' + nam(r) + ' bị Bộ Tư pháp trả lại.', pc.canBo.at, SO, mo, 'Được phân công điều chỉnh báo cáo bị trả lại');
-                else if (vt === 'ld_ubnd' && r.status === 'Đã gửi BTP') them('fa-paper-plane', '#ECFDF5', '#047857', 'Báo cáo công tác BTNN ' + nam(r) + ' của ' + esc(r.unitName) + ' <b>đã gửi Bộ Tư pháp</b>.', (r.issued && r.issued.at) || r.sentAt, SO, mo, 'Đã gửi Bộ Tư pháp');
+                // 06/11/2026: bỏ luồng Bộ Tư pháp trả lại báo cáo nên không còn thông báo bị trả lại, phân công xử lý
+                if (vt === 'ld_ubnd' && r.status === 'Đã gửi BTP') them('fa-paper-plane', '#ECFDF5', '#047857', 'Báo cáo công tác BTNN ' + nam(r) + ' của ' + esc(r.unitName) + ' <b>đã gửi Bộ Tư pháp</b>.', (r.issued && r.issued.at) || r.sentAt, SO, mo, 'Đã gửi Bộ Tư pháp');
                 else if (choKy(r) && UID_SO[vt]) {
                     var l = r.submit.levels[r.submit.current];
                     if (l && l.leaderId === UID_SO[vt]) them('fa-file-signature', '#F5F3FF', '#7C3AED', biTraVe(r)
@@ -58,21 +53,7 @@
                         : 'Báo cáo công tác BTNN ' + nam(r) + ' <b>đang chờ bạn ký duyệt</b> (Cấp ' + l.level + ').', biTraVe(r) ? r.reject.at : denLuot(r.submit), SO, mo, (biTraVe(r) ? 'Chờ ký duyệt lại' : 'Chờ ký duyệt') + ' (Cấp ' + l.level + ')');
                 }
             }
-            // ---- Xử lý báo cáo các Sở gửi lên (Bộ Tư pháp); báo cáo tổng hợp của Bộ (BTP-01) không trình ký
-            var uid = UID_BO[vb], b = r.bo; if (!uid || r.unitId === 'BTP-01' || !b) return;
-            var xl = 'xl=' + encodeURIComponent(r.id), bc = 'báo cáo công tác BTNN ' + nam(r) + ' của ' + esc(r.unitName);
-            var lanPhanCong = function () { var x = (b.ls || []).slice().reverse().find(function (h) { return /^Phân công/.test(h.action || ''); }); return x ? x.at : ''; };
-            if (vb === 'ld_cuc' && b.tt === 'Chờ phân công') them('fa-inbox', '#EFF6FF', '#1D4ED8', 'Có ' + bc + ' <b>mới gửi Bộ Tư pháp</b>, chờ bạn phân công.', (b.ls && b.ls[0] && b.ls[0].at) || '', BO, xl, 'Chờ phân công');
-            else if (b.tt === 'Từ chối duyệt' && !(b.traLai && b.traLai.traVe) && b.cv === uid) them('fa-reply', '#FEF2F2', '#DC2626', 'Yêu cầu điều chỉnh ' + bc + ' <b>bị Lãnh đạo từ chối</b>, chờ bạn rà soát lại.' + (b.traLai && b.traLai.lyDo ? ' Lý do: ' + esc(String(b.traLai.lyDo).length > 90 ? String(b.traLai.lyDo).slice(0, 88) + '…' : b.traLai.lyDo) : ''), b.traLai ? b.traLai.at : '', BO, xl, 'Yêu cầu điều chỉnh bị từ chối, chờ rà soát lại');
-            else if (vb === 'ld_phong_btp' && b.tt === 'Đang phân công') them('fa-diagram-project', '#EFF6FF', '#1D4ED8', 'Bạn <b>được phân công xử lý</b> ' + bc + '.', lanPhanCong(), BO, xl, 'Chờ phân công cán bộ');
-            else if (b.tt === 'Đang rà soát' && b.cv === uid) them('fa-diagram-project', '#EFF6FF', '#1D4ED8', 'Bạn <b>được phân công rà soát</b> ' + bc + '.', lanPhanCong(), BO, xl, 'Chờ rà soát');
-            else if ((b.tt === 'Chờ duyệt' || (b.tt === 'Từ chối duyệt' && b.traLai && b.traLai.traVe)) && b.trinh && b.trinh.levels) {
-                // Yêu cầu điều chỉnh bị Lãnh đạo cấp trên từ chối, trả về Lãnh đạo cấp dưới xem xét lại (traLai.traVe)
-                var t = b.trinh.levels[b.trinh.current], tv = b.tt === 'Từ chối duyệt' && b.trinh.current + 1 < (b.traLai.cap || 0);
-                if (t && t.leaderId === uid) them('fa-file-signature', '#F5F3FF', '#7C3AED', tv
-                    ? 'Yêu cầu điều chỉnh ' + bc + ' <b>bị Lãnh đạo cấp trên trả lại</b>, đang chờ bạn ký duyệt lại hoặc từ chối (Cấp ' + t.level + ').'
-                    : 'Yêu cầu điều chỉnh ' + bc + ' <b>đang chờ bạn ký duyệt</b> (Cấp ' + t.level + ').', tv ? b.traLai.at : denLuot(b.trinh), BO, xl, (tv ? 'Chờ ký duyệt lại yêu cầu điều chỉnh' : 'Chờ ký duyệt yêu cầu điều chỉnh') + ' (Cấp ' + t.level + ')');
-            }
+            // 06/11/2026 (yêu cầu khách hàng): bỏ quy trình rà soát báo cáo các Sở của Bộ Tư pháp nên không còn thông báo phân công, rà soát, ký duyệt yêu cầu điều chỉnh
         });
         delete ds.__r;
         return ds.sort(function (x, y) { return so(y.at) - so(x.at); });

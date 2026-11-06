@@ -15,9 +15,10 @@
     const OFFICER_UNIT = {
         'Nguyễn Văn Đạt': U_A, 'Lê Văn Cường': U_A, 'Hoàng Văn D': U_A, 'Trần Thị Bình': U_B, 'Hoàng Thị M': U_A, 'Phạm Văn Thiếu Sót': U_A,
         'Trần Văn Lỗi': U_B, 'Vũ Văn Tài': U_A, 'Ngô Quyền': U_B, 'Nguyễn Văn Chết': U_A, 'Lưu Quốc Toàn': U_B, 'Bùi Văn Nam': U_A,
-        'Phạm Quốc Huy': U_A, 'Đặng Thị Lan': U_A, 'Đỗ Thị Bình': U_A, 'Vũ Đình Trọng': U_B, 'Hoàng Văn Tuấn': U_A
+        'Phạm Quốc Huy': U_A, 'Đặng Thị Lan': U_B, 'Đỗ Thị Bình': U_A, 'Vũ Đình Trọng': U_B, 'Hoàng Văn Tuấn': U_A
     };
-    const PAY_UNIT_DEMO = { 'Trần Thị Bình': U_A, 'Đặng Thị Lan': U_B };
+    // Dữ liệu mẫu Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương khác Cơ quan trực tiếp quản lý (chỉ nhận Quyết định hoàn trả và thu tiền)
+    const PAY_UNIT_DEMO = { 'Trần Thị Bình': U_A, 'Đặng Thị Lan': U_A };
     const PRE_SPLIT = ['Chờ thành lập hội đồng', 'Chờ duyệt QĐ thành lập', 'Bị trả lại thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Họp hội đồng', 'Không xem xét trách nhiệm hoàn trả'];
     const REQ = 'Đây là trường bắt buộc';
 
@@ -44,10 +45,32 @@
     function xlFull(v) { return v === 'GIAM' || v === 'Giảm mức hoàn trả' ? 'Giảm mức hoàn trả' : (v === 'MIEN' || v === 'Miễn hoàn trả' ? 'Miễn hoàn trả' : 'Hoàn trả'); }
     const xlLabel = v => { const f = xlFull(v); return f === 'Hoàn trả' ? '-' : f; };
     window.htXlLabel = xlLabel;
-    // Mức độ lỗi: Vô ý / Cố ý nhưng không bị truy cứu trách nhiệm hình sự / Cố ý mà có bản án đã có hiệu lực pháp luật tuyên phạm tội / Khác (nhập nội dung)
-    const LOI_LIST = ['Vô ý', 'Cố ý nhưng không bị truy cứu trách nhiệm hình sự', 'Cố ý mà có bản án đã có hiệu lực pháp luật tuyên phạm tội', 'Khác'];
+    // Mức độ lỗi [DM_48] (SRS 05/11/2026): Không có lỗi (đầu danh sách) / Vô ý / Cố ý nhưng không bị truy cứu trách nhiệm hình sự / Cố ý mà có bản án đã có hiệu lực pháp luật tuyên phạm tội / Khác (nhập nội dung)
+    const LOI_NONE = 'Không có lỗi';
+    const LOI_LIST = [LOI_NONE, 'Vô ý', 'Cố ý nhưng không bị truy cứu trách nhiệm hình sự', 'Cố ý mà có bản án đã có hiệu lực pháp luật tuyên phạm tội', 'Khác'];
     // Dữ liệu cũ "Cố ý" đưa về "Cố ý nhưng không bị truy cứu trách nhiệm hình sự"
-    const loiNorm = v => v === 'Cố ý' ? LOI_LIST[1] : v;
+    const loiNorm = v => v === 'Cố ý' ? LOI_LIST[2] : v;
+    // Trạng thái người thi hành công vụ gây thiệt hại (06/11/2026, chốt với khách hàng): giá trị theo danh mục Trạng thái của công dân [DM_59],
+    // đồng bộ từ Trung tâm dữ liệu quốc gia (C12); người dùng tự chọn 01 giá trị, mặc định Còn sống.
+    // Chỉ giá trị «Đã chết» đi luồng người đã chết (Chấm dứt hoàn trả); giá trị khác của danh mục xử lý như Còn sống (nhanhl2 chọn 06/11/2026)
+    const TT_SONG = 'Còn sống', TT_CHET = 'Đã chết';
+    function dm59() {
+        // Mockup: đọc giá trị đang hoạt động của DM_59 trong trang Quản lý danh mục (localStorage masterCategories); chưa có thì dùng 02 giá trị minh họa
+        try {
+            const l = JSON.parse(localStorage.getItem('masterCategories') || '[]').filter(c => c && c.typeCode === 'DM_59' && (!c.status || c.status === 'Hoạt động')).map(c => c.name).filter(Boolean);
+            if (l.length) return l.includes(TT_SONG) ? l : [TT_SONG].concat(l);
+        } catch (e) { /* bỏ qua */ }
+        return [TT_SONG, TT_CHET];
+    }
+    const isDead = o => !!(o && (o.daChet || o.trangThaiNguoi === 'Đã chết'));
+    const isNoFault = o => !!(o && o.loi === LOI_NONE);
+    window.htIsDead = isDead;
+    // Kết quả xác định người thi hành công vụ gây thiệt hại (Bước 2)
+    const KQ_YES = 'Xác định được người thi hành công vụ gây thiệt hại', KQ_NO = 'Không xác định được người thi hành công vụ gây thiệt hại';
+    const CD_STATES = ['Chờ chấm dứt', 'Chờ duyệt QĐ chấm dứt', 'Bị trả lại QĐ chấm dứt', 'Chấm dứt hoàn trả'];
+    const DEAD_TAG = ' <span class="badge ht-dead-tag" style="display:inline-block; background:#e2e8f0; color:#334155; border:1px solid #cbd5e1; font-size:10.5px; font-weight:600; padding:1px 8px; border-radius:999px; margin-left:4px; vertical-align:middle;">Đã chết</span>';
+    // Nhãn cạnh tên: Đã chết; giá trị khác Còn sống của DM_59 (nếu có) hiển thị đúng tên giá trị
+    window.htDeadTag = o => isDead(o) ? DEAD_TAG : (o && o.trangThaiNguoi && o.trangThaiNguoi !== TT_SONG ? DEAD_TAG.replace('>Đã chết<', '>' + esc(o.trangThaiNguoi) + '<') : '');
     window.HT_LOI_LIST = LOI_LIST;
     // Pill trạng thái dùng chung Bước 2, 3, 4 (mỗi nhóm trạng thái một màu)
     const PILL = {
@@ -99,6 +122,13 @@
         // Popup cán bộ: Phương thức hoàn trả "Một lần" / "Nhiều lần"
         const m = document.getElementById('oMethod');
         if (m) m.innerHTML = '<option value="">-- Chọn phương thức hoàn trả --</option><option value="Một lần">Một lần</option><option value="Nhiều lần">Nhiều lần</option>';
+        // Popup cán bộ: Mức độ lỗi mặc định trống, placeholder, Không có lỗi đầu danh sách, bắt buộc chọn
+        const l = document.getElementById('oLoi');
+        if (l) {
+            l.innerHTML = '<option value="">-- Chọn mức độ lỗi --</option>' + LOI_LIST.map(v => '<option value="' + v + '">' + v + '</option>').join('');
+            l.value = '';
+            if (!document.getElementById('oLoiError')) l.insertAdjacentHTML('afterend', '<span class="invalid-feedback" id="oLoiError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>');
+        }
     } catch (e) { /* bỏ qua */ }
     // ===== Dữ liệu mẫu: cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại, cây đơn vị của popup cán bộ =====
     try {
@@ -125,8 +155,10 @@
         }
     } catch (e) { /* bỏ qua */ }
 
-    // Đình chỉ cả hồ sơ (Bước 1, Bước 2 - Mẫu 39) thuộc giai đoạn trước khi tách phần đơn vị; sau khi tách (có phần đơn vị), đình chỉ ở cấp cán bộ
-    const DCHT_PRE = ['Chờ duyệt QĐ đình chỉ', 'Bị trả lại QĐ đình chỉ', 'Đình chỉ xem xét hoàn trả'];
+    // Đình chỉ cả hồ sơ (Mẫu 39): Bước 1, Bước 2 dùng popup đình chỉ cả hồ sơ (chi_tiet_ho_so_hoan_tra_dcht.js); sau khi chốt ý kiến Hội đồng (Bước 3),
+    // đình chỉ cả hồ sơ khi chưa có Quyết định hoàn trả nào được ban hành (chi_tiet_ho_so_hoan_tra_qd.js). 06/11/2026: bỏ đình chỉ một phần cán bộ
+    // Chấm dứt việc xem xét trách nhiệm hoàn trả (cả hồ sơ): không phân tách phần đơn vị
+    const DCHT_PRE = ['Chờ duyệt QĐ đình chỉ', 'Bị trả lại QĐ đình chỉ', 'Đình chỉ xem xét hoàn trả'].concat(CD_STATES);
     function isSplitDossier() { return !!activeDossier && ((Array.isArray(activeDossier.htUnits) && activeDossier.htUnits.length > 0) || (!PRE_SPLIT.includes(activeDossier.status) && !DCHT_PRE.includes(activeDossier.status))); }
     function officerVisible(o) {
         if (scope === 'lanh_dao' || isOwnerScope()) return true;
@@ -134,9 +166,10 @@
         // Cơ quan trực tiếp quản lý hoặc Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương của cán bộ
         return o.agency === myUnit || (o.payUnit || o.agency) === myUnit;
     }
-    // Đơn vị ban hành QĐ hoàn trả của cán bộ: tố tụng hình sự - Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương; lĩnh vực khác - Đơn vị tạo Hội đồng (01 QĐ cho toàn bộ cán bộ)
+    // Đơn vị ban hành QĐ hoàn trả của cán bộ (SRS 05/11/2026): tố tụng hình sự - Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại; lĩnh vực khác - Đơn vị tạo Hội đồng (01 QĐ cho toàn bộ cán bộ)
+    // Cán bộ có Mức độ lỗi Không có lỗi: không đưa vào phần đơn vị
     const isTthsD = () => /tố tụng hình sự/i.test((activeDossier && activeDossier.claimField) || '');
-    const unitKeyOfO = o => (isTthsD() ? (o.payUnit || o.agency) : ownerOf(activeDossier));
+    const unitKeyOfO = o => (isNoFault(o) ? '' : (isTthsD() ? o.agency : ownerOf(activeDossier)));
     function canEditStep2() {
         return !isViewMode && currentPerspective !== 'leader' && isOwnerScope() && activeDossier.status === 'Họp hội đồng';
     }
@@ -246,6 +279,15 @@
             + '<input type="text" id="oPayUnitSearchInput" placeholder="Tìm theo mã hoặc tên đơn vị..." style="width: 100%; padding: 6px 10px 6px 30px; font-size: 13px; border: 1px solid #cbd5e1; border-radius: 4px; outline: none;" oninput="htPayRender(this.value)" onclick="event.stopPropagation();"></div></div>'
             + '<div id="oPayUnitListContainer" style="overflow-y: auto; max-height: 220px; padding: 4px 0;"></div></div>'
             + '<span class="invalid-feedback" id="oPayUnitError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span></div>');
+        // Trạng thái người thi hành công vụ gây thiệt hại: Radio button 02 lựa chọn nằm ngang, ngay dưới Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương
+        // (cùng kiểu trường Trạng thái người bị thiệt hại của Giải quyết yêu cầu bồi thường)
+        const rl = 'cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--text-main);';
+        el('oPayUnitGroup').insertAdjacentHTML('afterend', '<div class="form-group" id="oSongChetGroup" style="margin-bottom: 16px;">'
+            + '<span class="form-label">Trạng thái người thi hành công vụ gây thiệt hại <span style="color:red;">*</span></span>'
+            // 06/11/2026: các lựa chọn lấy từ danh mục Trạng thái của công dân [DM_59] (đồng bộ từ C12), người dùng tự chọn
+            + '<div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap; min-height: 38px; padding-left: 5px;">'
+            + dm59().map(v => '<label style="' + rl + '"><input type="radio" name="oSongChet" value="' + esc(v) + '"' + (v === TT_SONG ? ' checked' : '') + ' onchange="ht2ApplyVis(true)"> ' + esc(v) + '</label>').join('')
+            + '</div><div style="font-size:12px; color:var(--text-muted);">Giá trị theo danh mục Trạng thái của công dân, đồng bộ từ Trung tâm dữ liệu quốc gia (C12).</div></div>');
         document.addEventListener('click', e => {
             const p = el('oPayUnitDropdownPanel'), b = el('oPayUnitSelectBox');
             if (p && b && !p.contains(e.target) && !b.contains(e.target)) p.style.display = 'none';
@@ -326,8 +368,9 @@
             .concat((activeDossier.dcPreOfficers || []).filter(o => officerVisible(o)).map(o => ({ o, i: -1 })));
         const split = isSplitDossier();
         const thSt = el('ht2ColUnitStatus'); if (thSt) thSt.style.display = split ? '' : 'none';
-        // Đình chỉ tại Bước 2: chọn cán bộ (chọn tất cả = đình chỉ cả hồ sơ; chọn một phần = đình chỉ các cán bộ được chọn)
-        const canDc = !split && isOwnerScope() && activeDossier.status === 'Họp hội đồng' && currentPerspective !== 'leader' && scope !== 'stp';
+        // 06/11/2026 (chốt với khách hàng): bỏ đình chỉ một phần cán bộ; đình chỉ luôn áp dụng cả hồ sơ, bấm nút «Đình chỉ» ở thanh nút chân trang.
+        // Bảng không còn cột Chọn và nút Trình ký QĐ đình chỉ
+        const canDc = false;
         const table = el('ht2OfficerTable'), headRow = table && table.querySelector('thead tr');
         let th = el('ht2DcTh');
         if (canDc && headRow && !th) { headRow.insertAdjacentHTML('afterbegin', '<th id="ht2DcTh" style="width:40px; text-align:center;"><input type="checkbox" id="ht2DcAll" title="Chọn tất cả" onchange="ht2DcAll(this.checked)"></th>'); }
@@ -356,14 +399,16 @@
             // Giảm/Miễn hoàn trả: không giảm, không miễn hiển thị "-"; Giảm / Miễn kèm lý do
             const lyDo = xl === 'Giảm mức hoàn trả' && o.lyDoGiam ? '<div class="ht-note-i">Lý do giảm: ' + esc(o.lyDoGiam) + '</div>' : (xl === 'Miễn hoàn trả' && o.lyDoMien ? '<div class="ht-note-i">Lý do miễn: ' + esc(o.lyDoMien) + '</div>' : '');
             const stText = o.dcPre ? 'Đình chỉ hoàn trả' : officerStatusText(o);
+            // Mức độ lỗi Không có lỗi: cột tiền, Giảm/Miễn, Số tiền sau giảm, Phương thức hiển thị "-"; Đã chết: Giảm/Miễn, Số tiền sau giảm, Phương thức hiển thị "-"
+            const nf = isNoFault(o), blk = nf || isDead(o);
             return '<tr>' + (canDc ? '<td style="text-align:center;">' + (o.dcPre || x.i < 0 ? '' : '<input type="checkbox" class="ht2DcChk" data-idx="' + x.i + '" onchange="ht2DcSync()">') + '</td>' : '') + '<td style="text-align:center;">' + (k + 1) + '</td>'
-                + '<td><strong>' + esc(o.name) + '</strong>' + hoan + dcb + '<div style="font-size:12px; color:var(--text-muted);">' + esc(o.role || '') + '</div></td>'
+                + '<td><strong>' + esc(o.name) + '</strong>' + window.htDeadTag(o) + hoan + dcb + '<div style="font-size:12px; color:var(--text-muted);">' + esc(o.role || '') + '</div></td>'
                 + '<td>' + esc(o.agency || '') + '<div style="font-size:12px; color:var(--text-muted);">Quản lý, sử dụng, trả lương: ' + esc(o.payUnit || o.agency || '') + '</div></td>'
                 + '<td>' + esc(o.loi === 'Khác' ? (o.ykhdLoiKhac || 'Khác') : (o.loi || '')) + '</td>'
-                + '<td style="text-align:right; font-weight:600;">' + money(o.hd || o.total) + '</td>'
-                + '<td>' + esc(xlLabel(xl)) + lyDo + '</td>'
-                + '<td style="text-align:right;">' + (xl === 'Giảm mức hoàn trả' ? money(o.giam) : '-') + '</td>'
-                + '<td style="white-space:nowrap;' + (xl === 'Miễn hoàn trả' ? ' text-align:center;' : '') + '">' + esc(xl === 'Miễn hoàn trả' ? '-' : (htMethod(o.refundMethod) || '-')) + '</td>'
+                + '<td style="text-align:right; font-weight:600;">' + (nf ? '-' : money(o.hd || o.total)) + '</td>'
+                + '<td>' + (blk ? '-' : esc(xlLabel(xl)) + lyDo) + '</td>'
+                + '<td style="text-align:right;">' + (!blk && xl === 'Giảm mức hoàn trả' ? money(o.giam) : '-') + '</td>'
+                + '<td style="white-space:nowrap;' + (blk || xl === 'Miễn hoàn trả' ? ' text-align:center;' : '') + '">' + esc(blk || xl === 'Miễn hoàn trả' ? '-' : (htMethod(o.refundMethod) || '-')) + '</td>'
                 + (split ? '<td style="text-align:center;">' + (stText ? htPill(stText) : '') + '</td>' : '')
                 + (showAct ? '<td style="text-align:center; white-space:nowrap;">' + acts + '</td>' : '') + '</tr>';
         }).join('');
@@ -402,6 +447,8 @@
         const host = body.querySelector('.gqx-body') || body.querySelector('[id^="dcht"]');
         if (!n && host) { host.insertAdjacentHTML('afterbegin', '<div id="ht2DcNote" style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 14px; margin-bottom:14px; font-size:13px;"></div>'); n = el('ht2DcNote'); }
         if (!n) return;
+        // Chế độ chấm dứt (cả hồ sơ): không hiển thị ghi chú đình chỉ
+        n.style.display = typeof dchtIsCd === 'function' && dchtIsCd() ? 'none' : '';
         const sel = activeDossier.dcPartialSel;
         n.innerHTML = sel && sel.length ? '<strong>Đình chỉ đối với cán bộ:</strong> ' + esc(sel.join(', ')) + '<div style="color:var(--text-muted); margin-top:2px;">Các cán bộ được đình chỉ không được phân tách về cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại khi hoàn thành Bước 2.</div>' : '<strong>Đình chỉ cả hồ sơ</strong> (toàn bộ cán bộ).';
     }
@@ -435,8 +482,8 @@
         const units = (activeDossier.htUnits || []).filter(u => scope === 'lanh_dao' || isOwnerScope() || (activeDossier.refundOfficers || []).some(o => o && unitKeyOfO(o) === u.unit && officerVisible(o)));
         if (!isSplitDossier() || !isTthsD() || !units.length) { host.style.display = 'none'; host.innerHTML = ''; return; }
         host.style.display = 'block';
-        host.innerHTML = '<div style="font-weight:700; color:var(--primary-color); font-size:14px; margin-bottom:8px;"><i class="fa-solid fa-sitemap"></i> Phân tách theo cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương</div>'
-            + '<table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th>Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương</th><th style="width:90px; text-align:center;">Số cán bộ</th><th>Cán bộ</th><th>Tài liệu đính kèm phần đơn vị</th><th style="width:170px;">Trạng thái</th></tr></thead><tbody>'
+        host.innerHTML = '<div style="font-weight:700; color:var(--primary-color); font-size:14px; margin-bottom:8px;"><i class="fa-solid fa-sitemap"></i> Phân tách theo cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</div>'
+            + '<table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th>Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th><th style="width:90px; text-align:center;">Số cán bộ</th><th>Cán bộ</th><th>Tài liệu đính kèm phần đơn vị</th><th style="width:170px;">Trạng thái</th></tr></thead><tbody>'
             + units.map((u, i) => {
                 // Tài liệu đính kèm phần đơn vị: văn bản kiến nghị của Hội đồng (và tài liệu đính kèm Bước 2), mỗi tệp kèm Xem / Tải
                 const files = (u.files && u.files.length ? u.files : (ykhdFiles('kienNghi').map(f => f.name).concat((activeDossier.ht2Tlkt || []).map(t => t.name))))
@@ -482,6 +529,41 @@
         ykhdRenderField('kienNghi', ro);
         const mau35 = el('ykhdTaiMau35Link'); if (mau35) mau35.style.display = ro ? 'none' : 'inline';
         renderUnitSplit();
+        renderKetQua(ro);
+    };
+    // ===== Kết quả xác định người thi hành công vụ gây thiệt hại (Bước 2): Radio button 02 lựa chọn nằm ngang, dưới Tài liệu đính kèm =====
+    const ketQuaOf = () => (activeDossier && activeDossier.ketQuaXacDinh) || KQ_YES;
+    const ketQuaInput = () => { const r = document.querySelector('input[name="ht2KetQua"]:checked'); return r ? r.value : KQ_YES; };
+    function ensureKetQuaField() {
+        if (el('ht2KetQuaGroup')) return;
+        const tl = el('ht2Tlkt'); if (!tl) return;
+        const rl = 'cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--text-main);';
+        tl.insertAdjacentHTML('afterend', '<div class="form-group" id="ht2KetQuaGroup" style="margin-top:16px; margin-bottom:0;">'
+            + '<span class="form-label">Kết quả xác định người thi hành công vụ gây thiệt hại <span style="color:red;">*</span></span>'
+            + '<div id="ht2KetQuaRadios" style="display: flex; flex-wrap: wrap; gap: 8px 28px; align-items: center; min-height: 38px; padding-left: 5px;">'
+            + '<label style="' + rl + '"><input type="radio" name="ht2KetQua" value="' + KQ_YES + '" checked onchange="ht2OnKetQuaChange(true)"> ' + KQ_YES + '</label>'
+            + '<label style="' + rl + '"><input type="radio" name="ht2KetQua" value="' + KQ_NO + '" onchange="ht2OnKetQuaChange(true)"> ' + KQ_NO + '</label></div>'
+            + '<div id="ht2KetQuaView" class="info-value" style="display:none; background:#f8fafc; padding:10px 14px; border:1px solid var(--border-color); border-radius:6px;"></div></div>');
+    }
+    function renderKetQua(ro) {
+        ensureKetQuaField();
+        const g = el('ht2KetQuaGroup'); if (!g) return;
+        if (g.dataset.ht2Loaded !== activeDossier.code) {
+            g.dataset.ht2Loaded = activeDossier.code;
+            document.querySelectorAll('input[name="ht2KetQua"]').forEach(x => { x.checked = x.value === ketQuaOf(); });
+        }
+        const radios = el('ht2KetQuaRadios'), view = el('ht2KetQuaView');
+        if (radios) radios.style.display = ro ? 'none' : 'flex';
+        if (view) { view.style.display = ro ? 'block' : 'none'; view.innerText = ketQuaOf(); }
+        window.ht2OnKetQuaChange(false);
+    }
+    // Không xác định được: ẩn khối Danh sách người thi hành công vụ gây thiệt hại (giữ Văn bản kiến nghị)
+    window.ht2OnKetQuaChange = function (fromUser) {
+        const no = (canEditStep2() ? ketQuaInput() : ketQuaOf()) === KQ_NO;
+        const card = el('s2RecommendationCard'); if (!card) return;
+        [card.querySelector('.card-header'), card.querySelector('.table-container')].forEach(x => { if (x) x.style.display = no ? 'none' : ''; });
+        if (no) ['ht2DcBar', 'ht2OfficerError', 'ht2UnitSplit'].forEach(id => { const x = el(id); if (x) x.style.display = 'none'; });
+        else if (fromUser) renderOfficerTable();
     };
 
     // ===== Popup Thêm / Sửa / Xem cán bộ =====
@@ -492,8 +574,39 @@
         if (t) t.innerText = n ? (typeof docSoTien === 'function' ? docSoTien(n) : money(n) + ' đồng') : 'Chưa nhập số tiền';
     };
     function xlValue() { const r = document.querySelector('input[name="ht2Xl"]:checked'); return r ? r.value : 'Hoàn trả'; }
+    // Trạng thái người thi hành công vụ gây thiệt hại (popup cán bộ)
+    function songChet() { const r = document.querySelector('input[name="oSongChet"]:checked'); return r ? r.value : 'Còn sống'; }
+    const grpOf = id => { const x = el(id); return x && x.closest('.form-group'); };
+    // Đã chết hoặc Mức độ lỗi Không có lỗi: không nhập Giảm/Miễn, Phương thức, hoãn
+    const modalBlocked = () => songChet() === 'Đã chết' || (!!el('oLoi') && el('oLoi').value === LOI_NONE);
+    // Ẩn và xóa giá trị các trường theo Trạng thái người thi hành công vụ gây thiệt hại và Mức độ lỗi (clear = false: chỉ ẩn, dùng khi nạp bản ghi)
+    window.ht2ApplyVis = function (clear) {
+        const nf = !!el('oLoi') && el('oLoi').value === LOI_NONE, blk = modalBlocked();
+        const amtG = grpOf('oAmt'), xlG = grpOf('ht2XlGroup'), hoanG = grpOf('oPostponeReason');
+        if (amtG) amtG.style.display = nf ? 'none' : '';
+        if (xlG) xlG.style.display = blk ? 'none' : '';
+        if (hoanG) hoanG.style.display = blk ? 'none' : '';
+        if (nf && clear !== false) { el('oAmt').value = ''; const t = el('oAmtText'); if (t) t.innerText = 'Chưa nhập số tiền'; ht2ClearErr('oAmt'); }
+        if (!blk) { ht2OnXlChange(); return; }
+        if (clear !== false) {
+            document.querySelectorAll('input[name="ht2Xl"]').forEach(x => { x.checked = false; });
+            ['ht2Giam', 'ht2LyDoGiam', 'ht2LyDoMien', 'oMethod', 'oPostponeReason', 'oPostponeStart', 'oPostponeEnd'].forEach(id => { const x = el(id); if (x) x.value = ''; ht2ClearErr(id); });
+            const gt = el('ht2GiamText'); if (gt) gt.innerText = 'Chưa nhập số tiền';
+            ht2ClearErr('ht2Xl');
+            if (typeof ykhdSetPostponeFiles === 'function') ykhdSetPostponeFiles('');
+            if (typeof ykhdOnDieuKienHoanInput === 'function') ykhdOnDieuKienHoanInput();
+        }
+        ['ht2GiamWrap', 'ht2MienWrap', 'ht2MethodWrap', 'oPostponeBlock'].forEach(id => { const x = el(id); if (x) x.style.display = 'none'; });
+    };
+    const baseLoiChange = window.ykhdOnLoiChange;
+    window.ykhdOnLoiChange = function () {
+        if (typeof baseLoiChange === 'function') baseLoiChange.apply(this, arguments);
+        ht2ClearErr('oLoi');
+        window.ht2ApplyVis(true);
+    };
     // Giảm/Miễn hoàn trả: ô tích không bắt buộc, chọn tối đa 01 (chọn ô này thì bỏ chọn ô kia)
     window.ht2OnXlChange = function (src) {
+        if (modalBlocked()) { ['ht2GiamWrap', 'ht2MienWrap', 'ht2MethodWrap'].forEach(id => { const x = el(id); if (x) x.style.display = 'none'; }); return; }
         if (src && src.checked) document.querySelectorAll('input[name="ht2Xl"]').forEach(x => { if (x !== src) x.checked = false; });
         const xl = xlValue();
         el('ht2GiamWrap').style.display = xl === 'Giảm mức hoàn trả' ? 'block' : 'none';
@@ -522,7 +635,11 @@
         htRoleRefresh('', '', false);
         document.querySelectorAll('input[name="ht2Xl"]').forEach(x => { x.checked = false; });
         el('oMethod').value = '';
+        // Mức độ lỗi mặc định trống; Trạng thái người thi hành công vụ gây thiệt hại mặc định Còn sống
+        el('oLoi').value = ''; ht2ClearErr('oLoi');
+        document.querySelectorAll('input[name="oSongChet"]').forEach(x => { x.checked = x.value === 'Còn sống'; });
         ht2OnXlChange();
+        window.ht2ApplyVis(true);
     };
     function fillModal(o, index, title) {
         const oldQd = el('htOffQd'); if (oldQd) oldQd.remove();
@@ -538,7 +655,10 @@
         htRoleRefresh(o.agency || '', o.role || '', true);
         setPayUnit(o.payUnit || o.agency || '', false);
         payAuto = !o.payUnit || o.payUnit === o.agency;
-        el('oLoi').value = LOI_LIST.includes(loiNorm(o.loi)) ? loiNorm(o.loi) : 'Vô ý';
+        const ttO = isDead(o) ? TT_CHET : (o.trangThaiNguoi || TT_SONG), rTT = Array.from(document.querySelectorAll('input[name="oSongChet"]'));
+        rTT.forEach(x => { x.checked = x.value === ttO; });
+        if (!rTT.some(x => x.checked)) rTT.forEach(x => { x.checked = x.value === TT_SONG; });   // giá trị không còn trong danh mục: về Còn sống
+        el('oLoi').value = LOI_LIST.includes(loiNorm(o.loi)) ? loiNorm(o.loi) : '';
         ykhdOnLoiChange();
         if (el('ykhdLoiKhac')) el('ykhdLoiKhac').value = o.ykhdLoiKhac || '';
         el('oAmt').value = o.total ? money(o.total) : '';
@@ -555,6 +675,7 @@
         if (el('oPostponeStart')) el('oPostponeStart').value = o.postponeStart || '';
         if (el('oPostponeEnd')) el('oPostponeEnd').value = o.postponeEnd || '';
         ykhdSetPostponeFiles(o.ykhdDieuKienHoan ? (o.postponeFile || '') : '');
+        window.ht2ApplyVis(false);
     }
     window.editOfficerInStep2 = function (index) {
         const o = (activeDossier.refundOfficers || [])[index]; if (!o) return;
@@ -588,14 +709,18 @@
         m.querySelectorAll('.invalid-feedback').forEach(x => { x.style.display = 'none'; });
         const errs = [];
         const need = (id, ok, msg) => { if (!ok) errs.push(markErr(id, msg) || el(id + 'Error') || {}); };
-        const xl = xlValue();
-        const amt = parseMoney(el('oAmt').value), giam = parseMoney(el('ht2Giam').value);
+        const nf = el('oLoi').value === LOI_NONE, dead = songChet() === 'Đã chết', blk = nf || dead;
+        const xl = blk ? 'Hoàn trả' : xlValue();
+        const amt = nf ? 0 : parseMoney(el('oAmt').value), giam = parseMoney(el('ht2Giam').value);
         need('oAgency', !!el('oAgency').value);
         need('oPayUnit', !!(el('oPayUnit') && el('oPayUnit').value));
         need('oName', !!el('oName').value.trim());
         need('oRole', !!el('oRole').value.trim());
+        // Chỉ kiểm tra các trường đang hiển thị; Mức độ lỗi bắt buộc chọn
+        need('oLoi', !!el('oLoi').value);
         if (el('oLoi').value === 'Khác') need('ykhdLoiKhac', !!el('ykhdLoiKhac').value.trim());
-        if (!el('oAmt').value.trim()) need('oAmt', false);
+        if (nf) { /* Không có lỗi: ẩn Số tiền cần hoàn trả */ }
+        else if (!el('oAmt').value.trim()) need('oAmt', false);
         else need('oAmt', amt > 0, 'Số tiền cần hoàn trả phải lớn hơn 0.');
         // Giảm mức hoàn trả chỉ áp dụng khi Mức độ lỗi là Vô ý (Mẫu 37/BTNN)
         if (xl === 'Giảm mức hoàn trả' && el('oLoi').value !== 'Vô ý') need('ht2Xl', false, 'Giảm mức hoàn trả chỉ áp dụng khi Mức độ lỗi là Vô ý.');
@@ -606,9 +731,10 @@
             if (el('ht2Giam').value.trim() && giam > 0 && giam < amt) need('ht2Giam', amt - giam <= Math.floor(amt * 0.3), 'Mức giảm không được lớn hơn 30% Số tiền cần hoàn trả (Số tiền sau giảm tối thiểu ' + money(amt - Math.floor(amt * 0.3)) + ' đ).');
             need('ht2LyDoGiam', !!el('ht2LyDoGiam').value.trim());
         }
-        if (xl === 'Miễn hoàn trả') need('ht2LyDoMien', !!el('ht2LyDoMien').value.trim());
+        if (blk) { /* Đã chết / Không có lỗi: không nhập Giảm/Miễn, Phương thức, hoãn */ }
+        else if (xl === 'Miễn hoàn trả') need('ht2LyDoMien', !!el('ht2LyDoMien').value.trim());
         else need('oMethod', !!el('oMethod').value);
-        const reason = el('oPostponeReason').value.trim();
+        const reason = blk ? '' : el('oPostponeReason').value.trim();
         if (reason) {
             need('oPostponeStart', !!(el('oPostponeStart') && el('oPostponeStart').value.trim()));
             need('oPostponeFile', (ykhdPostponeFiles || []).length > 0);
@@ -621,10 +747,11 @@
         const o = Object.assign({}, old, {
             name: el('oName').value.trim(), role: el('oRole').value.trim(), agency: el('oAgency').value, payUnit: el('oPayUnit') ? el('oPayUnit').value : el('oAgency').value,
             loi: el('oLoi').value, ykhdLoiKhac: el('oLoi').value === 'Khác' ? el('ykhdLoiKhac').value.trim() : '',
+            daChet: dead, trangThaiNguoi: songChet(),
             total: amt, xl, giam: xl === 'Giảm mức hoàn trả' ? giam : 0,
             lyDoGiam: xl === 'Giảm mức hoàn trả' ? el('ht2LyDoGiam').value.trim() : '',
             lyDoMien: xl === 'Miễn hoàn trả' ? el('ht2LyDoMien').value.trim() : '',
-            refundMethod: xl === 'Miễn hoàn trả' ? '' : el('oMethod').value,
+            refundMethod: blk || xl === 'Miễn hoàn trả' ? '' : el('oMethod').value,
             ykhdDieuKienHoan: reason, isPostponed: !!reason, postponeStatus: reason ? 'Đề xuất hoãn' : 'Không hoãn',
             postponeReason: reason, postponeStart: reason && el('oPostponeStart') ? el('oPostponeStart').value.trim() : '',
             postponeEnd: reason && el('oPostponeEnd') ? el('oPostponeEnd').value.trim() : '',
@@ -668,7 +795,9 @@
         if (typeof tlktValidate === 'function' && el('ht2Tlkt').dataset.ht2Mounted && !tlktValidate('ht2')) return;
         // Cán bộ đã đình chỉ tại Bước 2 (QĐ đình chỉ một phần cán bộ): không đưa vào phần tách đơn vị
         const officers = (activeDossier.refundOfficers || []).filter(o => o && o.name && !o.dcPre);
-        if (!officers.length) {
+        const kq = ketQuaInput();
+        // TH2 chỉ áp dụng khi Kết quả xác định người thi hành công vụ gây thiệt hại là Xác định được
+        if (kq === KQ_YES && !officers.length) {
             const e = el('ht2OfficerError'); e.innerText = 'Vui lòng thêm ít nhất 01 người thi hành công vụ gây thiệt hại.'; e.style.display = 'block';
             e.scrollIntoView({ block: 'center' });
             return;
@@ -679,18 +808,44 @@
             return;
         }
         collectStep2();
-        // Tố tụng hình sự: phân tách theo Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương; lĩnh vực khác: 01 khối của Đơn vị tạo Hội đồng
-        const units = Array.from(new Set(officers.map(unitKeyOfO)));
-        const splitMsg = isTthsD() ? 'phân tách về ' + units.length + ' cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương' : 'chuyển sang ban hành 01 Quyết định hoàn trả cho toàn bộ cán bộ của hồ sơ';
+        // TH3 - Không xác định được người thi hành công vụ gây thiệt hại; TH4 - Không còn người phải hoàn trả (mọi cán bộ chưa đình chỉ đều Đã chết hoặc Không có lỗi)
+        if (kq === KQ_NO || officers.every(o => isDead(o) || isNoFault(o))) {
+            confirmBox('Xác nhận lưu ý kiến hội đồng',
+                'Hồ sơ sẽ chuyển sang trạng thái Chờ chấm dứt và không được cập nhật ý kiến của Hội đồng. Bạn có chắc chắn muốn lưu ý kiến hội đồng?',
+                'Lưu', () => {
+                    activeDossier.ketQuaXacDinh = kq;
+                    // TH3: không lưu danh sách cán bộ đã nhập; TH4: lưu danh sách cán bộ
+                    if (kq === KQ_NO) activeDossier.refundOfficers = (activeDossier.refundOfficers || []).filter(o => o && o.dcPre);
+                    activeDossier.cdLyDo = kq === KQ_NO ? KQ_NO : (officers.some(isDead) ? 'Người thi hành công vụ gây thiệt hại đã chết' : '');
+                    activeDossier.htUnits = [];
+                    activeDossier.status = 'Chờ chấm dứt';
+                    if (!activeDossier.timeline) activeDossier.timeline = [];
+                    activeDossier.timeline.unshift({ time: nowShort(), text: 'Lưu ý kiến của Hội đồng (' + (kq === KQ_NO ? KQ_NO : 'không còn người phải hoàn trả') + '). Hồ sơ chuyển sang trạng thái [Chờ chấm dứt].' });
+                    currentViewStep = 2;
+                    isViewMode = true; currentMode = 'view';
+                    renderStateLayout();
+                    if (typeof tlhdPersistCreated === 'function') tlhdPersistCreated();
+                    // [MSG-SUC-BTNN-HT-025]
+                    showToast('Lưu ý kiến hội đồng thành công. Hồ sơ chuyển sang trạng thái Chờ chấm dứt.', 'success');
+                });
+            return;
+        }
+        activeDossier.ketQuaXacDinh = kq;
+        // Tố tụng hình sự: phân tách theo Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại; lĩnh vực khác: 01 khối của Đơn vị tạo Hội đồng
+        // Cán bộ có Mức độ lỗi Không có lỗi: Không xem xét TNHT, không đưa vào phần đơn vị
+        const payers = officers.filter(o => !isNoFault(o));
+        const units = Array.from(new Set(payers.map(unitKeyOfO)));
+        const splitMsg = isTthsD() ? 'phân tách về ' + units.length + ' cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại' : 'chuyển sang ban hành 01 Quyết định hoàn trả cho toàn bộ cán bộ của hồ sơ';
         confirmBox('Xác nhận lưu ý kiến hội đồng',
             'Danh sách người thi hành công vụ gây thiệt hại sẽ được ' + splitMsg + ' và không được cập nhật ý kiến của Hội đồng. Bạn có chắc chắn muốn lưu ý kiến hội đồng?',
             'Lưu', () => {
                 activeDossier.dcPreOfficers = (activeDossier.refundOfficers || []).filter(o => o && o.dcPre);
                 activeDossier.refundOfficers = officers;
                 const files = ykhdFiles('kienNghi').map(f => f.name).concat((activeDossier.ht2Tlkt || []).map(t => t.name));
-                activeDossier.htUnits = units.map(u => ({ unit: u, status: 'Chờ ban hành QĐ hoàn trả', officers: officers.filter(o => unitKeyOfO(o) === u).map(o => o.name), files }));
-                officers.forEach(o => { o.ctStatus = 'Chờ ban hành QĐ hoàn trả'; o.status = 'Chờ ban hành QĐ'; o.progressClass = 'warning'; });
-                activeDossier.refundTotal = officers.reduce((s, o) => s + (o.total || 0), 0);
+                activeDossier.htUnits = units.map(u => ({ unit: u, status: 'Chờ ban hành QĐ hoàn trả', officers: payers.filter(o => unitKeyOfO(o) === u).map(o => o.name), files }));
+                payers.forEach(o => { o.ctStatus = 'Chờ ban hành QĐ hoàn trả'; o.status = 'Chờ ban hành QĐ'; o.progressClass = 'warning'; });
+                officers.filter(isNoFault).forEach(o => { o.ct = 'KXX'; o.ctStatus = 'Không xem xét TNHT'; o.status = 'Không xem xét TNHT'; o.total = 0; o.progressClass = 'secondary'; });
+                activeDossier.refundTotal = payers.reduce((s, o) => s + (o.total || 0), 0);
                 if (!activeDossier.timeline) activeDossier.timeline = [];
                 activeDossier.timeline.unshift({ time: nowShort(), text: 'Lưu ý kiến của Hội đồng; danh sách cán bộ được ' + splitMsg + '.' });
                 switchSimulatorState(3);
@@ -714,6 +869,13 @@
         if (!isOwnerScope() && scope !== 'lanh_dao') drop(/switchToEditMode\((1|2)\)|tlhdOpenModal/);
         // Sở Tư pháp: chỉ ghi nhận thu tiền / trả lại tiền; không Miễn, Giảm, Đình chỉ
         if (scope === 'stp') drop(/dchtOpenModal/);
+        // Hồ sơ Chờ chấm dứt, Chờ duyệt / Bị trả lại (QĐ chấm dứt), Chấm dứt hoàn trả: thanh nút chỉ gồm Trình ký QĐ chấm dứt (đơn vị tạo Hội đồng),
+        // Ký duyệt / Từ chối (Lãnh đạo được giao) và Đóng (chi_tiet_ho_so_hoan_tra_dcht.js)
+        if (CD_STATES.includes(activeDossier.status)) {
+            f.querySelectorAll('button').forEach(b => { if (!/dchtOpenModal|dchtLeader|closeRefundDetail/.test(b.getAttribute('onclick') || '')) b.remove(); });
+            if (!isOwnerScope()) drop(/dchtOpenModal/);
+            return;
+        }
         // Sau khi chốt ý kiến HĐ: đơn vị tạo Hội đồng Ghi nhận nộp tiền tại Bước 4 cho toàn bộ cán bộ ở mọi lĩnh vực;
         // Trình ký QĐ hoàn trả, miễn / giảm bổ sung, đình chỉ cấp cán bộ: Đơn vị ban hành QĐ hoàn trả (chi_tiet_ho_so_hoan_tra_qd.js)
         if (!isViewMode && currentViewStep === 2 && canEditStep2()) {
@@ -742,5 +904,5 @@
         currentPerspective = v === 'lanh_dao' ? 'leader' : 'staff';
         renderStateLayout();
     }
-    window.ht2Api = { confirmBox, setScope, scope: () => scope, myUnit: () => myUnit, isOwnerScope, officerVisible, isSplitDossier, STP_UNITS, renderOfficerTable, renderUnitSplit };
+    window.ht2Api = { confirmBox, setScope, scope: () => scope, myUnit: () => myUnit, owner: () => ownerOf(activeDossier), isOwnerScope, officerVisible, isSplitDossier, STP_UNITS, renderOfficerTable, renderUnitSplit };
 })();

@@ -1571,9 +1571,18 @@
         if ((rec.status === STATUS.BI_TRA_LAI || ((isYcbtRec(rec) || isXdRec(rec)) && rec.status === STATUS.BI_TU_CHOI)) && rec.returned) return rec.returned.kind || '';
         return '';
     }
+    // Tên hiển thị Loại trình của Giải quyết YCBT theo SRS (06/11/2026, người dùng chốt); khóa nội bộ trong dữ liệu/logic giữ nguyên
+    const KIND_DISPLAY_YCBT = { 'Tiếp nhận hồ sơ': 'Thông báo thụ lý hồ sơ', 'Yêu cầu bổ sung': 'Thông báo Yêu cầu bổ sung', 'Không thụ lý': 'Thông báo Không thụ lý' };
+    // ctx: hồ sơ / công việc (module, loaiYeuCau); không có ctx: chỉ đổi tên chỉ có ở Giải quyết YCBT (Tiếp nhận hồ sơ)
+    function kindDisplay(kind, ctx) {
+        if (!kind || !KIND_DISPLAY_YCBT[kind]) return kind || '';
+        if (ctx && isXdRec(ctx)) return kind;
+        if (ctx && (isYcbtRec(ctx) || ctx.loaiYeuCau === REQUEST_TYPE_YCBT)) return KIND_DISPLAY_YCBT[kind];
+        return kind === 'Tiếp nhận hồ sơ' ? KIND_DISPLAY_YCBT[kind] : kind;
+    }
     // Nhãn phụ hiển thị dưới trạng thái: chỉ tên Nội dung trình (không hiển thị cấp duyệt)
     function approvalLabel(rec) {
-        return approvalKindOf(rec);
+        return kindDisplay(approvalKindOf(rec), rec);
     }
     // Luồng phê duyệt động theo cấu hình luồng xử lý / cây đơn vị của cán bộ: "Cấp 1 - [Đơn vị] → Cấp 2 - [Đơn vị] ..."
     function approvalPathText(recLike) {
@@ -2326,8 +2335,8 @@
                 const a = rec.approval;
                 const step = a.steps[a.steps.length - 1];
                 pending.push(Object.assign({}, base, {
-                    key: 'pd:' + rec.code, type: workTypeOfKind(a.kind), kind: a.kind,
-                    detail: `${approveVerb(rec)}: ${a.kind} - cấp ${a.level + 1}/${a.path.length}`,
+                    key: 'pd:' + rec.code, type: workTypeOfKind(a.kind), kind: a.kind, kindText: kindDisplay(a.kind, rec),
+                    detail: `${approveVerb(rec)}: ${kindDisplay(a.kind, rec)} - cấp ${a.level + 1}/${a.path.length}`,
                     who: step ? `${userName(step.userId)} (${unitName(step.unitId)})` : `${userName(a.submittedBy)} - Cán bộ chủ trì`,
                     at: step ? step.at : a.submittedAt
                 }));
@@ -3625,7 +3634,7 @@
         DEFAULT_PERSONAL_DOC_TYPES, getPersonalDocTypes, normalizePersonalDocType, fillPersonalDocTypeSelect,
         loadRecords, saveRecords, getRecord, upsertRecord, removeRecord, addHistory, nextCode, createPendingRecord,
         latestRoute, canEditAtReception, canAssign, markViewed, assignToUnit, assignToOfficers,
-        getRecallInfo, recall, computeApprovalPath, submitForApproval, canApprove, isLastApprovalLevel, nextLevelLeaders, xdPresetNextAssignee, firstLevelLeaders, approvalKindOf, approvalLabel, approvalPathText, approvalPathLineHtml, KIND_KQXD, approve, approveVerb, isXdRec, gqConfiguredRoots, xdTargetUnitId, xdTargetConfigured, xdTargetNotConfiguredMsg, renderSignDocHtml, rejectApproval, performTransfer,
+        getRecallInfo, recall, computeApprovalPath, submitForApproval, canApprove, isLastApprovalLevel, nextLevelLeaders, xdPresetNextAssignee, firstLevelLeaders, approvalKindOf, approvalLabel, kindDisplay, approvalPathText, approvalPathLineHtml, KIND_KQXD, approve, approveVerb, isXdRec, gqConfiguredRoots, xdTargetUnitId, xdTargetConfigured, xdTargetNotConfiguredMsg, renderSignDocHtml, rejectApproval, performTransfer,
         transferToAgency, issueXdOffline, returnHistoryOf, supplementHistoryOf, renderXdReturnHistoryHtml, renderXdSupplementHistoryHtml, getLeaderTasks, thuLyUnitOf, thuLyLeaders, canThuLy, canCuNguoi, applyCuNguoi, KIND_CU_NGUOI, thuLyOfficerOptions, acceptCase, rejectCase,
         KIND_CDPD, STATUS_CU_NGUOI_PHDD, phddFlowNode, phddLeaders, canAssignPhdd, startPhddAssign, assignPhddToUnit, assignPhddToOfficer, PHDD_ASSIGN,
         KTL_TRANSFER_MODES, KTL_TRANSFER_LABELS, stpOfUnit, ktlTransferTarget, mountKtlTransfer, ktlTransferSentence,

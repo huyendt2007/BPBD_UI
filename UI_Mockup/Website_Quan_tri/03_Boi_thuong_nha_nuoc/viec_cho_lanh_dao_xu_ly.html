@@ -332,7 +332,7 @@
             const types = WF.getRequestTypesForUser(me.id);
             document.getElementById('fType').innerHTML = `<option value="">Tất cả</option>` + types.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
             const kinds = Array.from(new Set([].concat(WF.APPROVAL_KINDS.XD, WF.APPROVAL_KINDS.YCBT, WF.APPROVAL_KINDS.KP || [], WF.APPROVAL_KINDS.TN || [])));
-            document.getElementById('fKind').innerHTML = `<option value="">Tất cả</option>` + kinds.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
+            document.getElementById('fKind').innerHTML = `<option value="">Tất cả</option>` + kinds.map(k => `<option value="${esc(k)}">${esc(WF.kindDisplay ? WF.kindDisplay(k) : k)}</option>`).join('');
             document.getElementById('fWork').innerHTML = `<option value="">Tất cả</option>` + WF.WORK_TYPE_ORDER.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
             const tab = new URLSearchParams(location.search).get('tab');
             if (tab === 'done') activeTab = 'done';
@@ -410,7 +410,7 @@
                 return `<tr onclick="openWork(${i})">
                     <td style="text-align:center;">${i + 1}</td>
                     <td class="code-cell">${c}${codeSub}</td>
-                    <td>${workBadge(t.type)}${t.kind ? `<div class="muted" style="margin-top:4px;">${esc(t.kind)}</div>` : ''}</td>
+                    <td>${workBadge(t.type)}${t.kind ? `<div class="muted" style="margin-top:4px;">${esc(t.kindText || t.kind)}</div>` : ''}</td>
                     <td><strong>${esc(t.nycName || '--')}</strong></td>
                     <td>${esc(t.detail)}</td>
                     <td>${esc(t.who)}</td>
@@ -444,7 +444,7 @@
             if (t.source === 'wf' && WF.markViewed(t.rec, me)) WF.upsertRecord(t.rec);
             const row = (k, v) => `<div class="k">${esc(k)}</div><div>${v}</div>`;
             let html = `<div class="sec-title" style="margin-top:0;">I. Thông tin công việc</div><div class="info-grid">
-                ${row('Loại công việc', workBadge(t.type) + (t.kind ? ` <span class="muted">${esc(t.kind)}</span>` : ''))}
+                ${row('Loại công việc', workBadge(t.type) + (t.kind ? ` <span class="muted">${esc(t.kindText || t.kind)}</span>` : ''))}
                 ${row(activeTab === 'done' ? 'Kết quả xử lý của tôi' : 'Nội dung cần xử lý', esc(t.detail))}
                 ${row(activeTab === 'done' ? 'Người xử lý' : 'Người chuyển/trình', esc(t.who))}
                 ${row(activeTab === 'done' ? 'Thời điểm xử lý' : 'Thời điểm nhận', esc(t.at))}
@@ -613,7 +613,7 @@
             const xdAuto = isXdKq ? ` Hệ thống tự động chuyển hồ sơ đến ${WF.unitName(WF.xdTargetUnitId(rec))}.` : '';
             const after = mode === 'approve' ? (isLast ? `Cấp phê duyệt cuối cùng.${xdSign} Sau khi ${verb}, hồ sơ chuyển [${lastStatus}].${xdAuto}` : `Sau khi ${verb}, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} ${verb}${isXd ? ' (cấp này không ký số văn bản)' : ''}.`) : `Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.`;
             document.getElementById('decTitle').innerHTML = mode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> ${Verb} hồ sơ ${esc(code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối phê duyệt hồ sơ ${esc(code)}`;
-            document.getElementById('decContext').innerHTML = WF.renderDraftDocHtml(rec) + `<div><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(WF.userName(a.submittedBy))}</div>${a.content ? `<div class="muted">${esc(a.content)}</div>` : ''}<div style="margin-top:6px;"><strong>Cấp phê duyệt:</strong> ${a.level + 1}/${a.path.length} - ${esc(WF.unitName(a.path[a.level]))}</div><div class="hint">${esc(after)}</div>`;
+            document.getElementById('decContext').innerHTML = WF.renderDraftDocHtml(rec) + `<div><strong>Nội dung trình:</strong> ${esc(WF.kindDisplay ? WF.kindDisplay(a.kind, rec) : a.kind)} -${esc(WF.userName(a.submittedBy))}</div>${a.content ? `<div class="muted">${esc(a.content)}</div>` : ''}<div style="margin-top:6px;"><strong>Cấp phê duyệt:</strong> ${a.level + 1}/${a.path.length} - ${esc(WF.unitName(a.path[a.level]))}</div><div class="hint">${esc(after)}</div>`;
             document.getElementById('decLabel').innerHTML = mode === 'approve' ? `Ý kiến ${verb}` : 'Lý do từ chối phê duyệt<span class="required">*</span>';
             document.getElementById('decNote').placeholder = mode === 'approve' ? `Nhập ý kiến ${verb}...` : 'Nhập lý do từ chối phê duyệt...';
             document.getElementById('decNote').value = '';

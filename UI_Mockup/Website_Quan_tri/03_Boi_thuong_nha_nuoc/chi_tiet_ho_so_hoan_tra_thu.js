@@ -15,7 +15,8 @@
     const num = v => parseInt(String(v || '').replace(/\D/g, ''), 10) || 0;
     const parseD = s => { const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(s || '').trim()); return m ? new Date(+m[3], +m[2] - 1, +m[1]) : null; };
     const conLai = o => Math.max(0, (o.total || 0) - (o.paid || 0));
-    const STEP4 = ['THU', 'DONE', 'MIEN', 'DC'];
+    // Cán bộ Chấm dứt hoàn trả (người thi hành công vụ gây thiệt hại đã chết): dòng chỉ xem, không có ô Chọn, không ghi nhận nộp tiền
+    const STEP4 = ['THU', 'DONE', 'MIEN', 'DC', 'CHAMDUT'];
     function userLabel() {
         return 'Cán bộ ' + A().myUnit();
     }
@@ -42,6 +43,7 @@
         if (o.ct === 'DONE') return 'Cán bộ đã hoàn thành nghĩa vụ hoàn trả';
         if (o.ct === 'MIEN') return 'Cán bộ được Miễn hoàn trả';
         if (o.ct === 'DC') return 'Cán bộ đã Đình chỉ hoàn trả';
+        if (o.ct === 'CHAMDUT') return 'Cán bộ đã Chấm dứt hoàn trả';
         if (conLai(o) <= 0) return 'Không còn số tiền phải nộp';
         return '';
     }
@@ -64,7 +66,7 @@
     }
     function methodCell(o) {
         const a = A();
-        if (o.ct === 'MIEN' || o.xl === 'MIEN') return '<td style="text-align:center;">-</td>';
+        if (o.ct === 'MIEN' || o.xl === 'MIEN' || o.ct === 'CHAMDUT') return '<td style="text-align:center;">-</td>';
         const m = window.htMethod ? window.htMethod(o.refundMethod) : o.refundMethod;
         return '<td style="white-space:nowrap;">' + a.esc(m || '-') + '</td>';
     }
@@ -99,8 +101,8 @@
             h += '<div class="card" style="' + a.unitCardStyle(u) + '">' + a.unitHeader(u, 4, a.unitBadge(u)) + '<div class="card-body"' + (a.unitCollapsed(4, u) ? ' style="display:none;"' : '') + '>'
                 + '<div style="font-size:13px; margin-bottom:10px;">Cán bộ ở giai đoạn thu tiền: <strong>' + list.length + '</strong> • Tổng phải thu: <strong>' + a.money(tong) + ' đ</strong> • Đã thu: <strong>' + a.money(daThu) + ' đ</strong> • Còn phải thu: <strong>' + a.money(Math.max(0, list.reduce((s, x) => s + (x.o.ct === 'THU' ? conLai(x.o) : 0), 0))) + ' đ</strong></div>'
                 + a.mgToolbar(u, ui, list) + '<table class="dense-table" style="width:100%;"><thead><tr>' + a.mgHeadCell(u, ui, list) + '<th style="width:45px; text-align:center;">STT</th><th style="width:200px;">Họ và tên</th><th style="width:210px;">Mức độ lỗi</th><th style="width:100px;">Phương thức hoàn trả</th><th style="width:130px; text-align:right;">Số tiền phải hoàn trả (đ)</th><th style="width:120px; text-align:right;">Đã nộp (đ)</th><th style="width:130px; text-align:right; white-space:nowrap !important;">Còn phải thu (đ)</th><th style="width:220px;">Trạng thái</th><th style="min-width:160px; text-align:center; white-space:nowrap;">Thao tác</th></tr></thead><tbody>'
-                + list.map((x, k) => '<tr>' + a.mgCheckCell(x.o, x.idx, u, ui) + '<td style="text-align:center;">' + (k + 1) + '</td><td><strong>' + a.esc(x.o.name) + '</strong><div style="font-size:12px; color:var(--text-muted);">' + a.esc(x.o.role || '') + '</div></td><td>' + a.esc(x.o.loi === 'Khác' ? (x.o.ykhdLoiKhac || 'Khác') : (x.o.loi || '-')) + '</td>' + methodCell(x.o)
-                    + '<td style="text-align:right;">' + a.money(x.o.ct === 'MIEN' ? 0 : x.o.total) + '</td><td style="text-align:right;">' + a.money(x.o.paid) + '</td><td style="text-align:right; font-weight:700;">' + a.money(x.o.ct === 'THU' ? conLai(x.o) : 0) + '</td>'
+                + list.map((x, k) => '<tr>' + a.mgCheckCell(x.o, x.idx, u, ui) + '<td style="text-align:center;">' + (k + 1) + '</td><td><strong>' + a.esc(x.o.name) + '</strong>' + (window.htDeadTag ? window.htDeadTag(x.o) : '') + '<div style="font-size:12px; color:var(--text-muted);">' + a.esc(x.o.role || '') + '</div></td><td>' + a.esc(x.o.loi === 'Khác' ? (x.o.ykhdLoiKhac || 'Khác') : (x.o.loi || '-')) + '</td>' + methodCell(x.o)
+                    + '<td style="text-align:right;">' + a.money(x.o.ct === 'MIEN' || x.o.ct === 'CHAMDUT' ? 0 : x.o.total) + '</td><td style="text-align:right;">' + a.money(x.o.paid) + '</td><td style="text-align:right; font-weight:700;">' + a.money(x.o.ct === 'THU' ? conLai(x.o) : 0) + '</td>'
                     + '<td>' + statusCell(x.o) + '</td><td class="ht-act-cell">' + actions(x.o, x.idx) + '</td></tr>').join('')
                 + '</tbody></table>' + a.mgBlock(u) + a.dcBlock(u) + '</div></div>';
         });

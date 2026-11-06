@@ -2875,7 +2875,23 @@
                 if (tab === 'pending') { const rec = wfRecFor(d); return d.status === ST.CHO_DUYET && !!rec && W.canApprove(rec, me); }
                 return leaderHandled(d, me) && !(d.status === ST.CHO_DUYET && wfRecFor(d) && W.canApprove(wfRecFor(d), me));
             }
-            return QD_TAB_STATES[tab].includes(d.status);
+            return QD_TAB_STATES[tab].includes(d.status) && qdInMyScope(d);
+        }
+        // [vt1] Phạm vi Cán bộ xử lý: Quyết định của hồ sơ thuộc cơ quan giải quyết bồi thường của người dùng (cây đơn vị gốc);
+        // hồ sơ đã cử người giải quyết có cán bộ chọn từ tài khoản: chỉ các cán bộ đó (cùng quy tắc phân hồ sơ tại Giải quyết YCBT)
+        function qdInMyScope(d) {
+            const me = W.getCurrentUserId();
+            const u = W.getUser(me);
+            if (!u || !d) return false;
+            const myRoot = W.getRootId(u.unitId) || u.unitId;
+            const decUnit = d.unitId || (W.resolveAgencyUnit ? W.resolveAgencyUnit(d.agency || '') : '');
+            const decRoot = decUnit ? (W.getRootId(decUnit) || decUnit) : '';
+            if (!decRoot || decRoot !== myRoot) return false;
+            const claims = readJson('claimsList', null);
+            const c = Array.isArray(claims) ? claims.find(x => x && x.code === d.claimCode) : null;
+            const named = c && Array.isArray(c.appointedOfficers) ? c.appointedOfficers.filter(o => o && !o.freeText && (o.userId || o.name)) : [];
+            if (!named.length) return true;
+            return named.some(o => (o.userId && W.getUser(o.userId)) ? o.userId === me : o.name === u.name);
         }
 
         // ---------------- MH01 - Danh sách ----------------
@@ -5309,7 +5325,7 @@
     </script>
     <script src="quyet_dinh_gqbt_ctqd.js?v=20261106hqdhl1"></script>
     <!-- [hlqd] Cập nhật hiệu lực QĐ: Đã ban hành -> Có hiệu lực (tạo bản ghi Chi trả tiền bồi thường) / Không có hiệu lực -->
-    <script src="quyet_dinh_gqbt_hlqd.js?v=20261105np1"></script>
+    <script src="quyet_dinh_gqbt_hlqd.js?v=20261106vt1"></script>
     <!-- [scbf] Sửa chữa, bổ sung QĐ theo Form (điền sẵn nội dung QĐ, tự sinh Nội dung sửa chữa, bổ sung); liên thông kinh phí khi QĐ sửa chữa, bổ sung ban hành (Hủy QĐ không liên thông Kinh phí) -->
     <script src="quyet_dinh_gqbt_scbs.js?v=20261104huy1"></script>
     <script src="quyet_dinh_gqbt_schl.js?v=20261105kp2"></script>

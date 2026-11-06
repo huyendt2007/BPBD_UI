@@ -531,6 +531,8 @@
         }
         .form-group:has(> input.is-invalid) .wf-utree-display { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
         .view-mode .wf-utree-display { pointer-events: none; background: #f8fafc; }
+        /* Xem chi tiết: ô nhập bị khóa nền xám nhạt như ô chỉ đọc */
+        .view-mode .form-control:disabled { background-color: #f8fafc !important; color: #1e293b; cursor: default; opacity: 1; }
         .view-mode .wf-utree-clear, .view-mode .wf-utree-display .fa-chevron-down, .view-mode .unit-chip button { display: none !important; }
         .unit-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
         .unit-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 6px 3px 10px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 999px; font-size: 12px; color: #1e3a8a; }
@@ -559,7 +561,10 @@
         .kt-result .kt-step { background: #16a34a; }
         .kt-sub-title { font-weight: 700; color: #334155; margin: 14px 0 8px; font-size: 13px; }
         .member-table td { vertical-align: middle; }
-        .member-table .is-invalid { border-color: #ef4444 !important; background: #fef2f2 !important; }    </style>
+        .member-table .is-invalid { border-color: #ef4444 !important; background: #fef2f2 !important; }    
+        /* Ô nhập nhiều dòng dùng cùng phông chữ trang */
+        textarea.form-control { font-family: inherit; }
+    </style>
 </head>
 
 <body>
@@ -607,7 +612,6 @@
     <div class="section detail-panel" id="detailPanel">
         <div class="section-head">
             <div class="section-title" id="formTitle"><i class="fa-solid fa-pen-to-square"></i> Thêm mới</div>
-            <button class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>
         </div>
         <div class="info-strip">
             <div><div class="info-label">Mã cuộc kiểm tra</div><div class="info-value" id="formCode">Hệ thống tự sinh</div></div>
@@ -617,12 +621,12 @@
         </div>
         <form id="businessForm" onsubmit="return false;">
             <div class="kt-block" id="planBlock">
-                <div class="kt-block-title"><span class="kt-step">I</span> Kế hoạch kiểm tra <span class="muted" id="planNote"></span></div>
+                <div class="kt-block-title">Kế hoạch kiểm tra</div>
                 <div class="grid-3" id="planFields"></div>
-                <div class="kt-sub-title">Đoàn kiểm tra<span class="required">*</span></div>
+                <div class="kt-sub-title">Thành phần tham gia kiểm tra<span class="required">*</span></div>
                 <div class="table-wrap">
                     <table class="doc-table member-table">
-                        <thead><tr><th style="width:56px; text-align:center;">STT</th><th>Họ và tên<span class="required">*</span></th><th>Chức vụ<span class="required">*</span></th><th style="width:34%;">Đơn vị<span class="required">*</span></th><th style="width:150px;">Vai trò<span class="required">*</span></th><th style="width:90px; text-align:center;" class="edit-only">Thao tác</th></tr></thead>
+                        <thead><tr><th style="width:56px; text-align:center;">STT</th><th>Họ và tên<span class="required">*</span></th><th>Chức vụ<span class="required">*</span></th><th style="width:34%;">Đơn vị<span class="required">*</span></th><th style="width:180px;">Vai trò<span class="required">*</span></th><th style="width:90px; text-align:center;" class="edit-only">Thao tác</th></tr></thead>
                         <tbody id="memberRows"></tbody>
                     </table>
                 </div>
@@ -634,7 +638,7 @@
             </div>
 
             <div class="kt-block kt-result" id="resultBlock">
-                <div class="kt-block-title"><span class="kt-step">II</span> Kết quả kiểm tra <span class="muted" id="resultNote"></span></div>
+                <div class="kt-block-title">Kết quả kiểm tra <span class="muted" id="resultNote"></span></div>
                 <div id="resultBody">
                     <div class="grid-3" id="resultFields"></div>
                     <div class="kt-sub-title" id="resultDocsTitle">Tài liệu đính kèm</div>
@@ -670,6 +674,7 @@
     <script src="btnn_luong_xu_ly.js?v=20261105tn1"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
+    <script src="btnn_popup_xoa.js?v=20261106ro1"></script>
     <script>
         const W = window.BTNN_WF, CASE = window.BTNN_CASE, PV = window.BTNN_PHAMVI;
         const STORE_KEY = 'btnn_kiem_tra_records_v2';
@@ -678,8 +683,9 @@
         const KT_FORMS = ['Kiểm tra định kỳ', 'Kiểm tra đột xuất'];
         // Căn cứ kiểm tra - Điều 17
         const KT_BASIS = ['Kiến nghị, phản ánh, khiếu nại, tố cáo của cá nhân, cơ quan, tổ chức về công tác bồi thường nhà nước', 'Kết quả của hoạt động hướng dẫn nghiệp vụ; theo dõi, đôn đốc; hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường', 'Kết quả thống kê việc thực hiện công tác bồi thường nhà nước hằng năm', 'Theo hướng dẫn của cơ quan quản lý nhà nước ở trung ương'];
-        // Thành phần đoàn kiểm tra - khoản 1 Điều 20
+        // Thành phần tham gia kiểm tra - khoản 1 Điều 20: Vai trò nhập tự do (Text); giá trị dữ liệu mẫu
         const ROLES = ['Trưởng đoàn', 'Thành viên'];
+        const isLeaderRole = s => String(s || '').trim().toLowerCase() === 'trưởng đoàn';
         const ST = { PLANNED: 'Chờ kiểm tra', DONE: 'Đã kiểm tra' };
 
         const unitName = id => (id && W.unitName(id)) || '';
@@ -707,23 +713,25 @@
             const b = 'Nguyễn Văn Cán Bộ', s = 'Đỗ Văn Chung';
             const plan = (o) => Object.assign({ planDocs: [{ name: 'Kế hoạch kiểm tra', file: 'ke_hoach_kiem_tra.pdf' }], resultDocs: [] }, o);
             return [
-                plan({ code: 'KT-BTNN-2026-001', senderId: 'BTP-01', officer: b, createdAt: '20/03/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'UBND-LD', content: 'Kiểm tra việc giải quyết yêu cầu bồi thường và quản lý nhà nước về công tác bồi thường nhà nước tại tỉnh Lâm Đồng.', periodFrom: '01/01/2025', periodTo: '31/12/2025', scopeNote: 'Các vụ việc thụ lý trong năm 2025.', planFrom: '12/08/2026', planTo: '14/08/2026', planPlace: 'Trụ sở UBND tỉnh Lâm Đồng', members: [mem('Trần Văn Bồi Thường', 'Trưởng phòng', 'PLN-02', ROLES[0]), mem('Nguyễn Văn Cán Bộ', 'Chuyên viên', 'PLN-02', ROLES[1]), mem('Kha Văn Sang', 'Chủ tịch UBND', 'UBND-LD', ROLES[1])], status: ST.DONE, result: { from: '12/08/2026', to: '15/08/2026', place: 'Trụ sở UBND tỉnh Lâm Đồng và Cục Thi hành án dân sự tỉnh Lâm Đồng', content: 'Đã kiểm tra 05 vụ việc; 01 vụ việc quá thời hạn giải quyết. Đoàn kiểm tra đã ban hành kết luận kiểm tra.' }, resultDocs: [{ name: 'Biên bản kiểm tra', file: 'bien_ban_kiem_tra.pdf' }, { name: 'Kết luận kiểm tra', file: 'ket_luan_kiem_tra.pdf' }], history: [hist('20/03/2026 09:00', b, 'Lập kế hoạch kiểm tra'), hist('16/08/2026 15:00', b, 'Cập nhật kết quả kiểm tra')] }),
-                plan({ code: 'KT-BTNN-2026-002', senderId: 'BTP-01', officer: b, createdAt: '05/10/2026', form: KT_FORMS[1], basis: KT_BASIS[0], targetId: 'UBND-HN', content: 'Kiểm tra đột xuất việc giải quyết yêu cầu bồi thường có thời hạn kéo dài.', periodFrom: '01/01/2026', periodTo: '30/09/2026', scopeNote: '', planFrom: '20/10/2026', planTo: '21/10/2026', planPlace: 'Trụ sở UBND Thành phố Hà Nội', members: [mem('Phạm Thị Hồng Vân', 'Phó Cục trưởng', 'CĐK-01', ROLES[0]), mem('Trần Thị Thu Hà', 'Chuyên viên', 'PLN-02', ROLES[1])], status: ST.PLANNED, history: [hist('05/10/2026 10:00', b, 'Lập kế hoạch kiểm tra')] }),
-                plan({ code: 'KT-BTNN-2026-003', senderId: 'BTP-01', officer: b, createdAt: '25/03/2026', form: KT_FORMS[0], basis: KT_BASIS[1], targetId: 'VKSNDTC', content: 'Kiểm tra tổ chức thi hành pháp luật về trách nhiệm bồi thường của Nhà nước.', periodFrom: '01/01/2025', periodTo: '31/12/2025', scopeNote: '', planFrom: '10/11/2026', planTo: '12/11/2026', planPlace: 'Trụ sở Viện kiểm sát nhân dân tối cao', members: [mem('Nguyễn Văn Cục Trưởng', 'Cục trưởng', 'CĐK-01', ROLES[0]), mem('Phạm Minh Đức', 'Chuyên viên', 'PLN-02', ROLES[1])], status: ST.PLANNED, history: [hist('25/03/2026 08:30', b, 'Lập kế hoạch kiểm tra')] }),
-                plan({ code: 'KT-BTNN-2026-004', senderId: 'STP-HN', officer: s, createdAt: '15/03/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'UBND-CG', content: 'Kiểm tra việc giải quyết yêu cầu bồi thường và xác định trách nhiệm hoàn trả tại UBND phường Cầu Giấy.', periodFrom: '01/01/2025', periodTo: '31/12/2025', scopeNote: '', planFrom: '15/09/2026', planTo: '16/09/2026', planPlace: 'Trụ sở UBND phường Cầu Giấy', members: [mem('Phạm Quang Huy', 'Giám đốc Sở', 'STP-HN', ROLES[0]), mem('Đỗ Văn Chung', 'Chuyên viên', 'STP-HN-HCTP', ROLES[1])], status: ST.DONE, result: { from: '15/09/2026', to: '16/09/2026', place: 'Trụ sở UBND phường Cầu Giấy', content: 'Đơn vị thực hiện đúng trình tự, thủ tục giải quyết yêu cầu bồi thường.' }, resultDocs: [{ name: 'Kết luận kiểm tra', file: 'ket_luan_kt_cau_giay.pdf' }], history: [hist('15/03/2026 09:00', s, 'Lập kế hoạch kiểm tra'), hist('18/09/2026 10:00', s, 'Cập nhật kết quả kiểm tra')] }),
-                plan({ code: 'KT-BTNN-2026-005', senderId: 'STP-HN', officer: s, createdAt: '01/10/2026', form: KT_FORMS[1], basis: KT_BASIS[0], targetId: 'CA-TX', content: 'Kiểm tra đột xuất việc thụ lý hồ sơ yêu cầu bồi thường.', periodFrom: '01/06/2026', periodTo: '30/09/2026', scopeNote: 'Vụ việc BT-2026-038.', planFrom: '22/10/2026', planTo: '22/10/2026', planPlace: 'Trụ sở Công an phường Thanh Xuân', members: [mem('Vũ Thị Thanh', 'Trưởng phòng', 'STP-HN-HCTP', ROLES[0]), mem('Ngô Thị Lan', 'Chuyên viên', 'STP-HN-HCTP', ROLES[1])], status: ST.PLANNED, history: [hist('01/10/2026 14:00', s, 'Lập kế hoạch kiểm tra')] }),
-                plan({ code: 'KT-BTNN-2026-006', senderId: 'STP-HCM', officer: 'Châu Ngọc Ánh', createdAt: '10/04/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'CCTHADS-BT', content: 'Kiểm tra việc giải quyết yêu cầu bồi thường tại Chi cục Thi hành án dân sự quận Bình Tân.', periodFrom: '01/01/2025', periodTo: '31/12/2025', scopeNote: '', planFrom: '18/08/2026', planTo: '19/08/2026', planPlace: 'Trụ sở Chi cục Thi hành án dân sự quận Bình Tân', members: [mem('Lý Thanh Sơn', 'Giám đốc Sở', 'STP-HCM', ROLES[0]), mem('Châu Ngọc Ánh', 'Chuyên viên', 'STP-HCM-HCTP', ROLES[1])], status: ST.DONE, result: { from: '18/08/2026', to: '19/08/2026', place: 'Trụ sở Chi cục Thi hành án dân sự quận Bình Tân', content: 'Đơn vị thụ lý, giải quyết đúng thời hạn; đề nghị bổ sung sổ theo dõi vụ việc.' }, resultDocs: [{ name: 'Kết luận kiểm tra', file: 'ket_luan_kt_binh_tan.pdf' }], history: [hist('10/04/2026 09:00', 'Châu Ngọc Ánh', 'Lập kế hoạch kiểm tra'), hist('21/08/2026 10:00', 'Châu Ngọc Ánh', 'Cập nhật kết quả kiểm tra')] }),
-                plan({ code: 'KT-BTNN-2026-007', senderId: 'STP-HCM', officer: 'Châu Ngọc Ánh', createdAt: '12/10/2026', form: KT_FORMS[1], basis: KT_BASIS[0], targetId: 'VKS-Q1', content: 'Kiểm tra đột xuất việc giải quyết yêu cầu bồi thường theo phản ánh của người yêu cầu bồi thường.', periodFrom: '01/01/2026', periodTo: '30/09/2026', scopeNote: '', planFrom: '05/11/2026', planTo: '05/11/2026', planPlace: 'Trụ sở Viện kiểm sát nhân dân Quận 1', members: [mem('Châu Ngọc Ánh', 'Chuyên viên', 'STP-HCM-HCTP', ROLES[0])], status: ST.PLANNED, history: [hist('12/10/2026 14:00', 'Châu Ngọc Ánh', 'Lập kế hoạch kiểm tra')] }),
-                plan({ code: 'KT-BTNN-2026-008', senderId: 'STP-HP', officer: 'Tăng Thị Diệu', createdAt: '02/04/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'THADS-HP', content: 'Kiểm tra việc xác định trách nhiệm hoàn trả tại Cục Thi hành án dân sự Thành phố Hải Phòng.', periodFrom: '01/01/2025', periodTo: '31/12/2025', scopeNote: '', planFrom: '24/09/2026', planTo: '25/09/2026', planPlace: 'Trụ sở Cục Thi hành án dân sự Thành phố Hải Phòng', members: [mem('Bạch Văn Hải', 'Giám đốc Sở', 'STP-HP', ROLES[0]), mem('Tăng Thị Diệu', 'Chuyên viên', 'STP-HP-HCTP', ROLES[1]), mem('Quách Minh Tuấn', 'Chuyên viên', 'STP-HP-HCTP', ROLES[1])], status: ST.DONE, result: { from: '24/09/2026', to: '25/09/2026', place: 'Trụ sở Cục Thi hành án dân sự Thành phố Hải Phòng', content: 'Đơn vị đã xác định trách nhiệm hoàn trả đối với 02 vụ việc.' }, resultDocs: [{ name: 'Biên bản kiểm tra', file: 'bien_ban_kt_thads_hp.pdf' }], history: [hist('02/04/2026 08:30', 'Tăng Thị Diệu', 'Lập kế hoạch kiểm tra'), hist('28/09/2026 15:00', 'Tăng Thị Diệu', 'Cập nhật kết quả kiểm tra')] }),
-                plan({ code: 'KT-BTNN-2026-009', senderId: 'STP-HP', officer: 'Quách Minh Tuấn', createdAt: '15/10/2026', form: KT_FORMS[1], basis: KT_BASIS[1], targetId: 'VKS-HP', content: 'Kiểm tra đột xuất việc thực hiện quyết định giải quyết bồi thường.', periodFrom: '01/01/2026', periodTo: '30/09/2026', scopeNote: '', planFrom: '12/11/2026', planTo: '13/11/2026', planPlace: 'Trụ sở Viện kiểm sát nhân dân Thành phố Hải Phòng', members: [mem('Quách Minh Tuấn', 'Chuyên viên', 'STP-HP-HCTP', ROLES[0]), mem('Tăng Thị Diệu', 'Chuyên viên', 'STP-HP-HCTP', ROLES[1])], status: ST.PLANNED, history: [hist('15/10/2026 10:00', 'Quách Minh Tuấn', 'Lập kế hoạch kiểm tra')] })
+                plan({ code: 'KT-BTNN-2026-001', senderId: 'BTP-01', officer: b, createdAt: '20/03/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'UBND-LD', content: 'Kiểm tra việc giải quyết yêu cầu bồi thường và quản lý nhà nước về công tác bồi thường nhà nước tại tỉnh Lâm Đồng.', periodFrom: '01/01/2025', periodTo: '31/12/2025', planFrom: '12/08/2026', planTo: '14/08/2026', planPlace: 'Trụ sở UBND tỉnh Lâm Đồng', members: [mem('Trần Văn Bồi Thường', 'Trưởng phòng', 'PLN-02', ROLES[0]), mem('Nguyễn Văn Cán Bộ', 'Chuyên viên', 'PLN-02', ROLES[1]), mem('Kha Văn Sang', 'Chủ tịch UBND', 'UBND-LD', ROLES[1])], status: ST.DONE, result: { from: '12/08/2026', to: '15/08/2026', place: 'Trụ sở UBND tỉnh Lâm Đồng và Cục Thi hành án dân sự tỉnh Lâm Đồng', content: 'Đã kiểm tra 05 vụ việc; 01 vụ việc quá thời hạn giải quyết. Đoàn kiểm tra đã ban hành kết luận kiểm tra.' }, resultDocs: [{ name: 'Biên bản kiểm tra', file: 'bien_ban_kiem_tra.pdf' }, { name: 'Kết luận kiểm tra', file: 'ket_luan_kiem_tra.pdf' }], history: [hist('20/03/2026 09:00', b, 'Lập kế hoạch kiểm tra'), hist('16/08/2026 15:00', b, 'Cập nhật kết quả kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-002', senderId: 'BTP-01', officer: b, createdAt: '05/10/2026', form: KT_FORMS[1], basis: KT_BASIS[0], targetId: 'UBND-HN', content: 'Kiểm tra đột xuất việc giải quyết yêu cầu bồi thường có thời hạn kéo dài.', periodFrom: '01/01/2026', periodTo: '30/09/2026', planFrom: '20/10/2026', planTo: '21/10/2026', planPlace: 'Trụ sở UBND Thành phố Hà Nội', members: [mem('Phạm Thị Hồng Vân', 'Phó Cục trưởng', 'CĐK-01', ROLES[0]), mem('Trần Thị Thu Hà', 'Chuyên viên', 'PLN-02', ROLES[1])], status: ST.PLANNED, history: [hist('05/10/2026 10:00', b, 'Lập kế hoạch kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-003', senderId: 'BTP-01', officer: b, createdAt: '25/03/2026', form: KT_FORMS[0], basis: KT_BASIS[1], targetId: 'VKSNDTC', content: 'Kiểm tra tổ chức thi hành pháp luật về trách nhiệm bồi thường của Nhà nước.', periodFrom: '01/01/2025', periodTo: '31/12/2025', planFrom: '10/11/2026', planTo: '12/11/2026', planPlace: 'Trụ sở Viện kiểm sát nhân dân tối cao', members: [mem('Nguyễn Văn Cục Trưởng', 'Cục trưởng', 'CĐK-01', ROLES[0]), mem('Phạm Minh Đức', 'Chuyên viên', 'PLN-02', ROLES[1])], status: ST.PLANNED, history: [hist('25/03/2026 08:30', b, 'Lập kế hoạch kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-004', senderId: 'STP-HN', officer: s, createdAt: '15/03/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'UBND-CG', content: 'Kiểm tra việc giải quyết yêu cầu bồi thường và xác định trách nhiệm hoàn trả tại UBND phường Cầu Giấy.', periodFrom: '01/01/2025', periodTo: '31/12/2025', planFrom: '15/09/2026', planTo: '16/09/2026', planPlace: 'Trụ sở UBND phường Cầu Giấy', members: [mem('Phạm Quang Huy', 'Giám đốc Sở', 'STP-HN', ROLES[0]), mem('Đỗ Văn Chung', 'Chuyên viên', 'STP-HN-HCTP', ROLES[1])], status: ST.DONE, result: { from: '15/09/2026', to: '16/09/2026', place: 'Trụ sở UBND phường Cầu Giấy', content: 'Đơn vị thực hiện đúng trình tự, thủ tục giải quyết yêu cầu bồi thường.' }, resultDocs: [{ name: 'Kết luận kiểm tra', file: 'ket_luan_kt_cau_giay.pdf' }], history: [hist('15/03/2026 09:00', s, 'Lập kế hoạch kiểm tra'), hist('18/09/2026 10:00', s, 'Cập nhật kết quả kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-005', senderId: 'STP-HN', officer: s, createdAt: '01/10/2026', form: KT_FORMS[1], basis: KT_BASIS[0], targetId: 'CA-TX', content: 'Kiểm tra đột xuất việc thụ lý hồ sơ yêu cầu bồi thường.', periodFrom: '01/06/2026', periodTo: '30/09/2026', planFrom: '22/10/2026', planTo: '22/10/2026', planPlace: 'Trụ sở Công an phường Thanh Xuân', members: [mem('Vũ Thị Thanh', 'Trưởng phòng', 'STP-HN-HCTP', ROLES[0]), mem('Ngô Thị Lan', 'Chuyên viên', 'STP-HN-HCTP', ROLES[1])], status: ST.PLANNED, history: [hist('01/10/2026 14:00', s, 'Lập kế hoạch kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-006', senderId: 'STP-HCM', officer: 'Châu Ngọc Ánh', createdAt: '10/04/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'CCTHADS-BT', content: 'Kiểm tra việc giải quyết yêu cầu bồi thường tại Chi cục Thi hành án dân sự quận Bình Tân.', periodFrom: '01/01/2025', periodTo: '31/12/2025', planFrom: '18/08/2026', planTo: '19/08/2026', planPlace: 'Trụ sở Chi cục Thi hành án dân sự quận Bình Tân', members: [mem('Lý Thanh Sơn', 'Giám đốc Sở', 'STP-HCM', ROLES[0]), mem('Châu Ngọc Ánh', 'Chuyên viên', 'STP-HCM-HCTP', ROLES[1])], status: ST.DONE, result: { from: '18/08/2026', to: '19/08/2026', place: 'Trụ sở Chi cục Thi hành án dân sự quận Bình Tân', content: 'Đơn vị thụ lý, giải quyết đúng thời hạn; đề nghị bổ sung sổ theo dõi vụ việc.' }, resultDocs: [{ name: 'Kết luận kiểm tra', file: 'ket_luan_kt_binh_tan.pdf' }], history: [hist('10/04/2026 09:00', 'Châu Ngọc Ánh', 'Lập kế hoạch kiểm tra'), hist('21/08/2026 10:00', 'Châu Ngọc Ánh', 'Cập nhật kết quả kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-007', senderId: 'STP-HCM', officer: 'Châu Ngọc Ánh', createdAt: '12/10/2026', form: KT_FORMS[1], basis: KT_BASIS[0], targetId: 'VKS-Q1', content: 'Kiểm tra đột xuất việc giải quyết yêu cầu bồi thường theo phản ánh của người yêu cầu bồi thường.', periodFrom: '01/01/2026', periodTo: '30/09/2026', planFrom: '05/11/2026', planTo: '05/11/2026', planPlace: 'Trụ sở Viện kiểm sát nhân dân Quận 1', members: [mem('Châu Ngọc Ánh', 'Chuyên viên', 'STP-HCM-HCTP', ROLES[0])], status: ST.PLANNED, history: [hist('12/10/2026 14:00', 'Châu Ngọc Ánh', 'Lập kế hoạch kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-008', senderId: 'STP-HP', officer: 'Tăng Thị Diệu', createdAt: '02/04/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'THADS-HP', content: 'Kiểm tra việc xác định trách nhiệm hoàn trả tại Cục Thi hành án dân sự Thành phố Hải Phòng.', periodFrom: '01/01/2025', periodTo: '31/12/2025', planFrom: '24/09/2026', planTo: '25/09/2026', planPlace: 'Trụ sở Cục Thi hành án dân sự Thành phố Hải Phòng', members: [mem('Bạch Văn Hải', 'Giám đốc Sở', 'STP-HP', ROLES[0]), mem('Tăng Thị Diệu', 'Chuyên viên', 'STP-HP-HCTP', ROLES[1]), mem('Quách Minh Tuấn', 'Chuyên viên', 'STP-HP-HCTP', ROLES[1])], status: ST.DONE, result: { from: '24/09/2026', to: '25/09/2026', place: 'Trụ sở Cục Thi hành án dân sự Thành phố Hải Phòng', content: 'Đơn vị đã xác định trách nhiệm hoàn trả đối với 02 vụ việc.' }, resultDocs: [{ name: 'Biên bản kiểm tra', file: 'bien_ban_kt_thads_hp.pdf' }], history: [hist('02/04/2026 08:30', 'Tăng Thị Diệu', 'Lập kế hoạch kiểm tra'), hist('28/09/2026 15:00', 'Tăng Thị Diệu', 'Cập nhật kết quả kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-009', senderId: 'STP-HP', officer: 'Quách Minh Tuấn', createdAt: '15/10/2026', form: KT_FORMS[1], basis: KT_BASIS[1], targetId: 'VKS-HP', content: 'Kiểm tra đột xuất việc thực hiện quyết định giải quyết bồi thường.', periodFrom: '01/01/2026', periodTo: '30/09/2026', planFrom: '12/11/2026', planTo: '13/11/2026', planPlace: 'Trụ sở Viện kiểm sát nhân dân Thành phố Hải Phòng', members: [mem('Quách Minh Tuấn', 'Chuyên viên', 'STP-HP-HCTP', ROLES[0]), mem('Tăng Thị Diệu', 'Chuyên viên', 'STP-HP-HCTP', ROLES[1])], status: ST.PLANNED, history: [hist('15/10/2026 10:00', 'Quách Minh Tuấn', 'Lập kế hoạch kiểm tra')] })
             ];
         }
         let records = [];
-        function load() { try { records = JSON.parse(localStorage.getItem(STORE_KEY)) || null; } catch (e) { records = null; } if (!records) { records = seed(); save(); } }
+        // Chuyển dữ liệu cũ: bỏ Phạm vi kiểm tra khác; Căn cứ kiểm tra, Vai trò giữ nguyên chuỗi đã chọn làm nội dung text
+        function migrate() { let ch = false; records.forEach(r => { if ('scopeNote' in r) { delete r.scopeNote; ch = true; } }); if (ch) save(); }
+        function load() { try { records = JSON.parse(localStorage.getItem(STORE_KEY)) || null; } catch (e) { records = null; } if (!records) { records = seed(); save(); } migrate(); }
         function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(records)); } catch (e) { /* bỏ qua */ } }
         const findRec = code => records.find(r => r.code === code);
         function nextCode() { const n = records.reduce((m, r) => Math.max(m, parseInt(r.code.split('-').pop(), 10) || 0), 0) + 1; return `KT-BTNN-${new Date().getFullYear()}-${String(n).padStart(3, '0')}`; }
-        const leaderOf = r => ((r.members || []).find(m => m.role === ROLES[0]) || {}).name || '-';
+        const leaderOf = r => (r.members || []).filter(m => isLeaderRole(m.role)).map(m => m.name).filter(Boolean).join(', ') || '-';
 
         // ===== Danh sách =====
         let currentPage = 1, pageSize = 20;
@@ -785,7 +793,7 @@
                 const addBtn = document.getElementById('btnAddNew');
                 if (PV.canCreate(false)) addBtn.style.removeProperty('display'); else addBtn.style.setProperty('display', 'none', 'important');
             }
-            document.getElementById('tableHead').innerHTML = `<tr><th style="width:56px; text-align:center;">STT</th>${cols.map(c => `<th>${c[0]}</th>`).join('')}<th style="width:110px; text-align:center;">Thao tác</th></tr>`;
+            document.getElementById('tableHead').innerHTML = `<tr><th style="width:56px; text-align:center;">STT</th>${cols.map(c => `<th>${c[0]}</th>`).join('')}<th style="width:130px; text-align:center;">Thao tác</th></tr>`;
             const list = filtered(), total = list.length, maxPages = Math.ceil(total / pageSize) || 1;
             lastGrid = { cols, list };
             if (currentPage > maxPages) currentPage = maxPages;
@@ -797,12 +805,23 @@
                 <tr onclick="openForm('view','${r.code}')">
                     <td style="text-align:center;">${start + i + 1}</td>
                     ${cols.map(c => `<td>${c[1](r)}</td>`).join('')}
-                    <td style="text-align:center;"><div class="row-actions">${btn('edit', 'fa-pen-to-square', 'Sửa kế hoạch', isOwn(r) && r.status === ST.PLANNED, `openForm('edit','${r.code}')`)}${btn('submit', 'fa-clipboard-check', 'Cập nhật kết quả', isOwn(r), `openForm('result','${r.code}')`)}</div></td>
+                    <td style="text-align:center;"><div class="row-actions">${btn('edit', 'fa-pen-to-square', 'Sửa', isOwn(r) && r.status === ST.PLANNED, `openForm('edit','${r.code}')`)}${btn('sign', 'fa-reply', 'Cập nhật kết quả', isOwn(r) && r.status === ST.PLANNED, `openForm('result','${r.code}')`)}${btn('delete', 'fa-trash', 'Xóa', isOwn(r) && r.status === ST.PLANNED, `deleteRec('${r.code}')`)}</div></td>
                 </tr>`).join('') : (PV.level() === 'OTHER' ? PV.denyRow(cols.length + 2) : `<tr><td colspan="${cols.length + 2}" style="text-align:center; color:var(--text-muted); font-style:italic; padding:26px;">Không tìm thấy dữ liệu phù hợp. [MSG-INF-SYS-001]</td></tr>`);
             const item = (label, on, call, active) => `<span class="page-item ${active ? 'active' : ''} ${on ? '' : 'disabled'}" onclick="${on ? call : ''}">${label}</span>`;
             let h = item('&verbar;&lt;&lt;', currentPage > 1, 'goPage(1)') + item('&lt;', currentPage > 1, `goPage(${currentPage - 1})`);
             for (let p = 1; p <= maxPages; p++) h += item(p, true, `goPage(${p})`, p === currentPage);
             document.getElementById('paginationPages').innerHTML = h + item('&gt;', currentPage < maxPages, `goPage(${currentPage + 1})`) + item('&gt;&gt;&verbar;', currentPage < maxPages, `goPage(${maxPages})`);
+        }
+        // Xóa: chỉ cuộc kiểm tra của đơn vị mình, trạng thái Chờ kiểm tra (cùng điều kiện Sửa kế hoạch); popup xác nhận [MSG-CFM-SYS-001]
+        function deleteRec(code) {
+            const r = findRec(code);
+            if (!r || !isOwn(r) || r.status !== ST.PLANNED) return;
+            // Popup Xác nhận xóa dùng chung (btnn_popup_xoa.js), giống popup xóa màn Tập huấn, bồi dưỡng
+            BTNN_POPUP_XOA.open(code, () => {
+                records = records.filter(x => x.code !== code);
+                // Xóa từ màn Xem chi tiết: đóng màn, tải lại lưới
+                save(); closeForm(); renderTable(); showToast('Xóa bản ghi thành công. [MSG-SUC-SYS-006]');
+            });
         }
         function goPage(p) { currentPage = p; renderTable(); }
         function changePageSize(v) { pageSize = parseInt(v, 10); currentPage = 1; renderTable(); }
@@ -819,32 +838,30 @@
             });
         }
 
-        // ===== Biểu mẫu: I. Kế hoạch kiểm tra / II. Kết quả kiểm tra =====
+        // ===== Biểu mẫu: khối Kế hoạch kiểm tra / khối Kết quả kiểm tra =====
         let formMode = 'new', formRec = null, targetTree = null, memberTrees = [];
         const fg = (id, label, req, inner, span) => `<div class="form-group" id="fg_${id}"${span ? ` style="grid-column: span ${span};"` : ''}><span class="form-label">${label}${req ? '<span class="required">*</span>' : ''}</span>${inner}</div>`;
         const selectCtl = (id, opts, val, ph) => `<select class="form-control" id="f_${id}">${ph !== undefined ? `<option value="">${ph}</option>` : ''}${opts.map(o => `<option ${o === val ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select>`;
         const textCtl = (id, val, ph) => `<input class="form-control" id="f_${id}" value="${esc(val || '')}" placeholder="${ph}">`;
         const dateCtl = (id, val) => `<input class="form-control" id="f_${id}" value="${esc(val || '')}" placeholder="dd/mm/yyyy">`;
-        const areaCtl = (id, val, ph) => `<textarea class="form-control" id="f_${id}" placeholder="${ph}">${esc(val || '')}</textarea>`;
+        const areaCtl = (id, val, ph, max) => `<textarea class="form-control" id="f_${id}"${max ? ` maxlength="${max}"` : ''} placeholder="${ph}">${esc(val || '')}</textarea>`;
         const planEditable = () => formMode === 'new' || formMode === 'edit';
         const resultEditable = () => formMode === 'result';
         function renderPlan(r) {
             document.getElementById('planFields').innerHTML = [
                 fg('form', 'Hình thức kiểm tra', true, selectCtl('form', KT_FORMS, r.form || KT_FORMS[0])),
-                fg('basis', 'Căn cứ kiểm tra', true, selectCtl('basis', KT_BASIS, r.basis, '-- Chọn căn cứ kiểm tra --'), 2),
+                fg('basis', 'Căn cứ kiểm tra', true, areaCtl('basis', r.basis, 'Nhập căn cứ kiểm tra...', 2000), 2),
                 fg('target', 'Cơ quan được kiểm tra', true, '<div id="utree_target"></div>'),
                 fg('planFrom', 'Thời gian kiểm tra dự kiến từ ngày', true, dateCtl('planFrom', r.planFrom)),
                 fg('planTo', 'Thời gian kiểm tra dự kiến đến ngày', true, dateCtl('planTo', r.planTo)),
                 fg('planPlace', 'Địa điểm kiểm tra dự kiến', true, textCtl('planPlace', r.planPlace, 'Nhập địa điểm kiểm tra dự kiến...'), 3),
                 fg('content', 'Nội dung kiểm tra', true, areaCtl('content', r.content, 'Nhập nội dung kiểm tra...'), 3),
                 fg('periodFrom', 'Phạm vi kiểm tra - Thời kỳ từ ngày', true, dateCtl('periodFrom', r.periodFrom)),
-                fg('periodTo', 'Phạm vi kiểm tra - Thời kỳ đến ngày', true, dateCtl('periodTo', r.periodTo)),
-                fg('scopeNote', 'Phạm vi kiểm tra khác', false, textCtl('scopeNote', r.scopeNote, 'Nhập phạm vi kiểm tra khác (đối tượng, vụ việc cụ thể)...'))
+                fg('periodTo', 'Phạm vi kiểm tra - Thời kỳ đến ngày', true, dateCtl('periodTo', r.periodTo))
             ].join('');
             targetTree = W.mountUnitTree(document.getElementById('utree_target'), { value: r.targetId || '', disabledIds: disabledFor(allowTarget), disabledTitle: 'Đơn vị ngoài phạm vi quản lý', placeholder: '-- Chọn đơn vị trên cây cơ cấu tổ chức --', onChange: () => clearErr(document.getElementById('fg_target')) });
-            renderMembers(r.members && r.members.length ? r.members : [mem('', '', '', ROLES[0])]);
+            renderMembers(r.members && r.members.length ? r.members : [mem('', '', '', '')]);
             renderDocs('plan', r.planDocs && r.planDocs.length ? r.planDocs : [{ name: '', file: '' }]);
-            document.getElementById('planNote').innerText = planEditable() ? '' : '(chỉ đọc)';
             if (!planEditable()) lockArea('planBlock');
         }
         function renderMembers(list) {
@@ -855,17 +872,17 @@
                 <td><input class="form-control m-name" value="${esc(m.name)}" placeholder="Nhập họ và tên..."></td>
                 <td><input class="form-control m-position" value="${esc(m.position)}" placeholder="Nhập chức vụ..."></td>
                 <td><div class="m-unit" id="munit_${i}"></div></td>
-                <td>${selectCtl(`role_${i}`, ROLES, m.role || ROLES[1]).replace('class="form-control"', 'class="form-control m-role"')}</td>
+                <td><input class="form-control m-role" maxlength="100" value="${esc(m.role)}" placeholder="Nhập vai trò..."></td>
                 <td style="text-align:center;" class="edit-only"><button type="button" class="icon-btn delete" title="Xóa thành viên" onclick="removeMember(${i})"><i class="fa-solid fa-trash"></i></button></td>
             </tr>`).join('');
             list.forEach((m, i) => { memberTrees[i] = W.mountUnitTree(document.getElementById(`munit_${i}`), { value: m.unitId || '', placeholder: '-- Chọn đơn vị --' }); });
             document.querySelectorAll('#planBlock .edit-only').forEach(el => { el.style.display = edit ? '' : 'none'; });
         }
         function readMembers() {
-            return Array.from(document.querySelectorAll('#memberRows tr')).map((tr, i) => ({ name: tr.querySelector('.m-name').value.trim(), position: tr.querySelector('.m-position').value.trim(), unitId: memberTrees[i] ? memberTrees[i].getValue() : '', role: tr.querySelector('.m-role').value }));
+            return Array.from(document.querySelectorAll('#memberRows tr')).map((tr, i) => ({ name: tr.querySelector('.m-name').value.trim(), position: tr.querySelector('.m-position').value.trim(), unitId: memberTrees[i] ? memberTrees[i].getValue() : '', role: tr.querySelector('.m-role').value.trim() }));
         }
-        function addMember() { const l = readMembers(); l.push(mem('', '', '', ROLES[1])); renderMembers(l); }
-        function removeMember(i) { const l = readMembers(); l.splice(i, 1); renderMembers(l.length ? l : [mem('', '', '', ROLES[0])]); }
+        function addMember() { const l = readMembers(); l.push(mem('', '', '', '')); renderMembers(l); }
+        function removeMember(i) { const l = readMembers(); l.splice(i, 1); renderMembers(l.length ? l : [mem('', '', '', '')]); }
         function renderResult(r) {
             const block = document.getElementById('resultBlock');
             const has = !!r.result;
@@ -885,7 +902,7 @@
                 fg('resContent', 'Kết quả kiểm tra', true, areaCtl('resContent', res.content, 'Nhập kết quả kiểm tra...'), 3)
             ].join('');
             renderDocs('result', r.resultDocs && r.resultDocs.length ? r.resultDocs : [{ name: '', file: '' }]);
-            document.getElementById('resultNote').innerText = resultEditable() ? '' : '(chỉ đọc)';
+            document.getElementById('resultNote').innerText = '';
             if (!resultEditable()) lockArea('resultBlock');
         }
         function lockArea(id) {
@@ -918,8 +935,10 @@
         function removeDoc(kind, i) { docs[kind].splice(i, 1); if (!docs[kind].length) docs[kind] = [{ name: '', file: '' }]; renderDocs(kind); }
 
         function openForm(mode, code) {
-            formMode = mode;
             const rec = code ? findRec(code) : null;
+            // Cuộc kiểm tra Đã kiểm tra (trạng thái kết thúc): chỉ xem, không sửa kế hoạch/kết quả
+            if (rec && rec.status === ST.DONE && (mode === 'edit' || mode === 'result')) mode = 'view';
+            formMode = mode;
             formRec = rec ? JSON.parse(JSON.stringify(rec)) : { status: 'Đang nhập', senderId: PV.root(), officer: myUser().name };
             const titles = { new: 'Thêm mới kế hoạch kiểm tra', edit: 'Sửa kế hoạch kiểm tra', view: 'Xem chi tiết cuộc kiểm tra', result: 'Cập nhật kết quả kiểm tra' };
             document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${titles[mode]}`;
@@ -935,15 +954,29 @@
             const a = [`<button type="button" class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> ${mode === 'view' ? 'Đóng' : 'Hủy bỏ'}</button>`];
             if (planEditable()) a.push(`<button type="button" class="btn btn-primary" onclick="savePlan()"><i class="fa-solid fa-floppy-disk"></i> Lưu kế hoạch</button>`);
             if (resultEditable()) a.push(`<button type="button" class="btn btn-primary" onclick="saveResult()"><i class="fa-solid fa-floppy-disk"></i> Lưu kết quả kiểm tra</button>`);
-            // Xem chi tiết cuộc kiểm tra của đơn vị khác: chỉ có nút Đóng
-            if (mode === 'view' && isOwn(formRec)) {
-                if (formRec.status === ST.PLANNED) a.push(`<button type="button" class="btn btn-secondary" onclick="openForm('edit','${code}')"><i class="fa-solid fa-pen-to-square"></i> Sửa kế hoạch</button>`);
-                a.push(`<button type="button" class="btn btn-primary" onclick="openForm('result','${code}')"><i class="fa-solid fa-clipboard-check"></i> Cập nhật kết quả</button>`);
+            // Xem chi tiết: đúng các thao tác đang sáng trên lưới (Sửa, Cập nhật kết quả, Xóa - cuộc kiểm tra của đơn vị mình, Chờ kiểm tra);
+            // cuộc kiểm tra của đơn vị khác hoặc Đã kiểm tra: chỉ có nút Đóng
+            if (mode === 'view' && isOwn(formRec) && formRec.status === ST.PLANNED) {
+                a.push(`<button type="button" class="btn btn-secondary" onclick="openForm('edit','${code}')"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>`);
+                a.push(`<button type="button" class="btn btn-primary" onclick="openForm('result','${code}')"><i class="fa-solid fa-reply"></i> Cập nhật kết quả</button>`);
+                a.push(`<button type="button" class="btn btn-danger" onclick="deleteRec('${code}')"><i class="fa-solid fa-trash"></i> Xóa</button>`);
             }
             document.getElementById('formActions').innerHTML = a.join('');
             initDatePickers(document.getElementById('businessForm'));
             document.getElementById('detailPanel').classList.add('visible');
-            document.getElementById('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (mode === 'result') focusResultBlock();
+            else document.getElementById('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        // Cập nhật kết quả: cuộn tới khối Kết quả kiểm tra (đang mở) và đặt con trỏ vào trường nhập đầu tiên của khối
+        // (chạy sau btnn_form_page.js cuộn lên đầu page form)
+        function focusResultBlock() {
+            setTimeout(() => {
+                const block = document.getElementById('resultBlock');
+                block.style.display = ''; document.getElementById('resultBody').style.display = '';
+                block.scrollIntoView({ behavior: 'instant', block: 'start' });
+                const first = block.querySelector('#resultFields input:not([disabled]), #resultFields textarea:not([disabled])');
+                if (first) { first.focus({ preventScroll: true }); if (first._flatpickr) first._flatpickr.close(); }
+            }, 60);
         }
         function closeForm() { document.getElementById('detailPanel').classList.remove('visible'); }
 
@@ -966,18 +999,16 @@
             ['form', 'basis', 'planFrom', 'planTo', 'planPlace', 'content', 'periodFrom', 'periodTo'].forEach(id => { if (!v(id)) { const g = markErr(id); if (g) errs.push(g); } });
             if (!targetTree.getValue()) { const g = markErr('target'); if (g) errs.push(g); }
             checkRange('planFrom', 'planTo', errs); checkRange('periodFrom', 'periodTo', errs);
-            // Đoàn kiểm tra: đủ thông tin từng dòng, có đúng 01 Trưởng đoàn (khoản 1 Điều 20)
+            // Thành phần tham gia kiểm tra: đủ thông tin từng dòng (khoản 1 Điều 20); Vai trò nhập text
             const members = readMembers();
             const memErr = document.getElementById('memberError');
             document.querySelectorAll('#memberRows .is-invalid').forEach(e => e.classList.remove('is-invalid'));
             let msg = '';
-            members.forEach((m, i) => { const tr = document.querySelectorAll('#memberRows tr')[i]; if (!m.name) tr.querySelector('.m-name').classList.add('is-invalid'); if (!m.position) tr.querySelector('.m-position').classList.add('is-invalid'); if (!m.unitId) tr.querySelector('.wf-utree-display').classList.add('is-invalid'); if (!m.name || !m.position || !m.unitId) msg = 'Vui lòng nhập đầy đủ Họ và tên, Chức vụ, Đơn vị của thành viên đoàn kiểm tra.'; });
-            const leaders = members.filter(m => m.role === ROLES[0]).length;
-            if (!msg && leaders !== 1) msg = 'Đoàn kiểm tra phải có đúng 01 Trưởng đoàn.';
+            members.forEach((m, i) => { const tr = document.querySelectorAll('#memberRows tr')[i]; if (!m.name) tr.querySelector('.m-name').classList.add('is-invalid'); if (!m.position) tr.querySelector('.m-position').classList.add('is-invalid'); if (!m.unitId) tr.querySelector('.wf-utree-display').classList.add('is-invalid'); if (!m.role) tr.querySelector('.m-role').classList.add('is-invalid'); if (!m.name || !m.position || !m.unitId || !m.role) msg = 'Vui lòng nhập đầy đủ Họ và tên, Chức vụ, Đơn vị, Vai trò của thành phần tham gia kiểm tra.'; });
             memErr.style.display = msg ? 'block' : 'none'; memErr.innerText = msg;
             if (errs.length || msg) { (errs[0] || memErr).scrollIntoView({ block: 'center' }); return; }
             const r = formRec;
-            Object.assign(r, { form: v('form'), basis: v('basis'), targetId: targetTree.getValue(), planFrom: v('planFrom'), planTo: v('planTo'), planPlace: v('planPlace'), content: v('content'), periodFrom: v('periodFrom'), periodTo: v('periodTo'), scopeNote: v('scopeNote'), members, planDocs: docs.plan });
+            Object.assign(r, { form: v('form'), basis: v('basis'), targetId: targetTree.getValue(), planFrom: v('planFrom'), planTo: v('planTo'), planPlace: v('planPlace'), content: v('content'), periodFrom: v('periodFrom'), periodTo: v('periodTo'), members, planDocs: docs.plan });
             if (!r.code) { r.code = nextCode(); r.createdAt = today(); r.status = ST.PLANNED; r.resultDocs = []; r.history = [hist(nowText(), myUser().name, 'Lập kế hoạch kiểm tra')]; records.unshift(r); }
             else { r.history = [...(r.history || []), hist(nowText(), myUser().name, 'Sửa kế hoạch kiểm tra')]; records[records.findIndex(x => x.code === r.code)] = r; }
             save(); closeForm(); renderTable(); showToast('Lưu kế hoạch kiểm tra thành công. [MSG-SUC-SYS-003]');

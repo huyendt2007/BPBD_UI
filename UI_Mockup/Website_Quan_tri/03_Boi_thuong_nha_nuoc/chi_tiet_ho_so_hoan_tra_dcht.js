@@ -18,8 +18,23 @@
 const DCHT_ST_PENDING = 'Chờ duyệt QĐ đình chỉ';
 const DCHT_ST_REJECTED = 'Bị trả lại QĐ đình chỉ';
 const DCHT_ST_DONE = 'Đình chỉ xem xét hoàn trả';
+// Chấm dứt việc xem xét trách nhiệm hoàn trả (SRS 05/11/2026): dùng chung popup Mẫu 39/BTNN ở chế độ chấm dứt, áp dụng cho cả hồ sơ.
+// Chờ chấm dứt: lưu ý kiến Hội đồng với kết quả Không xác định được người thi hành công vụ gây thiệt hại, hoặc không còn người phải hoàn trả.
+const CDHT_ST_WAIT = 'Chờ chấm dứt';
+const CDHT_ST_PENDING = 'Chờ duyệt QĐ chấm dứt';
+const CDHT_ST_REJECTED = 'Bị trả lại QĐ chấm dứt';
+const CDHT_ST_DONE = 'Chấm dứt hoàn trả';
+const CDHT_STATES = [CDHT_ST_WAIT, CDHT_ST_PENDING, CDHT_ST_REJECTED, CDHT_ST_DONE];
+function dchtIsCd(s) { const v = s === undefined ? ((typeof activeDossier !== 'undefined' && activeDossier) ? activeDossier.status : '') : s; return CDHT_STATES.indexOf(v) >= 0; }
+// Mã trạng thái theo chế độ của popup (P: chờ duyệt, R: bị trả lại, D: ban hành)
+function dchtSt() {
+    return dchtIsCd()
+        ? { P: CDHT_ST_PENDING, R: CDHT_ST_REJECTED, D: CDHT_ST_DONE, loai: 'QĐ chấm dứt', qd: 'Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả', ngan: 'Quyết định chấm dứt' }
+        : { P: DCHT_ST_PENDING, R: DCHT_ST_REJECTED, D: DCHT_ST_DONE, loai: 'QĐ đình chỉ', qd: 'Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả', ngan: 'Quyết định đình chỉ' };
+}
 // Đình chỉ chỉ thực hiện khi chưa ban hành QĐ hoàn trả (chốt 28/10); QĐ hoàn trả đã ban hành: không cho phép
-// Đình chỉ cả hồ sơ: Bước 1 (Chờ duyệt / Bị trả lại QĐ thành lập Hội đồng) và Bước 2 (Họp hội đồng); sau khi chốt ý kiến Hội đồng đình chỉ ở cấp cán bộ (chi_tiet_ho_so_hoan_tra_qd.js)
+// Đình chỉ cả hồ sơ: Bước 1 (Chờ duyệt / Bị trả lại QĐ thành lập Hội đồng) và Bước 2 (Họp hội đồng) dùng popup này; sau khi chốt ý kiến Hội đồng,
+// đình chỉ cả hồ sơ ở Bước 3 khi chưa có Quyết định hoàn trả nào được ban hành (chi_tiet_ho_so_hoan_tra_qd.js). 06/11/2026: bỏ đình chỉ một phần cán bộ
 const DCHT_ALLOWED = ['Chờ duyệt QĐ thành lập', 'Bị trả lại thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Họp hội đồng'];
 
 // ---------------- Trạng thái hồ sơ hoàn trả (chốt 23/10): 9 giá trị hiển thị; Chờ duyệt / Bị trả lại kèm Loại trình ----------------
@@ -29,6 +44,7 @@ const HT_ST_MAP = {
     'Bị trả lại thành lập HĐ': ['Bị trả lại', 'Thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị trả lại', 'Thành lập hội đồng'],
     'Chờ duyệt QĐ hoàn trả': ['Chờ duyệt', 'QĐ hoàn trả'], 'Bị trả lại QĐ hoàn trả': ['Bị trả lại', 'QĐ hoàn trả'],
     'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'QĐ đình chỉ'], 'Bị trả lại QĐ đình chỉ': ['Bị trả lại', 'QĐ đình chỉ'],
+    'Chờ duyệt QĐ chấm dứt': ['Chờ duyệt', 'QĐ chấm dứt'], 'Bị trả lại QĐ chấm dứt': ['Bị trả lại', 'QĐ chấm dứt'],
     'Đang họp hội đồng': ['Họp hội đồng', ''], 'Chờ ban hành QĐ': ['Chờ ban hành QĐ hoàn trả', ''], 'Đang thu hồi': ['Thu tiền hoàn trả', ''], 'Hoàn tất': ['Hoàn thành', ''],
     // Chốt 23/10: bỏ 2 trạng thái, dữ liệu cũ quy về Đình chỉ xem xét hoàn trả
     'Không xem xét trách nhiệm hoàn trả': ['Đình chỉ xem xét hoàn trả', ''], 'Chấm dứt thu hồi': ['Đình chỉ xem xét hoàn trả', '']
@@ -36,8 +52,8 @@ const HT_ST_MAP = {
 // Hồ sơ chưa thành lập Hội đồng: mới khởi tạo, chưa trình/ban hành QĐ thành lập Hội đồng -> không có trạng thái (mã nội bộ giữ để điều khiển Bước 1)
 const HT_ST_DRAFT = 'Chờ thành lập hội đồng';
 const HT_LOAI_CODE = {
-    'Chờ duyệt': { 'Thành lập hội đồng': 'Chờ duyệt QĐ thành lập', 'QĐ hoàn trả': 'Chờ duyệt QĐ hoàn trả', 'Đình chỉ xem xét hoàn trả': 'Chờ duyệt QĐ đình chỉ' },
-    'Bị trả lại': { 'Thành lập hội đồng': 'Bị trả lại thành lập HĐ', 'QĐ hoàn trả': 'Bị trả lại QĐ hoàn trả', 'Đình chỉ xem xét hoàn trả': 'Bị trả lại QĐ đình chỉ' }
+    'Chờ duyệt': { 'Thành lập hội đồng': 'Chờ duyệt QĐ thành lập', 'QĐ hoàn trả': 'Chờ duyệt QĐ hoàn trả', 'Đình chỉ xem xét hoàn trả': 'Chờ duyệt QĐ đình chỉ', 'QĐ chấm dứt': 'Chờ duyệt QĐ chấm dứt' },
+    'Bị trả lại': { 'Thành lập hội đồng': 'Bị trả lại thành lập HĐ', 'QĐ hoàn trả': 'Bị trả lại QĐ hoàn trả', 'Đình chỉ xem xét hoàn trả': 'Bị trả lại QĐ đình chỉ', 'QĐ chấm dứt': 'Bị trả lại QĐ chấm dứt' }
 };
 function htStView(code) { const m = HT_ST_MAP[code]; return m ? { name: m[0], loai: m[1] } : { name: code || '', loai: '' }; }
 // Chuẩn hóa dữ liệu (dữ liệu cũ / dữ liệu theo tên mới kèm Loại trình) về mã trạng thái nội bộ
@@ -57,7 +73,9 @@ const HT_ST_STYLE = {
     'Thu tiền hoàn trả': ['#f0fdfa', '#0d9488', '#99f6e4'],
     'Miễn hoàn trả': ['#ecfdf5', '#059669', '#a7f3d0'],
     'Hoàn thành': ['#ecfdf5', '#059669', '#a7f3d0'],
-    'Đình chỉ xem xét hoàn trả': ['#f1f5f9', '#475569', '#cbd5e1']
+    'Đình chỉ xem xét hoàn trả': ['#f1f5f9', '#475569', '#cbd5e1'],
+    'Chờ chấm dứt': ['#fffbeb', '#b45309', '#fde68a'],
+    'Chấm dứt hoàn trả': ['#e2e8f0', '#334155', '#94a3b8']
 };
 // Badge trạng thái (đồng bộ màn Quyết định GQBT): pill không icon; Chờ duyệt / Bị trả lại có dòng phụ Loại trình; hồ sơ chưa thành lập Hội đồng không hiển thị trạng thái
 function htStBadgeHtml(code) {
@@ -75,6 +93,15 @@ const DCHT_CAN_CU_DEFAULT = [
     'Căn cứ khoản 2 Điều 69 của Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14 (đã được sửa đổi, bổ sung bởi Luật số 15/2026/QH16);',
     'Căn cứ ………………………………………………………………………………,'
 ].join('\n');
+// Chế độ chấm dứt: Căn cứ mặc định 02 dòng (chờ BA lead xác nhận), Nội dung trình mặc định
+const CDHT_SIGN_CONTENT_DEFAULT = 'Kính trình Lãnh đạo xem xét, ký duyệt Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả.';
+function cdhtCanCuDefault() {
+    const ngay = (typeof activeDossier !== 'undefined' && activeDossier && activeDossier.conclusionDate) || '[Ngày họp Hội đồng]';
+    return ['Căn cứ khoản 2a Điều 66 Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14 (đã được sửa đổi, bổ sung bởi Luật số 15/2026/QH16);',
+        'Căn cứ Văn bản kiến nghị của Hội đồng xem xét trách nhiệm hoàn trả ngày ' + ngay + ';'].join('\n');
+}
+// Lý do chấm dứt mặc định theo kết quả lưu ý kiến Hội đồng (mọi cán bộ Không có lỗi: để trống, người dùng nhập)
+function cdhtLyDoDefault() { return (typeof activeDossier !== 'undefined' && activeDossier && activeDossier.cdLyDo) || ''; }
 const DCHT_SIGN_SIZES = { nhay: [[180, 75], [220, 90], [280, 110]], so: [[200, 85], [245, 110], [320, 130]] };
 
 let dchtState = { method: 'online', docSrc: 'gen', onlineFile: null, offlineFile: null, step: 1, converting: false };
@@ -132,7 +159,7 @@ function dchtModalHtml() {
             <div>
                 <div style="font-size:16.5px; font-weight:700; color:#1e293b; display:flex; align-items:center; gap:8px;">
                     <span style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:50%; background:#fee2e2; color:#b91c1c; font-size:14px;"><i class="fa-solid fa-circle-stop"></i></span>
-                    <span>TRÌNH KÝ QUYẾT ĐỊNH ĐÌNH CHỈ VIỆC XEM XÉT TRÁCH NHIỆM HOÀN TRẢ</span>
+                    <span id="dchtTitle">TRÌNH KÝ QUYẾT ĐỊNH ĐÌNH CHỈ VIỆC XEM XÉT TRÁCH NHIỆM HOÀN TRẢ</span>
                 </div>
                 <div style="font-size:12.5px; color:#64748b; margin-top:4px; padding-left:38px;">
                     Hồ sơ: <strong id="dchtHdrCode" style="color:var(--primary-color);">--</strong>
@@ -151,7 +178,7 @@ function dchtModalHtml() {
 
         <div id="dchtStep1Body" class="gqx-body" style="overflow-y:auto; flex:1; padding:24px;">
             <div id="dchtReturnedBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
-                <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> QUYẾT ĐỊNH ĐÌNH CHỈ BỊ LÃNH ĐẠO TRẢ LẠI</div>
+                <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> <span id="dchtReturnedTitle">QUYẾT ĐỊNH ĐÌNH CHỈ BỊ LÃNH ĐẠO TRẢ LẠI</span></div>
                 <div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do bị trả lại: <strong id="dchtReturnedReason">--</strong><br>Người từ chối: <span id="dchtReturnedBy">--</span> • Thời điểm: <span id="dchtReturnedAt">--</span></div>
             </div>
 
@@ -202,9 +229,14 @@ function dchtModalHtml() {
                     <div class="gqx-field">
                         <div class="dcht-label-row"><label class="form-label" for="dchtCanCu">Căn cứ</label><span class="dcht-hint"><i class="fa-solid fa-circle-info"></i> Mỗi căn cứ trên 01 dòng</span></div>
                         <textarea id="dchtCanCu" class="form-control" rows="4" maxlength="4000" style="font-size:12.5px;" placeholder="Nhập căn cứ, mỗi căn cứ 01 dòng"></textarea>
-                        <div class="dcht-hint" style="margin-top:4px;">Ghi rõ tên, số, ngày ban hành văn bản thu hồi, thay thế, hủy bỏ văn bản làm căn cứ yêu cầu bồi thường.</div>
+                        <div class="dcht-hint" id="dchtCanCuHint" style="margin-top:4px;">Ghi rõ tên, số, ngày ban hành văn bản thu hồi, thay thế, hủy bỏ văn bản làm căn cứ yêu cầu bồi thường.</div>
                     </div>
-                    <div class="gqx-field">
+                    <div class="gqx-field" id="dchtLyDoGroup" style="display:none;">
+                        <label class="form-label" for="dchtLyDo">Lý do chấm dứt<span class="gqx-req">*</span></label>
+                        <textarea id="dchtLyDo" class="form-control" rows="2" maxlength="500" style="font-size:12.5px;" placeholder="Nhập lý do chấm dứt việc xem xét trách nhiệm hoàn trả" oninput="dchtClearErr('dchtLyDo')"></textarea>
+                        <div id="dchtLyDoErr" class="gqx-err">${DCHT_REQ_MSG}</div>
+                    </div>
+                    <div class="gqx-field" id="dchtVbCanCuGroup">
                         <label class="form-label" for="dchtVbCanCu">Văn bản làm căn cứ yêu cầu bồi thường</label>
                         <textarea id="dchtVbCanCu" class="form-control" rows="2" maxlength="1000" style="font-size:12.5px;" placeholder="Nhập tên, số hiệu, ngày ban hành, cơ quan ban hành văn bản làm căn cứ yêu cầu bồi thường"></textarea>
                     </div>
@@ -228,7 +260,7 @@ function dchtModalHtml() {
                     <input type="file" id="dchtOfflineFileInput" accept=".pdf" style="display:none;" onchange="dchtOnOfflineFile(this)">
                     <div id="dchtOfflineBox"></div>
                     <div id="dchtOfflineFileErr" class="gqx-err">${DCHT_OFF_FILE_MSG}</div>
-                    <div class="dcht-status-note"><i class="fa-solid fa-circle-info"></i> Khi bấm <strong>Ban hành văn bản</strong>, văn bản được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống) và hồ sơ chuyển sang trạng thái <strong>${DCHT_ST_DONE}</strong>.</div>
+                    <div class="dcht-status-note" id="dchtOffNote"><i class="fa-solid fa-circle-info"></i> Khi bấm <strong>Ban hành văn bản</strong>, văn bản được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống) và hồ sơ chuyển sang trạng thái <strong>${DCHT_ST_DONE}</strong>.</div>
                 </div>
             </div>
 
@@ -318,19 +350,34 @@ function dchtNoiNhanDefault() {
 }
 function dchtFileBase() {
     const vv = (activeDossier && (activeDossier.maVuViec || activeDossier.claimCode)) || '';
-    return `Mau_39_BTNN_Quyet_dinh_dinh_chi_xem_xet_hoan_tra_${vv}`;
+    return dchtIsCd() ? `Mau_39_BTNN_Quyet_dinh_cham_dut_xem_xet_hoan_tra_${vv}` : `Mau_39_BTNN_Quyet_dinh_dinh_chi_xem_xet_hoan_tra_${vv}`;
 }
 
 // ---------------- Mở / đóng popup ----------------
 function dchtCanOpen() {
     if (typeof currentPerspective !== 'undefined' && currentPerspective === 'leader') return false;
-    return !!activeDossier && (DCHT_ALLOWED.indexOf(activeDossier.status) >= 0 || activeDossier.status === DCHT_ST_REJECTED);
+    // Chế độ chấm dứt: hồ sơ Chờ chấm dứt hoặc Bị trả lại (QĐ chấm dứt)
+    return !!activeDossier && (DCHT_ALLOWED.indexOf(activeDossier.status) >= 0 || activeDossier.status === DCHT_ST_REJECTED || activeDossier.status === CDHT_ST_WAIT || activeDossier.status === CDHT_ST_REJECTED);
+}
+// Chế độ chấm dứt: tiêu đề, căn cứ (không ghi chú dưới ô), Lý do chấm dứt, ẩn Văn bản làm căn cứ yêu cầu bồi thường, ghi chú Ký ngoài
+function dchtApplyMode() {
+    const cd = dchtIsCd();
+    const set = (id, v) => { const e = dchtEl(id); if (e) e.innerHTML = v; };
+    set('dchtTitle', cd ? 'TRÌNH KÝ QUYẾT ĐỊNH CHẤM DỨT VIỆC XEM XÉT TRÁCH NHIỆM HOÀN TRẢ' : 'TRÌNH KÝ QUYẾT ĐỊNH ĐÌNH CHỈ VIỆC XEM XÉT TRÁCH NHIỆM HOÀN TRẢ');
+    set('dchtReturnedTitle', cd ? 'QUYẾT ĐỊNH CHẤM DỨT BỊ LÃNH ĐẠO TRẢ LẠI' : 'QUYẾT ĐỊNH ĐÌNH CHỈ BỊ LÃNH ĐẠO TRẢ LẠI');
+    set('dchtOffNote', '<i class="fa-solid fa-circle-info"></i> Khi bấm <strong>Ban hành văn bản</strong>, văn bản được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống) và hồ sơ chuyển sang trạng thái <strong>' + (cd ? CDHT_ST_DONE : DCHT_ST_DONE) + '</strong>.');
+    const show = (id, on) => { const e = dchtEl(id); if (e) e.style.display = on ? '' : 'none'; };
+    show('dchtCanCuHint', !cd);
+    show('dchtLyDoGroup', cd);
+    show('dchtVbCanCuGroup', !cd);
 }
 function dchtOpenModal() {
     if (!dchtCanOpen()) { dchtToast('Trạng thái hồ sơ không cho phép Đình chỉ việc xem xét trách nhiệm hoàn trả.', 'warning'); return; }
     dchtEnsureModal();
     if (typeof tlhdFrameFull === 'function') tlhdFrameFull(true);
-    const rejected = activeDossier.status === DCHT_ST_REJECTED;
+    const cd = dchtIsCd();
+    dchtApplyMode();
+    const rejected = activeDossier.status === dchtSt().R;
     const prev = rejected && activeDossier.dcht ? activeDossier.dcht : null;
     dchtState = { method: prev ? prev.method : 'online', docSrc: prev && prev.docSrc ? prev.docSrc : 'gen', onlineFile: null, offlineFile: null, step: 1, converting: false };
     if (prev && prev.docSrc === 'upload' && prev.uploadMeta) {
@@ -349,10 +396,11 @@ function dchtOpenModal() {
     }
     dchtEl('dchtSo').value = prev && prev.so ? prev.so : DCHT_SO_DEFAULT;
     dchtEl('dchtNgay').value = prev && prev.ngay ? prev.ngay : dchtToday();
-    dchtEl('dchtCanCu').value = prev && prev.canCu != null ? prev.canCu : DCHT_CAN_CU_DEFAULT;
-    dchtEl('dchtVbCanCu').value = prev && prev.vbCanCu != null ? prev.vbCanCu : dchtVbCanCuDefault();
+    dchtEl('dchtCanCu').value = prev && prev.canCu != null ? prev.canCu : (cd ? cdhtCanCuDefault() : DCHT_CAN_CU_DEFAULT);
+    dchtEl('dchtVbCanCu').value = prev && prev.vbCanCu != null ? prev.vbCanCu : (cd ? '' : dchtVbCanCuDefault());
+    if (dchtEl('dchtLyDo')) dchtEl('dchtLyDo').value = prev && prev.lyDo != null ? prev.lyDo : (cd ? cdhtLyDoDefault() : '');
     dchtEl('dchtNoiNhan').value = prev && prev.noiNhan != null ? prev.noiNhan : dchtNoiNhanDefault();
-    dchtEl('dchtSignContent').value = prev && prev.content ? prev.content : DCHT_SIGN_CONTENT_DEFAULT;
+    dchtEl('dchtSignContent').value = prev && prev.content ? prev.content : (cd ? CDHT_SIGN_CONTENT_DEFAULT : DCHT_SIGN_CONTENT_DEFAULT);
     dchtEl('dchtModal').querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
     dchtEl('dchtModal').querySelectorAll('.gqx-err').forEach(el => { el.style.display = 'none'; });
     if (typeof tlktMount === 'function') tlktMount('dcht', 'dchtTlkt', { required: false, rows: prev && prev.attachments ? prev.attachments : [] });
@@ -518,6 +566,8 @@ function dchtValidateStep1() {
     if (dchtState.docSrc === 'gen') {
         if (!dchtEl('dchtSo').value.trim()) mark('dchtSo');
         if (!dchtEl('dchtNgay').value.trim()) mark('dchtNgay');
+        // Chế độ chấm dứt: Lý do chấm dứt bắt buộc (khi hiển thị)
+        if (dchtIsCd() && dchtEl('dchtLyDo') && !dchtEl('dchtLyDo').value.trim()) mark('dchtLyDo');
     } else if (!dchtState.onlineFile) {
         const e = dchtEl('dchtDocFileErr'); if (e) { e.textContent = DCHT_REQ_MSG; e.style.display = 'block'; }
         const d = dchtEl('dchtOnlineDrop'); if (d) d.classList.add('is-error');
@@ -529,7 +579,8 @@ function dchtValidateStep1() {
 }
 function dchtLines(id) { return dchtEl(id).value.split('\n').map(s => s.trim()).filter(Boolean); }
 function dchtCollectDoc() {
-    return { so: dchtEl('dchtSo').value.trim(), ngay: dchtEl('dchtNgay').value.trim(), canCu: dchtEl('dchtCanCu').value, vbCanCu: dchtEl('dchtVbCanCu').value.trim(), noiNhan: dchtEl('dchtNoiNhan').value };
+    const cd = dchtIsCd();
+    return { so: dchtEl('dchtSo').value.trim(), ngay: dchtEl('dchtNgay').value.trim(), canCu: dchtEl('dchtCanCu').value, vbCanCu: cd ? '' : dchtEl('dchtVbCanCu').value.trim(), noiNhan: dchtEl('dchtNoiNhan').value, mode: cd ? 'cd' : 'dc', lyDo: cd && dchtEl('dchtLyDo') ? dchtEl('dchtLyDo').value.trim() : '' };
 }
 function dchtDocHtml(d) {
     const so = d.so && !/^\s*\/QĐ-\s*$/.test(d.so) ? d.so : '……/QĐ-……';
@@ -554,13 +605,15 @@ function dchtDocHtml(d) {
         </div>
         <div style="text-align:center; margin-bottom:14px;">
             <div style="font-weight:bold; font-size:15px;">QUYẾT ĐỊNH</div>
-            <div style="font-weight:bold; font-size:14px;">Đình chỉ việc xem xét trách nhiệm hoàn trả</div>
+            <div style="font-weight:bold; font-size:14px;">${d.mode === 'cd' ? 'Chấm dứt' : 'Đình chỉ'} việc xem xét trách nhiệm hoàn trả</div>
             <div style="border-bottom:1px solid #000; width:120px; margin:4px auto 10px;"></div>
             <div style="font-weight:bold; font-size:14px;">${dchtE(typeof tlhdHeadTitle === 'function' ? tlhdHeadTitle() : 'THỦ TRƯỞNG CƠ QUAN')}</div>
         </div>
         ${canCu}
         <div style="text-align:center; font-weight:bold; margin:10px 0;">QUYẾT ĐỊNH:</div>
-        <p style="${p}"><strong>Điều 1.</strong> Đình chỉ việc xác định trách nhiệm hoàn trả trong vụ việc yêu cầu bồi thường của ${dchtE(dchtVictim())} vì ${dchtE(d.vbCanCu || '……')} không còn là văn bản làm căn cứ yêu cầu bồi thường.</p>
+        ${d.mode === 'cd'
+            ? `<p style="${p}"><strong>Điều 1.</strong> Chấm dứt việc xem xét trách nhiệm hoàn trả trong vụ việc yêu cầu bồi thường của ${dchtE(dchtVictim())} vì ${dchtE(String(d.lyDo || '……').replace(/^./, c => c.toLowerCase()))}.</p>`
+            : `<p style="${p}"><strong>Điều 1.</strong> Đình chỉ việc xác định trách nhiệm hoàn trả trong vụ việc yêu cầu bồi thường của ${dchtE(dchtVictim())} vì ${dchtE(d.vbCanCu || '……')} không còn là văn bản làm căn cứ yêu cầu bồi thường.</p>`}
         <p style="${p}"><strong>Điều 2.</strong> Quyết định này có hiệu lực kể từ ngày ký./.</p>
         <div style="display:flex; justify-content:space-between; margin-top:24px; min-height:170px;">
             <div style="width:42%;">
@@ -768,7 +821,8 @@ function dchtSubmitOnline() {
     const gen = dchtState.docSrc === 'gen';
     const d = dchtCollectDoc();
     const f = dchtState.onlineFile;
-    const prevStatus = activeDossier.status === DCHT_ST_REJECTED && activeDossier.dcht ? activeDossier.dcht.prevStatus : activeDossier.status;
+    const S = dchtSt(), cd = dchtIsCd();
+    const prevStatus = activeDossier.status === S.R && activeDossier.dcht ? activeDossier.dcht.prevStatus : activeDossier.status;
     const keepId = !gen && f ? (f.keepId || (typeof tlktKeep === 'function' ? tlktKeep(f.raw) : '')) : '';
     activeDossier.dcht = Object.assign({ method: 'online', docSrc: dchtState.docSrc, prevStatus }, d, {
         fileName: gen ? dchtFileBase() + '.docx' : f.name,
@@ -777,13 +831,16 @@ function dchtSubmitOnline() {
         levels: dchtSign.levels, assignees: sign.assignees, coords: sign.coords, enableNhay: sign.enableNhay, content: sign.content, level: 0,
         submittedAt: dchtNow(), returned: null
     });
-    activeDossier.status = DCHT_ST_PENDING;
+    activeDossier.status = S.P;
     const lead1 = dchtLeaderLabel(activeDossier.dcht, 0) || 'Lãnh đạo cấp 1';
-    dchtLog(`Trình Lãnh đạo ${lead1} ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả (Mẫu 39/BTNN).` + (typeof tlktNote === 'function' ? tlktNote(activeDossier.dcht.attachments) : ''));
+    dchtLog(`Trình Lãnh đạo ${lead1} ký duyệt ${S.qd} (Mẫu 39/BTNN).` + (typeof tlktNote === 'function' ? tlktNote(activeDossier.dcht.attachments) : ''));
     dchtClose();
-    dchtToast(`Đã trình Lãnh đạo ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Hồ sơ chuyển sang trạng thái [Chờ duyệt (QĐ đình chỉ)].`, 'success');
+    // Chế độ chấm dứt: [MSG-SUC-BTNN-HT-026]
+    dchtToast(cd ? 'Trình ký Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả thành công.' : `Đã trình Lãnh đạo ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Hồ sơ chuyển sang trạng thái [Chờ duyệt (QĐ đình chỉ)].`, 'success');
     dchtAfter();
 }
+// [MSG-SUC-BTNN-HT-027]
+const CDHT_MSG_DONE = 'Ban hành Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả thành công. Hồ sơ chuyển sang trạng thái [Chấm dứt hoàn trả].';
 function dchtSubmitOffline() {
     // Ký ngoài: Số, ký hiệu và Ngày văn bản đã ký bắt buộc
     let bad = null;
@@ -797,17 +854,18 @@ function dchtSubmitOffline() {
         const dz = dchtEl('dchtOfflineDrop'); if (dz) { dz.classList.add('is-error'); dz.focus(); }
         return;
     }
-    const msg = `Văn bản ký ngoài sẽ được ban hành trực tiếp, bỏ qua bước duyệt của Lãnh đạo trên hệ thống. Hồ sơ sẽ chuyển sang trạng thái "${DCHT_ST_DONE}". Bạn có chắc chắn muốn ban hành văn bản?`;
+    const msg = `Văn bản ký ngoài sẽ được ban hành trực tiếp, bỏ qua bước duyệt của Lãnh đạo trên hệ thống. Hồ sơ sẽ chuyển sang trạng thái "${dchtSt().D}". Bạn có chắc chắn muốn ban hành văn bản?`;
     if (typeof tlhdConfirmIssue === 'function') tlhdConfirmIssue(msg, dchtIssueOffline); else if (window.confirm(msg)) dchtIssueOffline();
 }
 function dchtIssueOffline() {
     if (!dchtState.offlineFile) return;
-    const prevStatus = activeDossier.status === DCHT_ST_REJECTED && activeDossier.dcht ? activeDossier.dcht.prevStatus : activeDossier.status;
-    activeDossier.dcht = { method: 'offline', prevStatus, so: (dchtEl('dchtOffSo') || {}).value ? dchtEl('dchtOffSo').value.trim() : '', ngay: ((dchtEl('dchtOffNgay') || {}).value || '').trim(), fileName: dchtState.offlineFile.name, offFile: dchtState.offlineFile, issuedAt: dchtNow(), attachments: typeof tlktGet === 'function' ? tlktGet('dcht') : [], levels: [], assignees: [], level: 0 };
-    activeDossier.status = DCHT_ST_DONE;
-    dchtLog(`Ban hành Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả ký ngoài hệ thống (tệp ${dchtState.offlineFile.name}). Hồ sơ chuyển sang trạng thái [${DCHT_ST_DONE}].`);
+    const S = dchtSt(), cd = dchtIsCd();
+    const prevStatus = activeDossier.status === S.R && activeDossier.dcht ? activeDossier.dcht.prevStatus : activeDossier.status;
+    activeDossier.dcht = { method: 'offline', mode: cd ? 'cd' : 'dc', lyDo: cd ? cdhtLyDoDefault() : '', prevStatus, so: (dchtEl('dchtOffSo') || {}).value ? dchtEl('dchtOffSo').value.trim() : '', ngay: ((dchtEl('dchtOffNgay') || {}).value || '').trim(), fileName: dchtState.offlineFile.name, offFile: dchtState.offlineFile, issuedAt: dchtNow(), attachments: typeof tlktGet === 'function' ? tlktGet('dcht') : [], levels: [], assignees: [], level: 0 };
+    activeDossier.status = S.D;
+    dchtLog(`Ban hành ${S.qd} ký ngoài hệ thống (tệp ${dchtState.offlineFile.name}). Hồ sơ chuyển sang trạng thái [${S.D}].`);
     dchtClose();
-    dchtToast(`Đã ban hành Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả (Ký ngoài). Hồ sơ chuyển sang trạng thái [${DCHT_ST_DONE}].`, 'success');
+    dchtToast(cd ? CDHT_MSG_DONE : `Đã ban hành Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả (Ký ngoài). Hồ sơ chuyển sang trạng thái [${DCHT_ST_DONE}].`, 'success');
     dchtAfter();
 }
 
@@ -816,14 +874,14 @@ function dchtIssueOffline() {
 function dchtCanAct() {
     if (typeof currentPerspective === 'undefined' || currentPerspective !== 'leader') return false;
     const a = activeDossier && activeDossier.dcht;
-    if (!a || activeDossier.status !== DCHT_ST_PENDING || !a.levels || !a.levels.length) return false;
+    if (!a || activeDossier.status !== dchtSt().P || !a.levels || !a.levels.length) return false;
     const me = typeof tlhdMe === 'function' ? tlhdMe(a) : a.assignees[a.level];
     const assignee = a.assignees[a.level];
     return !assignee || assignee === me;
 }
 function dchtLeaderApprove() {
     const a = activeDossier.dcht;
-    if (!dchtCanAct()) { dchtToast('Chỉ Lãnh đạo được giao mới được Ký duyệt Quyết định đình chỉ.', 'warning'); return; }
+    if (!dchtCanAct()) { dchtToast('Chỉ Lãnh đạo được giao mới được Ký duyệt ' + dchtSt().ngan + '.', 'warning'); return; }
     // Mọi cấp: màn Ký duyệt dùng chung (xem văn bản trình ký); cấp trước -> dchtApproveLevel, cấp cuối -> dchtFinalSign
     if (typeof openLeaderSignModal === 'function') { openLeaderSignModal('dcht'); return; }
     if (!dchtApproveLevel()) dchtFinalSign();
@@ -834,8 +892,8 @@ function dchtApproveLevel() {
     if (!a || !a.levels || a.level >= a.levels.length - 1) return false;
     const who = dchtLeaderLabel(a, a.level) || ('Lãnh đạo cấp ' + (a.level + 1));
     a.level += 1;
-    dchtLog(`Lãnh đạo ${who} ký duyệt (ký nháy) Quyết định đình chỉ, chuyển Lãnh đạo cấp tiếp theo.`);
-    dchtToast('Ký duyệt thành công. Quyết định đình chỉ được chuyển Lãnh đạo cấp tiếp theo.', 'success');
+    dchtLog(`Lãnh đạo ${who} ký duyệt (ký nháy) ${dchtSt().ngan}, chuyển Lãnh đạo cấp tiếp theo.`);
+    dchtToast('Ký duyệt thành công. ' + dchtSt().ngan + ' được chuyển Lãnh đạo cấp tiếp theo.', 'success');
     dchtAfter();
     return true;
 }
@@ -845,13 +903,14 @@ function dchtFinalSign() {
     const who = dchtLeaderLabel(a, a.level) || ('Lãnh đạo cấp ' + (a.level + 1));
     a.signedAt = dchtNow();
     a.level = a.levels.length;
-    activeDossier.status = DCHT_ST_DONE;
-    dchtLog(`Lãnh đạo ${who} ký duyệt (ký số) Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Hồ sơ chuyển sang trạng thái [${DCHT_ST_DONE}].`);
-    dchtToast(`Ký duyệt thành công. Hệ thống ký số Quyết định đình chỉ; hồ sơ chuyển sang trạng thái [${DCHT_ST_DONE}].`, 'success');
+    const S = dchtSt(), cd = dchtIsCd();
+    activeDossier.status = S.D;
+    dchtLog(`Lãnh đạo ${who} ký duyệt (ký số) ${S.qd}. Hồ sơ chuyển sang trạng thái [${S.D}].`);
+    dchtToast(cd ? CDHT_MSG_DONE : `Ký duyệt thành công. Hệ thống ký số Quyết định đình chỉ; hồ sơ chuyển sang trạng thái [${DCHT_ST_DONE}].`, 'success');
     dchtAfter();
 }
 function dchtLeaderReject() {
-    if (!dchtCanAct()) { dchtToast('Chỉ Lãnh đạo được giao mới được Từ chối Quyết định đình chỉ.', 'warning'); return; }
+    if (!dchtCanAct()) { dchtToast('Chỉ Lãnh đạo được giao mới được Từ chối ' + dchtSt().ngan + '.', 'warning'); return; }
     if (typeof openRejectReasonModal !== 'function') return;
     openRejectReasonModal('dcht');
     const t = dchtEl('rejectTlkt');
@@ -863,9 +922,10 @@ function dchtApplyReject(reason) {
     const who = dchtLeaderLabel(a, a.level) || ('Lãnh đạo cấp ' + (a.level + 1));
     a.returned = { reason, by: who, at: dchtNow() };
     a.level = 0;
-    activeDossier.status = DCHT_ST_REJECTED;
-    dchtLog(`Lãnh đạo ${who} từ chối Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Lý do: ${reason}`);
-    dchtToast(`Đã từ chối Quyết định đình chỉ. Hồ sơ chuyển sang trạng thái [Bị trả lại (QĐ đình chỉ)].`, 'success');
+    const S = dchtSt();
+    activeDossier.status = S.R;
+    dchtLog(`Lãnh đạo ${who} từ chối ${S.qd}. Lý do: ${reason}`);
+    dchtToast(`Đã từ chối ${S.ngan}. Hồ sơ chuyển sang trạng thái [Bị trả lại (${S.loai})].`, 'success');
     dchtAfter();
 }
 
@@ -884,20 +944,32 @@ function dchtRenderInfoCard() {
     const tracker = document.querySelector('.progress-tracker');
     let card = dchtEl('dchtInfoCard');
     const a = activeDossier && activeDossier.dcht;
-    if (!a || !dchtIsDchtStatus(activeDossier.status)) { if (card) card.style.display = 'none'; return; }
+    // Khối Quyết định chấm dứt: hồ sơ Chờ chấm dứt (chưa có lượt trình), Chờ duyệt / Bị trả lại (QĐ chấm dứt), Chấm dứt hoàn trả
+    const cd = !!activeDossier && dchtIsCd(activeDossier.status);
+    if (!(cd || (a && dchtIsDchtStatus(activeDossier.status)))) { if (card) card.style.display = 'none'; return; }
     dchtInjectCss();
     if (!card) {
         if (!tracker) return;
         tracker.insertAdjacentHTML('beforebegin', '<div class="card" id="dchtInfoCard"></div>');
         card = dchtEl('dchtInfoCard');
     }
+    // Khối Quyết định chấm dứt: viền trái màu xám (khối đình chỉ: viền đỏ)
+    card.style.borderLeftColor = cd ? '#64748b' : '';
     const it = (k, v) => `<div><div class="dcht-k">${k}</div><div class="dcht-v">${v}</div></div>`;
     const emp = '<span class="dcht-empty">---</span>';
-    const pending = activeDossier.status === DCHT_ST_PENDING;
+    if (cd && (activeDossier.status === CDHT_ST_WAIT || !a)) {
+        card.innerHTML = `<div class="card-header"><div class="card-title" style="margin-bottom:0; color:#334155;"><i class="fa-solid fa-flag-checkered"></i> Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả</div></div><div class="card-body">`
+            + `<div style="font-size:13.5px; color:#334155;">Hồ sơ chờ trình ký Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả.</div>`
+            + `<div style="font-size:13px; margin-top:6px;"><span style="color:#64748b;">Lý do chấm dứt:</span> <strong>${dchtE(activeDossier.cdLyDo || '---')}</strong></div></div>`;
+        card.style.display = '';
+        return;
+    }
+    const pending = activeDossier.status === dchtSt().P;
     const lead = pending && a.levels && a.levels.length ? `Cấp ${a.level + 1}/${a.levels.length} - ${dchtE(a.levels[a.level].unit)}: ${dchtE(dchtLeaderLabel(a, a.level) || '---')}` : '';
-    let html = `<div class="card-header"><div class="card-title" style="margin-bottom:0; color:#b91c1c;"><i class="fa-solid fa-circle-stop"></i> Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả</div></div><div class="card-body">`;
+    let html = cd ? `<div class="card-header"><div class="card-title" style="margin-bottom:0; color:#334155;"><i class="fa-solid fa-flag-checkered"></i> Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả</div></div><div class="card-body">`
+        : `<div class="card-header"><div class="card-title" style="margin-bottom:0; color:#b91c1c;"><i class="fa-solid fa-circle-stop"></i> Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả</div></div><div class="card-body">`;
     // Lý do bị trả lại: khối cảnh báo ngay dưới tiêu đề (Lý do; Lãnh đạo/cấp trả lại • thời điểm)
-    if (a.returned && activeDossier.status === DCHT_ST_REJECTED) {
+    if (a.returned && activeDossier.status === dchtSt().R) {
         const meta = [a.returned.by, a.returned.at].filter(Boolean).map(dchtE).join(' • ');
         html += `<div class="dcht-return"><i class="fa-solid fa-triangle-exclamation"></i><div><div class="dcht-return-txt"><strong>Lý do bị trả lại:</strong> ${dchtE(a.returned.reason || '') || '---'}</div>${meta ? `<div class="dcht-return-meta">${meta}</div>` : ''}</div></div>`;
     }
@@ -907,7 +979,7 @@ function dchtRenderInfoCard() {
         + it('Hình thức ký', a.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống')
         + it('Số, ký hiệu văn bản', a.so && a.so.trim() && !/^\s*\/QĐ-\s*$/.test(a.so) ? dchtE(a.so) : emp)
         + it('Ngày văn bản', a.ngay ? dchtE(a.ngay) : emp)
-        + it(activeDossier.status === DCHT_ST_DONE ? 'Văn bản' : 'Văn bản dự thảo', a.fileName ? `<a href="javascript:void(0)" class="dcht-file" onclick="dchtViewDoc()" title="${dchtE(a.fileName)}"><i class="fa-solid ${fileIco}"></i><span>${dchtE(a.fileName)}</span></a>` : emp)
+        + it(activeDossier.status === dchtSt().D ? 'Văn bản' : 'Văn bản dự thảo', a.fileName ? `<a href="javascript:void(0)" class="dcht-file" onclick="dchtViewDoc()" title="${dchtE(a.fileName)}"><i class="fa-solid ${fileIco}"></i><span>${dchtE(a.fileName)}</span></a>` : emp)
         + (lead ? it('Lãnh đạo được giao ký duyệt', lead) : '')
         + `</div>`;
     // Bảng tài liệu: độ rộng cột cân đối, Tên tài liệu / File đính kèm căn trái (ga-skip: không để grid_align.js căn giữa cột tệp)
@@ -921,9 +993,14 @@ function dchtRenderInfoCard() {
 function dchtFooterButtons() {
     const st = activeDossier ? activeDossier.status : '';
     if (typeof currentPerspective !== 'undefined' && currentPerspective === 'leader') {
-        return st === DCHT_ST_PENDING && dchtCanAct()
+        return st === dchtSt().P && dchtCanAct()
             ? (typeof htkdBarButtons === 'function' ? htkdBarButtons('dchtLeaderReject()', 'dchtLeaderApprove()') : '')
             : '';
+    }
+    // Chế độ chấm dứt: Trình ký QĐ chấm dứt - chỉ người dùng thuộc đơn vị tạo Hội đồng, hồ sơ Chờ chấm dứt hoặc Bị trả lại (QĐ chấm dứt)
+    if (st === CDHT_ST_WAIT || st === CDHT_ST_REJECTED) {
+        const owner = !(window.ht2Api && ht2Api.isOwnerScope) || ht2Api.isOwnerScope();
+        return owner ? `<button type="button" class="btn btn-primary" onclick="dchtOpenModal()"><i class="fa-solid fa-paper-plane"></i> Trình ký QĐ chấm dứt</button>` : '';
     }
     // Bị trả lại: nút "Trình ký" (chế độ Cập nhật và Xem chi tiết; mở Popup trình ký với dữ liệu lần trình gần nhất)
     if (st === DCHT_ST_REJECTED) return `<button type="button" class="btn btn-primary" onclick="dchtOpenModal()"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>`;
@@ -934,6 +1011,8 @@ function dchtFooterButtons() {
     const wrap = (name, fn) => { const orig = window[name]; if (typeof orig === 'function') window[name] = fn(orig); };
     // Trạng thái Đình chỉ: tiến trình giữ theo bước trước khi đình chỉ
     wrap('getCurrentWorkflowStep', orig => function () {
+        // Hồ sơ Chờ chấm dứt, Chờ duyệt / Bị trả lại (QĐ chấm dứt), Chấm dứt hoàn trả: giữ tại Bước 2; Bước 3, Bước 4 chưa mở khóa
+        if (dchtIsCd()) return 2;
         const a = activeDossier && activeDossier.dcht;
         if (a && a.prevStatus && dchtIsDchtStatus(activeDossier.status)) {
             const s = activeDossier.status; activeDossier.status = a.prevStatus;
@@ -942,7 +1021,7 @@ function dchtFooterButtons() {
         return orig.apply(this, arguments);
     });
     wrap('isReadonlyStep', orig => function () {
-        if (activeDossier && (activeDossier.status === DCHT_ST_PENDING || activeDossier.status === DCHT_ST_DONE)) return true;
+        if (activeDossier && (activeDossier.status === DCHT_ST_PENDING || activeDossier.status === DCHT_ST_DONE || dchtIsCd())) return true;
         return orig.apply(this, arguments);
     });
     // Badge trạng thái hồ sơ: 9 trạng thái hiển thị, Chờ duyệt / Bị trả lại kèm nhãn Loại trình
@@ -962,11 +1041,22 @@ function dchtFooterButtons() {
         const r = orig.apply(this, arguments);
         if (target === 'dcht' && activeDossier && activeDossier.dcht) {
             const a = activeDossier.dcht;
-            const t = dchtEl('m20DocTitle'); if (t) t.innerText = 'Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả (Mẫu số 39/BTNN)';
-            const s = dchtEl('m20Summary'); if (s) s.innerText = a.content || DCHT_SIGN_CONTENT_DEFAULT;
+            const t = dchtEl('m20DocTitle'); if (t) t.innerText = dchtSt().qd + ' (Mẫu số 39/BTNN)';
+            const s = dchtEl('m20Summary'); if (s) s.innerText = a.content || (dchtIsCd() ? CDHT_SIGN_CONTENT_DEFAULT : DCHT_SIGN_CONTENT_DEFAULT);
             const k = dchtEl('m20Tlkt'); if (k) k.innerHTML = typeof tlktViewHtml === 'function' ? tlktViewHtml(a.attachments) : '';
         }
         return r;
+    });
+    // Màn Ký duyệt / Từ chối dùng chung (kdtcHtCtx): chế độ chấm dứt dùng tên văn bản, lịch sử trình ký và trạng thái kết quả của Quyết định chấm dứt
+    wrap('kdtcHtCtx', orig => function (target) {
+        const c = orig.apply(this, arguments);
+        if (target !== 'dcht' || !dchtIsCd() || !c) return c;
+        const staff = c.staff || 'Cán bộ xử lý';
+        const hist = ((activeDossier && activeDossier.timeline) || []).filter(x => /Quyết định chấm dứt/.test(x.text || '') && /^(Trình|Lãnh đạo)/.test(x.text || '')).map(x => {
+            const sub = /^Trình/.test(x.text), rj = /từ chối/.test(x.text);
+            return { type: sub ? 'submit' : (rj ? 'reject' : 'approve'), name: sub ? staff : ((/^Lãnh đạo (.+?) (ký duyệt|từ chối)/.exec(x.text) || [])[1] || 'Lãnh đạo'), at: x.time, msg: x.text };
+        });
+        return Object.assign(c, { kind: 'Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả (Mẫu số 39/BTNN)', title: 'QUYẾT ĐỊNH VỀ VIỆC CHẤM DỨT VIỆC XEM XÉT TRÁCH NHIỆM HOÀN TRẢ', hist, okStatus: CDHT_ST_DONE, noStatus: 'Bị trả lại (QĐ chấm dứt)' });
     });
     wrap('openPreviewFromLeaderModal', orig => function () {
         if (typeof pendingLeaderSignTarget !== 'undefined' && pendingLeaderSignTarget === 'dcht') { dchtViewDoc(); return; }

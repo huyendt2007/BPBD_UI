@@ -1074,11 +1074,8 @@ let fileCache = {
 // Khởi tạo màn hình
 document.addEventListener('DOMContentLoaded', () => {
     // Tự động tính toán mặc định 'Từ ngày' (3 tháng trước) đến 'Đến ngày' (ngày hiện tại)
-    const today = new Date();
-    const threeMonthsAgo = new Date();
-    threeMonthsAgo.setMonth(today.getMonth() - 3);
-    document.getElementById('filterFromDate').value = formatDateValue(threeMonthsAgo);
-    document.getElementById('filterToDate').value = formatDateValue(today);
+    // [vt2] Từ ngày / Đến ngày mặc định theo tab (xdApplyTabDates): tab Chờ xử lý - Từ ngày trống
+    xdApplyTabDates();
     const pageSizeSelect = document.getElementById('pageSizeSelect');
     if (pageSizeSelect) pageSizeSelect.value = String(pageSize);
 
@@ -1124,7 +1121,30 @@ function initWorkflowData() {
     migrateFinalLevelSeed();
     migrateVvClash();
     migrateXdTlktPatch(); // sau khi nạp đủ hồ sơ mẫu
+    migrateXdPendingDates();
     reloadRequestList();
+}
+
+// [vt1] Hồ sơ mẫu cũ (LEGACY_SEED) còn bước xử lý nhưng Ngày tiếp nhận trước mốc lọc mặc định "Ngày hiện tại trừ 03 tháng":
+// dời Ngày tiếp nhận vào khoảng lọc mặc định để số dòng tab Chờ xử lý khớp badge số lượng (dữ liệu mẫu; chạy mỗi lần nạp, chỉ sửa hồ sơ ngoài khoảng)
+function migrateXdPendingDates() {
+    const codes = LEGACY_SEED.map(s => s.code);
+    const from = new Date(); from.setMonth(from.getMonth() - 3); from.setHours(0, 0, 0, 0);
+    const p2 = n => String(n).padStart(2, '0');
+    const parse = s => { const p = String(s || '').trim().split(' ').pop().split('/'); return p.length === 3 ? new Date(+p[2], p[1] - 1, +p[0]) : null; };
+    const records = BTNN_WF.loadRecords();
+    let changed = false;
+    records.forEach(r => {
+        if (!r || r.module !== 'XD' || !codes.includes(r.code) || !XD_PENDING_STATES.includes(r.status)) return;
+        const d = parse(r.receivedAt || r.date);
+        if (!d || d >= from) return;
+        const t = new Date(from); t.setDate(t.getDate() + 7 + codes.indexOf(r.code));
+        const txt = `${p2(t.getDate())}/${p2(t.getMonth() + 1)}/${t.getFullYear()}`;
+        r.date = txt;
+        if (r.receivedAt) r.receivedAt = /\d{1,2}\/\d{1,2}\/\d{4}/.test(r.receivedAt) ? String(r.receivedAt).replace(/\d{1,2}\/\d{1,2}\/\d{4}/, txt) : txt;
+        changed = true;
+    });
+    if (changed) BTNN_WF.saveRecords(records);
 }
 
 // Bổ sung một lần hồ sơ mẫu của Sở Tư pháp vào kho dùng chung; gỡ hồ sơ mẫu cũ do UBND cấp tỉnh xử lý
@@ -1224,14 +1244,18 @@ function xdInTab(tab, item) {
         if (isXdViewOnly()) return !BTNN_WF.canApprove(item, me);
         return !BTNN_WF.canApprove(item, me) && BTNN_LD.leaderActedOn(item, me, /Phê duyệt|Ký duyệt|Từ chối phê duyệt/);
     }
+    // [vt1] Người dùng UBND cấp tỉnh không thuộc Nhóm lãnh đạo cấp ký duyệt cuối: chỉ xem, không có việc chờ xử lý; toàn bộ hồ sơ của Sở Tư pháp thuộc tỉnh ở tab Đã xử lý
+    if (isXdViewOnly()) return tab === 'done';
     return tab === 'pending' ? XD_PENDING_STATES.includes(item.status) : XD_DONE_STATES.includes(item.status);
 }
 function switchXdTab(tab) {
+    const prevTab = xdTab;
     xdTab = tab === 'done' ? 'done' : 'pending';
+    if (prevTab !== xdTab) xdApplyTabDates(); // [vt2] Từ ngày theo tab (chỉ khi đổi tab)
     document.querySelectorAll('.xd-tabs .xd-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === xdTab));
     const sel = document.getElementById('filterStatus');
     if (sel) {
-        const states = isLeaderMe()
+        const states = (isLeaderMe() || isXdViewOnly())
             ? Array.from(new Set(requestList.filter(r => xdInTab(xdTab, r)).map(r => r.status)))
             : (xdTab === 'pending' ? XD_PENDING_STATES : XD_DONE_STATES);
         sel.innerHTML = '<option value="">Tất cả</option>' + states.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join('');
@@ -2938,13 +2962,19 @@ function resetFilters() {
     document.getElementById('filterStatus').value = '';
     document.getElementById('filterApprovalKind').value = '';
     document.getElementById('filterUnit').value = '';
+    xdApplyTabDates();
+    currentPage = 1;
+    filterData();
+}
+
+// [vt2] Bộ lọc ngày mặc định theo tab: Chờ xử lý - Từ ngày trống (mọi hồ sơ đang chờ đều hiển thị); Đã xử lý - Ngày hiện tại trừ 03 tháng. Đến ngày: ngày hiện tại
+function xdApplyTabDates() {
     const today = new Date();
     const threeMonthsAgo = new Date();
     threeMonthsAgo.setMonth(today.getMonth() - 3);
-    document.getElementById('filterFromDate').value = formatDateValue(threeMonthsAgo);
-    document.getElementById('filterToDate').value = formatDateValue(today);
-    currentPage = 1;
-    filterData();
+    const f = document.getElementById('filterFromDate'), t = document.getElementById('filterToDate');
+    if (f) { f.value = xdTab === 'done' ? formatDateValue(threeMonthsAgo) : ''; if (f._flatpickr) f._flatpickr.setDate(f.value || null, false, 'd/m/Y'); }
+    if (t) t.value = formatDateValue(today);
 }
 
 function filterData() {
@@ -3057,12 +3087,11 @@ function getActionButtons(item) {
     // Lãnh đạo: Ký duyệt / Từ chối (tab Chờ xử lý); tab Đã xử lý chỉ xem - luồng ký duyệt không có Thu hồi
     if (isLeaderMe()) {
         const me = getMe();
-        if (xdTab === 'done') return '';
-        // Cấp trước: Phê duyệt; cấp cuối: Ký duyệt
-        return BTNN_WF.canApprove(item, me)
+        // [vt1] Tab Đã xử lý: Ký duyệt / Từ chối hiển thị mờ (SRS: bấm được chỉ tại tab Chờ xử lý); nhãn Ký duyệt ở mọi cấp
+        return xdTab !== 'done' && BTNN_WF.canApprove(item, me)
             // Icon chuẩn Ký duyệt / Từ chối trên lưới (dùng chung các phân hệ BTNN): fa-file-signature (accept sign) / fa-ban (delete reject)
             ? `<button class="icon-btn accept sign" data-admin-icon-normalized="1" title="${escapeAttr(BTNN_WF.approveVerb(item))}" onclick="BTNN_LD.openDecision('${escapeAttr(item.code)}','approve', afterXdLeaderAction)"><i class="fa-solid fa-file-signature"></i></button><button class="icon-btn delete reject" data-admin-icon-normalized="1" title="Từ chối" onclick="BTNN_LD.openDecision('${escapeAttr(item.code)}','reject', afterXdLeaderAction)"><i class="fa-solid fa-ban"></i></button>`
-            : `<button class="icon-btn accept sign is-disabled" data-admin-icon-normalized="1" title="Phê duyệt" disabled><i class="fa-solid fa-file-signature"></i></button><button class="icon-btn delete reject is-disabled" data-admin-icon-normalized="1" title="Từ chối" disabled><i class="fa-solid fa-ban"></i></button>`;
+            : `<button class="icon-btn accept sign is-disabled" data-admin-icon-normalized="1" title="Ký duyệt - Chỉ khả dụng tại tab Chờ xử lý, khi hồ sơ Chờ duyệt và người dùng là Lãnh đạo được giao ở cấp phê duyệt hiện hành" disabled><i class="fa-solid fa-file-signature"></i></button><button class="icon-btn delete reject is-disabled" data-admin-icon-normalized="1" title="Từ chối - Chỉ khả dụng tại tab Chờ xử lý, khi hồ sơ Chờ duyệt và người dùng là Lãnh đạo được giao ở cấp phê duyệt hiện hành" disabled><i class="fa-solid fa-ban"></i></button>`;
     }
     const owner = isChuTri(item);
     const ACTIONS = {

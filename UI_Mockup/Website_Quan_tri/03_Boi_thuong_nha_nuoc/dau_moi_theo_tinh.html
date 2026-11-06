@@ -395,14 +395,15 @@
             transform: translateY(-1px);
         }
 
-        /* 2. Tác vụ Chỉnh sửa / Cập nhật (Màu cam) */
+        /* 2. Tác vụ Sửa (Màu xanh lá - chuẩn admin-ui-standardizer.js .icon-btn.edit) */
         .icon-btn.edit {
-            background-color: #FFF7ED;
-            color: #F59E0B;
+            background-color: #ECFDF5;
+            color: #047857;
+            border-color: #A7F3D0;
         }
         .icon-btn.edit:hover {
-            background-color: #FFEDD5;
-            color: #B45309;
+            background-color: #D1FAE5;
+            color: #047857;
             transform: translateY(-1px);
         }
 
@@ -428,10 +429,8 @@
             transform: translateY(-1px);
         }
 
-        /* Trạng thái Vô hiệu hóa (Disabled State) */
+        /* Trạng thái Vô hiệu hóa (Disabled State): giữ màu icon theo loại, chỉ làm mờ (đồng nhất các màn Nghiệp vụ QLNN về công tác BTNN) */
         .icon-btn.disabled, .icon-btn[disabled] {
-            background-color: #F1F5F9 !important;
-            color: #94A3B8 !important;
             opacity: 0.35;
             pointer-events: none;
             cursor: not-allowed;
@@ -865,7 +864,6 @@
         <div class="modal-content" style="max-width: 1100px;">
             <div class="modal-header">
                 <h3 id="detailTitle"></h3>
-                <button class="modal-close-btn" onclick="closeModal('detailModal')"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body" id="detailBody"></div>
             <div class="modal-footer" id="detailFooter"></div>
@@ -1165,8 +1163,9 @@
             }
             document.getElementById('detailBody').innerHTML = html;
             let foot = '<button class="btn btn-secondary" onclick="closeModal(\'detailModal\')">Đóng</button>';
-            if (v) foot += `<button class="btn btn-outline-primary" onclick="openHistory('${prov}')"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử thay đổi</button>`;
+            // Đúng các thao tác đang sáng trên lưới, cùng thứ tự icon: Cập nhật, Lịch sử thay đổi
             if (canEditProvince(prov)) foot += `<button class="btn btn-primary" onclick="openEdit('${prov}')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>`;
+            if (v) foot += `<button class="btn btn-outline-primary" onclick="openHistory('${prov}')"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử thay đổi</button>`;
             document.getElementById('detailFooter').innerHTML = foot;
             document.getElementById('detailModal').classList.add('active');
         }
@@ -1207,7 +1206,7 @@
             document.getElementById('detailBody').innerHTML = `<div style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;"><i class="fa-solid fa-circle-info"></i> Người thôi làm đầu mối: chọn "Ngừng phụ trách" (không xóa) để giữ lịch sử. Mỗi lần lưu, hệ thống ghi nhận 01 phiên bản trong Lịch sử thay đổi.</div>`
                 + body
                 + `<div class="form-group" style="margin-top: 6px;"><label class="form-label">Nội dung thay đổi / ghi chú</label><textarea id="editNote" class="form-control" rows="2" maxlength="1000" placeholder="Ví dụ: Ông A chuyển công tác, bổ sung Bà B làm chuyên viên đầu mối"></textarea></div>`;
-            document.getElementById('detailFooter').innerHTML = `<button class="btn btn-secondary" onclick="cancelEdit()">Hủy</button>
+            document.getElementById('detailFooter').innerHTML = `<button class="btn btn-secondary" onclick="cancelEdit()">Hủy bỏ</button>
                 <button class="btn btn-primary" onclick="saveEdit()"><i class="fa-solid fa-floppy-disk"></i> Lưu thông tin</button>`;
         }
         function setField(id, f, val) { const p = draft.find(x => x.id === id); if (p) p[f] = val; }
@@ -1285,12 +1284,12 @@
             document.getElementById('historyTitle').innerText = `Lịch sử thay đổi đầu mối - ${prov}`;
             const rows = r.versions.slice().reverse().map(v => `<tr>
                 <td style="text-align: center;">${v.no}</td>
-                <td>${esc(v.at)}</td>
+                <td style="text-align: center;">${esc(v.at)}</td>
                 <td>${esc(v.by)}</td>
                 <td><ul class="dm-change">${v.changes.map(c => `<li class="${c.t}">${esc(c.s)}</li>`).join('')}</ul>${v.note ? `<div style="margin-top: 4px; font-size: 12px; color: var(--text-muted);">Ghi chú: ${esc(v.note)}</div>` : ''}</td>
                 <td style="text-align: center;"><button class="dm-link" onclick="openSnapshot('${prov}', ${v.no})">Xem danh sách</button></td>
             </tr>`).join('');
-            document.getElementById('historyBody').innerHTML = `<table class="dm-table"><thead><tr><th style="width: 50px;">Lần</th><th style="width: 140px;">Thời điểm</th><th style="width: 160px;">Người cập nhật</th><th>Nội dung thay đổi</th><th style="width: 120px;">Đầu mối tại thời điểm</th></tr></thead><tbody>${rows}</tbody></table>`;
+            document.getElementById('historyBody').innerHTML = `<table class="dm-table ga-skip"><thead><tr><th style="width: 50px; text-align: center;">Lần</th><th style="width: 140px; text-align: center;">Thời gian</th><th style="width: 160px;">Người cập nhật</th><th>Nội dung thay đổi</th><th style="width: 120px; text-align: center;">Đầu mối hiện tại</th></tr></thead><tbody>${rows}</tbody></table>`;
             document.getElementById('historyFooter').innerHTML = '<button class="btn btn-secondary" onclick="closeModal(\'historyModal\')">Đóng</button>';
             document.getElementById('historyModal').classList.add('active');
         }

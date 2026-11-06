@@ -212,6 +212,8 @@
             .icon-btn.sign { color: #7c3aed; background: #f5f3ff; border-color: #ddd6fe; }
             .icon-btn.reject { color: #ea580c; background: #fff7ed; border-color: #fed7aa; }
             .icon-btn.delete { color: #dc2626; background: #fef2f2; border-color: #fecaca; }
+            /* Hoàn thành - nhóm Nghiệp vụ QLNN về công tác BTNN (xanh lá, phân biệt Cập nhật kết quả màu tím) */
+            .icon-btn.finish { color: #16a34a; background: #f0fdf4; border-color: #86efac; }
             .icon-btn.disabled,
             .icon-btn:disabled {
                 opacity: 0.35 !important;

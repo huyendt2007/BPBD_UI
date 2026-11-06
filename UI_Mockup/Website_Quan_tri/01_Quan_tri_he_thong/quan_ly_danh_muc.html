@@ -805,10 +805,6 @@
                     <label class="form-label" id="detLblParent">Trực thuộc (Danh mục cha)</label>
                     <input type="text" id="detParent" class="form-control" readonly>
                 </div>
-                <div class="form-group" id="detMgrGroup" style="display:none;">
-                    <label class="form-label">Cơ quan quản lý mặc định</label>
-                    <input type="text" id="detMgr" class="form-control" readonly>
-                </div>
                 <div class="form-group" id="detUnitGroup" style="display:none;">
                     <label class="form-label">Đơn vị áp dụng</label>
                     <div id="detUnits" class="form-control" style="height:auto; min-height:38px; background:#f8fafc; line-height:1.7;"></div>
@@ -903,13 +899,6 @@
                         <div id="upChips" class="up-chips"></div>
                         <div style="font-size:12px; color:#64748b; margin-top:4px;">Chọn đơn vị cha thì áp dụng cho toàn bộ đơn vị trực thuộc. Chỉ người dùng thuộc đơn vị áp dụng mới thấy giá trị này tại các ô chọn và bộ lọc.</div>
                         <div class="error-message" id="errUnits">Vui lòng chọn ít nhất một đơn vị áp dụng.</div>
-                    </div>
-
-                    <!-- Cơ quan quản lý mặc định: chỉ dùng cho loại danh mục Loại CSDL nguồn (DM_56) -->
-                    <div class="form-group" id="mgrGroup" style="display:none;">
-                        <label class="form-label">Cơ quan quản lý mặc định</label>
-                        <div id="inpMgrTree"></div>
-                        <div style="font-size:12px; color:#64748b; margin-top:4px;">Chọn 01 đơn vị trên cây Cơ cấu tổ chức; hệ thống tự điền cơ quan này khi người dùng chọn Loại CSDL nguồn tương ứng.</div>
                     </div>
 
                     <div class="form-group">
@@ -1032,10 +1021,18 @@
             { code: "DM_26", name: "Tư cách người yêu cầu bồi thường", status: "Đang hoạt động" },
             { code: "DM_54", name: "Loại hồ sơ", status: "Đang hoạt động", phanQuyenDonVi: true },
             { code: "DM_55", name: "Lý do không thụ lý hồ sơ yêu cầu bồi thường", status: "Đang hoạt động" },
-            { code: "DM_56", name: "Loại CSDL nguồn", status: "Đang hoạt động" },
             { code: "DM_57", name: "Loại cơ quan", parentTypeCode: "", status: "Đang hoạt động" },
             { code: "DM_58", name: "Chức vụ", parentTypeCode: "DM_57", status: "Đang hoạt động" },
-            { code: "DM_59", name: "Trạng thái của công dân", status: "Đang hoạt động" }
+            { code: "DM_59", name: "Trạng thái của công dân", status: "Đang hoạt động" },
+            { code: "DM_61", name: "Tình trạng hiệu lực", description: "Dùng cho Văn bản quy phạm pháp luật và Văn bản chỉ đạo, điều hành", parentTypeCode: "", status: "Đang hoạt động" },
+            { code: "DM_62", name: "Nội dung theo dõi", description: "Dùng cho Theo dõi, đôn đốc công tác BTNN", parentTypeCode: "", status: "Đang hoạt động" },
+            { code: "DM_63", name: "Căn cứ theo dõi", description: "Dùng cho Theo dõi, đôn đốc công tác BTNN", parentTypeCode: "", status: "Đang hoạt động" },
+            { code: "DM_64", name: "Nội dung yêu cầu báo cáo", description: "Dùng cho Theo dõi, đôn đốc công tác BTNN", parentTypeCode: "", status: "Đang hoạt động" },
+            { code: "DM_65", name: "Nội dung đôn đốc", description: "Dùng cho Theo dõi, đôn đốc công tác BTNN", parentTypeCode: "", status: "Đang hoạt động" },
+            { code: "DM_66", name: "Căn cứ đôn đốc", description: "Dùng cho Theo dõi, đôn đốc công tác BTNN", parentTypeCode: "", status: "Đang hoạt động" },
+            { code: "DM_67", name: "Lĩnh vực nội dung", description: "Dùng cho Hướng dẫn nghiệp vụ công tác BTNN", parentTypeCode: "", status: "Đang hoạt động" },
+            { code: "DM_68", name: "Căn cứ phát sinh kiến nghị xử lý vi phạm", description: "Dùng cho Kiến nghị cơ quan có thẩm quyền xử lý vi phạm (khoản 1 Điều 47 Dự thảo Nghị định)", parentTypeCode: "", status: "Đang hoạt động" },
+            { code: "DM_69", name: "Loại quyết định hoàn trả bị kiến nghị", description: "Dùng cho Kiến nghị Thủ trưởng cơ quan xem xét lại quyết định hoàn trả (khoản 2 Điều 67 Luật TNBTCNN)", parentTypeCode: "", status: "Đang hoạt động" }
         ];
 
         // All simulated categories containing full values from 04_Danh_muc_va_Phu_luc.md (Table 5 & Table 6)
@@ -1116,6 +1113,63 @@
             // DM_23 (Giới tính) - dữ liệu minh họa, đồng bộ từ TTDLQG
             { typeCode: "DM_23", code: "1", name: "Nam", nameEn: "Male", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_23", code: "2", name: "Nữ", nameEn: "Female", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_62 (Nội dung theo dõi) - Thông tư 08/2019/TT-BTP, khoản 2 Điều 8; dùng cho Theo dõi, đôn đốc công tác BTNN
+            { typeCode: "DM_62", code: "TDND_01", name: "Giải quyết yêu cầu bồi thường", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 2 Điều 8", status: "Hoạt động" },
+            { typeCode: "DM_62", code: "TDND_02", name: "Tham gia tố tụng của cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 2 Điều 8", status: "Hoạt động" },
+            { typeCode: "DM_62", code: "TDND_03", name: "Cấp kinh phí bồi thường và chi trả tiền bồi thường", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 2 Điều 8", status: "Hoạt động" },
+            { typeCode: "DM_62", code: "TDND_04", name: "Xác định và thực hiện trách nhiệm hoàn trả của người thi hành công vụ gây thiệt hại", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 2 Điều 8", status: "Hoạt động" },
+            { typeCode: "DM_62", code: "TDND_05", name: "Xử lý kỷ luật người thi hành công vụ gây thiệt hại", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 2 Điều 8", status: "Hoạt động" },
+            { typeCode: "DM_62", code: "TDND_06", name: "Quản lý nhà nước về công tác bồi thường nhà nước", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 2 Điều 8", status: "Hoạt động" },
+            // DM_63 (Căn cứ theo dõi) - Thông tư 08/2019/TT-BTP, khoản 1 Điều 9; dùng cho Theo dõi, đôn đốc công tác BTNN
+            { typeCode: "DM_63", code: "TDCC_01", name: "Báo cáo về việc giải quyết yêu cầu bồi thường, xác định trách nhiệm hoàn trả và việc xử lý kỷ luật người thi hành công vụ gây thiệt hại", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 1 Điều 9", status: "Hoạt động" },
+            { typeCode: "DM_63", code: "TDCC_02", name: "Báo cáo việc thực hiện công tác bồi thường nhà nước", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 1 Điều 9", status: "Hoạt động" },
+            { typeCode: "DM_63", code: "TDCC_03", name: "Bản án, quyết định của Tòa án về giải quyết vụ án dân sự, hình sự, hành chính có nội dung giải quyết bồi thường", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 1 Điều 9", status: "Hoạt động" },
+            { typeCode: "DM_63", code: "TDCC_04", name: "Quyết định giải quyết bồi thường của cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 1 Điều 9", status: "Hoạt động" },
+            { typeCode: "DM_63", code: "TDCC_05", name: "Đề nghị hướng dẫn nghiệp vụ, giải đáp vướng mắc hoặc đề nghị hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 1 Điều 9", status: "Hoạt động" },
+            { typeCode: "DM_63", code: "TDCC_06", name: "Kết quả hoạt động kiểm tra, thanh tra công tác bồi thường nhà nước", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 1 Điều 9", status: "Hoạt động" },
+            { typeCode: "DM_63", code: "TDCC_07", name: "Thông tin báo chí về công tác bồi thường nhà nước", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 1 Điều 9", status: "Hoạt động" },
+            { typeCode: "DM_63", code: "TDCC_08", name: "Khiếu nại, tố cáo, phản ánh, kiến nghị của cơ quan, tổ chức, cá nhân về công tác bồi thường nhà nước", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 1 Điều 9", status: "Hoạt động" },
+            { typeCode: "DM_63", code: "TDCC_09", name: "Căn cứ khác có thông tin liên quan đến công tác bồi thường nhà nước", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 1 Điều 9", status: "Hoạt động" },
+            // DM_64 (Nội dung yêu cầu báo cáo) - Thông tư 08/2019/TT-BTP, Điều 11; dùng cho Theo dõi, đôn đốc công tác BTNN
+            { typeCode: "DM_64", code: "YCND_01", name: "Việc giải quyết yêu cầu bồi thường", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, Điều 11", status: "Hoạt động" },
+            { typeCode: "DM_64", code: "YCND_02", name: "Việc thực hiện trách nhiệm hoàn trả", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, Điều 11", status: "Hoạt động" },
+            { typeCode: "DM_64", code: "YCND_03", name: "Việc xử lý kỷ luật người thi hành công vụ", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, Điều 11", status: "Hoạt động" },
+            // DM_65 (Nội dung đôn đốc) - Thông tư 08/2019/TT-BTP, khoản 2 Điều 13; dùng cho Theo dõi, đôn đốc công tác BTNN
+            { typeCode: "DM_65", code: "DDND_01", name: "Giải quyết yêu cầu bồi thường tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 2 Điều 13", status: "Hoạt động" },
+            { typeCode: "DM_65", code: "DDND_02", name: "Phục hồi danh dự", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 2 Điều 13", status: "Hoạt động" },
+            { typeCode: "DM_65", code: "DDND_03", name: "Cấp kinh phí bồi thường và chi trả tiền bồi thường", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 2 Điều 13", status: "Hoạt động" },
+            { typeCode: "DM_65", code: "DDND_04", name: "Xác định và thực hiện trách nhiệm hoàn trả của người thi hành công vụ gây thiệt hại", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 2 Điều 13", status: "Hoạt động" },
+            { typeCode: "DM_65", code: "DDND_05", name: "Quản lý nhà nước về công tác bồi thường nhà nước", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, khoản 2 Điều 13", status: "Hoạt động" },
+            // DM_66 (Căn cứ đôn đốc) - Thông tư 08/2019/TT-BTP, Điều 14; dùng cho Theo dõi, đôn đốc công tác BTNN
+            { typeCode: "DM_66", code: "DDCC_01", name: "Khiếu nại, tố cáo, kiến nghị, phản ánh của người yêu cầu bồi thường, cơ quan, tổ chức, cá nhân có liên quan", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, Điều 14", status: "Hoạt động" },
+            { typeCode: "DM_66", code: "DDCC_02", name: "Kiến nghị của cơ quan quản lý nhà nước, kiến nghị, yêu cầu của cơ quan, tổ chức, cá nhân có liên quan", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, Điều 14", status: "Hoạt động" },
+            { typeCode: "DM_66", code: "DDCC_03", name: "Kết quả hướng dẫn nghiệp vụ, giải đáp vướng mắc, theo dõi, kiểm tra, thanh tra công tác bồi thường nhà nước, hỗ trợ, hướng dẫn người bị thiệt hại", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, Điều 14", status: "Hoạt động" },
+            { typeCode: "DM_66", code: "DDCC_04", name: "Quyết định giải quyết bồi thường hoặc bản án, quyết định của Tòa án về giải quyết yêu cầu bồi thường có hiệu lực pháp luật", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, Điều 14", status: "Hoạt động" },
+            { typeCode: "DM_66", code: "DDCC_05", name: "Quyết định có liên quan về trách nhiệm hoàn trả", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, Điều 14", status: "Hoạt động" },
+            { typeCode: "DM_66", code: "DDCC_06", name: "Báo cáo việc thực hiện công tác bồi thường nhà nước của TAND tối cao, VKSND tối cao, các Bộ, UBND cấp tỉnh", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, Điều 14", status: "Hoạt động" },
+            { typeCode: "DM_66", code: "DDCC_07", name: "Báo cáo về việc giải quyết yêu cầu bồi thường, xác định trách nhiệm hoàn trả của cơ quan giải quyết bồi thường", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thông tư 08/2019/TT-BTP, Điều 14", status: "Hoạt động" },
+            // DM_67 (Lĩnh vực nội dung) - dùng cho Hướng dẫn nghiệp vụ công tác BTNN; "Khác" đặt cuối, chọn Khác thì nhập Lĩnh vực khác
+            { typeCode: "DM_67", code: "LVND_01", name: "Giải quyết yêu cầu bồi thường", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_67", code: "LVND_02", name: "Cấp kinh phí bồi thường và chi trả tiền bồi thường", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_67", code: "LVND_03", name: "Xác định và thực hiện trách nhiệm hoàn trả", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_67", code: "LVND_04", name: "Xử lý kỷ luật", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_67", code: "LVND_05", name: "Quản lý nhà nước về công tác BTNN", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_67", code: "LVND_06", name: "Phục hồi danh dự", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_67", code: "LVND_07", name: "Khác", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            // DM_68 (Căn cứ phát sinh kiến nghị xử lý vi phạm) - khoản 1 Điều 47 Dự thảo Nghị định quy định chi tiết Luật TNBTCNN; dùng cho Kiến nghị cơ quan có thẩm quyền xử lý vi phạm
+            { typeCode: "DM_68", code: "CCKN_01", name: "Theo yêu cầu của người yêu cầu bồi thường hoặc cá nhân, tổ chức có liên quan", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Khoản 1 Điều 47 Dự thảo Nghị định", status: "Hoạt động" },
+            { typeCode: "DM_68", code: "CCKN_02", name: "Theo đề nghị của cơ quan nhà nước", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Khoản 1 Điều 47 Dự thảo Nghị định", status: "Hoạt động" },
+            { typeCode: "DM_68", code: "CCKN_03", name: "Phát hiện vi phạm trong quá trình thực hiện việc quản lý nhà nước về công tác bồi thường", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Khoản 1 Điều 47 Dự thảo Nghị định", status: "Hoạt động" },
+            // DM_69 (Loại quyết định hoàn trả bị kiến nghị) - khoản 2 Điều 67 Luật TNBTCNN (sửa đổi); dùng cho Kiến nghị Thủ trưởng cơ quan xem xét lại quyết định hoàn trả
+            { typeCode: "DM_69", code: "LQDHT_01", name: "Quyết định hoàn trả", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Khoản 2 Điều 67 Luật Trách nhiệm bồi thường của Nhà nước", status: "Hoạt động" },
+            { typeCode: "DM_69", code: "LQDHT_02", name: "Quyết định giảm mức hoàn trả", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Khoản 2 Điều 67 Luật Trách nhiệm bồi thường của Nhà nước", status: "Hoạt động" },
+            { typeCode: "DM_69", code: "LQDHT_03", name: "Quyết định miễn hoàn trả", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Khoản 2 Điều 67 Luật Trách nhiệm bồi thường của Nhà nước", status: "Hoạt động" },
+
+            // DM_61 (Tình trạng hiệu lực) - dùng cho Văn bản quy phạm pháp luật và Văn bản chỉ đạo, điều hành
+            { typeCode: "DM_61", code: "TTHL_01", name: "Còn hiệu lực", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_61", code: "TTHL_02", name: "Hết hiệu lực", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_61", code: "TTHL_03", name: "Bị sửa đổi bổ sung", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
 
             // DM_59 (Trạng thái của công dân) - dữ liệu minh họa, đồng bộ từ TTDLQG
             { typeCode: "DM_59", code: "TTCD_01", name: "Còn sống", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
@@ -1211,11 +1265,6 @@
             { typeCode: "DM_55", code: "KTL_06", name: "Yêu cầu bồi thường đã được thực hiện theo quy định tại điểm a khoản 1 Điều 52 của Luật này và đã được Tòa án có thẩm quyền thụ lý theo thủ tục tố tụng dân sự (Điểm e Khoản 2 Điều 43)", nameEn: "The claim has been accepted by a competent court under civil procedure (Point e, Clause 2, Article 43)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_55", code: "KTL_07", name: "Yêu cầu bồi thường đã được Tòa án có thẩm quyền chấp nhận theo quy định tại khoản 1 Điều 55 của Luật này (Điểm g Khoản 2 Điều 43)", nameEn: "The claim has been accepted by a competent court under Clause 1, Article 55 (Point g, Clause 2, Article 43)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_55", code: "KTL_08", name: "Yêu cầu bồi thường đã được giải quyết bằng bản án, quyết định đã có hiệu lực pháp luật (Điểm h Khoản 2 Điều 43)", nameEn: "The claim has been resolved by an effective judgment or decision (Point h, Clause 2, Article 43)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
-            // DM_56 (Loại CSDL nguồn) - khoản 9 Điều 44 dự thảo Nghị định; thuộc tính Cơ quan quản lý mặc định chọn trên cây Cơ cấu tổ chức
-            { typeCode: "DM_56", code: "CSDL_01", name: "CSDL về bản án, quyết định của Tòa án", nameEn: "Database of court judgments and decisions", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động", coQuanQuanLy: "TANDTC" },
-            { typeCode: "DM_56", code: "CSDL_02", name: "CSDL quốc gia về thủ tục hành chính (TTHC)", nameEn: "National database on administrative procedures", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động", coQuanQuanLy: "VPCP" },
-            { typeCode: "DM_56", code: "CSDL_03", name: "CSDL quốc gia về khiếu nại, tố cáo", nameEn: "National database on complaints and denunciations", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động", coQuanQuanLy: "TTCP" },
-            { typeCode: "DM_56", code: "CSDL_04", name: "Khác", nameEn: "Other", val: "", valEn: "", parentCode: "", notes: "Người dùng nhập Tên CSDL nguồn khác khi chọn giá trị này", status: "Hoạt động", coQuanQuanLy: "" },
 
             // DM_57 (Loại cơ quan) - Danh mục Loại cơ quan và Danh mục Chức vụ.md; Ghi chú = Phạm vi áp dụng
             { typeCode: "DM_57", code: "LDV_01", name: "Bộ", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
@@ -1560,7 +1609,7 @@
                 const idx02 = savedCats.findIndex(s => s.typeCode === 'DM_26' && s.code === 'TCNYC_02');
                 if (tc06) savedCats.splice(idx02 >= 0 ? idx02 + 1 : savedCats.length, 0, JSON.parse(JSON.stringify(tc06)));
             }
-            INITIAL_CATEGORIES.filter(d => ['DM_10', 'DM_23', 'DM_59', 'DM_25', 'DM_26','DM_54', 'DM_55', 'DM_56', 'DM_57', 'DM_58'].includes(d.typeCode) && !savedCats.some(s => s.typeCode === d.typeCode && s.code === d.code)).forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
+            INITIAL_CATEGORIES.filter(d => ['DM_10', 'DM_23', 'DM_59', 'DM_25', 'DM_26','DM_54', 'DM_55', 'DM_57', 'DM_58', 'DM_61', 'DM_62', 'DM_63', 'DM_64', 'DM_65', 'DM_66', 'DM_67', 'DM_68', 'DM_69'].includes(d.typeCode) && !savedCats.some(s => s.typeCode === d.typeCode && s.code === d.code)).forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
             // Bổ sung các đơn vị gốc mới vào Đơn vị áp dụng của Yêu cầu bồi thường (dữ liệu lưu từ phiên bản trước)
             const lyc02 = savedCats.find(c => c.typeCode === 'DM_54' && c.code === 'LYC_02');
             if (lyc02 && !lyc02.donViApDungV2) { lyc02.donViApDung = BTNN_WF.getRootUnits().map(u => u.id); lyc02.donViApDungV2 = true; }
@@ -1933,8 +1982,6 @@
 
             document.getElementById('unitGroup').style.display = hasUnitScope(typeCode) ? 'block' : 'none';
             if (hasUnitScope(typeCode)) renderUnitTree(formUnits);
-            document.getElementById('mgrGroup').style.display = typeCode === 'DM_56' ? 'block' : 'none';
-            if (typeCode === 'DM_56') mgrTree();
 
             const parentTypeCode = getParentTypeCode(typeCode);
             if (parentTypeCode) {
@@ -1964,11 +2011,6 @@
 
         // ---------- Đơn vị áp dụng (cây Cơ cấu tổ chức) ----------
         let formUnits = [];
-        // Cây chọn Cơ quan quản lý mặc định (DM_56), dùng component dùng chung BTNN_WF.mountUnitTree
-        function mgrTree() {
-            const box = document.getElementById('inpMgrTree');
-            return box.__utree || BTNN_WF.mountUnitTree(box, { placeholder: '-- Chọn cơ quan quản lý --' });
-        }
 
         function isUnitCoveredByParent(unitId, selected) {
             return BTNN_WF.getAncestors(unitId).slice(1).some(a => selected.includes(a));
@@ -2174,8 +2216,6 @@
 
             document.getElementById('detNotes').value = item.notes || 'Không có';
             document.getElementById('detUnitGroup').style.display = hasUnitScope(item.typeCode) ? 'block' : 'none';
-            document.getElementById('detMgrGroup').style.display = item.typeCode === 'DM_56' ? 'block' : 'none';
-            document.getElementById('detMgr').value = item.coQuanQuanLy ? BTNN_WF.unitTreeLabel(item.coQuanQuanLy) : 'Không có';
             document.getElementById('detUnits').innerHTML = (item.donViApDung || []).map(u => `• ${BTNN_WF.unitName(u)}${BTNN_WF.getDescendants(u).length ? ' (gồm đơn vị trực thuộc)' : ''}`).join('<br>') || 'Chưa chọn';
             document.getElementById('detStatus').value = item.status;
 
@@ -2209,7 +2249,6 @@
             document.getElementById('inpValEn').value = '';
             document.getElementById('inpNotes').value = '';
             formUnits = [];
-            mgrTree().setValue('');
             resetUnitPicker();
             document.getElementById('errUnits').style.display = 'none';
             document.querySelector('input[name="status"][value="Hoạt động"]').checked = true;
@@ -2247,7 +2286,6 @@
             document.getElementById('inpNotes').value = item.notes || '';
             formUnits = Array.isArray(item.donViApDung) ? item.donViApDung.slice() : [];
             resetUnitPicker();
-            mgrTree().setValue(item.coQuanQuanLy || '');
             document.getElementById('errUnits').style.display = 'none';
             document.querySelector(`input[name="status"][value="${item.status}"]`).checked = true;
 
@@ -2370,8 +2408,7 @@
                     parentCode,
                     notes,
                     status,
-                    donViApDung: hasUnitScope(typeCode) ? formUnits.slice() : undefined,
-                    coQuanQuanLy: typeCode === 'DM_56' ? mgrTree().getValue() : undefined
+                    donViApDung: hasUnitScope(typeCode) ? formUnits.slice() : undefined
                 });
                 showToast("Thêm mới danh mục thành công!", "success");
             } else {
@@ -2385,7 +2422,6 @@
                     item.notes = notes;
                     item.status = status;
                     if (hasUnitScope(item.typeCode)) item.donViApDung = formUnits.slice();
-                    if (item.typeCode === 'DM_56') item.coQuanQuanLy = mgrTree().getValue();
                 }
                 showToast("Cập nhật danh mục thành công!", "success");
             }

@@ -2411,6 +2411,8 @@
                     <div class="form-group" style="margin-bottom: 16px;">
                         <span class="form-label">Mức độ lỗi <span style="color:red;">*</span></span>
                         <select class="form-control" id="oLoi" required onchange="ykhdOnLoiChange()">
+                            <option value="">-- Chọn mức độ lỗi --</option>
+                            <option value="Không có lỗi">Không có lỗi</option>
                             <option value="Vô ý">Vô ý</option>
                             <option value="Cố ý nhưng không bị truy cứu trách nhiệm hình sự">Cố ý nhưng không bị truy cứu trách nhiệm hình sự</option>
                             <option value="Cố ý mà có bản án đã có hiệu lực pháp luật tuyên phạm tội">Cố ý mà có bản án đã có hiệu lực pháp luật tuyên phạm tội</option>
@@ -3167,14 +3169,15 @@
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Đình chỉ xem xét hoàn trả",
+                status: "Chấm dứt hoàn trả",
                 dateCreated: "10/07/2026",
+                cdLyDo: "Người thi hành công vụ gây thiệt hại không có lỗi do chấp hành đúng quyết định của cấp trên.",
                 hdDecision: "15/QĐ-TLHD",
                 hdDate: "10/07/2026",
                 qdStatus: "",
                 dcht: { method: 'offline', prevStatus: 'Họp hội đồng', fileName: 'QD_dinh_chi_HT-2026-011.pdf', offFile: { name: 'QD_dinh_chi_HT-2026-011.pdf' }, issuedAt: '15/07/2026 11:00', attachments: [], levels: [], assignees: [] },
                 refundOfficers: [
-                    { name: "Lê Văn Hùng", loi: "Không có lỗi", total: 0, paid: 0, nextDate: "—", status: "Đình chỉ xem xét hoàn trả", progressClass: "secondary", agency: "Sở Tư pháp Hà Nội", role: "Chuyên viên", isPostponed: false }
+                    { name: "Lê Văn Hùng", loi: "Không có lỗi", total: 0, paid: 0, nextDate: "—", status: "Chấm dứt hoàn trả", progressClass: "secondary", agency: "Sở Tư pháp Hà Nội", role: "Chuyên viên", isPostponed: false }
                 ],
                 payments: [],
                 timeline: [
@@ -3194,8 +3197,9 @@
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Đình chỉ xem xét hoàn trả",
+                status: "Chờ duyệt QĐ chấm dứt",
                 dateCreated: "20/05/2026",
+                cdLyDo: "Người thi hành công vụ gây thiệt hại đã chết",
                 hdDecision: "18/QĐ-TLHD",
                 hdDate: "20/05/2026",
                 qdStatus: "",
@@ -3203,7 +3207,7 @@
                 qdDate: "",
                 dcht: { method: 'offline', prevStatus: 'Họp hội đồng', fileName: 'QD_dinh_chi_HT-2026-012.pdf', offFile: { name: 'QD_dinh_chi_HT-2026-012.pdf' }, issuedAt: '25/05/2026 15:00', attachments: [], levels: [], assignees: [] },
                 refundOfficers: [
-                    { name: "Nguyễn Văn Chết", loi: "Đã chết", total: 0, paid: 0, nextDate: "—", status: "Đình chỉ xem xét hoàn trả", progressClass: "secondary", agency: "Sở Tư pháp Hà Nội", role: "Chấp hành viên", isPostponed: false }
+                    { name: "Nguyễn Văn Chết", loi: "Vô ý", daChet: true, trangThaiNguoi: "Đã chết", total: 20000000, paid: 0, nextDate: "—", status: "Chờ duyệt QĐ chấm dứt", progressClass: "secondary", agency: "Sở Tư pháp Hà Nội", role: "Chấp hành viên", isPostponed: false }
                 ],
                 payments: [],
                 timeline: [
@@ -3402,15 +3406,16 @@
                 id: "HT-2026-020",
                 code: "HT-2026-020",
                 claimCode: "BT-2026-820",
-                claimSummary: "Cán bộ ban hành quyết định đã từ trần, cơ quan ban hành QĐ đình chỉ việc xem xét trách nhiệm hoàn trả theo Luật BTNN.",
+                claimSummary: "Cán bộ ban hành quyết định đã từ trần, đơn vị tạo Hội đồng trình ký QĐ chấm dứt việc xem xét trách nhiệm hoàn trả theo Luật BTNN.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 80000000,
                 claimDate: "22/05/2026",
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Đình chỉ xem xét hoàn trả",
+                status: "Bị trả lại QĐ chấm dứt",
                 dateCreated: "05/06/2026",
+                cdLyDo: "Người thi hành công vụ gây thiệt hại đã chết",
                 hdDecision: "40/QĐ-TLHD",
                 hdDate: "05/06/2026",
                 qdStatus: "",
@@ -3418,7 +3423,7 @@
                 qdDate: "",
                 dcht: { method: 'offline', prevStatus: 'Họp hội đồng', fileName: 'QD_dinh_chi_HT-2026-020.pdf', offFile: { name: 'QD_dinh_chi_HT-2026-020.pdf' }, issuedAt: '18/06/2026 14:00', attachments: [], levels: [], assignees: [] },
                 refundOfficers: [
-                    { name: "Dương Đình Nghệ", loi: "Đã qua đời", total: 0, paid: 0, nextDate: "—", status: "Đình chỉ xem xét hoàn trả", progressClass: "secondary", agency: "UBND Tỉnh Lâm Đồng", role: "Chuyên viên Phòng Tư pháp", isPostponed: false }
+                    { name: "Dương Đình Nghệ", loi: "Vô ý", daChet: true, trangThaiNguoi: "Đã chết", total: 15000000, paid: 0, nextDate: "—", status: "Bị trả lại QĐ chấm dứt", progressClass: "secondary", agency: "UBND Tỉnh Lâm Đồng", role: "Chuyên viên Phòng Tư pháp", isPostponed: false }
                 ],
                 payments: [],
                 timeline: [
@@ -8022,18 +8027,18 @@
     <!-- Popup Thành lập Hội đồng xem xét trách nhiệm hoàn trả (Mẫu 33/BTNN) - bố cục như Popup Không thụ lý hồ sơ -->
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
     <script src="chi_tiet_ho_so_hoan_tra_tlhd.js?v=20261030s2"></script>
-    <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261106tlkt1"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261106m2"></script>
     <!-- Dữ liệu mẫu bổ sung phủ các trạng thái của Ma trận chuyển trạng thái (dùng chung màn Danh sách) -->
-    <script src="ht_du_lieu_mau.js?v=20261030dc1"></script>
+    <script src="ht_du_lieu_mau.js?v=20261106dc2"></script>
     <!-- Bước 1 / Bước 2 Ý kiến của Hội đồng, Stepper 04 bước, phạm vi người xem theo đơn vị -->
-    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261104m1"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261106dc2"></script>
     <!-- Bước 3: trình ký 02 tầng tại đơn vị (QĐ hoàn trả Mẫu 36; QĐ miễn Mẫu 38 / QĐ giảm Mẫu 37; QĐ đình chỉ Mẫu 39 cấp cán bộ) -->
-    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261030xl1"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261106dc3"></script>
     <!-- Bước 4: thu tiền hoàn trả theo phần đơn vị (nộp tiền nhiều đợt, miễn / giảm bổ sung, trả lại tiền) -->
-    <script src="chi_tiet_ho_so_hoan_tra_thu.js?v=20261029dvbh"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_thu.js?v=20261105tc1"></script>
     <!-- Thanh giả lập người dùng dùng chung màn Danh sách / Chi tiết, Khôi phục dữ liệu mẫu -->
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
-    <script src="ht_mock_role_bar.js?v=20261030s2"></script>
+    <script src="ht_mock_role_bar.js?v=20261105tc1"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>

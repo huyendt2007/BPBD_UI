@@ -805,8 +805,7 @@
                     <label class="form-label">Tình trạng hiệu lực</label>
                     <select id="filterStatus" class="form-select">
                         <option value="">Tất cả</option>
-                        <option value="Còn hiệu lực">Còn hiệu lực</option>
-                        <option value="Hết hiệu lực">Hết hiệu lực</option>
+                        <!-- Giá trị đang sử dụng của Danh mục Tình trạng hiệu lực [DM_61] (dm_tinh_trang_hieu_luc.js) -->
                     </select>
                 </div>
                 <div class="form-group">
@@ -839,12 +838,7 @@
                     <button class="stat-badge-btn active" onclick="filterByKpi('all')" id="kpiBtnAll">
                         Tất cả <span class="count" id="countAll">0</span>
                     </button>
-                    <button class="stat-badge-btn" onclick="filterByKpi('Còn hiệu lực')" id="kpiBtnActive">
-                        Còn hiệu lực <span class="count" id="countActive">0</span>
-                    </button>
-                    <button class="stat-badge-btn" onclick="filterByKpi('Hết hiệu lực')" id="kpiBtnExpired">
-                        Hết hiệu lực <span class="count" id="countExpired">0</span>
-                    </button>
+                    <!-- Mỗi giá trị đang sử dụng của Danh mục Tình trạng hiệu lực [DM_61] 01 nút (sinh khi tải trang) -->
                 </div>
 
                 <div class="action-toolbar" style="margin-top: 0; margin-bottom: 0;">
@@ -865,6 +859,7 @@
                         <th class="sortable" onclick="sortTable('loaiVanban')" style="width: 140px;">Loại văn bản <i class="fa-solid fa-sort" id="sort_loaiVanban"></i></th>
                         <th class="sortable" onclick="sortTable('coquanBanhanh')">Cơ quan ban hành <i class="fa-solid fa-sort" id="sort_coquanBanhanh"></i></th>
                         <th class="sortable cell-center" onclick="sortTable('ngayBanhanh')" style="width: 130px;">Ngày ban hành <i class="fa-solid fa-sort" id="sort_ngayBanhanh"></i></th>
+                        <th class="sortable cell-center" onclick="sortTable('ngayCoHieuLuc')" style="width: 130px;">Ngày có hiệu lực <i class="fa-solid fa-sort" id="sort_ngayCoHieuLuc"></i></th>
                         <th class="sortable" onclick="sortTable('nguoiTao')" style="min-width: 150px;">Cán bộ xử lý <i class="fa-solid fa-sort" id="sort_nguoiTao"></i></th>
                         <th class="sortable" id="thUnit" onclick="sortTable('unitName')" style="display: none; min-width: 160px;">Đơn vị thực hiện <i class="fa-solid fa-sort" id="sort_unitName"></i></th>
                         <th class="cell-center" style="width: 130px;">Tình trạng</th>
@@ -898,7 +893,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="modalTitle">Thêm mới văn bản chỉ đạo, điều hành</h3>
-                <button class="modal-close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <div class="modal-body">
@@ -962,8 +956,6 @@
                                 <label class="form-label">Tình trạng hiệu lực <span style="color: var(--danger-color);">*</span></label>
                                 <select id="docStatus" class="form-select">
                                     <option value="">-- Lựa chọn --</option>
-                                    <option value="Còn hiệu lực">Còn hiệu lực</option>
-                                    <option value="Hết hiệu lực">Hết hiệu lực</option>
                                 </select>
                                 <div id="docStatusBadge" style="display: none; padding-top: 6px;"></div>
                                 <span class="field-error-text" id="error_docStatus">Đây là trường bắt buộc</span>
@@ -981,24 +973,25 @@
                             <textarea id="docNote" class="form-control" rows="3" maxlength="2000" style="resize: vertical;"></textarea>
                         </div>
 
-                        <div class="grid-layout" id="auditInfo" style="grid-template-columns: repeat(2, 1fr); gap: 15px; display: none;">
-                            <div class="form-group">
-                                <label class="form-label">Cán bộ xử lý</label>
-                                <input type="text" id="docCreatorName" class="form-control" disabled>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Đơn vị thực hiện</label>
-                                <input type="text" id="docOwnerName" class="form-control" disabled>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Người cập nhật, thời điểm cập nhật</label>
-                                <input type="text" id="docAudit" class="form-control" disabled>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Tài liệu đính kèm: bảng chuẩn BTNN (btnn_tai_lieu_kem_theo.js) -->
                     <div id="docTlktHost" style="min-width: 0;"></div>
+                    <!-- Cán bộ xử lý, Đơn vị thực hiện, Người cập nhật: dưới Tài liệu đính kèm, trên Lịch sử cập nhật -->
+                    <div class="grid-layout" id="auditInfo" style="grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 12px; display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Cán bộ xử lý</label>
+                            <input type="text" id="docCreatorName" class="form-control" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Đơn vị thực hiện</label>
+                            <input type="text" id="docOwnerName" class="form-control" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Người cập nhật, thời điểm cập nhật</label>
+                            <input type="text" id="docAudit" class="form-control" disabled>
+                        </div>
+                    </div>
 
                     <!-- Lịch sử cập nhật: chỉ hiển thị ở Xem chi tiết khi có dữ liệu (ghi khi Sửa có thay đổi) -->
                     <div id="docHistoryHost"></div>
@@ -1037,6 +1030,8 @@
         <span id="toastMessage"></span>
     </div>
 
+    <!-- Danh mục Tình trạng hiệu lực [DM_61] dùng chung VBQPPL và Văn bản chỉ đạo, điều hành -->
+    <script src="../01_Quan_tri_he_thong/dm_tinh_trang_hieu_luc.js?v=20261106tthl1"></script>
     <script src="btnn_luong_xu_ly.js?v=20261105tn1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
@@ -1069,7 +1064,7 @@
         // Bộ lọc "Đơn vị thực hiện": khối Địa phương, người dùng Bộ Tư pháp/Cục
         const showUnitFilter = () => KHOI === 'dp' && level() === 'BTP';
         const showUnitCol = () => KHOI === 'tw' || level() === 'BTP';
-        const colCount = () => 9 + (showUnitCol() ? 1 : 0);
+        const colCount = () => 10 + (showUnitCol() ? 1 : 0);
         const CUC_ID = 'CĐK-01', BTP_ID = 'BTP-01';
         const userById = id => (W && W.USERS ? W.USERS.find(u => u.id === id) : null);
         // Cơ quan của đơn vị công tác: Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước, Bộ Tư pháp hoặc Sở Tư pháp
@@ -1104,7 +1099,7 @@
                     { id: 2, soKyHieu: '45/QĐ-TTg', loaiVanban: 'Chiến lược, chính sách', coquanBanhanh: 'Thủ tướng Chính phủ', trichYeu: 'Phê duyệt Chiến lược hoàn thiện thể chế về trách nhiệm bồi thường của Nhà nước giai đoạn 2026 - 2030', ngay: 8, tinhTrang: 'Còn hiệu lực', nguoiKy: 'Phó Thủ tướng', files: ['QD_45_TTg_Chien_luoc.pdf'] },
                     { id: 3, soKyHieu: '12/CT-TTg', loaiVanban: 'Chỉ thị', coquanBanhanh: 'Thủ tướng Chính phủ', trichYeu: 'Tăng cường thực hiện công tác bồi thường nhà nước trong hoạt động quản lý hành chính', ngay: 12, tinhTrang: 'Còn hiệu lực', nguoiKy: 'Thủ tướng Chính phủ', files: ['CT_12_TTg.pdf'] },
                     { id: 4, soKyHieu: '3150/BTP-BTNN', loaiVanban: 'Công văn chỉ đạo', coquanBanhanh: 'Bộ Tư pháp', trichYeu: 'Hướng dẫn báo cáo công tác bồi thường nhà nước kỳ báo cáo năm 2026', ngay: 15, tinhTrang: 'Còn hiệu lực', nguoiKy: 'Thứ trưởng', files: ['CV_3150_BTP_Huong_dan_bao_cao.pdf', 'Phu_luc_bieu_mau.docx'] },
-                    { id: 5, soKyHieu: '88/NQ-CP', loaiVanban: 'Chiến lược, chính sách', coquanBanhanh: 'Chính phủ', trichYeu: 'Nghị quyết về chính sách hỗ trợ người bị thiệt hại thực hiện quyền yêu cầu bồi thường', ngay: 21, tinhTrang: 'Còn hiệu lực', nguoiKy: 'Thủ tướng Chính phủ', files: ['NQ_88_CP.pdf'] },
+                    { id: 5, soKyHieu: '88/NQ-CP', loaiVanban: 'Chiến lược, chính sách', coquanBanhanh: 'Chính phủ', trichYeu: 'Nghị quyết về chính sách hỗ trợ người bị thiệt hại thực hiện quyền yêu cầu bồi thường', ngay: 21, tinhTrang: 'Bị sửa đổi bổ sung', nguoiKy: 'Thủ tướng Chính phủ', files: ['NQ_88_CP.pdf'] },
                     { id: 6, soKyHieu: '27/TB-BTP', loaiVanban: 'Thông báo kết luận', coquanBanhanh: 'Bộ Tư pháp', trichYeu: 'Thông báo kết luận của Lãnh đạo Bộ tại Hội nghị sơ kết công tác bồi thường nhà nước 6 tháng đầu năm', ngay: 30, tinhTrang: 'Còn hiệu lực', nguoiKy: 'Chánh Văn phòng', files: ['TB_27_BTP.pdf'] },
                     { id: 7, soKyHieu: '560/QĐ-BTP', loaiVanban: 'Quyết định', coquanBanhanh: 'Bộ Tư pháp', trichYeu: 'Ban hành Kế hoạch kiểm tra công tác bồi thường nhà nước tại các bộ, ngành, địa phương', ngay: 38, tinhTrang: 'Còn hiệu lực', nguoiKy: 'Bộ trưởng', files: ['QD_560_BTP.pdf'] },
                     { id: 8, soKyHieu: '210/KH-CĐKGDBĐ', loaiVanban: 'Kế hoạch', coquanBanhanh: 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', trichYeu: 'Kế hoạch tập huấn nghiệp vụ giải quyết bồi thường cho công chức Sở Tư pháp', ngay: 45, tinhTrang: 'Hết hiệu lực', nguoiKy: 'Cục trưởng', files: ['KH_210_Cuc.pdf'] }
@@ -1113,7 +1108,7 @@
             return [
                 { id: 101, unit: 'STP-HN', soKyHieu: '215/KH-UBND', loaiVanban: 'Kế hoạch', cq: 0, trichYeu: 'Kế hoạch thực hiện công tác bồi thường nhà nước trên địa bàn Thành phố năm 2027', ngay: 4, tinhTrang: 'Còn hiệu lực', nguoiKy: 'Phó Chủ tịch UBND', files: ['KH_215_UBND_HN.pdf'] },
                 { id: 102, unit: 'STP-HN', soKyHieu: '1820/STP-HCTP', loaiVanban: 'Công văn chỉ đạo', cq: 1, trichYeu: 'Đôn đốc các cơ quan giải quyết bồi thường báo cáo tình hình giải quyết yêu cầu bồi thường quý IV', ngay: 9, tinhTrang: 'Còn hiệu lực', nguoiKy: 'Giám đốc Sở', files: ['CV_1820_STP_HN.pdf'] },
-                { id: 103, unit: 'STP-HN', soKyHieu: '35/QĐ-UBND', loaiVanban: 'Quyết định', cq: 0, trichYeu: 'Ban hành Quy chế phối hợp giữa các sở, ngành trong công tác bồi thường nhà nước', ngay: 25, tinhTrang: 'Còn hiệu lực', nguoiKy: 'Chủ tịch UBND', files: ['QD_35_UBND_HN.pdf'] },
+                { id: 103, unit: 'STP-HN', soKyHieu: '35/QĐ-UBND', loaiVanban: 'Quyết định', cq: 0, trichYeu: 'Ban hành Quy chế phối hợp giữa các sở, ngành trong công tác bồi thường nhà nước', ngay: 25, tinhTrang: 'Bị sửa đổi bổ sung', nguoiKy: 'Chủ tịch UBND', files: ['QD_35_UBND_HN.pdf'] },
                 { id: 104, unit: 'STP-HCM', soKyHieu: '480/KH-UBND', loaiVanban: 'Kế hoạch', cq: 0, trichYeu: 'Kế hoạch kiểm tra công tác bồi thường nhà nước tại các phường năm 2026', ngay: 6, tinhTrang: 'Còn hiệu lực', nguoiKy: 'Phó Chủ tịch UBND', files: ['KH_480_UBND_HCM.pdf'] },
                 { id: 105, unit: 'STP-HCM', soKyHieu: '2205/STP-HCTP', loaiVanban: 'Công văn chỉ đạo', cq: 1, trichYeu: 'Hướng dẫn thực hiện hỗ trợ người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường', ngay: 18, tinhTrang: 'Còn hiệu lực', nguoiKy: 'Phó Giám đốc Sở', files: ['CV_2205_STP_HCM.pdf'] },
                 { id: 106, unit: 'STP-HP', soKyHieu: '09/CT-UBND', loaiVanban: 'Chỉ thị', cq: 0, trichYeu: 'Tăng cường trách nhiệm người đứng đầu trong công tác bồi thường nhà nước', ngay: 14, tinhTrang: 'Còn hiệu lực', nguoiKy: 'Chủ tịch UBND', files: ['CT_09_UBND_HP.pdf'] },
@@ -1123,7 +1118,7 @@
 
         // LOCAL STORAGE (mỗi khối 01 khóa); version buster khi đổi dữ liệu mẫu
         const DB_KEY = 'btnn_vbcd_' + KHOI;
-        const DB_VERSION = 'v3';
+        const DB_VERSION = 'v4';
         let documents = [];
         function loadDocs() {
             try {
@@ -1141,6 +1136,10 @@
                 }));
                 saveDocs();
             }
+            // Tình trạng hiệu lực theo Danh mục [DM_61]: lưu mã (tinhTrangMa) + tên tại thời điểm lưu (tinhTrang); dữ liệu cũ lưu tên thì quy đổi sang mã
+            let changed = false;
+            documents.forEach(d => { if (DM_TTHL.normalize(d)) changed = true; });
+            if (changed) saveDocs();
         }
         function saveDocs() {
             try {
@@ -1150,6 +1149,8 @@
         }
 
         let activeKpiFilter = 'all';
+        // Danh mục [DM_61] thay đổi tại Quản lý danh mục (tab khác): cập nhật bộ lọc, lọc nhanh và nhãn
+        window.addEventListener('storage', e => { if (e.key === 'masterCategories') { documents.forEach(d => DM_TTHL.normalize(d)); updateKpiCounters(); renderTthlControls(); refreshTable(); } });
         let currentPage = 1;
         let pageSize = 20;
         let sortColumn = 'ngayBanhanh';
@@ -1240,27 +1241,35 @@
             // Rule 6: không có quyền thêm mới thì ẩn nút (important: lớp chuẩn hóa .uxu-btn-tb - btnn_uxu_dong_bo.js - đặt display !important)
             document.getElementById('btnCreate').style.setProperty('display', canCreate() ? 'inline-flex' : 'none', 'important');
             loadDocs();
+            renderTthlControls();
             refreshTable();
             if (W && W.mountUserSwitcher) W.mountUserSwitcher();
         });
 
 
         // KPI (đếm theo Tình trạng hiệu lực, trong phạm vi dữ liệu)
-        const KPI_BTN = { 'all': 'kpiBtnAll', 'Còn hiệu lực': 'kpiBtnActive', 'Hết hiệu lực': 'kpiBtnExpired' };
-        function statusBadgeHtml(st) {
-            return `<span class="badge ${st === 'Còn hiệu lực' ? 'badge-success' : 'badge-danger'}">${st || '—'}</span>`;
+        const tthlEsc = v => String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+        // Nút lọc nhanh: 'Tất cả' + mỗi giá trị đang sử dụng của Danh mục Tình trạng hiệu lực [DM_61] 01 nút (khóa = mã giá trị)
+        const kpiBtnId = code => code === 'all' ? 'kpiBtnAll' : 'kpiBtn_' + code;
+        function renderTthlControls() {
+            DM_TTHL.fillSelect(document.getElementById('filterStatus'), 'Tất cả');
+            const row = document.getElementById('kpiStatsRow');
+            row.querySelectorAll('.stat-badge-btn[data-tthl]').forEach(b => b.remove());
+            DM_TTHL.active().forEach(c => row.insertAdjacentHTML('beforeend', `<button class="stat-badge-btn" data-tthl="${tthlEsc(c.code)}" id="${kpiBtnId(c.code)}" onclick="filterByKpi('${tthlEsc(c.code)}')">${tthlEsc(c.name)} <span class="count">0</span></button>`));
+            if (activeKpiFilter !== 'all' && !document.getElementById(kpiBtnId(activeKpiFilter))) activeKpiFilter = 'all';
+            row.querySelectorAll('.stat-badge-btn').forEach(b => b.classList.toggle('active', b.id === kpiBtnId(activeKpiFilter)));
         }
+        function statusBadgeHtml(code, fallbackName) { return DM_TTHL.badge(code, fallbackName); }
         function visibleDocs() { return documents.filter(d => !d.isDeleted && canSeeRec(d)); }
         function updateKpiCounters() {
             const list = visibleDocs();
             document.getElementById('countAll').innerText = list.length;
-            document.getElementById('countActive').innerText = list.filter(d => d.tinhTrang === 'Còn hiệu lực').length;
-            document.getElementById('countExpired').innerText = list.filter(d => d.tinhTrang === 'Hết hiệu lực').length;
+            document.querySelectorAll('#kpiStatsRow .stat-badge-btn[data-tthl]').forEach(b => { b.querySelector('.count').innerText = list.filter(d => d.tinhTrangMa === b.dataset.tthl).length; });
         }
         function filterByKpi(status) {
             activeKpiFilter = status;
             document.querySelectorAll('.stat-badge-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(KPI_BTN[status] || 'kpiBtnAll').classList.add('active');
+            (document.getElementById(kpiBtnId(status)) || document.getElementById('kpiBtnAll')).classList.add('active');
             currentPage = 1;
             refreshTable();
         }
@@ -1278,15 +1287,15 @@
             if (sum) list = list.filter(d => d.trichYeu.toLowerCase().includes(sum));
             if (type) list = list.filter(d => d.loaiVanban === type);
             if (issuer) list = list.filter(d => d.coquanBanhanh.toLowerCase().includes(issuer));
-            if (status) list = list.filter(d => d.tinhTrang === status);
+            if (status) list = list.filter(d => d.tinhTrangMa === status);
             if (fromD) list = list.filter(d => { const x = parseDate(d.ngayBanhanh); return x && x >= fromD; });
             if (toD) list = list.filter(d => { const x = parseDate(d.ngayBanhanh); return x && x <= toD; });
             if (showUnitFilter() && PV && document.getElementById('filter_unit')) list = list.filter(d => PV.matchFilter(d.unit, d.nguoiTao || '', 'filter_unit'));
-            if (activeKpiFilter !== 'all') list = list.filter(d => d.tinhTrang === activeKpiFilter);
+            if (activeKpiFilter !== 'all') list = list.filter(d => d.tinhTrangMa === activeKpiFilter);
 
             list.sort((a, b) => {
                 let va = sortColumn === 'unitName' ? recOrg(a) : a[sortColumn], vb = sortColumn === 'unitName' ? recOrg(b) : b[sortColumn];
-                if (sortColumn === 'ngayBanhanh') { va = parseDate(va) || new Date(0); vb = parseDate(vb) || new Date(0); }
+                if (sortColumn === 'ngayBanhanh' || sortColumn === 'ngayCoHieuLuc') { va = parseDate(va) || new Date(0); vb = parseDate(vb) || new Date(0); }
                 else { va = (va || '').toString().toLowerCase(); vb = (vb || '').toString().toLowerCase(); }
                 if (va < vb) return sortOrder === 'asc' ? -1 : 1;
                 if (va > vb) return sortOrder === 'asc' ? 1 : -1;
@@ -1340,9 +1349,10 @@
                     <td>${esc(d.loaiVanban)}</td>
                     <td>${esc(d.coquanBanhanh)}</td>
                     <td class="cell-center">${esc(d.ngayBanhanh)}</td>
+                    <td class="cell-center">${esc(d.ngayCoHieuLuc || '')}</td>
                     <td>${esc(d.nguoiTao || '')}</td>
                     ${showUnitCol() ? `<td>${esc(recOrg(d))}</td>` : ''}
-                    <td class="cell-center">${statusBadgeHtml(d.tinhTrang)}</td>
+                    <td class="cell-center">${statusBadgeHtml(d.tinhTrangMa, d.tinhTrang)}</td>
                     <td class="cell-center"><div class="action-flex">
                         ${editBtns}
                     </div></td>
@@ -1451,7 +1461,7 @@
                 + `<tr><td colspan="${n}" style="${font}font-size:11pt;font-style:italic;text-align:center;border:none;">${esc(info)}</td></tr>`
                 + (unitNote ? `<tr><td colspan="${n}" style="${font}font-size:11pt;font-style:italic;text-align:center;border:none;">${esc(unitNote)}</td></tr>` : '')
                 + '<tr>' + headers.map(h => `<th style="${font}font-size:12pt;background:#e5e7eb;">${esc(h)}</th>`).join('') + '</tr>'
-                + list.map((d, i) => '<tr>' + [i + 1, d.soKyHieu, d.trichYeu, d.loaiVanban, d.coquanBanhanh, d.ngayBanhanh, d.ngayCoHieuLuc, d.nguoiKy, d.nguoiTao || '', ...(unitCol ? [recOrg(d)] : []), d.tinhTrang]
+                + list.map((d, i) => '<tr>' + [i + 1, d.soKyHieu, d.trichYeu, d.loaiVanban, d.coquanBanhanh, d.ngayBanhanh, d.ngayCoHieuLuc, d.nguoiKy, d.nguoiTao || '', ...(unitCol ? [recOrg(d)] : []), DM_TTHL.name(d.tinhTrangMa, d.tinhTrang)]
                     .map(v => `<td style="${font}font-size:12pt;mso-number-format:'\\@';">${esc(v)}</td>`).join('') + '</tr>').join('')
                 + `<tr><td colspan="${n}" style="${font}font-size:10pt;font-style:italic;text-align:right;border:none;">Xuất ngày ${esc(stamp)} bởi ${esc(currentUserName())}</td></tr>`
                 + '</table>';
@@ -1618,7 +1628,8 @@
                 el.value = val || '';
             });
             document.getElementById('docSigner').value = doc ? (doc.nguoiKy || '') : '';
-            document.getElementById('docStatus').value = doc ? (doc.tinhTrang || 'Còn hiệu lực') : 'Còn hiệu lực';
+            // Combobox chỉ gồm giá trị đang sử dụng của [DM_61]; bản ghi có giá trị đã ngừng sử dụng vẫn hiển thị đúng tên
+            DM_TTHL.fillSelect(document.getElementById('docStatus'), '-- Lựa chọn --', doc ? (doc.tinhTrangMa || '') : DM_TTHL.defaultCode());
             document.getElementById('docSummary').value = doc ? doc.trichYeu : '';
             document.getElementById('docNote').value = doc ? (doc.ghiChu || '') : '';
             tempDocFiles = doc ? toTlktRows(doc.files) : [];
@@ -1694,7 +1705,7 @@
             const fields = {
                 soKyHieu: num, loaiVanban: type, coquanBanhanh: issuerSel === CQ_KHAC ? issuerOther : issuerSel,
                 ngayBanhanh: issueRaw, ngayCoHieuLuc: effectRaw,
-                nguoiKy: v('docSigner'), tinhTrang: status, trichYeu: summary, ghiChu: v('docNote'),
+                nguoiKy: v('docSigner'), tinhTrangMa: status, tinhTrang: DM_TTHL.name(status), trichYeu: summary, ghiChu: v('docNote'),
                 files: docFiles
             };
             const persist = () => {

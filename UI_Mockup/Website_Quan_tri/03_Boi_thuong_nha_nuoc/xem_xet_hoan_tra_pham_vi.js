@@ -1,6 +1,6 @@
 /*
  * Xem xét trách nhiệm hoàn trả - Màn danh sách (Prompt 1):
- * - Giả lập người dùng theo đơn vị: Đơn vị tạo hội đồng / Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương A, B / Sở Tư pháp / Lãnh đạo.
+ * - Giả lập người dùng theo đơn vị: Đơn vị tạo hội đồng / Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại A, B / Sở Tư pháp / Lãnh đạo.
  * - Trạng thái 02 tầng: trạng thái chi tiết (hồ sơ / phần đơn vị / cán bộ) và trạng thái chung (cấp ngoài) tổng hợp theo phạm vi dữ liệu.
  * - Nạp sau script chính của trang; ghi đè các hàm hiển thị danh sách (renderRefundTable, tab, bộ lọc, thao tác).
  */
@@ -14,8 +14,8 @@
     const STP_UNITS = [U_A, U_CHU];
     const HT_SCOPES = {
         don_vi_chu: { label: 'Đơn vị tạo hội đồng (' + U_CHU + ')', unit: U_CHU, legacy: 'chuyen_vien' },
-        don_vi_a: { label: 'Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương A (' + U_A + ')', unit: U_A, legacy: 'chuyen_vien' },
-        don_vi_b: { label: 'Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương B (' + U_B + ')', unit: U_B, legacy: 'chuyen_vien' },
+        don_vi_a: { label: 'Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại A (' + U_A + ')', unit: U_A, legacy: 'chuyen_vien' },
+        don_vi_b: { label: 'Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại B (' + U_B + ')', unit: U_B, legacy: 'chuyen_vien' },
         stp: { label: 'Sở Tư pháp (' + U_STP + ')', unit: U_STP, legacy: 'chuyen_vien' },
         lanh_dao: { label: 'Lãnh đạo phê duyệt', unit: '', legacy: 'lanh_dao' }
     };
@@ -43,29 +43,39 @@
         MIEN: ['Miễn hoàn trả', '', 'Miễn hoàn trả'],
         DONE: ['Hoàn thành', '', 'Hoàn thành'],
         // Cấp cán bộ: Đình chỉ hoàn trả; trạng thái chung (roll-up): Đình chỉ xem xét hoàn trả
-        DC: ['Đình chỉ hoàn trả', '', 'Đình chỉ xem xét hoàn trả']
+        DC: ['Đình chỉ hoàn trả', '', 'Đình chỉ xem xét hoàn trả'],
+        // SRS 05/11/2026: không có nhóm riêng, tính là trạng thái kết thúc (người Đã chết khi ban hành QĐ hoàn trả; Mức độ lỗi Không có lỗi khi lưu ý kiến hội đồng)
+        CHAMDUT: ['Chấm dứt hoàn trả', '', 'Hoàn thành'],
+        KXX: ['Không xem xét TNHT', '', 'Hoàn thành']
     };
+    const ENDED_ST = ['MIEN', 'DONE', 'DC', 'CHAMDUT', 'KXX'];
     // Hồ sơ (trước khi chốt ý kiến Hội đồng): mã trạng thái nội bộ của trang -> nhóm tổng hợp
     const HS_GROUP = {
         'Chờ thành lập hội đồng': 'Chờ xử lý',
         'Chờ duyệt QĐ thành lập': 'Đang xử lý', 'Chờ duyệt thành lập hội đồng': 'Đang xử lý', 'Chờ duyệt QĐ đình chỉ': 'Đang xử lý',
         'Bị trả lại thành lập HĐ': 'Chờ xử lý', 'Từ chối duyệt QĐ thành lập': 'Chờ xử lý', 'Bị trả lại QĐ đình chỉ': 'Chờ xử lý',
         'Họp hội đồng': 'Chờ xử lý',
-        'Đình chỉ xem xét hoàn trả': 'Đình chỉ xem xét hoàn trả'
+        'Đình chỉ xem xét hoàn trả': 'Đình chỉ xem xét hoàn trả',
+        // Chấm dứt việc xem xét trách nhiệm hoàn trả (cả hồ sơ)
+        'Chờ chấm dứt': 'Chờ xử lý', 'Bị trả lại QĐ chấm dứt': 'Chờ xử lý', 'Chờ duyệt QĐ chấm dứt': 'Đang xử lý',
+        'Chấm dứt hoàn trả': 'Chấm dứt hoàn trả'
     };
+    const CD_STATES = ['Chờ chấm dứt', 'Chờ duyệt QĐ chấm dứt', 'Bị trả lại QĐ chấm dứt', 'Chấm dứt hoàn trả'];
     // Bước 1: trạng thái hồ sơ đang trình / bị trả lại QĐ thành lập Hội đồng -> [badge, Loại trình]
     const HS_TRINH = {
         'Chờ duyệt QĐ thành lập': ['Chờ duyệt', 'QĐ thành lập hội đồng'], 'Chờ duyệt thành lập hội đồng': ['Chờ duyệt', 'QĐ thành lập hội đồng'],
         'Bị trả lại thành lập HĐ': ['Bị trả lại', 'QĐ thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị trả lại', 'QĐ thành lập hội đồng'],
         // Đình chỉ cả hồ sơ (trước khi tách phần đơn vị)
-        'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'QĐ đình chỉ'], 'Bị trả lại QĐ đình chỉ': ['Bị trả lại', 'QĐ đình chỉ']
+        'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'QĐ đình chỉ'], 'Bị trả lại QĐ đình chỉ': ['Bị trả lại', 'QĐ đình chỉ'],
+        // Chấm dứt việc xem xét trách nhiệm hoàn trả (cả hồ sơ)
+        'Chờ duyệt QĐ chấm dứt': ['Chờ duyệt', 'QĐ chấm dứt'], 'Bị trả lại QĐ chấm dứt': ['Bị trả lại', 'QĐ chấm dứt']
     };
-    const CHUNG_ORDER = ['Chờ duyệt', 'Bị trả lại', 'Chờ xử lý', 'Đang xử lý', 'Thu tiền hoàn trả', 'Miễn hoàn trả', 'Hoàn thành', 'Đình chỉ xem xét hoàn trả'];
+    const CHUNG_ORDER = ['Chờ duyệt', 'Bị trả lại', 'Chờ xử lý', 'Đang xử lý', 'Thu tiền hoàn trả', 'Miễn hoàn trả', 'Hoàn thành', 'Đình chỉ xem xét hoàn trả', 'Chấm dứt hoàn trả'];
     // Mỗi trạng thái chung một màu badge riêng
-    const CHUNG_STYLE = { 'Chờ duyệt': 'wait', 'Bị trả lại': 'tralai', 'Chờ xử lý': 'warning', 'Đang xử lý': 'pending', 'Thu tiền hoàn trả': 'info', 'Miễn hoàn trả': 'mien', 'Hoàn thành': 'success', 'Đình chỉ xem xét hoàn trả': 'draft' };
+    const CHUNG_STYLE = { 'Chờ duyệt': 'wait', 'Bị trả lại': 'tralai', 'Chờ xử lý': 'warning', 'Đang xử lý': 'pending', 'Thu tiền hoàn trả': 'info', 'Miễn hoàn trả': 'mien', 'Hoàn thành': 'success', 'Đình chỉ xem xét hoàn trả': 'draft', 'Chấm dứt hoàn trả': 'chamdut' };
     try {
         const st = document.createElement('style');
-        st.textContent = '.ht-st-mien{background-color:#fdf2f8;color:#be185d;border:1px solid #fbcfe8;} .ht-st-wait{background-color:#ede9fe;color:#6d28d9;border:1px solid #ddd6fe;} .ht-trinh-sub{font-size:11px;color:#64748b;margin-top:3px;}';
+        st.textContent = '.ht-st-mien{background-color:#fdf2f8;color:#be185d;border:1px solid #fbcfe8;} .ht-st-wait{background-color:#ede9fe;color:#6d28d9;border:1px solid #ddd6fe;} .ht-st-chamdut{background-color:#e2e8f0;color:#334155;border:1px solid #94a3b8;} .ht-trinh-sub{font-size:11px;color:#64748b;margin-top:3px;}';
         document.head.appendChild(st);
     } catch (e) { /* bỏ qua */ }
 
@@ -89,7 +99,7 @@
         'HT-2026-018': { owner: U_CHU, officers: [C('Bùi Văn Nam', U_A, 'BTC_HT', { hd: 25000000 })] },
         'HT-2026-021': { owner: U_CHU, officers: [
             C('Phạm Quốc Huy', U_A, 'CD_HT', { hd: 55000000 }),
-            C('Đặng Thị Lan', U_A, 'CBH_HT', { hd: 30000000, pay: U_B })] }
+            C('Đặng Thị Lan', U_B, 'CBH_HT', { hd: 30000000, pay: U_A })] }
     };
     // Dữ liệu mẫu bổ sung phủ các trạng thái của ma trận (ht_du_lieu_mau.js)
     Object.keys(window.HT_EXTRA_SPLIT || {}).forEach(code => {
@@ -102,7 +112,7 @@
         Object.keys(st).forEach(code => {
             const v = st[code]; if (!v || !Array.isArray(v.officers) || !v.officers.length) return;
             const old = HT_SPLIT[code] || {};
-            HT_SPLIT[code] = { owner: v.owner || old.owner || U_CHU, officers: v.officers.map(o => C(o.name, o.unit, o.st, { xl: o.xl, hd: o.hd, giam: o.giam, paid: o.paid, hoan: o.hoan, pt: o.pt, trinh: o.trinh || '', refund: o.refund || 0, stp: !!o.stp, pay: o.pay || '' })) };
+            HT_SPLIT[code] = { owner: v.owner || old.owner || U_CHU, officers: v.officers.map(o => C(o.name, o.unit, o.st, { xl: o.xl, hd: o.hd, giam: o.giam, paid: o.paid, hoan: o.hoan, pt: o.pt, trinh: o.trinh || '', refund: o.refund || 0, stp: !!o.stp, pay: o.pay || '', chet: !!o.chet })) };
         });
     } catch (e) { /* bỏ qua */ }
     // Hồ sơ chưa tách phần đơn vị: trạng thái hồ sơ do màn chi tiết lưu (thành lập Hội đồng, đình chỉ cả hồ sơ...)
@@ -113,7 +123,8 @@
     // Hồ sơ chưa chốt ý kiến Hội đồng: cán bộ (dự thảo ý kiến tại Bước 2) theo đơn vị
     const HT_DRAFT_UNIT = { 'HT-2026-005': U_A, 'HT-2026-007': U_B, 'HT-2026-008': U_A, 'HT-2026-011': U_B, 'HT-2026-013': U_B, 'HT-2026-016': U_A, 'HT-2026-023': U_A, 'HT-2026-024': U_B };
     // Rút gọn danh sách mẫu để chụp ảnh tài liệu: bỏ các hồ sơ trùng trạng thái (giữ đủ hồ sơ demo của ma trận chuyển trạng thái)
-    const HT_HIDE = ['HT-2026-006', 'HT-2026-012', 'HT-2026-013', 'HT-2026-014', 'HT-2026-015', 'HT-2026-016', 'HT-2026-019', 'HT-2026-020',
+    // HT-2026-012 (Chờ duyệt QĐ chấm dứt), HT-2026-020 (Bị trả lại QĐ chấm dứt): hiển thị để demo chấm dứt việc xem xét trách nhiệm hoàn trả
+    const HT_HIDE = ['HT-2026-006', 'HT-2026-013', 'HT-2026-014', 'HT-2026-015', 'HT-2026-016', 'HT-2026-019',
         'HT-2026-002', 'HT-2026-009', 'HT-2026-017', 'HT-2026-018'];
     try { if (typeof dossiersList !== 'undefined') for (let i = dossiersList.length - 1; i >= 0; i--) if (HT_HIDE.includes(dossiersList[i].code)) dossiersList.splice(i, 1); } catch (e) { /* bỏ qua */ }
 
@@ -123,12 +134,13 @@
     function cbStatus(o) { return CB_ST[o.trinh || o.st] || CB_ST.THU; }
     // Trình ký phát sinh khi cán bộ đang Thu tiền hoàn trả: giữ nhóm Thu hồi; trình ký QĐ đình chỉ ở Bước 3: theo Loại trình
     function cbGroup(o) { return o.trinh ? (o.st === 'THU' ? 'Thu tiền hoàn trả' : cbStatus(o)[2]) : cbStatus(o)[2]; }
-    function issued(o) { return !['CBH_HT', 'CD_HT', 'BTC_HT'].includes(o.st); }
-    function unitIssued(d, unit) { const l = (splitOf(d) || { officers: [] }).officers.filter(o => o.unit === unit); return l.length > 0 && l.every(issued); }
+    // Cán bộ Không xem xét TNHT: không thuộc phần đơn vị, không có Quyết định hoàn trả
+    function issued(o) { return !['CBH_HT', 'CD_HT', 'BTC_HT', 'KXX'].includes(o.st); }
+    function unitIssued(d, unit) { const l = (splitOf(d) || { officers: [] }).officers.filter(o => o.unit === unit && o.st !== 'KXX'); return l.length > 0 && l.every(issued); }
     function cur() { return HT_SCOPES[htScope]; }
-    // Đơn vị ban hành QĐ hoàn trả của cán bộ: tố tụng hình sự - Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương; lĩnh vực khác - Đơn vị tạo Hội đồng (01 QĐ cho toàn bộ cán bộ)
+    // Đơn vị ban hành QĐ hoàn trả của cán bộ (SRS 05/11/2026): tố tụng hình sự - Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại; lĩnh vực khác - Đơn vị tạo Hội đồng (01 QĐ cho toàn bộ cán bộ)
     function isTths(d) { return /tố tụng hình sự/i.test((d && d.claimField) || ''); }
-    function issuerOf(d, o) { return isTths(d) ? (o.pay || o.unit) : ownerOf(d); }
+    function issuerOf(d, o) { return isTths(d) ? o.unit : ownerOf(d); }
 
     // ===== Phạm vi dữ liệu =====
     // Trả về { visible, full, officers } của hồ sơ đối với người dùng giả lập
@@ -156,15 +168,16 @@
         const l = sc.officers;
         if (!l.length) return 'Chờ xử lý';
         // Thứ tự: trạng thái đích (100% kết thúc) > Thu tiền hoàn trả > Đang xử lý > Chờ xử lý
-        const ended = o => ['MIEN', 'DONE', 'DC'].includes(o.st) && !o.trinh;
+        const ended = o => ENDED_ST.includes(o.st) && !o.trinh;
         if (l.every(ended)) {
-            if (l.every(o => o.st === 'DC')) return 'Đình chỉ xem xét hoàn trả';
+            // Đình chỉ cả hồ sơ (06/11/2026): mọi cán bộ Đình chỉ hoàn trả, trừ cán bộ Không xem xét TNHT đã kết thúc từ Bước 2
+            if (l.some(o => o.st === 'DC') && l.every(o => o.st === 'DC' || o.st === 'KXX')) return 'Đình chỉ xem xét hoàn trả';
             if (l.every(o => o.st === 'MIEN')) return 'Miễn hoàn trả';
             return 'Hoàn thành';
         }
         if (l.some(o => o.st === 'THU')) return 'Thu tiền hoàn trả';
         // Có đơn vị đang trình / đã ban hành QĐ hoàn trả, hoặc đang trình QĐ miễn / giảm / đình chỉ
-        if (l.some(o => !['CBH_HT', 'BTC_HT', 'DC'].includes(o.st) || /^CD_/.test(o.trinh || ''))) return 'Đang xử lý';
+        if (l.some(o => !['CBH_HT', 'BTC_HT', 'DC', 'KXX'].includes(o.st) || /^CD_/.test(o.trinh || ''))) return 'Đang xử lý';
         return 'Chờ xử lý';
     }
     function trinhLabel(d) { return !isSplit(d) && HS_TRINH[d.status] ? HS_TRINH[d.status][1] : ''; }
@@ -191,13 +204,13 @@
     // pt: số tiền phải hoàn trả hiện tại do màn chi tiết lưu (sau QĐ giảm / giảm bổ sung)
     // Miễn / Đình chỉ: số phải thu = số đã thu được giữ lại (0 khi chưa thu hoặc đã trả lại)
     // Sau khi ban hành QĐ hoàn trả: số phải thu sau miễn / giảm theo ý kiến Hội đồng (Giảm: số tiền sau giảm; Miễn: số đã thu)
-    function phaiThu(o) { if (['MIEN', 'DC'].includes(o.st)) return o.paid || 0; if (!issued(o)) return 0; if (o.pt != null) return o.pt; if (o.xl === 'MIEN') return o.paid || 0; return o.xl === 'GIAM' ? (o.giam || o.hd) : o.hd; }
+    function phaiThu(o) { if (['CHAMDUT', 'KXX'].includes(o.st)) return 0; if (['MIEN', 'DC'].includes(o.st)) return o.paid || 0; if (!issued(o)) return 0; if (o.pt != null) return o.pt; if (o.xl === 'MIEN') return o.paid || 0; return o.xl === 'GIAM' ? (o.giam || o.hd) : o.hd; }
     function money(sc) {
         const off = sc.officers.filter(issued);
         const tong = off.reduce((s, o) => s + phaiThu(o), 0);
         const paid = off.reduce((s, o) => s + (o.paid || 0), 0);
         const hd = sc.officers.reduce((s, o) => s + (o.hd || 0), 0);
-        const ended = sc.officers.filter(o => ['DONE', 'MIEN', 'DC'].includes(o.st) && !o.trinh).length;
+        const ended = sc.officers.filter(o => ENDED_ST.includes(o.st) && !o.trinh).length;
         return { tong, paid, hd, conLai: Math.max(0, tong - paid), ended, n: sc.officers.length, anyIssued: off.length > 0 };
     }
 
@@ -207,7 +220,7 @@
             if (!isSplit(d)) return HT_APPROVAL_STATES.includes(d.status);
             return sc.officers.some(o => cbStatus(o)[0] === 'Chờ duyệt');
         }
-        if (!isSplit(d)) return sc.full && ['Chờ thành lập hội đồng', 'Bị trả lại thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Bị trả lại QĐ đình chỉ', 'Họp hội đồng'].includes(d.status);
+        if (!isSplit(d)) return sc.full && ['Chờ thành lập hội đồng', 'Bị trả lại thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Bị trả lại QĐ đình chỉ', 'Họp hội đồng', 'Chờ chấm dứt', 'Bị trả lại QĐ chấm dứt'].includes(d.status);
         if (htScope === 'stp') return sc.officers.some(o => o.st === 'THU');
         // Sau khi chốt ý kiến HĐ: Đơn vị ban hành QĐ hoàn trả - trình ký QĐ hoàn trả, trình ký lại; đơn vị tạo Hội đồng, Cơ quan đang quản lý, sử dụng, trả lương - thu tiền
         const U = cur().unit;
@@ -228,6 +241,8 @@
         if (!isSplit(d)) {
             if (sc.full && d.status !== 'Chờ thành lập hội đồng') list.push({ gate: 'Trình ký QĐ thành lập Hội đồng' });
             if (sc.full && d.status === 'Đình chỉ xem xét hoàn trả') list.push({ gate: 'Trình ký QĐ đình chỉ' });
+            if (sc.full && CD_STATES.includes(d.status)) list.push({ gate: 'Chốt ý kiến Hội đồng' });
+            if (sc.full && ['Chờ duyệt QĐ chấm dứt', 'Chấm dứt hoàn trả'].includes(d.status)) list.push({ gate: 'Trình ký QĐ chấm dứt' });
             return list;
         }
         if (sc.full) { list.push({ gate: 'Trình ký QĐ thành lập Hội đồng' }); list.push({ gate: 'Chốt ý kiến Hội đồng' }); }
@@ -258,7 +273,9 @@
     window.filterByKpiRefund = function () { /* bỏ Lọc nhanh */ };
 
     window.switchRefundTab = function (tab) {
+        const prevTab = htTab;
         htTab = tab === 'done' ? 'done' : 'pending';
+        if (prevTab !== htTab) setDefaultDateRange(); // [vt2] Từ ngày theo tab (chỉ khi đổi tab)
         document.querySelectorAll('.ht-tabs-card .ht-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === htTab));
         const sel = document.getElementById('filterStatusRefund');
         if (sel) {
@@ -311,10 +328,10 @@
     // Bước mở sẵn (Stepper 4 bước): bước nhỏ nhất của phần việc chưa kết thúc trong phạm vi
     function focusStepOf(d, sc) {
         if (!isSplit(d)) {
-            if (['Họp hội đồng', 'Đình chỉ xem xét hoàn trả'].includes(d.status) || d.status === 'Chờ duyệt QĐ đình chỉ' || d.status === 'Bị trả lại QĐ đình chỉ') return 2;
+            if (['Họp hội đồng', 'Đình chỉ xem xét hoàn trả'].includes(d.status) || d.status === 'Chờ duyệt QĐ đình chỉ' || d.status === 'Bị trả lại QĐ đình chỉ' || CD_STATES.includes(d.status)) return 2;
             return 1;
         }
-        const open = sc.officers.filter(o => !['DONE', 'MIEN', 'DC'].includes(o.st) || o.trinh);
+        const open = sc.officers.filter(o => !ENDED_ST.includes(o.st) || o.trinh);
         if (!open.length) return 4;
         return open.some(o => o.st !== 'THU') ? 3 : 4;
     }
@@ -468,11 +485,11 @@
         });
     };
     window.applyRefundFilters = function () { currentPageRefund = 1; renderRefundTable(); };
-    // Mặc định Từ ngày = ngày đầu tháng hiện tại, Đến ngày = ngày hiện tại (theo ngày hệ thống)
+    // Mặc định Đến ngày = ngày hiện tại; Từ ngày: [vt2] tab Chờ xử lý trống (mọi hồ sơ đang chờ đều hiển thị), tab Đã xử lý ngày đầu tháng hiện tại
     function setDefaultDateRange() {
         const now = new Date(), p2 = n => String(n).padStart(2, '0'), my = p2(now.getMonth() + 1) + '/' + now.getFullYear();
         const f = document.getElementById('filterFromDate'), t = document.getElementById('filterToDate');
-        if (f) f.value = '01/' + my;
+        if (f) { f.value = htTab === 'done' ? '01/' + my : ''; if (f._flatpickr) f._flatpickr.setDate(f.value || null, false, 'd/m/Y'); }
         if (t) t.value = p2(now.getDate()) + '/' + my;
     }
     setDefaultDateRange();
@@ -495,8 +512,17 @@
             const s = d && splitOf(d);
             if (s && loai === 'QĐ hoàn trả' && d.status !== before) {
                 // Ban hành QĐ hoàn trả: Miễn -> Miễn hoàn trả; Giảm / không giảm, không miễn -> Thu tiền hoàn trả (không QĐ miễn / giảm riêng)
-                s.officers.filter(o => o.st === 'CD_HT').forEach(o => { o.st = approve ? (o.xl === 'MIEN' ? 'MIEN' : 'THU') : 'BTC_HT'; });
+                // Người thi hành công vụ gây thiệt hại Đã chết: Chấm dứt hoàn trả, không phát sinh thu tiền hoàn trả
+                s.officers.filter(o => o.st === 'CD_HT').forEach(o => { o.st = approve ? (o.chet ? 'CHAMDUT' : (o.xl === 'MIEN' ? 'MIEN' : 'THU')) : 'BTC_HT'; });
                 renderRefundTable();
+            }
+            // Hồ sơ chưa tách phần đơn vị (QĐ thành lập Hội đồng, QĐ đình chỉ, QĐ chấm dứt): lưu trạng thái để màn Danh sách giữ kết quả khi tải lại
+            if (d && !s && d.status !== before) {
+                try {
+                    const all = JSON.parse(localStorage.getItem('btnn_ht_status_v1') || '{}') || {};
+                    all[d.code] = Object.assign({}, all[d.code] || {}, { status: d.status });
+                    localStorage.setItem('btnn_ht_status_v1', JSON.stringify(all));
+                } catch (e) { /* bỏ qua */ }
             }
         };
     }

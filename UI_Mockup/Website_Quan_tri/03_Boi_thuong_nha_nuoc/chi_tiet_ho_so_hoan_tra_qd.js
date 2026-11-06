@@ -17,21 +17,28 @@
         CBH_GIAM: ['Chờ ban hành QĐ Giảm mức hoàn trả', ''], CD_GIAM: ['Chờ duyệt', 'QĐ giảm mức hoàn trả'], BTC_GIAM: ['Bị trả lại', 'QĐ giảm mức hoàn trả'],
         THU: ['Thu tiền hoàn trả', ''], MIEN: ['Miễn hoàn trả', ''], DONE: ['Hoàn thành', ''], DC: ['Đình chỉ hoàn trả', ''],
         // Trình ký QĐ đình chỉ cấp cán bộ (o.trinh) và chờ trả lại tiền sau khi ban hành QĐ đình chỉ (phương án hoàn trả lại số tiền đã thu)
-        CD_DC: ['Chờ duyệt', 'QĐ đình chỉ'], BTC_DC: ['Bị trả lại', 'QĐ đình chỉ'], TL_DC: ['Chờ trả lại tiền', 'Đình chỉ hoàn trả']
+        CD_DC: ['Chờ duyệt', 'QĐ đình chỉ'], BTC_DC: ['Bị trả lại', 'QĐ đình chỉ'], TL_DC: ['Chờ trả lại tiền', 'Đình chỉ hoàn trả'],
+        // SRS 05/11/2026: cán bộ Đã chết chuyển Chấm dứt hoàn trả khi ban hành QĐ hoàn trả; Mức độ lỗi Không có lỗi chuyển Không xem xét TNHT khi lưu ý kiến hội đồng (kết thúc, chỉ xem)
+        CHAMDUT: ['Chấm dứt hoàn trả', ''], KXX: ['Không xem xét TNHT', '']
     };
     // Trạng thái chung (roll-up) - cùng quy tắc với màn danh sách
     const GROUP = {
         CBH_HT: 'Chờ xử lý', BTC_HT: 'Chờ xử lý', CBH_MIEN: 'Chờ xử lý', BTC_MIEN: 'Chờ xử lý', CBH_GIAM: 'Chờ xử lý', BTC_GIAM: 'Chờ xử lý', BTC_DC: 'Chờ xử lý',
         CD_HT: 'Đang xử lý', CD_MIEN: 'Đang xử lý', CD_GIAM: 'Đang xử lý', CD_DC: 'Đang xử lý', TL_DC: 'Thu tiền hoàn trả',
-        THU: 'Thu tiền hoàn trả', MIEN: 'Miễn hoàn trả', DONE: 'Hoàn thành', DC: 'Đình chỉ xem xét hoàn trả'
+        THU: 'Thu tiền hoàn trả', MIEN: 'Miễn hoàn trả', DONE: 'Hoàn thành', DC: 'Đình chỉ xem xét hoàn trả',
+        // Không có nhóm riêng; tính là trạng thái kết thúc
+        CHAMDUT: 'Hoàn thành', KXX: 'Hoàn thành'
     };
     const HS_GROUP = {
         'Chờ thành lập hội đồng': 'Chờ xử lý', 'Bị trả lại thành lập HĐ': 'Chờ xử lý', 'Từ chối duyệt QĐ thành lập': 'Chờ xử lý', 'Bị trả lại QĐ đình chỉ': 'Chờ xử lý', 'Họp hội đồng': 'Chờ xử lý',
         'Chờ duyệt QĐ thành lập': 'Đang xử lý', 'Chờ duyệt thành lập hội đồng': 'Đang xử lý', 'Chờ duyệt QĐ đình chỉ': 'Đang xử lý',
-        'Đình chỉ xem xét hoàn trả': 'Đình chỉ xem xét hoàn trả'
+        'Đình chỉ xem xét hoàn trả': 'Đình chỉ xem xét hoàn trả',
+        // Chấm dứt việc xem xét trách nhiệm hoàn trả (cả hồ sơ)
+        'Chờ chấm dứt': 'Chờ xử lý', 'Bị trả lại QĐ chấm dứt': 'Chờ xử lý', 'Chờ duyệt QĐ chấm dứt': 'Đang xử lý', 'Chấm dứt hoàn trả': 'Chấm dứt hoàn trả'
     };
     const STEP3 = ['CBH_HT', 'CD_HT', 'BTC_HT', 'CBH_MIEN', 'CD_MIEN', 'BTC_MIEN', 'CBH_GIAM', 'CD_GIAM', 'BTC_GIAM'];
-    const ENDED = ['MIEN', 'DONE', 'DC'];
+    const ENDED = ['MIEN', 'DONE', 'DC', 'CHAMDUT', 'KXX'];
+    const isDeadO = o => !!(o && (o.daChet || o.trangThaiNguoi === 'Đã chết'));
     // Dữ liệu mẫu (đồng bộ màn danh sách)
     const SEED = {
         'Nguyễn Văn Đạt': ['DONE', 'HT'], 'Lê Văn Cường': ['THU', 'HT'], 'Hoàng Văn D': ['THU', 'GIAM', 11000000], 'Trần Thị Bình': ['THU', 'HT'],
@@ -69,12 +76,13 @@
     const isSplit = () => !!(api().isSplitDossier && api().isSplitDossier());
     // Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương: nhận QĐ hoàn trả và thực hiện Thu tiền hoàn trả (mặc định = Cơ quan trực tiếp quản lý)
     const payUnitOf = o => (o && (o.payUnit || o.agency)) || '';
-    // Đơn vị ban hành QĐ hoàn trả:
-    // - Lĩnh vực tố tụng hình sự: Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương của từng cán bộ; cán bộ tách thành phần đơn vị theo đơn vị này, mỗi phần đơn vị 01 QĐ hoàn trả
+    // Đơn vị ban hành QĐ hoàn trả (SRS 05/11/2026):
+    // - Lĩnh vực tố tụng hình sự: Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại của từng cán bộ; cán bộ tách thành phần đơn vị theo đơn vị này, mỗi phần đơn vị 01 QĐ hoàn trả
     // - Lĩnh vực khác: Đơn vị tạo QĐ thành lập Hội đồng; không tách phần đơn vị, 01 QĐ hoàn trả cho toàn bộ cán bộ của hồ sơ
-    // Khóa phần đơn vị (u.unit) = Đơn vị ban hành QĐ hoàn trả
+    // Khóa phần đơn vị (u.unit) = Đơn vị ban hành QĐ hoàn trả; cán bộ Không xem xét TNHT (Mức độ lỗi Không có lỗi) không thuộc phần đơn vị nào
     const isTths = () => /tố tụng hình sự/i.test((activeDossier && activeDossier.claimField) || '');
-    const unitKeyOf = o => (isTths() ? payUnitOf(o) : ((activeDossier && activeDossier.ownerUnit) || payUnitOf(o)));
+    const isKxx = o => !!o && (o.ct === 'KXX' || o.loi === 'Không có lỗi');
+    const unitKeyOf = o => (isKxx(o) ? '' : (isTths() ? (o.agency || payUnitOf(o)) : ((activeDossier && activeDossier.ownerUnit) || payUnitOf(o))));
     const inUnit = (o, u) => unitKeyOf(o) === (u && u.unit != null ? u.unit : u);
     const issuerOf = u => u.unit;
     const xlCode = o => { const x = o.xl || ''; return x === 'Giảm mức hoàn trả' || x === 'GIAM' ? 'GIAM' : (x === 'Miễn hoàn trả' || x === 'MIEN' ? 'MIEN' : 'HT'); };
@@ -93,7 +101,7 @@
             const all = readStore();
             all[activeDossier.code] = {
                 owner: activeDossier.ownerUnit || '',
-                officers: officers().map(o => ({ name: o.name, unit: o.agency, pay: payUnitOf(o), st: o.ct, xl: xlCode(o), hd: o.hd || 0, giam: o.giam || 0, paid: o.paid || 0, hoan: !!o.ykhdDieuKienHoan, pt: STEP3.includes(o.ct) ? null : (o.total || 0), trinh: o.trinh || '', refund: o.refund || 0, stp: (o.payments || []).some(p => /^Sở Tư pháp/.test(p.unit || '')) })),
+                officers: officers().map(o => ({ name: o.name, unit: o.agency, pay: payUnitOf(o), chet: isDeadO(o), st: o.ct, xl: xlCode(o), hd: o.hd || 0, giam: o.giam || 0, paid: o.paid || 0, hoan: !!o.ykhdDieuKienHoan, pt: STEP3.includes(o.ct) ? null : (o.total || 0), trinh: o.trinh || '', refund: o.refund || 0, stp: (o.payments || []).some(p => /^Sở Tư pháp/.test(p.unit || '')) })),
                 detail: { units: activeDossier.htUnits, dcs: activeDossier.htDcs || [], mgs: activeDossier.htMgs || [], recs: officers().map(o => ({ name: o.name, payUnit: payUnitOf(o), ct: o.ct, qd2: o.qd2 || null, qd3: o.qd3 || null, trinh: o.trinh || '', total: o.total, paid: o.paid || 0, payments: o.payments || [], refund: o.refund || 0, refundDone: o.refundDone || null, dcKey: o.dcKey != null ? o.dcKey : null })) }
             };
             localStorage.setItem(STORE_KEY, JSON.stringify(all));
@@ -111,6 +119,8 @@
             if (rec) Object.assign(o, { payUnit: rec.payUnit || payUnitOf(o), ct: rec.ct, qd2: rec.qd2, qd3: rec.qd3 || null, trinh: rec.trinh || '', total: rec.total != null ? rec.total : o.total, paid: rec.paid || 0, payments: rec.payments || [], refund: rec.refund || 0, refundDone: rec.refundDone || null, dcKey: rec.dcKey != null ? rec.dcKey : null });
             // QĐ giảm mức hoàn trả đã ban hành: số tiền sau giảm theo Quyết định
             if (rec && rec.qd2 && rec.qd2.issuedAt && rec.qd2.supp && rec.qd2.supp.phaiHT != null) o.giam = rec.qd2.supp.giam;
+            // Mức độ lỗi Không có lỗi: Không xem xét TNHT (không phải hoàn trả)
+            if (o.loi === 'Không có lỗi') { o.ct = 'KXX'; o.total = 0; }
             if (!o.ct) {
                 if (o.ctStatus) o.ct = 'CBH_HT';
                 else if (sd) o.ct = sd[0];
@@ -133,7 +143,7 @@
         if (stored && stored.detail && stored.detail.units) activeDossier.htUnits = stored.detail.units;
         activeDossier.htDcs = (stored && stored.detail && stored.detail.dcs) || activeDossier.htDcs || [];
         activeDossier.htMgs = (stored && stored.detail && stored.detail.mgs) || activeDossier.htMgs || [];
-        const names = Array.from(new Set(officers().map(unitKeyOf)));
+        const names = Array.from(new Set(officers().map(unitKeyOf))).filter(Boolean);
         activeDossier.htUnits = names.map(u => {
             const old = (activeDossier.htUnits || []).find(x => x.unit === u) || {};
             const list = officers().filter(o => inUnit(o, u));
@@ -185,7 +195,8 @@
     function allDc(unit) { const l = officers().filter(o => inUnit(o, unit)); return l.length > 0 && l.every(o => o.ct === 'DC'); }
     function recomputeBase() {
         const l = officers();
-        if (l.length && l.every(o => o.ct === 'DC')) activeDossier.status = 'Đình chỉ xem xét hoàn trả';
+        // Đình chỉ cả hồ sơ: mọi cán bộ Đình chỉ hoàn trả, trừ cán bộ Không xem xét TNHT (Không có lỗi) đã kết thúc từ Bước 2
+        if (l.length && l.some(o => o.ct === 'DC') && l.every(o => o.ct === 'DC' || o.ct === 'KXX')) activeDossier.status = 'Đình chỉ xem xét hoàn trả';
         else if (l.length && l.every(o => ENDED.includes(o.ct))) activeDossier.status = 'Hoàn thành';
         else if (l.some(o => STEP3.includes(o.ct))) activeDossier.status = 'Chờ ban hành QĐ hoàn trả';
         else activeDossier.status = 'Thu tiền hoàn trả';
@@ -299,7 +310,7 @@
         if (kind === 'HT') { const u = activeDossier.htUnits[key]; return { unit: u.unit, issuer: issuerOf(u), list: officers().filter(o => inUnit(o, u) && o.ct !== 'DC'), u }; }
         if (kind === 'DC') {
             const d = (activeDossier.htDcs || [])[key] || DC_DRAFT || { names: [] };
-            return { unit: d.unit, list: d.names.map(n => officers().find(o => o.name === n)).filter(Boolean), u: activeDossier.htUnits.find(x => x.unit === d.unit) || {}, dc: d.dc || null };
+            return { unit: d.unit, list: d.names.map(n => officers().find(o => o.name === n)).filter(Boolean), u: activeDossier.htUnits.find(x => x.unit === d.unit) || {}, dc: d.dc || null, whole: !!d.whole };
         }
         if (isBatch(kind)) {
             const d = (activeDossier.htMgs || [])[key] || MG_DRAFT || { names: [] };
@@ -414,7 +425,7 @@
         const viewOnly = scope() !== 'lanh_dao' && !canActUnit(u);
         return '<div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">'
             + '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;"><button type="button" data-admin-icon-normalized="1" title="Thu gọn / Mở rộng" onclick="htToggleUnit(\'' + esc(key).replace(/'/g, '&#39;') + '\', this)" style="border:1px solid var(--border-color); background:#fff; border-radius:6px; width:28px; height:28px; cursor:pointer;"><i class="fa-solid ' + (col ? 'fa-chevron-right' : 'fa-chevron-down') + '"></i></button>'
-            // Tố tụng hình sự: Phần đơn vị theo Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương; lĩnh vực khác: 01 khối cho toàn bộ cán bộ của hồ sơ
+            // Tố tụng hình sự: Phần đơn vị theo Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại; lĩnh vực khác: 01 khối cho toàn bộ cán bộ của hồ sơ
             + '<div class="card-title" style="margin-bottom:0;"><i class="fa-solid fa-sitemap"></i> ' + (isTths() ? 'Phần đơn vị: ' + esc(u.unit) : 'Toàn bộ cán bộ của hồ sơ') + '</div>' + badgeHtml
             + '<span style="font-size:11.5px; color:#475569; white-space:nowrap;">Đơn vị ban hành QĐ hoàn trả: ' + esc(issuerOf(u)) + '</span>'
             + (viewOnly ? '<span style="font-size:11px; padding:2px 8px; border-radius:999px; background:#eff6ff; color:#1d4ed8; font-weight:500; white-space:nowrap;">' + (hasOwnUnit() ? 'Chỉ xem (Đơn vị phối hợp)' : 'Chỉ xem') + '</span>' : '') + '</div>'
@@ -510,27 +521,33 @@
     const dcEligible = o => !dcQdIssued(o) && !ENDED.includes(o.ct) && !/^CD_/.test(o.ct) && !/^CD_|_DC$/.test(o.trinh || '') && !((o.refund || 0) > 0);
     const dcUnitIssued = u => !!(u && (u.st === 'DONE' || (u.qd && u.qd.issuedAt)));
     // Cột Chọn chỉ hiển thị khi QĐ hoàn trả của đơn vị chưa ban hành
+    // 06/11/2026 (chốt với khách hàng): bỏ đình chỉ cấp cán bộ (chọn từng cán bộ); cột Chọn và nút Trình ký QĐ đình chỉ của phần đơn vị không còn hiển thị.
+    // Đình chỉ cả hồ sơ: nút «Đình chỉ» ở thanh nút chân trang (ht3OpenDcHs)
+    const DC_CAP_CAN_BO = false;
     function dcCheckCell(o, idx, u, ui) {
+        if (!DC_CAP_CAN_BO) return '';
         if (!canActUnit(u) || dcUnitIssued(u)) return '';
         return '<td style="text-align:center;">' + (dcEligible(o) ? '<input type="checkbox" class="htDcChk" data-u="' + ui + '" data-idx="' + idx + '" onchange="ht3DcSync(' + ui + ')">' : '') + '</td>';
     }
     function dcHeadCell(u, ui, rows) {
+        if (!DC_CAP_CAN_BO) return '';
         if (!canActUnit(u) || dcUnitIssued(u)) return '';
         const any = rows.some(x => dcEligible(x.o));
         return '<th style="width:40px; text-align:center;">' + (any ? '<input type="checkbox" class="htDcAll" data-u="' + ui + '" title="Chọn tất cả" onchange="ht3DcAll(' + ui + ', this.checked)">' : '') + '</th>';
     }
     // Trình ký QĐ đình chỉ: chỉ hiển thị khi QĐ hoàn trả của phần đơn vị chưa ban hành (đã ban hành: ẩn, không khóa mờ)
     function dcToolbar(u, ui, rows) {
+        if (!DC_CAP_CAN_BO) return '';
         if (!canActUnit(u) || dcUnitIssued(u) || !rows.some(x => dcEligible(x.o))) return '';
         // Khóa khi chưa chọn cán bộ; có chọn: bật, hiển thị số cán bộ đã chọn (ht3DcSync)
         return '<div style="display:flex; justify-content:flex-end; margin-bottom:8px;"><button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-dc htDcBtn" data-u="' + ui + '" disabled onclick="ht3OpenDc(' + ui + ')"><i class="fa-solid fa-ban"></i> Trình ký QĐ đình chỉ</button></div>';
     }
     // Khối các lượt trình QĐ đình chỉ của đơn vị: Ký duyệt / Từ chối (Lãnh đạo), Trình ký lại (bị trả lại), Xem file
-    function dcBlock(u) {
-        const recs = (activeDossier.htDcs || []).map((d, k) => ({ d, k })).filter(x => x.d && x.d.unit === u.unit);
+    // Lượt trình đình chỉ cấp cán bộ của phần đơn vị (dữ liệu cũ trước 06/11/2026); lượt đình chỉ cả hồ sơ hiển thị ở khối riêng đầu Bước 3 (dcHsBlock)
+    function dcBlock(u) { return dcBang((activeDossier.htDcs || []).map((d, k) => ({ d, k })).filter(x => x.d && !x.d.whole && x.d.unit === u.unit), canActUnit(u), 'Quyết định đình chỉ (Mẫu 39/BTNN)'); }
+    function dcBang(recs, act, tieuDe) {
         if (!recs.length) return '';
-        const act = canActUnit(u);
-        let h = '<div style="font-weight:700; color:var(--primary-color); margin:16px 0 8px;"><i class="fa-solid fa-ban"></i> Quyết định đình chỉ (Mẫu 39/BTNN)</div>'
+        let h = '<div style="font-weight:700; color:var(--primary-color); margin:16px 0 8px;"><i class="fa-solid fa-ban"></i> ' + tieuDe + '</div>'
             + '<table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th>Cán bộ</th><th style="width:150px;">Hình thức ký</th><th style="width:220px;">Trạng thái</th><th style="width:150px;">Tệp văn bản</th><th style="width:150px; text-align:center;">Thao tác</th></tr></thead><tbody>';
         recs.forEach((x, n) => {
             const d = x.d;
@@ -559,6 +576,26 @@
         if (idxs.some(i => !activeDossier.refundOfficers[i] || !dcEligible(activeDossier.refundOfficers[i]))) { showToast('Cán bộ được chọn không đủ điều kiện đình chỉ.', 'warning'); return; }
         activeDossier.htDcs = activeDossier.htDcs || [];
         DC_DRAFT = { unit: u.unit, names: idxs.map(i => activeDossier.refundOfficers[i].name) };
+        ht3OpenSign('DC', activeDossier.htDcs.length);
+    };
+    // ===== Đình chỉ cả hồ sơ sau khi chốt ý kiến Hội đồng (06/11/2026, chốt với khách hàng; nhanhl2 chọn thời điểm) =====
+    // Đơn vị tạo Hội đồng trình ký 01 Quyết định đình chỉ (Mẫu 39/BTNN) cho toàn bộ cán bộ chưa kết thúc của hồ sơ, khi chưa có Quyết định hoàn trả
+    // nào được ban hành (khoản 2 Điều 69 Luật 10/2017); áp dụng cả khi tố tụng hình sự có nhiều phần đơn vị
+    const laChuHs = () => !!(api().isOwnerScope && api().isOwnerScope()) && !isLeader() && scope() !== 'stp';
+    const dcHsIssued = () => (activeDossier.htUnits || []).some(dcUnitIssued);
+    const dcHsActive = () => (activeDossier.htDcs || []).some(d => d && d.whole);
+    function dcHsBlock() {
+        const recs = (activeDossier.htDcs || []).map((d, k) => ({ d, k })).filter(x => x.d && x.d.whole);
+        if (!recs.length) return '';
+        return '<div class="card" style="border-left:4px solid #dc2626;"><div class="card-body" style="padding-top:4px;">' + dcBang(recs, laChuHs(), 'Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả - cả hồ sơ (Mẫu 39/BTNN)') + '</div></div>';
+    }
+    window.ht3OpenDcHs = function () {
+        if (!laChuHs()) return;
+        if (dcHsIssued()) { showToast('Đã có Quyết định hoàn trả được ban hành, không thực hiện Đình chỉ xem xét hoàn trả.', 'warning'); return; }
+        const names = officers().filter(o => !ENDED.includes(o.ct)).map(o => o.name);
+        if (!names.length) { showToast('Hồ sơ không còn người thi hành công vụ gây thiệt hại để đình chỉ.', 'warning'); return; }
+        activeDossier.htDcs = activeDossier.htDcs || [];
+        DC_DRAFT = { unit: api().owner ? api().owner() : myUnit(), names, whole: true };
         ht3OpenSign('DC', activeDossier.htDcs.length);
     };
 
@@ -635,7 +672,7 @@
         Array.from(panel.children).forEach(ch => { if (ch !== root) { ch.dataset.ht3Hide = '1'; ch.style.display = 'none'; } });
         root.style.display = '';
         const units = orderUnits(unitsInView());
-        let h = '<div style="margin-bottom:14px;"><h3 style="font-size:16px; font-weight:800; color:var(--primary-color); margin:0; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-file-signature"></i> Ban hành Quyết định hoàn trả</h3></div>';
+        let h = '<div style="margin-bottom:14px;"><h3 style="font-size:16px; font-weight:800; color:var(--primary-color); margin:0; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-file-signature"></i> Ban hành Quyết định hoàn trả</h3></div>' + dcHsBlock();
         if (!units.length) h += '<div class="card"><div class="card-body" style="color:var(--text-muted);">Không có phần đơn vị thuộc phạm vi dữ liệu của người dùng.</div></div>';
         units.forEach(u => {
             const i = activeDossier.htUnits.indexOf(u);
@@ -645,7 +682,7 @@
                 + '<div style="font-weight:700; color:var(--primary-color); margin-bottom:8px;"><i class="fa-solid fa-file-contract"></i> Quyết định hoàn trả (Mẫu 36/BTNN)</div>' + qdBlock(u, i)
                 + '<div style="display:flex; justify-content:space-between; align-items:flex-end; gap:10px;"><div style="font-weight:700; color:var(--primary-color); margin-bottom:8px;"><i class="fa-solid fa-users"></i> Cán bộ của đơn vị</div>' + dcToolbar(u, i, list) + '</div>'
                 + '<table class="dense-table" style="width:100%;"><thead><tr>' + dcHeadCell(u, i, list) + '<th style="width:45px; text-align:center;">STT</th><th>Họ và tên</th><th style="width:90px;">Mức độ lỗi</th><th style="width:150px;">Giảm/Miễn hoàn trả</th><th style="width:140px;">Phương thức hoàn trả</th><th style="width:140px; text-align:right;">Số tiền cần hoàn trả (đ)</th><th style="width:130px; text-align:right;">Số tiền sau giảm (đ)</th><th style="width:230px;">Trạng thái</th><th style="min-width:160px; text-align:center; white-space:nowrap;">Thao tác</th></tr></thead><tbody>'
-                + list.map((x, k) => '<tr>' + dcCheckCell(x.o, x.idx, u, i) + '<td style="text-align:center;">' + (k + 1) + '</td><td><strong>' + esc(x.o.name) + '</strong><div style="font-size:12px; color:var(--text-muted);">' + esc(x.o.role || '') + '</div></td><td>' + esc(x.o.loi === 'Khác' ? (x.o.ykhdLoiKhac || 'Khác') : (x.o.loi || '-')) + '</td><td>' + esc(xlText(x.o)) + lyDoNote(x.o) + '</td><td style="white-space:nowrap;' + (xlCode(x.o) === 'MIEN' ? ' text-align:center;' : '') + '">' + (xlCode(x.o) === 'MIEN' ? '-' : esc((window.htMethod ? htMethod(x.o.refundMethod) : x.o.refundMethod) || '-')) + '</td><td style="text-align:right;">' + money(x.o.hd) + '</td><td style="text-align:right;">' + (xlCode(x.o) === 'GIAM' ? money(x.o.giam) : '-') + '</td><td>' + officerStatusCell(x.o, x.idx) + '</td><td class="ht-act-cell">' + actCell(x.o, x.idx, u) + '</td></tr>').join('')
+                + list.map((x, k) => '<tr>' + dcCheckCell(x.o, x.idx, u, i) + '<td style="text-align:center;">' + (k + 1) + '</td><td><strong>' + esc(x.o.name) + '</strong>' + (window.htDeadTag ? window.htDeadTag(x.o) : '') + '<div style="font-size:12px; color:var(--text-muted);">' + esc(x.o.role || '') + '</div></td><td>' + esc(x.o.loi === 'Khác' ? (x.o.ykhdLoiKhac || 'Khác') : (x.o.loi || '-')) + '</td><td>' + esc(xlText(x.o)) + lyDoNote(x.o) + '</td><td style="white-space:nowrap;' + (xlCode(x.o) === 'MIEN' ? ' text-align:center;' : '') + '">' + (xlCode(x.o) === 'MIEN' ? '-' : esc((window.htMethod ? htMethod(x.o.refundMethod) : x.o.refundMethod) || '-')) + '</td><td style="text-align:right;">' + money(x.o.hd) + '</td><td style="text-align:right;">' + (xlCode(x.o) === 'GIAM' ? money(x.o.giam) : '-') + '</td><td>' + officerStatusCell(x.o, x.idx) + '</td><td class="ht-act-cell">' + actCell(x.o, x.idx, u) + '</td></tr>').join('')
                 + '</tbody></table>' + dcBlock(u) + '</div></div>';
         });
         root.innerHTML = h;
@@ -664,7 +701,9 @@
         if (!ensureModel()) return baseStep();
         const vis = officers().filter(o => seeOfficer(o));
         if (!vis.length || vis.every(o => STEP3.includes(o.ct))) return 3;
-        return vis.some(o => ['THU', 'DONE', 'MIEN', 'DC'].includes(o.ct)) ? 4 : 3;
+        // Đình chỉ cả hồ sơ tại Bước 3 (chưa có Quyết định hoàn trả): thanh tiến trình giữ ở Bước 3, không mở Bước 4 (nhanhl2 chọn 06/11/2026)
+        if (dcHsActive() && vis.every(o => ['DC', 'KXX'].includes(o.ct))) return 3;
+        return vis.some(o => ['THU', 'DONE', 'MIEN', 'DC', 'CHAMDUT'].includes(o.ct)) ? 4 : 3;
     };
     // Thanh nút: bỏ thao tác Bước 3 cũ (QĐ hoàn trả 1 lần cho cả hồ sơ)
     const baseActions = window.renderPageHeaderActions;
@@ -672,8 +711,16 @@
         baseActions.apply(this, arguments);
         if (!activeDossier || !isSplit()) return;
         const f = el('stickyFooterActionsContainer'); if (!f) return;
-        // Sau khi chốt ý kiến Hội đồng: Đình chỉ thực hiện ở cấp cán bộ trong từng phần đơn vị (bỏ nút Đình chỉ cả hồ sơ)
+        // Sau khi chốt ý kiến HĐ: bỏ nút Đình chỉ của popup đình chỉ Bước 1, Bước 2; nút Đình chỉ cả hồ sơ của Bước 3 thêm ở dưới (06/11/2026)
         f.querySelectorAll('button').forEach(b => { if (/submitStep3ForApproval|issueStep3OfflineDecision|handleHeaderApprove|handleHeaderReject|switchToEditMode\((3|4)\)|dchtOpenModal/.test(b.getAttribute('onclick') || '')) b.remove(); });
+        // Đình chỉ cả hồ sơ: đơn vị tạo Hội đồng, chưa có Quyết định hoàn trả nào được ban hành, chưa có lượt đình chỉ cả hồ sơ, còn cán bộ chưa kết thúc.
+        // Đang có Quyết định chờ Lãnh đạo ký duyệt (QĐ hoàn trả, QĐ miễn, QĐ giảm): nút khóa mờ, ghi lý do
+        if (laChuHs() && !dcHsIssued() && !dcHsActive() && officers().some(o => !ENDED.includes(o.ct))) {
+            const ban = officers().some(o => /^CD_/.test(o.ct) || /^(CD|BTC)_DC$/.test(o.trinh || ''));
+            f.insertAdjacentHTML('afterbegin', '<button type="button" class="btn btn-danger" onclick="ht3OpenDcHs()"'
+                + (ban ? ' disabled title="Đang có Quyết định chờ Lãnh đạo ký duyệt. Chỉ đình chỉ khi không có Quyết định nào đang chờ ký duyệt."' : ' title="Đình chỉ việc xem xét trách nhiệm hoàn trả cho toàn bộ cán bộ của hồ sơ (Mẫu 39/BTNN)"')
+                + '><i class="fa-solid fa-circle-stop"></i> Đình chỉ</button>');
+        }
     };
 
     // ===== Popup trình ký (chuẩn: Hình thức ký, Stepper 02 bước, nguồn tệp, Tài liệu đính kèm, chọn Lãnh đạo) =====
@@ -749,9 +796,9 @@
     window.ht3OpenSign = function (kind, key) {
         // Lượt trình QĐ đình chỉ mới: chỉ khi QĐ hoàn trả của đơn vị chưa ban hành
         if (kind === 'DC' && !recOf('DC', key)) {
-            const du = DC_DRAFT && (activeDossier.htUnits || []).find(x => x.unit === DC_DRAFT.unit);
+            const du = DC_DRAFT && (DC_DRAFT.whole ? { unit: DC_DRAFT.unit } : (activeDossier.htUnits || []).find(x => x.unit === DC_DRAFT.unit));
             if (!du || !DC_DRAFT.names.length) { DC_DRAFT = null; showToast('Vui lòng chọn ít nhất 01 cán bộ để trình ký Quyết định đình chỉ.', 'warning'); return; }
-            if (dcUnitIssued(du)) { DC_DRAFT = null; showToast(DC_ISSUED_MSG, 'warning'); return; }
+            if (DC_DRAFT.whole ? dcHsIssued() : dcUnitIssued(du)) { DC_DRAFT = null; showToast(DC_ISSUED_MSG, 'warning'); return; }
         }
         // Lượt trình QĐ miễn / giảm bổ sung chung mới: phải có cán bộ được chọn
         if (isBatch(kind) && !recOf(kind, key) && !(MG_DRAFT && MG_DRAFT.names.length)) { MG_DRAFT = null; showToast('Vui lòng chọn ít nhất 01 cán bộ.', 'warning'); return; }
@@ -1058,7 +1105,7 @@
             tlkt: typeof tlktGet === 'function' ? tlktGet('ht3') : [], // Ký ngoài: chỉ Tài liệu ban hành kèm theo
             levels: S.levels, assignees: S.assignees.slice(), content: el('ht3Content').value.trim(), level: 0,
             hist: (recOf(S.kind, S.key) || { hist: [] }).hist.slice(), supp: readSupp(),
-            dc: readDc(), unit: S.ctx.unit, names: (S.ctx.list || []).map(o => o.name)
+            dc: readDc(), unit: S.ctx.unit, names: (S.ctx.list || []).map(o => o.name), whole: !!S.ctx.whole
         };
     }
     window.ht3Submit = function () {
@@ -1109,6 +1156,8 @@
             // Không giảm, không miễn -> Thu tiền hoàn trả; Giảm -> Thu tiền hoàn trả theo Số tiền sau giảm; Miễn -> Miễn hoàn trả
             officers().filter(o => inUnit(o, u) && o.ct !== 'DC').forEach(o => {
                 const x = xlCode(o);
+                // Người thi hành công vụ gây thiệt hại Đã chết: Chấm dứt hoàn trả (kết thúc, chỉ xem), không phát sinh thu tiền hoàn trả
+                if (isDeadO(o)) { o.ct = 'CHAMDUT'; o.total = 0; return; }
                 if (x === 'MIEN') { o.ct = 'MIEN'; o.total = 0; }
                 else { o.ct = 'THU'; o.total = x === 'GIAM' ? (o.giam || o.hd) : o.hd; }
             });
@@ -1222,8 +1271,8 @@
 
     // ===== Badge trạng thái đầu màn: trạng thái chung theo phạm vi người xem (cùng quy tắc roll-up với màn danh sách) =====
     // Màu badge trạng thái chung (đồng bộ màn danh sách)
-    const CHUNG_TONE = { 'Chờ duyệt': '#ede9fe;color:#6d28d9;border:1px solid #ddd6fe', 'Bị trả lại': '#fef3c7;color:#b45309;border:1px solid #fde68a', 'Chờ xử lý': '#fffbeb;color:#b45309;border:1px solid #fde68a', 'Đang xử lý': '#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe', 'Thu tiền hoàn trả': '#f0fdfa;color:#0d9488;border:1px solid #99f6e4', 'Miễn hoàn trả': '#fdf2f8;color:#be185d;border:1px solid #fbcfe8', 'Hoàn thành': '#ecfdf5;color:#047857;border:1px solid #a7f3d0', 'Đình chỉ xem xét hoàn trả': '#f1f5f9;color:#475569;border:1px solid #cbd5e1' };
-    const HS_TRINH = { 'Chờ duyệt QĐ thành lập': ['Chờ duyệt', 'QĐ thành lập hội đồng'], 'Chờ duyệt thành lập hội đồng': ['Chờ duyệt', 'QĐ thành lập hội đồng'], 'Bị trả lại thành lập HĐ': ['Bị trả lại', 'QĐ thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị trả lại', 'QĐ thành lập hội đồng'], 'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'QĐ đình chỉ'], 'Bị trả lại QĐ đình chỉ': ['Bị trả lại', 'QĐ đình chỉ'] };
+    const CHUNG_TONE = { 'Chờ duyệt': '#ede9fe;color:#6d28d9;border:1px solid #ddd6fe', 'Bị trả lại': '#fef3c7;color:#b45309;border:1px solid #fde68a', 'Chờ xử lý': '#fffbeb;color:#b45309;border:1px solid #fde68a', 'Đang xử lý': '#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe', 'Thu tiền hoàn trả': '#f0fdfa;color:#0d9488;border:1px solid #99f6e4', 'Miễn hoàn trả': '#fdf2f8;color:#be185d;border:1px solid #fbcfe8', 'Hoàn thành': '#ecfdf5;color:#047857;border:1px solid #a7f3d0', 'Đình chỉ xem xét hoàn trả': '#f1f5f9;color:#475569;border:1px solid #cbd5e1', 'Chấm dứt hoàn trả': '#e2e8f0;color:#334155;border:1px solid #94a3b8' };
+    const HS_TRINH = { 'Chờ duyệt QĐ thành lập': ['Chờ duyệt', 'QĐ thành lập hội đồng'], 'Chờ duyệt thành lập hội đồng': ['Chờ duyệt', 'QĐ thành lập hội đồng'], 'Bị trả lại thành lập HĐ': ['Bị trả lại', 'QĐ thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị trả lại', 'QĐ thành lập hội đồng'], 'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'QĐ đình chỉ'], 'Bị trả lại QĐ đình chỉ': ['Bị trả lại', 'QĐ đình chỉ'], 'Chờ duyệt QĐ chấm dứt': ['Chờ duyệt', 'QĐ chấm dứt'], 'Bị trả lại QĐ chấm dứt': ['Bị trả lại', 'QĐ chấm dứt'] };
     function chungDetail() {
         if (!ensureModel()) {
             const s = activeDossier.status;
@@ -1235,7 +1284,7 @@
         // Thứ tự: trạng thái đích (100% kết thúc) > Thu tiền hoàn trả > Đang xử lý > Chờ xử lý
         const ended = o => ENDED.includes(o.ct) && !o.trinh;
         let chung = 'Chờ xử lý';
-        if (vis.length && vis.every(ended)) chung = vis.every(o => o.ct === 'DC') ? 'Đình chỉ xem xét hoàn trả' : (vis.every(o => o.ct === 'MIEN') ? 'Miễn hoàn trả' : 'Hoàn thành');
+        if (vis.length && vis.every(ended)) chung = vis.some(o => o.ct === 'DC') && vis.every(o => o.ct === 'DC' || o.ct === 'KXX') ? 'Đình chỉ xem xét hoàn trả' : (vis.every(o => o.ct === 'MIEN') ? 'Miễn hoàn trả' : 'Hoàn thành');
         else if (vis.some(o => o.ct === 'THU')) chung = 'Thu tiền hoàn trả';
         else if (vis.some(o => !['CBH_HT', 'BTC_HT', 'DC'].includes(o.ct) || /^CD_/.test(o.trinh || ''))) chung = 'Đang xử lý';
         const m = new Map();

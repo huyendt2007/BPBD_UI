@@ -412,7 +412,14 @@ function kpdcBasisCard(item) {
 function kpdcHistInject(html, item) {
     var list = (item.kpdcHistory || []).slice().reverse();
     if (!list.length) return html;
-    var rows = list.map(function (h) { return '<div class="kpdt-hist-row"><span style="color:#64748b;">' + kpdcE(h.at) + '</span><span style="font-weight:600;">' + kpdcE(h.userName) + '</span><span><b>' + kpdcE(h.action) + '</b>' + (h.note ? ': ' + kpdcE(h.note) : '') + '</span></div>'; }).join('');
+    // Dòng có bản ghi liên kết (linkId, linkCode - VD Phát sinh bản ghi chi trả thêm): Mã kinh phí trong nội dung là link mở chi tiết bản ghi đó
+    var noteHtml = function (h) {
+        var s = kpdcE(h.note);
+        var links = (h.linkId && h.linkCode ? [{ id: h.linkId, code: h.linkCode }] : []).concat(Array.isArray(h.links) ? h.links : []);
+        links.forEach(function (l) { if (l && l.id && l.code) s = s.split(kpdcE(l.code)).join('<a href="javascript:void(0)" style="color:var(--primary-light); text-decoration:underline; font-weight:600;" onclick="kpdtOpen(\'' + kpdcE(l.id) + '\')">' + kpdcE(l.code) + '</a>'); });
+        return s;
+    };
+    var rows = list.map(function (h) { return '<div class="kpdt-hist-row"><span style="color:#64748b;">' + kpdcE(h.at) + '</span><span style="font-weight:600;">' + kpdcE(h.userName) + '</span><span><b>' + kpdcE(h.action) + '</b>' + (h.note ? ': ' + noteHtml(h) : '') + '</span></div>'; }).join('');
     var out = html.replace(/Lịch sử xử lý \((\d+)\)/, function (m, n) { return 'Lịch sử xử lý (' + (Number(n) + list.length) + ')'; });
     out = out.replace('<div style="color:#64748b;">Chưa có lịch sử.</div>', '');
     var key = '<div class="kpdt-card-body">';

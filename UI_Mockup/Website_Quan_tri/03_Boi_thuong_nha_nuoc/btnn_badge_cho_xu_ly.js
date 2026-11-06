@@ -13,7 +13,7 @@
     const GQ_SIM_KEY = 'bdg_gq_sim';
     // Thứ tự = thứ tự mục menu
     const MODULES = {
-        tiepNhan: { title: 'Tiếp nhận hồ sơ', page: 'tiep_nhan_ycbt.html', url: 'tiep_nhan_ycbt.html?v=3' },
+        tiepNhan: { title: 'Tiếp nhận hồ sơ', page: 'tiep_nhan_ycbt.html', url: 'tiep_nhan_ycbt.html?v=4' },
         xdcq: { title: 'Xác định cơ quan giải quyết bồi thường', page: 'xac_dinh_co_quan_boi_thuong.html', url: 'xac_dinh_co_quan_boi_thuong.html?v=20261008' },
         gqYcbt: { title: 'Giải quyết yêu cầu bồi thường', page: 'quan_ly_boi_thuong.html', url: 'quan_ly_boi_thuong.html?v=1' },
         qdGqbt: { title: 'Quyết định giải quyết bồi thường', page: 'quyet_dinh_giai_quyet_boi_thuong.html', url: 'quyet_dinh_giai_quyet_boi_thuong.html?v=1' },

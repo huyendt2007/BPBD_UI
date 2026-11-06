@@ -798,11 +798,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="formTitle">Thêm mới câu hỏi nghiệp vụ</h3>
-                <button class="modal-close-btn" onclick="closeModal('formModal')"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <form id="qForm" onsubmit="return false;">
                     <input type="hidden" id="qId">
+                    <!-- Sửa câu hỏi Bị trả lại: lý do trả lại hiển thị đầu form để biết nội dung cần sửa -->
+                    <div id="qReturnBox" style="display: none; margin-bottom: 16px; padding: 12px 16px; background: #FEF2F2; border: 1px solid #FCA5A5; border-left: 4px solid #DC2626; border-radius: 8px; color: #7F1D1D; font-size: 14px;"></div>
                     <div class="form-section">
                         <div class="form-section-title"><i class="fa-solid fa-circle-question"></i> Thông tin câu hỏi</div>
                         <div class="grid-layout" style="grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 15px;">
@@ -831,8 +832,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('formModal')">Hủy</button>
-                <button class="btn btn-outline-primary" onclick="saveQuestion(false)"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
+                <button class="btn btn-secondary" onclick="closeModal('formModal')">Hủy bỏ</button>
                 <button class="btn btn-primary" onclick="saveQuestion(true)"><i class="fa-solid fa-paper-plane"></i> Lưu và trình Lãnh đạo</button>
             </div>
         </div>
@@ -843,7 +843,6 @@
         <div class="modal-content" style="max-width: 900px;">
             <div class="modal-header">
                 <h3 id="detailTitle">Chi tiết câu hỏi nghiệp vụ</h3>
-                <button class="modal-close-btn" onclick="closeModal('detailModal')"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body" id="detailBody"></div>
             <div class="modal-footer" id="detailFooter"></div>
@@ -902,8 +901,8 @@
         const BTP_PHONG = 'PLN-02';
 
         const TOPICS = ['Tiếp nhận hồ sơ yêu cầu bồi thường', 'Xác định cơ quan giải quyết bồi thường', 'Giải quyết yêu cầu bồi thường', 'Kinh phí bồi thường', 'Trách nhiệm hoàn trả', 'Phục hồi danh dự', 'Báo cáo, thống kê', 'Khác'];
+        // 06/11/2026: bỏ trạng thái Nháp và nút Lưu nháp (BTNN không có lưu nháp)
         const ST = {
-            DRAFT: 'Nháp',
             WAIT_PHONG_SO: 'Chờ Lãnh đạo Phòng duyệt',
             WAIT_SO: 'Chờ Lãnh đạo Sở duyệt',
             RETURNED: 'Bị trả lại',
@@ -912,10 +911,10 @@
             ANSWERING: 'Đang trả lời',
             ANSWERED: 'Đã trả lời'
         };
-        const STATUS_ORDER = [ST.DRAFT, ST.WAIT_PHONG_SO, ST.WAIT_SO, ST.RETURNED, ST.WAIT_CUC, ST.WAIT_PHONG, ST.ANSWERING, ST.ANSWERED];
+        const STATUS_ORDER = [ST.WAIT_PHONG_SO, ST.WAIT_SO, ST.RETURNED, ST.WAIT_CUC, ST.WAIT_PHONG, ST.ANSWERING, ST.ANSWERED];
         const SENT = [ST.WAIT_CUC, ST.WAIT_PHONG, ST.ANSWERING, ST.ANSWERED];
         const BADGE = {
-            [ST.DRAFT]: 'badge-secondary', [ST.WAIT_PHONG_SO]: 'badge-warning', [ST.WAIT_SO]: 'badge-warning', [ST.RETURNED]: 'badge-danger', [ST.WAIT_CUC]: 'badge-warning',
+            [ST.WAIT_PHONG_SO]: 'badge-warning', [ST.WAIT_SO]: 'badge-warning', [ST.RETURNED]: 'badge-danger', [ST.WAIT_CUC]: 'badge-warning',
             [ST.WAIT_PHONG]: 'badge-warning', [ST.ANSWERING]: 'badge-info', [ST.ANSWERED]: 'badge-success'
         };
 
@@ -948,7 +947,7 @@
         // Người đang phải xử lý: dùng cho tab Chờ xử lý và cột Người xử lý hiện tại
         function isMyTask(q) {
             const r = role(), u = me();
-            if ((q.status === ST.DRAFT || q.status === ST.RETURNED) && r === 'STP_CV') return q.unit === stpOfMe() && q.creator === u.id;
+            if (q.status === ST.RETURNED && r === 'STP_CV') return q.unit === stpOfMe() && q.creator === u.id;
             if (q.status === ST.WAIT_PHONG_SO && r === 'STP_LDP') return q.unit === stpOfMe();
             if (q.status === ST.WAIT_SO && r === 'STP_LD') return q.unit === stpOfMe();
             if (q.status === ST.WAIT_CUC && r === 'CUC_LD') return true;
@@ -956,9 +955,17 @@
             if (q.status === ST.ANSWERING && r === 'BTP_CV') return q.officer === u.id;
             return false;
         }
+        // Tab Đã xử lý: câu hỏi không phải việc đang chờ của người dùng và người dùng đã tham gia xử lý (đã tạo hoặc có dòng Lịch sử xử lý do người dùng thực hiện);
+        // vai trò chỉ xem (Bộ Tư pháp ngoài Cục/Phòng, UBND cấp tỉnh): mọi câu hỏi trong phạm vi xem
+        function isDoneByMe(q) {
+            if (isMyTask(q)) return false;
+            const r = role(), id = me().id;
+            if (r === 'BTP_VIEW' || r === 'UBND_VIEW') return true;
+            return q.creator === id || (q.history || []).some(h => h.by === id) || !!(q.answer && q.answer.by === id);
+        }
         function currentHandler(q) {
             switch (q.status) {
-                case ST.DRAFT: case ST.RETURNED: return userName(q.creator);
+                case ST.RETURNED: return userName(q.creator);
                 case ST.WAIT_PHONG_SO: return 'Lãnh đạo Phòng - ' + unitName(q.unit);
                 case ST.WAIT_SO: return 'Lãnh đạo ' + unitName(q.unit);
                 case ST.WAIT_CUC: return 'Lãnh đạo Cục';
@@ -984,7 +991,7 @@
                     legal: 'Điều 33 đến Điều 39 Luật Trách nhiệm bồi thường của Nhà nước', files: ['CV_STP_HN_de_nghi_huong_dan.pdf'],
                     status: ST.ANSWERED, sentAt: fmtDate(ago(20)), phongLead: 'tpbt', officer: 'hatt',
                     answer: { content: 'Cơ quan giải quyết bồi thường là cơ quan trực tiếp quản lý người thi hành công vụ tại thời điểm thực hiện hành vi gây thiệt hại. Trường hợp cơ quan đó đã giải thể hoặc sáp nhập thì xác định theo quy định về kế thừa quyền, nghĩa vụ.', files: ['CV_BTP_tra_loi_HD-001.pdf'], by: 'hatt', at: fmtTime(ago(8, 15)) },
-                    history: [H(21, 9, 'cv_hn1', 'Lưu nháp'), H(21, 10, 'cv_hn1', 'Trình Lãnh đạo Phòng'), H(21, 15, 'tp_hctp_hn', 'Duyệt, trình Lãnh đạo Sở'), H(20, 14, 'gdso_hn', 'Duyệt, gửi Bộ Tư pháp'), H(19, 9, 'cuctruong', 'Phân công Lãnh đạo Phòng', 'Giao Trần Văn Bồi Thường'), H(18, 10, 'tpbt', 'Phân công Chuyên viên', 'Giao Trần Thị Thu Hà'), H(8, 15, 'hatt', 'Gửi trả lời')]
+                    history: [H(21, 10, 'cv_hn1', 'Trình Lãnh đạo Phòng'), H(21, 15, 'tp_hctp_hn', 'Duyệt, trình Lãnh đạo Sở'), H(20, 14, 'gdso_hn', 'Duyệt, gửi Bộ Tư pháp'), H(19, 9, 'cuctruong', 'Phân công Lãnh đạo Phòng', 'Giao Trần Văn Bồi Thường'), H(18, 10, 'tpbt', 'Phân công Chuyên viên', 'Giao Trần Thị Thu Hà'), H(8, 15, 'hatt', 'Gửi trả lời')]
                 },
                 {
                     code: `HD-${y}-002`, unit: 'STP-HCM', creator: 'cv_hcm1', topic: 'Kinh phí bồi thường',
@@ -1031,8 +1038,8 @@
                     title: 'Lưu trữ hồ sơ giải quyết bồi thường sau khi hoàn thành chi trả',
                     content: 'Thời hạn lưu trữ hồ sơ giải quyết bồi thường tại cơ quan giải quyết bồi thường là bao lâu?',
                     legal: '', files: [],
-                    status: ST.DRAFT, sentAt: '',
-                    history: [H(0, 10, 'cv_hn1', 'Lưu nháp')]
+                    status: ST.WAIT_PHONG_SO, sentAt: '',
+                    history: [H(0, 10, 'cv_hn1', 'Trình Lãnh đạo Phòng')]
                 },
                 {
                     code: `HD-${y}-008`, unit: 'STP-HN', creator: 'cv_hn2', topic: 'Giải quyết yêu cầu bồi thường',
@@ -1041,12 +1048,29 @@
                     legal: 'Điều 46 Luật Trách nhiệm bồi thường của Nhà nước', files: [],
                     status: ST.WAIT_PHONG_SO, sentAt: '',
                     history: [H(0, 9, 'cv_hn2', 'Trình Lãnh đạo Phòng')]
+                },
+                // Câu hỏi đang giao Chuyên viên Trần Thị Thu Hà trả lời (tab Chờ xử lý của người dùng giả lập mặc định không trống)
+                {
+                    code: `HD-${y}-009`, unit: 'STP-HCM', creator: 'cv_hcm1', topic: 'Giải quyết yêu cầu bồi thường',
+                    title: 'Thời hạn xác minh thiệt hại khi phải trưng cầu giám định',
+                    content: 'Vụ việc phải trưng cầu giám định thương tật để xác định thiệt hại về sức khỏe. Thời gian chờ kết quả giám định có được tính vào thời hạn xác minh thiệt hại không?',
+                    legal: 'Điều 45 Luật Trách nhiệm bồi thường của Nhà nước', files: ['CV_STP_HCM_hoi_thoi_han_xac_minh.pdf'],
+                    status: ST.ANSWERING, sentAt: fmtDate(ago(5)), phongLead: 'tpbt', officer: 'hatt',
+                    history: [H(6, 9, 'cv_hcm1', 'Trình Lãnh đạo Sở'), H(5, 10, 'gdso_hcm', 'Duyệt, gửi Bộ Tư pháp'), H(4, 9, 'cuctruong', 'Phân công Lãnh đạo Phòng', 'Giao Trần Văn Bồi Thường'), H(3, 14, 'tpbt', 'Phân công Chuyên viên', 'Giao Trần Thị Thu Hà')]
+                },
+                {
+                    code: `HD-${y}-010`, unit: 'STP-HP', creator: 'cv_hp1', topic: 'Kinh phí bồi thường',
+                    title: 'Chi trả tiền bồi thường khi người được bồi thường đã chết',
+                    content: 'Người được bồi thường chết sau khi Quyết định giải quyết bồi thường có hiệu lực nhưng trước khi nhận tiền. Cơ quan giải quyết bồi thường chi trả cho ai và cần những giấy tờ gì?',
+                    legal: '', files: [],
+                    status: ST.ANSWERING, sentAt: fmtDate(ago(2)), phongLead: 'tpbt', officer: 'hatt',
+                    history: [H(3, 9, 'cv_hp1', 'Trình Lãnh đạo Sở'), H(2, 10, 'gdso_hp', 'Duyệt, gửi Bộ Tư pháp'), H(2, 15, 'cucpho', 'Phân công Lãnh đạo Phòng', 'Giao Trần Văn Bồi Thường'), H(1, 9, 'tpbt', 'Phân công Chuyên viên', 'Giao Trần Thị Thu Hà')]
                 }
             ].map((q, i) => Object.assign({ id: i + 1, createdAt: q.history[0].at.split(' ')[1] }, q));
         }
 
         const DB_KEY = 'btnn_hoi_dap_nghiep_vu';
-        const DB_VERSION = 'v2';
+        const DB_VERSION = 'v4'; // v4: gộp nhánh ngadt63 (HD-009, HD-010) + bỏ Nháp
         let questions = [];
         function loadData() {
             try { if (localStorage.getItem(DB_KEY + '_version') === DB_VERSION) questions = JSON.parse(localStorage.getItem(DB_KEY) || '[]'); } catch (e) { questions = []; }
@@ -1062,7 +1086,7 @@
         let activeTab = 'pending', currentPage = 1, pageSize = 20;
 
         window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('filterStatus').innerHTML = '<option value="">Tất cả</option>' + STATUS_ORDER.map(s => `<option value="${s}">${s}</option>`).join('');
+            fillStatusFilter();
             // Bộ Tư pháp: lọc theo Sở Tư pháp (bộ lọc Đơn vị dùng chung, chỉ hiện với Bộ Tư pháp)
             if (PV) {
                 const html = PV.filterHtml({ id: 'filter_unit', label: 'Sở Tư pháp', includeBtp: false });
@@ -1083,8 +1107,31 @@
             document.getElementById('btnCreate').style.setProperty('display', role() === 'STP_CV' && activeTab === 'pending' ? 'inline-flex' : 'none', 'important');
         }
 
+        // Bộ lọc Trạng thái: chỉ gồm các trạng thái có thể có ở tab đang chọn theo vai trò (như Tiếp nhận hồ sơ, Kinh phí); nạp lại khi chuyển tab
+        function tabStatuses(tab, r) {
+            const SENT4 = [ST.WAIT_CUC, ST.WAIT_PHONG, ST.ANSWERING, ST.ANSWERED];
+            const P = { STP_CV: [ST.RETURNED], STP_LDP: [ST.WAIT_PHONG_SO], STP_LD: [ST.WAIT_SO], CUC_LD: [ST.WAIT_CUC], PHONG_LD: [ST.WAIT_PHONG], BTP_CV: [ST.ANSWERING] };
+            const D = {
+                STP_CV: [ST.WAIT_PHONG_SO, ST.WAIT_SO].concat(SENT4),
+                STP_LDP: [ST.RETURNED, ST.WAIT_SO].concat(SENT4),
+                STP_LD: [ST.WAIT_PHONG_SO, ST.RETURNED].concat(SENT4), // câu hỏi Lãnh đạo Sở đã trả lại, Chuyên viên trình lại
+                CUC_LD: [ST.WAIT_PHONG, ST.ANSWERING, ST.ANSWERED],
+                PHONG_LD: [ST.ANSWERING, ST.ANSWERED],
+                BTP_CV: [ST.ANSWERED],
+                BTP_VIEW: SENT4, UBND_VIEW: SENT4
+            };
+            const list = (tab === 'pending' ? P : D)[r] || [];
+            return STATUS_ORDER.filter(s => list.includes(s));
+        }
+        function fillStatusFilter() {
+            const sel = document.getElementById('filterStatus'), cur = sel.value;
+            const opts = tabStatuses(activeTab, role());
+            sel.innerHTML = '<option value="">Tất cả</option>' + opts.map(s => `<option value="${s}">${s}</option>`).join('');
+            sel.value = opts.includes(cur) ? cur : '';
+        }
         function setTab(tab) {
             activeTab = tab;
+            fillStatusFilter();
             document.getElementById('tabPending').classList.toggle('active', tab === 'pending');
             document.getElementById('tabDone').classList.toggle('active', tab === 'done');
             updateCreateBtn();
@@ -1111,8 +1158,8 @@
         function refreshTable() {
             const all = filteredList();
             const pending = all.filter(isMyTask);
-            const done = all.filter(q => !isMyTask(q));
-            document.getElementById('countPending').innerText = pending.length;
+            const done = all.filter(isDoneByMe);
+            document.getElementById('countPending').innerText = questions.filter(q => canSee(q) && isMyTask(q)).length; // quy ước 7: badge không phụ thuộc bộ lọc
             document.getElementById('countDone').innerText = done.length;
             const list = activeTab === 'pending' ? pending : done;
             const tbody = document.getElementById('tableBody');
@@ -1137,13 +1184,13 @@
             tbody.innerHTML = list.slice(start, end).map((q, i) => {
                 // Cột Thao tác: bộ nút cố định (Sửa, Xóa, Xử lý); nút không được thao tác hiển thị mờ
                 const canEdit = role() === 'STP_CV' && isMyTask(q);
-                const canDel = canEdit && q.status === ST.DRAFT;
+                const canDel = canEdit;
                 const canAct = isMyTask(q) && !canEdit;
                 const ib = (on, cls, icon, title, offTitle, call) => on
                     ? `<button data-admin-icon-normalized="1" class="icon-btn ${cls}" title="${title}" onclick="event.stopPropagation(); ${call}"><i class="fa-solid ${icon}"></i></button>`
                     : `<button data-admin-icon-normalized="1" class="icon-btn ${cls} disabled" title="${offTitle}" disabled><i class="fa-solid ${icon}"></i></button>`;
-                const btns = ib(canEdit, 'edit', 'fa-pen-to-square', 'Sửa', 'Chỉ sửa câu hỏi Nháp / Bị trả lại do mình soạn', `openEditModal(${q.id})`)
-                    + ib(canDel, 'delete', 'fa-trash', 'Xóa', 'Chỉ xóa câu hỏi Nháp do mình soạn', `deleteQuestion(${q.id})`)
+                const btns = ib(canEdit, 'edit', 'fa-pen-to-square', 'Sửa', 'Chỉ sửa câu hỏi Bị trả lại do mình soạn', `openEditModal(${q.id})`)
+                    + ib(canDel, 'delete', 'fa-trash', 'Xóa', 'Chỉ xóa câu hỏi Bị trả lại do mình soạn', `deleteQuestion(${q.id})`)
                     + ib(canAct, 'send', 'fa-hand-pointer', 'Xử lý', 'Câu hỏi không chờ bạn xử lý', `openDetail(${q.id})`);
                 return `<tr style="cursor: pointer;" onclick="openDetail(${q.id})">
                     <td class="cell-center">${start + i + 1}</td>
@@ -1186,7 +1233,7 @@
         function searchData() { currentPage = 1; refreshTable(); }
 
         function exportExcel() {
-            const list = filteredList().filter(q => activeTab === 'pending' ? isMyTask(q) : !isMyTask(q));
+            const list = filteredList().filter(q => activeTab === 'pending' ? isMyTask(q) : isDoneByMe(q));
             if (!list.length) { showToast('Không có dữ liệu để kết xuất Excel.', 'error'); return; }
             const headers = ['STT', 'Mã câu hỏi', 'Tiêu đề câu hỏi', 'Đơn vị hỏi', 'Ngày gửi', 'Người xử lý hiện tại', 'Trạng thái'];
             const now = new Date(), font = "font-family:'Times New Roman';", n = headers.length;
@@ -1241,9 +1288,20 @@
             document.getElementById('qForm').reset();
             document.getElementById('qId').value = '';
             document.getElementById('qUnit').value = unitName(stpOfMe());
+            showReturnBox(null);
             mountDocs('hdq', 'qTlkt', [], { secClass: 'form-section', titleClass: 'form-section-title' });
             document.getElementById('formTitle').innerText = 'Thêm mới câu hỏi nghiệp vụ';
             document.getElementById('formModal').classList.add('active');
+        }
+        // Câu hỏi Bị trả lại: "Bị trả lại bởi [Họ tên] ([Thời điểm]): [Lý do]" theo dòng Lịch sử xử lý Trả lại gần nhất
+        function showReturnBox(q) {
+            const box = document.getElementById('qReturnBox');
+            if (!q || q.status !== ST.RETURNED || !q.returnReason) { box.style.display = 'none'; box.innerHTML = ''; return; }
+            const h = (q.history || []).slice().reverse().find(x => x.action === 'Trả lại');
+            const who = h ? `${esc(userName(h.by))} (${esc(h.at)})` : '';
+            box.innerHTML = `<div style="font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-rotate-left"></i> Lý do trả lại</div>`
+                + `<div style="white-space: pre-line;">${who ? `Bị trả lại bởi ${who}: ` : ''}${esc(q.returnReason)}</div>`;
+            box.style.display = 'block';
         }
         function openEditModal(id) {
             const q = questions.find(x => x.id === id);
@@ -1256,6 +1314,7 @@
             document.getElementById('qLegal').value = q.legal || '';
             mountDocs('hdq', 'qTlkt', q.files, { secClass: 'form-section', titleClass: 'form-section-title' });
             document.getElementById('formTitle').innerText = `Sửa câu hỏi nghiệp vụ ${q.code}`;
+            showReturnBox(q);
             closeModal('detailModal');
             document.getElementById('formModal').classList.add('active');
         }
@@ -1277,20 +1336,18 @@
             else {
                 const y = new Date().getFullYear();
                 const nextNo = questions.filter(x => x.code.startsWith(`HD-${y}-`)).length + 1;
-                q = Object.assign({ id: Date.now(), code: `HD-${y}-${String(nextNo).padStart(3, '0')}`, unit: stpOfMe(), creator: me().id, status: ST.DRAFT, sentAt: '', createdAt: fmtDate(new Date()), history: [] }, fields);
+                q = Object.assign({ id: Date.now(), code: `HD-${y}-${String(nextNo).padStart(3, '0')}`, unit: stpOfMe(), creator: me().id, status: '', sentAt: '', createdAt: fmtDate(new Date()), history: [] }, fields);
                 questions.push(q);
             }
-            let sentTo = '';
-            if (submit) sentTo = submitQuestion(q);
-            else { q.status = q.status === ST.RETURNED ? ST.RETURNED : ST.DRAFT; addHistory(q, id ? 'Cập nhật' : 'Lưu nháp'); }
+            const sentTo = submitQuestion(q);
             saveData();
             closeModal('formModal');
             refreshTable();
-            showToast(submit ? `Đã trình ${sentTo} câu hỏi ${q.code}` : `Đã lưu câu hỏi ${q.code}`, 'success');
+            showToast(`Đã trình ${sentTo} câu hỏi ${q.code}`, 'success');
         }
         function deleteQuestion(id) {
             const q = questions.find(x => x.id === id);
-            if (!q || q.status !== ST.DRAFT) return;
+            if (!q || role() !== 'STP_CV' || !isMyTask(q)) return;
             openConfirm(`Bạn có chắc chắn muốn xóa câu hỏi "${q.code} - ${q.title}" không?`, () => {
                 questions = questions.filter(x => x.id !== id);
                 saveData(); closeModal('detailModal'); refreshTable();
@@ -1302,7 +1359,7 @@
         // ===== Xem chi tiết + thao tác theo vai trò =====
         function flowHtml(q) {
             const steps = ['Soạn câu hỏi', 'Lãnh đạo Phòng (Sở) duyệt', 'Lãnh đạo Sở duyệt', 'Lãnh đạo Cục phân công', 'Lãnh đạo Phòng (Bộ) phân công', 'Chuyên viên trả lời', 'Đã trả lời'];
-            const cur = { [ST.DRAFT]: 0, [ST.RETURNED]: 0, [ST.WAIT_PHONG_SO]: 1, [ST.WAIT_SO]: 2, [ST.WAIT_CUC]: 3, [ST.WAIT_PHONG]: 4, [ST.ANSWERING]: 5, [ST.ANSWERED]: 6 }[q.status];
+            const cur = { [ST.RETURNED]: 0, [ST.WAIT_PHONG_SO]: 1, [ST.WAIT_SO]: 2, [ST.WAIT_CUC]: 3, [ST.WAIT_PHONG]: 4, [ST.ANSWERING]: 5, [ST.ANSWERED]: 6 }[q.status];
             return '<div class="hd-flow">' + steps.map((s, i) => `<span class="step ${i < cur || q.status === ST.ANSWERED ? 'done' : i === cur ? 'cur' : ''}">${s}</span>`).join('<i class="fa-solid fa-chevron-right"></i>') + '</div>';
         }
         function openDetail(id) {
@@ -1323,12 +1380,12 @@
             // Câu trả lời: hiển thị với mọi người dùng xem được câu hỏi
             if (q.answer) {
                 html += `<div class="form-section"><div class="form-section-title" style="color: #166534;"><i class="fa-solid fa-comment-dots"></i> Câu trả lời của Bộ Tư pháp</div>
-                    <div class="hd-kv">${kv('Người trả lời', esc(userName(q.answer.by)))}${kv('Thời điểm trả lời', esc(q.answer.at))}</div>
+                    <div class="hd-kv">${kv('Người trả lời', esc(userName(q.answer.by)))}${kv('Thời điểm trả lời', esc(q.answer.at))}${q.answer.updatedAt ? kv('Cập nhật lần cuối', esc(userName(q.answer.updatedBy) + ' - ' + q.answer.updatedAt)) : ''}</div>
                     <div class="hd-answer">${esc(q.answer.content)}</div>
                     ${docsView(q.answer.files, 'Văn bản trả lời đính kèm')}</div>`;
             }
             html += `<div class="form-section"><div class="form-section-title"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử xử lý</div><ul class="hd-timeline">`
-                + q.history.slice().reverse().map(h => `<li><div><strong>${esc(h.action)}</strong> - ${esc(userName(h.by))}</div>${h.note ? `<div>${esc(h.note)}</div>` : ''}<div class="t">${esc(h.at)}</div></li>`).join('')
+                + q.history.slice().reverse().map(h => `<li><div><strong>${esc(h.action)}</strong> - ${esc(userName(h.by))}</div>${h.note ? `<div style="white-space: pre-line;">${esc(h.note)}</div>` : ''}<div class="t">${esc(h.at)}</div></li>`).join('')
                 + '</ul></div>';
             document.getElementById('detailBody').innerHTML = html;
 
@@ -1336,7 +1393,7 @@
             const r = role(), mine = isMyTask(q);
             let foot = '<button class="btn btn-secondary" onclick="closeModal(\'detailModal\')">Đóng</button>';
             if (mine && r === 'STP_CV') {
-                if (q.status === ST.DRAFT) foot += `<button class="btn btn-outline-danger" onclick="deleteQuestion(${q.id})"><i class="fa-solid fa-trash"></i> Xóa</button>`;
+                foot += `<button class="btn btn-outline-danger" onclick="deleteQuestion(${q.id})"><i class="fa-solid fa-trash"></i> Xóa</button>`;
                 foot += `<button class="btn btn-outline-primary" onclick="openEditModal(${q.id})"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>`
                     + `<button class="btn btn-primary" onclick="submitToLeader(${q.id})"><i class="fa-solid fa-paper-plane"></i> Trình ${submitTarget(q).label}</button>`;
             }
@@ -1351,6 +1408,7 @@
             if (mine && r === 'CUC_LD') foot += `<button class="btn btn-primary" onclick="openAssign(${q.id}, 'phong')"><i class="fa-solid fa-user-plus"></i> Phân công Lãnh đạo Phòng</button>`;
             if (mine && r === 'PHONG_LD') foot += `<button class="btn btn-primary" onclick="openAssign(${q.id}, 'cv')"><i class="fa-solid fa-user-plus"></i> Phân công Chuyên viên</button>`;
             if (mine && r === 'BTP_CV') foot += `<button class="btn btn-primary" onclick="openAnswer(${q.id})"><i class="fa-solid fa-reply"></i> Trả lời</button>`;
+            if (canUpdateAnswer(q)) foot += `<button class="btn btn-primary" onclick="openAnswer(${q.id}, true)"><i class="fa-solid fa-pen-to-square"></i> Cập nhật trả lời</button>`;
             document.getElementById('detailFooter').innerHTML = foot;
             document.getElementById('detailModal').classList.add('active');
         }
@@ -1412,8 +1470,44 @@
                     done(q, `Đã phân công ${userName(uid)} xử lý câu hỏi ${q.code}`);
                 });
         }
-        function openAnswer(id) {
+        // Câu hỏi Đã trả lời: Chuyên viên Bộ Tư pháp đã trả lời (hoặc được phân công trả lời) được cập nhật câu trả lời; ghi Lịch sử xử lý nội dung thay đổi
+        function canUpdateAnswer(q) {
+            const id = me().id;
+            return q.status === ST.ANSWERED && !!q.answer && role() === 'BTP_CV' && (q.answer.by === id || q.officer === id);
+        }
+        // So sánh tài liệu theo tên tệp (dữ liệu cũ lưu tên tệp dạng chuỗi, dữ liệu mới lưu { name, file })
+        const docLabel = f => typeof f === 'string' ? f : ((f && ((f.file && f.file.name) || f.name)) || '');
+        function answerDiff(oldA, content, files) {
+            const lines = [];
+            if ((oldA.content || '') !== content) lines.push(`Nội dung trả lời: "${oldA.content || ''}" → "${content}"`);
+            const before = (oldA.files || []).map(docLabel), after = (files || []).map(docLabel);
+            after.filter(n => n && !before.includes(n)).forEach(n => lines.push(`Thêm tài liệu: ${n}`));
+            before.filter(n => n && !after.includes(n)).forEach(n => lines.push(`Xóa tài liệu: ${n}`));
+            return lines;
+        }
+        function openAnswer(id, isUpdate) {
             const q = questions.find(x => x.id === id);
+            if (isUpdate) {
+                if (!canUpdateAnswer(q)) return;
+                openAct('Cập nhật trả lời câu hỏi ' + q.code,
+                    `<div class="hd-question" style="margin-bottom: 12px;"><strong>${esc(q.title)}</strong>\n${esc(q.content)}</div>
+                     <div class="form-group"><label class="form-label">Nội dung trả lời <span style="color: var(--danger-color);">*</span></label>
+                     <textarea id="actAnswer" class="form-control" rows="6" maxlength="4000">${esc(q.answer.content)}</textarea><span class="field-error-text" id="error_actAnswer">Đây là trường bắt buộc</span></div>
+                     <div id="aTlkt"></div>`,
+                    '<i class="fa-solid fa-floppy-disk"></i> Lưu cập nhật', () => {
+                        const v = document.getElementById('actAnswer').value.trim();
+                        if (!v) { document.getElementById('actAnswer').classList.add('is-invalid'); document.getElementById('error_actAnswer').style.display = 'block'; document.getElementById('actAnswer').focus(); return false; }
+                        const docs = readDocs('hda');
+                        if (!docs) return false;
+                        const lines = answerDiff(q.answer, v, docs);
+                        if (!lines.length) { closeModal('actModal'); showToast('Câu trả lời không có thay đổi.', 'info'); return; }
+                        Object.assign(q.answer, { content: v, files: docs, updatedBy: me().id, updatedAt: fmtTime(new Date()) });
+                        addHistory(q, 'Cập nhật trả lời', lines.join('\n'));
+                        done(q, `Đã cập nhật trả lời câu hỏi ${q.code}`);
+                    });
+                mountDocs('hda', 'aTlkt', q.answer.files || [], { title: 'Văn bản trả lời đính kèm' });
+                return;
+            }
             openAct('Trả lời câu hỏi ' + q.code,
                 `<div class="hd-question" style="margin-bottom: 12px;"><strong>${esc(q.title)}</strong>\n${esc(q.content)}</div>
                  <div class="form-group"><label class="form-label">Nội dung trả lời <span style="color: var(--danger-color);">*</span></label>

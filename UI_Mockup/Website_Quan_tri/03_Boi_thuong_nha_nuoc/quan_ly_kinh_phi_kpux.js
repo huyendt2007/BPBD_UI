@@ -157,7 +157,9 @@
         SEEDS.forEach(function (s) {
             if (proposalsList.some(function (p) { return p && (p.id === s.id || p.code === s.code); })) return;
             var it = JSON.parse(JSON.stringify(tpl));
-            ['kptbPayment', 'kptbApproval', 'kptbReturned', 'kptbSupp', 'noticeList', 'noticeNote', 'noticeFiles', 'payoutDate', 'payoutAmountReal', 'payoutFiles', 'payoutFile', 'treasuryForfeitDate', 'treasuryVoucherNo', 'treasuryAmount', 'treasuryReason', 'treasuryFile', 'recovery', 'statusBasis', 'statusChangeBasis'].forEach(function (k) { delete it[k]; });
+            ['kptbPayment', 'kptbApproval', 'kptbReturned', 'kptbSupp', 'noticeList', 'noticeNote', 'noticeFiles', 'payoutDate', 'payoutAmountReal', 'payoutFiles', 'payoutFile', 'treasuryForfeitDate', 'treasuryVoucherNo', 'treasuryAmount', 'treasuryReason', 'treasuryFile', 'recovery', 'statusBasis', 'statusChangeBasis',
+                // Bản ghi khuôn có thể đã bị Quyết định sửa chữa, bổ sung / đình chỉ tác động: không sao chép căn cứ, lịch sử liên thông, lịch sử chi trả
+                'kpqd', 'kpqdLog', 'kpqdOrigin', 'kpqdCommitted', 'kpdcHistory', 'kpdcNoRecover', 'payHistory', 'kpAdvCancel'].forEach(function (k) { delete it[k]; });
             it.id = s.id; it.code = s.code; it.ycbtCode = s.ycbt; it.vvCode = s.vv; it.nycName = s.nyc; it.amount = s.amount; it.date = s.date; it.status = s.st;
             // Liên thông Quyết định GQBT theo decId: bản ghi có Quyết định thật (decId) dùng mã đó; còn lại giữ theo bản ghi mẫu
             if (s.decId) it.decId = s.decId;

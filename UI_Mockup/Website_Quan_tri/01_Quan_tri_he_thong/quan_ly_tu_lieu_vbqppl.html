@@ -798,9 +798,7 @@
                     <label class="form-label">Tình trạng hiệu lực</label>
                     <select id="filterStatus" class="form-select">
                         <option value="">Tất cả</option>
-                        <option value="Còn hiệu lực">Còn hiệu lực</option>
-                        <option value="Hết hiệu lực">Hết hiệu lực</option>
-                        <option value="Bị sửa đổi bổ sung">Bị sửa đổi bổ sung</option>
+                        <!-- Giá trị đang sử dụng của Danh mục Tình trạng hiệu lực [DM_61] (dm_tinh_trang_hieu_luc.js) -->
                     </select>
                 </div>
                 <div class="form-group">
@@ -832,15 +830,7 @@
                     <button class="stat-badge-btn active" onclick="filterByKpi('all')" id="kpiBtnAll">
                         Tất cả <span class="count" id="countAll">0</span>
                     </button>
-                    <button class="stat-badge-btn" onclick="filterByKpi('Còn hiệu lực')" id="kpiBtnActive">
-                        Còn hiệu lực <span class="count" id="countActive">0</span>
-                    </button>
-                    <button class="stat-badge-btn" onclick="filterByKpi('Hết hiệu lực')" id="kpiBtnExpired">
-                        Hết hiệu lực <span class="count" id="countExpired">0</span>
-                    </button>
-                    <button class="stat-badge-btn" onclick="filterByKpi('Bị sửa đổi bổ sung')" id="kpiBtnAmended">
-                        Bị sửa đổi bổ sung <span class="count" id="countAmended">0</span>
-                    </button>
+                    <!-- Mỗi giá trị đang sử dụng của Danh mục Tình trạng hiệu lực [DM_61] 01 nút (sinh khi tải trang) -->
                 </div>
                 
                 <!-- Action Buttons Toolbar -->
@@ -973,9 +963,6 @@
                                 <label class="form-label">Tình trạng <span style="color: var(--danger-color);">*</span></label>
                                 <select id="docStatus" class="form-select">
                                     <option value="">-- Lựa chọn --</option>
-                                    <option value="Còn hiệu lực">Còn hiệu lực</option>
-                                    <option value="Hết hiệu lực">Hết hiệu lực</option>
-                                    <option value="Bị sửa đổi bổ sung">Bị sửa đổi bổ sung</option>
                                 </select>
                                 <div id="docStatusBadge" style="display: none; padding-top: 6px;"></div>
                                 <span class="field-error-text" id="error_docStatus">Đây là trường bắt buộc</span>
@@ -1012,7 +999,7 @@
                     </div>
                     <!-- Menu BTNN: Tài liệu đính kèm dùng bảng chuẩn btnn_tai_lieu_kem_theo.js (thay vùng tải tệp bên trên) -->
                     <div id="docTlktHost"></div>
-                    <!-- Menu BTNN, Xem chi tiết: Cán bộ xử lý, Đơn vị thực hiện -->
+                    <!-- Menu BTNN, Xem chi tiết: Cán bộ xử lý, Đơn vị thực hiện (dưới Tài liệu đính kèm, trên Lịch sử cập nhật; như Văn bản chỉ đạo, điều hành) -->
                     <div id="docCreatorInfo" class="grid-layout" style="display: none; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 12px;">
                         <div class="form-group"><label class="form-label">Cán bộ xử lý</label><input type="text" id="docCreatorName" class="form-control" disabled></div>
                         <div class="form-group"><label class="form-label">Đơn vị thực hiện</label><input type="text" id="docCreatorOrg" class="form-control" disabled></div>
@@ -1064,6 +1051,8 @@
             document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_tai_lieu_kem_theo.js?v=20261029stt48"><\/script>');
         }
     </script>
+    <!-- Danh mục Tình trạng hiệu lực [DM_61] dùng chung VBQPPL và Văn bản chỉ đạo, điều hành -->
+    <script src="dm_tinh_trang_hieu_luc.js?v=20261106tthl1"></script>
     <!-- JavaScript logic -->
     <script>
         // Trang dùng chung BPBĐ/BTNN: menu BTNN mở kèm ?system=btnn; BTNN dùng nhãn thao tác 'Sửa', BPBĐ giữ 'Chỉnh sửa'
@@ -1108,6 +1097,8 @@
         // Menu BTNN: tiêu đề màn hình theo tên mục Menu "Văn bản quy phạm pháp luật"; BPBĐ giữ tiêu đề cũ
         if (VBQPPL_SYSTEM === 'btnn') {
             document.title = 'Văn bản quy phạm pháp luật';
+            // BTNN: bỏ nút đóng (X) góc phải tiêu đề màn hình Thêm mới/Sửa/Xem chi tiết; thoát bằng nút ở chân màn hình
+            const formX = document.querySelector('#modalTitle + .modal-close-btn'); if (formX) formX.style.display = 'none';
             const pageTitleEl = document.querySelector('.page-header h1');
             if (pageTitleEl) pageTitleEl.innerText = 'Văn bản quy phạm pháp luật';
         }
@@ -1180,7 +1171,8 @@
         }
         // Chuẩn hóa dữ liệu cũ: bỏ trạng thái phê duyệt, bổ sung Tình trạng hiệu lực
         documents.forEach(d => {
-            if (!d.tinhTrang) d.tinhTrang = 'Còn hiệu lực';
+            // Tình trạng hiệu lực theo Danh mục [DM_61]: lưu mã (tinhTrangMa) + tên tại thời điểm lưu (tinhTrang); dữ liệu cũ lưu tên thì quy đổi sang mã
+            DM_TTHL.normalize(d);
             delete d.trangThai; delete d.nguoiDuyet; delete d.ngayDuyet; delete d.lyDoTuChoi;
             // Bỏ Tags/Từ khóa, Người ký, Chức danh, File media
             delete d.tags; delete d.nguoiKy; delete d.chucDanh; delete d.media;
@@ -1197,10 +1189,13 @@
             }
         }
         
+        documents.forEach(d => DM_TTHL.normalize(d)); // dữ liệu mẫu vừa khởi tạo: bổ sung mã Tình trạng hiệu lực
         // Không tự đổi ngày của bản ghi: Ngày ban hành / Ngày có hiệu lực / Ngày tạo giữ đúng giá trị đã lưu.
         // Bộ lọc Ngày ban hành mặc định để trống nên dữ liệu mẫu và văn bản ban hành đã lâu vẫn hiển thị.
 
         let activeKpiFilter = "all"; 
+        // Danh mục [DM_61] thay đổi tại Quản lý danh mục (tab khác): cập nhật bộ lọc, lọc nhanh và nhãn
+        window.addEventListener('storage', e => { if (e.key === 'masterCategories') { documents.forEach(d => DM_TTHL.normalize(d)); renderTthlControls(); refreshTable(); } });
         
         let currentPage = 1;
         let pageSize = 20;
@@ -1234,6 +1229,7 @@
 
         // ON LOAD INITIALIZATION
         window.addEventListener('DOMContentLoaded', () => {
+            renderTthlControls();
             // Không có quyền Thêm mới: ẩn nút Thêm mới
             if (!vbCanEdit()) { const b = document.getElementById('btnCreateDoc'); if (b) b.style.display = 'none'; }
             // Menu BTNN: hiển thị cột Cán bộ xử lý, Đơn vị thực hiện
@@ -1305,18 +1301,21 @@
         }
 
         // KPI REFRESH & COUNTER UPDATES (đếm theo Tình trạng hiệu lực)
-        const STATUS_LIST = ['Còn hiệu lực', 'Hết hiệu lực', 'Bị sửa đổi bổ sung'];
-        const KPI_BTN = { 'all': 'kpiBtnAll', 'Còn hiệu lực': 'kpiBtnActive', 'Hết hiệu lực': 'kpiBtnExpired', 'Bị sửa đổi bổ sung': 'kpiBtnAmended' };
-        function statusBadgeHtml(st) {
-            const cls = st === 'Còn hiệu lực' ? 'badge-success' : (st === 'Bị sửa đổi bổ sung' ? 'badge-warning' : 'badge-danger');
-            return `<span class="badge ${cls}">${st || '—'}</span>`;
+        // Nút lọc nhanh: 'Tất cả' + mỗi giá trị đang sử dụng của Danh mục Tình trạng hiệu lực [DM_61] 01 nút (khóa = mã giá trị)
+        const kpiBtnId = code => code === 'all' ? 'kpiBtnAll' : 'kpiBtn_' + code;
+        function renderTthlControls() {
+            DM_TTHL.fillSelect(document.getElementById('filterStatus'), 'Tất cả');
+            const row = document.getElementById('kpiStatsRow');
+            row.querySelectorAll('.stat-badge-btn[data-tthl]').forEach(b => b.remove());
+            DM_TTHL.active().forEach(c => row.insertAdjacentHTML('beforeend', `<button class="stat-badge-btn" data-tthl="${vbEsc(c.code)}" id="${kpiBtnId(c.code)}" onclick="filterByKpi('${vbEsc(c.code)}')">${vbEsc(c.name)} <span class="count">0</span></button>`));
+            if (activeKpiFilter !== 'all' && !document.getElementById(kpiBtnId(activeKpiFilter))) activeKpiFilter = 'all';
+            row.querySelectorAll('.stat-badge-btn').forEach(b => b.classList.toggle('active', b.id === kpiBtnId(activeKpiFilter)));
         }
+        function statusBadgeHtml(code, fallbackName) { return DM_TTHL.badge(code, fallbackName); }
         function updateKpiCounters() {
             const list = documents.filter(d => !d.isDeleted);
             document.getElementById('countAll').innerText = list.length;
-            document.getElementById('countActive').innerText = list.filter(d => d.tinhTrang === 'Còn hiệu lực').length;
-            document.getElementById('countExpired').innerText = list.filter(d => d.tinhTrang === 'Hết hiệu lực').length;
-            document.getElementById('countAmended').innerText = list.filter(d => d.tinhTrang === 'Bị sửa đổi bổ sung').length;
+            document.querySelectorAll('#kpiStatsRow .stat-badge-btn[data-tthl]').forEach(b => { b.querySelector('.count').innerText = list.filter(d => d.tinhTrangMa === b.dataset.tthl).length; });
         }
 
         function filterByKpi(status) {
@@ -1324,7 +1323,7 @@
             // BTNN: lọc nhanh và ô Tình trạng hiệu lực cùng một điều kiện
             if (IS_BTNN) document.getElementById('filterStatus').value = status === 'all' ? '' : status;
             document.querySelectorAll('.stat-badge-btn').forEach(btn => btn.classList.remove('active'));
-            const btn = document.getElementById(KPI_BTN[status] || 'kpiBtnAll');
+            const btn = document.getElementById(kpiBtnId(status)) || document.getElementById('kpiBtnAll');
             if (btn) btn.classList.add('active');
             currentPage = 1;
             refreshTable();
@@ -1392,7 +1391,7 @@
                 list = list.filter(d => fold(d.coquanBanhanh).includes(fold(issuer)));
             }
             if (status) {
-                list = list.filter(d => d.tinhTrang === status);
+                list = list.filter(d => d.tinhTrangMa === status);
             }
             if (fromD) {
                 list = list.filter(d => {
@@ -1409,7 +1408,7 @@
 
             // 2. Apply KPI quick status filter
             if (activeKpiFilter !== 'all') {
-                list = list.filter(d => d.tinhTrang === activeKpiFilter);
+                list = list.filter(d => d.tinhTrangMa === activeKpiFilter);
             }
 
             // 3. Sorting
@@ -1542,7 +1541,7 @@
                 // Status Badge
                 const tdStatus = document.createElement('td');
                 tdStatus.className = "cell-center";
-                tdStatus.innerHTML = statusBadgeHtml(doc.tinhTrang);
+                tdStatus.innerHTML = statusBadgeHtml(doc.tinhTrangMa, doc.tinhTrang);
                 if (IS_BTNN) {
                     const tdOfficer = document.createElement('td'); tdOfficer.innerText = doc.nguoiTao || ''; tr.appendChild(tdOfficer);
                     const tdOrg = document.createElement('td'); tdOrg.innerText = vbDocOrg(doc); tr.appendChild(tdOrg);
@@ -1672,7 +1671,7 @@
                 const st = document.getElementById('filterStatus').value;
                 activeKpiFilter = st || 'all';
                 document.querySelectorAll('.stat-badge-btn').forEach(btn => btn.classList.remove('active'));
-                const kb = document.getElementById(KPI_BTN[activeKpiFilter] || 'kpiBtnAll'); if (kb) kb.classList.add('active');
+                const kb = document.getElementById(kpiBtnId(activeKpiFilter)) || document.getElementById('kpiBtnAll'); if (kb) kb.classList.add('active');
             }
             currentPage = 1;
             refreshTable();
@@ -2052,7 +2051,8 @@
             setFormDate('docIssueDate', doc ? doc.ngayBanhanh : '');
             setFormDate('docEffectDate', doc ? doc.ngayCoHieuLuc : '');
             document.getElementById('docSummary').value = doc ? (doc.tomTat || '') : '';
-            document.getElementById('docStatus').value = doc ? (doc.tinhTrang || 'Còn hiệu lực') : 'Còn hiệu lực';
+            // Combobox chỉ gồm giá trị đang sử dụng của [DM_61]; bản ghi có giá trị đã ngừng sử dụng vẫn hiển thị đúng tên
+            DM_TTHL.fillSelect(document.getElementById('docStatus'), '-- Lựa chọn --', doc ? (doc.tinhTrangMa || '') : DM_TTHL.defaultCode());
             tlktRows = doc ? toTlktRows(doc.files) : [];
             tempDocFiles = doc ? (doc.files || []).map(fileNameOf).filter(Boolean) : [];
             renderUploadedFiles();
@@ -2174,7 +2174,8 @@
                     coquanBanhanh: issuer,
                     ngayBanhanh: issueStr,
                     ngayCoHieuLuc: effectStr,
-                    tinhTrang: tinhTrang,
+                    tinhTrangMa: tinhTrang,
+                    tinhTrang: DM_TTHL.name(tinhTrang),
                     tomTat: document.getElementById('docSummary').value.trim(),
                     files: IS_BTNN ? docFiles : [...tempDocFiles]
                 };

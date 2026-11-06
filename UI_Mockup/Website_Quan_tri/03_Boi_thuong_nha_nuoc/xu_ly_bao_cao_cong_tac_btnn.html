@@ -766,6 +766,9 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
         /* Thành phần mới (bộ mẫu chưa có thẻ số liệu): khối Tổng hợp tình hình gửi báo cáo. Số dùng màu chữ; màu trạng thái chỉ ở icon, thanh tiến độ và chú giải */
         .th-tieu-de { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; font-weight: 700; color: var(--primary-color); font-size: 15px; }
         .th-han { font-weight: 600; font-size: 12.5px; color: var(--text-muted); }
+        /* 06/11/2026: dòng thời điểm dữ liệu của khối Tổng hợp tình hình gửi báo cáo */
+        .th-cap-nhat { margin: -6px 0 14px; font-size: 12.5px; color: var(--text-muted); }
+        .th-cap-nhat i { color: var(--primary-color); margin-right: 4px; }
         .th-the-hang { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
         @media (max-width: 900px) { .th-the-hang { grid-template-columns: minmax(0, 1fr); } }
         .th-the { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); background: #fff; }
@@ -774,6 +777,12 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
         .th-icon.tot { background: var(--st-success-bg); color: var(--st-success-fg); }
         .th-icon.canh { background: var(--st-warning-bg); color: var(--st-warning-fg); }
         .th-icon.xau { background: var(--st-danger-bg); color: var(--st-danger-fg); }
+        /* 06/11/2026: thẻ số liệu bấm được để lọc danh sách; thẻ đang lọc viền xanh navy, nền xanh nhạt, có nhãn «Đang lọc» */
+        .th-the-loc { position: relative; cursor: pointer; transition: border-color .15s, box-shadow .15s, background .15s; }
+        .th-the-loc:hover { border-color: var(--primary-color); box-shadow: 0 2px 8px rgba(30, 58, 138, .12); }
+        .th-the-loc:focus-visible { outline: 2px solid var(--primary-color); outline-offset: 2px; }
+        .th-the-loc.dang-loc { border-color: var(--primary-color); background: #eff6ff; box-shadow: inset 0 0 0 1px var(--primary-color); }
+        .th-the-dau { position: absolute; top: 8px; right: 10px; font-size: 11.5px; font-weight: 600; color: var(--primary-color); }
         .th-so { font-size: 26px; font-weight: 700; color: var(--text-main); line-height: 1.1; }
         .th-so small { font-size: 14px; font-weight: 600; color: var(--text-muted); }
         .th-nhan { font-size: 13px; font-weight: 600; color: var(--text-main); margin-top: 2px; }
@@ -805,23 +814,16 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
             <div class="role-switch" data-btnn-gl="label"><!-- bctt_bao_cao.js (chế độ Bộ) dựng ô chọn người dùng giả lập --></div>
         </div>
         <div class="tab-bar" id="boMainTabs">
-            <button type="button" class="tab-btn active" data-chinh="xl"><i class="fa-solid fa-inbox"></i> Xử lý báo cáo <span class="tab-count" id="boDemChinh"></span></button>
+            <!-- 06/11/2026 (yêu cầu khách hàng): bỏ tab Xử lý báo cáo (quy trình rà soát); tab Tình hình gửi báo cáo đứng sau tab Tổng hợp báo cáo -->
+            <button type="button" class="tab-btn active" data-chinh="tong"><i class="fa-solid fa-layer-group"></i> Tổng hợp báo cáo <span class="tab-count" id="boDemTong"></span></button>
             <button type="button" class="tab-btn" data-chinh="th"><i class="fa-solid fa-chart-column"></i> Tình hình gửi báo cáo</button>
-            <button type="button" class="tab-btn" data-chinh="tong"><i class="fa-solid fa-layer-group"></i> Tổng hợp báo cáo <span class="tab-count" id="boDemTong"></span></button>
         </div>
-        <div id="boPanel_xl"></div>
+        <div id="boPanel_tong"><section id="bcttApp"></section></div>
         <div id="boPanel_th" class="hidden"></div>
-        <div id="boPanel_tong" class="hidden"><section id="bcttApp"></section></div>
     </section>
-
-    <section id="raSoatView" data-trang class="hidden"></section>
 
 </div>
 
-<!-- Popup Phân công, Popup Trình duyệt yêu cầu điều chỉnh, màn Ký duyệt / Từ chối (nội dung dựng bởi bctt_bo_xu_ly.js) -->
-<div class="modal-overlay" id="boPC" role="dialog" aria-modal="true" aria-labelledby="boPCTieuDe"></div>
-<div class="modal-overlay" id="boTrinh" role="dialog" aria-modal="true"></div>
-<div class="ky-duyet" id="boKD" role="dialog" aria-modal="true"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/vn.js"></script>
@@ -1290,7 +1292,7 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
 <script src="filter_toggle_auto.js"></script>
 <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
 <script src="btnn_grid_toolbar.js"></script>
-<script src="btnn_luong_xu_ly.js?v=20261105tn1"></script>
+<script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
 <script src="btnn_tai_lieu_kem_theo.js?v=20261103mau1"></script>
 <script src="btnn_badge_cho_xu_ly.js?v=20261103nhanh"></script>
 <script>
@@ -1299,8 +1301,8 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
     // Thông báo của engine bctt_bao_cao.js (cần #toastContainer hoặc window.showToast) hiển thị bằng UI.toast của bộ mẫu
     window.showToast = function (msg, type) { UI.toast(msg, type || 'success'); };
 </script>
-<script src="bctt_bao_cao.js?v=20261105nh1"></script>
-<script src="bctt_bo_xu_ly.js?v=20261104pc"></script>
+<script src="bctt_bao_cao.js?v=20261106tw3"></script>
+<script src="bctt_bo_xu_ly.js?v=20261106loc1"></script>
 <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
 <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>

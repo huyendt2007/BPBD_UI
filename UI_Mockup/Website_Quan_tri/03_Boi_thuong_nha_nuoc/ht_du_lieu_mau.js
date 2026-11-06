@@ -6,6 +6,30 @@
  * - HT-2026-024: Bị trả lại (QĐ đình chỉ) - đình chỉ cả hồ sơ tại Bước 1
  * - HT-2026-025: Chờ ban hành QĐ hoàn trả, cán bộ Miễn / Giảm theo ý kiến Hội đồng (ban hành QĐ hoàn trả -> Miễn hoàn trả / Thu tiền hoàn trả) (đơn vị B)
  * - HT-2026-026: Thu tiền hoàn trả: nhiều đợt nộp, cán bộ Giảm / Miễn; chọn nhiều cán bộ trình QĐ miễn / giảm bổ sung (đơn vị A)
+ * - SRS 05/11/2026 (chấm dứt việc xem xét trách nhiệm hoàn trả, người thi hành công vụ Đã chết, Mức độ lỗi Không có lỗi):
+ *   + HT-2026-029: Chờ chấm dứt (Không xác định được người thi hành công vụ gây thiệt hại)
+ *   + HT-2026-012: Chờ duyệt (QĐ chấm dứt); HT-2026-020: Bị trả lại (QĐ chấm dứt); HT-2026-011: Chấm dứt hoàn trả (trang Danh sách và Chi tiết)
+ *   + HT-2026-030: cán bộ Đã chết đã Chấm dứt hoàn trả, cán bộ khác đang Thu tiền hoàn trả
+ *   + HT-2026-031: cán bộ Không có lỗi (Không xem xét TNHT), cán bộ khác đang Thu tiền hoàn trả
+ *   + HT-2026-021: tố tụng hình sự, phần đơn vị theo Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại (Cơ quan đang trả lương khác)
+ * - 05/11/2026 (b23) - hồ sơ Bước 2 (Họp hội đồng, đã nhập sẵn danh sách người thi hành công vụ) theo cách xếp Cột 7, 8 Mẫu số 04 (TT 08/2019):
+ *   + HT-2026-032: tất cả còn sống, không có lỗi (Cột 7)
+ *   + HT-2026-033: tất cả đã chết (Cột 8)
+ *   + HT-2026-034: còn sống không có lỗi + đã chết có lỗi (Cột 8)
+ *   + HT-2026-035: còn sống không có lỗi + đã chết không có lỗi (Cột 7)
+ *   + HT-2026-036: còn sống không có lỗi + đã chết có lỗi + đã chết không có lỗi (không tính Cột 7, 8)
+ *   + HT-2026-037: có người còn sống và có lỗi (lưu ý kiến thì sang Bước 3, không tính Cột 7, 8)
+ *   Bước 2 TH4: Lưu ý kiến hội đồng với HT-2026-032 đến HT-2026-036 thì hồ sơ chuyển Chờ chấm dứt.
+ * - 05/11/2026 (b23) - hồ sơ Bước 3 (Chờ ban hành QĐ hoàn trả):
+ *   + HT-2026-038: còn sống có lỗi + đã chết có lỗi + không có lỗi (Không xem xét TNHT)
+ *   + HT-2026-039: 02 người còn sống có lỗi (có giảm mức hoàn trả theo ý kiến Hội đồng) + 01 người đã chết
+ * - 05/11/2026 (dc1) - hồ sơ để thử Thêm người thi hành công vụ gây thiệt hại và đình chỉ người thi hành công vụ:
+ *   + HT-2026-040 (Bước 2 - Họp hội đồng): chưa có người thi hành công vụ, thêm từ đầu
+ *   + HT-2026-041 (Bước 2): 03 người còn sống có lỗi, thử đình chỉ cả hồ sơ tại Bước 2 (nút Đình chỉ ở thanh nút chân trang)
+ *   + HT-2026-042 (Bước 2): 01 người còn sống không có lỗi + 02 người còn sống có lỗi
+ *   + HT-2026-043 (Bước 2): 01 người đã chết có lỗi + 02 người còn sống có lỗi
+ *   + HT-2026-044 (Bước 3 - Chờ ban hành QĐ hoàn trả): 03 người còn sống có lỗi, thử đình chỉ cả hồ sơ tại Bước 3
+ * - 06/11/2026: bỏ đình chỉ một phần cán bộ (chốt với khách hàng); đình chỉ luôn áp dụng cả hồ sơ, tới trước khi có Quyết định hoàn trả được ban hành
  * Nạp sau khối dữ liệu của trang, trước các add-on xem_xet_hoan_tra_pham_vi.js / chi_tiet_ho_so_hoan_tra_ykhd.js / _qd.js.
  */
 (function () {
@@ -16,12 +40,20 @@
     // 29/10: Đơn vị ban hành QĐ hoàn trả - tố tụng hình sự (HT-2026-021, HT-2026-027): theo Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương, mỗi đơn vị 01 QĐ; lĩnh vực khác: Đơn vị tạo Hội đồng, 01 QĐ cho toàn bộ cán bộ
     // 30/10: HT-2026-028 - tố tụng hình sự, 02 Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương: 01 đơn vị đã ban hành QĐ hoàn trả, 01 đơn vị chưa ban hành
     // 30/10 (xl1): dời ngày dữ liệu mẫu theo ngày hiện tại (htShiftDate) -> xóa trạng thái đã lưu có ngày cũ
-    const SEED_VER = '20261030xl1', SEED_CODES = ['HT-2026-025', 'HT-2026-026', 'HT-2026-027', 'HT-2026-001', 'HT-2026-021', 'HT-2026-028'];
+    // 05/11 (tc1): tố tụng hình sự phân tách theo Cơ quan trực tiếp quản lý; chấm dứt việc xem xét trách nhiệm hoàn trả, cán bộ Đã chết / Không có lỗi
+    // 05/11 (b23): thêm hồ sơ Bước 2 (HT-2026-032 đến 037) và Bước 3 (HT-2026-038, 039)
+    // 05/11 (dc1): thêm hồ sơ thử thêm người và đình chỉ (HT-2026-040 đến 044)
+    const SEED_VER = '20261105dc1', SEED_CODES = ['HT-2026-025', 'HT-2026-026', 'HT-2026-027', 'HT-2026-001', 'HT-2026-021', 'HT-2026-028', 'HT-2026-030', 'HT-2026-031', 'HT-2026-038', 'HT-2026-039', 'HT-2026-044'];
+    // Hồ sơ chưa tách phần đơn vị đổi trạng thái mẫu: xóa trạng thái đã lưu của màn Chi tiết
+    const STATUS_CODES = ['HT-2026-011', 'HT-2026-012', 'HT-2026-020', 'HT-2026-029', 'HT-2026-032', 'HT-2026-033', 'HT-2026-034', 'HT-2026-035', 'HT-2026-036', 'HT-2026-037', 'HT-2026-040', 'HT-2026-041', 'HT-2026-042', 'HT-2026-043'];
     try {
         if (localStorage.getItem('btnn_ht_seed_ver') !== SEED_VER) {
             const st = JSON.parse(localStorage.getItem('btnn_ht_units_v1') || '{}') || {};
             SEED_CODES.forEach(c => { delete st[c]; });
             localStorage.setItem('btnn_ht_units_v1', JSON.stringify(st));
+            const hs = JSON.parse(localStorage.getItem('btnn_ht_status_v1') || '{}') || {};
+            STATUS_CODES.forEach(c => { delete hs[c]; });
+            localStorage.setItem('btnn_ht_status_v1', JSON.stringify(hs));
             localStorage.setItem('btnn_ht_seed_ver', SEED_VER);
         }
     } catch (e) { /* bỏ qua */ }
@@ -43,6 +75,10 @@
         };
     }
     const OF =(name, agency, role, loi, total, refundMethod) => ({ name, agency, role, loi, total, paid: 0, nextDate: '—', status: '', refundMethod, progressClass: 'primary', isPostponed: false });
+    // Bước 2 (Họp hội đồng): người thi hành công vụ đã nhập, chưa lưu ý kiến hội đồng; DC = người đã chết
+    const B2 = o => Object.assign(o, { status: 'Họp hội đồng', progressClass: 'info' });
+    const DC = o => Object.assign(o, { daChet: true, trangThaiNguoi: 'Đã chết' });
+    const B2YK = 'Hội đồng đã họp, xem xét hồ sơ và ý kiến của người thi hành công vụ gây thiệt hại; chờ lưu ý kiến của Hội đồng.';
     const CASES = [
         { id: 'HT-2026-022', claimCode: 'BT-2026-822', claimSummary: 'Thu giữ phương tiện vi phạm quá thời hạn tạm giữ theo quy định.', claimAmt: 40000000, status: 'Chờ thành lập hội đồng', hdDecision: '', hdDate: '', officers: [] },
         { id: 'HT-2026-023', claimCode: 'BT-2026-823', claimSummary: 'Ban hành quyết định xử phạt vi phạm hành chính sai đối tượng.', claimAmt: 60000000, status: 'Chờ duyệt QĐ đình chỉ', prev: 'Họp hội đồng', dcht: 'pending', hdDecision: '51/QĐ-TLHD', hdDate: '05/09/2026', officers: [OF('Lâm Văn Đình', U_A, 'Chuyên viên', 'Vô ý', 20000000, 'Một lần')] },
@@ -68,6 +104,96 @@
             id: 'HT-2026-028', claimCode: 'BT-2026-828', claimSummary: 'Tạm giữ, tạm giam trái pháp luật trong giai đoạn điều tra; người bị tạm giam được tuyên không phạm tội.', claimAmt: 150000000, status: 'Chờ ban hành QĐ hoàn trả', hdDecision: '55/QĐ-TLHD', hdDate: '05/08/2026',
             officers: [OF('Lã Văn Thành', U_A, 'Trưởng Công an phường', 'Vô ý', 24000000, 'Hoàn trả nhiều lần'), OF('Ông Thị Mai', U_A, 'Cán bộ điều tra', 'Vô ý', 16000000, 'Hoàn trả một lần'),
                 OF('Giáp Văn Hùng', U_B, 'Phó Trưởng Công an xã', 'Vô ý', 20000000, ''), OF('Tôn Thị Hà', U_B, 'Cán bộ điều tra', 'Vô ý', 12000000, '')]
+        },
+        // Chờ chấm dứt: Hội đồng không xác định được người thi hành công vụ gây thiệt hại (không lưu danh sách cán bộ)
+        {
+            id: 'HT-2026-029', claimCode: 'BT-2026-829', claimSummary: 'Thu giữ tài sản trái pháp luật trong đợt kiểm tra liên ngành; biên bản thu giữ không ghi tên người thực hiện.', claimAmt: 45000000, status: 'Chờ chấm dứt', hdDecision: '56/QĐ-TLHD', hdDate: '12/08/2026', officers: [],
+            extra: { ketQuaXacDinh: 'Không xác định được người thi hành công vụ gây thiệt hại', cdLyDo: 'Không xác định được người thi hành công vụ gây thiệt hại', conclusionDate: '20/08/2026', ht2YKienChung: 'Hội đồng không xác định được người thi hành công vụ gây thiệt hại do biên bản thu giữ không ghi tên người thực hiện và các thành viên đoàn kiểm tra đã chuyển công tác.' }
+        },
+        // Cán bộ Đã chết: ban hành QĐ hoàn trả thì chuyển Chấm dứt hoàn trả (không thu tiền); cán bộ khác đang Thu tiền hoàn trả
+        {
+            id: 'HT-2026-030', claimCode: 'BT-2026-830', claimSummary: 'Cưỡng chế tháo dỡ công trình khi quyết định cưỡng chế đã hết hiệu lực thi hành.', claimAmt: 90000000, status: 'Thu tiền hoàn trả', hdDecision: '57/QĐ-TLHD', hdDate: '18/07/2026',
+            officers: [Object.assign(OF('Quách Văn Khuất', U_A, 'Phó Chủ tịch phường', 'Vô ý', 25000000, ''), { daChet: true, trangThaiNguoi: 'Đã chết' }), OF('Lê Thị Thanh', U_A, 'Công chức địa chính - xây dựng', 'Vô ý', 15000000, 'Nhiều lần')]
+        },
+        // Cán bộ có Mức độ lỗi Không có lỗi: Không xem xét TNHT (không đưa vào phần đơn vị); cán bộ khác đang Thu tiền hoàn trả
+        {
+            id: 'HT-2026-031', claimCode: 'BT-2026-831', claimSummary: 'Từ chối cấp giấy phép xây dựng trái pháp luật; Hội đồng xác định 01 cán bộ không có lỗi.', claimAmt: 70000000, status: 'Thu tiền hoàn trả', hdDecision: '58/QĐ-TLHD', hdDate: '22/07/2026',
+            officers: [OF('Kim Văn Vô', U_B, 'Chuyên viên', 'Không có lỗi', 0, ''), OF('Nhữ Thị Ngọc', U_B, 'Trưởng phòng Quản lý đô thị', 'Vô ý', 18000000, 'Một lần'), OF('Đàm Văn Quý', U_B, 'Cán bộ cấp phép xây dựng', 'Cố ý nhưng không bị truy cứu trách nhiệm hình sự', 22000000, 'Nhiều lần')]
+        },
+        // ===== Bước 2 - Họp hội đồng (05/11/2026): các trường hợp xếp Cột 7, 8 Mẫu số 04 (TT 08/2019) =====
+        // Tất cả còn sống, không có lỗi: Lưu ý kiến hội đồng -> Chờ chấm dứt; ban hành QĐ chấm dứt -> Cột 7
+        {
+            id: 'HT-2026-032', claimCode: 'BT-2026-832', claimSummary: 'Thu hồi giấy phép kinh doanh do văn bản hướng dẫn của cấp trên sai; công chức thực hiện đúng hướng dẫn.', claimAmt: 55000000, status: 'Họp hội đồng', hdDecision: '59/QĐ-TLHD', hdDate: '20/08/2026', extra: { ht2YKienChung: B2YK },
+            officers: [B2(OF('Bạc Văn Đúng', U_A, 'Chuyên viên phòng Kinh tế', 'Không có lỗi', 0, '')), B2(OF('Cấn Thị Mẫn', U_A, 'Phó Trưởng phòng Kinh tế', 'Không có lỗi', 0, ''))]
+        },
+        // Tất cả đã chết: Lưu ý kiến hội đồng -> Chờ chấm dứt; ban hành QĐ chấm dứt -> Cột 8
+        {
+            id: 'HT-2026-033', claimCode: 'BT-2026-833', claimSummary: 'Cưỡng chế thu hồi đất trái pháp luật; hai người thi hành công vụ đã chết trước khi Hội đồng họp.', claimAmt: 85000000, status: 'Họp hội đồng', hdDecision: '60/QĐ-TLHD', hdDate: '21/08/2026', extra: { ht2YKienChung: B2YK },
+            officers: [B2(DC(OF('Thân Văn Mất', U_B, 'Phó Chủ tịch phường', 'Vô ý', 30000000, ''))), B2(DC(OF('Vi Thị Lành', U_B, 'Công chức địa chính', 'Cố ý nhưng không bị truy cứu trách nhiệm hình sự', 25000000, '')))]
+        },
+        // Còn sống không có lỗi + đã chết có lỗi: Chờ chấm dứt -> Cột 8
+        {
+            id: 'HT-2026-034', claimCode: 'BT-2026-834', claimSummary: 'Xử phạt vi phạm hành chính không đúng thẩm quyền; người ký quyết định đã chết.', claimAmt: 48000000, status: 'Họp hội đồng', hdDecision: '61/QĐ-TLHD', hdDate: '22/08/2026', extra: { ht2YKienChung: B2YK },
+            officers: [B2(OF('Ứng Văn Lành', U_A, 'Cán bộ tư pháp', 'Không có lỗi', 0, '')), B2(DC(OF('Khúc Văn Tạ', U_A, 'Chủ tịch phường', 'Vô ý', 20000000, '')))]
+        },
+        // Còn sống không có lỗi + đã chết không có lỗi: Chờ chấm dứt -> Cột 7
+        {
+            id: 'HT-2026-035', claimCode: 'BT-2026-835', claimSummary: 'Tạm giữ phương tiện quá thời hạn do lỗi hệ thống quản lý; Hội đồng kết luận cán bộ không có lỗi.', claimAmt: 32000000, status: 'Họp hội đồng', hdDecision: '62/QĐ-TLHD', hdDate: '23/08/2026', extra: { ht2YKienChung: B2YK },
+            officers: [B2(OF('Lò Văn Ngay', U_B, 'Cảnh sát khu vực', 'Không có lỗi', 0, '')), B2(DC(OF('Mẫn Thị Hiền', U_B, 'Cán bộ quản lý kho tang vật', 'Không có lỗi', 0, '')))]
+        },
+        // Còn sống không có lỗi + đã chết có lỗi + đã chết không có lỗi: Chờ chấm dứt, không tính Cột 7, 8
+        {
+            id: 'HT-2026-036', claimCode: 'BT-2026-836', claimSummary: 'Phá dỡ công trình phụ không thuộc diện cưỡng chế; người chỉ đạo và người thực hiện đã chết.', claimAmt: 66000000, status: 'Họp hội đồng', hdDecision: '63/QĐ-TLHD', hdDate: '24/08/2026', extra: { ht2YKienChung: B2YK },
+            officers: [B2(OF('Ninh Văn Thật', U_A, 'Công chức địa chính - xây dựng', 'Không có lỗi', 0, '')), B2(DC(OF('Ông Văn Chỉ', U_A, 'Phó Chủ tịch phường', 'Vô ý', 22000000, ''))),
+                B2(DC(OF('Phó Thị Làm', U_A, 'Cán bộ đội trật tự đô thị', 'Không có lỗi', 0, '')))]
+        },
+        // Có người còn sống và có lỗi: Lưu ý kiến hội đồng -> Bước 3 (người không có lỗi: Không xem xét TNHT); không tính Cột 7, 8
+        {
+            id: 'HT-2026-037', claimCode: 'BT-2026-837', claimSummary: 'Chậm giải quyết hồ sơ cấp giấy chứng nhận quyền sử dụng đất quá thời hạn luật định.', claimAmt: 74000000, status: 'Họp hội đồng', hdDecision: '64/QĐ-TLHD', hdDate: '25/08/2026', extra: { ht2YKienChung: B2YK },
+            officers: [B2(OF('Quan Văn Chậm', U_B, 'Chuyên viên Văn phòng đăng ký đất đai', 'Vô ý', 18000000, 'Một lần')), B2(OF('Sầm Thị Ngay', U_B, 'Cán bộ một cửa', 'Không có lỗi', 0, '')),
+                B2(DC(OF('Tào Văn Khuất', U_B, 'Phó Giám đốc Chi nhánh đăng ký đất đai', 'Vô ý', 15000000, '')))]
+        },
+        // ===== Bước 3 - Chờ ban hành QĐ hoàn trả (05/11/2026) =====
+        // Còn sống có lỗi + đã chết có lỗi (ban hành QĐ -> Chấm dứt hoàn trả) + không có lỗi (Không xem xét TNHT, không vào QĐ)
+        {
+            id: 'HT-2026-038', claimCode: 'BT-2026-838', claimSummary: 'Ra quyết định cưỡng chế thu hồi đất khi chưa ban hành quyết định thu hồi đất.', claimAmt: 140000000, status: 'Chờ ban hành QĐ hoàn trả', hdDecision: '65/QĐ-TLHD', hdDate: '05/08/2026',
+            officers: [OF('Uông Văn Quyết', U_A, 'Phó Chủ tịch phường', 'Vô ý', 30000000, 'Nhiều lần'), DC(OF('Văn Thị Hương', U_A, 'Trưởng ban bồi thường giải phóng mặt bằng', 'Vô ý', 20000000, '')),
+                OF('Xa Văn Đúng', U_A, 'Công chức địa chính', 'Không có lỗi', 0, '')]
+        },
+        // 02 người còn sống có lỗi (01 người Giảm mức hoàn trả theo ý kiến Hội đồng) + 01 người đã chết
+        {
+            id: 'HT-2026-039', claimCode: 'BT-2026-839', claimSummary: 'Đình chỉ hoạt động cơ sở kinh doanh không có căn cứ, gây thiệt hại thu nhập.', claimAmt: 110000000, status: 'Chờ ban hành QĐ hoàn trả', hdDecision: '66/QĐ-TLHD', hdDate: '06/08/2026',
+            officers: [OF('Yên Văn Bảo', U_B, 'Chánh Thanh tra phường', 'Cố ý nhưng không bị truy cứu trách nhiệm hình sự', 35000000, 'Nhiều lần'), OF('Âu Thị Giảm', U_B, 'Thanh tra viên', 'Vô ý', 15000000, 'Một lần'),
+                DC(OF('Bế Văn Tâm', U_B, 'Đội trưởng Đội quản lý thị trường', 'Vô ý', 18000000, ''))]
+        },
+        // ===== Thử Thêm người thi hành công vụ gây thiệt hại và đình chỉ (05/11/2026) =====
+        // Bước 2 - Họp hội đồng, chưa có người thi hành công vụ: bấm Thêm người thi hành công vụ gây thiệt hại
+        {
+            id: 'HT-2026-040', claimCode: 'BT-2026-840', claimSummary: 'Niêm phong kho hàng của doanh nghiệp khi chưa có quyết định kiểm tra.', claimAmt: 72000000, status: 'Họp hội đồng', hdDecision: '67/QĐ-TLHD', hdDate: '26/08/2026', extra: { ht2YKienChung: B2YK }, officers: []
+        },
+        // Bước 2: 03 người còn sống có lỗi; bấm Đình chỉ ở thanh nút chân trang (đình chỉ cả hồ sơ)
+        {
+            id: 'HT-2026-041', claimCode: 'BT-2026-841', claimSummary: 'Thu hồi giấy chứng nhận quyền sử dụng đất dựa trên văn bản sau đó bị hủy bỏ một phần.', claimAmt: 96000000, status: 'Họp hội đồng', hdDecision: '68/QĐ-TLHD', hdDate: '27/08/2026', extra: { ht2YKienChung: B2YK },
+            officers: [B2(OF('Đậu Văn Hòa', U_A, 'Phó Chủ tịch phường', 'Vô ý', 25000000, 'Nhiều lần')), B2(OF('Giang Thị Liễu', U_A, 'Công chức địa chính', 'Vô ý', 15000000, 'Một lần')),
+                B2(OF('Hầu Văn Đạt', U_B, 'Chuyên viên Văn phòng đăng ký đất đai', 'Cố ý nhưng không bị truy cứu trách nhiệm hình sự', 30000000, 'Nhiều lần'))]
+        },
+        // Bước 2: 01 người không có lỗi + 02 người có lỗi
+        {
+            id: 'HT-2026-042', claimCode: 'BT-2026-842', claimSummary: 'Xử phạt vi phạm hành chính căn cứ biên bản lập sai; văn bản làm căn cứ sau đó bị thu hồi.', claimAmt: 58000000, status: 'Họp hội đồng', hdDecision: '69/QĐ-TLHD', hdDate: '28/08/2026', extra: { ht2YKienChung: B2YK },
+            officers: [B2(OF('Khương Văn Ngay', U_B, 'Cán bộ tư pháp', 'Không có lỗi', 0, '')), B2(OF('La Thị Phạt', U_B, 'Phó Chủ tịch phường', 'Vô ý', 20000000, 'Một lần')),
+                B2(OF('Mạc Văn Lập', U_B, 'Cảnh sát khu vực', 'Vô ý', 12000000, 'Một lần'))]
+        },
+        // Bước 2: 01 người đã chết có lỗi + 02 người còn sống có lỗi
+        {
+            id: 'HT-2026-043', claimCode: 'BT-2026-843', claimSummary: 'Kê biên tài sản không thuộc sở hữu của người phải thi hành; quyết định kê biên sau đó bị hủy bỏ.', claimAmt: 104000000, status: 'Họp hội đồng', hdDecision: '70/QĐ-TLHD', hdDate: '29/08/2026', extra: { ht2YKienChung: B2YK },
+            officers: [B2(DC(OF('Nghiêm Văn Cố', U_A, 'Chấp hành viên', 'Vô ý', 28000000, ''))), B2(OF('Ôn Thị Kê', U_A, 'Thư ký thi hành án', 'Vô ý', 14000000, 'Một lần')),
+                B2(OF('Phùng Văn Biên', U_A, 'Phó Chi cục trưởng', 'Vô ý', 18000000, 'Nhiều lần'))]
+        },
+        // Bước 3 - Chờ ban hành QĐ hoàn trả: bấm Đình chỉ ở thanh nút chân trang (đình chỉ cả hồ sơ, chưa có Quyết định hoàn trả được ban hành)
+        {
+            id: 'HT-2026-044', claimCode: 'BT-2026-844', claimSummary: 'Đình chỉ thi công công trình khi chưa có căn cứ vi phạm trật tự xây dựng.', claimAmt: 125000000, status: 'Chờ ban hành QĐ hoàn trả', hdDecision: '71/QĐ-TLHD', hdDate: '07/08/2026',
+            officers: [OF('Quang Văn Dừng', U_B, 'Đội trưởng Đội trật tự đô thị', 'Vô ý', 22000000, 'Nhiều lần'), OF('Rơ Thị Thi', U_B, 'Công chức địa chính - xây dựng', 'Vô ý', 16000000, 'Một lần'),
+                OF('Sử Văn Công', U_B, 'Phó Chủ tịch phường', 'Cố ý nhưng không bị truy cứu trách nhiệm hình sự', 30000000, 'Nhiều lần')]
         }
     ];
     // Trạng thái mẫu của cán bộ (màn Chi tiết, chi_tiet_ho_so_hoan_tra_qd.js): [ct, xl, giam, extra]
@@ -92,7 +218,15 @@
         'Hà Thị Ngân': ['THU', 'HT', 0, { paid: 10000000 }], 'Tô Văn Khải': ['THU', 'HT', 0, { paid: 0 }],
         // HT-2026-028: Đơn vị A đã ban hành QĐ hoàn trả (Thu tiền hoàn trả); Đơn vị B chưa ban hành (Chờ ban hành QĐ hoàn trả)
         'Lã Văn Thành': ['THU', 'HT', 0, { paid: 6000000 }], 'Ông Thị Mai': ['THU', 'HT', 0, { paid: 0 }],
-        'Giáp Văn Hùng': ['CBH_HT', 'HT'], 'Tôn Thị Hà': ['CBH_HT', 'HT']
+        'Giáp Văn Hùng': ['CBH_HT', 'HT'], 'Tôn Thị Hà': ['CBH_HT', 'HT'],
+        // HT-2026-030: cán bộ Đã chết - Chấm dứt hoàn trả; HT-2026-031: cán bộ Không có lỗi - Không xem xét TNHT
+        'Quách Văn Khuất': ['CHAMDUT', 'HT', 0, { total: 0 }], 'Lê Thị Thanh': ['THU', 'HT', 0, { paid: 5000000 }],
+        'Kim Văn Vô': ['KXX', 'HT', 0, { total: 0 }], 'Nhữ Thị Ngọc': ['THU', 'HT', 0, { paid: 0 }], 'Đàm Văn Quý': ['THU', 'HT', 0, { paid: 7000000 }],
+        // HT-2026-038, HT-2026-039 (Bước 3 - Chờ ban hành QĐ hoàn trả): người đã chết vẫn vào QĐ hoàn trả; người Không có lỗi: Không xem xét TNHT
+        'Uông Văn Quyết': ['CBH_HT', 'HT'], 'Văn Thị Hương': ['CBH_HT', 'HT'], 'Xa Văn Đúng': ['KXX', 'HT', 0, { total: 0 }],
+        'Yên Văn Bảo': ['CBH_HT', 'HT'], 'Âu Thị Giảm': ['CBH_HT', 'GIAM', 11000000], 'Bế Văn Tâm': ['CBH_HT', 'HT'],
+        // HT-2026-044 (Bước 3): thử đình chỉ cả hồ sơ
+        'Quang Văn Dừng': ['CBH_HT', 'HT'], 'Rơ Thị Thi': ['CBH_HT', 'HT'], 'Sử Văn Công': ['CBH_HT', 'HT']
     };
     // Phần đơn vị / cán bộ của hồ sơ đã chốt ý kiến Hội đồng (màn Danh sách, xem_xet_hoan_tra_pham_vi.js)
     const L = (name, unit, st, o) => Object.assign({ name, unit, st, xl: 'HT', hd: 0, giam: 0, paid: 0 }, o || {});
@@ -111,7 +245,12 @@
         'HT-2026-028': {
             owner: U_CHU, officers: [L('Lã Văn Thành', U_A, 'THU', { hd: 24000000, paid: 6000000 }), L('Ông Thị Mai', U_A, 'THU', { hd: 16000000 }),
                 L('Giáp Văn Hùng', U_B, 'CBH_HT', { hd: 20000000 }), L('Tôn Thị Hà', U_B, 'CBH_HT', { hd: 12000000 })]
-        }
+        },
+        'HT-2026-030': { owner: U_CHU, officers: [L('Quách Văn Khuất', U_A, 'CHAMDUT', { hd: 25000000, chet: true }), L('Lê Thị Thanh', U_A, 'THU', { hd: 15000000, paid: 5000000 })] },
+        'HT-2026-031': { owner: U_CHU, officers: [L('Kim Văn Vô', U_B, 'KXX', { hd: 0 }), L('Nhữ Thị Ngọc', U_B, 'THU', { hd: 18000000 }), L('Đàm Văn Quý', U_B, 'THU', { hd: 22000000, paid: 7000000 })] },
+        'HT-2026-038': { owner: U_CHU, officers: [L('Uông Văn Quyết', U_A, 'CBH_HT', { hd: 30000000 }), L('Văn Thị Hương', U_A, 'CBH_HT', { hd: 20000000, chet: true }), L('Xa Văn Đúng', U_A, 'KXX', { hd: 0 })] },
+        'HT-2026-039': { owner: U_CHU, officers: [L('Yên Văn Bảo', U_B, 'CBH_HT', { hd: 35000000 }), L('Âu Thị Giảm', U_B, 'CBH_HT', { xl: 'GIAM', hd: 15000000, giam: 11000000 }), L('Bế Văn Tâm', U_B, 'CBH_HT', { hd: 18000000, chet: true })] },
+        'HT-2026-044': { owner: U_CHU, officers: [L('Quang Văn Dừng', U_B, 'CBH_HT', { hd: 22000000 }), L('Rơ Thị Thi', U_B, 'CBH_HT', { hd: 16000000 }), L('Sử Văn Công', U_B, 'CBH_HT', { hd: 30000000 })] }
     };
 
     // Nguồn lập hồ sơ hoàn trả mới (popup Chọn vụ việc bồi thường, màn Danh sách): vụ việc đã hoàn tất chi trả kinh phí bồi thường,
@@ -141,7 +280,7 @@
     // Họ và tên người yêu cầu theo Mã hồ sơ GQBT (định danh vụ việc "Mã vụ việc - Họ và tên" trên Danh sách / Chi tiết)
     try { if (typeof CLAIMANT_BY_CODE !== 'undefined') window.HT_SOURCE_CLAIMS.forEach(s => { if (!CLAIMANT_BY_CODE[s.claimCode]) CLAIMANT_BY_CODE[s.claimCode] = s.claimant; }); } catch (e) { /* bỏ qua */ }
     // Người yêu cầu của vụ việc nguồn (hồ sơ Giải quyết YCBT Hoàn thành - quan_ly_boi_thuong_seedht.js)
-    const HT_CLAIMANTS = { 'BT-2026-801': 'Nguyễn Hữu Lâm', 'BT-2026-802': 'Đặng Thị Hoa', 'BT-2026-803': 'Trịnh Quốc Bảo', 'BT-2026-804': 'Công ty TNHH Xây dựng Phú Thịnh', 'BT-2026-805': 'Lò Văn Tâm', 'BT-2026-806': 'Hà Thị Liên', 'BT-2026-808': 'Vũ Ngọc Ánh', 'BT-2026-809': 'Phí Văn Đức', 'BT-2026-810': 'Tống Thị Hằng', 'BT-2026-811': 'Lưu Đình Nam', 'BT-2026-812': 'Mai Thị Thu', 'BT-2026-813': 'Cù Văn Hải', 'BT-2026-814': 'Đoàn Thị Vân', 'BT-2026-815': 'Lương Đức Mạnh', 'BT-2026-816': 'Nghiêm Thị Hà', 'BT-2026-817': 'Kiều Thị Thơ', 'BT-2026-818': 'Thái Văn Lộc', 'BT-2026-819': 'Ninh Văn Hiển', 'BT-2026-820': 'Âu Thị Phượng', 'BT-2026-821': 'Hứa Văn Kiên', 'BT-2026-822': 'Bế Văn Thuận', 'BT-2026-823': 'La Văn Sinh', 'BT-2026-824': 'Mông Thị Hiền', 'BT-2026-825': 'Quản Văn Tư', 'BT-2026-826': 'Công ty Cổ phần Thương mại An Phú', 'BT-2026-827': 'Viên Văn Trí', 'BT-2026-828': 'Đào Văn Chính' };
+    const HT_CLAIMANTS = { 'BT-2026-801': 'Nguyễn Hữu Lâm', 'BT-2026-802': 'Đặng Thị Hoa', 'BT-2026-803': 'Trịnh Quốc Bảo', 'BT-2026-804': 'Công ty TNHH Xây dựng Phú Thịnh', 'BT-2026-805': 'Lò Văn Tâm', 'BT-2026-806': 'Hà Thị Liên', 'BT-2026-808': 'Vũ Ngọc Ánh', 'BT-2026-809': 'Phí Văn Đức', 'BT-2026-810': 'Tống Thị Hằng', 'BT-2026-811': 'Lưu Đình Nam', 'BT-2026-812': 'Mai Thị Thu', 'BT-2026-813': 'Cù Văn Hải', 'BT-2026-814': 'Đoàn Thị Vân', 'BT-2026-815': 'Lương Đức Mạnh', 'BT-2026-816': 'Nghiêm Thị Hà', 'BT-2026-817': 'Kiều Thị Thơ', 'BT-2026-818': 'Thái Văn Lộc', 'BT-2026-819': 'Ninh Văn Hiển', 'BT-2026-820': 'Âu Thị Phượng', 'BT-2026-821': 'Hứa Văn Kiên', 'BT-2026-822': 'Bế Văn Thuận', 'BT-2026-823': 'La Văn Sinh', 'BT-2026-824': 'Mông Thị Hiền', 'BT-2026-825': 'Quản Văn Tư', 'BT-2026-826': 'Công ty Cổ phần Thương mại An Phú', 'BT-2026-827': 'Viên Văn Trí', 'BT-2026-828': 'Đào Văn Chính', 'BT-2026-832': 'Công ty TNHH Dịch vụ Hưng Phát', 'BT-2026-833': 'Hoàng Văn Thái', 'BT-2026-834': 'Kha Thị Duyên', 'BT-2026-835': 'Lạc Văn Toàn', 'BT-2026-836': 'Mạch Thị Nga', 'BT-2026-837': 'Nguyễn Thị Thoa', 'BT-2026-838': 'Phương Văn Khôi', 'BT-2026-839': 'Hộ kinh doanh Quang Minh', 'BT-2026-840': 'Công ty Cổ phần Kho vận Bắc Hà', 'BT-2026-841': 'Đinh Văn Lực', 'BT-2026-842': 'Trương Thị Mai', 'BT-2026-843': 'Lý Văn Hậu', 'BT-2026-844': 'Công ty TNHH Xây dựng Thành Công' };
     try { if (typeof CLAIMANT_BY_CODE !== 'undefined') Object.keys(HT_CLAIMANTS).forEach(k => { CLAIMANT_BY_CODE[k] = HT_CLAIMANTS[k]; }); } catch (e) { /* bỏ qua */ }
     // Đơn vị của người dùng giả lập (thanh giả lập Hoàn trả): xác định phạm vi dữ liệu của nguồn lập hồ sơ
     window.htSourceInScope = function (src) {
@@ -159,6 +298,7 @@
             id: c.id, code: c.id, claimCode: c.claimCode, claimSummary: c.claimSummary, agency: 'Sở Tư pháp Hà Nội', claimAmt: c.claimAmt, claimDate: '20/06/2026',
             status: c.status, dateCreated: '01/07/2026', hdDecision: c.hdDecision, hdDate: c.hdDate, refundOfficers: c.officers.map(o => Object.assign({}, o)), payments: []
         };
+        if (c.extra) Object.assign(base, c.extra);
         if (isDetail) {
             addMockDossier(Object.assign(base, { qdStatus: null, qdNo: '', qdDate: '', qdSigner: '', qdSummary: '', qdFileName: '', conclusionFile: '', timeline: [], refundTotal: c.officers.reduce((s, o) => s + o.total, 0) }));
         } else if (!dossiersList.some(d => d.id === c.id)) {
@@ -168,11 +308,12 @@
             }));
         }
     });
-    // Lĩnh vực tố tụng hình sự: Đơn vị ban hành QĐ hoàn trả là Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương của từng cán bộ (mỗi đơn vị 01 QĐ)
-    // HT-2026-021: 02 cán bộ cùng Cơ quan trực tiếp quản lý (UBND Phường Bồ Đề), khác Cơ quan đang quản lý, sử dụng, trả lương -> 02 QĐ hoàn trả
+    // Lĩnh vực tố tụng hình sự (SRS 05/11/2026): Đơn vị ban hành QĐ hoàn trả là Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại của từng cán bộ (mỗi đơn vị 01 QĐ)
+    // HT-2026-021: 02 cán bộ khác Cơ quan trực tiếp quản lý (UBND Phường Bồ Đề, UBND phường Hải An) -> 02 QĐ hoàn trả;
+    // Đặng Thị Lan do UBND Phường Bồ Đề trả lương (chỉ nhận Quyết định hoàn trả và thu tiền)
     const TTHS_CODES = ['HT-2026-021', 'HT-2026-027', 'HT-2026-028'];
     dossiersList.forEach(d => { if (TTHS_CODES.includes(d.code || d.id)) d.claimField = 'Trong hoạt động tố tụng hình sự'; });
-    // HT-2026-008 (Họp hội đồng): thêm 01 cán bộ để demo đình chỉ một phần cán bộ tại Bước 2
+    // HT-2026-008 (Họp hội đồng): thêm 01 cán bộ (trước dùng để demo đình chỉ một phần cán bộ; bỏ từ 06/11/2026)
     const d8 = dossiersList.find(d => d.id === 'HT-2026-008');
     if (d8 && Array.isArray(d8.refundOfficers) && !d8.refundOfficers.some(o => o.name === 'Nguyễn Thị Hoa')) {
         d8.refundOfficers.push(Object.assign(OF('Nguyễn Thị Hoa', U_A, 'Cán bộ tư pháp', 'Vô ý', 15000000, 'Hoàn trả nhiều lần'), { xl: 'Hoàn trả', status: 'Họp hội đồng' }));
@@ -182,7 +323,7 @@
     try {
         let createdCodes = [];
         try { createdCodes = (JSON.parse(localStorage.getItem('btnn_hoantra_created_v1') || '[]') || []).map(d => d && (d.code || d.id)); } catch (e) { createdCodes = []; }
-        const isSeed = d => d && /^HT-2026-0(0[1-9]|1\d|2[0-8])$/.test(d.code || d.id || '') && !createdCodes.includes(d.code || d.id);
+        const isSeed = d => d && /^HT-2026-0(0[1-9]|[1-3]\d|4[0-4])$/.test(d.code || d.id || '') && !createdCodes.includes(d.code || d.id);
         const walk = (o, key) => {
             if (typeof o === 'string') return window.htShiftDate(o, /deadline|nextDate|^han[A-Z]/i.test(key || ''));
             if (Array.isArray(o)) { o.forEach((v, i) => { o[i] = walk(v, key); }); return o; }
@@ -221,6 +362,26 @@
             s1RelatedDocs.splice(0, s1RelatedDocs.length, { title: 'Quyết định giải quyết bồi thường số ' + no, code: no, date: activeDossier.claimDate || '', fileName: 'Quyet_dinh_giai_quyet_boi_thuong_' + no.replace(/\//g, '_') + '.pdf' });
             if (typeof renderStep1 === 'function') renderStep1();
         } catch (e) { /* bỏ qua */ }
+    });
+
+    // Màn Chi tiết: lượt trình Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả (Mẫu 39/BTNN chế độ chấm dứt) của hồ sơ mẫu
+    const CD_SEED = { 'HT-2026-012': 'pending', 'HT-2026-020': 'rejected', 'HT-2026-011': 'done' };
+    window.addEventListener('DOMContentLoaded', () => {
+        const k = activeDossier && CD_SEED[activeDossier.id];
+        if (!k || (activeDossier.dcht && activeDossier.dcht.mode === 'cd') || typeof tlhdLevels !== 'function') return;
+        const levels = tlhdLevels();
+        const r = {
+            method: 'online', docSrc: 'gen', mode: 'cd', prevStatus: 'Chờ chấm dứt', so: k === 'done' ? '27/QĐ-UBND' : '', ngay: window.htShiftDate('22/09/2026'),
+            canCu: typeof cdhtCanCuDefault === 'function' ? cdhtCanCuDefault() : '', vbCanCu: '', lyDo: activeDossier.cdLyDo || '', noiNhan: typeof dchtNoiNhanDefault === 'function' ? dchtNoiNhanDefault() : '',
+            fileName: 'Mau_39_BTNN_Quyet_dinh_cham_dut_xem_xet_hoan_tra_' + activeDossier.code + '.docx', uploadMeta: null,
+            attachments: [{ name: 'Văn bản kiến nghị của Hội đồng xem xét trách nhiệm hoàn trả', file: { id: '', name: 'Van_ban_kien_nghi_hoan_tra.pdf', size: 245760, type: 'application/pdf' } }],
+            levels, assignees: levels.map(l => (l.leaders && l.leaders[0] ? l.leaders[0].id : '')), coords: [], enableNhay: true,
+            content: 'Kính trình Lãnh đạo xem xét, ký duyệt Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả.', level: k === 'done' ? levels.length : 0, submittedAt: window.htShiftDate('22/09/2026 09:00'),
+            returned: k === 'rejected' ? { reason: 'Cần bổ sung giấy chứng tử của người thi hành công vụ gây thiệt hại vào hồ sơ trình ký.', by: 'Lãnh đạo cấp 1', at: window.htShiftDate('23/09/2026 10:30') } : null
+        };
+        if (k === 'done') { r.signedAt = window.htShiftDate('24/09/2026 15:00'); r.issuedAt = r.signedAt; }
+        activeDossier.dcht = r;
+        if (typeof renderStateLayout === 'function') renderStateLayout();
     });
 
     // Màn Chi tiết: lượt trình Quyết định đình chỉ cả hồ sơ (Chờ duyệt / Bị trả lại) cho HT-2026-023, HT-2026-024

@@ -267,6 +267,15 @@
             padding-left: 54px;
         }
 
+        /* Menu cha cấp 3 (có menu con cấp 4) - đồng bộ HomePageBTNN */
+        .menu-sub-group-header.level-3 {
+            padding-left: 54px;
+        }
+
+        .menu-leaf-item.level-4 {
+            padding-left: 72px;
+        }
+
         /* Badge notification for pending items */
         .menu-badge {
             display: inline-flex;
@@ -887,16 +896,17 @@
                 title: "Bồi thường nhà nước",
                 icon: "fa-solid fa-hand-holding-dollar",
                 children: [
+                    // 06/11/2026: đồng bộ theo HomePageBTNN.html (sắp xếp menu theo góp ý khách hàng ngày 02/11/2026); sửa menu BTNN thì sửa cả 2 trang
                     // Badge số lượng (badgeKey bdg_*) = badge tab Chờ xử lý của phân hệ, tính qua tiện ích dùng chung BDG (btnn_badge_cho_xu_ly.js)
-                    { title: "Bàn làm việc Lãnh đạo", url: "../03_Boi_thuong_nha_nuoc/dashboard_lanh_dao_btnn.html" },
-                    { title: "Tiếp nhận hồ sơ", url: "../03_Boi_thuong_nha_nuoc/tiep_nhan_ycbt.html?v=3", badgeKey: "bdg_tiepNhan", badgeType: "danger" },
-                    { title: "Xác định cơ quan giải quyết bồi thường", badgeKey: "bdg_xdcq", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/xac_dinh_co_quan_boi_thuong.html?v=20261008" },
+                    { title: "Bàn làm việc Lãnh đạo", url: "../03_Boi_thuong_nha_nuoc/dashboard_lanh_dao_btnn.html?v=20261106vt1" },
+                    { title: "Tiếp nhận hồ sơ", url: "../03_Boi_thuong_nha_nuoc/tiep_nhan_ycbt.html?v=20261106vt2", badgeKey: "bdg_tiepNhan", badgeType: "danger" },
+                    { title: "Xác định cơ quan giải quyết bồi thường", badgeKey: "bdg_xdcq", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/xac_dinh_co_quan_boi_thuong.html?v=20261106vt2" },
                     {
                         // Badge nhóm = tổng badge 2 mục con (bdg_gqGroup, tính trong BDG.mountMenu)
                         title: "Giải quyết bồi thường", badgeKey: "bdg_gqGroup", badgeType: "danger",
                         children: [
-                            { title: "Giải quyết yêu cầu bồi thường", badgeKey: "bdg_gqYcbt", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/quan_ly_boi_thuong.html?v=1" },
-                            { title: "Quyết định giải quyết bồi thường", badgeKey: "bdg_qdGqbt", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/quyet_dinh_giai_quyet_boi_thuong.html?v=1" }
+                            { title: "Giải quyết yêu cầu bồi thường", badgeKey: "bdg_gqYcbt", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/quan_ly_boi_thuong.html?v=20261106db3" },
+                            { title: "Quyết định giải quyết bồi thường", badgeKey: "bdg_qdGqbt", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/quyet_dinh_giai_quyet_boi_thuong.html?v=20261106vt1" }
                         ]
                     },
                     {
@@ -904,64 +914,76 @@
                         // Badge nhóm = tổng badge 2 mục con (bdg_kpGroup, tính trong BDG.mountMenu)
                         title: "Kinh phí", badgeKey: "bdg_kpGroup", badgeType: "danger",
                         children: [
-                            { title: "Tạm ứng kinh phí", badgeKey: "bdg_kpTamUng", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/quan_ly_kinh_phi_boi_thuong.html?v=1&menu=tam-ung" },
-                            { title: "Chi trả tiền bồi thường", badgeKey: "bdg_kpChiTra", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/quan_ly_kinh_phi_boi_thuong.html?v=1&menu=chi-tra" }
+                            { title: "Tạm ứng kinh phí", badgeKey: "bdg_kpTamUng", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/quan_ly_kinh_phi_boi_thuong.html?v=20261106vt2&menu=tam-ung" },
+                            { title: "Chi trả tiền bồi thường", badgeKey: "bdg_kpChiTra", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/quan_ly_kinh_phi_boi_thuong.html?v=20261106vt2&menu=chi-tra" }
                         ]
                     },
-                    { title: "Xem xét trách nhiệm hoàn trả", badgeKey: "bdg_hoanTra", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/xem_xet_trach_nhiem_hoan_tra.html" },
+                    { title: "Xem xét trách nhiệm hoàn trả", badgeKey: "bdg_hoanTra", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/xem_xet_trach_nhiem_hoan_tra.html?v=20261106vt2" },
                     { title: "Tra cứu vụ việc", url: "../03_Boi_thuong_nha_nuoc/tra_cuu_ho_so_boi_thuong.html?v=1" },
                     { title: "Theo dõi vụ việc tại Tòa án", url: "../03_Boi_thuong_nha_nuoc/theo_doi_vu_viec_toa_an.html" },
-                    { title: "Quản lý chấm điểm công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_cham_diem_btnn.html" },
+                    { title: "Quản lý chấm điểm công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_cham_diem_btnn.html", hidden: true },
+                    // Nhóm Quản lý nhà nước: sắp xếp theo góp ý khách hàng ngày 02/11/2026 (nhóm theo nghiệp vụ, phạm vi BTP/STP do phân quyền quyết định)
                     {
-                        title: "Hỗ trợ & thông tin tư liệu BTNN",
-                        children: [
-                            { title: "Quản lý thông tin tư liệu VBQPPL", url: "quan_ly_tu_lieu_vbqppl.html?system=btnn" },
-                            { title: "Quản lý câu hỏi và trả lời thường gặp", url: "quan_ly_cau_hoi_faq.html?system=btnn" },
-                            { title: "Kiểm tra thử nghiệm ứng dụng hỏi đáp", url: "../temp_placeholder.html" }
+                        title: "Văn bản liên quan đến công tác BTNN", children: [
+                            { title: "Văn bản quy phạm pháp luật", url: "quan_ly_tu_lieu_vbqppl.html?system=btnn&v=20261106db3" },
+                            // 02 menu dùng chung trang van_ban_chi_dao_dieu_hanh.html, phân biệt bằng tham số menu (tw / dp)
+                            // Menu cha cấp 3, 02 menu con cấp 4
+                            {
+                                title: "Văn bản chỉ đạo, điều hành", children: [
+                                    { title: "Văn bản chỉ đạo, điều hành do Trung ương ban hành", url: "../03_Boi_thuong_nha_nuoc/van_ban_chi_dao_dieu_hanh.html?menu=tw&v=20261106db3" },
+                                    { title: "Văn bản chỉ đạo, điều hành do Địa phương ban hành", url: "../03_Boi_thuong_nha_nuoc/van_ban_chi_dao_dieu_hanh.html?menu=dp&v=20261106db3" }
+                                ]
+                            }
                         ]
                     },
                     {
-                        title: "Nghiệp vụ dùng cho Bộ Tư pháp",
-                        children: [
-                            { title: "Xây dựng chiến lược, chính sách về công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=chien_luoc_chinh_sach" },
-                            { title: "Biểu mẫu, sổ sách về công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=van_ban_bieu_mau_so_sach", hidden: true }, // Ẩn theo yêu cầu khách hàng
-                            { title: "Hợp tác quốc tế", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=hop_tac_quoc_te" },
-                            { title: "Phối hợp với TAND tối cao, VKSND tối cao", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=phoi_hop_tand_vksnd" },
-                            { title: "Giải đáp vướng mắc trong việc áp dụng pháp luật", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=giai_dap_vuong_mac" },
-                            { title: "Thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=dau_moi_btnn" },
-                            { title: "Thông tin từ các CSDL có liên quan đến công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=csdl_lien_quan_btnn" }
-                        ]
-                    },
-                    {
-                        title: "Nghiệp vụ dùng chung BTP & STP",
-                        children: [
-                            { title: "Hướng dẫn, bồi dưỡng kỹ năng, nghiệp vụ", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_tt08.html?module=huong_dan" },
-                            { title: "Theo dõi, đôn đốc công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_theo_doi_don_doc_btnn.html" },
-                            { title: "Kiểm tra công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_kiem_tra_cong_tac_btnn.html" },
-                            { title: "Giải quyết khiếu nại, tố cáo, xử lý vi phạm", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_tt08.html?module=khieu_nai" }
-                        ]
-                    },
-                    {
-                        title: "Nghiệp vụ dùng cho STP",
-                        children: [
-                            { title: "Hỗ trợ người bị thiệt hại thực hiện quyền yêu cầu bồi thường", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=ho_tro_nguoi_bi_thiet_hai" },
-                            { title: "Kiến nghị cơ quan có thẩm quyền xử lý vi phạm", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_xu_ly_vi_pham" },
-                            { title: "Kiến nghị người có thẩm quyền kháng nghị bản án", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_khang_nghi_ban_an" },
-                            { title: "Yêu cầu Thủ trưởng cơ quan hủy quyết định GQBT", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=yeu_cau_huy_qd_gqbt" },
-                            { title: "Kiến nghị Thủ trưởng cơ quan xem xét lại quyết định hoàn trả", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_xem_xet_qd_hoan_tra" }
-                        ]
-                    },
-                    {
-                        title: "Báo cáo quản lý BTNN",
-                        children: [
-                            { title: "Báo cáo công tác BTNN", badgeKey: "bdg_bctt", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/bao_cao_cong_tac_btnn.html" },
-                            // Ẩn: chưa làm đợt này (6 mục dưới, hidden: true)
+                        title: "Nghiệp vụ quản lý nhà nước về công tác BTNN", children: [
+                            { title: "Kiểm tra công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_kiem_tra_cong_tac_btnn.html?v=20261106db3" },
+                            { title: "Phối hợp thực hiện công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=phoi_hop_tand_vksnd&v=20261106db3" },
+                            { title: "Theo dõi, đôn đốc công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_theo_doi_don_doc_btnn.html?v=20261106db3" },
+                            { title: "Tập huấn, bồi dưỡng", url: "../03_Boi_thuong_nha_nuoc/tap_huan_boi_duong_btnn.html?v=20261106db3" },
+                            { title: "Hướng dẫn nghiệp vụ", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_tt08.html?module=huong_dan&v=20261106db3" },
+                            // Menu cha cấp 3, 02 menu con cấp 4: Sở Tư pháp lập báo cáo tại «Báo cáo công tác BTNN», Bộ Tư pháp xử lý báo cáo các Sở gửi lên tại «Xử lý báo cáo Công tác BTNN»
+                            // Badge nhóm = tổng badge 2 mục con (bdg_bcttGroup, tính trong BDG.mountMenu)
+                            {
+                                title: "Báo cáo công tác BTNN", badgeKey: "bdg_bcttGroup", badgeType: "danger",
+                                children: [
+                                    { title: "Báo cáo công tác BTNN", badgeKey: "bdg_bctt", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/bao_cao_cong_tac_btnn.html" },
+                                    { title: "Tổng hợp báo cáo Công tác BTNN", badgeKey: "bdg_bctt_bo", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/xu_ly_bao_cao_cong_tac_btnn.html" }
+                                ]
+                            },
+                            { title: "Thông tin đầu mối thực hiện công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/dau_moi_theo_tinh.html?v=20261106db3" },
+                            // Ẩn: màn đầu mối cũ (danh sách phẳng, chỉ Bộ Tư pháp nhập) - thay bằng màn theo tỉnh (góp ý KH số 2)
+                            { title: "Thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=dau_moi_btnn", hidden: true },
+                            // Chỉ Bộ Tư pháp (02 mục dưới)
+                            { title: "Hợp tác quốc tế", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=hop_tac_quoc_te&v=20261106db3" },
+                            { title: "Thông tin từ các CSDL có liên quan đến công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=csdl_lien_quan_btnn&v=20261106db3" },
+                            // Ẩn: chưa làm đợt này (8 mục dưới, hidden: true)
                             { title: "Thống kê số lượng vụ việc YCBT theo thời gian", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_thoi_gian", hidden: true },
                             { title: "Thống kê chi tiết vụ việc YCBT theo các cấp", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_cap", hidden: true },
                             { title: "Thống kê chi tiết vụ việc YCBT theo phạm vi", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_pham_vi", hidden: true },
                             { title: "Thống kê chi tiết vụ việc YCBT theo cơ quan", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_co_quan", hidden: true },
                             { title: "Thống kê kết quả giải quyết YCBT tại địa phương", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_dia_phuong", hidden: true },
-                            { title: "Báo cáo tổng hợp kết quả đánh giá xếp loại", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=xep_loai", hidden: true }
+                            { title: "Báo cáo tổng hợp kết quả đánh giá xếp loại", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=xep_loai", hidden: true },
+                            { title: "Báo cáo chi tiết đánh giá công tác BTNN các năm", url: "../temp_placeholder.html", hidden: true },
+                            { title: "Báo cáo chi tiết giải quyết vụ việc tồn đọng, kéo dài", url: "../temp_placeholder.html", hidden: true }
+                        ]
+                    },
+                    { title: "Hỗ trợ người bị thiệt hại thực hiện quyền yêu cầu bồi thường", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=ho_tro_nguoi_bi_thiet_hai&v=20261106db3" },
+                    {
+                        title: "Yêu cầu, kiến nghị các vụ việc BTNN", children: [
+                            { title: "Kiến nghị cơ quan có thẩm quyền xử lý vi phạm", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_xu_ly_vi_pham&v=20261106db3" },
+                            { title: "Kiến nghị người có thẩm quyền kháng nghị bản án", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_khang_nghi_ban_an&v=20261106db3" },
+                            { title: "Yêu cầu Thủ trưởng cơ quan hủy quyết định GQBT", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=yeu_cau_huy_qd_gqbt&v=20261106db3" },
+                            { title: "Kiến nghị Thủ trưởng cơ quan xem xét lại quyết định hoàn trả", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_xem_xet_qd_hoan_tra&v=20261106db3" }
+                        ]
+                    },
+                    { title: "Khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_tt08.html?module=khieu_nai&v=20261106db3" },
+                    {
+                        title: "Hỏi đáp", children: [
+                            { title: "Hỏi đáp nghiệp vụ", url: "../03_Boi_thuong_nha_nuoc/hoi_dap_nghiep_vu.html?v=20261106db3" },
+                            { title: "Câu hỏi và trả lời thường gặp", url: "quan_ly_cau_hoi_faq.html?system=btnn&v=20261106db3" },
+                            { title: "Kiểm tra thử nghiệm ứng dụng hỏi đáp", url: "../temp_placeholder.html", hidden: true }
                         ]
                     }
                 ]
@@ -1160,6 +1182,42 @@
                         subGroupItemsContainer.id = `subgroup-container-${rootIdx}-${childIdx}`;
 
                         child.children.forEach((leaf, leafIdx) => {
+                            // Menu cha cấp 3: nhóm thu gọn chứa menu con cấp 4 (đồng bộ HomePageBTNN)
+                            if (leaf.children) {
+                                const key = `${rootIdx}-${childIdx}-${leafIdx}`;
+                                const l3Btn = document.createElement('button');
+                                l3Btn.className = 'menu-sub-group-header level-3';
+                                l3Btn.id = `subgroup-item-${key}`;
+                                l3Btn.onclick = () => toggleSubGroup(rootIdx, childIdx, leafIdx);
+                                l3Btn.innerHTML = `<span>${leaf.title}</span>${leaf.badgeKey ? `<span class="menu-badge ${leaf.badgeType || 'danger'}" data-badge-key="${leaf.badgeKey}" style="margin-left:auto; margin-right:8px; display:none;"></span>` : ''}<i class="fa fa-chevron-down menu-sub-group-arrow" id="subgroup-arrow-${key}"></i>`;
+                                const l3Box = document.createElement('div');
+                                l3Box.className = 'menu-sub-group-container';
+                                l3Box.id = `subgroup-container-${key}`;
+                                leaf.children.forEach((leaf4, idx4) => {
+                                    const a4 = document.createElement('a');
+                                    a4.className = 'menu-leaf-item level-4';
+                                    a4.id = `leaf-${key}-${idx4}`;
+                                    const t4 = document.createElement('span');
+                                    t4.className = 'menu-leaf-text';
+                                    t4.innerText = leaf4.title;
+                                    a4.appendChild(t4);
+                                    if (leaf4.badgeKey) {
+                                        const badge4 = document.createElement('span');
+                                        badge4.className = `menu-badge ${leaf4.badgeType || 'danger'}`;
+                                        badge4.dataset.badgeKey = leaf4.badgeKey;
+                                        badge4.style.display = 'none';
+                                        a4.appendChild(badge4);
+                                    }
+                                    a4.onclick = (e) => {
+                                        e.preventDefault();
+                                        selectLeaf(leaf4, [root.title, child.title, leaf.title, leaf4.title], a4.id);
+                                    };
+                                    l3Box.appendChild(a4);
+                                });
+                                subGroupItemsContainer.appendChild(l3Btn);
+                                subGroupItemsContainer.appendChild(l3Box);
+                                return;
+                            }
                             const leafLink = document.createElement('a');
                             leafLink.className = 'menu-leaf-item level-3';
                             leafLink.id = `leaf-${rootIdx}-${childIdx}-${leafIdx}`;
@@ -1264,10 +1322,12 @@
         }
 
         // Toggle Subgroup blocks
-        function toggleSubGroup(rootIdx, childIdx) {
-            const subgroupContainer = document.getElementById(`subgroup-container-${rootIdx}-${childIdx}`);
-            const subgroupArrow = document.getElementById(`subgroup-arrow-${rootIdx}-${childIdx}`);
-            const subgroupBtn = document.getElementById(`subgroup-item-${rootIdx}-${childIdx}`);
+        // leafIdx: có khi là menu cha cấp 3
+        function toggleSubGroup(rootIdx, childIdx, leafIdx) {
+            const key = leafIdx === undefined ? `${rootIdx}-${childIdx}` : `${rootIdx}-${childIdx}-${leafIdx}`;
+            const subgroupContainer = document.getElementById(`subgroup-container-${key}`);
+            const subgroupArrow = document.getElementById(`subgroup-arrow-${key}`);
+            const subgroupBtn = document.getElementById(`subgroup-item-${key}`);
             if (subgroupContainer) {
                 const isExpanded = subgroupContainer.classList.toggle('expanded');
                 if (subgroupArrow) {
@@ -1298,13 +1358,9 @@
             const parentSpan = document.getElementById('breadcrumbParent');
             const childSpan = document.getElementById('breadcrumbChild');
 
-            if (pathArray.length === 3) {
-                parentSpan.innerText = `${pathArray[0]} / ${pathArray[1]}`;
-                childSpan.innerText = pathArray[2];
-            } else {
-                parentSpan.innerText = pathArray[0];
-                childSpan.innerText = pathArray[1];
-            }
+            // 2-4 cấp: các cấp cha ở phần đầu, cấp cuối là trang hiện tại
+            parentSpan.innerText = pathArray.slice(0, -1).join(' / ');
+            childSpan.innerText = pathArray[pathArray.length - 1];
 
             // Update Header & loading target in iframe
             const iframe = document.getElementById('mainContentIframe');
@@ -1342,6 +1398,20 @@
                     if (child.children) {
                         for (let leafIdx = 0; leafIdx < child.children.length; leafIdx++) {
                             const leaf = child.children[leafIdx];
+                            if (leaf.children) {
+                                const idx4 = leaf.children.findIndex(l4 => sameLeaf(l4.url));
+                                if (idx4 >= 0) {
+                                    return {
+                                        rootIdx,
+                                        childIdx,
+                                        leafIdx,
+                                        leaf: leaf.children[idx4],
+                                        path: [root.title, child.title, leaf.title, leaf.children[idx4].title],
+                                        elementId: `leaf-${rootIdx}-${childIdx}-${leafIdx}-${idx4}`
+                                    };
+                                }
+                                continue;
+                            }
                             if (sameLeaf(leaf.url)) {
                                 return {
                                     rootIdx,
@@ -1420,7 +1490,12 @@
             'xem_chi_tiet_lich_su_can_bo.html': '../02_Bien_phap_bao_dam/xem_chi_tiet_lich_su_can_bo.html',
             'xem_chi_tiet_thay_doi.html': '../02_Bien_phap_bao_dam/xem_chi_tiet_thay_doi.html',
             'xem_tai_lieu_kiem_chung.html': '../03_Boi_thuong_nha_nuoc/xem_tai_lieu_kiem_chung.html',
-            'xem_xet_trach_nhiem_hoan_tra.html': '../03_Boi_thuong_nha_nuoc/xem_xet_trach_nhiem_hoan_tra.html'
+            'xem_xet_trach_nhiem_hoan_tra.html': '../03_Boi_thuong_nha_nuoc/xem_xet_trach_nhiem_hoan_tra.html',
+            'van_ban_chi_dao_dieu_hanh.html': '../03_Boi_thuong_nha_nuoc/van_ban_chi_dao_dieu_hanh.html',
+            'tap_huan_boi_duong_btnn.html': '../03_Boi_thuong_nha_nuoc/tap_huan_boi_duong_btnn.html',
+            'xu_ly_bao_cao_cong_tac_btnn.html': '../03_Boi_thuong_nha_nuoc/xu_ly_bao_cao_cong_tac_btnn.html',
+            'dau_moi_theo_tinh.html': '../03_Boi_thuong_nha_nuoc/dau_moi_theo_tinh.html',
+            'hoi_dap_nghiep_vu.html': '../03_Boi_thuong_nha_nuoc/hoi_dap_nghiep_vu.html'
         };
         function resolveModuleUrl(url) {
             const s = String(url || '');
@@ -1449,6 +1524,10 @@
             const subGroupContainer = document.getElementById(`subgroup-container-${match.rootIdx}-${match.childIdx}`);
             if (subGroupContainer && !subGroupContainer.classList.contains('expanded')) {
                 toggleSubGroup(match.rootIdx, match.childIdx);
+            }
+            if (match.leafIdx !== undefined) {
+                const l3 = document.getElementById(`subgroup-container-${match.rootIdx}-${match.childIdx}-${match.leafIdx}`);
+                if (l3 && !l3.classList.contains('expanded')) toggleSubGroup(match.rootIdx, match.childIdx, match.leafIdx);
             }
 
             selectLeaf(match.leaf, match.path, match.elementId, url);
@@ -1482,11 +1561,15 @@
                     if (!rc || !rc.classList.contains('expanded')) toggleRootItem(match.rootIdx);
                     const sg = document.getElementById(`subgroup-container-${match.rootIdx}-${match.childIdx}`);
                     if (sg && !sg.classList.contains('expanded')) toggleSubGroup(match.rootIdx, match.childIdx);
+                    if (match.leafIdx !== undefined) {
+                        const l3 = document.getElementById(`subgroup-container-${match.rootIdx}-${match.childIdx}-${match.leafIdx}`);
+                        if (l3 && !l3.classList.contains('expanded')) toggleSubGroup(match.rootIdx, match.childIdx, match.leafIdx);
+                    }
                     document.querySelectorAll('.menu-leaf-item').forEach(item => item.classList.remove('active'));
                     const el = document.getElementById(match.elementId);
                     if (el) el.classList.add('active');
                     const p = match.path;
-                    document.getElementById('breadcrumbParent').innerText = p.length === 3 ? `${p[0]} / ${p[1]}` : p[0];
+                    document.getElementById('breadcrumbParent').innerText = p.slice(0, -1).join(' / ');
                     document.getElementById('breadcrumbChild').innerText = p[p.length - 1];
                 }
             }
@@ -1601,6 +1684,10 @@
                             if (subgroupContainer) subgroupContainer.classList.add('expanded');
                             if (subgroupArrow) subgroupArrow.classList.add('rotated');
                             if (subgroupBtn) subgroupBtn.classList.add('expanded');
+                            // Menu cha cấp 3
+                            child.children.forEach((leaf, leafIdx) => {
+                                if (leaf.children) document.getElementById(`subgroup-container-${rootIdx}-${childIdx}-${leafIdx}`)?.classList.add('expanded');
+                            });
                         }
                     });
                 } else {

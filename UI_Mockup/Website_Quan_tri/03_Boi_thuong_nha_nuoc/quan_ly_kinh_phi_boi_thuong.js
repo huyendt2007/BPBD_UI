@@ -1355,6 +1355,7 @@ function initKinhPhiApp() {
     // Vai trò giả lập theo tài khoản đang đăng nhập (thuộc Nhóm lãnh đạo: Lãnh đạo) để badge tab Chờ xử lý và badge menu trái cùng vai trò
     else if (window.BTNN_WF && typeof kptbIsLeaderAccount === "function" && kptbIsLeaderAccount(BTNN_WF.getCurrentUserId())) { const rs = document.getElementById("roleSelector"); if (rs) rs.value = "lanh-dao"; }
     if (dashQ.get("tab")) kpActiveTab = /^(done|da-xu-ly)$/.test(dashQ.get("tab")) ? "done" : "pending";
+    kpApplyTabDates(); // [vt2] Từ ngày mặc định theo tab
 
     // Populate table on load
     renderProposalsTable();
@@ -2674,6 +2675,7 @@ function clearFilters() {
 
     document.getElementById('searchFromDate').value = formatDate(firstDayOfMonth);
     document.getElementById('searchToDate').value = formatDate(today);
+    kpApplyTabDates(); // [vt2] tab Chờ xử lý: Từ ngày trống
 
     // Reset lọc nhanh về Tất cả
     activeKpiFilterKp = 'all';
@@ -5494,6 +5496,7 @@ function kpSyncMenuTo(item) {
     } catch (e) { /* file:// hoặc khung khác nguồn: bỏ qua */ }
     kpApplyMenuUi();
     kpActiveTab = 'pending';
+    kpApplyTabDates(); // [vt2]
     currentPage = 1;
     renderProposalsTable();
     try {
@@ -5567,7 +5570,15 @@ function kpRefreshTabUi() {
     const table = document.getElementById('proposalsTable');
     if (table) table.classList.toggle('kp-done', kpActiveTab === 'done');
 }
+// [vt2] Bộ lọc ngày mặc định theo tab: Chờ xử lý - Từ ngày trống (mọi bản ghi đang chờ đều hiển thị); Đã xử lý - ngày đầu tháng hiện tại. Đến ngày: ngày hiện tại
+function kpApplyTabDates() {
+    const today = new Date(), p2 = n => String(n).padStart(2, '0');
+    const f = document.getElementById('searchFromDate'), t = document.getElementById('searchToDate');
+    if (f) { f.value = kpActiveTab === 'done' ? `01/${p2(today.getMonth() + 1)}/${today.getFullYear()}` : ''; if (f._flatpickr) f._flatpickr.setDate(f.value || null, false, 'd/m/Y'); }
+    if (t) t.value = `${p2(today.getDate())}/${p2(today.getMonth() + 1)}/${today.getFullYear()}`;
+}
 function kpSetTab(tab) {
+    if (kpActiveTab !== tab) { kpActiveTab = tab; kpApplyTabDates(); }
     kpActiveTab = tab;
     activeKpiFilterKp = 'all';
     document.querySelectorAll('#kpiStatsRow .stat-badge-btn').forEach(btn => btn.classList.remove('active'));

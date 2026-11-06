@@ -1425,7 +1425,9 @@
         //   Đã xử lý = hồ sơ Lãnh đạo đã Chuyển đơn vị / Phân công cán bộ (trạng thái có thể vẫn là Đang phân công).
         let receptionTab = "pending";
         function switchReceptionTab(tab) {
+            const prevTab = receptionTab;
             receptionTab = tab === "done" ? "done" : "pending";
+            if (prevTab !== receptionTab) initDates(); // [vt2] Từ ngày theo tab (chỉ khi đổi tab)
             document.querySelectorAll(".tn-tabs-card .tn-tab").forEach(b => b.classList.toggle("active", b.dataset.tab === receptionTab));
             // Ẩn nút "Tiếp nhận mới" khi ở tab "Đã xử lý", chỉ hiển thị tại tab "Chờ xử lý"
             const btnNew = document.getElementById("btnNewReception");
@@ -1832,11 +1834,13 @@
             });
         }
 
-        // Khoảng lọc mặc định: 03 tháng gần nhất (từ cùng ngày của 03 tháng trước đến ngày hiện tại)
+        // Khoảng lọc mặc định theo tab: [vt2] tab Chờ xử lý: Từ ngày trống (mọi hồ sơ đang chờ đều hiển thị);
+        // tab Đã xử lý: 03 tháng gần nhất (từ cùng ngày của 03 tháng trước). Đến ngày: ngày hiện tại
         function initDates() {
             const now = new Date();
             const from = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
-            setDateValue("filterFromDate", from);
+            if (typeof receptionTab !== "undefined" && receptionTab === "done") setDateValue("filterFromDate", from);
+            else { const el = document.getElementById("filterFromDate"); if (el) { if (el._flatpickr) el._flatpickr.clear(false); el.value = ""; } }
             setDateValue("filterToDate", now);
         }
 
@@ -2036,7 +2040,7 @@
                     const canAssign = receptionTab === "pending" && rec && BTNN_WF.canAssign(rec, CURRENT_USER.id);
                     const canRecall = receptionTab === "done" && BTNN_LD.canRecall(rec, CURRENT_USER.id);
                     const assignBtn = `<button class="icon-btn accept${canAssign ? "" : " disabled-action"}" data-ld="assign" title="${canAssign ? "Phân công" : "Phân công - Chỉ khả dụng khi hồ sơ Chờ phân công / Đang phân công và người dùng thuộc Nhóm lãnh đạo của đơn vị đang phân công"}" style="${canAssign ? "" : offStyle}" onclick="event.stopPropagation(); openAssignFromList('${escapeAttr(item.code)}')"><i class="fa-solid fa-diagram-project"></i></button>`;
-                    const recallBtn = `<button class="icon-btn edit${canRecall ? "" : " disabled-action"}" title="${canRecall ? "Thu hồi" : "Chỉ khả dụng với Lãnh đạo đã chuyển/phân công khi bên nhận chưa xử lý"}" style="${canRecall ? "" : offStyle}" onclick="event.stopPropagation(); recallFromList('${escapeAttr(item.code)}')"><i class="fa-solid fa-rotate-left"></i></button>`;
+                    const recallBtn = `<button class="icon-btn edit${canRecall ? "" : " disabled-action"}" title="${canRecall ? "Thu hồi" : "Thu hồi - Chỉ khả dụng với Lãnh đạo đã chuyển/phân công khi bên nhận chưa xử lý"}" style="${canRecall ? "" : offStyle}" onclick="event.stopPropagation(); recallFromList('${escapeAttr(item.code)}')"><i class="fa-solid fa-rotate-left"></i></button>`;
 
                     // Sửa
                     const editDisabled = !editable;
@@ -2070,7 +2074,7 @@
                             <td style="text-align:center;">${escapeHtml(item.receivedAt || item.date || "--")}</td>
                             <td>${escapeHtml(item.receivedBy || "-")}</td>
                             <td>${RECEPTION_STATUSES.includes(status) ? escapeHtml(BTNN_WF.unitName(item.currentUnitId || item.rootUnitId)) : "-"}</td>
-                            <td style="text-align:center;">${renderStatusBadge(status)}</td>
+                            <td style="text-align:center;">${renderStatusBadge(status)}${receptionKindSubHtml(item, rec, status)}</td>
                             <td style="text-align:center;">
                                 <div class="action-flex" style="justify-content:center;">${actionsHtml}</div>
                             </td>
@@ -2793,6 +2797,20 @@
         // Trạng thái hiện tại của hồ sơ (Chờ phân công, Đang phân công hoặc trạng thái tại phân hệ xử lý, VD Chờ tiếp nhận)
         function renderStatusBadge(status) {
             return BTNN_WF.statusBadge(status);
+        }
+        // [dxl 06/11] Dòng phụ Loại trình dưới badge, áp dụng cả 02 tab Chờ xử lý / Đã xử lý:
+        // - Hồ sơ Bị trả lại tại luồng duyệt tiếp nhận (chưa có hồ sơ luồng phân công): Loại trình "Phiếu tiếp nhận"
+        // - Trạng thái Chờ duyệt / Bị trả lại cập nhật theo phân hệ xử lý: Loại trình của phiếu trình tại phân hệ đó
+        //   (phiếu trình Quyết định GQBT / Hủy QĐ / Sửa chữa, bổ sung QĐ: không hiển thị, như Giải quyết YCBT)
+        function receptionKindSubHtml(item, rec, status) {
+            let label = "";
+            if (!rec && status === "Bị trả lại") label = "Phiếu tiếp nhận";
+            else if (rec && BTNN_WF.approvalLabel) {
+                label = BTNN_WF.approvalLabel(rec) || "";
+                if ((BTNN_WF.QD_KINDS || []).includes(label)) label = "";
+            }
+            if (!label) return "";
+            return `<div class="muted tn-kind-sub" style="margin-top:4px; font-size:11.5px; font-weight:600; color:#64748b;">${escapeHtml(label)}</div>`;
         }
 
         function updateWardOptions(selectedWard = "") {

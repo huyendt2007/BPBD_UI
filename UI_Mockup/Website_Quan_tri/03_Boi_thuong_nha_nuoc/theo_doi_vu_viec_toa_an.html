@@ -852,7 +852,10 @@
                 <div id="claimMoneySection">
                     <div class="info-group-title">Thiệt hại yêu cầu bồi thường</div>
                     <!-- [th2c] Bảng thiệt hại 2 cấp (06 nhóm / 35 mục DM_27 + VII. Các thiệt hại khác): dựng bởi buildDamageRows (BTNN_TH.tableHtml) -->
-                    <div class="table-container" id="damageTreeWrap" style="margin-bottom:20px;"></div>
+                    <div class="table-container" id="damageTreeWrap" style="margin-bottom:6px;"></div>
+                    <!-- Trạng thái Đã có bản án/QĐ: tổng số tiền là Số tiền chi trả, bắt buộc lớn hơn 0 -->
+                    <div id="damageError" class="error-message" style="margin-bottom:10px;">Tổng cộng số tiền yêu cầu bồi thường phải lớn hơn 0 khi Trạng thái là Đã có bản án/QĐ</div>
+                    <div style="margin-bottom:14px;"></div>
                 </div>
 
                 <div class="info-group-title">Tài liệu đính kèm<span class="required" style="color:var(--danger-color);">*</span></div>
@@ -928,7 +931,7 @@
         // ===== Cấu hình =====
         const STORE_KEY = "btnn_court_cases_v1";
         const SEED_KEY = "btnn_court_cases_seed";
-        const SEED_VERSION = "v9s2";
+        const SEED_VERSION = "v9s3";
         const FUNDING_KEY = "proposalsList";
         const REQUEST_TYPE_YCBT = BTNN_WF.REQUEST_TYPE_YCBT || "Giải quyết yêu cầu bồi thường";
         const NBTH_ROLE = "Người bị thiệt hại";
@@ -1403,6 +1406,8 @@
             const total = t ? (BTNN_TH.refresh(t).amt || 0) : 0;
             document.getElementById("damageTotalText").textContent = `${total.toLocaleString("vi-VN")} đồng`;
             document.getElementById("damageTotalWord").textContent = `Viết bằng chữ: ${numberToVietnameseWords(total)} đồng`;
+            const de = document.getElementById("damageError");
+            if (de && total > 0 && de.style.display === "block") { de.style.display = "none"; if (typeof tdtaErrSummary === "function" && document.getElementById("formErrSummary").style.display !== "none") tdtaErrSummary(true); }
         }
         function readDamages() {
             const out = [];
@@ -1535,7 +1540,8 @@
             isFormReadOnly = readOnly;
             clearValidation();
 
-            document.getElementById("listView").style.display = "none";
+            // Form dạng trang (như btnn_form_trang.js): giữ khối tiêu đề màn, ẩn phần danh sách; form rộng hết trang ngay dưới tiêu đề
+            Array.from(document.getElementById("listView").children).forEach(c => { if (!c.classList.contains("page-heading")) c.classList.add("tdta-page-hidden"); });
             const formView = document.getElementById("formView");
             formView.style.display = "flex";
             formView.classList.toggle("readonly-mode", readOnly);
@@ -1613,7 +1619,7 @@
             }
 
             // Lịch sử
-            document.getElementById("historyBlock").style.display = rec ? "block" : "none";
+            document.getElementById("historyBlock").style.display = rec && (rec.history || []).length ? "block" : "none";
             document.getElementById("historyList").innerHTML = rec ? renderHistory(rec) : "";
 
             // Nút
@@ -1632,7 +1638,7 @@
             isFormReadOnly = false;
             document.getElementById("formView").style.display = "none";
             document.getElementById("formView").classList.remove("readonly-mode");
-            document.getElementById("listView").style.display = "block";
+            document.querySelectorAll("#listView > .tdta-page-hidden").forEach(c => c.classList.remove("tdta-page-hidden"));
             renderTable();
         }
 
@@ -1660,7 +1666,7 @@
         function clearValidation() {
             document.querySelectorAll("#formView .is-invalid").forEach(el => el.classList.remove("is-invalid"));
             document.querySelectorAll("#formView [aria-invalid]").forEach(el => el.removeAttribute("aria-invalid"));
-            document.querySelectorAll("#formView .error-message").forEach(el => { el.style.display = "none"; if (el.id !== "docsError") el.textContent = "Đây là trường bắt buộc"; });
+            document.querySelectorAll("#formView .error-message").forEach(el => { el.style.display = "none"; if (el.id !== "docsError" && el.id !== "damageError") el.textContent = "Đây là trường bắt buộc"; });
             if (typeof tdtaErrSummary === "function") tdtaErrSummary(null);
             if (typeof formNotice === "function") formNotice("");
         }
@@ -1698,10 +1704,15 @@
                 const k = BTNN_TH.validateKhac(DAMAGE_TID);
                 if (k && !firstInvalid) firstInvalid = k;
             }
+            // Đã có bản án/QĐ: tổng số tiền (theo Bản án/Quyết định) là Số tiền chi trả, bắt buộc lớn hơn 0
+            let dmgZero = false;
+            if (status === STATUS_BAN_AN && readDamages().reduce((s, d) => s + (Number(d.amount) || 0), 0) <= 0) {
+                dmgZero = true; document.getElementById("damageError").style.display = "block";
+            }
 
             // Dòng tài liệu có lỗi định dạng / dung lượng tệp: không lưu
             const fileErr = basisRows.concat(docRows).some(d => d && d.err);
-            if (firstInvalid || !docsOk || fileErr) {
+            if (firstInvalid || !docsOk || fileErr || dmgZero) {
                 // [ux] Không dùng toast: khung báo lỗi đầu form liệt kê các trường chưa hợp lệ, cuộn tới lỗi đầu tiên (theo thứ tự trên màn hình)
                 const first = tdtaErrSummary(true);
                 if (first) { first.scrollIntoView({ behavior: "smooth", block: "center" }); if (first.focus) first.focus({ preventScroll: true }); }
@@ -1757,9 +1768,10 @@
                 const prevStatus = rec.status;
                 Object.assign(rec, common);
                 if (typeof tdtaApplyCode === "function") tdtaApplyCode(rec);
+                const moneyLines = damageDiffLines(rec.damages, damages);
                 rec.damages = damages; rec.requestKind = "money";
                 rec.honorForms = null;
-                addHistory(rec, "Cập nhật vụ việc", prevStatus !== status ? `Chuyển trạng thái: ${prevStatus} → ${status}.` : "Cập nhật thông tin vụ việc.");
+                addHistory(rec, "Cập nhật vụ việc", (prevStatus !== status ? `Chuyển trạng thái: ${prevStatus} → ${status}.` : "Cập nhật thông tin vụ việc.") + (moneyLines.length ? "\n" + moneyLines.join("\n") : ""));
                 created.push(rec);
             } else {
                 // Yêu cầu cả hai: lưu thành 01 vụ việc (01 Mã vụ việc), không tách
@@ -1949,14 +1961,33 @@
         }
 
         // ===== Lịch sử =====
+        // Lịch sử: chỉ ghi các mục thiệt hại có số tiền thay đổi ("[Mục]: cũ → mới đồng") và Tổng cộng khi tổng thay đổi
+        function damageDiffLines(oldList, newList) {
+            const fmt = n => `${(Number(n) || 0).toLocaleString("vi-VN")}`;
+            const map = list => { const m = {}; (list || []).forEach(d => { const k = d.code || d.key; if (!k) return; m[k] = { label: d.label || d.name || BTNN_TH.name(k), amt: Number(d.amount) || 0 }; }); return m; };
+            const o = map(oldList), n = map(newList), lines = [];
+            Object.keys(o).concat(Object.keys(n).filter(k => !(k in o))).forEach(k => {
+                const a = o[k] ? o[k].amt : 0, b = n[k] ? n[k].amt : 0;
+                if (a !== b) lines.push(`${(n[k] || o[k]).label}: ${fmt(a)} → ${fmt(b)} đồng.`);
+            });
+            const ta = (oldList || []).reduce((s, d) => s + (Number(d.amount) || 0), 0), tb = (newList || []).reduce((s, d) => s + (Number(d.amount) || 0), 0);
+            if (ta !== tb) lines.push(`Tổng cộng số tiền yêu cầu bồi thường: ${fmt(ta)} → ${fmt(tb)} đồng.`);
+            return lines;
+        }
         function addHistory(rec, action, note, userName) {
             if (!rec.history) rec.history = [];
             rec.history.push({ at: BTNN_WF.nowText(), userName: userName || CURRENT_USER.name, action, note: note || "" });
         }
         function renderHistory(rec) {
             const h = (rec.history || []).slice().reverse();
-            if (!h.length) return `<div class="muted" style="font-style:italic;">Chưa có lịch sử cập nhật.</div>`;
-            return h.map(x => `<div class="history-item"><div style="font-weight:600; color:#0f172a;">${escapeHtml(x.action)} <span style="font-weight:400; color:#64748b;">- ${escapeHtml(x.userName)} - ${escapeHtml(x.at)}</span></div>${x.note ? `<div style="color:#334155; margin-top:2px;">${escapeHtml(x.note)}</div>` : ""}</div>`).join("");
+            if (!h.length) return "";
+            // Bảng 03 cột chuẩn BTNN (như Văn bản chỉ đạo, điều hành): Thời điểm | Người thực hiện | Nội dung (Thao tác + nội dung); mới nhất ở trên
+            const cell = "padding:8px 10px; border:1px solid var(--border-color); vertical-align:top; text-align:left;";
+            return `<table style="width:100%; border-collapse:collapse; font-size:13px;"><thead><tr style="background:#F1F5F9;">`
+                + `<th style="${cell} width:150px;">Thời điểm</th><th style="${cell} width:190px;">Người thực hiện</th><th style="${cell}">Nội dung</th></tr></thead><tbody>`
+                + h.map(x => `<tr><td style="${cell} white-space:nowrap;">${escapeHtml(x.at)}</td><td style="${cell}">${escapeHtml(x.userName)}</td>`
+                    + `<td style="${cell}"><span style="font-weight:600;">${escapeHtml(x.action)}</span>${x.note ? `<div style="margin-top:2px; white-space:pre-line;">${escapeHtml(x.note)}</div>` : ""}</td></tr>`).join("")
+                + `</tbody></table>`;
         }
 
         // ===== Xác nhận / Thông báo =====
@@ -2145,7 +2176,7 @@
     <!-- [tdta] Vụ việc liên kết (Tìm kiếm / Tìm kiếm nâng cao), khối Người yêu cầu Cá nhân/Tổ chức, lưới + bộ lọc theo cột -->
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="tra_cuu_seed_tcvv.js?v=20261030s2"></script>
-    <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261104ic1"></script>
+    <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261106sd1"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_grid_toolbar.js?v=20261030gt1"></script>
     <script src="btnn_tieu_de_man.js?v=20261103td2"></script>

@@ -48,7 +48,7 @@
         <div class="dash-grid" id="dashGrid"></div>
     </main>
 
-    <script src="btnn_luong_xu_ly.js?v=20261105tn1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261106vt1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script src="bctt_chuong.js?v=20261105nv"></script>
     <script>
@@ -63,8 +63,8 @@
         ];
         // 09 khối Chờ xử lý (Kinh phí: 02 khối theo 02 menu con); click khối mở tab Chờ xử lý của phân hệ tương ứng ở vai trò Lãnh đạo
         const BLOCKS = [
-            { key: 'pc', title: 'Chờ phân công', module: 'Tiếp nhận hồ sơ', icon: 'fa-diagram-project', color: '#0369a1', bg: '#e0f2fe',
-              leaf: 'tiep_nhan_ycbt.html?v=3', url: 'tiep_nhan_ycbt.html?v=3&tab=pending' },
+            { key: 'pc', title: 'Chờ phân công, duyệt Phiếu tiếp nhận', module: 'Tiếp nhận hồ sơ', icon: 'fa-diagram-project', color: '#0369a1', bg: '#e0f2fe',
+              leaf: 'tiep_nhan_ycbt.html?v=4', url: 'tiep_nhan_ycbt.html?v=4&tab=pending' },
             { key: 'xd', title: 'Chờ duyệt Xác định CQGQBT', module: 'Xác định cơ quan giải quyết bồi thường', icon: 'fa-compass', color: '#7c3aed', bg: '#ede9fe',
               leaf: 'xac_dinh_co_quan_boi_thuong.html?v=20261008', url: 'xac_dinh_co_quan_boi_thuong.html?v=20261008&tab=pending' },
             { key: 'gq', title: 'Chờ duyệt Giải quyết YCBT', module: 'Giải quyết yêu cầu bồi thường', icon: 'fa-scale-balanced', color: '#15803d', bg: '#dcfce7',
@@ -79,11 +79,11 @@
             { key: 'ht', title: 'Chờ duyệt Xem xét hoàn trả', module: 'Xem xét trách nhiệm hoàn trả', icon: 'fa-rotate-left', color: '#334155', bg: '#e2e8f0',
               leaf: 'xem_xet_trach_nhiem_hoan_tra.html', url: 'xem_xet_trach_nhiem_hoan_tra.html?role=lanh_dao&tab=pending' },
             // Hỏi đáp nghiệp vụ: màn mở mặc định tab Chờ xử lý
-            { key: 'hd', title: 'Chờ xử lý Hỏi đáp nghiệp vụ', module: 'Hỏi đáp nghiệp vụ', icon: 'fa-circle-question', color: '#0f766e', bg: '#ccfbf1',
+            { key: 'hd', title: 'Chờ duyệt Hỏi đáp nghiệp vụ', module: 'Hỏi đáp nghiệp vụ', icon: 'fa-circle-question', color: '#0f766e', bg: '#ccfbf1',
               leaf: 'hoi_dap_nghiep_vu.html', url: 'hoi_dap_nghiep_vu.html' },
             // Báo cáo công tác BTNN (05/11/2026, nhanhl2): Lãnh đạo Sở Tư pháp mở trang «Báo cáo công tác BTNN»,
             // Lãnh đạo Bộ Tư pháp mở trang «Tổng hợp báo cáo Công tác BTNN» (trang, tên phân hệ tính theo người dùng trong bcttTrang)
-            { key: 'bctt', title: 'Chờ xử lý Báo cáo công tác BTNN', module: 'Báo cáo công tác BTNN', icon: 'fa-file-lines', color: '#4338ca', bg: '#e0e7ff',
+            { key: 'bctt', title: 'Chờ duyệt Báo cáo công tác BTNN', module: 'Báo cáo công tác BTNN', icon: 'fa-file-lines', color: '#4338ca', bg: '#e0e7ff',
               leaf: 'bao_cao_cong_tac_btnn.html', url: 'bao_cao_cong_tac_btnn.html' }
         ];
 
@@ -106,7 +106,7 @@
         // Hỏi đáp nghiệp vụ: câu hỏi chờ Lãnh đạo đang đăng nhập xử lý (cùng quy tắc isMyTask của hoi_dap_nghiep_vu.html)
         // LĐ Phòng (Sở) duyệt, LĐ Sở duyệt gửi Bộ, LĐ Cục phân công LĐ Phòng, LĐ Phòng (Bộ) phân công Chuyên viên
         const HD = { WAIT_PHONG_SO: 'Chờ Lãnh đạo Phòng duyệt', WAIT_SO: 'Chờ Lãnh đạo Sở duyệt', WAIT_CUC: 'Chờ Lãnh đạo Cục phân công', WAIT_PHONG: 'Chờ Lãnh đạo Phòng phân công' };
-        const HD_KEY = 'btnn_hoi_dap_nghiep_vu', HD_VERSION = 'v2';
+        const HD_KEY = 'btnn_hoi_dap_nghiep_vu', HD_VERSION = 'v4'; // v4 (06/11/2026): bỏ trạng thái Nháp (HD-007 chuyển Chờ Lãnh đạo Phòng duyệt) + gộp nhánh ngadt63 (HD-009, HD-010)
         // Dữ liệu mẫu câu hỏi đang chờ Lãnh đạo (dùng khi phân hệ Hỏi đáp chưa mở lần nào), khớp buildSeed của hoi_dap_nghiep_vu.html
         function hdFallback() {
             const y = new Date().getFullYear();
@@ -114,6 +114,7 @@
                 { code: `HD-${y}-003`, unit: 'STP-HP', status: HD.WAIT_PHONG, phongLead: 'tpbt', title: 'Xác định mức hoàn trả khi nhiều người thi hành công vụ cùng gây thiệt hại' },
                 { code: `HD-${y}-004`, unit: 'STP-HN', status: HD.WAIT_CUC, title: 'Cách thống kê vụ việc chuyển tiếp từ kỳ báo cáo trước' },
                 { code: `HD-${y}-005`, unit: 'STP-HN', status: HD.WAIT_SO, title: 'Tiếp nhận hồ sơ yêu cầu bồi thường gửi qua dịch vụ bưu chính thiếu thành phần' },
+                { code: `HD-${y}-007`, unit: 'STP-HN', status: HD.WAIT_PHONG_SO, title: 'Lưu trữ hồ sơ giải quyết bồi thường sau khi hoàn thành chi trả' },
                 { code: `HD-${y}-008`, unit: 'STP-HN', status: HD.WAIT_PHONG_SO, title: 'Thương lượng khi người yêu cầu bồi thường ủy quyền cho luật sư' }
             ];
         }
@@ -157,12 +158,40 @@
                 .map(p => row(p.code, `Chờ duyệt ${adv ? 'QĐ tạm ứng kinh phí' : 'Thông báo chi trả'}`, p.maVuViec || vuViec(p.ycbtCode), p.nycName));
             let ht = null;
             try { ht = JSON.parse(localStorage.getItem('btnn_hoantra_summary') || 'null'); } catch (e) { ht = null; }
+            // [vt1] Khối Tiếp nhận hồ sơ = tab Chờ xử lý của Tiếp nhận hồ sơ (cùng hàm đếm receptionPendingItems với badge tab / menu):
+            // hồ sơ người dùng được Phân công + Phiếu tiếp nhận chờ chính người dùng Ký duyệt ở cấp hiện hành
+            let ptn = {};
+            try { ptn = JSON.parse(localStorage.getItem('btnnPhieuTiepNhan_v1') || '{}') || {}; } catch (e) { ptn = {}; }
+            const ptnSignable = code => {
+                const p = ptn[code];
+                if (!p || p.flow !== 'tn' || p.status !== 'Chờ duyệt' || !p.approval) return false;
+                const a = p.approval, who = (a.assignees || [])[a.level], grp = (a.leaders || [])[a.level];
+                if (who) return who === me;
+                return Array.isArray(grp) ? grp.includes(me) : WF.isLeaderOf(me, a.path[a.level]);
+            };
+            const ptnAt = code => { const a = (ptn[code] || {}).approval || {}; const st = (a.steps || [])[(a.steps || []).length - 1]; return st ? st.at : (ptn[code] || {}).submittedAt; };
+            const pcWork = new Map(work.filter(t => t.type === WT.PHAN_CONG && !t.phdd).map(t => [t.code, t]));
+            const pc = WF.receptionPendingItems(me).map(x => {
+                if (x.rec && WF.canAssign(x.rec, me)) { const t = pcWork.get(x.rec.code); return { at: t ? t.at : '', r: t ? wfRow(t, 'Chờ phân công xử lý') : row(x.rec.code, 'Chờ phân công xử lý', x.rec.maVuViec || vuViec(x.rec.code), x.rec.nycName) }; }
+                if (!x.rec && ptnSignable(x.code)) { const c = x.claim || {}; return { at: ptnAt(x.code), r: row(x.code, 'Chờ duyệt Phiếu tiếp nhận', c.maVuViec || vuViec(x.code), c.nyc) }; }
+                return null;
+            }).filter(Boolean).sort((a, b) => timeOf(b.at) - timeOf(a.at)).map(o => o.r);
             return {
-                pc: work.filter(t => t.type === WT.PHAN_CONG && !t.phdd).map(t => wfRow(t, 'Chờ phân công xử lý')),
-                xd: work.filter(t => t.type === WT.PHE_DUYET && t.rec && t.rec.module === 'XD').map(t => wfRow(t, `Chờ duyệt ${t.kind}`)),
+                pc,
+                // [vt1] Xác định CQGQBT: cùng điều kiện tab Chờ xử lý của phân hệ (canApprove), gồm cả Lãnh đạo UBND cấp tỉnh ký cấp cuối
+                // (getLeaderWork lọc theo Loại hồ sơ áp dụng cho đơn vị của người dùng nên bỏ sót UBND cấp tỉnh)
+                xd: (() => {
+                    const fromWork = new Map(work.filter(t => t.type === WT.PHE_DUYET && t.rec && t.rec.module === 'XD').map(t => [t.code, t]));
+                    return WF.loadRecords().filter(r => WF.isXdRec(r) && WF.canApprove(r, me)).map(r => {
+                        const t = fromWork.get(r.code);
+                        const a = r.approval || {}, st = (a.steps || [])[(a.steps || []).length - 1];
+                        return { at: t ? t.at : (st ? st.at : a.submittedAt), r: t ? wfRow(t, `Chờ duyệt ${t.kindText || t.kind}`) : row(r.code, `Chờ duyệt ${WF.kindDisplay(a.kind, r)}`, r.maVuViec || vuViec(r.code), r.nycName) };
+                    }).sort((x, y) => timeOf(y.at) - timeOf(x.at)).map(o => o.r);
+                })(),
                 // [cdpd] Cử người phục hồi danh dự (phân công theo luồng của đơn vị) thuộc khối Chờ duyệt Giải quyết YCBT
+                // [vt1] Nội dung trình theo tên hiển thị Loại trình của Giải quyết YCBT (kindDisplay: Thông báo thụ lý hồ sơ...)
                 gq: work.filter(t => t.type === WT.THU_LY || t.phdd || (t.type === WT.PHE_DUYET && !(t.rec && t.rec.module === 'XD')))
-                    .map(t => wfRow(t, t.phdd ? 'Chờ cử người phục hồi danh dự' : `Chờ duyệt ${t.type === WT.THU_LY ? 'Cử người giải quyết bồi thường' : t.kind}`)),
+                    .map(t => wfRow(t, t.phdd ? 'Chờ cử người phục hồi danh dự' : `Chờ duyệt ${t.type === WT.THU_LY ? 'Cử người giải quyết bồi thường' : (t.kindText || t.kind)}`)),
                 qd: work.filter(t => t.type === WT.KY_QD).map(t => wfRow(t, `Chờ duyệt ${t.kind}`)),
                 kpt: kp(true),
                 kpc: kp(false),

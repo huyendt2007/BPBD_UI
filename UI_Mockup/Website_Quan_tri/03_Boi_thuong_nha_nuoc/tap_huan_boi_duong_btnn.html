@@ -532,6 +532,22 @@
             align-items: center;
             gap: 10px;
         }
+        /* Tập huấn, bồi dưỡng: 02 khối Thông tin kế hoạch ban đầu / Kết quả, tiến độ thực tế + khối Tài liệu đính kèm + Lịch sử xử lý (mẫu .kt-block màn Kiểm tra) */
+        .th-block { border: 1px solid #dbe3ef; border-radius: 10px; padding: 14px 16px 16px; margin-bottom: 16px; background: #fff; }
+        .th-block.th-result { border-color: #bbf7d0; background: #fbfefc; }
+        .th-block-title { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 800; color: var(--primary-color); margin-bottom: 12px; }
+        .th-result .th-block-title { color: #15803d; }
+        .th-block .grid-3 { align-items: start; }
+        .th-block .th-full { grid-column: 1 / -1; }
+        .th-block .th-span2 { grid-column: span 2; }
+        #form-th textarea { font-family: inherit; }
+        #th-tlkt .th-tlkt-notitle { display: none !important; }
+        /* Xem chi tiết: ô nhập bị khóa nền xám nhạt như ô chỉ đọc; ẩn dấu bắt buộc và placeholder */
+        #th-form-card.view-mode .form-control:disabled, #th-form-card.view-mode .form-select:disabled { background-color: #f8fafc !important; color: #1e293b; cursor: default; opacity: 1; }
+        #th-form-card.view-mode .form-label .required { display: none !important; }
+        #th-form-card.view-mode .form-control::placeholder { color: transparent; }
+        .history-list { border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 12px; background: #f8fafc; font-size: 13px; line-height: 1.7; }
+        .history-list .muted { color: var(--text-muted); font-style: italic; }
     </style>
 </head>
 <body>
@@ -592,14 +608,22 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Tình trạng thực hiện</label>
+                    <label class="form-label">Trạng thái</label>
                     <select id="th-filter-tinhtrang" class="form-select">
                         <option value="">Tất cả</option>
                         <option value="Chưa thực hiện">Chưa thực hiện</option>
-                        <option value="Đang triển khai">Đang triển khai</option>
-                        <option value="Đã hoàn thành">Đã hoàn thành</option>
-                        <option value="Hoãn/Hủy">Hoãn/Hủy</option>
+                        <option value="Đang thực hiện">Đang thực hiện</option>
+                        <option value="Hoàn thành">Hoàn thành</option>
                     </select>
+                </div>
+                <!-- Từ ngày / Đến ngày: lọc theo Thời gian dự kiến tổ chức (khoảng giao nhau) -->
+                <div class="form-group">
+                    <label class="form-label">Từ ngày</label>
+                    <input type="text" id="th-filter-tungay" class="form-control" placeholder="dd/mm/yyyy">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Đến ngày</label>
+                    <input type="text" id="th-filter-denngay" class="form-control" placeholder="dd/mm/yyyy">
                 </div>
             </div>
 
@@ -611,11 +635,8 @@
 
         <!-- GridView -->
         <div class="card-section" id="th-list-card">
-            <div class="section-title">
-                <span><i class="fa-solid fa-list-check"></i> Danh sách kế hoạch tập huấn, hội nghị, hội thảo, tọa đàm</span>
-            </div>
             <div class="grid-action-toolbar">
-                <button class="btn btn-primary" onclick="openCreateThForm()"><i class="fa fa-plus"></i> Tạo kế hoạch mới</button>
+                <button class="btn btn-primary" onclick="openCreateThForm()"><i class="fa fa-plus"></i> Thêm mới</button>
                 <button class="btn btn-outline-primary" onclick="exportExcelTh()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
             </div>
             
@@ -630,7 +651,7 @@
                             <th width="180px">Thời gian dự kiến</th>
                             <th width="130px">Hình thức</th>
                             <th width="150px">Kinh phí dự kiến</th>
-                            <th width="150px">Tình trạng</th>
+                            <th width="150px">Trạng thái</th>
                             <th width="100px" style="text-align: center;">Thao tác</th>
                         </tr>
                     </thead>
@@ -647,153 +668,144 @@
         <!-- Form Edit/Create -->
         <div class="card-section" id="th-form-card" style="display: none;">
             <div class="section-title">
-                <span id="th-form-title"><i class="fa-solid fa-pen-to-square"></i> Chi tiết kế hoạch tập huấn, hội thảo</span>
-                <button class="btn btn-secondary btn-sm" onclick="closeThForm()"><i class="fa-solid fa-times"></i> Đóng</button>
+                <span id="th-form-title"><i class="fa-solid fa-pen-to-square"></i> Chi tiết tập huấn, bồi dưỡng</span>
             </div>
             
             <form id="form-th" onsubmit="event.preventDefault();" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-md);">
                 <input type="hidden" id="th-id">
 
-                <!-- Thông tin kế hoạch -->
-                <div class="form-section-header">
-                    <span>Thông tin lập kế hoạch hoạt động</span>
-                </div>
-
-                <div class="grid-3">
-                    <div class="form-group">
-                        <label class="form-label">Mã kế hoạch <span class="required">*</span></label>
-                        <input type="text" id="th-ma" class="form-control" readonly value="KH-TH-2026-0001">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Tên kế hoạch <span class="required">*</span></label>
-                        <input type="text" id="th-ten" class="form-control" placeholder="Nhập tên kế hoạch..." maxlength="250">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Phân loại hoạt động <span class="required">*</span></label>
-                        <select id="th-loai" class="form-select">
-                            <option value="">-- Chọn phân loại --</option>
-                            <option value="Tập huấn">Tập huấn</option>
-                            <option value="Hội nghị">Hội nghị</option>
-                            <option value="Hội thảo">Hội thảo</option>
-                            <option value="Tọa đàm">Tọa đàm</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="grid-3">
-                    <div class="form-group">
-                        <label class="form-label">Đơn vị chủ trì <span class="required">*</span></label>
-                        <select id="th-donvi-chutri" class="form-select">
-                            <option value="">-- Chọn đơn vị --</option>
-                            <option value="Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước">Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</option>
-                            <option value="Phòng Quản lý nghiệp vụ về bồi thường nhà nước">Phòng Quản lý nghiệp vụ về bồi thường nhà nước</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Đơn vị phối hợp</label>
-                        <input type="text" id="th-donvi-phoihop" class="form-control" placeholder="Ngăn cách bằng dấu phẩy...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Kinh phí dự kiến (VNĐ)</label>
-                        <input type="number" id="th-kinhphi-dukien" class="form-control" placeholder="Ví dụ: 50000000">
-                    </div>
-                </div>
-
-                <div class="grid-3">
-                    <div class="form-group">
-                        <label class="form-label">Hình thức tổ chức <span class="required">*</span></label>
-                        <select id="th-hinhthuc" class="form-select" onchange="toggleThDiaDiem(this.value)">
-                            <option value="Trực tiếp">Trực tiếp</option>
-                            <option value="Trực tuyến">Trực tuyến</option>
-                        </select>
-                    </div>
-                    <div class="form-group" id="th-diadiem-group">
-                        <label class="form-label">Địa điểm dự kiến <span class="required">*</span></label>
-                        <input type="text" id="th-diadiem" class="form-control" placeholder="Nhập địa điểm dự kiến...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Thời gian dự kiến tổ chức <span class="required">*</span></label>
-                        <div style="display: flex; gap: 5px;">
-                            <input type="text" id="th-batdau-dukien" class="form-control" placeholder="Từ ngày" style="width: 50%;">
-                            <input type="text" id="th-ketthuc-dukien" class="form-control" placeholder="Đến ngày" style="width: 50%;">
+                <!-- Khối 1: Thông tin kế hoạch ban đầu -->
+                <div class="th-block" id="th-plan-block">
+                    <div class="th-block-title">Thông tin kế hoạch ban đầu</div>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label class="form-label">Mã kế hoạch <span class="required">*</span></label>
+                            <input type="text" id="th-ma" class="form-control" readonly value="KH-TH-2026-0001">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tên kế hoạch <span class="required">*</span></label>
+                            <input type="text" id="th-ten" class="form-control" placeholder="Nhập tên kế hoạch..." maxlength="250">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phân loại hoạt động <span class="required">*</span></label>
+                            <select id="th-loai" class="form-select">
+                                <option value="">-- Chọn phân loại --</option>
+                                <option value="Tập huấn">Tập huấn</option>
+                                <option value="Hội nghị">Hội nghị</option>
+                                <option value="Hội thảo">Hội thảo</option>
+                                <option value="Tọa đàm">Tọa đàm</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Đơn vị chủ trì <span class="required">*</span></label>
+                            <select id="th-donvi-chutri" class="form-select">
+                                <option value="">-- Chọn đơn vị --</option>
+                                <option value="Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước">Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</option>
+                                <option value="Phòng Quản lý nghiệp vụ về bồi thường nhà nước">Phòng Quản lý nghiệp vụ về bồi thường nhà nước</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Đơn vị phối hợp</label>
+                            <input type="text" id="th-donvi-phoihop" class="form-control" placeholder="Ngăn cách bằng dấu phẩy...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kinh phí dự kiến (VNĐ)</label>
+                            <input type="number" id="th-kinhphi-dukien" class="form-control" placeholder="Ví dụ: 50000000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hình thức tổ chức <span class="required">*</span></label>
+                            <select id="th-hinhthuc" class="form-select" onchange="toggleThDiaDiem(this.value)">
+                                <option value="Trực tiếp">Trực tiếp</option>
+                                <option value="Trực tuyến">Trực tuyến</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="th-diadiem-group">
+                            <label class="form-label">Địa điểm dự kiến <span class="required">*</span></label>
+                            <input type="text" id="th-diadiem" class="form-control" placeholder="Nhập địa điểm dự kiến...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Thời gian dự kiến tổ chức <span class="required">*</span></label>
+                            <div style="display: flex; gap: 5px;">
+                                <input type="text" id="th-batdau-dukien" class="form-control" placeholder="Từ ngày" style="width: 50%;">
+                                <input type="text" id="th-ketthuc-dukien" class="form-control" placeholder="Đến ngày" style="width: 50%;">
+                            </div>
+                        </div>
+                        <div class="form-group th-full">
+                            <label class="form-label">Nội dung kế hoạch chi tiết</label>
+                            <textarea id="th-noidung" class="form-control" placeholder="Nhập tóm tắt nội dung kế hoạch..." maxlength="2000"></textarea>
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Nội dung kế hoạch chi tiết</label>
-                    <textarea id="th-noidung" class="form-control" placeholder="Nhập tóm tắt nội dung kế hoạch..." maxlength="2000"></textarea>
-                </div>
-
-                <!-- Tài liệu đính kèm kế hoạch: bảng chuẩn btnn_tai_lieu_kem_theo.js (key thKh) -->
-                <div class="form-group" id="th-kh-tlkt"></div>
-
-                <!-- Tiến độ thực hiện thực tế -->
-                <div class="form-section-header" id="th-progress-header" style="display: none;">
-                    <span>Tiến độ thực hiện thực tế</span>
-                </div>
-
-                <div class="grid-3" id="th-progress-fields" style="display: none;">
-                    <div class="form-group">
-                        <label class="form-label">Tình trạng thực hiện <span class="required">*</span></label>
-                        <select id="th-tinhtrang" class="form-select" onchange="onThTinhTrangChange(this.value)">
-                            <option value="Chưa thực hiện">Chưa thực hiện</option>
-                            <option value="Đang triển khai">Đang triển khai</option>
-                            <option value="Đã hoàn thành">Đã hoàn thành</option>
-                            <option value="Hoãn/Hủy">Hoãn/Hủy</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Thời gian thực tế tổ chức</label>
-                        <div style="display: flex; gap: 5px;">
-                            <input type="text" id="th-batdau-thucte" class="form-control" placeholder="Từ ngày" style="width: 50%;">
-                            <input type="text" id="th-ketthuc-thucte" class="form-control" placeholder="Đến ngày" style="width: 50%;">
+                <!-- Khối 2: Kết quả, tiến độ thực tế (chế độ Sửa) -->
+                <div class="th-block th-result" id="th-progress-block" style="display: none;">
+                    <div class="th-block-title">Kết quả, tiến độ thực tế</div>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label class="form-label">Trạng thái thực hiện <span class="required">*</span></label>
+                            <select id="th-tinhtrang" class="form-select" onchange="onThTinhTrangChange(this.value)">
+                                <option value="Chưa thực hiện">Chưa thực hiện</option>
+                                <option value="Đang thực hiện">Đang thực hiện</option>
+                                <!-- Hoàn thành chỉ thực hiện qua icon/nút Hoàn thành (popup); giá trị ẩn, chỉ dùng hiển thị ở Xem chi tiết -->
+                                <option value="Hoàn thành" hidden>Hoàn thành</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Thời gian thực tế tổ chức</label>
+                            <div style="display: flex; gap: 5px;">
+                                <input type="text" id="th-batdau-thucte" class="form-control" placeholder="Từ ngày" style="width: 50%;">
+                                <input type="text" id="th-ketthuc-thucte" class="form-control" placeholder="Đến ngày" style="width: 50%;">
+                            </div>
+                        </div>
+                        <div class="form-group th-result-field">
+                            <label class="form-label">Số lượng đại biểu tham dự thực tế</label>
+                            <input type="number" id="th-daibieu-thucte" class="form-control" placeholder="Ví dụ: 80">
+                        </div>
+                        <div class="form-group th-result-field">
+                            <label class="form-label">Đánh giá kết quả</label>
+                            <select id="th-danhgia" class="form-select">
+                                <option value="">-- Chọn đánh giá --</option>
+                                <option value="Xuất sắc">Xuất sắc</option>
+                                <option value="Đạt yêu cầu">Đạt yêu cầu</option>
+                                <option value="Cần rút kinh nghiệm">Cần rút kinh nghiệm</option>
+                            </select>
+                        </div>
+                        <div class="form-group th-result-field th-span2">
+                            <label class="form-label">Thành phần tham dự chính</label>
+                            <input type="text" id="th-thanhphan" class="form-control" placeholder="Các cơ quan, tổ chức tham gia...">
+                        </div>
+                        <div class="form-group th-full" id="th-lydo-group">
+                            <label class="form-label">Nội dung tiến độ / Lý do điều chỉnh</label>
+                            <textarea id="th-lydo" class="form-control" placeholder="Nhập lý do điều chỉnh hoặc mô tả tiến độ..."></textarea>
+                        </div>
+                        <div class="form-group th-full th-result-field">
+                            <label class="form-label">Báo cáo tổng kết kết quả</label>
+                            <textarea id="th-baocao-kq" class="form-control" placeholder="Tóm tắt kết quả đạt được, kiến nghị rút kinh nghiệm..."></textarea>
                         </div>
                     </div>
-                    <div class="form-group" id="th-lydo-group">
-                        <label class="form-label">Nội dung tiến độ / Lý do điều chỉnh <span class="required" id="th-lydo-req" style="display:none;">*</span></label>
-                        <textarea id="th-lydo" class="form-control" style="min-height: 40px;" placeholder="Nhập lý do điều chỉnh hoặc mô tả tiến độ..."></textarea>
-                    </div>
                 </div>
 
-                <!-- Kết quả thực hiện -->
-                <div class="form-section-header" id="th-result-header" style="display: none;">
-                    <span>Kết quả thực hiện hoạt động</span>
+                <!-- Khối 3: Tài liệu đính kèm (01 bảng chung: tài liệu kế hoạch + Tài liệu kết quả đính kèm), bảng chuẩn btnn_tai_lieu_kem_theo.js (key thTl) -->
+                <div class="th-block" id="th-tl-block">
+                    <div class="th-block-title">Tài liệu đính kèm</div>
+                    <div id="th-tlkt"></div>
                 </div>
 
-                <div class="grid-3" id="th-result-row1" style="display: none;">
-                    <div class="form-group">
-                        <label class="form-label">Số lượng đại biểu tham dự thực tế <span class="required">*</span></label>
-                        <input type="number" id="th-daibieu-thucte" class="form-control" placeholder="Ví dụ: 80">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Đánh giá kết quả <span class="required">*</span></label>
-                        <select id="th-danhgia" class="form-select">
-                            <option value="">-- Chọn đánh giá --</option>
-                            <option value="Xuất sắc">Xuất sắc</option>
-                            <option value="Đạt yêu cầu">Đạt yêu cầu</option>
-                            <option value="Cần rút kinh nghiệm">Cần rút kinh nghiệm</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Thành phần tham dự chính <span class="required">*</span></label>
-                        <input type="text" id="th-thanhphan" class="form-control" placeholder="Các cơ quan, tổ chức tham gia...">
-                    </div>
+                <!-- Lịch sử xử lý: luôn đặt cuối form -->
+                <div class="form-group" id="th-history-group" style="margin-top: 16px;">
+                    <span class="form-label">Lịch sử xử lý</span>
+                    <div id="th-history-list" class="history-list"></div>
                 </div>
-
-                <div class="form-group" id="th-result-row2" style="display: none;">
-                    <label class="form-label">Báo cáo tổng kết kết quả <span class="required">*</span></label>
-                    <textarea id="th-baocao-kq" class="form-control" placeholder="Tóm tắt kết quả đạt được, kiến nghị rút kinh nghiệm..."></textarea>
-                </div>
-
-                <!-- Tài liệu kết quả / Kỷ yếu / Nghị quyết (bắt buộc khi Đã hoàn thành): bảng chuẩn btnn_tai_lieu_kem_theo.js (key thKq) -->
-                <div class="form-group" id="th-result-row3" style="display: none;"></div>
 
                 <!-- Form actions -->
                 <div class="search-actions" style="margin-top: 20px;">
-                    <button type="button" class="btn btn-outline-primary" id="th-btn-export" onclick="exportProgressTh()"><i class="fa-solid fa-file-excel"></i> Kết xuất tiến độ</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeThForm()">Hủy bỏ</button>
-                    <button type="button" class="btn btn-success" id="th-btn-save" onclick="saveTh()"><i class="fa-solid fa-circle-check"></i> Cập nhật</button>
+                    <button type="button" class="btn btn-secondary" id="th-btn-close" onclick="closeThForm()" style="display: none;"><i class="fa-solid fa-xmark"></i> Đóng</button>
+                    <!-- Xem chi tiết: đúng các thao tác đang sáng trên lưới của bản ghi (Sửa / Hoàn thành / Xóa) -->
+                    <button type="button" class="btn btn-primary" id="th-btn-v-edit" onclick="openEditThForm(document.getElementById('th-id').value)" style="display: none;"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
+                    <button type="button" class="btn btn-success" id="th-btn-v-finish" onclick="finishTh(document.getElementById('th-id').value)" style="display: none;"><i class="fa-solid fa-circle-check"></i> Hoàn thành</button>
+                    <button type="button" class="btn btn-danger" id="th-btn-v-delete" onclick="deleteTh(document.getElementById('th-id').value)" style="display: none;"><i class="fa-solid fa-trash"></i> Xóa</button>
+                    <button type="button" class="btn btn-secondary" id="th-btn-cancel" onclick="closeThForm()">Hủy bỏ</button>
+                    <button type="button" class="btn btn-success" id="th-btn-save" onclick="saveTh()"><i class="fa-solid fa-floppy-disk"></i> Lưu thông tin</button>
                 </div>
             </form>
         </div>
@@ -1366,6 +1378,36 @@
     </div>
 </div>
 
+<!-- Popup Xác nhận xóa tập huấn, bồi dưỡng [MSG-CFM-SYS-001] -->
+<div id="th-delete-popup" class="confirm-popup">
+    <div class="confirm-content">
+        <div class="confirm-title">
+            <i class="fa-solid fa-circle-question" style="font-size: 20px;"></i>
+            <span>Xác nhận</span>
+        </div>
+        <p id="th-delete-text" style="font-size: 13px; color: var(--text-main); margin-bottom: 15px; line-height: 1.4;"></p>
+        <div class="search-actions" style="margin-top: 15px; padding-top: 15px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="closeThDelete(false)">Hủy bỏ</button>
+            <button type="button" class="btn btn-danger btn-sm" onclick="closeThDelete(true)">Đồng ý</button>
+        </div>
+    </div>
+</div>
+
+<!-- Popup Xác nhận hoàn thành tập huấn, bồi dưỡng -->
+<div id="th-finish-popup" class="confirm-popup">
+    <div class="confirm-content">
+        <div class="confirm-title" style="color: var(--primary-color);">
+            <i class="fa-solid fa-circle-question" style="font-size: 20px;"></i>
+            <span>Xác nhận</span>
+        </div>
+        <p id="th-finish-text" style="font-size: 13px; color: var(--text-main); margin-bottom: 15px; line-height: 1.4;"></p>
+        <div class="search-actions" style="margin-top: 15px; padding-top: 15px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="closeThFinish(false)">Hủy bỏ</button>
+            <button type="button" class="btn btn-success btn-sm" onclick="closeThFinish(true)">Đồng ý</button>
+        </div>
+    </div>
+</div>
+
 <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
 <script>
     // Global Mock Data - Tập huấn, Hội nghị, Hội thảo
@@ -1390,7 +1432,7 @@
             ],
             "batDauThucte": "10/03/2026",
             "ketThucThucte": "11/03/2026",
-            "tinhTrang": "Đã hoàn thành",
+            "tinhTrang": "Hoàn thành",
             "lyDo": "",
             "daibieuThucte": 110,
             "thanhPhan": "Công chức làm công tác BTNN của Sở Tư pháp, cơ quan giải quyết bồi thường khu vực phía Bắc",
@@ -1423,7 +1465,7 @@
             ],
             "batDauThucte": "22/04/2026",
             "ketThucThucte": "22/04/2026",
-            "tinhTrang": "Đã hoàn thành",
+            "tinhTrang": "Hoàn thành",
             "lyDo": "",
             "daibieuThucte": 260,
             "thanhPhan": "Công chức làm công tác BTNN của 34 Sở Tư pháp",
@@ -1456,7 +1498,7 @@
             ],
             "batDauThucte": "18/06/2026",
             "ketThucThucte": "18/06/2026",
-            "tinhTrang": "Đã hoàn thành",
+            "tinhTrang": "Hoàn thành",
             "lyDo": "",
             "daibieuThucte": 180,
             "thanhPhan": "Lãnh đạo Bộ Tư pháp, TANDTC, VKSNDTC, đại diện các Bộ, ngành, Sở Tư pháp",
@@ -1489,7 +1531,7 @@
             ],
             "batDauThucte": "15/09/2026",
             "ketThucThucte": "",
-            "tinhTrang": "Đang triển khai",
+            "tinhTrang": "Đang thực hiện",
             "lyDo": "",
             "daibieuThucte": 0,
             "thanhPhan": "",
@@ -1568,13 +1610,46 @@
             ],
             "batDauThucte": "",
             "ketThucThucte": "",
-            "tinhTrang": "Hoãn/Hủy",
+            "tinhTrang": "Chưa thực hiện",
             "lyDo": "Điều chỉnh kế hoạch, gộp vào Hội nghị sơ kết 05 năm thi hành Luật.",
             "daibieuThucte": 0,
             "thanhPhan": "",
             "danhGia": "",
             "baocaoKq": "",
             "filesKq": []
+        },
+        {
+            "id": "KH-TH-2026-0008",
+            "ten": "Tập huấn nghiệp vụ xác minh thiệt hại cho công chức các cơ quan giải quyết bồi thường khu vực miền Trung",
+            "loai": "Tập huấn",
+            "donViChuTri": "Phòng Quản lý nghiệp vụ về bồi thường nhà nước",
+            "donViPhoiHop": "Sở Tư pháp Thành phố Đà Nẵng",
+            "kinhPhiDukien": 40000000,
+            "hinhThuc": "Trực tiếp",
+            "diaDiem": "Hội trường Sở Tư pháp Thành phố Đà Nẵng",
+            "batDauDukien": "27/10/2026",
+            "ketThucDukien": "28/10/2026",
+            "noiDung": "Kỹ năng xác minh thiệt hại, lập biên bản xác minh, xác định thiệt hại thực tế được bồi thường.",
+            "filesKh": [
+                {
+                    "name": "Ke_hoach_Tap_huan_mien_Trung.pdf",
+                    "size": "0.9 MB"
+                }
+            ],
+            "batDauThucte": "27/10/2026",
+            "ketThucThucte": "28/10/2026",
+            "tinhTrang": "Đang thực hiện",
+            "lyDo": "",
+            "daibieuThucte": 95,
+            "thanhPhan": "Công chức làm công tác BTNN của các Sở Tư pháp, cơ quan giải quyết bồi thường khu vực miền Trung",
+            "danhGia": "Đạt yêu cầu",
+            "baocaoKq": "Đại biểu nắm được trình tự xác minh thiệt hại; tổng hợp 14 vướng mắc gửi Cục để hướng dẫn.",
+            "filesKq": [
+                {
+                    "name": "Bao_cao_ket_qua_tap_huan_mien_Trung.pdf",
+                    "size": "1.5 MB"
+                }
+            ]
         }
     ];
 
@@ -2164,8 +2239,11 @@
         if (typeof flatpickr !== 'undefined') {
             flatpickr("#lk-filter-tungay", { dateFormat: "d/m/Y", allowInput: true, onChange: executeLkSearch });
             flatpickr("#lk-filter-denngay", { dateFormat: "d/m/Y", allowInput: true, onChange: executeLkSearch });
+            flatpickr("#th-filter-tungay", { dateFormat: "d/m/Y", allowInput: true });
+            flatpickr("#th-filter-denngay", { dateFormat: "d/m/Y", allowInput: true });
         }
 
+        thData.forEach(thNormalize);
         renderThTable(thData);
         renderKhTable(khData);
         renderLkTable(lkData);
@@ -2390,14 +2468,13 @@
 
         pageData.forEach((th, idx) => {
             let badgeClass = "bg-secondary";
-            if(th.tinhTrang === "Đang triển khai") badgeClass = "bg-info";
-            else if(th.tinhTrang === "Đã hoàn thành") badgeClass = "bg-success";
-            else if(th.tinhTrang === "Hoãn/Hủy") badgeClass = "bg-danger";
+            if(th.tinhTrang === "Đang thực hiện") badgeClass = "bg-info";
+            else if(th.tinhTrang === "Hoàn thành") badgeClass = "bg-success";
 
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${startIndex + idx + 1}</td>
-                <td><a href="#" onclick="openEditThForm('${th.id}')" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;">${th.id}</a></td>
+                <td><a href="#" onclick="event.preventDefault(); event.stopPropagation(); openViewThForm('${th.id}')" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;">${th.id}</a></td>
                 <td style="font-weight: 600;" title="${th.ten}">${th.ten.length > 80 ? th.ten.substring(0, 77) + '...' : th.ten}</td>
                 <td>${th.loai}</td>
                 <td>${th.batDauDukien} - ${th.ketThucDukien}</td>
@@ -2406,9 +2483,16 @@
                 <td><span class="badge ${badgeClass}">${th.tinhTrang}</span></td>
                 <td style="text-align: center;">
                     <div class="action-icons">
-                        <button class="action-icon" title="Xem chi tiết" onclick="openEditThForm('${th.id}')"><i class="fa-solid fa-eye"></i></button>
-                        <button data-admin-icon-normalized="1" class="action-icon" title="Cập nhật tiến độ/kết quả" onclick="openEditThForm('${th.id}')"><i class="fa-solid fa-clipboard-check"></i></button>
-                        <button class="action-icon delete" title="Xóa" onclick="deleteTh('${th.id}')"><i class="fa-solid fa-trash"></i></button>
+                        <button class="action-icon" title="Xem chi tiết" onclick="openViewThForm('${th.id}')"><i class="fa-solid fa-eye"></i></button>
+                        ${thActs(th).edit
+                            ? `<button data-admin-icon-normalized="1" class="icon-btn edit" title="Sửa" onclick="openEditThForm('${th.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`
+                            : `<button data-admin-icon-normalized="1" class="icon-btn edit disabled" title="Hồ sơ đã Hoàn thành, không được sửa"><i class="fa-solid fa-pen-to-square"></i></button>`}
+                        ${thActs(th).finish
+                            ? `<button data-admin-icon-normalized="1" class="icon-btn finish" title="Hoàn thành" onclick="finishTh('${th.id}')"><i class="fa-solid fa-circle-check"></i></button>`
+                            : `<button data-admin-icon-normalized="1" class="icon-btn finish disabled" title="${thActs(th).finishTitle}"><i class="fa-solid fa-circle-check"></i></button>`}
+                        ${thActs(th).del
+                            ? `<button data-admin-icon-normalized="1" class="icon-btn delete" title="Xóa" onclick="deleteTh('${th.id}')"><i class="fa-solid fa-trash"></i></button>`
+                            : `<button data-admin-icon-normalized="1" class="icon-btn delete disabled" title="${thActs(th).delTitle}"><i class="fa-solid fa-trash"></i></button>`}
                     </div>
                 </td>
             `;
@@ -2482,12 +2566,22 @@
         const ten = document.getElementById("th-filter-ten").value.toLowerCase();
         const loai = document.getElementById("th-filter-loai").value;
         const tinhtrang = document.getElementById("th-filter-tinhtrang").value;
+        const pd = v => { const p = String(v || "").trim().split("/"); return p.length === 3 && p[2] ? new Date(+p[2], +p[1] - 1, +p[0]) : null; };
+        const from = pd(document.getElementById("th-filter-tungay").value), to = pd(document.getElementById("th-filter-denngay").value);
+        if (from && to && from > to) { showToast("Từ ngày không được lớn hơn Đến ngày. [MSG-ERR-VAL-007]", true); return; }
 
         let filtered = thData.filter(th => {
             if(ma && !th.id.toLowerCase().includes(ma)) return false;
             if(ten && !th.ten.toLowerCase().includes(ten)) return false;
             if(loai && th.loai !== loai) return false;
             if(tinhtrang && th.tinhTrang !== tinhtrang) return false;
+            // Thời gian dự kiến [Từ - Đến] giao với khoảng lọc; chỉ có 1 ngày dự kiến thì so ngày đó
+            if (from || to) {
+                const s = pd(th.batDauDukien) || pd(th.ketThucDukien), e = pd(th.ketThucDukien) || s;
+                if (!s) return false;
+                if (from && e < from) return false;
+                if (to && s > to) return false;
+            }
             return true;
         });
         thCurrentPage = 1;
@@ -2499,6 +2593,7 @@
         document.getElementById("th-filter-ten").value = "";
         document.getElementById("th-filter-loai").value = "";
         document.getElementById("th-filter-tinhtrang").value = "";
+        ["th-filter-tungay", "th-filter-denngay"].forEach(id => { const el = document.getElementById(id); if (el._flatpickr) el._flatpickr.clear(); el.value = ""; });
         thCurrentPage = 1;
         renderThTable(thData);
         showToast("Đã thiết lập lại bộ lọc.");
@@ -2515,25 +2610,79 @@
         }
     }
 
+    // Trạng thái thực hiện: Chưa thực hiện / Đang thực hiện / Hoàn thành
+    const TH_ST = { NEW: "Chưa thực hiện", DOING: "Đang thực hiện", DONE: "Hoàn thành" };
+    // Quy đổi giá trị cũ: Đang triển khai -> Đang thực hiện; Đã hoàn thành -> Hoàn thành; Hoãn/Hủy -> Chưa thực hiện
+    const TH_ST_OLD = { "Đang triển khai": TH_ST.DOING, "Đã hoàn thành": TH_ST.DONE, "Hoãn/Hủy": TH_ST.NEW };
+    const TH_KQ_NAME = "Tài liệu kết quả đính kèm";
+    const TH_USER = "Nguyễn Văn Cán Bộ"; // người thực hiện (mockup)
+    function thNow() {
+        const d = new Date(), p = n => String(n).padStart(2, "0");
+        return `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
+    }
+    function thEsc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+    // Lịch sử xử lý mẫu
+    const TH_SEED_HISTORY = {
+        "KH-TH-2026-0001": [["15/01/2026 09:00", "Thêm mới tập huấn, bồi dưỡng"], ["10/03/2026 08:00", "Cập nhật trạng thái thực hiện: Chưa thực hiện → Đang thực hiện"], ["13/03/2026 16:30", "Cập nhật trạng thái thực hiện: Đang thực hiện → Hoàn thành"]],
+        "KH-TH-2026-0002": [["02/03/2026 10:15", "Thêm mới tập huấn, bồi dưỡng"], ["22/04/2026 07:45", "Cập nhật trạng thái thực hiện: Chưa thực hiện → Đang thực hiện"], ["24/04/2026 15:00", "Cập nhật trạng thái thực hiện: Đang thực hiện → Hoàn thành"]],
+        "KH-TH-2026-0003": [["20/04/2026 14:00", "Thêm mới tập huấn, bồi dưỡng"], ["05/06/2026 09:30", "Sửa thông tin tập huấn, bồi dưỡng"], ["19/06/2026 17:00", "Cập nhật trạng thái thực hiện: Chưa thực hiện → Hoàn thành"]],
+        "KH-TH-2026-0004": [["10/07/2026 08:30", "Thêm mới tập huấn, bồi dưỡng"], ["15/09/2026 08:00", "Cập nhật trạng thái thực hiện: Chưa thực hiện → Đang thực hiện"]],
+        "KH-TH-2026-0005": [["01/10/2026 10:00", "Thêm mới tập huấn, bồi dưỡng"]],
+        "KH-TH-2026-0006": [["20/10/2026 15:20", "Thêm mới tập huấn, bồi dưỡng"]],
+        "KH-TH-2026-0007": [["02/04/2026 09:00", "Thêm mới tập huấn, bồi dưỡng"], ["28/04/2026 11:00", "Sửa thông tin tập huấn, bồi dưỡng"]],
+        "KH-TH-2026-0008": [["05/09/2026 09:00", "Thêm mới tập huấn, bồi dưỡng"], ["27/10/2026 08:00", "Cập nhật trạng thái thực hiện: Chưa thực hiện → Đang thực hiện"], ["30/10/2026 16:00", "Sửa thông tin tập huấn, bồi dưỡng"]]
+    };
+    // Chuẩn hóa bản ghi: quy đổi trạng thái; gộp filesKh + filesKq vào 01 danh sách Tài liệu đính kèm (dòng kết quả mang tên "Tài liệu kết quả đính kèm"); lịch sử mẫu
+    function thNormalize(th) {
+        if (!th) return th;
+        if (TH_ST_OLD[th.tinhTrang]) th.tinhTrang = TH_ST_OLD[th.tinhTrang];
+        if (![TH_ST.NEW, TH_ST.DOING, TH_ST.DONE].includes(th.tinhTrang)) th.tinhTrang = TH_ST.NEW;
+        if (!Array.isArray(th.files)) {
+            th.files = thToRows(th.filesKh).concat(thToRows(th.filesKq).map(r => ({ name: TH_KQ_NAME, file: r.file })));
+        }
+        delete th.filesKh; delete th.filesKq;
+        if (!Array.isArray(th.history)) th.history = (TH_SEED_HISTORY[th.id] || []).map(x => ({ at: x[0], by: TH_USER, action: x[1] }));
+        return th;
+    }
+    // Đã đủ kết quả bắt buộc khi Hoàn thành: Số lượng đại biểu, Đánh giá kết quả, Thành phần tham dự chính, Báo cáo tổng kết kết quả, dòng "Tài liệu kết quả đính kèm" có file
+    function thHasResult(th) {
+        return !!(th && Number(th.daibieuThucte) > 0 && th.danhGia && String(th.thanhPhan || "").trim() && String(th.baocaoKq || "").trim()
+            && (th.files || []).some(r => r.name === TH_KQ_NAME && r.file));
+    }
+    // Thao tác theo Trạng thái thực hiện (dùng chung lưới và chân màn Xem chi tiết):
+    // Chưa thực hiện: Sửa, Xóa (Hoàn thành mờ); Đang thực hiện: Sửa, Hoàn thành khi đã đủ kết quả (Xóa mờ); Hoàn thành: chỉ xem
+    function thActs(th) {
+        thNormalize(th);
+        const st = th.tinhTrang, ok = thHasResult(th);
+        return {
+            edit: st !== TH_ST.DONE,
+            finish: st === TH_ST.DOING && ok,
+            finishTitle: st === TH_ST.DOING && !ok ? "Cần cập nhật đầy đủ kết quả trước khi hoàn thành" : "Hoàn thành",
+            del: st === TH_ST.NEW,
+            delTitle: st === TH_ST.DONE ? "Hồ sơ đã Hoàn thành, không được xóa" : "Hồ sơ Đang thực hiện, không được xóa"
+        };
+    }
+    function thRenderHistory(list) {
+        const el = document.getElementById("th-history-list");
+        if (!el) return;
+        el.innerHTML = list && list.length
+            ? list.map(x => `<div class="history-item"><b>${thEsc(x.at)}</b> - ${thEsc(x.by)}: ${thEsc(x.action)}</div>`).join("")
+            : '<div class="muted">Chưa có lịch sử xử lý.</div>';
+    }
+
     function onThTinhTrangChange(val) {
-        // Toggle Tiến độ & Kết quả section based on status
-        const isComplete = val === "Đã hoàn thành";
-        const isCanceled = val === "Hoãn/Hủy";
-
-        document.getElementById("th-lydo-req").style.display = isCanceled ? "inline" : "none";
-
-        // Result sections
-        const elements = ["th-result-header", "th-result-row1", "th-result-row2", "th-result-row3"];
-        elements.forEach(id => {
-            const el = document.getElementById(id);
-            if(el) el.style.display = isComplete ? "block" : "none";
+        // Đang thực hiện / Hoàn thành: hiển thị các trường kết quả (bắt buộc khi Hoàn thành); thêm sẵn dòng "Tài liệu kết quả đính kèm" vào bảng Tài liệu đính kèm nếu chưa có
+        const showResult = val === TH_ST.DOING || val === TH_ST.DONE;
+        document.querySelectorAll("#th-progress-block .th-result-field").forEach(el => {
+            el.style.display = showResult ? "" : "none";
         });
-        if(val === "Đã hoàn thành") {
-            document.getElementById("th-result-row1").style.display = "grid";
+        if (showResult && typeof tlktGet === "function" && document.getElementById("th-progress-block").style.display !== "none") {
+            const rows = thCurrentRows();
+            if (!rows.some(r => r.name === TH_KQ_NAME)) { rows.push({ name: TH_KQ_NAME, file: null }); thMountFiles(rows); }
         }
     }
 
-    // ===== Tài liệu đính kèm (bảng chuẩn btnn_tai_lieu_kem_theo.js) =====
+    // ===== Tài liệu đính kèm (bảng chuẩn btnn_tai_lieu_kem_theo.js, 01 bảng chung) =====
     // Định dạng giữ như cũ: .pdf, .docx, .xlsx; dung lượng theo component (tối đa 50MB/tệp).
     const TH_FILE_EXTS = [".pdf", ".docx", ".xlsx"];
     function thSizeBytes(s) {
@@ -2553,49 +2702,49 @@
             return { name: String(f.name || "").replace(/\.[^.]+$/, ""), file: f.name ? { name: f.name, size: thSizeBytes(f.size) } : null };
         }).filter(Boolean);
     }
-    function thMountFiles(th) {
+    function thCurrentRows() { return typeof tlktGet === "function" ? tlktGet("thTl").map(r => ({ name: r.name, file: r.file })) : []; }
+    function thMountFiles(rows) {
         if (typeof tlktMount !== "function") return;
-        tlktMount("thKh", "th-kh-tlkt", { split: false, noLeader: true, title: "Tài liệu đính kèm kế hoạch", exts: TH_FILE_EXTS, rows: thToRows(th && th.filesKh) });
-        tlktMount("thKq", "th-result-row3", { split: false, noLeader: true, required: true, title: "Tài liệu kết quả / Kỷ yếu / Nghị quyết", exts: TH_FILE_EXTS, rows: thToRows(th && th.filesKq) });
+        tlktMount("thTl", "th-tlkt", { split: false, noLeader: true, title: "Tài liệu đính kèm", titleClass: "th-tlkt-notitle", exts: TH_FILE_EXTS, rows: rows || [] });
     }
 
     function openCreateThForm() {
-        document.getElementById("th-form-title").innerHTML = `<i class="fa-solid fa-circle-plus"></i> Tạo kế hoạch hoạt động mới`;
+        setThViewMode(false);
+        document.getElementById("th-form-title").innerHTML = `<i class="fa-solid fa-circle-plus"></i> Thêm mới tập huấn, bồi dưỡng`;
         document.getElementById("th-id").value = "";
-        
+
         const num = String(thData.length + 1).padStart(4, '0');
         document.getElementById("th-ma").value = `KH-TH-2026-${num}`;
-        
-        document.getElementById("th-ten").value = "";
-        document.getElementById("th-loai").value = "";
-        document.getElementById("th-donvi-chutri").value = "";
-        document.getElementById("th-donvi-phoihop").value = "";
-        document.getElementById("th-kinhphi-dukien").value = "";
+
+        ["th-ten", "th-loai", "th-donvi-chutri", "th-donvi-phoihop", "th-kinhphi-dukien", "th-diadiem", "th-batdau-dukien", "th-ketthuc-dukien", "th-noidung"].forEach(id => { document.getElementById(id).value = ""; });
         document.getElementById("th-hinhthuc").value = "Trực tiếp";
-        document.getElementById("th-diadiem").value = "";
-        document.getElementById("th-batdau-dukien").value = "";
-        document.getElementById("th-ketthuc-dukien").value = "";
-        document.getElementById("th-noidung").value = "";
-        thMountFiles(null);
+        toggleThDiaDiem("Trực tiếp");
+        thMountFiles([]);
 
-        // Hide progress & result sections
-        document.getElementById("th-progress-header").style.display = "none";
-        document.getElementById("th-progress-fields").style.display = "none";
-        onThTinhTrangChange("Chưa thực hiện");
-
-        // Hide export
-        document.getElementById("th-btn-export").style.display = "none";
+        // Thêm mới: chỉ khối Thông tin kế hoạch ban đầu; Trạng thái thực hiện gán "Chưa thực hiện" khi lưu
+        document.getElementById("th-progress-block").style.display = "none";
+        document.getElementById("th-tinhtrang").value = TH_ST.NEW;
+        onThTinhTrangChange(TH_ST.NEW);
+        thRenderHistory([]);
 
         document.getElementById("th-search-card").style.display = "none";
         document.getElementById("th-list-card").style.display = "none";
         document.getElementById("th-form-card").style.display = "block";
     }
 
-    function openEditThForm(id) {
-        const th = thData.find(item => item.id === id);
-        if(!th) return;
+    // Xem chi tiết (click dòng / Mã kế hoạch): chỉ xem, mọi trường khóa, bảng tài liệu chỉ Xem file / Tải file, chân màn hình chỉ có nút Đóng
+    function openViewThForm(id) { openEditThForm(id, true); }
 
-        document.getElementById("th-form-title").innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Cập nhật hoạt động: ${th.id}`;
+    function openEditThForm(id, viewOnly) {
+        const th = thNormalize(thData.find(item => item.id === id));
+        if(!th) return;
+        // Hồ sơ Hoàn thành (trạng thái kết thúc): không được sửa, chỉ mở Xem chi tiết
+        const view = !!viewOnly || th.tinhTrang === TH_ST.DONE;
+        setThViewMode(false);
+
+        document.getElementById("th-form-title").innerHTML = view
+            ? `<i class="fa-solid fa-eye"></i> Xem chi tiết tập huấn, bồi dưỡng: ${th.id}`
+            : `<i class="fa-solid fa-pen-to-square"></i> Sửa tập huấn, bồi dưỡng: ${th.id}`;
         document.getElementById("th-id").value = th.id;
         document.getElementById("th-ma").value = th.id;
         document.getElementById("th-ten").value = th.ten;
@@ -2610,33 +2759,47 @@
         document.getElementById("th-ketthuc-dukien").value = th.ketThucDukien;
         document.getElementById("th-noidung").value = th.noiDung;
 
-        // Tài liệu đính kèm kế hoạch + Tài liệu kết quả (bảng chuẩn)
-        thMountFiles(th);
+        thMountFiles(th.files);
 
-        // Show progress section
-        document.getElementById("th-progress-header").style.display = "block";
-        document.getElementById("th-progress-fields").style.display = "grid";
+        // Khối Kết quả, tiến độ thực tế
+        document.getElementById("th-progress-block").style.display = "block";
         document.getElementById("th-tinhtrang").value = th.tinhTrang;
         document.getElementById("th-batdau-thucte").value = th.batDauThucte || "";
         document.getElementById("th-ketthuc-thucte").value = th.ketThucThucte || "";
         document.getElementById("th-lydo").value = th.lyDo || "";
-
+        document.getElementById("th-daibieu-thucte").value = th.daibieuThucte || "";
+        document.getElementById("th-danhgia").value = th.danhGia || "";
+        document.getElementById("th-thanhphan").value = th.thanhPhan || "";
+        document.getElementById("th-baocao-kq").value = th.baocaoKq || "";
         onThTinhTrangChange(th.tinhTrang);
-
-        // If completed, fill results fields
-        if(th.tinhTrang === "Đã hoàn thành") {
-            document.getElementById("th-daibieu-thucte").value = th.daibieuThucte || "";
-            document.getElementById("th-danhgia").value = th.danhGia || "";
-            document.getElementById("th-thanhphan").value = th.thanhPhan || "";
-            document.getElementById("th-baocao-kq").value = th.baocaoKq || "";
-        }
-
-        // Show export button
-        document.getElementById("th-btn-export").style.display = "inline-flex";
+        thRenderHistory(th.history);
+        if (view) setThViewMode(true, th);
 
         document.getElementById("th-search-card").style.display = "none";
         document.getElementById("th-list-card").style.display = "none";
         document.getElementById("th-form-card").style.display = "block";
+    }
+
+    // Bật/tắt chế độ chỉ xem của form: khóa mọi ô nhập (nền xám nhạt), bảng tài liệu dạng chỉ đọc, ẩn Hủy bỏ/Lưu thông tin, hiện Đóng
+    function setThViewMode(on, th) {
+        const card = document.getElementById("th-form-card");
+        card.classList.toggle("view-mode", on);
+        document.querySelectorAll("#form-th input, #form-th select, #form-th textarea").forEach(el => {
+            if (el.type === "hidden" || el.id === "th-ma") return;
+            el.disabled = on;
+        });
+        document.getElementById("th-btn-cancel").style.display = on ? "none" : "";
+        document.getElementById("th-btn-save").style.display = on ? "none" : "";
+        document.getElementById("th-btn-close").style.display = on ? "" : "none";
+        const acts = on && th ? thActs(th) : {};
+        document.getElementById("th-btn-v-edit").style.display = acts.edit ? "" : "none";
+        document.getElementById("th-btn-v-finish").style.display = acts.finish ? "" : "none";
+        document.getElementById("th-btn-v-delete").style.display = acts.del ? "" : "none";
+        if (!on) { document.getElementById("th-tl-block").style.display = ""; return; }
+        // Tài liệu đính kèm chỉ đọc: Xem file / Tải file; không có dữ liệu thì ẩn khối
+        const html = typeof tlktViewHtml === "function" ? tlktViewHtml((th && th.files) || [], { split: false, title: "Tài liệu đính kèm", titleClass: "th-tlkt-notitle" }) : "";
+        document.getElementById("th-tlkt").innerHTML = html;
+        document.getElementById("th-tl-block").style.display = html ? "" : "none";
     }
 
     function closeThForm() {
@@ -2656,7 +2819,7 @@
         const batdauDukien = document.getElementById("th-batdau-dukien").value;
         const ketthucDukien = document.getElementById("th-ketthuc-dukien").value;
 
-        // Validation for plan info
+        // Kiểm tra khối Thông tin kế hoạch ban đầu
         if(!ten || !loai || !donviChutri || !batdauDukien || !ketthucDukien) {
             showToast("Vui lòng nhập đầy đủ các trường thông tin kế hoạch bắt buộc!", true);
             return;
@@ -2666,50 +2829,33 @@
             return;
         }
 
-        // Tài liệu đính kèm kế hoạch: dòng có dữ liệu phải đủ Tên tài liệu + File
-        if (typeof tlktValidate === "function" && !tlktValidate("thKh")) {
-            showToast("Vui lòng nhập đầy đủ Tên tài liệu, văn bản và File đính kèm của Tài liệu đính kèm kế hoạch!", true);
+        // Bỏ dòng "Tài liệu kết quả đính kèm" chưa có file (dòng tự thêm sẵn), không chặn lưu
+        if (id) {
+            const rows0 = thCurrentRows(), keep = rows0.filter(r => !(r.name === TH_KQ_NAME && !r.file));
+            if (keep.length !== rows0.length) thMountFiles(keep);
+        }
+        // Tài liệu đính kèm: dòng có dữ liệu phải đủ Tên tài liệu + File
+        if (typeof tlktValidate === "function" && !tlktValidate("thTl")) {
+            showToast("Vui lòng nhập đầy đủ Tên tài liệu, văn bản và File đính kèm của Tài liệu đính kèm!", true);
             return;
         }
-        const filesKh = typeof tlktGet === "function" ? tlktGet("thKh") : [];
-
+        const files = thCurrentRows();
         const isNew = !id;
-        
+
         if(!isNew) {
-            // Update mode, validate progress & results
             const status = document.getElementById("th-tinhtrang").value;
-            const batdauThucte = document.getElementById("th-batdau-thucte").value;
-            const ketthucThucte = document.getElementById("th-ketthuc-thucte").value;
-            const lydo = document.getElementById("th-lydo").value.trim();
+            let daibieuThucte = 0, danhGia = "", thanhPhan = "", baocaoKq = "";
 
-            if(status === "Hoãn/Hủy" && !lydo) {
-                showToast("Lý do điều chỉnh là bắt buộc khi trạng thái Hoãn/Hủy!", true);
-                return;
-            }
-
-            let daibieuThucte = 0, danhGia = "", thanhPhan = "", baocaoKq = "", filesKq = [];
-            
-            if(status === "Đã hoàn thành") {
-                daibieuThucte = parseInt(document.getElementById("th-daibieu-thucte").value);
+            // Đang thực hiện: được nhập dần các trường kết quả (không bắt buộc); Hoàn thành: bắt buộc đủ kết quả
+            if(status !== TH_ST.NEW) {
+                daibieuThucte = parseInt(document.getElementById("th-daibieu-thucte").value) || 0;
                 danhGia = document.getElementById("th-danhgia").value;
                 thanhPhan = document.getElementById("th-thanhphan").value.trim();
                 baocaoKq = document.getElementById("th-baocao-kq").value.trim();
-
-                if(!daibieuThucte || !danhGia || !thanhPhan || !baocaoKq) {
-                    showToast("Vui lòng điền đầy đủ các thông tin Kết quả thực hiện!", true);
-                    return;
-                }
-
-                // Bắt buộc tối thiểu 01 dòng đủ Tên tài liệu + File
-                if (typeof tlktValidate === "function" && !tlktValidate("thKq")) {
-                    showToast("Vui lòng tải lên tài liệu kết quả/kỷ yếu sự kiện!", true);
-                    return;
-                }
-                filesKq = typeof tlktGet === "function" ? tlktGet("thKq") : [];
             }
 
-            // Update global data
             const th = thData.find(item => item.id === id);
+            const oldStatus = th.tinhTrang;
             th.ten = ten;
             th.loai = loai;
             th.donViChuTri = donviChutri;
@@ -2720,21 +2866,25 @@
             th.batDauDukien = batdauDukien;
             th.ketThucDukien = ketthucDukien;
             th.noiDung = document.getElementById("th-noidung").value;
-            th.filesKh = filesKh;
+            th.files = files;
 
             th.tinhTrang = status;
-            th.batDauThucte = batdauThucte;
-            th.ketThucThucte = ketthucThucte;
-            th.lyDo = lydo;
+            th.batDauThucte = document.getElementById("th-batdau-thucte").value;
+            th.ketThucThucte = document.getElementById("th-ketthuc-thucte").value;
+            th.lyDo = document.getElementById("th-lydo").value.trim();
             th.daibieuThucte = daibieuThucte;
             th.thanhPhan = thanhPhan;
             th.danhGia = danhGia;
             th.baocaoKq = baocaoKq;
-            th.filesKq = filesKq;
 
-            showToast("Cập nhật thông tin và tiến độ kế hoạch thành công.");
+            // Lịch sử xử lý: Sửa / cập nhật kết quả; đổi trạng thái ghi thêm dòng riêng
+            const at = thNow();
+            th.history = th.history || [];
+            th.history.push({ at, by: TH_USER, action: "Sửa thông tin tập huấn, bồi dưỡng" });
+            if (oldStatus !== status) th.history.push({ at, by: TH_USER, action: `Cập nhật trạng thái thực hiện: ${oldStatus} → ${status}` });
+
+            showToast("Cập nhật thông tin tập huấn, bồi dưỡng thành công.");
         } else {
-            // Create mode
             thData.push({
                 id: ma,
                 ten: ten,
@@ -2747,8 +2897,8 @@
                 batDauDukien: batdauDukien,
                 ketThucDukien: ketthucDukien,
                 noiDung: document.getElementById("th-noidung").value,
-                filesKh: filesKh,
-                tinhTrang: "Chưa thực hiện",
+                files: files,
+                tinhTrang: TH_ST.NEW,
                 batDauThucte: "",
                 ketThucThucte: "",
                 lyDo: "",
@@ -2756,29 +2906,59 @@
                 thanhPhan: "",
                 danhGia: "",
                 baocaoKq: "",
-                filesKq: []
+                history: [{ at: thNow(), by: TH_USER, action: "Thêm mới tập huấn, bồi dưỡng" }]
             });
-            showToast("Tạo mới kế hoạch tập huấn thành công.");
+            showToast("Thêm mới tập huấn, bồi dưỡng thành công.");
         }
 
         renderThTable(thData);
         closeThForm();
     }
 
+    // Xóa: popup xác nhận [MSG-CFM-SYS-001]; Đồng ý -> xóa bản ghi khỏi danh sách, thông báo [MSG-SUC-SYS-006]
+    let thDeleteId = null;
     function deleteTh(id) {
-        if(confirm(`Bạn có chắc chắn muốn xóa kế hoạch ${id}?`)) {
-            thData = thData.filter(item => item.id !== id);
-            renderThTable(thData);
-            showToast("Đã xóa kế hoạch thành công.");
-        }
+        const th = thData.find(item => item.id === id);
+        if (!th || !thActs(th).del) return; // chỉ xóa khi Chưa thực hiện
+        thDeleteId = id;
+        document.getElementById("th-delete-text").innerText = `Bạn có chắc chắn muốn xóa hồ sơ ${id} không?`;
+        document.getElementById("th-delete-popup").classList.add("active");
+    }
+    function closeThDelete(ok) {
+        document.getElementById("th-delete-popup").classList.remove("active");
+        const id = thDeleteId; thDeleteId = null;
+        if (!ok || !id) return;
+        thData = thData.filter(item => item.id !== id);
+        // Xóa từ màn Xem chi tiết: đóng màn, tải lại lưới
+        if (document.getElementById("th-form-card").style.display === "block") closeThForm();
+        renderThTable(thData);
+        showToast("Xóa bản ghi thành công.");
+    }
+
+    // Hoàn thành (icon trên lưới / nút ở Xem chi tiết): chỉ khi Đang thực hiện và đã đủ kết quả; popup xác nhận -> Hoàn thành, ghi Lịch sử xử lý
+    let thFinishId = null;
+    function finishTh(id) {
+        const th = thData.find(item => item.id === id);
+        if (!th || !thActs(th).finish) return;
+        thFinishId = id;
+        document.getElementById("th-finish-text").innerText = `Bạn có chắc chắn muốn hoàn thành hồ sơ ${id} không?`;
+        document.getElementById("th-finish-popup").classList.add("active");
+    }
+    function closeThFinish(ok) {
+        document.getElementById("th-finish-popup").classList.remove("active");
+        const id = thFinishId; thFinishId = null;
+        const th = ok && id ? thData.find(item => item.id === id) : null;
+        if (!th) return;
+        th.tinhTrang = TH_ST.DONE;
+        th.history = th.history || [];
+        th.history.push({ at: thNow(), by: TH_USER, action: "Hoàn thành" });
+        if (document.getElementById("th-form-card").style.display === "block") closeThForm();
+        renderThTable(thData);
+        showToast(`Đã hoàn thành hồ sơ ${id}.`);
     }
 
     function exportExcelTh() {
-        showToast("Đang kết xuất Sổ theo dõi tập huấn, hội nghị ra Excel...");
-    }
-
-    function exportProgressTh() {
-        showToast("Đang kết xuất báo cáo tiến độ hoạt động ra Excel...");
+        showToast("Đang kết xuất danh sách tập huấn, bồi dưỡng ra Excel...");
     }
 
 
