@@ -2,8 +2,8 @@
  * [gql] Hủy Quyết định giải quyết bồi thường -> Đình chỉ giải quyết hoặc Giải quyết lại (Giải quyết yêu cầu bồi thường, prefix gql) - quy tắc chốt 04/11/2026
  * - Hủy QĐ (Ký số cấp cuối / Ký ngoài tại Quyết định GQBT): Quyết định "Hủy quyết định"; vụ việc giữ trạng thái; bản ghi kinh phí giữ trạng thái, bị chặn chi tiếp (Kinh phí).
  * - Lưới MH01: dòng phụ "QĐ đã bị hủy" dưới badge Trạng thái (vụ việc có QĐ Hủy quyết định, chưa có QĐ GQBT khác ngoài Hủy quyết định (kể cả dự thảo)).
- * - Thao tác "Giải quyết lại" (Thao tác khác MH01 / thanh thao tác MH04): vụ việc có QĐ Hủy quyết định, chưa có QĐ GQBT khác ngoài Hủy quyết định (kể cả dự thảo),
- *   Trạng thái vụ việc thuộc GQL_SOURCE; trường hợp khác: mục mờ trong Thao tác khác, không hiển thị tại thanh thao tác.
+ * - Thao tác "Giải quyết lại" (Thao tác khác MH01 / thanh thao tác MH04) - chốt 06/11/2026: Trạng thái Giải quyết YCBT thuộc GQL_REDO_SOURCE (Chờ chi trả / Hoàn thành),
+ *   vụ việc có Quyết định hủy Có hiệu lực (tự Có hiệu lực khi cấp cuối Ký duyệt / Ký ngoài Hủy QĐ), chưa có QĐ GQBT khác ngoài Hủy quyết định (kể cả dự thảo); trường hợp khác: mục mờ trong Thao tác khác, không hiển thị tại thanh thao tác.
  * - Popup Giải quyết lại: Căn cứ (Số, Ngày QĐ hủy, Lý do hủy - chỉ đọc), Bước giải quyết lại (bắt buộc), Lý do giải quyết lại (bắt buộc, 2000 ký tự);
  *   Lưu -> popup xác nhận -> vụ việc chuyển ngay trạng thái của bước (không trình Lãnh đạo); Lịch sử xử lý "Giải quyết lại"; gửi Dịch vụ công (bước 20).
  * - Dữ liệu lần trước giữ nguyên, chỉ đọc: QĐ đã hủy (qdHuyList), kết quả thương lượng cũ (tlRounds - "Lịch sử các lần thương lượng"),
@@ -12,7 +12,11 @@
  * Đặt sau các script của trang (gqldActionDefs, renderAccordions, tlReadHtml, tlRenderEditBlock, gqApprovalSubLabel, saveClaimsToLocal).
  */
 var GQL_STEPS = ['Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ'];
+// Trạng thái hợp lệ để khôi phục vụ việc theo phiếu trình Quyết định GQBT (gqlQdRestoreStatus)
 var GQL_SOURCE = ['Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành'];
+// Trạng thái Giải quyết YCBT được Giải quyết lại (chốt 06/11/2026)
+var GQL_REDO_SOURCE = ['Chờ chi trả', 'Hoàn thành'];
+var GQL_HL_ON = 'Có hiệu lực';
 var GQL_HUY = ['Hủy quyết định', 'Đã hủy'];
 var GQL_MAX = 2000;
 var GQL_SUB = 'QĐ đã bị hủy';
@@ -59,11 +63,20 @@ function gqlCancelInfo(c) {
     return h.length ? h[h.length - 1] : null;
 }
 function gqlHasCancelled(c) { return !!gqlCancelInfo(c); }
-function gqlEligible(c) { return !!c && gqlHasCancelled(c) && !gqlHasActiveDec(c) && GQL_SOURCE.indexOf(gqlSt(c)) >= 0; }
+// Quyết định hủy Có hiệu lực: kho Quyết định GQBT ghi cancel.hieuLuc khi cấp cuối Ký duyệt / Ký ngoài Hủy QĐ (dữ liệu cũ chưa ghi: Quyết định hủy đã ban hành = Có hiệu lực)
+function gqlCancelEffective(c) {
+    if (!c) return false;
+    var d = gqlStoreCancelled(c);
+    if (d) { var h = d.cancel && d.cancel.hieuLuc; return !h || h === GQL_HL_ON; }
+    if (GQL_HUY.indexOf(c.decStatus || '') >= 0) return !c.cancelHieuLuc || c.cancelHieuLuc === GQL_HL_ON;
+    return false;
+}
+function gqlEligible(c) { return !!c && gqlHasCancelled(c) && gqlCancelEffective(c) && !gqlHasActiveDec(c) && GQL_REDO_SOURCE.indexOf(gqlSt(c)) >= 0; }
 function gqlBlockReason(c) {
     if (!gqlHasCancelled(c)) return 'Vụ việc không có Quyết định giải quyết bồi thường ở trạng thái Hủy quyết định';
+    if (!gqlCancelEffective(c)) return 'Quyết định hủy chưa có hiệu lực';
     if (gqlHasActiveDec(c)) return 'Vụ việc đã có Quyết định giải quyết bồi thường khác (kể cả dự thảo)';
-    if (GQL_SOURCE.indexOf(gqlSt(c)) < 0) return 'Không áp dụng ở trạng thái ' + gqlSt(c);
+    if (GQL_REDO_SOURCE.indexOf(gqlSt(c)) < 0) return 'Không áp dụng ở trạng thái ' + gqlSt(c);
     return '';
 }
 // Lưu Quyết định đã hủy vào danh sách Quyết định đã bị hủy của vụ việc (01 lần theo Số Quyết định + Số Quyết định hủy)

@@ -3,7 +3,7 @@
  * Màn hình Xem chi tiết / Cập nhật hồ sơ hoàn trả (chi_tiet_ho_so_hoan_tra.html).
  * Bố cục như Popup Không thụ lý hồ sơ / Popup Thành lập Hội đồng (tlhd):
  *   - Hình thức ký 02 thẻ đầu form; Stepper 2 bước chỉ hiển thị khi Ký số trên hệ thống.
- *   - Ký số: Bước 1 Nhập thông tin (Sinh văn bản theo mẫu 39/BTNN | Tải lên từ máy, Tài liệu đính kèm bắt buộc)
+ *   - Ký số: Bước 1 Nhập thông tin (Sinh văn bản theo mẫu 39/BTNN | Tải lên từ máy, Tài liệu đính kèm không bắt buộc)
  *            Bước 2 Kéo ô ký & chọn Lãnh đạo -> Trình Lãnh đạo.
  *   - Ký ngoài: đính kèm PDF đã ký & đóng dấu, Ban hành văn bản (có xác nhận).
  * Luồng trạng thái (giả định, bổ sung vào luồng hiện có của module hoàn trả):
@@ -232,7 +232,7 @@ function dchtModalHtml() {
                 </div>
             </div>
 
-            <!-- Tài liệu đính kèm (bắt buộc khi Ký số trên hệ thống) -->
+            <!-- Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo (Ký số; không bắt buộc) -->
             <div id="dchtTlkt"></div>
         </div>
 
@@ -355,7 +355,7 @@ function dchtOpenModal() {
     dchtEl('dchtSignContent').value = prev && prev.content ? prev.content : DCHT_SIGN_CONTENT_DEFAULT;
     dchtEl('dchtModal').querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
     dchtEl('dchtModal').querySelectorAll('.gqx-err').forEach(el => { el.style.display = 'none'; });
-    if (typeof tlktMount === 'function') tlktMount('dcht', 'dchtTlkt', { required: true, rows: prev && prev.attachments ? prev.attachments : [] });
+    if (typeof tlktMount === 'function') tlktMount('dcht', 'dchtTlkt', { required: false, rows: prev && prev.attachments ? prev.attachments : [] });
     // Ký ngoài: Số, ký hiệu / Ngày văn bản đã ký (mặc định ngày hiện tại)
     ['dchtOffSo', 'dchtOffNgay'].forEach(id => { const i = dchtEl(id); if (i) { i.classList.remove('is-invalid'); dchtEl(id + 'Err').style.display = 'none'; } });
     if (dchtEl('dchtOffSo')) dchtEl('dchtOffSo').value = '';

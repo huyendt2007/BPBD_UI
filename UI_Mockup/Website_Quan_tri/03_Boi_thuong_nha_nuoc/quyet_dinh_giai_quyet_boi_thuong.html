@@ -1836,7 +1836,7 @@
                     </div>
                 </div>
 
-                <!-- Khối 3: Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo (Ký số: 02 khối, khối không ban hành kèm theo bắt buộc; Ký ngoài: chỉ khối ban hành kèm theo) - btnn_tai_lieu_kem_theo.js dựng -->
+                <!-- Khối 3: Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo (Ký số: 02 khối; Ký ngoài: chỉ khối ban hành kèm theo; không bắt buộc) - btnn_tai_lieu_kem_theo.js dựng -->
                 <div id="hqdTlkt"></div>
             </div>
 
@@ -2294,6 +2294,8 @@
         const KIND_SC = 'Sửa chữa, bổ sung QĐ';
         // Trạng thái Quyết định: không còn "Chờ ban hành" (cấp cuối Ký duyệt -> Đã ban hành); Lãnh đạo từ chối -> "Bị trả lại"
         const ST = { CHO_DUYET: 'Chờ duyệt', TRA_LAI: 'Bị trả lại', DA_BH: 'Đã ban hành', DA_HUY: 'Hủy quyết định' };
+        // [hqdhl] Quyết định hủy tự Có hiệu lực khi cấp cuối Ký duyệt (Ký số) / ban hành Ký ngoài; Quyết định hủy không có Cập nhật hiệu lực
+        const QDH_HL_ON = 'Có hiệu lực';
         // Trạng thái hồ sơ luồng khi cấp phê duyệt cuối cùng đồng ý (resultStatus truyền cho BTNN_WF.submitForApproval)
         const RESULT_STATUS = {};
         RESULT_STATUS[KIND_QD] = 'Đã ban hành';
@@ -2634,7 +2636,7 @@
                 decisionType: 'Quyết định giải quyết bồi thường', total, advance: 0, net: total, adjustReason: '', effectiveText: 'Kể từ ngày ký',
                 sourceType: 'verification', sourceLabel: 'Kết quả xác minh thiệt hại', amendments: [], request: null, cancel: null, returned: null,
                 draftDoc: { source: 'generated', generatedName: `Du_thao_QD_GQBT_${o.claimCode}.doc` }, wfKind: '', createdBy: 'canbonv'
-            }, o, { total: o.total || total, net: (o.total || total) - num(o.advance) });
+            }, o, { total: o.total || total, net: (o.total || total) - num(o.advance) }, o.cancel ? { cancel: Object.assign({ hieuLuc: QDH_HL_ON, hieuLucAt: o.cancel.at || '' }, o.cancel) } : {});
         }
         function buildSeedDecisions() {
             return [
@@ -2729,6 +2731,8 @@
                 if (d.status === 'Đã hủy') { d.status = ST.DA_HUY; ch = true; }
                 (d.history || []).forEach(h => { if (h && typeof h.note === 'string' && h.note.indexOf('[Đã hủy]') >= 0) { h.note = h.note.split('[Đã hủy]').join(`[${ST.DA_HUY}]`); ch = true; } });
                 if (d.status === 'Chờ ban hành') { qdgqApplyIssued(d, (d.approvedAt || '').split(' ').pop() || W.dateText()); qdgqIssueLinks(d); ch = true; }
+                // [hqdhl] Dữ liệu cũ: Quyết định hủy đã ban hành chưa ghi hiệu lực -> Có hiệu lực (thời điểm hủy)
+                if (d.status === ST.DA_HUY && d.cancel && !d.cancel.hieuLuc) { d.cancel.hieuLuc = QDH_HL_ON; d.cancel.hieuLucAt = d.cancel.at || ''; ch = true; }
             });
             return ch;
         }
@@ -2796,9 +2800,10 @@
                         qdgqIssueLinks(d);
                     } else if (d.wfKind === KIND_HUY) {
                         d.status = ST.DA_HUY;
-                        d.cancel = Object.assign({}, d.request, { approvedBy: d.approvedBy, at: d.approvedAt });
+                        // [hqdhl] Cấp cuối Ký duyệt Hủy QĐ: Quyết định hủy tự chuyển Có hiệu lực (không có Cập nhật hiệu lực)
+                        d.cancel = Object.assign({}, d.request, { approvedBy: d.approvedBy, at: d.approvedAt, hieuLuc: QDH_HL_ON, hieuLucAt: d.approvedAt });
                         d.request = null;
-                        updateClaimInStorage(d.claimCode, { decStatus: ST.DA_HUY, cancelReason: d.cancel.content, cancelDecDate: W.dateText() });
+                        updateClaimInStorage(d.claimCode, { decStatus: ST.DA_HUY, cancelReason: d.cancel.content, cancelDecDate: W.dateText(), cancelHieuLuc: QDH_HL_ON });
                     } else if (d.wfKind === KIND_SC) {
                         d.status = ST.DA_BH;
                         (d.amendments = d.amendments || []).push(Object.assign({}, d.request, { approvedBy: d.approvedBy, at: d.approvedAt }));
@@ -2806,7 +2811,7 @@
                         // [schl] Quyết định sửa chữa, bổ sung ban hành: Quyết định chuyển Đã ban hành, chờ Cập nhật hiệu lực (kinh phí tính khi Có hiệu lực)
                         d.scPending = { n: d.amendments.length, at: d.approvedAt, prevHieuLuc: d.hieuLuc || '' }; d.hieuLuc = '';
                     }
-                    pushHistory(d, d.approvedAt, d.approvedBy, 'Phê duyệt cấp cuối', `${d.wfKind}. Quyết định chuyển [${typeof qdhlState === 'function' ? qdhlState(d) : d.status}].`);
+                    pushHistory(d, d.approvedAt, d.approvedBy, 'Phê duyệt cấp cuối', `${d.wfKind}. Quyết định chuyển [${typeof qdhlState === 'function' ? qdhlState(d) : d.status}].${d.wfKind === KIND_HUY ? ` Quyết định hủy [${QDH_HL_ON}].` : ''}`);
                     d.lastKind = d.wfKind;
                     d.wfKind = '';
                     changed = true;
@@ -4284,7 +4289,7 @@
             else openScbModal(id);
         }
 
-        // ---------------- Tài liệu đính kèm (Hủy QĐ: bắt buộc; Sửa chữa, bổ sung QĐ: không bắt buộc) & Trình lại ----------------
+        // ---------------- Tài liệu đính kèm (Hủy QĐ, Sửa chữa, bổ sung QĐ: không bắt buộc) & Trình lại ----------------
         // Trình lại (Bị trả lại): điền lại đúng dữ liệu lần trình trước - nguồn tệp, tệp văn bản trình ký, vị trí ô ký, Nội dung trình, Tài liệu đính kèm
         function tlktQdRestore(st, p, prev, sd, required) {
             if (prev) {
@@ -4351,7 +4356,7 @@
             $('hqdMethodOn').checked = true;
             hqdRenderOff();
             hqdSetDocSrc('gen');
-            tlktQdRestore(hqd, 'hqd', prev, sd, true);
+            tlktQdRestore(hqd, 'hqd', prev, sd, false); // Tài liệu không ban hành kèm theo: không bắt buộc (chốt 06/11/2026)
             hqdSetMethod('Ký số');
             if (typeof gqFrameFull === 'function') gqFrameFull(true);
             openModal('hqdModal');
@@ -4538,10 +4543,11 @@
             const name = hqd.offFile.name;
             const at = W.nowText();
             if (W.getRecord(d.claimCode)) W.ensureClaimRecord({ code: d.claimCode, status: RESULT_STATUS[KIND_HUY] });
-            d.cancel = { kind: KIND_HUY, content: '', signMethod: 'Ký ngoài', draftDoc: { source: 'uploaded', uploadedName: name }, approvedBy: '', issuedBy: W.getCurrentUserId(), at, attachments: typeof tlktGet === 'function' ? tlktGet('hqd') : [] };
+            // [hqdhl] Ban hành Ký ngoài: Quyết định hủy tự chuyển Có hiệu lực
+            d.cancel = { kind: KIND_HUY, content: '', signMethod: 'Ký ngoài', draftDoc: { source: 'uploaded', uploadedName: name }, approvedBy: '', issuedBy: W.getCurrentUserId(), at, hieuLuc: QDH_HL_ON, hieuLucAt: at, attachments: typeof tlktGet === 'function' ? tlktGet('hqd') : [] };
             d.status = ST.DA_HUY; d.request = null; d.returned = null; d.wfKind = ''; d.lastKind = KIND_HUY; d.updatedAt = new Date().toISOString();
-            updateClaimInStorage(d.claimCode, { decStatus: ST.DA_HUY, cancelReason: '', cancelDecDate: W.dateText() });
-            addDecHistory(d, 'Ban hành Quyết định hủy Quyết định giải quyết bồi thường (Ký ngoài)', `Tệp đã ký: ${name}.`);
+            updateClaimInStorage(d.claimCode, { decStatus: ST.DA_HUY, cancelReason: '', cancelDecDate: W.dateText(), cancelHieuLuc: QDH_HL_ON });
+            addDecHistory(d, 'Ban hành Quyết định hủy Quyết định giải quyết bồi thường (Ký ngoài)', `Tệp đã ký: ${name}. Quyết định hủy [${QDH_HL_ON}].`);
             saveDecisions();
             closeHqdModal();
             showToast('Đã ban hành Quyết định hủy Quyết định giải quyết bồi thường (Ký ngoài).', 'success');
@@ -5136,7 +5142,7 @@
                 request: { kind: KIND_HUY, content: 'Căn cứ ban hành Quyết định không chính xác theo kết luận kiểm tra của cơ quan có thẩm quyền.', effectiveDate: '20/10/2026', draftDoc: { source: 'generated', generatedName: 'Du_thao_Huy_QD_BT-2026-071.doc' }, bodyHtml: '', leaderId: 'tpbt', signMethod: 'Ký số', note: s1.rec.approval.content, submittedAt: '08:30 14/10/2026', submittedBy: 'canbonv' },
                 history: [{ at: '16:00 15/09/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Ban hành', note: 'Số 25/QĐ-BTP ngày 15/09/2026.' }, { at: '08:30 14/10/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: `Trình ${KIND_HUY}`, note: `Lý do hủy Quyết định: Căn cứ ban hành Quyết định không chính xác theo kết luận kiểm tra của cơ quan có thẩm quyền. Trình ${W.userLabel('tpbt')}.` }],
                 updatedAt: '2026-10-14T08:30:00.000Z' });
-            // Tài liệu của lần trình Hủy QĐ: 01 ban hành kèm theo + 01 không ban hành kèm theo (bắt buộc) - Lãnh đạo xem tại màn Ký duyệt/Từ chối
+            // Tài liệu của lần trình Hủy QĐ: 01 ban hành kèm theo + 01 không ban hành kèm theo - Lãnh đạo xem tại màn Ký duyệt/Từ chối
             s1.tlkt = [
                 { name: 'Kết luận kiểm tra số 15/KL-TTr ngày 30/09/2026 của Thanh tra Bộ Tư pháp', file: { id: '', name: 'Ket_luan_kiem_tra_15_KL-TTr.pdf', size: 524288, type: 'application/pdf' }, scope: 'internal', unit: 'BTP-01' },
                 { name: 'Văn bản xác định trường hợp hủy Quyết định giải quyết bồi thường', file: { id: '', name: 'Van_ban_xac_dinh_truong_hop_huy_QD.pdf', size: 312320, type: 'application/pdf' }, scope: 'issued', unit: 'BTP-01' }
@@ -5301,7 +5307,7 @@
         });
         window.addEventListener('storage', e => { if (e.key === W.KEYS.RECORDS || e.key === KEY_DEC) { decisions = loadDecisions(); if ($('contentListDecisions').style.display !== 'none') showList(); } });
     </script>
-    <script src="quyet_dinh_gqbt_ctqd.js?v=20261028tl1"></script>
+    <script src="quyet_dinh_gqbt_ctqd.js?v=20261106hqdhl1"></script>
     <!-- [hlqd] Cập nhật hiệu lực QĐ: Đã ban hành -> Có hiệu lực (tạo bản ghi Chi trả tiền bồi thường) / Không có hiệu lực -->
     <script src="quyet_dinh_gqbt_hlqd.js?v=20261105np1"></script>
     <!-- [scbf] Sửa chữa, bổ sung QĐ theo Form (điền sẵn nội dung QĐ, tự sinh Nội dung sửa chữa, bổ sung); liên thông kinh phí khi QĐ sửa chữa, bổ sung ban hành (Hủy QĐ không liên thông Kinh phí) -->

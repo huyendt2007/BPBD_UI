@@ -126,6 +126,7 @@ function ctqdCancelHtml(d) {
         + ctqdF('Thời điểm hủy', esc(c.at || ''))
         + (c.decNo || sd.docNo ? ctqdF('Số quyết định hủy', esc(c.decNo || sd.docNo)) : '')
         + ctqdF('Hiệu lực', 'Kể từ ngày ký') // [hqdhl] cố định theo Mẫu 20/BTNN
+        + ctqdF('Trạng thái Quyết định hủy', esc(c.hieuLuc || 'Có hiệu lực')) // [hqdhl] tự Có hiệu lực khi cấp cuối Ký duyệt / ban hành Ký ngoài
         + ctqdF('Lý do hủy Quyết định', esc(c.content || ''), true)
         + '</div>';
     return '<div class="ctqd-card is-danger" id="ctqdCancel"><div class="ctqd-title"><i class="fa-solid fa-ban"></i> Quyết định đã bị hủy</div>' + g
