@@ -296,6 +296,13 @@ function kpdtAdvBody(item) {
     const docNoOk = docNo && !/^\/|^\s*\//.test(docNo) ? docNo : '';
     const dec = `<div class="kpdt-grid c3">${kpdtFld('Hình thức ký', s.method === 'Ký ngoài' ? 'Ký ngoài' : 'Ký số trên hệ thống')}${kpdtFld('Số Quyết định', kpdtEsc(docNoOk))}${kpdtFld('Ngày Quyết định', kpdtEsc(s.docDate || ''))}
         <div class="kpdt-fld kpdt-full"><span class="form-label">Tệp Quyết định</span>${kpdtFileHtml(kpdtCurFile)}</div></div>`;
+    // Tạm ứng chi 01 lần (KH chốt 05/11/2026): Ngày chi trả, Số tiền thực tế chi trả, Chứng từ, Người cập nhật; dữ liệu cũ nhiều lần chi: bảng các lần tạm ứng
+    const ph = typeof kpPayHistory === 'function' ? kpPayHistory(item) : [];
+    const p1 = ph[0] || {};
+    const p1Docs = (p1.files || []).map(f => kpdtEsc((f && f.file && f.file.name) || (f && f.name) || f)).join('<br>') || '-';
+    const paidBody = ph.length > 1 ? kpdtPayHistHtml(item, ph).replace('Lịch sử chi trả', 'Các lần tạm ứng')
+        : `<div class="kpdt-grid c3">${kpdtFld('Ngày thực hiện chi trả', kpdtEsc(p1.payDate || ''))}${kpdtFld('Số tiền thực tế chi trả (VNĐ)', kpdtFmt(p1.amount))}${kpdtFld('Người cập nhật', kpdtEsc(p1.by ? kpdtUserName(p1.by) : (item.user || '')))}${kpdtFld('Chứng từ', p1Docs)}</div>`;
+    const paidCard = ph.length ? kpdtCard('fa-receipt', 'Thông tin chi trả tạm ứng', paidBody) : '';
     return kpdtRejHtml(item)
         + kpdtCard('fa-folder-open', 'Hồ sơ', claim)
         + kpdtCard('fa-user', 'Thông tin người yêu cầu', nyc)
@@ -304,6 +311,7 @@ function kpdtAdvBody(item) {
         + kpdtCard('fa-money-bill-transfer', 'Phương thức chi trả tiền tạm ứng', pay)
         + kpdtCard('fa-file-signature', 'Quyết định tạm ứng kinh phí', dec)
         + kpdtAdvDocsCard(s.attachments || item.files || [])
+        + paidCard
         + kpdtHistHtml(item);
 }
 // Khối Tài liệu đính kèm: 02 bảng Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo (quy tắc 5.9);

@@ -78,7 +78,7 @@ var KPDC_KP_SEED = [
     ['P10', 'KP-2026-010', 'BT-2026-010', 'Cấp tạm ứng', 'Hoàn thành', 50000000],
     ['P11', 'KP-2026-011', 'BT-2026-060', 'Cấp tạm ứng', 'Hoàn thành', 100000000],
     ['P12', 'KP-2026-012', 'BT-2026-011', 'Cấp kinh phí bồi thường', 'Hoàn thành', 300000000],
-    ['P16', 'KP-2026-016', 'BT-2026-012', 'Cấp kinh phí bồi thường', 'Hoàn thành', 450000000],
+    ['P16', 'KP-2026-016', 'BT-2026-012', 'Cấp kinh phí bồi thường', 'Hoàn thành', 750000000],
     ['P16_TU', 'KP-2026-197', 'BT-2026-012', 'Cấp tạm ứng', 'Hoàn thành', 100000000],
     ['P17', 'KP-2026-017', 'BT-2026-022', 'Cấp tạm ứng', 'Hoàn thành', 85000000],
     ['P18', 'KP-2026-018', 'BT-2026-003-A', 'Cấp kinh phí bồi thường', 'Hoàn thành', 520000000],

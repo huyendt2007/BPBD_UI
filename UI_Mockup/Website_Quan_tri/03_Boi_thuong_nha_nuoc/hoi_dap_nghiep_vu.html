@@ -887,7 +887,7 @@
         <span id="toastMessage"></span>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261105tn1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script>
@@ -1062,7 +1062,7 @@
         let activeTab = 'pending', currentPage = 1, pageSize = 20;
 
         window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('filterStatus').innerHTML = '<option value="">-- Tất cả --</option>' + STATUS_ORDER.map(s => `<option value="${s}">${s}</option>`).join('');
+            document.getElementById('filterStatus').innerHTML = '<option value="">Tất cả</option>' + STATUS_ORDER.map(s => `<option value="${s}">${s}</option>`).join('');
             // Bộ Tư pháp: lọc theo Sở Tư pháp (bộ lọc Đơn vị dùng chung, chỉ hiện với Bộ Tư pháp)
             if (PV) {
                 const html = PV.filterHtml({ id: 'filter_unit', label: 'Sở Tư pháp', includeBtp: false });

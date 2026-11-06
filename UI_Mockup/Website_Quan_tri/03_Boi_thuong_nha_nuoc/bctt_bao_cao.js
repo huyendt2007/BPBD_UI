@@ -544,16 +544,16 @@
     // Dữ liệu mẫu bổ sung: hồ sơ Giải quyết YCBT của Thành phố Hà Nội mà Quyết định GQBT / Chi trả tiền bồi thường mẫu tham chiếu nhưng chưa có trong kho luồng xử lý
     // (chỉ dùng khi kho luồng xử lý không có Mã hồ sơ; số liệu Quyết định / Chi trả lấy theo kho của phân hệ nếu có)
     var M43_SEED_CASES = [
-        { code: 'BT-2026-193', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '20/08/2026', status: 'Hoàn thành', qd: ['16/09/2026', 120000000], pay: ['25/09/2026', 120000000] },
-        { code: 'BT-2026-077', unit: 'UBND-CG', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '15/11/2025', status: 'Hoàn thành', qd: ['05/10/2026', 92000000], pay: ['20/10/2026', 92000000] },
+        { code: 'BT-2026-193', nyc: 'Trần Thị Hạnh', dc: 'Số 12 ngõ 45 Nguyễn Trãi, Phường Thanh Xuân, Thành phố Hà Nội', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '20/08/2026', status: 'Hoàn thành', qd: ['16/09/2026', 120000000], pay: ['25/09/2026', 120000000] },
+        { code: 'BT-2026-077', nyc: 'Hoàng Văn Sơn', dc: 'Số 30 Xuân Thủy, Phường Cầu Giấy, Thành phố Hà Nội', unit: 'UBND-CG', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '15/11/2025', status: 'Hoàn thành', qd: ['05/10/2026', 92000000], pay: ['20/10/2026', 92000000] },
         // Trả lại ngân sách nhà nước một phần (KP-2026-130): Số tiền đã chi thực tế 60.000.000, không tính 30.000.000 trả lại ngân sách nhà nước
         // Chi trả nhiều lần (KP-2026-131): mỗi lần chi tính theo Ngày chi của lần đó; pay mẫu dùng khi kho Kinh phí chưa có bản ghi
-        { code: 'BT-2026-097', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '10/08/2026', status: 'Chờ chi trả', qd: ['08/10/2026', 100000000], pay: ['20/10/2026', 40000000] },
-        { code: 'BT-2023-063', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '20/03/2023', status: 'Hoàn thành', qd: ['20/06/2023', 90000000], pay: ['15/03/2026', 60000000] },
-        { code: 'BT-2026-005', unit: 'STP-HP', lv: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH', thuLy: '12/05/2026', status: 'Chờ duyệt' },
-        { code: 'BT-2026-003', unit: 'UBND-CG', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '06/04/2026', status: 'Chờ chi trả', qd: ['02/07/2026', 4800000000] },
-        { code: 'BT-2026-047', unit: 'CCTHADS-CG', lv: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ', thuLy: '12/03/2026', status: 'Đình chỉ giải quyết' },
-        { code: 'BT-2025-142', unit: 'CA-TX', lv: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', thuLy: '20/10/2025', status: 'Xác minh thiệt hại' },
+        { code: 'BT-2026-097', nyc: 'Công ty TNHH Thương mại Minh Phát', dc: 'Số 88 Láng Hạ, Phường Láng, Thành phố Hà Nội', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '10/08/2026', status: 'Chờ chi trả', qd: ['08/10/2026', 100000000], pay: ['20/10/2026', 40000000] },
+        { code: 'BT-2023-063', nyc: 'Lê Văn Phúc', dc: 'Thôn Đoài, Xã Sóc Sơn, Thành phố Hà Nội', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '20/03/2023', status: 'Hoàn thành', qd: ['20/06/2023', 90000000], pay: ['15/03/2026', 60000000] },
+        { code: 'BT-2026-005', nyc: 'Vũ Thị Lan', dc: 'Số 15 Lạch Tray, Phường Ngô Quyền, Thành phố Hải Phòng', unit: 'STP-HP', lv: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH', thuLy: '12/05/2026', status: 'Chờ duyệt' },
+        { code: 'BT-2026-003', nyc: 'Công ty Cổ phần Xây dựng Thăng Long', dc: 'Số 2 Phạm Hùng, Phường Cầu Giấy, Thành phố Hà Nội', unit: 'UBND-CG', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '06/04/2026', status: 'Chờ chi trả', qd: ['02/07/2026', 4800000000] },
+        { code: 'BT-2026-047', nyc: 'Nguyễn Thị Mai', dc: 'Số 5 Trần Thái Tông, Phường Cầu Giấy, Thành phố Hà Nội', unit: 'CCTHADS-CG', lv: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ', thuLy: '12/03/2026', status: 'Đình chỉ giải quyết' },
+        { code: 'BT-2025-142', nyc: 'Phạm Quốc Toản', dc: 'Số 210 Khương Đình, Phường Khương Đình, Thành phố Hà Nội', unit: 'CA-TX', lv: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', thuLy: '20/10/2025', status: 'Xác minh thiệt hại' },
         // Phục hồi danh dự: hồ sơ Chỉ yêu cầu phục hồi danh dự; hồ sơ cán bộ chủ động phục hồi danh dự (riêng / cùng Mã vụ việc với hồ sơ BT-2026-193 đã giải quyết)
         { code: 'BT-2026-211', unit: 'UBND-HM', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '22/07/2026', status: 'Hoàn thành', requestKind: 'honor' },
         { code: 'BT-2026-212', unit: 'CA-TX', lv: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', thuLy: '10/09/2026', status: 'Đang phục hồi danh dự', requestKind: 'honor', cdpd: true },
@@ -561,10 +561,10 @@
     ];
     // Vụ việc tại Tòa án mẫu (cùng dữ liệu mẫu của màn Theo dõi vụ việc tại Tòa án): dùng khi trình duyệt chưa mở màn Theo dõi vụ việc tại Tòa án
     var M43_COURT_FALLBACK = [
-        { id: 'TA-BT-2026-301', rootUnitId: 'UBND-CG', status: 'Đã thụ lý', basis: 'a', acceptDate: '15/09/2026', fieldGroup: 'hành chính', amount: 320000000 },
+        { id: 'TA-BT-2026-301', nyc: { name: 'Đỗ Minh Tuấn', address: 'Số 7 Trần Đăng Ninh', ward: 'Phường Cầu Giấy', city: 'Thành phố Hà Nội' }, rootUnitId: 'UBND-CG', status: 'Đã thụ lý', basis: 'a', acceptDate: '15/09/2026', fieldGroup: 'hành chính', amount: 320000000 },
         { id: 'TA-BT-2026-302', hoSoCode: 'BT-2026-030', linkedAgencyId: 'CA-HM', rootUnitId: 'STP-HN', status: 'Đang giải quyết', basis: 'b', acceptDate: '02/09/2026', fieldGroup: 'hình sự', amount: 121500000 },
-        { id: 'TA-BT-2026-304', rootUnitId: 'THADS-LD', status: M43_COURT_DONE, basis: 'a', acceptDate: '10/06/2026', effectiveDate: '28/09/2026', fieldGroup: 'thi hành án dân sự', amount: 506000000 },
-        { id: 'TA-BT-2026-305', rootUnitId: 'UBND-HK', status: M43_COURT_DONE, basis: 'tt', acceptDate: '20/05/2026', effectiveDate: '15/08/2026', fieldGroup: 'tố tụng hành chính', amount: 15000000 },
+        { id: 'TA-BT-2026-304', nyc: { name: 'Trịnh Văn Hải', address: 'Số 3 Phan Đình Phùng', ward: 'Phường Xuân Hương - Đà Lạt', city: 'Tỉnh Lâm Đồng' }, rootUnitId: 'THADS-LD', status: M43_COURT_DONE, basis: 'a', acceptDate: '10/06/2026', effectiveDate: '28/09/2026', fieldGroup: 'thi hành án dân sự', amount: 506000000 },
+        { id: 'TA-BT-2026-305', nyc: { name: 'Ngô Thị Thu', address: 'Số 21 Hàng Bài', ward: 'Phường Hoàn Kiếm', city: 'Thành phố Hà Nội' }, rootUnitId: 'UBND-HK', status: M43_COURT_DONE, basis: 'tt', acceptDate: '20/05/2026', effectiveDate: '15/08/2026', fieldGroup: 'tố tụng hành chính', amount: 15000000 },
         { id: 'TA-BT-2026-306', rootUnitId: 'BTP-01', status: M43_COURT_RETURNED, basis: 'a', acceptDate: '05/08/2026', fieldGroup: 'hành chính', amount: 60000000 },
         { id: 'TA-BT-2026-307', rootUnitId: 'BTP-01', status: 'Đang giải quyết', basis: 'tt', acceptDate: '12/08/2026', fieldGroup: 'hình sự', amount: 244000000 },
         { id: 'TA-BT-2026-308', hoSoCode: 'BT-2026-052', linkedAgencyId: 'UBND-CG', rootUnitId: 'BTP-01', status: 'Đã thụ lý', basis: 'b', acceptDate: '20/10/2026', fieldGroup: 'hành chính', amount: 95000000 }
@@ -640,7 +640,7 @@
             var key = vv(rec.maVuViec) || vv(rec.code) || rec.code, e = get(key);
             var d = m43ThuLyDate(rec);
             // Nhiều hồ sơ cùng Mã vụ việc (Chuyển CQGQBT): lấy hồ sơ thụ lý sau cùng
-            if (!e.ag || d >= e.ag.date) { e.ag = { code: rec.code, date: d, status: rec.status, kind: rec.requestKind }; e.unit = W.getRootId(rec.rootUnitId) || rec.rootUnitId; e.lv = rec.linhVuc || e.lv; }
+            if (!e.ag || d >= e.ag.date) { e.ag = { code: rec.code, date: d, status: rec.status, kind: rec.requestKind, rec: rec }; e.unit = W.getRootId(rec.rootUnitId) || rec.rootUnitId; e.lv = rec.linhVuc || e.lv; }
             link(e, [key, rec.code, rec.claimCode]);
         });
         M43_SEED_CASES.forEach(function (s) {
@@ -664,7 +664,7 @@
             var cur = e.ct;
             var newer = !cur || d > cur.date || (d === cur.date && (stamp > cur.stamp || (stamp === cur.stamp && order > cur.order)));
             if (newer) {
-                e.ct = { date: d, basis: m43Basis(c), status: c.status, eff: m43Day(c.effectiveDate), amount: amt, stamp: stamp, order: order, id: c.id };
+                e.ct = { date: d, basis: m43Basis(c), status: c.status, eff: m43Day(c.effectiveDate), amount: amt, stamp: stamp, order: order, id: c.id, raw: c };
                 if (!e.ag) { e.unit = W.getRootId(c.linkedAgencyId || c.rootUnitId) || c.linkedAgencyId || c.rootUnitId; e.lv = FIELD_LV[c.fieldGroup] || c.fieldGroup || ''; }
             }
             link(e, [key, c.code, c.id, c.hoSoCode]);
@@ -743,20 +743,137 @@
                 else { row[18] += 1; res = 18; } // gồm Dừng giải quyết, Từ chối phục hồi danh dự (yêu cầu cả hai)
             } else if (ctDone) { row[RES[place]] += 1; row[16] += Math.round((e.ct.amount || 0) / 1000); res = RES[place]; }
             else { row[ING[place]] += 1; res = ING[place]; }
-            detail.push({ key: e.key, g: g, col: BASE[place] + (isNew ? 0 : 4), res: res || '', unit: e.unit });
+            detail.push({ key: e.key, g: g, col: BASE[place] + (isNew ? 0 : 4), res: res || '', unit: e.unit, e: e });
         });
         return { rows: rows, n: n, detail: detail };
     }
-    function m43HasAutoValue(m43) { return GROUPS.some(function (g) { return M43_AUTO_COLS.some(function (c) { return num(m43[g.k] && m43[g.k][c]) > 0; }); }); }
-    function m43ApplyAuto(r, ed) {
-        var res = null;
-        try { res = m43Compute(r); } catch (e) { res = null; }
-        if (!res) { toast('Kết nối tới hệ thống bị gián đoạn. Vui lòng thử lại sau.', 'error'); return; }
-        GROUPS.forEach(function (g) { M43_AUTO_COLS.forEach(function (c) { r.m43[g.k][c] = res.rows[g.k][c]; }); });
-        window.__bcttM43Last = res;
-        renderM43Tab(r, ed);
-        var any = GROUPS.some(function (g) { return M43_AUTO_COLS.some(function (c) { return res.rows[g.k][c] > 0; }); });
-        toast(any ? 'Đã tổng hợp số liệu Mẫu 43/BTNN từ dữ liệu vụ việc (' + res.n + ' vụ việc thụ lý). Cột 23, 24 giữ nguyên số đang nhập.' : 'Không có vụ việc phù hợp trong kỳ báo cáo; số liệu các cột tổng hợp bằng 0.', any ? 'success' : 'warning');
+    // ---------------- Nút «Cập nhật dữ liệu» (05/11/2026, nhanhl2): Mẫu 41/BTNN, Mẫu 43/BTNN, Mẫu số 04 (TT 08/2019) ----------------
+    // Chỉ lấy hồ sơ có Loại yêu cầu giải quyết bồi thường là Yêu cầu cả hai hoặc Chỉ yêu cầu bồi thường thiệt hại bằng tiền (m43HonorOnly loại hồ sơ
+    // Chỉ yêu cầu phục hồi danh dự và hồ sơ cán bộ chủ động phục hồi danh dự); vụ việc tại Tòa án vẫn lấy, trừ Trả lại đơn khởi kiện (như Mẫu 43).
+    // Mẫu 41: thông tin người yêu cầu và cơ quan của từng vụ việc (vụ việc lấy theo cùng tập Mẫu 43 tính ở Cột 3 - 10)
+    function m41Info(e) {
+        var W = wf(), ag = e.ag || {}, s = ag.seed, rec = ag.rec, c = e.ct && e.ct.raw;
+        var ten = function (u) { try { return (W && W.unitName(u)) || u || ''; } catch (x) { return u || ''; } };
+        var dc = function (o) { try { return W && W.joinAddress ? W.joinAddress(o) : ''; } catch (x) { return ''; } };
+        // Khối người yêu cầu của hồ sơ (nyc): địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố
+        var dcNyc = function (n) { n = n || {}; return dc({ address: n.addressDetail || n.address, ward: n.ward || n.phuongXa, city: n.city || n.tinhThanh }) || n.address || ''; };
+        // Vụ việc tại Tòa án chưa thụ lý tại cơ quan nhưng có hồ sơ liên kết: lấy người yêu cầu của hồ sơ đó
+        if (!rec && c && c.hoSoCode && W) rec = W.loadRecords().find(function (x) { return x && x.code === c.hoSoCode && !m43HonorOnly(x); });
+        if (rec) return { hoTen: rec.nycName || (rec.nyc && rec.nyc.name) || '', diaChi: dc(rec) || dcNyc(rec.nyc), coQuan: ten(e.unit) };
+        if (s) return { hoTen: s.nyc || '', diaChi: s.dc || '', coQuan: ten(s.unit) };
+        if (c) { var n = c.nyc || {}; return { hoTen: n.name || c.nycName || '', diaChi: dcNyc(n), coQuan: c.agency || ten(c.linkedAgencyId || c.rootUnitId) }; }
+        return { hoTen: '', diaChi: '', coQuan: ten(e.unit) };
+    }
+    // Danh mục mới: dòng của vụ việc (gắn Mã vụ việc ẩn _vv) theo nhóm; giữ cột (4), (5), (6) đã nhập của vụ việc trùng Mã vụ việc
+    // và giữ nguyên dòng Cán bộ tự thêm (không có _vv); dòng tự động của vụ việc không còn thuộc kỳ thì bỏ
+    function m41FromAuto(r, res) {
+        var cu = {}, tay = {}, moi = {}, n = 0;
+        GROUPS.forEach(function (g) {
+            moi[g.k] = []; tay[g.k] = [];
+            (r.m41[g.k] || []).forEach(function (row) { if (row._vv) cu[row._vv] = row; else tay[g.k].push(row); });
+        });
+        res.detail.forEach(function (d) {
+            var o = m41Info(d.e), old = cu[d.key] || {};
+            moi[d.g].push({ _vv: d.key, hoTen: o.hoTen, diaChi: o.diaChi, coQuan: o.coQuan, tinhHinh: old.tinhHinh || '', khoKhan: old.khoKhan || '', ghiChu: old.ghiChu || '' });
+            n++;
+        });
+        GROUPS.forEach(function (g) { moi[g.k] = moi[g.k].concat(tay[g.k]); });
+        return { m41: moi, n: n };
+    }
+    // Mẫu số 04: hồ sơ Xem xét trách nhiệm hoàn trả mẫu (số tiền theo đồng). Hồ sơ hoàn trả tạo mới trên phân hệ (btnn_hoantra_created_v1)
+    // được đọc thêm khi tìm được vụ việc gốc trong kho hồ sơ. Cột 7, 8 không có dữ liệu nguồn: giữ số Cán bộ đang nhập.
+    var M04_SEED = [
+        // Đã ban hành Quyết định hoàn trả, đang thu tiền: Cột 4, 5, 13, 15
+        { code: 'HT-2026-101', vv: 'BT-2023-063', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', chiTra: 60000000, tao: '20/03/2026', qd: '15/05/2026', phai: 20000000,
+          nop: [['10/06/2026', 8000000], ['10/09/2026', 4000000]] },
+        // Đang xem xét, chưa có Quyết định hoàn trả: Cột 6
+        { code: 'HT-2026-102', vv: 'BT-2026-193', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', chiTra: 120000000, tao: '05/10/2026' },
+        // Quyết định năm trước có giảm mức hoàn trả, nộp từ kỳ trước, hoãn trong kỳ: Cột 4, 5, 11, 13, 14, 15
+        { code: 'HT-2025-090', vv: 'BT-2025-120', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', chiTra: 300000000, tao: '10/11/2025', qd: '20/12/2025', phai: 40000000,
+          giam: [50000000, 40000000], nop: [['20/12/2025', 5000000], ['20/01/2026', 10000000], ['20/07/2026', 10000000]], hoan: [['01/08/2026', '31/12/2026']] },
+        // Quyết định trong kỳ có giảm mức hoàn trả, chưa nộp: Cột 6 không tính (đã có Quyết định), Cột 9, 10, 15
+        // Quyết định năm trước không giảm; Quyết định giảm mức hoàn trả bổ sung ban hành trong kỳ: Cột 4, 5 (sau giảm), 9, 10, 13, 14, 15
+        { code: 'HT-2025-075', vv: 'BT-2025-098', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', chiTra: 250000000, tao: '05/06/2025', qd: '10/09/2025', phai: 50000000,
+          giamBs: [['15/07/2026', 42000000, 32000000]], nop: [['10/10/2025', 8000000], ['10/02/2026', 6000000]] },
+        { code: 'HT-2026-115', vv: 'BT-2026-140', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ', chiTra: 80000000, tao: '02/06/2026', qd: '25/08/2026', phai: 9000000, giam: [12000000, 9000000] }
+    ];
+    function m04Dossiers() {
+        var W = wf(), list = M04_SEED.slice(), recs = W ? W.loadRecords() : [];
+        var them = m43Read('btnn_hoantra_created_v1');
+        (Array.isArray(them) ? them : []).forEach(function (d) {
+            if (!d || !d.claimCode) return;
+            var rec = recs.find(function (x) { return x && (x.code === d.claimCode || x.claimCode === d.claimCode); }); if (!rec || m43HonorOnly(rec)) return;
+            list.push({ code: d.code, vv: d.claimCode, unit: W.getRootId(rec.rootUnitId) || rec.rootUnitId, lv: rec.linhVuc || '', chiTra: Number(d.claimAmt) || 0, tao: d.dateCreated, qd: d.qdDate,
+                phai: Number(d.refundTotal) || 0, nop: (d.payments || []).map(function (p) { return [p.date, Number(p.amt) || 0]; }), dinhChi: /Đình chỉ/.test(d.status || '') });
+        });
+        return list;
+    }
+    var M04_AUTO_COLS = [2, 4, 5, 6, 9, 10, 11, 13, 14, 15];
+    function m04Compute(r) {
+        var W = wf(); if (!W) return null;
+        var from = m43Day(r.fromDate), to = m43Day(r.toDate), dong = {}, n = 0;
+        GROUPS.forEach(function (g) { var o = {}; M04_AUTO_COLS.forEach(function (c) { o[c] = 0; }); dong[g.k] = o; });
+        m04Dossiers().forEach(function (h) {
+            if (!h.unit || W.stpOfUnit(h.unit) !== r.unitId) return;
+            var g = m43Group(h.lv); if (!g) return;
+            var tao = m43Day(h.tao), qd = m43Day(h.qd); if (!tao || tao > to) return;
+            var o = dong[g], nop = h.nop || [], cong = function (f) { return nop.reduce(function (s, p) { var d = m43Day(p[0]); return s + (f(d) ? p[1] : 0); }, 0); };
+            var daNopDenCuoi = cong(function (d) { return d && d <= to; }), daNopTruoc = cong(function (d) { return d && d < from; }), daNopTrong = cong(function (d) { return d >= from && d <= to; });
+            var coQd = !!qd && qd <= to; n++;
+            // Mốc của Quyết định hoàn trả và Quyết định giảm mức hoàn trả bổ sung: ngày ban hành (nhanhl2 chốt 05/11/2026)
+            var bs = (h.giamBs || []).map(function (x) { return { d: m43Day(x[0]), tien: (x[1] || 0) - (x[2] || 0) }; });
+            var phaiDen = function (f) { return (h.phai || 0) - bs.reduce(function (s, x) { return s + (f(x.d) ? x.tien : 0); }, 0); };
+            var phaiCuoi = phaiDen(function (d) { return d && d <= to; }), phaiDau = phaiDen(function (d) { return d && d < from; });
+            if (tao >= from) o[2] += h.chiTra || 0;                                     // Cột 2: vụ việc làm căn cứ xem xét hoàn trả trong kỳ
+            if (coQd && daNopDenCuoi > 0) { o[4] += 1; o[5] += phaiCuoi; }               // Cột 4, 5 (tại ngày cuối kỳ)
+            if (!coQd && !h.dinhChi) o[6] += 1;                                          // Cột 6
+            // Cột 9, 10: giảm ngay trong Quyết định hoàn trả và Quyết định giảm mức hoàn trả bổ sung ban hành trong kỳ; hồ sơ tính 01 lần ở Cột 9
+            var giamQd = h.giam && qd >= from && qd <= to ? h.giam[0] - h.giam[1] : 0, bsTrong = bs.filter(function (x) { return x.d >= from && x.d <= to; });
+            if (giamQd || bsTrong.length) { o[9] += 1; o[10] += giamQd + bsTrong.reduce(function (s, x) { return s + x.tien; }, 0); }
+            if ((h.hoan || []).some(function (x) { var a = m43Day(x[0]), b = m43Day(x[1]) || 99999999; return a <= to && b >= from; })) o[11] += 1; // Cột 11
+            o[13] += daNopTrong;                                                         // Cột 13
+            if (qd && qd < from && phaiDau - daNopTruoc > 0) o[14] += daNopTruoc;       // Cột 14
+            if (coQd) o[15] += Math.max(0, phaiCuoi - daNopDenCuoi);                     // Cột 15
+        });
+        // Quy đổi nghìn đồng: cộng theo đồng rồi chia 1.000, làm tròn nửa lên (như Cột 16, 26, 27 của Mẫu 43)
+        GROUPS.forEach(function (g) { [2, 5, 10, 13, 14, 15].forEach(function (c) { dong[g.k][c] = Math.round(dong[g.k][c] / 1000); }); });
+        return { rows: dong, n: n };
+    }
+    // Popup xác nhận rồi màn chờ; Hệ thống không tự lưu báo cáo
+    function xacNhanCapNhatDuLieu(r) {
+        collect(r);
+        var html = '<div class="bctt-modal" style="width:600px;"><div class="bctt-mh"><div><div class="tt">Cập nhật dữ liệu</div></div><button class="bctt-x" data-close>&times;</button></div>'
+            + '<div class="bctt-mb"><p>Hệ thống lấy dữ liệu từ ' + esc(r.fromDate) + ' đến ' + esc(r.toDate) + ', chỉ từ hồ sơ có Loại yêu cầu giải quyết bồi thường là <strong>Yêu cầu cả hai (Bồi thường tiền &amp; Phục hồi danh dự)</strong> hoặc <strong>Chỉ yêu cầu bồi thường thiệt hại bằng tiền</strong>, cho 03 biểu mẫu sau:</p>'
+            + '<ul style="margin:8px 0 0;padding-left:20px;line-height:1.7;">'
+            + '<li><strong>Mẫu 41/BTNN</strong>: danh mục vụ việc được lấy lại. Cột (4), (5), (6) đã nhập của vụ việc cũ và các dòng tự thêm được giữ nguyên.</li>'
+            + '<li><strong>Mẫu 43/BTNN</strong>: số liệu các cột tổng hợp bị ghi đè. Cột 23, 24 giữ nguyên.</li>'
+            + '<li><strong>Mẫu số 04 (TT 08/2019)</strong>: số liệu bị ghi đè, trừ Cột 7, 8.</li></ul>'
+            + '<p style="margin-top:8px;">Hệ thống không tự lưu báo cáo. Bạn có muốn tiếp tục?</p></div>'
+            + '<div class="bctt-mf"><button class="btn btn-secondary" data-close>Hủy bỏ</button><button class="btn btn-primary" id="bcttDataSyncOk"><i class="fa-solid fa-rotate"></i> Cập nhật</button></div></div>';
+        openOv('bcttOv2', html); bindClose('bcttOv2');
+        $('bcttDataSyncOk').onclick = function () {
+            closeOv('bcttOv2');
+            choXuLy('Đang cập nhật dữ liệu', 3, function () { apDungCapNhatDuLieu(r); }, 'Đã cập nhật {n}/{t} biểu mẫu...', 'Vui lòng chờ, không thao tác trong lúc hệ thống cập nhật dữ liệu.');
+        };
+    }
+    function apDungCapNhatDuLieu(r) {
+        var a = null, b = null;
+        try { a = m43Compute(r); b = m04Compute(r); } catch (e) { a = null; }
+        if (!a || !b) { toast('Kết nối tới hệ thống bị gián đoạn. Vui lòng thử lại sau.', 'error'); return; }
+        GROUPS.forEach(function (g) {
+            M43_AUTO_COLS.forEach(function (c) { r.m43[g.k][c] = a.rows[g.k][c]; });
+            if (!r.m04[g.k]) r.m04[g.k] = {};
+            M04_AUTO_COLS.forEach(function (c) { r.m04[g.k][c] = b.rows[g.k][c]; });
+        });
+        var m41 = m41FromAuto(r, a); r.m41 = m41.m41;
+        renderM41Tab(r, true); renderM43Tab(r, true); renderM04Tab(r, true);
+        // Biểu mẫu không có dữ liệu: Mẫu 41/BTNN và Mẫu 43/BTNN cùng tập vụ việc (quy tắc 12); Mẫu số 04 theo hồ sơ hoàn trả (quy tắc 12b)
+        var trong = (a.n ? [] : ['Mẫu 41/BTNN', 'Mẫu 43/BTNN']).concat(b.n ? [] : ['Mẫu số 04 (TT 08/2019)']);
+        var noi = function (ds) { return ds.length > 1 ? ds.slice(0, -1).join(', ') + ' và ' + ds[ds.length - 1] : ds[0]; };
+        var kq = 'Đã cập nhật dữ liệu: Mẫu 41/BTNN ' + m41.n + ' vụ việc, Mẫu 43/BTNN ' + a.n + ' vụ việc thụ lý, Mẫu số 04 ' + b.n + ' hồ sơ hoàn trả.';
+        if (!trong.length) toast(kq + ' Báo cáo chưa được lưu.', 'success');
+        else if (trong.length === 3) toast('Không có dữ liệu phù hợp trong kỳ báo cáo cho ' + noi(trong) + '. Số liệu các cột lấy tự động bằng 0. Báo cáo chưa được lưu.', 'warning');
+        else toast(kq + ' Không có dữ liệu phù hợp trong kỳ báo cáo cho ' + noi(trong) + '. Báo cáo chưa được lưu.', 'warning');
     }
     // Popup Xác nhận dùng chung [POPUP-CFM-001]: nút `Hủy` và `Xác nhận`
     function xacNhanXoa(msg, ok) {
@@ -765,14 +882,6 @@
             + '<div class="bctt-mf"><button class="btn btn-secondary" data-close>Hủy</button><button class="btn btn-danger" id="bcttXoaOk">Xác nhận</button></div></div>';
         openOv('bcttOv2', html); bindClose('bcttOv2');
         $('bcttXoaOk').onclick = function () { closeOv('bcttOv2'); ok(); };
-    }
-    function m43ConfirmAuto(r, ed) {
-        if (!m43HasAutoValue(r.m43)) { m43ApplyAuto(r, ed); return; }
-        var html = '<div class="bctt-modal" style="width:560px;"><div class="bctt-mh"><div><div class="tt">Tổng hợp số liệu Mẫu 43/BTNN</div></div><button class="bctt-x" data-close>&times;</button></div>'
-            + '<div class="bctt-mb"><p>Hệ thống tổng hợp số liệu từ dữ liệu vụ việc của các cơ quan giải quyết bồi thường trên địa bàn, từ ' + esc(r.fromDate) + ' đến ' + esc(r.toDate) + '.</p><p style="margin-top:8px;">Số liệu đang nhập tại các cột tổng hợp sẽ bị ghi đè; Cột 23, 24 giữ nguyên. Bạn có muốn tiếp tục?</p></div>'
-            + '<div class="bctt-mf"><button class="btn btn-secondary" data-close>Hủy bỏ</button><button class="btn btn-primary" id="bcttM43AutoOk"><i class="fa-solid fa-calculator"></i> Tổng hợp</button></div></div>';
-        openOv('bcttOv2', html); bindClose('bcttOv2');
-        $('bcttM43AutoOk').onclick = function () { closeOv('bcttOv2'); m43ApplyAuto(r, ed); };
     }
     // ---------------- Tính toán Mẫu số 04 (TT 08/2019) ----------------
     function m04Row(row) {
@@ -1373,6 +1482,8 @@
         if (view.tab === 'hist') view.tab = 'm42';
         var acts = '<button class="btn btn-secondary" id="bcttBack2"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>'
             + '<button class="btn btn-secondary" id="bcttPreview"><i class="fa-solid fa-file-pdf"></i> Xem trước PDF</button>';
+        // 05/11/2026 (nhanhl2): nút Cập nhật dữ liệu cho Mẫu 41/BTNN, Mẫu 43/BTNN, Mẫu số 04 (thay nút Tổng hợp của Tab Mẫu 43/BTNN)
+        if (ed && !isBtpReport(r)) acts += '<button class="btn btn-warning" id="bcttDataSync" title="Lấy dữ liệu Mẫu 41/BTNN, Mẫu 43/BTNN, Mẫu số 04 (TT 08/2019) từ hồ sơ trên hệ thống"><i class="fa-solid fa-rotate"></i> Cập nhật dữ liệu</button>';
         if (ed && isBtpReport(r)) acts += '<button class="btn btn-warning" id="bcttSrcSync" title="Tổng hợp lại số liệu Mẫu 41/BTNN, Mẫu 43/BTNN, Mẫu số 04 từ báo cáo các đơn vị đã gửi"><i class="fa-solid fa-rotate"></i> Cập nhật số liệu từ các đơn vị</button>';
         if (ed) acts += '<button class="btn btn-primary" id="bcttSave"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>' + (isBtpReport(r) ? '' : '<button class="btn btn-success" id="bcttSubmit"><i class="fa-solid fa-paper-plane"></i> Gửi phê duyệt</button>');
         if (coPhanCongSo(r)) acts += '<button class="btn btn-primary" id="bcttPC"><i class="fa-solid fa-diagram-project"></i> Phân công</button>';
@@ -1389,6 +1500,7 @@
         $('bcttBack').onclick = $('bcttBack2').onclick = function () { var b = detailBack; detailBack = null; (b || showList)(); };
         if ($('bcttSrcUnits')) $('bcttSrcUnits').onclick = function () { if (ed) collect(r); showBtp(r.year, r.period); };
         if ($('bcttSrcSync')) $('bcttSrcSync').onclick = function () { confirmSync(r); };
+        if ($('bcttDataSync')) $('bcttDataSync').onclick = function () { xacNhanCapNhatDuLieu(r); };
         if ($('bcttReturn')) $('bcttReturn').onclick = function () { openReturn(r); };
         $('bcttPreview').onclick = function () { if (ed) collect(r); openViewer(r, null, 'Xem trước bộ báo cáo (PDF)'); };
         if (ed) { $('bcttSave').onclick = function () { collect(r); hist(r, me().name, 'Lưu báo cáo'); save(); toast('Đã lưu báo cáo.'); showDetail(r.id); };
@@ -1430,11 +1542,11 @@
         };
     }
     // Màn chờ xử lý: phủ toàn trang, biểu tượng quay, đếm số đơn vị đã tổng hợp; chặn bấm chuột và bàn phím tới khi xong (mockup giả lập khoảng 2 giây)
-    function choXuLy(tieuDe, soDv, xong) {
+    function choXuLy(tieuDe, soDv, xong, mauDem, ghi) {
         var ov = document.createElement('div'), n = 0, tong = Math.max(1, soDv || 1);
         ov.className = 'bctt-cho'; ov.setAttribute('role', 'alertdialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-busy', 'true'); ov.setAttribute('aria-live', 'polite');
         ov.innerHTML = '<div class="bctt-cho-hop" tabindex="-1"><span class="bctt-cho-quay" aria-hidden="true"></span><div class="bctt-cho-tt">' + esc(tieuDe) + '</div>'
-            + '<div class="bctt-cho-dem">Đã tổng hợp <strong>0</strong>/' + tong + ' Sở Tư pháp...</div><div class="bctt-cho-thanh"><span></span></div><div class="bctt-cho-ghi">Vui lòng chờ, không thao tác trong lúc hệ thống tổng hợp.</div></div>';
+            + '<div class="bctt-cho-dem">' + esc(mauDem || 'Đã tổng hợp {n}/{t} Sở Tư pháp...').replace('{n}', '<strong>0</strong>').replace('{t}', tong) + '</div><div class="bctt-cho-thanh"><span></span></div><div class="bctt-cho-ghi">' + esc(ghi || 'Vui lòng chờ, không thao tác trong lúc hệ thống tổng hợp.') + '</div></div>';
         document.body.appendChild(ov);
         var chan = function (e) { e.preventDefault(); e.stopPropagation(); };
         document.addEventListener('keydown', chan, true);
@@ -1492,7 +1604,7 @@
             + '<div class="bctt-mb"><div class="bctt-loc-cs">'
             + '<div class="form-group" style="margin:0;"><label class="form-label" for="bcttCsNhom">Nhóm</label><select class="form-control" id="bcttCsNhom">' + GROUPS.map(function (q) { return '<option value="' + q.k + '"' + (q.k === g ? ' selected' : '') + '>' + q.k + '. ' + esc(q.name) + '</option>'; }).join('') + '</select></div>'
             + '<div class="form-group" style="margin:0;"><label class="form-label" for="bcttCsCot">Cột</label><select class="form-control" id="bcttCsCot" style="text-overflow:ellipsis;">' + opCot + '</select></div>'
-            + '<div class="form-group" style="margin:0;"><label class="form-label" for="bcttCsDv">Đơn vị báo cáo</label><select class="form-control" id="bcttCsDv"><option value="">Tất cả đơn vị</option>' + gui.map(function (x) { return '<option value="' + esc(x.id) + '">' + esc(x.unitName) + '</option>'; }).join('') + '</select></div></div>'
+            + '<div class="form-group" style="margin:0;"><label class="form-label" for="bcttCsDv">Đơn vị báo cáo</label><select class="form-control" id="bcttCsDv"><option value="">Tất cả</option>' + gui.map(function (x) { return '<option value="' + esc(x.id) + '">' + esc(x.unitName) + '</option>'; }).join('') + '</select></div></div>'
             + '<div id="bcttCsSo"></div>'
             + '<div class="table-container" style="max-height:46vh;overflow:auto;"><table class="custom-table" id="bcttCellDet"><thead><tr><th style="width:60px;">STT</th><th>Đơn vị báo cáo</th><th style="width:180px;text-align:right;">Số liệu</th></tr></thead><tbody></tbody></table></div></div>'
             + '<div class="bctt-mf"><button class="btn btn-secondary" data-close>Đóng</button></div></div>';
@@ -1579,7 +1691,7 @@
     }
     function renderM41Tab(r, ed) {
         var p = $('bcttP_m41');
-        p.innerHTML = '<div class="toolbar-row" style="justify-content:space-between;align-items:center;"><div class="formula-hint">Cơ quan lập danh mục: <strong>' + esc(r.unitName) + '</strong>. Danh mục vụ việc theo 06 nhóm lĩnh vực.</div>' + m41AllBtns('bcttM41') + '</div>'
+        p.innerHTML = '<div class="toolbar-row" style="justify-content:space-between;align-items:center;"><div class="formula-hint">Cơ quan lập danh mục: <strong>' + esc(r.unitName) + '</strong>. Danh mục vụ việc theo 06 nhóm lĩnh vực.' + (ed && !isBtpReport(r) ? ' Nút Cập nhật dữ liệu lấy danh mục vụ việc từ hồ sơ; Cột (4), (5), (6) do Cán bộ nhập.' : '') + '</div>' + m41AllBtns('bcttM41') + '</div>'
             + '<div class="table-container">' + m41TableHtml(r.m41, ed, { unitCol: isBtpReport(r), ctdv: isBtpReport(r) ? r : null }) + '</div>';
         p.oninput = function (e) { if (e.target.classList && e.target.classList.contains('bctt-ag')) autoGrow(e.target); };
         autoGrowIn(p);
@@ -1690,9 +1802,9 @@
         var f = FORMS.find(function (x) { return x.id === form; }), ds = ctdvDs(r), gui = ds.filter(function (d) { return d.gui; }), mau = form !== 'm42';
         var loc = { dv: '', nhom: mau ? key : '', ct: mau ? '' : key }, trang = { page: 1, size: 10 };
         var loai = mau
-            ? '<div class="form-group" style="margin:0;width:420px;max-width:100%;"><label class="form-label" for="bcttM42sNhom">Nhóm</label><select class="form-control" id="bcttM42sNhom"><option value="">Tất cả nhóm</option>'
+            ? '<div class="form-group" style="margin:0;width:420px;max-width:100%;"><label class="form-label" for="bcttM42sNhom">Nhóm</label><select class="form-control" id="bcttM42sNhom"><option value="">Tất cả</option>'
                 + GROUPS.map(function (g) { return '<option value="' + g.k + '"' + (g.k === key ? ' selected' : '') + '>' + g.k + '. ' + esc(g.name) + '</option>'; }).join('') + '</select></div>'
-            : '<div class="form-group" style="margin:0;width:520px;max-width:100%;"><label class="form-label" for="bcttM42sCT">Chỉ tiêu</label><select class="form-control" id="bcttM42sCT" style="text-overflow:ellipsis;"><option value="">Tất cả chỉ tiêu</option>'
+            : '<div class="form-group" style="margin:0;width:520px;max-width:100%;"><label class="form-label" for="bcttM42sCT">Chỉ tiêu</label><select class="form-control" id="bcttM42sCT" style="text-overflow:ellipsis;"><option value="">Tất cả</option>'
                 // Ô chọn của trình duyệt kéo danh sách rộng bằng tùy chọn dài nhất (chỉ tiêu I.2 quản lý chuyên ngành hơn 400 ký tự) làm danh sách tràn màn hình:
                 // rút gọn chữ tùy chọn còn 90 ký tự, chữ đầy đủ ở title và ở cột Chỉ tiêu của bảng (04/11/2026)
                 + M42_ITEMS.map(function (it) { var t = m42ChiTieu(it, r.m42), n = t.length > 90 ? t.slice(0, 88).replace(/[\s,;.]+$/, '') + '…' : t; return '<option value="' + it.k + '"' + (it.k === key ? ' selected' : '') + ' title="' + esc(t) + '">' + esc(n) + '</option>'; }).join('') + '</select></div>';
@@ -1703,7 +1815,7 @@
             + '<div><label>Đơn vị đã báo cáo</label><strong>' + gui.length + ' đơn vị</strong></div>'
             + '<div><label>Đơn vị chưa báo cáo</label><strong>' + (ds.length - gui.length) + ' đơn vị</strong></div></div>'
             + '<div class="m42s-loc"><div class="form-group" style="margin:0;width:160px;"><label class="form-label" for="bcttM42sNam">Năm</label><select class="form-control" id="bcttM42sNam" disabled title="Năm của báo cáo, không chọn lại được"><option>' + r.year + '</option></select></div>'
-            + '<div class="form-group" style="margin:0;width:420px;max-width:100%;"><label class="form-label" for="bcttM42sDv">Đơn vị báo cáo</label><select class="form-control" id="bcttM42sDv"><option value="">Tất cả đơn vị</option>'
+            + '<div class="form-group" style="margin:0;width:420px;max-width:100%;"><label class="form-label" for="bcttM42sDv">Đơn vị báo cáo</label><select class="form-control" id="bcttM42sDv"><option value="">Tất cả</option>'
             + gui.map(function (d) { return '<option value="' + esc(d.ma) + '">' + esc(d.ten) + '</option>'; }).join('') + '</select></div>' + loai + '</div>'
             + '<div id="bcttM42sBang"></div></div>'
             + '<div class="bctt-mf"><button class="btn btn-secondary" data-close><i class="fa-solid fa-xmark"></i> Đóng</button></div></div>';
@@ -1857,14 +1969,13 @@
     }
     function renderM43Tab(r, ed) {
         var p = $('bcttP_m43');
-        // Nút Tổng hợp: báo cáo của Sở Tư pháp ở chế độ nhập liệu (cùng điều kiện sửa ô số liệu)
+        // Câu nhắc nút Cập nhật dữ liệu (thanh thao tác): báo cáo của Sở Tư pháp ở chế độ nhập liệu
         var auto = !!ed && !isBtpReport(r);
-        p.innerHTML = '<div class="toolbar-row" style="justify-content:space-between;"><div class="formula-hint" style="flex:1;min-width:0;">Số liệu tính từ ' + r.fromDate + ' đến ' + r.toDate + '. Ô tổng tự tính: Cột 2 = Cột 3+4+5+6+7+8+9+10; Cột 11 = Cột 12+13+14+15; Cột 17 = Cột 18+19+20+21. Cột 16, 26, 27 đơn vị nghìn đồng.' + (auto ? ' Nút Tổng hợp tự điền số liệu từ dữ liệu vụ việc, trừ Cột 23, 24.' : '') + '</div>'
-            + (isBtpReport(r) ? detToggle('m43') : '') + (auto ? '<button type="button" class="btn btn-primary btn-sm" id="bcttM43Auto" title="Tổng hợp số liệu từ dữ liệu vụ việc"><i class="fa-solid fa-calculator"></i> Tổng hợp</button>' : '') + '</div>'
+        p.innerHTML = '<div class="toolbar-row" style="justify-content:space-between;"><div class="formula-hint" style="flex:1;min-width:0;">Số liệu tính từ ' + r.fromDate + ' đến ' + r.toDate + '. Ô tổng tự tính: Cột 2 = Cột 3+4+5+6+7+8+9+10; Cột 11 = Cột 12+13+14+15; Cột 17 = Cột 18+19+20+21. Cột 16, 26, 27 đơn vị nghìn đồng.' + (auto ? ' Nút Cập nhật dữ liệu tự điền số liệu từ dữ liệu vụ việc, trừ Cột 23, 24.' : '') + '</div>'
+            + (isBtpReport(r) ? detToggle('m43') : '') + '</div>'
             + '<div class="table-container">' + m43TableHtml(r.m43, isBtpReport(r) && btpDet.m43 ? 'agg' : (ed ? 'edit' : 'view'), null, isBtpReport(r) ? r : null) + '</div>';
         cuonNoi(p.querySelector('.table-container'));
         if (isBtpReport(r)) bindBtpTab(r, 'm43', p, function () { renderM43Tab(r, ed); });
-        if (auto) $('bcttM43Auto').onclick = function () { m43ConfirmAuto(r, ed); };
         if (ed) p.oninput = function (e) {
             var i = e.target.closest('input[data-c]'); if (!i) return;
             r.m43[i.getAttribute('data-g')][i.getAttribute('data-c')] = num(i.value);
@@ -1925,7 +2036,7 @@
     }
     function renderM04Tab(r, ed) {
         var p = $('bcttP_m04');
-        p.innerHTML = '<div class="toolbar-row" style="justify-content:space-between;"><div class="formula-hint">Số liệu tính từ ' + r.fromDate + ' đến ' + r.toDate + '. Ô tổng tự tính: Cột 3 = Cột 4 + 6; Cột 12 = Cột 13 + 14. Cột 2, 5, 10, 12, 13, 14, 15 đơn vị nghìn đồng.</div>' + (isBtpReport(r) ? detToggle('m04') : '') + '</div>'
+        p.innerHTML = '<div class="toolbar-row" style="justify-content:space-between;"><div class="formula-hint">Số liệu tính từ ' + r.fromDate + ' đến ' + r.toDate + '. Ô tổng tự tính: Cột 3 = Cột 4 + 6; Cột 12 = Cột 13 + 14. Cột 2, 5, 10, 12, 13, 14, 15 đơn vị nghìn đồng.' + (ed && !isBtpReport(r) ? ' Nút Cập nhật dữ liệu tự điền số liệu từ hồ sơ hoàn trả, trừ Cột 7, 8.' : '') + '</div>' + (isBtpReport(r) ? detToggle('m04') : '') + '</div>'
             + '<div class="table-container">' + m04TableHtml(r.m04, isBtpReport(r) && btpDet.m04 ? 'agg' : (ed ? 'edit' : 'view'), null, isBtpReport(r) ? r : null) + '</div>';
         cuonNoi(p.querySelector('.table-container'));
         if (isBtpReport(r)) bindBtpTab(r, 'm04', p, function () { renderM04Tab(r, ed); });

@@ -237,6 +237,9 @@ const QDTU_CASH = 'Nhận tiền mặt';
 const QDTU_TRANSFER = 'Nhận qua chuyển khoản';
 const QDTU_MAX_FILE = 50 * 1024 * 1024;
 const QDTU_DEFAULT_RATE = 75;
+// Mức tạm ứng tối thiểu 75% giá trị thiệt hại (khoản 2 Điều 44 Luật TNBTCNN sửa đổi theo Luật 15/2026/QH16), tối đa 100% - MSG-ERR-BTNN-KP-014
+const QDTU_MIN_RATE = 75, QDTU_MAX_RATE = 100;
+const QDTU_MSG_RATE = 'Tỷ lệ tạm ứng phải từ 75% đến 100% giá trị thiệt hại về tinh thần và thiệt hại khác có thể tính được ngay.';
 const QDTU_CAN_CU_DEFAULT = [
     'Căn cứ Điều 44 Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14 đã được sửa đổi, bổ sung bởi Luật số 81/2025/QH15 và Luật số 15/2026/QH16;',
     'Căn cứ…………………………….(4)…………………………………….;',
@@ -532,7 +535,7 @@ function qdtuEnsurePage() {
                     <div class="qdtu-grid">
                         ${money('qdtuAmtTinhThan', 'Thiệt hại về tinh thần (đồng)', false)}
                         ${money('qdtuAmtKhac', 'Thiệt hại khác có thể tính được ngay mà không cần xác minh (đồng)', false)}
-                        ${qdtuFld('qdtuRate', 'Tỷ lệ tạm ứng trên tổng số tiền thiệt hại (%)', true, `<input type="number" class="form-control" id="qdtuRate" min="0" max="100" step="0.01" style="text-align:right;" oninput="qdtuMark('qdtuRate', false); qdtuRecalc('qdtuRate')" onchange="if (this.value !== '') { this.value = Math.round(parseFloat(this.value) * 100) / 100; qdtuRecalc('qdtuRate'); }">`)}
+                        ${qdtuFld('qdtuRate', 'Tỷ lệ tạm ứng trên tổng số tiền thiệt hại (%)', true, `<input type="number" class="form-control" id="qdtuRate" min="75" max="100" step="0.01" style="text-align:right;" oninput="qdtuMark('qdtuRate', false); qdtuRecalc('qdtuRate')" onchange="if (this.value !== '') { this.value = Math.round(parseFloat(this.value) * 100) / 100; qdtuRecalc('qdtuRate'); }">`)}
                         <div class="form-group"><span class="form-label">Số tiền tạm ứng kinh phí (đồng)<span class="required">*</span></span>
                             <input type="text" class="form-control" id="qdtuAmount" maxlength="20" style="text-align:right; font-weight:700;" placeholder="0" oninput="formatNumberInput(this); qdtuMark('qdtuAmount', false); qdtuRecalc('qdtuAmount')">
                             ${qdtuErrDiv('qdtuAmount')}
@@ -688,7 +691,7 @@ function qdtuLoadForm(f) {
 }
 // Số tiền tạm ứng = (Thiệt hại về tinh thần + Thiệt hại khác) x Tỷ lệ % / 100, làm tròn đến đồng.
 // Sửa Số tiền tạm ứng: Tỷ lệ % = Số tiền tạm ứng / (Thiệt hại về tinh thần + Thiệt hại khác) x 100, làm tròn 02 chữ số thập phân (bỏ số 0 thừa);
-// tổng 02 khoản = 0 thì giữ nguyên Tỷ lệ %. Không kiểm tra mức tạm ứng tối thiểu.
+// tổng 02 khoản = 0 thì giữ nguyên Tỷ lệ %. Tỷ lệ phải từ 75% đến 100%, kiểm tra khi bấm Tiếp tục (qdtuContinue).
 function qdtuRecalc(src) {
     const tt = qdtuNum(qdtuEl('qdtuAmtTinhThan').value), kh = qdtuNum(qdtuEl('qdtuAmtKhac').value);
     const total = tt + kh;
@@ -740,15 +743,35 @@ function qdtuContinue() {
     if (!qdtuState.claimCode) { qdtuEl('qdtuClaimInputErr').innerText = 'Đây là trường bắt buộc'; qdtuMark('qdtuClaimInput', true); qdtuEl('qdtuClaimInput').focus(); return; }
     const cash = qdtuEl('qdtuPayMethod').value === QDTU_CASH;
     const req = ['qdtuNycName', 'qdtuNycIdNo', 'qdtuNycAddress', 'qdtuRate', 'qdtuAmount', 'qdtuRecName', 'qdtuRecIdNo', 'qdtuRecAddress'].concat(cash ? ['qdtuCashPlace'] : ['qdtuAccHolder', 'qdtuAccount', 'qdtuBank']);
+    const rateErr = qdtuEl('qdtuRateErr');
+    if (rateErr) rateErr.innerText = 'Đây là trường bắt buộc';
     const bad = req.filter(id => !String(qdtuEl(id).value || '').trim());
     req.forEach(id => qdtuMark(id, bad.includes(id)));
     if (bad.length) { qdtuEl(bad[0]).focus(); qdtuEl(bad[0]).scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+    // Mức tạm ứng: Tỷ lệ từ 75% đến 100% (MSG-ERR-BTNN-KP-014)
+    const rate = parseFloat(qdtuEl('qdtuRate').value);
+    if (isNaN(rate) || rate < QDTU_MIN_RATE || rate > QDTU_MAX_RATE) {
+        if (rateErr) rateErr.innerText = QDTU_MSG_RATE;
+        qdtuMark('qdtuRate', true); qdtuEl('qdtuRate').focus(); qdtuEl('qdtuRate').scrollIntoView({ block: 'center', behavior: 'smooth' }); return;
+    }
     // Cập nhật QĐ tạm ứng Bị trả lại: chặn khi vụ việc đã chuyển khỏi trạng thái QDTU_ELIGIBLE
     if (qdtuState.id && !qdtuClaimStillEligible(qdtuState.claimCode)) { showToast(QDTU_MSG_NOT_ELIGIBLE, 'error'); return; }
     // Chặn trùng QĐ tạm ứng của vụ việc (Chờ duyệt / Chờ chi trả / Hoàn thành) - MSG-ERR-BTNN-KP-012
     const dup = kpcdQdtuDup(qdtuState.claimCode, qdtuState.id);
     if (dup) { showToast(`Vụ việc ${kpcdVv(dup.ycbtCode) || dup.ycbtCode} đã có Quyết định tạm ứng kinh phí ${dup.code} ở trạng thái ${kpNormStatus(dup.status)}. Không thể tạo Quyết định tạm ứng mới.`, 'error'); return; }
+    // Khóa tạm ứng khi Quyết định giải quyết bồi thường đang trình ký - MSG-ERR-BTNN-KP-015
+    if (qdtuQdSigning(qdtuState.claimCode)) { showToast(qdtuMsgQdSigning(qdtuState.claimCode), 'error'); return; }
     qdtuOpenSign(qdtuFormData());
+}
+// Quyết định giải quyết bồi thường của vụ việc đang trình ký (Chờ duyệt, Loại trình Quyết định GQBT) - kho 'btnn_qd_gqbt_v2' của màn Quyết định GQBT
+function qdtuQdSigning(claimCode) {
+    let list = null;
+    try { list = JSON.parse(localStorage.getItem('btnn_qd_gqbt_v2') || 'null'); } catch (e) { list = null; }
+    if (list && !Array.isArray(list)) list = Object.values(list);
+    return Array.isArray(list) ? list.find(d => d && d.claimCode === claimCode && d.status === 'Chờ duyệt' && d.wfKind === 'Quyết định GQBT') || null : null;
+}
+function qdtuMsgQdSigning(claimCode) {
+    return `Vụ việc ${qdtuVv(claimCode) || claimCode} đang trình ký Quyết định giải quyết bồi thường. Không thể tạo, trình hoặc ký duyệt Quyết định tạm ứng kinh phí cho đến khi Quyết định giải quyết bồi thường được ban hành hoặc bị trả lại.`;
 }
 
 // ---------------- MH Tìm kiếm nâng cao vụ việc (như MH02a Quyết định GQBT) ----------------
@@ -1376,6 +1399,8 @@ function qdtuLdOpen(id, mode) {
     const W = qdtuW();
     const a = item.qdtuApproval;
     const approve = mode !== 'reject';
+    // Khóa tạm ứng khi Quyết định giải quyết bồi thường đang trình ký: không Ký duyệt (Từ chối vẫn cho phép) - MSG-ERR-BTNN-KP-015
+    if (approve && qdtuQdSigning(item.ycbtCode)) { showToast(qdtuMsgQdSigning(item.ycbtCode), 'error'); return; }
     const last = qdtuIsLast(a);
     const nextUnitId = (a.path || [])[a.level + 1];
     // Lãnh đạo các cấp do cán bộ chọn khi trình: không chọn Lãnh đạo cấp tiếp theo tại màn Ký duyệt

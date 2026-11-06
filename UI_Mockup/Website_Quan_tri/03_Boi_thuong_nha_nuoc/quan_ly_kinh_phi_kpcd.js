@@ -50,7 +50,8 @@ function kpcdNbth(d) { const c = kpcdClaim(d.claimCode); return (c && (c.nbth ||
 function kpcdNycName(d) { const c = kpcdClaim(d.claimCode); return d.nycName || (c && (c.nyc || c.nycName)) || ''; }
 // Chỉ Quyết định "Đã ban hành" VÀ hồ sơ GQBT "Chờ chi trả" (áp dụng cho ô tìm nhanh và Tìm kiếm nâng cao)
 function kpcdEligibleDecs() {
-    return kpcdAllDecs().filter(d => d.status === KPCD_DEC_ISSUED && kpcdClaimStatus(d) === KPCD_CLAIM_WAIT && !/^PHDD-/i.test(d.claimCode));
+    // Quyết định không phát sinh chi trả (Số tiền phải chi trả bằng 0): không tạo Thông báo chi trả
+    return kpcdAllDecs().filter(d => d.status === KPCD_DEC_ISSUED && kpcdClaimStatus(d) === KPCD_CLAIM_WAIT && !/^PHDD-/i.test(d.claimCode) && !(typeof kpNoPayHas === 'function' && kpNoPayHas(d.id)));
 }
 function kpcdFindDec(val) {
     const v = String(val || '').trim().toLowerCase();

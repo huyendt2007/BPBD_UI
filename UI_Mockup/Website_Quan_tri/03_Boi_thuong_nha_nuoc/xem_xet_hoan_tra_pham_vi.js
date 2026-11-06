@@ -280,7 +280,7 @@
         const units = new Set();
         dossiersList.forEach(d => { const sc = scopeOf(d); if (sc.visible) sc.officers.forEach(o => units.add(o.unit)); });
         const curVal = sel.value;
-        sel.innerHTML = '<option value="">Tất cả đơn vị</option>' + Array.from(units).sort((a, b) => a.localeCompare(b, 'vi')).map(u => '<option value="' + u + '">' + u + '</option>').join('');
+        sel.innerHTML = '<option value="">Tất cả</option>' + Array.from(units).sort((a, b) => a.localeCompare(b, 'vi')).map(u => '<option value="' + u + '">' + u + '</option>').join('');
         sel.value = units.has(curVal) ? curVal : '';
     }
 

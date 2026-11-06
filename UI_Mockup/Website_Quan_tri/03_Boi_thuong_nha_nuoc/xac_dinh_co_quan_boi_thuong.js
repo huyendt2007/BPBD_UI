@@ -1234,7 +1234,7 @@ function switchXdTab(tab) {
         const states = isLeaderMe()
             ? Array.from(new Set(requestList.filter(r => xdInTab(xdTab, r)).map(r => r.status)))
             : (xdTab === 'pending' ? XD_PENDING_STATES : XD_DONE_STATES);
-        sel.innerHTML = '<option value="">Tất cả trạng thái</option>' + states.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join('');
+        sel.innerHTML = '<option value="">Tất cả</option>' + states.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join('');
     }
     applyFilters();
 }
@@ -1331,7 +1331,7 @@ function renderUnitFilterOptions() {
         if (!type) return;
         (groups[type] = groups[type] || []).push(u);
     });
-    sel.innerHTML = '<option value="">Tất cả cơ quan</option>' + ['Bộ Tư pháp', 'Sở Tư pháp'].filter(t => groups[t]).map(t =>
+    sel.innerHTML = '<option value="">Tất cả</option>' + ['Bộ Tư pháp', 'Sở Tư pháp'].filter(t => groups[t]).map(t =>
         `<optgroup label="${escapeAttr(t)}">${groups[t].length > 1 ? `<option value="type:${escapeAttr(t)}">Tất cả ${escapeHtml(t)}</option>` : ''}${groups[t].map(u => `<option value="${escapeAttr(u)}">${escapeHtml(BTNN_WF.unitName(u))}</option>`).join('')}</optgroup>`
     ).join('');
 }

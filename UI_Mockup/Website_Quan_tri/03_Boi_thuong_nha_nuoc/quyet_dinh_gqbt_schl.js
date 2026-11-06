@@ -2,10 +2,11 @@
  * [schl] Hiệu lực của Quyết định sửa chữa, bổ sung (quyet_dinh_giai_quyet_boi_thuong.html), nạp sau quyet_dinh_gqbt_scbs.js
  * - Quyết định sửa chữa, bổ sung được ban hành (Lãnh đạo cấp cuối Ký duyệt / Ký ngoài): Quyết định chuyển "Đã ban hành" (d.hieuLuc = ''),
  *   lưu d.scPending = { n, at, prevHieuLuc, evt }; tab Chờ xử lý; thao tác "Cập nhật hiệu lực QĐ" được phép (kể cả khi đã chi trả).
- * - Liên thông kinh phí (Bảng A, Bảng B) KHÔNG chạy khi ban hành: sự kiện 'btnn_kpqd_events_v1' giữ trong d.scPending.evt.
+ * - Liên thông kinh phí (Bảng A, chỉ bản ghi Chi trả; Tạm ứng giữ nguyên) KHÔNG chạy khi ban hành: sự kiện 'btnn_kpqd_events_v1' giữ trong d.scPending.evt.
  * - Cập nhật hiệu lực:
- *   + Có hiệu lực: ghi sự kiện liên thông kinh phí (Quyết định chưa có bản ghi Chi trả tiền bồi thường: advOnly, chỉ xét Bảng B;
- *     bản ghi Chi trả tạo theo số tiền mới như quy tắc Có hiệu lực); lần sửa chữa ghi "Có hiệu lực".
+ *   + Có hiệu lực: ghi sự kiện liên thông kinh phí (Quyết định chưa từng Có hiệu lực, chưa có bản ghi Chi trả tiền bồi thường: advOnly,
+ *     bản ghi Chi trả tạo theo số tiền mới như quy tắc Có hiệu lực rồi điều chỉnh theo Số tiền phải chi trả; Quyết định không phát sinh chi trả
+ *     mà sửa chữa tăng tiền: tạo bản ghi chi trả thêm); lần sửa chữa ghi "Có hiệu lực".
  *   + Không có hiệu lực: bỏ lần sửa chữa, bổ sung - Quyết định quay về nội dung và trạng thái hiệu lực trước sửa chữa, kinh phí không đổi;
  *     lần sửa chữa ghi "Không có hiệu lực" (lưu Lý do, Tài liệu đính kèm), không tính vào nhãn "Theo QĐ sửa chữa, bổ sung lần n".
  * - Trong thời gian chờ cập nhật hiệu lực: phân hệ Kinh phí chặn Trình thông báo chi trả / Cập nhật chi trả của Quyết định (quan_ly_kinh_phi_hlqd.js đọc d.scPending).
@@ -90,7 +91,9 @@ function schlNo(a) { return (a && (a.decNo || (a.signDoc || {}).docNo)) || ''; }
             if (!schlPending(d)) return origSave.apply(this, arguments);
             var p = d.scPending, a = schlAmend(d) || {}, me = W.getCurrentUserId(), at = W.nowText();
             if (to === SCHL_ON) {
-                var hadPay = !!(qdhlPayRec(d) || qdhlQueued(d));
+                // [scbs] Dữ liệu cũ: bản ghi Loại "Cấp kinh phí bồi thường" cũng là bản ghi Chi trả của Quyết định (Bảng A)
+                var legacy = (qdhlRead('proposalsList', []) || []).some(function (x) { return x && x.type === 'Cấp kinh phí bồi thường' && (x.decId === d.id || (!x.decId && x.ycbtCode === d.claimCode)); });
+                var hadPay = !!(qdhlPayRec(d) || qdhlQueued(d) || legacy);
                 origSave.apply(this, arguments);
                 d = getDec(id);
                 a.hieuLuc = SCHL_ON; a.hlAt = at;

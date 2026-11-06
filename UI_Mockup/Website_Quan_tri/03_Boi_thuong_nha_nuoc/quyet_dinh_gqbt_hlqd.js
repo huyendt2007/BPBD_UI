@@ -50,6 +50,9 @@ function qdhlReturned(d) { var p = qdhlPayRec(d); return !!p && QDHL_RETURNED.in
 function qdhlPaid(d) {
     var p = qdhlPayRec(d);
     if (p) return p.status === 'Hoàn thành' || QDHL_RETURNED.indexOf(p.status) >= 0 || Number(p.payoutAmountReal) > 0;
+    // Quyết định không phát sinh chi trả (kho 'btnn_kp_qd_khong_chi_v1' của màn Kinh phí): tạm ứng đã Hoàn thành, hồ sơ đã đóng -> tính là đã hoàn thành chi trả
+    var np = qdhlRead('btnn_kp_qd_khong_chi_v1', []);
+    if (d && Array.isArray(np) && np.some(function (x) { return x && x.decId === d.id && x.done; })) return true;
     return !!(d && d.qdhlPaidSeed);
 }
 function qdhlCan(d) {

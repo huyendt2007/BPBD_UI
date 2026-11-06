@@ -266,10 +266,21 @@ function kptbImportAndSeed() {
     const before = proposalsList.length;
     kptbSeed();
     let changed = proposalsList.length !== before;
+    // Quyết định GQBT đã ban hành: bản ghi Tạm ứng kinh phí chưa chi -> Đã hủy (trước khi tính Số tiền chi trả)
+    if (typeof kpAdvCancelApply === 'function' && kpAdvCancelApply()) changed = true;
     const q = kptbReadJson(KPTB_QUEUE_KEY, []);
     (Array.isArray(q) ? q : []).forEach(dec => {
         if (!dec || !dec.decId || proposalsList.some(p => p.decId === dec.decId)) return;
-        proposalsList.unshift(kptbBuildRecord(dec));
+        // Số tiền chi trả = Tổng số tiền bồi thường − Số tiền đã tạm ứng (số đã chi tạm ứng thực tế, KH chốt 05/11/2026);
+        // bằng 0 -> không tạo bản ghi, hồ sơ GQBT Hoàn thành (Quyết định không phát sinh chi trả)
+        let net = kptbNet(dec);
+        if (typeof kpAdvApproved === 'function') {
+            const adv = kpAdvApproved(dec.claimCode), total = Number(dec.total) || 0;
+            if (adv.recs.length) net = Math.max(0, total - adv.sum);
+            if (!kpNoPayHas(dec.decId) && total > 0 && net === 0) { kpNoPayAdd(dec, adv.sum); kpNoPayTryComplete(dec.claimCode, kptbToday()); changed = true; return; }
+        }
+        if (typeof kpNoPayHas === 'function' && kpNoPayHas(dec.decId)) return;
+        proposalsList.unshift(kptbBuildRecord(Object.assign({}, dec, { net, advance: Math.max(0, (Number(dec.total) || 0) - net) })));
         changed = true;
     });
     if (changed) saveProposalsToLocal();

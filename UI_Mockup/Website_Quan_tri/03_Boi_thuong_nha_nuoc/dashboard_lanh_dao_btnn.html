@@ -29,7 +29,8 @@
         .dash-list li { display: flex; gap: 8px; align-items: baseline; padding: 7px 0; border-top: 1px dashed var(--border-color); font-size: 12.5px; color: #334155; }
         .dash-list li .c { font-weight: 700; color: var(--primary-light); white-space: nowrap; }
         .dash-list li .d { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .dash-empty { padding: 10px 18px 4px; color: var(--text-muted); font-size: 12.5px; font-style: italic; }
+        /* flex: 1 để khối không có công việc cũng đẩy phần cuối (Mở danh sách Chờ xử lý) xuống đáy, thẳng hàng với khối bên cạnh trong cùng hàng */
+        .dash-empty { flex: 1; padding: 10px 18px 4px; color: var(--text-muted); font-size: 12.5px; font-style: italic; }
         .dash-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 18px 14px; margin-top: 6px; border-top: 1px solid var(--border-color); font-size: 12.5px; font-weight: 600; }
         .dash-foot .more { color: var(--text-muted); }
         .dash-foot .open { color: var(--primary-light); white-space: nowrap; }
@@ -47,8 +48,9 @@
         <div class="dash-grid" id="dashGrid"></div>
     </main>
 
-    <script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261105tn1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
+    <script src="bctt_chuong.js?v=20261105nv"></script>
     <script>
         const WF = BTNN_WF;
         const WT = WF.WORK_TYPES;
@@ -59,7 +61,7 @@
             { code: 'HT-2026-014', status: 'Chờ duyệt QĐ thành lập', claimCode: 'BT-2026-008' },
             { code: 'HT-2026-021', status: 'Chờ duyệt QĐ hoàn trả', claimCode: 'BT-2026-001' }
         ];
-        // 08 khối Chờ xử lý (Kinh phí: 02 khối theo 02 menu con); click khối mở tab Chờ xử lý của phân hệ tương ứng ở vai trò Lãnh đạo
+        // 09 khối Chờ xử lý (Kinh phí: 02 khối theo 02 menu con); click khối mở tab Chờ xử lý của phân hệ tương ứng ở vai trò Lãnh đạo
         const BLOCKS = [
             { key: 'pc', title: 'Chờ phân công', module: 'Tiếp nhận hồ sơ', icon: 'fa-diagram-project', color: '#0369a1', bg: '#e0f2fe',
               leaf: 'tiep_nhan_ycbt.html?v=3', url: 'tiep_nhan_ycbt.html?v=3&tab=pending' },
@@ -78,8 +80,28 @@
               leaf: 'xem_xet_trach_nhiem_hoan_tra.html', url: 'xem_xet_trach_nhiem_hoan_tra.html?role=lanh_dao&tab=pending' },
             // Hỏi đáp nghiệp vụ: màn mở mặc định tab Chờ xử lý
             { key: 'hd', title: 'Chờ xử lý Hỏi đáp nghiệp vụ', module: 'Hỏi đáp nghiệp vụ', icon: 'fa-circle-question', color: '#0f766e', bg: '#ccfbf1',
-              leaf: 'hoi_dap_nghiep_vu.html', url: 'hoi_dap_nghiep_vu.html' }
+              leaf: 'hoi_dap_nghiep_vu.html', url: 'hoi_dap_nghiep_vu.html' },
+            // Báo cáo công tác BTNN (05/11/2026, nhanhl2): Lãnh đạo Sở Tư pháp mở trang «Báo cáo công tác BTNN»,
+            // Lãnh đạo Bộ Tư pháp mở trang «Tổng hợp báo cáo Công tác BTNN» (trang, tên phân hệ tính theo người dùng trong bcttTrang)
+            { key: 'bctt', title: 'Chờ xử lý Báo cáo công tác BTNN', module: 'Báo cáo công tác BTNN', icon: 'fa-file-lines', color: '#4338ca', bg: '#e0e7ff',
+              leaf: 'bao_cao_cong_tac_btnn.html', url: 'bao_cao_cong_tac_btnn.html' }
         ];
+
+        // Báo cáo công tác BTNN: việc chờ của Lãnh đạo đang đăng nhập, cùng quy tắc chuông thông báo (bctt_chuong.js):
+        // Lãnh đạo Sở, Lãnh đạo Phòng (Sở) ký duyệt hoặc phân công báo cáo bị Bộ trả lại; Lãnh đạo Cục phân công báo cáo mới;
+        // Lãnh đạo Phòng (Bộ) phân công cán bộ; Lãnh đạo Phòng, Lãnh đạo Cục ký duyệt yêu cầu điều chỉnh.
+        const KY_BC = { thuc_te: 'Báo cáo năm số liệu thực tế', chinh_thuc: 'Số liệu thống kê năm chính thức' };
+        function bcttTrang() {
+            const V = window.BCTT_VIEC, vai = V ? V.vaiTro(WF.getCurrentUserId()) : { vt: '', vb: '' };
+            const PV = window.BTNN_PHAMVI, bo = !!vai.vb || (!vai.vt && PV && PV.level() === 'BTP');
+            return { vai, bo, url: bo ? V.BO[0] : V.SO[0], module: bo ? V.BO[1] : V.SO[1] };
+        }
+        function bcttItems() {
+            const V = window.BCTT_VIEC;
+            if (!V) return [];
+            const bo = bcttTrang().bo;
+            return V.cua(WF.getCurrentUserId()).map(x => row(`Năm ${x.r.year}`, `${x.nhan} - ${bo ? x.r.unitName : (KY_BC[x.r.period] || x.r.period)}`, '', x.ngan));
+        }
 
         // Hỏi đáp nghiệp vụ: câu hỏi chờ Lãnh đạo đang đăng nhập xử lý (cùng quy tắc isMyTask của hoi_dap_nghiep_vu.html)
         // LĐ Phòng (Sở) duyệt, LĐ Sở duyệt gửi Bộ, LĐ Cục phân công LĐ Phòng, LĐ Phòng (Bộ) phân công Chuyên viên
@@ -147,7 +169,8 @@
                 // Hoàn trả: hồ sơ chờ Lãnh đạo duyệt trình người dùng đang đăng nhập (chưa lưu người ký: Lãnh đạo cơ quan giải quyết bồi thường của vụ việc - caseLeaders);
                 // sắp theo mốc thời gian cập nhật gần nhất của hồ sơ (trình ký, ký duyệt/từ chối, quyết định, tạo)
                 ht: ((ht && ht.pendingApproval) || HT_FALLBACK).filter(x => { try { return WF.caseLeaders(x.claimCode, x.agency || '').includes(me); } catch (e) { return false; } }).map((x, i) => ({ x, i, t: Math.max(0, ...(x.times || []).map(timeOf)) })).sort((a, b) => (b.t - a.t) || (a.i - b.i)).map(o => o.x).map(x => row(x.code, x.status, x.maVuViec || vuViec(x.claimCode))),
-                hd: hdItems()
+                hd: hdItems(),
+                bctt: bcttItems()
             };
         }
 
@@ -165,7 +188,7 @@
                 return `<div class="dash-card" role="button" tabindex="0" style="--card-color:${b.color}; --card-bg:${b.bg};" onclick="openBlock(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openBlock(${i});}">
                     <div class="dash-card-top">
                         <div class="dash-icon"><i class="fa-solid ${b.icon}"></i></div>
-                        <div><div class="dash-title">${esc(b.title)}</div><div class="dash-module">${esc(b.module)}</div></div>
+                        <div><div class="dash-title">${esc(b.title)}</div><div class="dash-module">${esc(b.key === 'bctt' ? bcttTrang().module : b.module)}</div></div>
                         <div class="dash-count${n ? '' : ' zero'}">${n}</div>
                     </div>
                     ${rows ? `<ul class="dash-list">${rows}</ul>` : '<div class="dash-empty">Không có công việc chờ xử lý.</div>'}
@@ -177,9 +200,23 @@
 
         // Mở tab Chờ xử lý của phân hệ tại trang Quản trị (chọn đúng menu); chạy độc lập thì chuyển trang
         function openBlock(i) {
-            const b = BLOCKS[i];
-            if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
-                window.parent.openAdminModule(b.url, b.leaf);
+            let b = BLOCKS[i];
+            if (b.key === 'bctt') {
+                // Mở đúng trang của Sở hoặc của Bộ, với vai trò giả lập của trang đó khớp Lãnh đạo đang đăng nhập
+                const t = bcttTrang();
+                try {
+                    if (t.vai.vt) localStorage.setItem('bctt_role_v1', t.vai.vt);
+                    if (t.vai.vb) localStorage.setItem('bctt_role_v1_bo', t.vai.vb);
+                } catch (e) { /* bỏ qua */ }
+                b = Object.assign({}, b, { url: t.url, leaf: t.url });
+            }
+            if (window.parent && window.parent !== window) {
+                // Gọi thẳng hàm của trang chủ khi cùng nguồn (github.io, máy chủ web). Mở bằng tệp trên máy (file://) thì trình duyệt
+                // chặn truy cập trang chủ và ném lỗi, nên gửi lệnh admin:navigate qua postMessage (trang chủ có sẵn bộ nhận) - 05/11/2026
+                try {
+                    if (typeof window.parent.openAdminModule === 'function') { window.parent.openAdminModule(b.url, b.leaf); return; }
+                } catch (e) { /* khác nguồn: dùng postMessage */ }
+                window.parent.postMessage({ type: 'admin:navigate', url: b.url, activeUrl: b.leaf }, '*');
             } else {
                 location.href = b.url;
             }

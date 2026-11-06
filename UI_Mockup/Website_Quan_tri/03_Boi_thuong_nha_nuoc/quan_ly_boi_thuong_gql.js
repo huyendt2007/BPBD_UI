@@ -18,7 +18,7 @@ var GQL_MAX = 2000;
 var GQL_SUB = 'QĐ đã bị hủy';
 var GQL_ACTION = 'Giải quyết lại';
 var GQL_DVC_STEP = 'GIAI_QUYET_LAI';
-var GQL_SEED_VER = '20261104gql6';
+var GQL_SEED_VER = '20261106gql7';
 var GQL_SEED_KEY = 'btnn_gql_seed_v';
 var gqlClaim = null;
 
@@ -76,7 +76,101 @@ function gqlSnapCancelled(c) {
     return info;
 }
 
+// ---------- Phiếu trình của chức năng Quyết định GQBT (hồ sơ luồng dùng chung Mã vụ việc) và Trạng thái Giải quyết YCBT ----------
+// - Hủy QĐ, Sửa chữa, bổ sung QĐ: vụ việc giữ trạng thái trong suốt quá trình trình (Chờ duyệt / Bị trả lại / Rút yêu cầu) và khi Quyết định hủy, Quyết định sửa chữa ban hành
+//   (hồ sơ luồng "Hủy quyết định" / "Đã ban hành" là trạng thái của Quyết định, không phải Trạng thái vụ việc).
+// - Quyết định GQBT (chốt 05/11/2026): vụ việc giữ Chờ ban hành QĐ khi phiếu trình Chờ duyệt / Bị trả lại / rút yêu cầu; cấp cuối Ký duyệt (hoặc Ký ngoài) -> Chờ chi trả.
+// - Dữ liệu đã lưu bị kẹt Chờ duyệt / Bị trả lại theo các phiếu trình này: khôi phục trạng thái trước khi trình (thiếu dữ liệu: Chờ chi trả).
+var GQL_QD_KINDS = ['Quyết định GQBT', 'Hủy QĐ', 'Sửa chữa, bổ sung QĐ'];
+var GQL_KEEP_KINDS = ['Quyết định GQBT', 'Hủy QĐ', 'Sửa chữa, bổ sung QĐ'];
+var GQL_QD_RESULT = ['Đã ban hành', 'Hủy quyết định', 'Đã hủy'];
+var GQL_PENDING = ['Chờ duyệt', 'Bị trả lại'];
+function gqlQdKind(r) {
+    if (!r) return '';
+    var a = r.approval && r.approval.kind, b = r.returned && r.returned.kind;
+    if (r.status === 'Bị trả lại' && b && GQL_QD_KINDS.indexOf(b) >= 0) return b;
+    if (a && GQL_QD_KINDS.indexOf(a) >= 0) return a;
+    return b && GQL_QD_KINDS.indexOf(b) >= 0 ? b : '';
+}
+// Hồ sơ luồng đang có phiếu trình Hủy QĐ / Sửa chữa, bổ sung QĐ (Chờ duyệt hoặc Bị trả lại chưa trình lại / rút)
+function gqlKeepPending(r) { return !!r && GQL_PENDING.indexOf(r.status) >= 0 && GQL_KEEP_KINDS.indexOf(gqlQdKind(r)) >= 0; }
+function gqlRecOf(c) { try { var W = typeof gqW === 'function' ? gqW() : null; return W && c ? W.getRecord(c.code) : null; } catch (e) { return null; } }
+function gqlQdRestoreStatus(c, r, kind) {
+    if (kind === 'Quyết định GQBT' && r.approval && r.approval.done) return 'Chờ chi trả';
+    var l = [c.gqlQdPrev, r.approval && r.approval.prevStatus, r.returned && r.returned.prevStatus];
+    for (var i = 0; i < l.length; i++) { var p = l[i] ? canonicalClaimStatus(l[i]) : ''; if (GQL_SOURCE.indexOf(p) >= 0) return p; }
+    return kind === 'Quyết định GQBT' ? 'Chờ ban hành QĐ' : 'Chờ chi trả';
+}
+(function () {
+    var o = window.gqApplyRecord;
+    if (typeof o !== 'function') return;
+    window.gqApplyRecord = function (c, r, full) {
+        try {
+            var kind = gqlQdKind(r);
+            if (c && r && kind) {
+                var cur = canonicalClaimStatus(c.status), stuck = GQL_PENDING.indexOf(cur) >= 0, res;
+                if (GQL_PENDING.indexOf(r.status) >= 0 || GQL_QD_RESULT.indexOf(r.status) >= 0) {
+                    // Quyết định GQBT được cấp cuối Ký duyệt: vụ việc Chờ ban hành QĐ -> Chờ chi trả
+                    var issued = kind === 'Quyết định GQBT' && r.status === 'Đã ban hành' && r.approval && r.approval.done && cur === 'Chờ ban hành QĐ';
+                    if (!stuck && !issued) return false;
+                    res = o.call(this, c, Object.assign({}, r, { status: gqlQdRestoreStatus(c, r, kind), returned: null }), full);
+                    c.wfReturned = null; delete c.gqlQdPrev;
+                    return res;
+                }
+            }
+        } catch (e) { /* mockup */ }
+        return o.apply(this, arguments);
+    };
+})();
+// Ghi trạng thái vụ việc về hồ sơ luồng: không ghi đè phiếu trình Hủy QĐ / Sửa chữa, bổ sung QĐ đang Chờ duyệt / Bị trả lại (của chức năng Quyết định GQBT)
+function gqlKeepWrap(name) {
+    var o = window[name];
+    if (typeof o !== 'function') return;
+    window[name] = function () {
+        var W = typeof gqW === 'function' ? gqW() : null, keep = {};
+        try { (W ? W.loadRecords() || [] : []).forEach(function (r) { if (r && r.module === 'YCBT' && gqlKeepPending(r)) keep[r.code] = r.status; }); } catch (e) { /* mockup */ }
+        var res = o.apply(this, arguments);
+        try {
+            if (W && Object.keys(keep).length) {
+                var list = W.loadRecords() || [], ch = false;
+                list.forEach(function (r) { if (r && keep[r.code] && r.status !== keep[r.code]) { r.status = keep[r.code]; ch = true; } });
+                if (ch) W.saveRecords(list);
+            }
+        } catch (e) { /* mockup */ }
+        return res;
+    };
+}
+gqlKeepWrap('gqPushClaimStatuses');
+// Thao tác tiếp theo tại Giải quyết YCBT (VD Trình Đình chỉ giải quyết bồi thường): hồ sơ luồng đang ghi trạng thái Quyết định -> ghi lại Trạng thái vụ việc
+(function () {
+    var o = window.gqEnsureRecord;
+    if (typeof o !== 'function') return;
+    window.gqEnsureRecord = function (claim) {
+        try {
+            var W = typeof gqW === 'function' ? gqW() : null, rec = W && claim ? W.getRecord(claim.code) : null;
+            var st = claim ? canonicalClaimStatus(claim.status) : '';
+            if (rec && GQL_QD_RESULT.indexOf(rec.status) >= 0 && GQL_PENDING.indexOf(st) < 0 && GQ_CASE_STATUSES.indexOf(st) >= 0) W.ensureClaimRecord({ code: claim.code, status: st });
+        } catch (e) { /* mockup */ }
+        return o.apply(this, arguments);
+    };
+})();
+gqlKeepWrap('gqEnsureRecord');
+
 // ---------- Thao tác khác / thanh thao tác ----------
+// Đình chỉ giải quyết khi vụ việc Hoàn thành: chỉ khi có QĐ giải quyết bồi thường bị hủy (QĐ hủy đã ban hành) và chưa có QĐ khác (user chốt 06/11/2026); trạng thái khác giữ quy tắc cũ
+function gqlStopDoneOk(c, bs) { return bs !== 'Hoàn thành' || (gqlHasCancelled(c) && !gqlHasActiveDec(c)); }
+(function () {
+    var o = window.openDcgqModal;
+    if (typeof o !== 'function') return;
+    window.openDcgqModal = function (claimId) {
+        try {
+            var c = gqClaim(claimId), rec = c ? gqRecord(c) : null;
+            var isRet = !!(rec && rec.status === 'Bị trả lại' && rec.approval && typeof DCGQ_KIND !== 'undefined' && rec.approval.kind === DCGQ_KIND);
+            if (c && !isRet && !gqlStopDoneOk(c, gqBranchStatus(c))) { showToast('Trạng thái hồ sơ hiện tại không cho phép Đình chỉ giải quyết.', 'error'); return; }
+        } catch (e) { /* mockup */ }
+        return o.apply(this, arguments);
+    };
+})();
 (function () {
     var o = window.gqldActionDefs;
     if (typeof o !== 'function') return;
@@ -86,7 +180,7 @@ function gqlSnapCancelled(c) {
         try {
             var bs = typeof gqBranchStatus === 'function' ? gqBranchStatus(item) : canonicalClaimStatus(item.status);
             (d.more || []).forEach(function (m) {
-                if (m.key === 'stop' && typeof GQLD_STOP_SOURCE !== 'undefined') m.allowed = GQLD_STOP_SOURCE.indexOf(bs) >= 0;
+                if (m.key === 'stop' && typeof GQLD_STOP_SOURCE !== 'undefined') m.allowed = GQLD_STOP_SOURCE.indexOf(bs) >= 0 && gqlStopDoneOk(item, bs);
                 if (m.key === 'dgq' && typeof DGQ_SOURCE !== 'undefined') m.allowed = DGQ_SOURCE.indexOf(bs) >= 0;
             });
         } catch (e) { /* mockup */ }
@@ -107,14 +201,14 @@ function gqlSnapCancelled(c) {
         return r;
     };
 })();
-// Lưới: dòng phụ "QĐ đã bị hủy" dưới badge Trạng thái
+// Lưới: dòng phụ "QĐ đã bị hủy" dưới badge Trạng thái (vụ việc Đình chỉ giải quyết: không hiển thị)
 (function () {
     var o = window.gqApprovalSubLabel;
     if (typeof o !== 'function') return;
     window.gqApprovalSubLabel = function (claim) {
         var h = o.apply(this, arguments) || '';
         try {
-            if (claim && gqlHasCancelled(claim) && !gqlHasActiveDec(claim)) {
+            if (claim && gqlHasCancelled(claim) && !gqlHasActiveDec(claim) && gqlSt(claim) !== 'Đình chỉ giải quyết') {
                 var i = gqlCancelInfo(claim) || {};
                 h += '<span class="gq-sub gql-sub" style="color:#b91c1c !important;" title="Quyết định giải quyết bồi thường số ' + gqlE(i.decNo || '-') + ' đã bị hủy' + (i.cancelDecNo ? ' theo Quyết định số ' + gqlE(i.cancelDecNo) : '') + '">' + GQL_SUB + '</span>';
             }
@@ -462,14 +556,14 @@ var GQL_SEEDS = [
         th: [{ type: 2, calc: 'Thu nhập thực tế bị mất 06 tháng', val: 160000000, xmVal: 150000000, xmNote: 'Theo bảng lương' }], xm: 150000000,
         neg: [{ key: 'TN', label: 'Thu nhập thực tế bị mất/giảm sút', proposed: 160000000, verified: 150000000, agreed: 150000000, status: 'Thành công', reason: '' }], negDate: '20/07/2026'
     },
-    // Đã Giải quyết lại về Chờ ban hành QĐ (QĐ 64/QĐ-STP bị hủy theo 74/QĐ-STP); Tạm ứng KP-2026-564 đã chi 100.000.000 - thử QĐ mới nhỏ hơn số đã tạm ứng (Bảng B)
+    // Đã Giải quyết lại về Chờ ban hành QĐ (QĐ 64/QĐ-STP bị hủy theo 74/QĐ-STP); Tạm ứng KP-2026-564 đã chi 100.000.000; QĐ mới 120.000.000 lớn hơn số đã tạm ứng (không giả lập QĐ mới nhỏ hơn số đã tạm ứng - khách hàng chốt 06/11/2026)
     {
         id: 'GQL_S4', code: 'BT-2026-564', nyc: 'Trương Văn Bình', cardNo: '001082005564', status: 'Chờ chi trả', redo: 'Chờ ban hành QĐ', advanceNum: 100000000,
         decNo: '64/QĐ-STP', decDate: '10/08/2026', cancelDecNo: '74/QĐ-STP', cancelDecDate: '15/09/2026', decAmount: 150000000,
         cancelReason: 'Kết quả xác minh thiệt hại tài sản chưa chính xác, mức bồi thường tại Quyết định cao hơn thiệt hại thực tế.',
         redoReason: 'Lập lại Quyết định giải quyết bồi thường theo kết quả xác minh bổ sung',
-        th: [{ type: 1, calc: 'Tài sản bị xâm phạm', val: 150000000, xmVal: 80000000, xmNote: 'Theo kết quả xác minh bổ sung' }], xm: 80000000,
-        neg: [{ key: 'TS', label: 'Tài sản bị xâm phạm', proposed: 150000000, verified: 80000000, agreed: 80000000, status: 'Thành công', reason: '' }], negDate: '05/08/2026'
+        th: [{ type: 1, calc: 'Tài sản bị xâm phạm', val: 150000000, xmVal: 120000000, xmNote: 'Theo kết quả xác minh bổ sung' }], xm: 120000000,
+        neg: [{ key: 'TS', label: 'Tài sản bị xâm phạm', proposed: 150000000, verified: 120000000, agreed: 120000000, status: 'Thành công', reason: '' }], negDate: '05/08/2026'
     },
     // Chờ ban hành QĐ; dự thảo Quyết định GQBT QD-RT1 Bị trả lại tại phân hệ Quyết định GQBT (vụ việc giữ Chờ ban hành QĐ, không có QĐ còn hiệu lực khác)
     {
@@ -560,4 +654,33 @@ function gqlSeed() {
         }
     };
     if (document.readyState === 'complete') setTimeout(run, 0); else window.addEventListener('load', function () { setTimeout(run, 0); });
+})();
+
+// ---------- Vụ việc đang có phiếu trình Quyết định GQBT / Hủy QĐ / Sửa chữa, bổ sung QĐ (Chờ duyệt / Bị trả lại) tại chức năng Quyết định GQBT ----------
+// Trạng thái vụ việc giữ nguyên; các thao tác trình Lãnh đạo tại Giải quyết YCBT mờ (mỗi hồ sơ tối đa 01 phiếu trình); không hiển thị dòng phụ Loại trình dưới badge
+var GQL_LOCK_KEYS = ['transfer', 'pause', 'resume', 'stop', 'suspend', 'dgq'];
+function gqlLockReason(item) {
+    var r = gqlRecOf(item);
+    return gqlKeepPending(r) ? 'Vụ việc đang có phiếu trình ' + gqlQdKind(r) + ' tại Quyết định giải quyết bồi thường' : '';
+}
+(function () {
+    var o = window.gqldActionDefs;
+    if (typeof o !== 'function') return;
+    window.gqldActionDefs = function (item) {
+        var d = o.apply(this, arguments);
+        try { if (d && Array.isArray(d.more) && gqlLockReason(item)) d.more.forEach(function (m) { if (GQL_LOCK_KEYS.indexOf(m.key) >= 0) m.allowed = false; }); } catch (e) { /* mockup */ }
+        return d;
+    };
+})();
+(function () {
+    var o = window.gqApprovalSubLabel;
+    if (typeof o !== 'function') return;
+    window.gqApprovalSubLabel = function (claim) {
+        var h = o.apply(this, arguments) || '';
+        try {
+            var r = gqlRecOf(claim);
+            if (gqlKeepPending(r)) h = h.replace(/<span class="gq-sub"(?: title="[^"]*")?>[^<]*<\/span>/, '');
+        } catch (e) { /* mockup */ }
+        return h;
+    };
 })();

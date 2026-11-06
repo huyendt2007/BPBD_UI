@@ -3,7 +3,7 @@
  * - Nguồn: hàng đợi 'btnn_kpqd_events_v1' do màn Quyết định giải quyết bồi thường ghi khi QĐ sửa chữa, bổ sung được ban hành
  *   (Lãnh đạo cấp cuối Ký duyệt hoặc Ký ngoài). Màn này áp từng sự kiện 01 lần khi tải trang (đánh dấu 'btnn_kpqd_applied_v1').
  * - Sửa chữa, bổ sung (chỉ khi thay đổi Số tiền / người yêu cầu / người nhận / phương thức chi trả):
- *   + Số tiền chi trả theo QĐ sau sửa chữa P = max(0, Tổng số tiền bồi thường − Số tiền đã tạm ứng theo QĐ).
+ *   + Số tiền chi trả theo QĐ sau sửa chữa P = max(0, Tổng số tiền bồi thường − Số tiền đã tạm ứng); Số tiền đã tạm ứng = số đã chi tạm ứng thực tế, không đổi theo sửa chữa.
  *   + Đã cam kết: Hoàn thành = đã chi; Chờ chi trả đã chi một phần / Trả lại ngân sách nhà nước = Số tiền của bản ghi; Chờ thu hồi / Đã thu hồi = phần giữ lại.
  *   + Chênh lệch D = P − Đã cam kết:
  *     D > 0: giảm Số tiền phải thu hồi đang có (theo QĐ sửa chữa, bổ sung) trước; còn lại -> sửa bản ghi chưa chi (đưa về Chờ thông báo chi trả)
@@ -11,9 +11,11 @@
  *     D = 0: bản ghi chưa chi -> Đã hủy.
  *     D < 0: bản ghi chưa chi -> Đã hủy; giảm Số tiền của bản ghi Chờ chi trả đã chi một phần (đủ thì Hoàn thành); trừ phần đã trả lại ngân sách nhà nước;
  *            còn lại -> Chờ thu hồi các khoản đã chi.
- *   + Tạm ứng: Tổng số tiền bồi thường sau sửa chữa nhỏ hơn Số tiền tạm ứng đã chi -> khoản tạm ứng đã chi chuyển Chờ thu hồi phần chênh lệch.
+ *   + Tạm ứng (KH chốt 05/11/2026): không xét bản ghi Tạm ứng kinh phí (bỏ Bảng B: thu hồi tạm ứng thừa, Tạm dừng chi tạm ứng).
+ *   + Số tiền phải chi trả còn lại bằng 0, không còn khoản chưa hoàn tất: hồ sơ GQBT Hoàn thành (kpqdScDone).
  *   + Chỉ thay đổi thông tin người nhận / phương thức: cập nhật bản ghi chưa chi, giữ trạng thái.
- * - Hủy QĐ: bản ghi kinh phí giữ trạng thái, bị chặn chi tiếp (quan_ly_kinh_phi_hlqd.js); QĐ mới sau Giải quyết lại: Bảng A, Bảng B, Hoàn thành vụ việc (mục [gql] cuối tệp).
+ * - Hủy QĐ: bản ghi kinh phí giữ trạng thái, bị chặn chi tiếp (quan_ly_kinh_phi_hlqd.js); QĐ mới sau Giải quyết lại: Bảng A, thu hồi tạm ứng vượt
+ *   (khác Sửa chữa, bổ sung), Hoàn thành vụ việc (mục [gql] cuối tệp).
  * - Hiển thị: dòng phụ "Theo QĐ sửa chữa, bổ sung" dưới badge trạng thái (MH01, MH10, MH23); Khối Căn cứ thay đổi theo Quyết định tại MH10, MH23.
  */
 var KPQD_EVT_KEY = 'btnn_kpqd_events_v1';
@@ -136,7 +138,7 @@ function kpqdInfoPatch(ev, p) {
 function kpqdApplySc(list, ev) {
     var changed = [];
     var mark = function (p) { if (changed.indexOf(p) < 0) changed.push(p); };
-    // [schl] advOnly: Quyết định chưa có bản ghi Chi trả tiền bồi thường khi Quyết định sửa chữa, bổ sung Có hiệu lực - chỉ xét Tạm ứng (Bảng B)
+    // [schl] advOnly: Quyết định chưa có bản ghi Chi trả tiền bồi thường khi Quyết định sửa chữa, bổ sung Có hiệu lực (bản ghi Chi trả vừa tạo theo số tiền mới)
     var pays = ev.advOnly ? [] : list.filter(function (p) { return p && kpqdIsPay(p) && (p.decId === ev.decId || (!p.decId && p.ycbtCode === ev.claimCode)) && kpqdSt(p) !== 'Đã hủy'; });
     var advs = list.filter(function (p) { return p && kpqdIsAdv(p) && p.ycbtCode === ev.claimCode; });
     var B = kpqdN(ev.after.total), adv = kpqdN(ev.after.advance);
@@ -151,47 +153,13 @@ function kpqdApplySc(list, ev) {
             mark(p);
         });
     } else {
-        // Tạm ứng: thu hồi phần tạm ứng đã chi vượt Tổng số tiền bồi thường sau sửa chữa
-        var advPaid = advs.filter(function (p) { return kpqdPaid(p) > 0; });
-        var advPaidTotal = advPaid.reduce(function (s, p) { return s + kpqdPaid(p); }, 0);
-        var advNeedNow = advPaid.reduce(function (s, p) { return s + (kpqdRecovSc(p) ? kpqdNeed(p) : 0); }, 0);
-        var advNeedNew = Math.max(0, advPaidTotal - B);
-        if (advNeedNew > advNeedNow) {
-            var add = advNeedNew - advNeedNow;
-            advPaid.forEach(function (p) {
-                if (!add) return;
-                var st = kpqdSt(p); if (st === 'Đã thu hồi' || (st === 'Chờ thu hồi' && !kpqdRecovSc(p))) return;
-                var room = kpqdPaid(p) - (kpqdRecovSc(p) ? kpqdNeed(p) : 0), x = Math.min(add, room);
-                if (x > 0) { kpqdToRecover(ev, p, x); add -= x; mark(p); }
-            });
-        } else if (advNeedNew < advNeedNow) {
-            var less = advNeedNow - advNeedNew;
-            advPaid.forEach(function (p) {
-                if (!less || !kpqdRecovSc(p) || kpqdSt(p) !== 'Chờ thu hồi') return;
-                less = kpqdReduceRecover(ev, p, less, mark);
-            });
-        }
-        // [schl] Bản ghi Tạm ứng chưa chi: Số tạm ứng đã chi bằng / vượt Tổng số tiền bồi thường sau sửa chữa -> chặn chi tạm ứng tiếp (kpqdAdvBlock, quan_ly_kinh_phi_hlqd.js); hết vượt -> bỏ chặn
-        advs.forEach(function (p) {
-            var st = kpqdSt(p);
-            if (kpqdPaid(p) > 0 || ['Đã hủy', 'Đã thu hồi', 'Hoàn thành'].indexOf(st) >= 0) return;
-            if (advPaidTotal >= B && B >= 0) {
-                if (p.kpqdAdvBlock) return;
-                p.kpqdAdvBlock = { evId: ev.id, label: KPQD_LBL[ev.kind] || KPQD_LBL.sc, at: kpqdNow(), total: B, advPaid: advPaidTotal };
-                kpqdHist(p, 'Tạm dừng chi tạm ứng', 'Căn cứ: ' + kpqdRef(ev) + '. Số tiền tạm ứng đã chi ' + kpqdFmt(advPaidTotal) + ' đồng không nhỏ hơn Tổng số tiền bồi thường sau sửa chữa, bổ sung ' + kpqdFmt(B) + ' đồng; không chi tạm ứng tiếp.');
-                mark(p);
-            } else if (p.kpqdAdvBlock) {
-                delete p.kpqdAdvBlock;
-                kpqdHist(p, 'Bỏ tạm dừng chi tạm ứng', 'Căn cứ: ' + kpqdRef(ev) + '. Tổng số tiền bồi thường sau sửa chữa, bổ sung ' + kpqdFmt(B) + ' đồng lớn hơn số tiền tạm ứng đã chi ' + kpqdFmt(advPaidTotal) + ' đồng.');
-                mark(p);
-            }
-        });
-        // Chi trả - [schl] Số tiền đã tạm ứng: tổng Số tiền đã chi thực tế của các bản ghi Tạm ứng kinh phí của vụ việc, sau khi trừ phần thu hồi theo Bảng B
-        // (vụ việc chưa có bản ghi Tạm ứng trên phân hệ: theo Số tiền đã tạm ứng ghi trên Quyết định)
-        var advKept = advs.length ? Math.max(0, advPaidTotal - advNeedNew) : adv;
-        var P = Math.max(0, B - advKept);
-        // [schl] Quyết định chưa có bản ghi Chi trả trước khi sửa chữa (advOnly): bản ghi Chi trả vừa tạo khi Có hiệu lực tính theo số ghi trên Quyết định
-        // -> điều chỉnh Số tiền chi trả theo số tạm ứng đã chi thực tế; Số tiền phải chi trả bằng 0 -> Đã hủy
+        // [KH chốt 05/11/2026] Sửa chữa, bổ sung không xét Tạm ứng kinh phí (bỏ Bảng B): bản ghi Tạm ứng giữ nguyên, chỉ so lệch với Chi trả tiền bồi thường.
+        // Số tiền đã tạm ứng = tổng số đã chi tạm ứng thực tế của vụ việc (không đổi theo sửa chữa); vụ việc chưa có bản ghi Tạm ứng: theo số ghi trên Quyết định
+        var advLive = advs.filter(function (p) { return kpqdSt(p) !== 'Đã hủy'; });
+        var advPaidTotal = advLive.reduce(function (s, p) { return s + kpqdAdvPaid(p); }, 0);
+        var P = Math.max(0, B - (advLive.length ? advPaidTotal : adv));
+        // [schl] Quyết định chưa có bản ghi Chi trả trước khi sửa chữa (advOnly): bản ghi Chi trả vừa tạo khi Có hiệu lực
+        // -> điều chỉnh Số tiền chi trả theo Số tiền phải chi trả; bằng 0 -> Đã hủy
         if (ev.advOnly) {
             list.filter(function (p) { return p && kpqdIsPay(p) && (p.decId === ev.decId || (!p.decId && p.ycbtCode === ev.claimCode)) && kpqdSt(p) !== 'Đã hủy' && unpaid(p); }).forEach(function (p) {
                 var old = kpqdN(p.amount);
@@ -199,7 +167,7 @@ function kpqdApplySc(list, ev) {
                 if (old === P) return;
                 p.amount = P; if (p.kptbDec) p.kptbDec.net = P;
                 kpqdBasis(ev, p, kpqdSt(p), kpqdSt(p), { amountBefore: old, amountAfter: P });
-                kpqdHist(p, 'Cập nhật theo QĐ sửa chữa, bổ sung', 'Căn cứ: ' + kpqdRef(ev) + '. Số tiền chi trả từ ' + kpqdFmt(old) + ' thành ' + kpqdFmt(P) + ' đồng theo số tạm ứng đã chi thực tế.');
+                kpqdHist(p, 'Cập nhật theo QĐ sửa chữa, bổ sung', 'Căn cứ: ' + kpqdRef(ev) + '. Số tiền chi trả từ ' + kpqdFmt(old) + ' thành ' + kpqdFmt(P) + ' đồng.');
                 mark(p);
             });
         }
@@ -224,11 +192,14 @@ function kpqdApplySc(list, ev) {
                 kpqdHist(u, 'Cập nhật theo QĐ sửa chữa, bổ sung', 'Căn cứ: ' + kpqdRef(ev) + '. Số tiền chi trả từ ' + kpqdFmt(old) + ' thành ' + kpqdFmt(D) + ' đồng. Trạng thái trước: ' + st0 + '; trạng thái sau: ' + kpqdSt(u) + '.');
                 mark(u);
                 U.slice(1).forEach(function (p) { kpqdCancelUnpaid(ev, p, mark); });
-            } else if (pays.length && typeof kptbBuildRecord === 'function') {
+            } else if (!ev.advOnly && typeof kptbBuildRecord === 'function') {
+                // [scbs] Không còn bản ghi Chi trả chưa hủy (bản ghi chi trả thêm Đã hủy - Bảng A dòng 7) hoặc Quyết định không phát sinh chi trả: vẫn tạo bản ghi chi trả thêm
                 var n = ev.n || 1;
-                var dec = Object.assign({}, ev.after, { decId: ev.decId, claimCode: ev.claimCode, decNo: ev.decNo, issueDate: ev.decDate, unitName: ((pays[0].kptbDec || {}).unitName) || pays[0].agency || '', net: D,
+                var tpl = pays[0] || list.find(function (p) { return p && kpqdIsPay(p) && (p.decId === ev.decId || (!p.decId && p.ycbtCode === ev.claimCode)); }) || null;
+                var qdq = (kpqdRead('btnn_kptb_qd_issued_v1', []) || []).find(function (x) { return x && x.decId === ev.decId; }) || {};
+                var dec = Object.assign({}, qdq, ev.after, { decId: ev.decId, claimCode: ev.claimCode, decNo: ev.decNo, issueDate: ev.decDate, unitName: (tpl && (((tpl.kptbDec || {}).unitName) || tpl.agency)) || qdq.unitName || '', net: D,
                     sourceLabel: 'QĐ sửa chữa, bổ sung' + (ev.docNo ? ' số ' + ev.docNo : '') + ' của Quyết định giải quyết bồi thường', at: kpqdNow() });
-                var rec = kptbBuildRecord(dec, { id: 'P_TB_' + ev.decId + '_SCBS' + n, date: (ev.docDate || '') || (typeof kptbToday === 'function' ? kptbToday() : ''), nycRole: pays[0].nycRole || 'Người bị thiệt hại' });
+                var rec = kptbBuildRecord(dec, { id: 'P_TB_' + ev.decId + '_SCBS' + n, date: (ev.docDate || '') || (typeof kptbToday === 'function' ? kptbToday() : ''), nycRole: (tpl && tpl.nycRole) || 'Người bị thiệt hại' });
                 rec.amount = D;
                 kpqdBasis(ev, rec, '', 'Chờ thông báo chi trả', { amountBefore: 0, amountAfter: D, chiThem: true });
                 kpqdHist(rec, 'Tạo bản ghi chi trả thêm theo QĐ sửa chữa, bổ sung', 'Căn cứ: ' + kpqdRef(ev) + '. Số tiền chi trả thêm: ' + kpqdFmt(D) + ' đồng.');
@@ -265,6 +236,11 @@ function kpqdApplySc(list, ev) {
         }
     }
     return changed;
+}
+// Số tiền đã tạm ứng thực tế của bản ghi Tạm ứng kinh phí (trừ phần phải thu hồi theo QĐ sửa chữa, bổ sung của dữ liệu cũ)
+function kpqdAdvPaid(p) {
+    var v = typeof kpAdvPaidOf === 'function' ? kpAdvPaidOf(p) : kpqdPaid(p);
+    return Math.max(0, v - (kpqdRecovSc(p) ? kpqdNeed(p) : 0));
 }
 function kpqdCancelUnpaid(ev, p, mark) {
     var st = kpqdSt(p);
@@ -303,6 +279,7 @@ function kpqdApplyAll(list) {
         if (ev.kind !== 'sc') { done.push(ev.id); return; }
         var ch = kpqdApplySc(list, ev);
         kpqdScReopen(ev, ch);
+        kpqdScDone(ev, ch);
         done.push(ev.id); n += ch.length || 0.5;
     });
     kpqdWrite(KPQD_DONE_KEY, done);
@@ -332,6 +309,30 @@ function kpqdScOpen(claimCode, except) {
         return st === 'Chờ thu hồi' && !!p.kpqd;
     });
 }
+// [scbs] Bản ghi Chi trả chuyển Hoàn thành / Đã hủy / Đã thu hồi theo QĐ sửa chữa, bổ sung và vụ việc không còn khoản chưa hoàn tất: Hoàn thành chi trả (quy tắc 2b)
+function kpqdScDone(ev, changed) {
+    var hit = (changed || []).some(function (p) { var st = kpqdSt(p); return kpqdIsPay(p) && ['Hoàn thành', 'Đã hủy', 'Đã thu hồi'].indexOf(st) >= 0; });
+    if (!hit || typeof proposalsList === 'undefined' || kpqdScOpen(ev.claimCode, null)) return false;
+    var list = kpqdRead('claimsList', []);
+    var c = Array.isArray(list) ? list.find(function (x) { return x && x.code === ev.claimCode; }) : null;
+    if (!c || c.status !== 'Chờ chi trả') return false;
+    if (c.scReopen) return kpqdScTryComplete(ev.claimCode, 'Hoàn tất chi trả theo ' + kpqdRef(ev));
+    var done = proposalsList.filter(function (p) { return p && kpqdIsPay(p) && p.ycbtCode === ev.claimCode && ['Hoàn thành', 'Trả lại ngân sách nhà nước', 'Đã thu hồi'].indexOf(kpqdSt(p)) >= 0; });
+    // [KH chốt 05/11/2026] Số tiền phải chi trả còn lại bằng 0, mọi bản ghi Chi trả chưa chi Đã hủy (chưa chi lần nào): hồ sơ GQBT Hoàn thành
+    if (!done.length && typeof kpCompleteClaim === 'function') {
+        var dt = typeof kptbToday === 'function' ? kptbToday() : new Date().toLocaleDateString('vi-VN');
+        var advSum = proposalsList.filter(function (p) { return p && kpqdIsAdv(p) && p.ycbtCode === ev.claimCode && kpqdSt(p) !== 'Đã hủy'; }).reduce(function (s, p) { return s + kpqdAdvPaid(p); }, 0);
+        kpCompleteClaim({ ycbtCode: ev.claimCode, code: ev.docNo || '' }, function (cl) {
+            cl.timeline.push({ title: 'Hoàn thành chi trả tiền bồi thường', date: dt, desc: 'Căn cứ: ' + kpqdRef(ev) + ' Có hiệu lực: Số tiền phải chi trả bằng 0' + (advSum ? ' (đã tạm ứng ' + kpqdFmt(advSum) + ' đồng)' : '') + ', không còn khoản chi trả. Trạng thái Giải quyết YCBT chuyển Hoàn thành.', status: 'completed' });
+            if (advSum) { cl.moneyPaid = true; cl.thucthiDate = dt; cl.thucthiNote = 'Không phát sinh chi trả; đã tạm ứng ' + kpqdFmt(advSum) + ' đồng.'; }
+        });
+        return true;
+    }
+    if (!done.length || typeof kpPayCompleteClaim !== 'function') return false;
+    var paid = done.reduce(function (s, p) { return s + kpqdPaid(p) - (kpqdRecovSc(p) ? kpqdNeed(p) : 0); }, 0);
+    kpPayCompleteClaim(done[0], typeof kptbToday === 'function' ? kptbToday() : new Date().toLocaleDateString('vi-VN'), paid);
+    return true;
+}
 function kpqdScTryComplete(claimCode, note) {
     var list = kpqdRead('claimsList', []);
     var c = Array.isArray(list) ? list.find(function (x) { return x && x.code === claimCode; }) : null;
@@ -352,6 +353,8 @@ if (typeof kpCompleteClaim === 'function') {
             if (item && item.ycbtCode) {
                 var list = kpqdRead('claimsList', []);
                 var c = Array.isArray(list) ? list.find(function (x) { return x && x.code === item.ycbtCode; }) : null;
+                // [scbs] Vụ việc chưa từng Hoàn thành nhưng có bản ghi theo QĐ sửa chữa, bổ sung: chỉ Hoàn thành khi không còn khoản chưa hoàn tất
+                if (c && !c.scReopen && kpqdIsPay(item) && proposalsList.some(function (p) { return p && p !== item && p.ycbtCode === item.ycbtCode && kpqdHas(p); }) && kpqdScOpen(item.ycbtCode, item)) return;
                 if (c && c.scReopen) {
                     if (kpqdScOpen(item.ycbtCode, item)) return;
                     var r = orig.apply(this, arguments);
@@ -448,8 +451,8 @@ function kpqdDecorateTable() {
 //   + Hoàn thành / Trả lại ngân sách nhà nước / Chờ thu hồi theo QĐ sửa chữa, bổ sung: đã chốt như Bảng A.
 //   + Chênh lệch D = Số tiền phải chi trả theo Quyết định mới - Số tiền đã chốt: D > 0 tạo 01 bản ghi Chi trả bằng D (Quyết định mới);
 //     D < 0: bản ghi đã chi chuyển Chờ thu hồi phần thừa (tối đa bằng Số tiền đã chi); D = 0: không tạo bản ghi.
-// - Tạm ứng theo Bảng B: tạm ứng đã chi vượt Tổng số tiền bồi thường của Quyết định mới -> Chờ thu hồi phần vượt, phân bổ lần lượt, tối đa bằng số đã chi.
-// - Vụ việc không còn khoản chi thêm: không chênh lệch -> Hoàn thành ngay (Dịch vụ công bước 19); thừa tiền / thừa tạm ứng -> giữ Chờ chi trả,
+// - Tạm ứng (khác Sửa chữa, bổ sung - KH chốt 05/11/2026): Số tiền đã tạm ứng = số đã chi thực tế; tạm ứng đã chi vượt Tổng số tiền bồi thường của Quyết định mới -> Chờ thu hồi phần vượt, phân bổ lần lượt, tối đa bằng số đã chi.
+// - Vụ việc không còn khoản chi thêm: không chênh lệch -> Hoàn thành ngay (không gửi Dịch vụ công); thừa tiền / thừa tạm ứng -> giữ Chờ chi trả,
 //   Hoàn thành khi các bản ghi Chờ thu hồi theo QĐ giải quyết lại chuyển Đã thu hồi; còn bản ghi Chi trả chưa xong -> chưa Hoàn thành.
 // - Nhãn "Theo QĐ giải quyết lại". Mỗi Quyết định mới áp dụng 01 lần ('btnn_kpqd_gql_done_v1').
 var KPQD_GQL_DONE_KEY = 'btnn_kpqd_gql_done_v1';
@@ -480,7 +483,9 @@ function kpqdGqlApply(list, dec, ids) {
     var old = kpqdGqlOld(list, dec, ids);
     var ev = { id: 'gql_' + dec.decId, kind: 'gql', decId: dec.decId, claimCode: dec.claimCode, docNo: dec.decNo || '', docDate: dec.issueDate || '', decNo: (old[0] && (old[0].baseDecisionNo || (old[0].kptbDec || {}).decNo)) || '', decDate: '', content: '' };
     var total = kpqdN(dec.total);
-    var P = typeof kptbNet === 'function' ? kptbNet(dec) : Math.max(0, total - kpqdN(dec.advance));
+    // Số tiền đã tạm ứng = số đã chi tạm ứng thực tế của vụ việc (KH chốt 05/11/2026); chưa có bản ghi Tạm ứng: theo số ghi trên Quyết định
+    var advLive = list.filter(function (p) { return p && kpqdIsAdv(p) && p.ycbtCode === dec.claimCode && kpqdSt(p) !== 'Đã hủy'; });
+    var P = advLive.length ? Math.max(0, total - advLive.reduce(function (s, p) { return s + kpqdAdvPaid(p); }, 0)) : (typeof kptbNet === 'function' ? kptbNet(dec) : Math.max(0, total - kpqdN(dec.advance)));
     var committed = 0, paidRecs = [], changed = 0;
     old.forEach(function (p) {
         var st = kpqdSt(p), paid = kpqdPaid(p);
@@ -526,7 +531,7 @@ function kpqdGqlApply(list, dec, ids) {
             changed++;
         });
     }
-    // Bảng B: tạm ứng đã chi vượt Tổng số tiền bồi thường của Quyết định mới
+    // Tạm ứng vượt: tạm ứng đã chi vượt Tổng số tiền bồi thường của Quyết định mới (chỉ áp dụng Giải quyết lại)
     var advs = list.filter(function (p) { return p && kpqdIsAdv(p) && p.ycbtCode === dec.claimCode && kpqdPaid(p) > 0 && kpqdSt(p) !== 'Đã thu hồi' && !(kpqdSt(p) === 'Chờ thu hồi' && !(p.kpqd && p.kpqd.kind === 'gql')); });
     var advPaid = advs.reduce(function (s, p) { return s + kpqdPaid(p); }, 0);
     var advNeedNow = advs.reduce(function (s, p) { return s + (kpqdSt(p) === 'Chờ thu hồi' ? kpqdNeed(p) : 0); }, 0);
@@ -541,7 +546,7 @@ function kpqdGqlApply(list, dec, ids) {
     if (D <= 0) kpqdGqlTryComplete(dec.claimCode, D === 0 ? 'Quyết định giải quyết bồi thường số ' + (dec.decNo || '-') + ' (giải quyết lại) Có hiệu lực, không phát sinh khoản chi thêm' : '');
     return changed || 1;
 }
-// Vụ việc Chờ chi trả: không còn bản ghi Chi trả chưa xong, không còn bản ghi Chờ thu hồi theo QĐ giải quyết lại -> Hoàn thành (Dịch vụ công bước 19)
+// Vụ việc Chờ chi trả: không còn bản ghi Chi trả chưa xong, không còn bản ghi Chờ thu hồi theo QĐ giải quyết lại -> Hoàn thành (không gửi Dịch vụ công)
 function kpqdGqlTryComplete(claimCode, note) {
     if (!claimCode || typeof proposalsList === 'undefined') return false;
     if (!kpqdGqlCancelledIds(claimCode).length) return false;
@@ -564,7 +569,7 @@ function kpqdGqlTryComplete(claimCode, note) {
     return true;
 }
 window.kpqdGqlTryComplete = kpqdGqlTryComplete;
-// Dữ liệu mẫu: Tạm ứng KP-2026-564 đã chi 100.000.000 của BT-2026-564 (QĐ QD-GQL3 Hủy quyết định) - thử QĐ mới nhỏ hơn số đã tạm ứng
+// Dữ liệu mẫu: Tạm ứng KP-2026-564 đã chi 100.000.000 của BT-2026-564 (QĐ QD-GQL3 Hủy quyết định); QĐ mới lớn hơn số đã tạm ứng
 function kpqdGqlSeed(list) {
     if (list.some(function (p) { return p && p.code === 'KP-2026-564'; })) return 0;
     var tpl = list.find(function (p) { return p && kpqdIsAdv(p) && kpqdSt(p) === 'Hoàn thành' && kpqdPaid(p) > 0; });

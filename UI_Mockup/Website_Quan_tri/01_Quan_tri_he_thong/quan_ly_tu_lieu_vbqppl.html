@@ -749,6 +749,10 @@
             color: #F59E0B;
         }
             /* Chế độ xem chi tiết: chỉ hiển thị thông tin, ẩn vùng tải lên, thanh định dạng và dấu bắt buộc */
+        body.vb-btnn .modal-content.view-mode .form-control:disabled, body.vb-btnn .modal-content.view-mode .form-select:disabled {
+            border-color: transparent; background: #f8fafc; color: #1e293b; cursor: default; -webkit-appearance: none; appearance: none; background-image: none; opacity: 1;
+        }
+        body.vb-btnn .modal-content.view-mode .flatpickr-wrap i, body.vb-btnn .modal-content.view-mode .form-control:disabled + i { display: none; }
         .modal-content.view-mode .upload-area, .modal-content.view-mode .rich-text-toolbar, .modal-content.view-mode .form-label > span[style*="danger"] { display: none !important; }
     </style>
 </head>
@@ -841,8 +845,8 @@
                 
                 <!-- Action Buttons Toolbar -->
                 <div class="action-toolbar" style="margin-top: 0; margin-bottom: 0;">
-                    <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa fa-plus"></i> Thêm mới</button>
-                    <button class="btn btn-outline-success" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+                    <button class="btn btn-primary" id="btnCreateDoc" onclick="openCreateModal()"><i class="fa fa-plus"></i> Thêm mới</button>
+                    <button class="btn btn-outline-success" id="btnExportExcel" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
                 </div>
             </div>
         </div>
@@ -859,6 +863,8 @@
                         <th class="sortable" onclick="sortTable('coquanBanhanh')">Cơ quan ban hành <i class="fa-solid fa-sort" id="sort_coquanBanhanh"></i></th>
                         <th class="sortable cell-center" onclick="sortTable('ngayBanhanh')" style="width: 130px;">Ngày ban hành <i class="fa-solid fa-sort" id="sort_ngayBanhanh"></i></th>
                         <th class="sortable cell-center" onclick="sortTable('ngayCoHieuLuc')" style="width: 130px;">Ngày có hiệu lực <i class="fa-solid fa-sort" id="sort_ngayCoHieuLuc"></i></th>
+                        <th class="sortable vb-btnn-col" onclick="sortTable('nguoiTao')" style="display: none; min-width: 150px;">Cán bộ xử lý <i class="fa-solid fa-sort" id="sort_nguoiTao"></i></th>
+                        <th class="sortable vb-btnn-col" onclick="sortTable('donViThucHien')" style="display: none; min-width: 170px;">Đơn vị thực hiện <i class="fa-solid fa-sort" id="sort_donViThucHien"></i></th>
                         <th class="cell-center" style="width: 150px;">Tình trạng</th>
                         <th class="cell-center" style="width: 140px; min-width: 140px;">Thao tác</th>
                     </tr>
@@ -922,7 +928,7 @@
                             
                             <div class="form-group">
                                 <label class="form-label">Loại văn bản <span style="color: var(--danger-color);">*</span></label>
-                                <select id="docType" class="form-select">
+                                <select id="docType" class="form-select" onchange="toggleDocTypeOther()">
                                     <option value="">-- Lựa chọn --</option>
                                     <option value="Luật">Luật</option>
                                     <option value="Nghị định">Nghị định</option>
@@ -932,6 +938,13 @@
                                     <option value="Thông tư liên tịch">Thông tư liên tịch</option>
                                 </select>
                                 <span class="field-error-text" id="error_docType">Đây là trường bắt buộc</span>
+                            </div>
+
+                            <!-- Loại văn bản = "Khác": nhập tên loại văn bản (bắt buộc) -->
+                            <div class="form-group" id="docTypeOtherGroup" style="display: none;">
+                                <label class="form-label">Loại văn bản khác <span style="color: var(--danger-color);">*</span></label>
+                                <input type="text" id="docTypeOther" class="form-control" maxlength="100" placeholder="Nhập loại văn bản khác">
+                                <span class="field-error-text" id="error_docTypeOther">Đây là trường bắt buộc</span>
                             </div>
 
                             <div class="form-group">
@@ -997,8 +1010,17 @@
                             <span class="field-error-text" id="error_docFiles">Đây là trường bắt buộc</span>
                         </div>
                     </div>
+                    <!-- Menu BTNN: Tài liệu đính kèm dùng bảng chuẩn btnn_tai_lieu_kem_theo.js (thay vùng tải tệp bên trên) -->
+                    <div id="docTlktHost"></div>
+                    <!-- Menu BTNN, Xem chi tiết: Cán bộ xử lý, Đơn vị thực hiện -->
+                    <div id="docCreatorInfo" class="grid-layout" style="display: none; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 12px;">
+                        <div class="form-group"><label class="form-label">Cán bộ xử lý</label><input type="text" id="docCreatorName" class="form-control" disabled></div>
+                        <div class="form-group"><label class="form-label">Đơn vị thực hiện</label><input type="text" id="docCreatorOrg" class="form-control" disabled></div>
+                    </div>
 
                 </form>
+                <!-- Menu BTNN: Lịch sử cập nhật (chỉ ở Xem chi tiết, ẩn khi chưa có dòng nào) -->
+                <div id="docHistoryBlock" style="display: none;"></div>
             </div>
             
             <div class="modal-footer">
@@ -1034,11 +1056,55 @@
         <span id="toastMessage"></span>
     </div>
 
+    <!-- Menu BTNN (?system=btnn): người dùng giả lập và phạm vi đơn vị để phân quyền Thêm mới / Sửa / Xóa -->
+    <script>
+        if ((new URLSearchParams(window.location.search).get('system') || '').toLowerCase() === 'btnn') {
+            document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261105mg1"><\/script>');
+            document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_pham_vi_don_vi.js?v=20261030dvth2"><\/script>');
+            document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_tai_lieu_kem_theo.js?v=20261029stt48"><\/script>');
+        }
+    </script>
     <!-- JavaScript logic -->
     <script>
         // Trang dùng chung BPBĐ/BTNN: menu BTNN mở kèm ?system=btnn; BTNN dùng nhãn thao tác 'Sửa', BPBĐ giữ 'Chỉnh sửa'
         const VBQPPL_SYSTEM = (new URLSearchParams(window.location.search).get('system') || 'bpbd').toLowerCase();
+        // Phân quyền BTNN (05_Phan_quyen 5.10.1, người dùng chốt 05/11/2026): Thêm mới / Sửa / Xóa cho Cán bộ và Lãnh đạo của Bộ Tư pháp, Cục;
+        // Sở Tư pháp, UBND cấp tỉnh chỉ xem. BPBĐ giữ nguyên (không phân quyền tại màn này)
+        function vbCanEdit() {
+            if (VBQPPL_SYSTEM !== 'btnn') return true;
+            const PV = window.BTNN_PHAMVI;
+            return PV ? PV.level() === 'BTP' : true;
+        }
+        function vbNoRight() { showToast('Đơn vị của bạn chỉ được xem văn bản quy phạm pháp luật.', 'error'); }
         const EDIT_LABEL = VBQPPL_SYSTEM === 'btnn' ? 'Sửa' : 'Chỉnh sửa';
+        const IS_BTNN = VBQPPL_SYSTEM === 'btnn';
+        // Người dùng hiện tại: BTNN lấy theo người dùng đăng nhập (BTNN_WF); BPBĐ giữ tên mặc định
+        function vbUserName() {
+            const u = IS_BTNN && window.BTNN_WF && BTNN_WF.getCurrentUser ? BTNN_WF.getCurrentUser() : null;
+            return (u && u.name) || 'Nguyễn Văn Cán Bộ';
+        }
+        function vbUserUnit() { const u = IS_BTNN && window.BTNN_WF && BTNN_WF.getCurrentUser ? BTNN_WF.getCurrentUser() : null; return (u && u.unitId) || ''; }
+        // Menu BTNN: cột "Cán bộ xử lý" (người tạo) và "Đơn vị thực hiện" (cơ quan của Cán bộ xử lý: Cục Đăng ký giao dịch bảo đảm
+        // và Bồi thường nhà nước hoặc Bộ Tư pháp); bản ghi cũ chưa lưu đơn vị: tra theo tên người tạo
+        function vbOrgOf(uid) {
+            const W = window.BTNN_WF; if (!W || !uid) return '';
+            const chain = W.getAncestors ? W.getAncestors(uid) : [uid];
+            if (chain.includes('CĐK-01')) return W.unitName('CĐK-01');
+            if (chain.includes('BTP-01')) return W.unitName('BTP-01');
+            return W.unitName(chain[chain.length - 1] || uid);
+        }
+        function vbDocOrg(d) {
+            const W = window.BTNN_WF;
+            let uid = d.donViTaoId || '';
+            if (!uid && W && W.USERS && d.nguoiTao) { const u = W.USERS.find(x => x.name === d.nguoiTao); uid = u ? u.unitId : ''; }
+            return vbOrgOf(uid);
+        }
+        // Danh mục Loại văn bản quy phạm pháp luật [DM_21] (menu BTNN); chọn "Khác" thì nhập "Loại văn bản khác"
+        const LOAI_VB_BTNN = ['Luật', 'Nghị định', 'Thông tư', 'Quyết định', 'Nghị quyết', 'Chỉ thị', 'Thông tư liên tịch', 'Khác'];
+        const LOAI_KHAC = 'Khác';
+        function typeLabel(d) { return d.loaiVanban === LOAI_KHAC && d.loaiVanbanKhac ? `${LOAI_KHAC} (${d.loaiVanbanKhac})` : (d.loaiVanban || ''); }
+        const vbEsc = v => String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+        const MSG_DATE_FMT = 'Ngày không hợp lệ (định dạng dd/mm/yyyy).'; // [MSG-ERR-BTNN-HTTL-004]
         // Menu BTNN: tiêu đề màn hình theo tên mục Menu "Văn bản quy phạm pháp luật"; BPBĐ giữ tiêu đề cũ
         if (VBQPPL_SYSTEM === 'btnn') {
             document.title = 'Văn bản quy phạm pháp luật';
@@ -1069,12 +1135,24 @@
             { id: 20, tenVanban: "Thông tư quy định về cấp chứng chỉ nghiệp vụ cho Đăng ký viên biện pháp bảo đảm", soHieu: "16/2026/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "28/05/2026", ngayCoHieuLuc: "01/08/2026", tomTat: "Khung đào tạo, thi tuyển và thu hồi thẻ đăng ký viên biện pháp bảo đảm trên phạm vi toàn quốc.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "28/05/2026", files: ["TT16_BTP_DangKyVien.pdf"], isDeleted: 0 }
         ];
 
+        // Menu BTNN: kho dữ liệu riêng (người dùng chốt 05/11/2026 tách khỏi kho BPBĐ); dữ liệu mẫu là văn bản quy phạm pháp luật về bồi thường nhà nước
+        const VB_KEY = IS_BTNN ? 'btnn_vbqppl_documents' : 'vbqppl_documents';
+        const VB_VER_KEY = VB_KEY + '_version';
+        const btnnMockDocs = [
+            { id: 6, tenVanban: "Luật Trách nhiệm bồi thường của Nhà nước", soHieu: "10/2017/QH14", loaiVanban: "Luật", coquanBanhanh: "Quốc hội", ngayBanhanh: "20/06/2017", ngayCoHieuLuc: "01/07/2018", tomTat: "Quy định trách nhiệm bồi thường của Nhà nước đối với cá nhân, tổ chức bị thiệt hại do người thi hành công vụ gây ra.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "20/06/2017", files: ["Luat_TrachNhiemBoiThuong_2017.pdf"], isDeleted: 0 },
+            { id: 7, tenVanban: "Quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước", soHieu: "68/2018/NĐ-CP", loaiVanban: "Nghị định", coquanBanhanh: "Chính phủ", ngayBanhanh: "15/05/2018", ngayCoHieuLuc: "01/07/2018", tomTat: "Hướng dẫn xác định thiệt hại, cơ quan giải quyết bồi thường và thủ tục chi trả.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/05/2018", files: ["Nghidinh_68_2018_ND_CP.pdf"], isDeleted: 0 },
+            { id: 8, tenVanban: "Ban hành một số biểu mẫu trong hoạt động giải quyết bồi thường của Nhà nước", soHieu: "04/2018/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "17/05/2018", ngayCoHieuLuc: "01/07/2018", tomTat: "Ban hành các biểu mẫu phục vụ việc thụ lý, xác minh, thương lượng và giải quyết bồi thường.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "17/05/2018", files: ["Thongtu_04_2018_TT_BTP.pdf"], isDeleted: 0 },
+            { id: 9, tenVanban: "Quy định biện pháp thực hiện chức năng quản lý nhà nước về công tác bồi thường nhà nước", soHieu: "08/2019/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "10/12/2019", ngayCoHieuLuc: "", tomTat: "Quy định biện pháp thực hiện quản lý nhà nước về công tác bồi thường nhà nước.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "10/12/2019", files: ["Thongtu_08_2019_TT_BTP.pdf"], isDeleted: 0 },
+            { id: 21, tenVanban: "Ban hành Bộ tiêu chí đánh giá hoạt động bồi thường nhà nước", soHieu: "3062/QĐ-BTP", loaiVanban: "Quyết định", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "11/12/2019", ngayCoHieuLuc: "", tomTat: "Bộ tiêu chí đánh giá hoạt động bồi thường nhà nước.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "11/12/2019", files: ["QD_3062_BTP_Bo_tieu_chi.pdf"], isDeleted: 0 }
+        ];
+        const seedDocs = () => (IS_BTNN ? btnnMockDocs : initialMockDocs);
         // LOCAL STORAGE STORAGE FOR CRUD STATE WITH VERSION BUSTER TO CLEAN OLD STALE MOCK DATA
-        const DB_VERSION = "v7";
+        // v8: bỏ dịch ngày tự động (dữ liệu cũ đã bị đổi ngày được nạp lại theo dữ liệu mẫu gốc); BTNN: kho riêng, phiên bản b1
+        const DB_VERSION = IS_BTNN ? "b1" : "v8";
         try {
-            if (localStorage.getItem('vbqppl_documents_version') !== DB_VERSION) {
-                localStorage.setItem('vbqppl_documents', JSON.stringify(initialMockDocs));
-                localStorage.setItem('vbqppl_documents_version', DB_VERSION);
+            if (localStorage.getItem(VB_VER_KEY) !== DB_VERSION) {
+                localStorage.setItem(VB_KEY, JSON.stringify(seedDocs()));
+                localStorage.setItem(VB_VER_KEY, DB_VERSION);
             }
         } catch (err) {
             console.error("Lỗi khi bẻ khóa version buster hoặc đọc ghi localStorage:", err);
@@ -1083,7 +1161,7 @@
         // STATE VARIABLES
         let documents = [];
         try {
-            const savedDocsStr = localStorage.getItem('vbqppl_documents');
+            const savedDocsStr = localStorage.getItem(VB_KEY);
             if (savedDocsStr) {
                 documents = JSON.parse(savedDocsStr);
             }
@@ -1091,26 +1169,36 @@
             console.error("Lỗi parse vbqppl_documents từ localStorage:", e);
         }
         
+        // Dữ liệu mẫu menu BTNN: Luật TNBTCNN (id 6) có sẵn 01 lần Sửa để minh họa khối Lịch sử cập nhật ở Xem chi tiết (bổ sung 01 lần, không đè dữ liệu người dùng)
+        if (VBQPPL_SYSTEM === 'btnn') {
+            const law = documents.find(d => d && d.id === 6 && !d.isDeleted);
+            if (law && !law.histSeeded) {
+                law.history = (law.history || []).concat([{ at: '09:15 02/11/2026', by: 'Nguyễn Văn Cán Bộ', text: 'Ngày có hiệu lực: (trống) → 01/07/2018\nTóm tắt nội dung: đã cập nhật' }]);
+                law.histSeeded = true;
+                try { localStorage.setItem(VB_KEY, JSON.stringify(documents)); } catch (e) { /* bỏ qua */ }
+            }
+        }
         // Chuẩn hóa dữ liệu cũ: bỏ trạng thái phê duyệt, bổ sung Tình trạng hiệu lực
         documents.forEach(d => {
             if (!d.tinhTrang) d.tinhTrang = 'Còn hiệu lực';
             delete d.trangThai; delete d.nguoiDuyet; delete d.ngayDuyet; delete d.lyDoTuChoi;
-            // Bỏ Tags/Từ khóa, Người ký, Chức danh, File media; Văn bản QPPL chỉ nhận PDF
+            // Bỏ Tags/Từ khóa, Người ký, Chức danh, File media
             delete d.tags; delete d.nguoiKy; delete d.chucDanh; delete d.media;
-            d.files = (d.files || []).filter(n => /\.pdf$/i.test(n));
+            // Tệp: BPBĐ lưu tên tệp (chuỗi), BTNN lưu dòng bảng chuẩn { name, file } - giữ cả 02 dạng
+            d.files = (d.files || []).filter(f => f && (typeof f === 'string' || f.name || f.file));
         });
 
         if (!documents || documents.length === 0) {
-            documents = [...initialMockDocs];
+            documents = [...seedDocs()];
             try {
-                localStorage.setItem('vbqppl_documents', JSON.stringify(documents));
+                localStorage.setItem(VB_KEY, JSON.stringify(documents));
             } catch (err) {
                 console.error("Lỗi lưu vbqppl_documents mặc định:", err);
             }
         }
         
-        // DYNAMIC SHIFT DATES TO CURRENT MONTH (guarantees results are visible under default filters)
-        shiftDatesToCurrentMonth();
+        // Không tự đổi ngày của bản ghi: Ngày ban hành / Ngày có hiệu lực / Ngày tạo giữ đúng giá trị đã lưu.
+        // Bộ lọc Ngày ban hành mặc định để trống nên dữ liệu mẫu và văn bản ban hành đã lâu vẫn hiển thị.
 
         let activeKpiFilter = "all"; 
         
@@ -1122,25 +1210,12 @@
         // Current temporary files list in Modal
         let tempDocFiles = [];
 
-        // DYNAMIC DATE SHIFTING HELPER
-        function shiftDatesToCurrentMonth() {
-            const today = new Date();
-            const currentMonth = String(today.getMonth() + 1).padStart(2, '0');
-            const currentYear = today.getFullYear();
-            const currentDay = today.getDate();
-
-            documents.forEach((doc, index) => {
-                const targetDay = (index % currentDay) + 1;
-                const dayStr = String(targetDay).padStart(2, '0');
-                
-                doc.ngayBanhanh = `${dayStr}/${currentMonth}/${currentYear}`;
-                doc.ngayTao = `${dayStr}/${currentMonth}/${currentYear}`;
-                if (doc.ngayCoHieuLuc) {
-                    doc.ngayCoHieuLuc = `${dayStr}/${currentMonth}/${currentYear}`;
-                }
-
-            });
-        }
+        // BTNN: khoảng Ngày ban hành đang áp dụng (chỉ cập nhật khi bấm Tìm kiếm và hợp lệ theo [BR-VAL-007])
+        let appliedRange = { from: null, to: null, fromStr: '', toStr: '' };
+        // BTNN: dòng tài liệu đính kèm (bảng chuẩn) của bản ghi đang mở
+        let tlktRows = [];
+        const TLKT_KEY = 'vbqppl';
+        const TLKT_MAX = 10;
 
         // Date translation functions
         function convertDateToIso(dateStr) {
@@ -1159,33 +1234,75 @@
 
         // ON LOAD INITIALIZATION
         window.addEventListener('DOMContentLoaded', () => {
-            // Set date defaults in filters
-            const today = new Date();
-            const twoMonthsAgo = new Date();
-            twoMonthsAgo.setMonth(today.getMonth() - 2);
-
-            const formatDate = (date) => {
-                let dd = date.getDate();
-                let mm = date.getMonth() + 1;
-                const yyyy = date.getFullYear();
-                if (dd < 10) dd = '0' + dd;
-                if (mm < 10) mm = '0' + mm;
-                return `${dd}/${mm}/${yyyy}`;
-            };
-
-            const defFromDate = formatDate(twoMonthsAgo);
-            const defToDate = formatDate(today);
-            
-            document.getElementById('filterFromDate').value = defFromDate;
-            document.getElementById('filterToDate').value = defToDate;
+            // Không có quyền Thêm mới: ẩn nút Thêm mới
+            if (!vbCanEdit()) { const b = document.getElementById('btnCreateDoc'); if (b) b.style.display = 'none'; }
+            // Menu BTNN: hiển thị cột Cán bộ xử lý, Đơn vị thực hiện
+            if (IS_BTNN) document.querySelectorAll('.vb-btnn-col').forEach(th => { th.style.display = ''; });
+            if (IS_BTNN) document.body.classList.add('vb-btnn');
+            // Menu BTNN: ô "Người dùng giả lập" góc trên phải (như các màn BTNN khác); đổi người dùng thì tải lại trang
+            if (IS_BTNN && window.BTNN_WF && BTNN_WF.mountUserSwitcher) BTNN_WF.mountUserSwitcher();
+            // Bộ lọc Ngày ban hành mặc định để trống (hiển thị toàn bộ văn bản, kể cả văn bản ban hành đã lâu)
+            document.getElementById('filterFromDate').value = '';
+            document.getElementById('filterToDate').value = '';
+            if (IS_BTNN) setupBtnnForm();
 
             if (typeof flatpickr !== 'undefined') {
-                flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true, onChange: refreshTable });
-                flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true, onChange: refreshTable });
+                // BTNN: khoảng ngày áp dụng khi bấm Tìm kiếm (kiểm tra [BR-VAL-007]); BPBĐ giữ lọc ngay khi chọn ngày
+                const onDate = IS_BTNN ? [] : refreshTable;
+                flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true, onChange: onDate });
+                flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true, onChange: onDate });
+                if (IS_BTNN) {
+                    // Ngày trên form hiển thị dd/mm/yyyy (không dùng input type="date" theo định dạng trình duyệt)
+                    flatpickr('#docIssueDate', { dateFormat: 'd/m/Y', allowInput: true, maxDate: 'today' });
+                    flatpickr('#docEffectDate', { dateFormat: 'd/m/Y', allowInput: true });
+                }
             }
 
             refreshTable();
         });
+
+        // Menu BTNN: Loại văn bản theo [DM_21], ô ngày dd/mm/yyyy, độ dài tối đa theo SRS, bảng Tài liệu đính kèm chuẩn
+        function setupBtnnForm() {
+            const typeOpts = LOAI_VB_BTNN.map(t => `<option value="${t}">${t}</option>`).join('');
+            document.getElementById('filterDocType').innerHTML = `<option value="">-- Tất cả --</option>${typeOpts}`;
+            document.getElementById('docType').innerHTML = `<option value="">-- Lựa chọn --</option>${typeOpts}`;
+            ['docIssueDate', 'docEffectDate'].forEach(id => {
+                const el = document.getElementById(id);
+                el.type = 'text';
+                el.placeholder = 'dd/mm/yyyy';
+                el.insertAdjacentHTML('afterend', '<i class="fa-regular fa-calendar"></i>');
+            });
+            const ML = { filterDocName: 2000, filterDocNo: 100, filterIssuer: 255, filterFromDate: 10, filterToDate: 10,
+                docName: 2000, docNum: 100, docTypeOther: 100, docIssuer: 255, docIssueDate: 10, docEffectDate: 10, docSummary: 2000 };
+            Object.keys(ML).forEach(id => { const el = document.getElementById(id); if (el) el.maxLength = ML[id]; });
+            // Thống nhất với Văn bản chỉ đạo, điều hành (người dùng chốt 05/11/2026): "Số, ký hiệu" và "Trích yếu" thay cho "Số hiệu văn bản", "Tên văn bản";
+            // Số, ký hiệu đứng trước Trích yếu ở vùng tìm kiếm và lưới
+            const setLabel = (inputId, text) => { const g = document.getElementById(inputId).closest('.form-group'); const l = g && g.querySelector('.form-label'); if (l) l.firstChild.nodeValue = text; };
+            setLabel('filterDocName', 'Trích yếu'); setLabel('filterDocNo', 'Số, ký hiệu');
+            document.getElementById('filterDocName').placeholder = 'Nhập trích yếu...';
+            document.getElementById('filterDocNo').placeholder = 'Nhập số, ký hiệu...';
+            const gName = document.getElementById('filterDocName').closest('.form-group'), gNo = document.getElementById('filterDocNo').closest('.form-group');
+            gName.parentNode.insertBefore(gNo, gName);
+            setLabel('docName', 'Trích yếu '); setLabel('docNum', 'Số, ký hiệu ');
+            // Form như Văn bản chỉ đạo, điều hành: Số, ký hiệu ở đầu form; Trích yếu (ô nhiều dòng) đặt sau các trường thông tin, trước Tóm tắt nội dung
+            const nameInput = document.getElementById('docName');
+            const nameArea = document.createElement('textarea');
+            nameArea.id = 'docName'; nameArea.className = 'form-control'; nameArea.rows = 3; nameArea.maxLength = 2000; nameArea.style.resize = 'vertical';
+            nameInput.replaceWith(nameArea);
+            const gNameForm = nameArea.closest('.form-group');
+            gNameForm.style.gridColumn = ''; gNameForm.style.marginBottom = '15px';
+            const gSummary = document.getElementById('docSummary').closest('.form-group');
+            gSummary.parentNode.insertBefore(gNameForm, gSummary);
+            const thName = document.getElementById('sort_tenVanban').parentNode, thNo = document.getElementById('sort_soHieu').parentNode;
+            thName.firstChild.nodeValue = 'Trích yếu '; thNo.firstChild.nodeValue = 'Số, ký hiệu ';
+            thName.parentNode.insertBefore(thNo, thName);
+            thName.style.minWidth = '280px'; thNo.style.width = '150px'; // như lưới Văn bản chỉ đạo, điều hành
+            document.getElementById('uploadSection').style.display = 'none';
+            // Lỗi khoảng Ngày ban hành tại Bộ lọc tìm kiếm: hiển thị ngay dưới ô
+            ['filterFromDate', 'filterToDate'].forEach(id => {
+                document.getElementById(id).closest('.form-group').insertAdjacentHTML('beforeend', `<span class="field-error-text" id="${id}Err"></span>`);
+            });
+        }
 
         // KPI REFRESH & COUNTER UPDATES (đếm theo Tình trạng hiệu lực)
         const STATUS_LIST = ['Còn hiệu lực', 'Hết hiệu lực', 'Bị sửa đổi bổ sung'];
@@ -1204,6 +1321,8 @@
 
         function filterByKpi(status) {
             activeKpiFilter = status;
+            // BTNN: lọc nhanh và ô Tình trạng hiệu lực cùng một điều kiện
+            if (IS_BTNN) document.getElementById('filterStatus').value = status === 'all' ? '' : status;
             document.querySelectorAll('.stat-badge-btn').forEach(btn => btn.classList.remove('active'));
             const btn = document.getElementById(KPI_BTN[status] || 'kpiBtnAll');
             if (btn) btn.classList.add('active');
@@ -1211,6 +1330,25 @@
             refreshTable();
         }
         // DATE UTILS
+        // Ngày dd/mm/yyyy hợp lệ (đúng định dạng, có thật trên lịch) -> Date; không hợp lệ -> null
+        function validDate(str) {
+            const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(str || '').trim());
+            if (!m) return null;
+            const dt = new Date(+m[3], +m[2] - 1, +m[1]);
+            return dt.getDate() === +m[1] && dt.getMonth() === +m[2] - 1 ? dt : null;
+        }
+        // Ô ngày trên form: BTNN là ô văn bản dd/mm/yyyy (flatpickr); BPBĐ giữ input type="date" (yyyy-mm-dd)
+        function getFormDate(id) {
+            const v = document.getElementById(id).value.trim();
+            return IS_BTNN ? v : convertIsoToDate(v);
+        }
+        function setFormDate(id, str) {
+            const el = document.getElementById(id);
+            if (IS_BTNN) {
+                if (el._flatpickr) el._flatpickr.setDate(validDate(str) || null, false);
+                el.value = str || '';
+            } else el.value = convertDateToIso(str);
+        }
         function parseDate(dateStr) {
             if (!dateStr) return null;
             const parts = dateStr.split('/');
@@ -1226,7 +1364,7 @@
         }
 
         // FILTER, SORT, PAGINATE & RENDER
-        function refreshTable() {
+        function filteredList() {
             let list = documents.filter(d => !d.isDeleted);
 
             // 1. Apply Filter panel criteria
@@ -1235,20 +1373,23 @@
             const docType = document.getElementById('filterDocType').value;
             const issuer = document.getElementById('filterIssuer').value.trim().toLowerCase();
             const status = document.getElementById('filterStatus').value;
-            const fromD = parseDate(document.getElementById('filterFromDate').value);
-            const toD = parseDate(document.getElementById('filterToDate').value);
+            // BTNN: khoảng Ngày ban hành đã áp dụng khi bấm Tìm kiếm; BPBĐ: đọc trực tiếp ô lọc
+            const fromD = IS_BTNN ? appliedRange.from : parseDate(document.getElementById('filterFromDate').value);
+            const toD = IS_BTNN ? appliedRange.to : parseDate(document.getElementById('filterToDate').value);
 
+            // BTNN: tìm gần đúng, không phân biệt hoa thường, có dấu/không dấu; BPBĐ giữ nguyên
+            const fold = s => { s = String(s || '').toLowerCase(); return IS_BTNN ? s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd') : s; };
             if (docName) {
-                list = list.filter(d => d.tenVanban.toLowerCase().includes(docName));
+                list = list.filter(d => fold(d.tenVanban).includes(fold(docName)));
             }
             if (docNo) {
-                list = list.filter(d => d.soHieu.toLowerCase().includes(docNo));
+                list = list.filter(d => fold(d.soHieu).includes(fold(docNo)));
             }
             if (docType) {
                 list = list.filter(d => d.loaiVanban === docType);
             }
             if (issuer) {
-                list = list.filter(d => d.coquanBanhanh.toLowerCase().includes(issuer));
+                list = list.filter(d => fold(d.coquanBanhanh).includes(fold(issuer)));
             }
             if (status) {
                 list = list.filter(d => d.tinhTrang === status);
@@ -1271,13 +1412,10 @@
                 list = list.filter(d => d.tinhTrang === activeKpiFilter);
             }
 
-            // Update the counters
-            updateKpiCounters();
-
             // 3. Sorting
             list.sort((a, b) => {
-                let valA = a[sortColumn];
-                let valB = b[sortColumn];
+                let valA = sortColumn === 'donViThucHien' ? vbDocOrg(a) : a[sortColumn];
+                let valB = sortColumn === 'donViThucHien' ? vbDocOrg(b) : b[sortColumn];
 
                 if (sortColumn === 'ngayBanhanh' || sortColumn === 'ngayCoHieuLuc') {
                     valA = parseDate(valA) || new Date(0);
@@ -1291,6 +1429,13 @@
                 if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
                 return 0;
             });
+            return list;
+        }
+
+        function refreshTable() {
+            // Update the counters
+            updateKpiCounters();
+            const list = filteredList();
 
             // Update Sort Indicators visually
             document.querySelectorAll('.custom-table th i').forEach(icon => {
@@ -1315,7 +1460,9 @@
             tbody.innerHTML = '';
 
             if (paginatedList.length === 0) {
-                tbody.innerHTML = `
+                tbody.innerHTML = IS_BTNN
+                    ? `<tr><td colspan="11" class="cell-center" style="color: var(--text-muted); font-style: italic; padding: 26px;">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>` // [MSG-INF-SYS-001]
+                    : `
                     <tr>
                         <td colspan="9" class="cell-center" style="color: var(--text-muted); padding: 30px;">
                             <i class="fa-solid fa-folder-open" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
@@ -1323,13 +1470,25 @@
                         </td>
                     </tr>
                 `;
+                if (IS_BTNN) {
+                    // Rule 7: rỗng vẫn hiển thị thanh phân trang, các nút mờ
+                    document.getElementById('pageInfo').innerText = 'Hiển thị 0-0 của 0 bản ghi';
+                    document.getElementById('paginationBox').style.display = 'flex';
+                    renderPaginationControls(0);
+                    document.querySelectorAll('#paginationBtns .page-btn').forEach(b => { b.disabled = true; });
+                    vbSyncExcelBtn(0);
+                    return;
+                }
                 document.getElementById('pageInfo').innerText = `Hiển thị 0 đến 0 trong tổng số 0 bản ghi`;
                 document.getElementById('paginationBox').style.display = 'none';
                 return;
             }
 
             document.getElementById('paginationBox').style.display = 'flex';
-            document.getElementById('pageInfo').innerText = `Hiển thị từ ${startIdx + 1} đến ${endIdx} trong tổng số ${totalRecords} bản ghi`;
+            document.getElementById('pageInfo').innerText = IS_BTNN
+                ? `Hiển thị ${startIdx + 1}-${endIdx} của ${totalRecords} bản ghi` // Rule 7
+                : `Hiển thị từ ${startIdx + 1} đến ${endIdx} trong tổng số ${totalRecords} bản ghi`;
+            if (IS_BTNN) vbSyncExcelBtn(totalRecords);
 
             paginatedList.forEach((doc, index) => {
                 const tr = document.createElement('tr');
@@ -1351,16 +1510,16 @@
                 // BTNN: Tên văn bản hiển thị dạng văn bản thường; xem chi tiết bằng Row click
                 if (VBQPPL_SYSTEM === 'btnn') tdName.innerText = doc.tenVanban;
                 else tdName.innerHTML = `<a href="javascript:void(0)" onclick="openDetailModal(${doc.id})" style="color: var(--primary-color); font-weight: 500; text-decoration: none;">${doc.tenVanban}</a>`;
-                tr.appendChild(tdName);
-
                 // Number/Code
                 const tdNum = document.createElement('td');
                 tdNum.innerText = doc.soHieu;
-                tr.appendChild(tdNum);
+                // BTNN: Số, ký hiệu trước Trích yếu; BPBĐ giữ Tên văn bản trước Số hiệu
+                if (VBQPPL_SYSTEM === 'btnn') { tr.appendChild(tdNum); tr.appendChild(tdName); }
+                else { tr.appendChild(tdName); tr.appendChild(tdNum); }
 
                 // Type
                 const tdType = document.createElement('td');
-                tdType.innerText = doc.loaiVanban;
+                tdType.innerText = typeLabel(doc);
                 tr.appendChild(tdType);
 
                 // Issuer
@@ -1384,6 +1543,10 @@
                 const tdStatus = document.createElement('td');
                 tdStatus.className = "cell-center";
                 tdStatus.innerHTML = statusBadgeHtml(doc.tinhTrang);
+                if (IS_BTNN) {
+                    const tdOfficer = document.createElement('td'); tdOfficer.innerText = doc.nguoiTao || ''; tr.appendChild(tdOfficer);
+                    const tdOrg = document.createElement('td'); tdOrg.innerText = vbDocOrg(doc); tr.appendChild(tdOrg);
+                }
                 tr.appendChild(tdStatus);
 
                 // Action Column Fixed Slots alignment
@@ -1391,10 +1554,14 @@
                 tdActions.className = "cell-center";
                 
                 // Cán bộ nghiệp vụ trực tiếp quản lý: 3 thao tác cố định Xem chi tiết | Chỉnh sửa | Xóa
+                // Không có quyền: icon Sửa, Xóa hiển thị mờ, không click được, kèm tooltip (Rule 6)
+                const can = vbCanEdit();
                 tdActions.innerHTML = `<div class="action-flex">
-                    <button class="icon-btn view" title="Xem chi tiết" onclick="openDetailModal(${doc.id})"><i class="fa-solid fa-eye"></i></button>
-                    <button class="icon-btn edit" title="${EDIT_LABEL}" onclick="openEditModal(${doc.id})"><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button class="icon-btn delete" title="Xóa" onclick="deleteDoc(${doc.id})"><i class="fa-solid fa-trash-can"></i></button>
+                    ${IS_BTNN ? '' : `<button class="icon-btn view" title="Xem chi tiết" onclick="openDetailModal(${doc.id})"><i class="fa-solid fa-eye"></i></button>`}
+                    ${can ? `<button class="icon-btn edit" title="${EDIT_LABEL}" onclick="openEditModal(${doc.id})"><i class="fa-solid fa-pen-to-square"></i></button>`
+                          : `<button data-admin-icon-normalized="1" class="icon-btn edit disabled" title="Không có quyền sửa văn bản này" disabled><i class="fa-solid fa-pen-to-square"></i></button>`}
+                    ${can ? `<button class="icon-btn delete" title="Xóa" onclick="deleteDoc(${doc.id})"><i class="fa-solid fa-trash-can"></i></button>`
+                          : `<button data-admin-icon-normalized="1" class="icon-btn delete disabled" title="Không có quyền xóa văn bản này" disabled><i class="fa-solid fa-trash"></i></button>`}
                 </div>`;
                 tr.appendChild(tdActions);
                 tbody.appendChild(tr);
@@ -1476,57 +1643,90 @@
         }
 
         // CLEAR FILTERS
-        function clearFilters() {
-            document.getElementById('filterDocName').value = '';
-            document.getElementById('filterDocNo').value = '';
-            document.getElementById('filterDocType').value = '';
-            document.getElementById('filterIssuer').value = '';
-            document.getElementById('filterStatus').value = '';
-
-            const today = new Date();
-            const twoMonthsAgo = new Date();
-            twoMonthsAgo.setMonth(today.getMonth() - 2);
-
-            const formatDate = (date) => {
-                let dd = date.getDate();
-                let mm = date.getMonth() + 1;
-                const yyyy = date.getFullYear();
-                if (dd < 10) dd = '0' + dd;
-                if (mm < 10) mm = '0' + mm;
-                return `${dd}/${mm}/${yyyy}`;
-            };
-
-            const defFromDate = formatDate(twoMonthsAgo);
-            const defToDate = formatDate(today);
-
-            const elStart = document.getElementById("filterFromDate");
-            const elEnd = document.getElementById("filterToDate");
-            if (elStart) {
-                elStart.value = defFromDate;
-                if (elStart._flatpickr) elStart._flatpickr.setDate(defFromDate);
-            }
-            if (elEnd) {
-                elEnd.value = defToDate;
-                if (elEnd._flatpickr) elEnd._flatpickr.setDate(defToDate);
-            }
-            
+        // Đặt các ô lọc về mặc định: ô nhập trống, combobox "Tất cả", Ngày ban hành trống, lọc nhanh "Tất cả"
+        function resetFilterInputs() {
+            ['filterDocName', 'filterDocNo', 'filterDocType', 'filterIssuer', 'filterStatus'].forEach(id => { document.getElementById(id).value = ''; });
+            ['filterFromDate', 'filterToDate'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el._flatpickr) el._flatpickr.clear(false);
+                el.value = '';
+            });
+            appliedRange = { from: null, to: null, fromStr: '', toStr: '' };
+            clearFilterDateErr();
             activeKpiFilter = 'all';
             document.querySelectorAll('.stat-badge-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('kpiBtnAll').classList.add('active');
-
+        }
+        function clearFilters() {
+            resetFilterInputs();
             currentPage = 1;
             refreshTable();
-            showToast("Đã xóa bộ lọc tìm kiếm", "success");
+            // BTNN: SRS không quy định thông báo khi Xóa bộ lọc
+            if (!IS_BTNN) showToast("Đã xóa bộ lọc tìm kiếm", "success");
         }
 
         function searchData() {
+            if (IS_BTNN && !applyDateRange()) return;
+            // BTNN: Tìm kiếm theo ô Tình trạng hiệu lực thì lọc nhanh chuyển theo (không chọn: Tất cả)
+            if (IS_BTNN) {
+                const st = document.getElementById('filterStatus').value;
+                activeKpiFilter = st || 'all';
+                document.querySelectorAll('.stat-badge-btn').forEach(btn => btn.classList.remove('active'));
+                const kb = document.getElementById(KPI_BTN[activeKpiFilter] || 'kpiBtnAll'); if (kb) kb.classList.add('active');
+            }
             currentPage = 1;
             refreshTable();
-            showToast("Đã thực hiện tìm kiếm", "success");
+            // BTNN: SRS không quy định thông báo khi Tìm kiếm
+            if (!IS_BTNN) showToast("Đã thực hiện tìm kiếm", "success");
+        }
+
+        // BTNN - kiểm tra khoảng Ngày ban hành tại Bộ lọc tìm kiếm:
+        // ngày sai định dạng / không có thật -> báo lỗi dưới ô; Từ ngày > Đến ngày -> [MSG-ERR-VAL-007] dưới ô Đến ngày ([BR-VAL-007]); có lỗi thì không tìm kiếm
+        function clearFilterDateErr() {
+            ['filterFromDate', 'filterToDate'].forEach(id => {
+                document.getElementById(id).classList.remove('is-invalid');
+                const e = document.getElementById(id + 'Err');
+                if (e) e.style.display = 'none';
+            });
+        }
+        function applyDateRange() {
+            clearFilterDateErr();
+            const fromEl = document.getElementById('filterFromDate'), toEl = document.getElementById('filterToDate');
+            const fs = fromEl.value.trim(), ts = toEl.value.trim();
+            const f = fs ? validDate(fs) : null, t = ts ? validDate(ts) : null;
+            let first = null;
+            const err = (el, msg) => {
+                el.classList.add('is-invalid');
+                const e = document.getElementById(el.id + 'Err');
+                if (e) { e.innerText = msg; e.style.display = 'block'; }
+                if (!first) first = el;
+            };
+            if (fs && !f) err(fromEl, MSG_DATE_FMT);
+            if (ts && !t) err(toEl, MSG_DATE_FMT);
+            if (!first && f && t && f > t) { fromEl.classList.add('is-invalid'); err(toEl, 'Từ ngày không được lớn hơn Đến ngày'); }
+            if (first) { if (first.scrollIntoView) first.scrollIntoView({ block: 'center' }); return false; }
+            appliedRange = { from: f, to: t, fromStr: fs, toStr: ts };
+            return true;
+        }
+
+        // Sau khi lưu: bản ghi vừa lưu luôn hiển thị trên danh sách. Bộ lọc hiện tại không bao gồm bản ghi thì đặt lại bộ lọc về mặc định;
+        // chuyển tới trang chứa bản ghi (sắp xếp hiện tại)
+        function revealSaved(id) {
+            let list = filteredList();
+            if (!list.some(d => d.id === id)) { resetFilterInputs(); list = filteredList(); }
+            const idx = list.findIndex(d => d.id === id);
+            currentPage = idx >= 0 ? Math.floor(idx / pageSize) + 1 : 1;
         }
 
         // Kết xuất Excel: theo Quy chuẩn Kết xuất Excel dùng chung (04_Danh_muc_va_Phu_luc.md #quy-chuan-ket-xuat-excel)
         // Toàn bộ bản ghi theo bộ lọc/sắp xếp hiện tại (không theo trang); cột theo lưới đang hiển thị, bỏ cột Thao tác
+        // BTNN: danh sách rỗng thì nút Kết xuất Excel hiển thị mờ kèm tooltip ([BR-EXP-040])
+        function vbSyncExcelBtn(total) {
+            const b = document.getElementById('btnExportExcel'); if (!b) return;
+            const off = !total;
+            b.disabled = off; b.style.opacity = off ? '0.5' : ''; b.style.cursor = off ? 'not-allowed' : '';
+            b.title = off ? 'Không có dữ liệu để xuất Excel.' : 'Kết xuất Excel';
+        }
         function exportExcel() {
             const sz = pageSize, pg = currentPage;
             pageSize = 1e9; currentPage = 1; refreshTable();
@@ -1539,12 +1739,13 @@
                 .map(tr => keep.map(i => { const c = tr.cells.length === ths.length ? tr.cells[i] : tr.cells[vis.indexOf(i)]; return { v: cellText(c), al: c ? getComputedStyle(c).textAlign : 'left' }; }));
             const headers = keep.map(i => ths[i].textContent.replace(/\s+/g, ' ').trim());
             pageSize = sz; currentPage = pg; refreshTable();
-            if (!rows.length) { showToast('Không có dữ liệu để kết xuất Excel. [MSG-WRN-SYS-001]', 'error'); return; }
+            if (!rows.length) { showToast(IS_BTNN ? 'Không có dữ liệu để xuất Excel.' : 'Không có dữ liệu để kết xuất Excel. [MSG-WRN-SYS-001]', IS_BTNN ? 'warning' : 'error'); return; } // [MSG-WRN-SYS-001]
             const p2 = x => String(x).padStart(2, '0'), now = new Date();
             const stamp = `${p2(now.getDate())}/${p2(now.getMonth() + 1)}/${now.getFullYear()} ${p2(now.getHours())}:${p2(now.getMinutes())}`;
             const ymd = `${now.getFullYear()}${p2(now.getMonth() + 1)}${p2(now.getDate())}`;
             const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-            const fromD = document.getElementById('filterFromDate').value.trim(), toD = document.getElementById('filterToDate').value.trim();
+            const fromD = IS_BTNN ? appliedRange.fromStr : document.getElementById('filterFromDate').value.trim();
+            const toD = IS_BTNN ? appliedRange.toStr : document.getElementById('filterToDate').value.trim();
             const info = (fromD || toD) ? `Ngày ban hành: Từ ngày ${fromD || '...'} đến ngày ${toD || '...'}` : `Thời điểm xuất: ${stamp}`;
             const u = window.BTNN_WF && BTNN_WF.getCurrentUser ? BTNN_WF.getCurrentUser() : null;
             const n = headers.length, font = "font-family:'Times New Roman';";
@@ -1561,7 +1762,7 @@
             a.download = `${ymd}_Quan_ly_thong_tin_tu_lieu_VBQPPL.xls`;
             document.body.appendChild(a); a.click();
             setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
-            showToast(`Đã kết xuất ${rows.length} văn bản ra tệp Excel.`, 'success');
+            showToast(IS_BTNN ? 'Đã kết xuất Excel danh sách tư liệu VBQPPL thành công.' : `Đã kết xuất ${rows.length} văn bản ra tệp Excel.`, 'success'); // [MSG-SUC-BTNN-HTTL-003]
         }
 
         // CUSTOM CONFIRMATION MODAL
@@ -1585,17 +1786,18 @@
 
         // DELETING DOCUMENT (SOFT DELETE)
         function deleteDoc(id) {
+            if (!vbCanEdit()) { vbNoRight(); return; }
             const doc = documents.find(d => d.id === id);
             if (!doc) return;
             openConfirm(`Bạn có chắc chắn muốn xóa văn bản "${doc.soHieu} - ${doc.tenVanban}" không?`, () => {
                 // Xóa mềm [BR-DEL-001]: lưu Người xóa, Thời điểm xóa
                 const p2 = n => String(n).padStart(2, '0'), now = new Date();
                 doc.isDeleted = 1;
-                doc.deletedBy = (window.BTNN_WF && BTNN_WF.getCurrentUserId && BTNN_WF.getCurrentUserId()) || 'Nguyễn Văn Cán Bộ';
+                doc.deletedBy = vbUserName();
                 doc.deletedAt = `${p2(now.getHours())}:${p2(now.getMinutes())} ${p2(now.getDate())}/${p2(now.getMonth() + 1)}/${now.getFullYear()}`;
-                localStorage.setItem('vbqppl_documents', JSON.stringify(documents));
+                localStorage.setItem(VB_KEY, JSON.stringify(documents));
                 refreshTable();
-                showToast("Xóa văn bản thành công", "success");
+                showToast(IS_BTNN ? "Xóa văn bản thành công." : "Xóa văn bản thành công", "success"); // [MSG-SUC-BTNN-HTTL-008]
             });
         }
         // MODAL MANAGEMENT
@@ -1656,6 +1858,67 @@
             }, 100);
         }
 
+        // Tên tệp của 01 phần tử tệp (BPBĐ: chuỗi; BTNN: { name, file })
+        function fileNameOf(f) { return typeof f === 'string' ? f : ((f && f.file && f.file.name) || (f && f.name) || ''); }
+
+        // BTNN - Tài liệu đính kèm: bảng chuẩn (btnn_tai_lieu_kem_theo.js), định dạng / dung lượng theo [BR-FILE-014]
+        // Quy đổi dữ liệu cũ: mảng tên tệp ['a.pdf'] -> dòng bảng chuẩn [{ name, file: { name, size } }]
+        function toTlktRows(files) {
+            return (files || []).map(f => typeof f === 'string'
+                ? { name: f.replace(/\.[^.]+$/, ''), file: { name: f, size: '' } }
+                : { name: f.name || (f.file && f.file.name) || '', file: f.file || null }).filter(r => r.name || r.file);
+        }
+        function renderAttachmentsBtnn(viewMode) {
+            const host = document.getElementById('docTlktHost');
+            if (viewMode) {
+                host.innerHTML = typeof tlktViewHtml === 'function'
+                    ? tlktViewHtml(tlktRows, { split: false, title: 'Tài liệu đính kèm', boxClass: 'form-section', titleClass: 'form-section-title' }) : '';
+                return;
+            }
+            if (typeof tlktMount === 'function') tlktMount(TLKT_KEY, 'docTlktHost', {
+                split: false, noLeader: true, required: true, rows: tlktRows,
+                title: 'Tài liệu đính kèm', secClass: 'form-section', titleClass: 'form-section-title', hint: `Tối đa ${TLKT_MAX} tài liệu.`
+            });
+        }
+
+        // BTNN - Lịch sử cập nhật: 03 cột (Thời điểm | Người thực hiện | Nội dung), mới nhất ở trên; chỉ ở Xem chi tiết, không có dòng nào thì ẩn khối
+        function renderHistoryBtnn(viewMode) {
+            const box = document.getElementById('docHistoryBlock');
+            const id = document.getElementById('docId').value;
+            const doc = id ? documents.find(d => String(d.id) === String(id)) : null;
+            const list = viewMode && doc && Array.isArray(doc.history) ? [...doc.history].reverse() : [];
+            if (!list.length) { box.innerHTML = ''; box.style.display = 'none'; return; }
+            const cell = 'padding:6px 8px; border:1px solid #e2e8f0; vertical-align:top; text-align:left;';
+            box.innerHTML = '<div class="form-section"><div class="form-section-title"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử cập nhật</div>'
+                + `<table style="width:100%; border-collapse:collapse; font-size:13px;"><thead><tr style="background:#f1f5f9;">`
+                + `<th style="${cell} width:140px;">Thời điểm</th><th style="${cell} width:200px;">Người thực hiện</th><th style="${cell}">Nội dung</th></tr></thead><tbody>`
+                + list.map(x => `<tr><td style="${cell}">${vbEsc(x.at)}</td><td style="${cell}">${vbEsc(x.by || '')}</td><td style="${cell} white-space:pre-line;">${vbEsc(x.text)}</td></tr>`).join('')
+                + '</tbody></table></div>';
+            box.style.display = 'block';
+        }
+        // Nội dung thay đổi khi Sửa (mỗi thay đổi 01 dòng): "[Tên trường]: [Giá trị cũ] → [Giá trị mới]"; Tóm tắt nội dung: "đã cập nhật";
+        // tài liệu đính kèm thêm / xóa. Không có thay đổi -> mảng rỗng (không ghi lịch sử)
+        const HIST_FIELDS = [['soHieu', 'Số, ký hiệu'], ['tenVanban', 'Trích yếu'], ['__type', 'Loại văn bản'], ['coquanBanhanh', 'Cơ quan ban hành'],
+            ['ngayBanhanh', 'Ngày ban hành'], ['ngayCoHieuLuc', 'Ngày có hiệu lực'], ['tinhTrang', 'Tình trạng']];
+        function diffDoc(old, f) {
+            const out = [];
+            const val = (o, k) => String((k === '__type' ? typeLabel(o) : o[k]) || '').trim();
+            const show = v => v || '(trống)';
+            HIST_FIELDS.forEach(([k, label]) => { const a = val(old, k), b = val(f, k); if (a !== b) out.push(`${label}: ${show(a)} → ${show(b)}`); });
+            if (String(old.tomTat || '').trim() !== String(f.tomTat || '').trim()) out.push('Tóm tắt nội dung: đã cập nhật');
+            const key = r => `${r.name}|${r.file ? (r.file.id || r.file.name) : ''}`;
+            const lbl = r => `${r.name}${r.file ? ` (${r.file.name})` : ''}`;
+            const oldRows = toTlktRows(old.files), newRows = toTlktRows(f.files);
+            const oldKeys = oldRows.map(key), newKeys = newRows.map(key);
+            newRows.filter(r => !oldKeys.includes(key(r))).forEach(r => out.push(`Tài liệu đính kèm: thêm ${lbl(r)}`));
+            oldRows.filter(r => !newKeys.includes(key(r))).forEach(r => out.push(`Tài liệu đính kèm: xóa ${lbl(r)}`));
+            return out;
+        }
+        function nowStamp() {
+            const p2 = n => String(n).padStart(2, '0'), d = new Date();
+            return `${p2(d.getHours())}:${p2(d.getMinutes())} ${formatDateToString(d)}`;
+        }
+
         function renderUploadedFiles() {
             const isViewOnly = document.getElementById('docName').disabled;
             
@@ -1674,7 +1937,7 @@
                 item.innerHTML = `
                     <div class="attachment-item-info" style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
                         <i class="fa-regular fa-file-pdf" style="flex-shrink: 0;"></i>
-                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%;" title="${file}">${file}</span>
+                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%;" title="${vbEsc(fileNameOf(file))}">${vbEsc(fileNameOf(file))}</span>
                     </div>
                     <div class="attachment-actions" style="flex-shrink: 0; white-space: nowrap;">
                         <a href="#" target="_blank">Xem file</a>
@@ -1706,7 +1969,7 @@
             clearErrors();
 
             const inputs = [
-                'docName', 'docNum', 'docType', 'docIssuer', 'docIssueDate',
+                'docName', 'docNum', 'docType', 'docTypeOther', 'docIssuer', 'docIssueDate',
                 'docEffectDate', 'docSummary', 'docStatus'
             ];
             inputs.forEach(id => {
@@ -1725,17 +1988,24 @@
 
             const isDraftEmpty = (documents.filter(d => !d.isDeleted).length === 0);
             const btnCancel = document.getElementById('btnCancel');
-            btnCancel.style.display = (isDraftEmpty && !editMode && !viewMode) ? 'none' : 'inline-flex';
+            btnCancel.style.display = (!IS_BTNN && isDraftEmpty && !editMode && !viewMode) ? 'none' : 'inline-flex';
             btnCancel.innerText = viewMode ? 'Đóng' : 'Hủy';
             document.getElementById('btnSave').style.display = viewMode ? 'none' : 'inline-flex';
             const btnDeleteInView = document.getElementById('btnDeleteInView');
             const btnEditInView = document.getElementById('btnEditInView');
-            if (btnDeleteInView) btnDeleteInView.style.display = viewMode ? 'inline-flex' : 'none';
+            if (btnDeleteInView) btnDeleteInView.style.display = viewMode && vbCanEdit() ? 'inline-flex' : 'none';
             if (btnEditInView) {
-                btnEditInView.style.display = viewMode ? 'inline-flex' : 'none';
+                btnEditInView.style.display = viewMode && vbCanEdit() ? 'inline-flex' : 'none';
                 btnEditInView.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${EDIT_LABEL}`;
             }
             renderUploadedFiles(); // vẽ lại danh sách tệp theo chế độ xem/sửa
+            if (IS_BTNN) { renderAttachmentsBtnn(viewMode); renderHistoryBtnn(viewMode); }
+            if (IS_BTNN) {
+                const info = document.getElementById('docCreatorInfo');
+                const cur = documents.find(d => String(d.id) === String(document.getElementById('docId').value));
+                info.style.display = viewMode && cur ? 'grid' : 'none';
+                if (cur) { document.getElementById('docCreatorName').value = cur.nguoiTao || ''; document.getElementById('docCreatorOrg').value = vbDocOrg(cur); }
+            }
 
             document.getElementById('docModal').classList.add('active');
         }
@@ -1756,15 +2026,42 @@
             deleteDoc(id);
         }
 
+        // Loại văn bản = "Khác": hiện ô nhập bắt buộc "Loại văn bản khác"
+        function toggleDocTypeOther() {
+            const on = document.getElementById('docType').value === LOAI_KHAC;
+            document.getElementById('docTypeOtherGroup').style.display = on ? '' : 'none';
+            if (!on) {
+                document.getElementById('docTypeOther').classList.remove('is-invalid');
+                document.getElementById('error_docTypeOther').style.display = 'none';
+            }
+        }
+        // Điền form theo bản ghi (null = form trống)
+        function fillForm(doc) {
+            document.getElementById('docForm').reset();
+            document.getElementById('docId').value = doc ? doc.id : '';
+            document.getElementById('docName').value = doc ? doc.tenVanban : '';
+            document.getElementById('docNum').value = doc ? doc.soHieu : '';
+            const typeSel = document.getElementById('docType');
+            const type = doc ? (doc.loaiVanban || '') : '';
+            // Giá trị ngoài danh sách đang hiển thị (dữ liệu nhập từ hệ thống khác): bổ sung option để không mất giá trị
+            if (type && !Array.from(typeSel.options).some(o => o.value === type)) typeSel.insertAdjacentHTML('beforeend', `<option value="${vbEsc(type)}">${vbEsc(type)}</option>`);
+            typeSel.value = type;
+            document.getElementById('docTypeOther').value = doc ? (doc.loaiVanbanKhac || '') : '';
+            toggleDocTypeOther();
+            document.getElementById('docIssuer').value = doc ? doc.coquanBanhanh : '';
+            setFormDate('docIssueDate', doc ? doc.ngayBanhanh : '');
+            setFormDate('docEffectDate', doc ? doc.ngayCoHieuLuc : '');
+            document.getElementById('docSummary').value = doc ? (doc.tomTat || '') : '';
+            document.getElementById('docStatus').value = doc ? (doc.tinhTrang || 'Còn hiệu lực') : 'Còn hiệu lực';
+            tlktRows = doc ? toTlktRows(doc.files) : [];
+            tempDocFiles = doc ? (doc.files || []).map(fileNameOf).filter(Boolean) : [];
+            renderUploadedFiles();
+        }
+
         // OPEN MODAL FOR CREATION
         function openCreateModal() {
-            document.getElementById('docForm').reset();
-            document.getElementById('docId').value = '';
-            
-            tempDocFiles = [];
-            document.getElementById('docStatus').value = 'Còn hiệu lực';
-            renderUploadedFiles();
-
+            if (!vbCanEdit()) { vbNoRight(); return; }
+            fillForm(null);
             showModal("Thêm mới thông tin tư liệu văn bản quy phạm pháp luật", false, false);
         }
 
@@ -1772,41 +2069,16 @@
         function openDetailModal(id) {
             const doc = documents.find(d => d.id === id);
             if (!doc) return;
-
-            document.getElementById('docId').value = doc.id;
-            document.getElementById('docName').value = doc.tenVanban;
-            document.getElementById('docNum').value = doc.soHieu;
-            document.getElementById('docType').value = doc.loaiVanban;
-            document.getElementById('docIssuer').value = doc.coquanBanhanh;
-            document.getElementById('docIssueDate').value = convertDateToIso(doc.ngayBanhanh);
-            document.getElementById('docEffectDate').value = convertDateToIso(doc.ngayCoHieuLuc);
-            document.getElementById('docSummary').value = doc.tomTat;
-            document.getElementById('docStatus').value = doc.tinhTrang || 'Còn hiệu lực';
-
-            tempDocFiles = [...(doc.files || [])];
-            renderUploadedFiles();
-
+            fillForm(doc);
             showModal("Chi tiết thông tin tư liệu văn bản quy phạm pháp luật", true, false);
         }
 
         // OPEN MODAL FOR EDITING
         function openEditModal(id) {
+            if (!vbCanEdit()) { vbNoRight(); return; }
             const doc = documents.find(d => d.id === id);
             if (!doc) return;
-
-            document.getElementById('docId').value = doc.id;
-            document.getElementById('docName').value = doc.tenVanban;
-            document.getElementById('docNum').value = doc.soHieu;
-            document.getElementById('docType').value = doc.loaiVanban;
-            document.getElementById('docIssuer').value = doc.coquanBanhanh;
-            document.getElementById('docIssueDate').value = convertDateToIso(doc.ngayBanhanh);
-            document.getElementById('docEffectDate').value = convertDateToIso(doc.ngayCoHieuLuc);
-            document.getElementById('docSummary').value = doc.tomTat;
-            document.getElementById('docStatus').value = doc.tinhTrang || 'Còn hiệu lực';
-
-            tempDocFiles = [...(doc.files || [])];
-            renderUploadedFiles();
-
+            fillForm(doc);
             showModal(`${EDIT_LABEL} thông tin tư liệu văn bản quy phạm pháp luật`, false, true);
         }
 
@@ -1825,104 +2097,123 @@
             const name = document.getElementById('docName').value.trim();
             const num = document.getElementById('docNum').value.trim();
             const type = document.getElementById('docType').value;
+            const typeOther = type === LOAI_KHAC ? document.getElementById('docTypeOther').value.trim() : '';
             const issuer = document.getElementById('docIssuer').value.trim();
-            const issueDateRaw = document.getElementById('docIssueDate').value;
-            const effectDateRaw = document.getElementById('docEffectDate').value;
+            const issueStr = getFormDate('docIssueDate');
+            const effectStr = getFormDate('docEffectDate');
             const tinhTrang = document.getElementById('docStatus').value;
+            const curId = document.getElementById('docId').value;
+            const norm = s => String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
 
             if (!name) markErr('docName', 'error_docName', 'Đây là trường bắt buộc');
             // BTNN: văn bản trùng khi trùng đồng thời Tên văn bản, Số hiệu văn bản, Ngày ban hành, Loại văn bản
             // (so sánh sau khi bỏ khoảng trắng thừa, không phân biệt hoa thường; bỏ qua chính bản ghi đang sửa và bản ghi đã xóa)
-            if (VBQPPL_SYSTEM === 'btnn' && name && num && type && issueDateRaw) {
-                const norm = s => String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
-                const curId = document.getElementById('docId').value;
-                const issueStr = convertIsoToDate(issueDateRaw);
+            if (IS_BTNN && name && num && type && issueStr) {
+                const curType = typeLabel({ loaiVanban: type, loaiVanbanKhac: typeOther });
                 const dup = documents.some(d => !d.isDeleted && String(d.id) !== String(curId)
                     && norm(d.tenVanban) === norm(name) && norm(d.soHieu) === norm(num)
-                    && norm(d.loaiVanban) === norm(type) && d.ngayBanhanh === issueStr);
+                    && norm(typeLabel(d)) === norm(curType) && d.ngayBanhanh === issueStr);
                 if (dup) {
-                    markErr('docName', 'error_docName', 'Văn bản đã tồn tại trong hệ thống (trùng Tên văn bản, Số hiệu văn bản, Ngày ban hành và Loại văn bản)');
+                    markErr('docName', 'error_docName', 'Văn bản đã tồn tại trong hệ thống (trùng Số, ký hiệu, Trích yếu, Ngày ban hành và Loại văn bản)');
                     ['docNum', 'docType', 'docIssueDate'].forEach(id => document.getElementById(id).classList.add('is-invalid'));
                 }
             }
             if (!num) markErr('docNum', 'error_docNum');
             if (!type) markErr('docType', 'error_docType');
+            else if (type === LOAI_KHAC && !typeOther) markErr('docTypeOther', 'error_docTypeOther', 'Đây là trường bắt buộc');
             if (!issuer) markErr('docIssuer', 'error_docIssuer');
 
             let issueDate = null;
-            if (!issueDateRaw) {
+            if (!issueStr) {
                 markErr('docIssueDate', 'error_docIssueDate', 'Đây là trường bắt buộc');
             } else {
-                issueDate = new Date(issueDateRaw);
+                issueDate = validDate(issueStr);
                 const today = new Date();
                 today.setHours(23, 59, 59, 999);
-                if (isNaN(issueDate.getTime()) || issueDate > today) {
-                    markErr('docIssueDate', 'error_docIssueDate', 'Ngày ban hành không hợp lệ hoặc lớn hơn ngày hiện tại');
-                }
+                if (!issueDate) markErr('docIssueDate', 'error_docIssueDate', IS_BTNN ? MSG_DATE_FMT : 'Ngày ban hành không hợp lệ hoặc lớn hơn ngày hiện tại');
+                else if (issueDate > today) markErr('docIssueDate', 'error_docIssueDate', IS_BTNN ? 'Ngày nhập vào không được lớn hơn ngày hiện tại' : 'Ngày ban hành không hợp lệ hoặc lớn hơn ngày hiện tại');
             }
-            if (effectDateRaw) {
-                const effectDate = new Date(effectDateRaw);
-                if (isNaN(effectDate.getTime()) || (issueDate && effectDate < issueDate)) {
-                    markErr('docEffectDate', 'error_docEffectDate');
-                }
+            if (effectStr) {
+                const effectDate = validDate(effectStr);
+                if (!effectDate) markErr('docEffectDate', 'error_docEffectDate', IS_BTNN ? MSG_DATE_FMT : 'Ngày có hiệu lực phải lớn hơn hoặc bằng ngày ban hành');
+                else if (issueDate && effectDate < issueDate) markErr('docEffectDate', 'error_docEffectDate', 'Ngày có hiệu lực phải lớn hơn hoặc bằng ngày ban hành');
             }
             if (!tinhTrang) markErr('docStatus', 'error_docStatus');
-            if (tempDocFiles.length === 0) markErr('docFileInput', 'error_docFiles', 'Đây là trường bắt buộc');
+            if (!IS_BTNN && tempDocFiles.length === 0) markErr('docFileInput', 'error_docFiles', 'Đây là trường bắt buộc');
 
             if (firstInvalid) {
+                if (IS_BTNN && typeof tlktValidate === 'function') tlktValidate(TLKT_KEY); // hiển thị lỗi bảng tài liệu cùng lúc
                 const focusEl = firstInvalid.id === 'docFileInput' ? document.getElementById('error_docFiles') : firstInvalid;
                 if (focusEl.scrollIntoView) focusEl.scrollIntoView({ block: 'center' });
                 if (focusEl.focus) focusEl.focus();
                 return;
             }
 
-            const persist = () => {
-            const issueDateStr = convertIsoToDate(issueDateRaw);
-            const effectDateStr = convertIsoToDate(effectDateRaw);
-            const fields = {
-                tenVanban: name,
-                soHieu: num,
-                loaiVanban: type,
-                coquanBanhanh: issuer,
-                ngayBanhanh: issueDateStr,
-                ngayCoHieuLuc: effectDateStr,
-                tinhTrang: tinhTrang,
-                tomTat: document.getElementById('docSummary').value.trim(),
-                files: [...tempDocFiles]
-            };
-
-            const id = document.getElementById('docId').value;
-            if (id) {
-                const idx = documents.findIndex(d => d.id === parseInt(id));
-                if (idx !== -1) {
-                    Object.assign(documents[idx], fields, {
-                        nguoiCapNhat: "Nguyễn Văn Cán Bộ",
-                        ngayCapNhat: formatDateToString(new Date())
-                    });
+            // BTNN - Tài liệu đính kèm: bắt buộc tối thiểu 01 dòng đủ Tên + Tệp; dòng có dữ liệu phải đủ Tên + Tệp; tối đa 10 tài liệu
+            let docFiles = null;
+            if (IS_BTNN) {
+                if (typeof tlktValidate === 'function' && !tlktValidate(TLKT_KEY)) {
+                    const tlktErr = document.querySelector('#docTlktHost .is-invalid, #docTlktHost .tlkt-err.on');
+                    if (tlktErr && tlktErr.scrollIntoView) tlktErr.scrollIntoView({ block: 'center' });
+                    return;
                 }
-            } else {
-                documents.push(Object.assign({ id: Date.now() }, fields, {
-                    nguoiTao: "Nguyễn Văn Cán Bộ",
-                    ngayTao: formatDateToString(new Date()),
-                    isDeleted: 0
-                }));
+                docFiles = typeof tlktGet === 'function' ? tlktGet(TLKT_KEY) : [];
+                if (docFiles.length > TLKT_MAX) {
+                    const e = document.getElementById('tlkt_' + TLKT_KEY + '_err');
+                    if (e) { e.textContent = 'Hệ thống chỉ hỗ trợ tối đa 10 tài liệu đính kèm.'; e.classList.add('on'); if (e.scrollIntoView) e.scrollIntoView({ block: 'center' }); }
+                    return;
+                }
             }
 
-            localStorage.setItem('vbqppl_documents', JSON.stringify(documents));
-            shiftDatesToCurrentMonth();
-            closeModal();
-            refreshTable();
-            showToast(id ? "Cập nhật văn bản thành công" : "Thêm mới văn bản thành công", "success");
+            const persist = () => {
+                const fields = {
+                    tenVanban: name,
+                    soHieu: num,
+                    loaiVanban: type,
+                    loaiVanbanKhac: typeOther,
+                    coquanBanhanh: issuer,
+                    ngayBanhanh: issueStr,
+                    ngayCoHieuLuc: effectStr,
+                    tinhTrang: tinhTrang,
+                    tomTat: document.getElementById('docSummary').value.trim(),
+                    files: IS_BTNN ? docFiles : [...tempDocFiles]
+                };
+
+                let savedId = null;
+                if (curId) {
+                    const doc = documents.find(d => d.id === parseInt(curId));
+                    if (doc) {
+                        // BTNN - Lịch sử cập nhật: chỉ ghi khi Sửa có thay đổi; Thêm mới không ghi
+                        if (IS_BTNN) {
+                            const changes = diffDoc(doc, fields);
+                            if (changes.length) doc.history = (doc.history || []).concat([{ at: nowStamp(), by: vbUserName(), text: changes.join('\n') }]);
+                        }
+                        Object.assign(doc, fields, { nguoiCapNhat: vbUserName(), ngayCapNhat: formatDateToString(new Date()) });
+                        savedId = doc.id;
+                    }
+                } else {
+                    savedId = Date.now();
+                    documents.push(Object.assign({ id: savedId }, fields, {
+                        nguoiTao: vbUserName(),
+                        donViTaoId: vbUserUnit(),
+                        ngayTao: formatDateToString(new Date()),
+                        isDeleted: 0
+                    }));
+                }
+
+                localStorage.setItem(VB_KEY, JSON.stringify(documents));
+                closeModal();
+                if (savedId !== null) revealSaved(savedId);
+                refreshTable();
+                showToast(IS_BTNN ? (curId ? "Cập nhật văn bản thành công." : "Thêm mới văn bản thành công.") : (curId ? "Cập nhật văn bản thành công" : "Thêm mới văn bản thành công"), "success"); // [MSG-SUC-BTNN-HTTL-005] / [MSG-SUC-BTNN-HTTL-004]
             };
 
             // BTNN: chỉ trùng Số hiệu văn bản (không trùng đủ 04 thông tin) -> cảnh báo, người dùng chọn tiếp tục lưu hoặc quay lại sửa
-            if (VBQPPL_SYSTEM === 'btnn') {
-                const normNo = s => String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
-                const curId = document.getElementById('docId').value;
-                const sameNo = documents.filter(d => !d.isDeleted && String(d.id) !== String(curId) && normNo(d.soHieu) === normNo(num));
+            if (IS_BTNN) {
+                const sameNo = documents.filter(d => !d.isDeleted && String(d.id) !== String(curId) && norm(d.soHieu) === norm(num));
                 if (sameNo.length) {
-                    const list = sameNo.map(d => `- ${d.tenVanban} (${d.loaiVanban}, ban hành ngày ${d.ngayBanhanh})`).join('\n');
-                    openConfirm(`Số hiệu văn bản "${num}" đã tồn tại ở văn bản:\n${list}\n\nBạn có muốn tiếp tục lưu không?`, persist, 'Cảnh báo trùng số hiệu văn bản', { okLabel: 'Tiếp tục lưu', okClass: 'btn-primary', okIcon: 'fa-floppy-disk' });
+                    const list = sameNo.map(d => `- ${d.tenVanban} (${typeLabel(d)}, ban hành ngày ${d.ngayBanhanh})`).join('\n');
+                    openConfirm(`Số, ký hiệu "${num}" đã tồn tại ở văn bản:\n${list}\n\nBạn có muốn tiếp tục lưu không?`, persist, 'Cảnh báo trùng số, ký hiệu văn bản', { okLabel: 'Tiếp tục lưu', okClass: 'btn-primary', okIcon: 'fa-floppy-disk' });
                     return;
                 }
             }

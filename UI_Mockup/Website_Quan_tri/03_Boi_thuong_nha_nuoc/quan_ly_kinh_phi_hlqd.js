@@ -58,13 +58,22 @@
     }
     // [gql] Quyết định Hủy quyết định: bản ghi Chi trả của Quyết định giữ trạng thái, bị chặn chi tiếp như Quyết định Không có hiệu lực (quy tắc 8)
     function isHuy(i) { return !!i && (i.status === HUY || i.status === 'Đã hủy'); }
-    // [schl] Bản ghi Tạm ứng kinh phí chưa chi bị tạm dừng: số tạm ứng đã chi không nhỏ hơn Tổng số tiền bồi thường sau sửa chữa, bổ sung (quan_ly_kinh_phi_kpqd.js)
-    var MSG_ADV = 'Số tiền tạm ứng đã chi không nhỏ hơn Tổng số tiền bồi thường theo Quyết định sau sửa chữa, bổ sung, không chi tạm ứng tiếp.';
-    var LABEL_ADV = 'Tạm dừng chi tạm ứng';
-    function blocked(item) { if (item && item.kpqdAdvBlock) return true; var i = decInfo(item); return !!i && (isHuy(i) || i.hieuLuc === OFF || !!i.scPending); }
-    function msgOf(item) { if (item && item.kpqdAdvBlock) return MSG_ADV; var i = decInfo(item); return isHuy(i) ? MSG_HUY : (i && i.scPending ? MSG_SC : MSG); }
-    function labelOf(item) { if (item && item.kpqdAdvBlock) return LABEL_ADV; var i = decInfo(item); return isHuy(i) ? LABEL_HUY : (i && i.scPending ? LABEL_SC : LABEL); }
+    // Sửa chữa, bổ sung QĐ không xét Tạm ứng kinh phí (KH chốt 05/11/2026): bỏ Tạm dừng chi tạm ứng
+    // [KH chốt 05/11/2026] Khóa chi tạm ứng: vụ việc có Quyết định GQBT đang trình ký (Chờ duyệt, Loại trình Quyết định GQBT) -> bản ghi Tạm ứng kinh phí Chờ chi trả
+    // không Cập nhật chi trả / Hoàn thành tạm ứng (MSG-ERR-BTNN-KP-016); hết khóa khi Quyết định Bị trả lại, rút yêu cầu hoặc Đã ban hành
+    var LABEL_ADV = 'QĐ GQBT đang trình ký';
+    function advSigning(item) {
+        if (!item || !(item.type === 'Cấp tạm ứng' || item.type === 'Đề nghị tạm ứng')) return null;
+        var st = typeof kpNormStatus === 'function' ? kpNormStatus(item.status) : item.status;
+        if (st !== 'Chờ chi trả' || typeof qdtuQdSigning !== 'function') return null;
+        return qdtuQdSigning(item.ycbtCode);
+    }
+    function msgAdv(item) { return 'Vụ việc ' + ((typeof qdtuVv === 'function' && qdtuVv(item.ycbtCode)) || item.ycbtCode) + ' đang trình ký Quyết định giải quyết bồi thường. Không thể cập nhật chi trả tạm ứng kinh phí cho đến khi Quyết định giải quyết bồi thường được ban hành hoặc bị trả lại.'; }
+    function blocked(item) { if (advSigning(item)) return true; var i = decInfo(item); return !!i && (isHuy(i) || i.hieuLuc === OFF || !!i.scPending); }
+    function msgOf(item) { if (advSigning(item)) return msgAdv(item); var i = decInfo(item); return isHuy(i) ? MSG_HUY : (i && i.scPending ? MSG_SC : MSG); }
+    function labelOf(item) { if (advSigning(item)) return LABEL_ADV; var i = decInfo(item); return isHuy(i) ? LABEL_HUY : (i && i.scPending ? LABEL_SC : LABEL); }
     window.kphlBlocked = blocked;
+    window.kphlMsg = msgOf;
 
     function css() {
         if (document.getElementById('kphlCss')) return;
@@ -254,11 +263,9 @@
         if (hs && !hs.querySelector('.kphl-sub')) hs.insertAdjacentHTML('beforeend', '<span class="kphl-sub" style="margin-left:8px;"><span class="badge">' + labelOf(item) + '</span></span>');
         var body = document.getElementById('kpdtBody');
         var info = decInfo(item) || {};
-        if (body && !body.querySelector('.kphl-alert') && item.kpqdAdvBlock) {
-            var ab = item.kpqdAdvBlock;
-            body.insertAdjacentHTML('afterbegin', '<div class="kphl-alert"><b><i class="fa-solid fa-circle-exclamation"></i> TẠM DỪNG CHI TẠM ỨNG KINH PHÍ</b><br>'
-                + 'Số tiền tạm ứng đã chi ' + Number(ab.advPaid || 0).toLocaleString('vi-VN') + ' đồng không nhỏ hơn Tổng số tiền bồi thường theo Quyết định sau sửa chữa, bổ sung ' + Number(ab.total || 0).toLocaleString('vi-VN') + ' đồng' + (ab.at ? ' (' + esc(ab.at) + ')' : '') + '.'
-                + '<br>Không thực hiện Cập nhật chi trả / Ký duyệt Quyết định tạm ứng của bản ghi.</div>');
+        if (body && !body.querySelector('.kphl-alert') && advSigning(item)) {
+            body.insertAdjacentHTML('afterbegin', '<div class="kphl-alert" style="background:#eff6ff;border-color:#bfdbfe;border-left-color:#2563eb;color:#1e3a8a;"><b style="color:#1d4ed8;"><i class="fa-solid fa-circle-info"></i> QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG ĐANG TRÌNH KÝ</b><br>'
+                + esc(msgAdv(item)) + '</div>');
         }
         if (body && !body.querySelector('.kphl-alert') && isHuy(info)) {
             body.insertAdjacentHTML('afterbegin', '<div class="kphl-alert"><b><i class="fa-solid fa-circle-exclamation"></i> QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG ĐÃ BỊ HỦY</b><br>'

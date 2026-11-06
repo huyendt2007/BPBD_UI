@@ -2878,7 +2878,7 @@
         let version = null;
         try { version = localStorage.getItem(KEY_SEED); } catch (e) { version = null; }
         const existing = readJson(KEY_RECORDS, null);
-        if (version === SEED_VERSION && existing && existing.length) { ensureThuLySeed(); ensurePhongSeed(); ensureToChucSeed(); applySeedPatch(); return; }
+        if (version === SEED_VERSION && existing && existing.length) { ensureThuLySeed(); ensurePhongSeed(); fixPhongSeedSource(); ensureToChucSeed(); applySeedPatch(); return; }
         const seed = buildSeed();
         if (!existing || !existing.length || version !== SEED_VERSION) {
             writeJson(KEY_RECORDS, seed);
@@ -2899,7 +2899,7 @@
         }
         try { localStorage.setItem(KEY_SEED, SEED_VERSION); } catch (e) { /* bỏ qua */ }
         ensureThuLySeed();
-        ensurePhongSeed();
+        ensurePhongSeed(); fixPhongSeedSource();
         ensureToChucSeed();
         applySeedPatch();
     }
@@ -3047,10 +3047,19 @@
                 history: [h('Tiếp nhận hồ sơ', 'cv_hn2', '14:10 17/10/2026', 'Chuyển lãnh đạo Sở Tư pháp Thành phố Hà Nội phân công xử lý.'), h('Chuyển đơn vị', 'gdso_hn', '16:00 17/10/2026', 'Chuyển Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hà Nội phân công.')]
             })
         ];
+        // [tncb] Hồ sơ Tiếp nhận mới: đánh dấu tạo tại màn Tiếp nhận hồ sơ (cán bộ tiếp nhận thấy ở tab Đã xử lý)
+        seeds.forEach(s => { if (s.nguonHoSo === SOURCES.TIEP_NHAN) s.source = 'Tiếp nhận'; });
         const codes = new Set(list.map(r => r.code));
         seeds.forEach(s => { if (!codes.has(s.code)) list.unshift(s); });
         writeJson(KEY_RECORDS, list);
         try { localStorage.setItem(KEY_SEED_PHONG, '1'); } catch (e) { /* bỏ qua */ }
+    }
+    // [tncb] Dữ liệu mẫu Đang phân công đã lưu trước đây thiếu trường source: bổ sung cho hồ sơ Tiếp nhận mới (chạy lại không đổi)
+    function fixPhongSeedSource() {
+        const list = readJson(KEY_RECORDS, []);
+        let changed = false;
+        list.forEach(r => { if (r && /^VVBT-2026-14[1-5]$/.test(r.code) && !r.source && r.nguonHoSo === SOURCES.TIEP_NHAN) { r.source = 'Tiếp nhận'; changed = true; } });
+        if (changed) writeJson(KEY_RECORDS, list);
     }
     const KEY_SEED_THULY = 'btnn_wf_seed_thuly_v2';
     function ensureThuLySeed() {
@@ -3359,7 +3368,7 @@
     }
     // Hồ sơ thuộc tab Chờ xử lý của người dùng: [{ code, claim, rec }]
     // - Lãnh đạo: hồ sơ Chờ phân công / Đang phân công mà Lãnh đạo thuộc Nhóm lãnh đạo của đơn vị đang phân công.
-    // - Cán bộ tiếp nhận: hồ sơ mình tiếp nhận (Nguồn Tiếp nhận mới) còn Chờ phân công / Đang phân công.
+    // - Cán bộ tiếp nhận: hồ sơ mình tiếp nhận (Nguồn Tiếp nhận mới) đang Chờ duyệt tiếp nhận / Bị trả lại (từ Chờ phân công trở đi thuộc tab Đã xử lý).
     // claims: danh sách hồ sơ tiếp nhận đang có trong trang; không truyền thì đọc kho localStorage của màn Tiếp nhận hồ sơ.
     function receptionPendingItems(userId, claims) {
         userId = userId || getCurrentUserId();
@@ -3391,14 +3400,11 @@
             records.filter(r => canAssign(r, userId)).forEach(r => add(r.code, claimOf(r.code), r));
             list.filter(ptnCanSign).forEach(c => add(c.code, c, null));
         } else {
+            // [tncb] Cán bộ tiếp nhận: chỉ hồ sơ mình tiếp nhận còn chờ duyệt Phiếu tiếp nhận (Chờ duyệt tiếp nhận / Bị trả lại)
             list.forEach(c => {
                 const rec = recMap.get(c.code) || null;
-                // Trạng thái hồ sơ tiếp nhận lấy theo hồ sơ luồng phân công
-                const status = rec ? rec.status : c.status;
-                if (c.rootUnitId === root && (c.receivedBy || name) === name && allowed.includes(c.requestType) && (inReception(status) || ptnHeld(c))) add(c.code, c, rec);
+                if (c.rootUnitId === root && (c.receivedBy || name) === name && allowed.includes(c.requestType) && ptnHeld(c)) add(c.code, c, rec);
             });
-            records.filter(r => r.source === 'Tiếp nhận' && receptionSourceOf(r.nguonHoSo) === SOURCES.TIEP_NHAN
-                && r.receivedBy === name && r.rootUnitId === root && inReception(r.status)).forEach(r => add(r.code, claimOf(r.code), r));
         }
         return Array.from(map.values()).filter(x => allowed.includes((x.claim ? x.claim.requestType : x.rec && x.rec.loaiYeuCau) || REQUEST_TYPE_YCBT));
     }

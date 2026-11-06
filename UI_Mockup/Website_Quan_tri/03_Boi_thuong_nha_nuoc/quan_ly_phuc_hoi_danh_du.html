@@ -466,7 +466,7 @@
                 <div>
                     <span class="form-label">Cơ quan giải quyết bồi thường</span>
                     <select class="form-control" id="filterAgency">
-                        <option value="">Tất cả cơ quan</option>
+                        <option value="">Tất cả</option>
                         <option value="Sở Tư pháp Hà Nội">Sở Tư pháp Hà Nội</option>
                         <option value="Tòa án nhân dân TP. Hà Nội">Tòa án nhân dân TP. Hà Nội</option>
                         <option value="Sở Tư pháp Hải Phòng">Sở Tư pháp Hải Phòng</option>
@@ -478,7 +478,7 @@
                 <div>
                     <span class="form-label">Trạng thái</span>
                     <select class="form-control" id="filterStatus">
-                        <option value="">Tất cả trạng thái</option>
+                        <option value="">Tất cả</option>
                         <option value="Chờ thông báo">Chờ thông báo</option>
                         <option value="Chờ phản hồi">Chờ phản hồi</option>
                         <option value="Chờ thực hiện">Chờ thực hiện</option>
@@ -490,7 +490,7 @@
                 <div>
                     <span class="form-label">Hình thức phục hồi danh dự</span>
                     <select class="form-control" id="filterType">
-                        <option value="">Tất cả hình thức</option>
+                        <option value="">Tất cả</option>
                         <option value="Trực tiếp xin lỗi">Trực tiếp xin lỗi</option>
                         <option value="Đăng báo xin lỗi">Đăng báo xin lỗi</option>
                         <option value="Cả hai hình thức">Cả hai hình thức</option>
@@ -1823,7 +1823,7 @@
             if (!statusSelect) return;
             if (tab === 'pending') {
                 statusSelect.innerHTML = `
-                    <option value="">Tất cả trạng thái</option>
+                    <option value="">Tất cả</option>
                     <option value="Chờ thông báo">Chờ thông báo</option>
                     <option value="Chờ phản hồi">Chờ phản hồi</option>
                     <option value="Chờ thực hiện">Chờ thực hiện</option>
@@ -1831,7 +1831,7 @@
                 `;
             } else {
                 statusSelect.innerHTML = `
-                    <option value="">Tất cả trạng thái</option>
+                    <option value="">Tất cả</option>
                     <option value="Hoàn thành">Hoàn thành</option>
                     <option value="Từ chối">Từ chối</option>
                 `;

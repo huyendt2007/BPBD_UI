@@ -892,7 +892,7 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261105tn1"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261104mh1"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script>
@@ -1419,8 +1419,8 @@
         });
 
         // ===== 02 tab Chờ xử lý / Đã xử lý (theo thao tác của người dùng đang đăng nhập, không cố định theo trạng thái) =====
-        // - Cán bộ tiếp nhận: Chờ xử lý = hồ sơ mình tiếp nhận (Nguồn Tiếp nhận mới) còn Chờ phân công / Đang phân công;
-        //   Đã xử lý = hồ sơ mình tiếp nhận đã được phân công cán bộ xử lý (từ Chờ tiếp nhận trở đi).
+        // - Cán bộ tiếp nhận: Chờ xử lý = hồ sơ mình tiếp nhận (Nguồn Tiếp nhận mới) đang Chờ duyệt tiếp nhận / Bị trả lại;
+        //   Đã xử lý = hồ sơ mình tiếp nhận từ Chờ phân công trở đi (Chờ phân công, Đang phân công, Chờ tiếp nhận, trạng thái theo hồ sơ tại phân hệ xử lý).
         // - Lãnh đạo: Chờ xử lý = hồ sơ Lãnh đạo được quyền Phân công (Nhóm lãnh đạo của đơn vị đang phân công);
         //   Đã xử lý = hồ sơ Lãnh đạo đã Chuyển đơn vị / Phân công cán bộ (trạng thái có thể vẫn là Đang phân công).
         let receptionTab = "pending";
@@ -1491,7 +1491,7 @@
             if (tab === "pending") {
                 // Tab Chờ xử lý: dùng chung hàm đếm với badge menu "Tiếp nhận hồ sơ" (BTNN_WF.receptionPendingItems)
                 // - Lãnh đạo: hồ sơ Chờ phân công / Đang phân công mà Lãnh đạo thuộc Nhóm lãnh đạo của đơn vị đang phân công
-                // - Cán bộ tiếp nhận: hồ sơ mình tiếp nhận (Nguồn Tiếp nhận mới) còn Chờ phân công / Đang phân công
+                // - Cán bộ tiếp nhận: hồ sơ mình tiếp nhận (Nguồn Tiếp nhận mới) đang Chờ duyệt tiếp nhận / Bị trả lại
                 return BTNN_WF.receptionPendingItems(me, claimsList)
                     .map(x => x.claim || rowFromRecord(x.rec))
                     .sort((a, b) => getDateTimeSort(b.receivedAt || b.date) - getDateTimeSort(a.receivedAt || a.date));
@@ -1501,8 +1501,9 @@
                     // [tnd] Hồ sơ Lãnh đạo đã Ký duyệt / Từ chối Phiếu tiếp nhận (không còn chờ Lãnh đạo ký duyệt)
                     if (window.PTN) claimsList.filter(c => !c.deleted && PTN.leaderActed(c.code, me) && !PTN.canActCode(c.code, me) && !(BTNN_WF.getRecord(c.code) && BTNN_WF.canAssign(BTNN_WF.getRecord(c.code), me))).forEach(add);
                 } else {
-                    getReceptionRows().filter(item => !inReception(item.status) && !(window.PTN && PTN.holds(item))).forEach(add);
-                    records.filter(rec => isMyReceptionRecord(rec) && !inReception(rec.status)).forEach(rec => add(rowFromRecord(rec)));
+                    // [tncb] Hồ sơ mình tiếp nhận từ Chờ phân công trở đi (không còn chờ duyệt Phiếu tiếp nhận)
+                    getReceptionRows().filter(item => !(window.PTN && PTN.holds(item))).forEach(add);
+                    records.filter(rec => isMyReceptionRecord(rec)).forEach(rec => add(rowFromRecord(rec)));
                 }
             }
             return Array.from(map.values())
@@ -1549,9 +1550,14 @@
         }
 
         // Hình thức tiếp nhận (DM_25): bộ lọc gồm Tất cả + 03 giá trị; form Tiếp nhận mới chỉ gồm Trực tiếp, Qua dịch vụ bưu chính
+        // [tncb] Người dùng không thuộc Nhóm lãnh đạo chỉ xem hồ sơ Tiếp nhận mới do mình tiếp nhận: bộ lọc chỉ gồm Trực tiếp, Qua dịch vụ bưu chính
         function initReceiveMethodOptions() {
             const toOpts = list => list.map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}</option>`).join("");
-            document.getElementById("filterReceiveMethod").innerHTML = `<option value="">Tất cả</option>${toOpts(BTNN_WF.RECEIVE_METHOD_ORDER)}`;
+            const isLeader = !!(window.BTNN_LD && BTNN_LD.isLeaderUser(CURRENT_USER.id));
+            const filterMethods = isLeader ? BTNN_WF.RECEIVE_METHOD_ORDER : BTNN_WF.FORM_RECEIVE_METHODS;
+            document.getElementById("filterReceiveMethod").innerHTML = `<option value="">Tất cả</option>${toOpts(filterMethods)}`;
+            // [tncb] Bộ lọc Nguồn hồ sơ: người dùng không thuộc Nhóm lãnh đạo chỉ có hồ sơ Tiếp nhận mới
+            if (!isLeader) document.getElementById("filterSource").innerHTML = `<option value="">Tất cả</option>${toOpts([SOURCES.TIEP_NHAN])}`;
             document.getElementById("formReceiveMethod").innerHTML = toOpts(BTNN_WF.FORM_RECEIVE_METHODS);
         }
 

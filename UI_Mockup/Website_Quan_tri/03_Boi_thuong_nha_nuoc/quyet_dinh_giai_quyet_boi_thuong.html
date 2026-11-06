@@ -551,6 +551,8 @@
         .toast-notif.success { background-color: var(--success-color); }
         .toast-notif.error { background-color: var(--danger-color); }
         .toast-notif.info { background-color: var(--info-color); }
+        /* Thông báo loại warning (VD MSG-WRN-BTNN-QD-002): trước đây thiếu nền, chữ trắng không đọc được */
+        .toast-notif.warning { background-color: #D97706; }
 
         /* Custom Confirmation Modal Overlay */
         .confirm-modal-overlay {
@@ -2276,8 +2278,8 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
-    <script src="btnn_dvc_sync.js?v=20261030dvc1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261105tn1"></script>
+    <script src="btnn_dvc_sync.js?v=20261105dvc10"></script>
     <!-- [th2c] Danh mục Loại thiệt hại 2 cấp (DM_27) + bảng 2 cấp dùng chung -->
     <script src="btnn_thiet_hai.js?v=20261030dm28"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
@@ -2666,7 +2668,7 @@
                     items: seedItems([['Thu nhập thực tế bị mất/giảm sút', 160000000, 150000000, 150000000]]), recipient: { name: 'Phan Thị Lụa', idNo: '001190005562', account: '0451000562562', bank: 'Vietinbank', branch: 'Chi nhánh Hoàn Kiếm' },
                     cancel: { kind: KIND_HUY, content: 'Biên bản kết quả thương lượng có nội dung chưa đúng thỏa thuận về mức bồi thường thu nhập bị mất.', decNo: '73/QĐ-STP', draftDoc: { source: 'generated', generatedName: 'Du_thao_Huy_QD_BT-2026-562.doc' }, approvedBy: 'gdso_hn', at: '09:00 20/09/2026' },
                     history: [{ at: '10:00 02/08/2026', userId: 'gdso_hn', userName: W.userName('gdso_hn'), action: 'Phê duyệt cấp cuối', note: 'Quyết định GQBT. Quyết định chuyển [Đã ban hành]. Số 62/QĐ-STP ngày 02/08/2026.' }, { at: '09:00 20/09/2026', userId: 'gdso_hn', userName: W.userName('gdso_hn'), action: 'Phê duyệt cấp cuối', note: 'Hủy QĐ. Quyết định chuyển [Hủy quyết định].' }], createdBy: 'cv_hn1' }),
-                // [gql] QD-GQL3 (BT-2026-564): Hủy quyết định trước khi cập nhật hiệu lực; vụ việc đã Giải quyết lại về Chờ ban hành QĐ; Tạm ứng KP-2026-564 đã chi 100.000.000 (QĐ mới nhỏ hơn số đã tạm ứng: Bảng B)
+                // [gql] QD-GQL3 (BT-2026-564): Hủy quyết định trước khi cập nhật hiệu lực; vụ việc đã Giải quyết lại về Chờ ban hành QĐ; Tạm ứng KP-2026-564 đã chi 100.000.000 (QĐ mới 120.000.000 lớn hơn số đã tạm ứng)
                 seedDec({ id: 'QD-GQL3', claimCode: 'BT-2026-564', nycName: 'Trương Văn Bình', nycAddress: 'Số 3 phố Tràng Thi, Phường Hoàn Kiếm, Thành phố Hà Nội', unitId: 'STP-HN', leaderId: 'gdso_hn', approvedBy: 'gdso_hn', status: ST.DA_HUY, decNo: '64/QĐ-STP', issueDate: '10/08/2026', signedFile: 'QD_GQBT_BT-2026-564_ky_so.pdf', signMethod: 'Ký số', advance: 100000000,
                     items: seedItems([['Tài sản bị xâm phạm', 150000000, 150000000, 150000000]]), recipient: { name: 'Trương Văn Bình', idNo: '001082005564', account: '0451000564564', bank: 'Vietcombank', branch: 'Chi nhánh Hoàn Kiếm' },
                     cancel: { kind: KIND_HUY, content: 'Kết quả xác minh thiệt hại tài sản chưa chính xác, mức bồi thường tại Quyết định cao hơn thiệt hại thực tế.', decNo: '74/QĐ-STP', draftDoc: { source: 'generated', generatedName: 'Du_thao_Huy_QD_BT-2026-564.doc' }, approvedBy: 'gdso_hn', at: '10:00 15/09/2026' },
@@ -2744,7 +2746,16 @@
             if (W.getRecord(d.claimCode)) W.ensureClaimRecord({ code: d.claimCode, status: ST.DA_BH });
             const claim = claimByCode(d.claimCode);
             updateClaimInStorage(d.claimCode, Object.assign({ decNo: d.decNo, decDate: d.issueDate, decPublishDate: d.issueDate, decStatus: 'Đã ban hành', decAmount: d.total, decSigner: d.approvedBy ? W.userLabel(d.approvedBy) : '', decEffectiveDate: d.effectiveText }, claim && claim.status === 'Chờ ban hành QĐ' ? { status: 'Chờ chi trả' } : {}));
+            qdAdvCancelNotify(d);
             kptbNotifyIssued(d);
+        }
+        // Quyết định GQBT ban hành (cấp cuối Ký duyệt / Ký ngoài): bản ghi Tạm ứng kinh phí chưa chi của vụ việc chuyển Đã hủy (KH chốt 05/11/2026)
+        // (ghi hàng đợi 'btnn_kp_tu_huy_v1'; màn Kinh phí áp khi tải trang, trước khi tạo bản ghi Chi trả)
+        function qdAdvCancelNotify(d) {
+            const q = readJson('btnn_kp_tu_huy_v1', []);
+            if (!Array.isArray(q) || q.some(x => x && x.decId === d.id)) return;
+            q.push({ decId: d.id, claimCode: d.claimCode, decNo: d.decNo || '', issueDate: d.issueDate || '', at: W.nowText() });
+            writeJson('btnn_kp_tu_huy_v1', q);
         }
 
         // Hồ sơ luồng đang trình đúng Nội dung trình của Quyết định (Chờ duyệt / Bị trả lại)
@@ -3445,7 +3456,8 @@
                 toggleDecisionCards(true);
 
                 form.items = JSON.parse(JSON.stringify(d.items || []));
-                form.advance = num(d.advance);
+                // Cập nhật Quyết định (chưa ban hành): lấy lại số tiền đã chi tạm ứng thực tế tại thời điểm mở form
+                form.advance = claimByCode(d.claimCode) ? qdAdvanceApproved(claimByCode(d.claimCode)) : num(d.advance);
                 form.proposal = { sourceType: d.sourceType, sourceLabel: d.sourceLabel, summary: d.sourceSummary || '', scenario: d.scenario || '', participation: d.participation, participationLabel: d.participationLabel || '', sourceNote: d.sourceNote || '', legacy: d.participation === undefined };
                 $('qdNycName').value = d.nycName || '';
                 $('qdNycAddress').value = d.nycAddress || '';
@@ -3570,6 +3582,31 @@
             toggleDecisionCards(false);
             $('formClaimSearchInput').focus();
         }
+        // Số tiền bồi thường đã tạm ứng = tổng số tiền đã chi tạm ứng thực tế của các bản ghi Tạm ứng kinh phí của vụ việc (KH chốt 05/11/2026; không tính bản ghi chưa chi, Đã hủy)
+        // (kho 'proposalsList' của module Kinh phí); mockup: kho chưa khởi tạo thì lấy số tạm ứng của dữ liệu mẫu vụ việc
+        const QD_ADV_TYPES = ['Cấp tạm ứng', 'Đề nghị tạm ứng'];
+        function qdAdvPaidOf(p) {
+            const h = Array.isArray(p.payHistory) ? p.payHistory.reduce((s, x) => s + num(x && x.amount), 0) : 0;
+            const v = Math.max(h, num(p.payoutAmountReal));
+            return v || (p.status === 'Hoàn thành' ? num(p.amount) : 0);
+        }
+        function qdAdvanceApproved(c) {
+            if (!c) return 0;
+            let list = null;
+            try { list = JSON.parse(localStorage.getItem('proposalsList') || 'null'); } catch (e) { list = null; }
+            if (Array.isArray(list)) return list.filter(p => p && QD_ADV_TYPES.includes(p.type) && p.ycbtCode === c.code && p.status !== 'Đã hủy').reduce((s, p) => s + qdAdvPaidOf(p), 0);
+            return num(c.advanceNum !== undefined ? c.advanceNum : c.advanceAmount);
+        }
+        // Tiếp tục / Trình ký / Ban hành văn bản: không chặn khi tạm ứng chưa hoàn thành (KH chốt 05/11/2026);
+        // lấy lại Số tiền đã tạm ứng (đã chi thực tế), khác số trên form thì cập nhật và báo [MSG-WRN-BTNN-QD-002]
+        function qdAdvanceGuard() {
+            const adv = qdAdvanceApproved(claimByCode(form.claimCode));
+            if (adv !== num(form.advance)) {
+                form.advance = adv; recalcTotals();
+                showToast(`Số tiền bồi thường đã tạm ứng được cập nhật theo số tiền đã chi tạm ứng thực tế: ${fmt(adv)} đồng.`, 'warning');
+            }
+            return true;
+        }
         // Tự động điền khi chọn Mã vụ việc
         function onClaimChange(code) {
             form.claimCode = code;
@@ -3580,7 +3617,7 @@
             const prop = resolveProposal(c);
             form.proposal = prop;
             form.items = prop.items.map(it => Object.assign({}, it, { amount: it.sourceAmount }));
-            form.advance = num(c && (c.advanceNum !== undefined ? c.advanceNum : c.advanceAmount));
+            form.advance = qdAdvanceApproved(c);
             $('qdNycName').value = claimName(c);
             $('qdNycAddress').value = composeAddress(c);
             $('qdRecName').value = (c && (c.payoutRecName || c.recName)) || claimName(c);
@@ -3985,6 +4022,7 @@
         let qs = null;
         function openQdSign() {
             if (!validateForm()) { showToast('Vui lòng nhập đầy đủ các trường bắt buộc.', 'error'); return; }
+            if (!qdAdvanceGuard()) return;
             const d = form.id ? getDec(form.id) : null;
             const recLike = recLikeFor(form.claimCode);
             const path = W.computeApprovalPath(recLike) || [];
@@ -4182,6 +4220,7 @@
                 const pe = $('qsPlace' + i + 'Err'); if (!qs.placed[i]) { if (pe) pe.style.display = 'block'; ok = false; }
             });
             if (!ok) return;
+            qdAdvanceGuard();
             const data = qsDocData();
             const f = qs.docFile;
             data.draftDoc = f.generated ? { source: 'generated', generatedName: f.name } : { source: 'uploaded', uploadedName: f.name, generatedName: '' };
@@ -4200,6 +4239,7 @@
             $('qsOffFileErr').style.display = qs.offFile ? 'none' : 'block';
             const qsDz = $('qsOffBox').querySelector('.qdx-drop'); if (qsDz) qsDz.classList.toggle('is-error', !qs.offFile);
             if (bad.length || !qs.offFile) { if (bad.length) $(bad[0]).focus(); return; }
+            qdAdvanceGuard();
             // Popup xác nhận trước khi ban hành
             if (confirmed !== true) { qdxConfirmIssue('Quyết định giải quyết bồi thường', 'Quyết định chuyển sang trạng thái "Đã ban hành"', () => qsIssueOffline(true)); return; }
             const data = collectForm();
@@ -5263,10 +5303,10 @@
     </script>
     <script src="quyet_dinh_gqbt_ctqd.js?v=20261028tl1"></script>
     <!-- [hlqd] Cập nhật hiệu lực QĐ: Đã ban hành -> Có hiệu lực (tạo bản ghi Chi trả tiền bồi thường) / Không có hiệu lực -->
-    <script src="quyet_dinh_gqbt_hlqd.js?v=20261104kt2"></script>
+    <script src="quyet_dinh_gqbt_hlqd.js?v=20261105np1"></script>
     <!-- [scbf] Sửa chữa, bổ sung QĐ theo Form (điền sẵn nội dung QĐ, tự sinh Nội dung sửa chữa, bổ sung); liên thông kinh phí khi QĐ sửa chữa, bổ sung ban hành (Hủy QĐ không liên thông Kinh phí) -->
     <script src="quyet_dinh_gqbt_scbs.js?v=20261104huy1"></script>
-    <script src="quyet_dinh_gqbt_schl.js?v=20261105hl4"></script>
+    <script src="quyet_dinh_gqbt_schl.js?v=20261105kp2"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
     <script src="filter_toggle_auto.js?v=20261012"></script>

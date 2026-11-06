@@ -663,13 +663,13 @@ let proposalsList = [
         noticeProofFile: "Thong_bao_nhan_kinh_phi_G.pdf"
     },
     {
-        id: "P16",
+        id: "P16", decId: "QD-04",
         code: "KP-2026-016",
         type: "Cấp kinh phí bồi thường",
         ycbtCode: "BT-2026-012",
         nycName: "Lê Văn H",
         nycRole: "Người bị thiệt hại",
-        amount: 450000000,
+        amount: 750000000,
         user: "Nguyễn Văn Thụ",
         date: "16/09/2026",
         status: "Hoàn thành",
@@ -679,13 +679,13 @@ let proposalsList = [
         leaderOpinion: "Đồng ý chi trả kinh phí theo đúng bản án có hiệu lực pháp luật.",
         files: [{ name: "Tờ trình chi trả Lê Văn H", file: "To_trinh_KPBT_DoQuocCuong.pdf" }],
         approvedDamages: {
-            taiSan: 100000000,
+            taiSan: 400000000,
             thuNhap: 120000000,
             tinhThan: 180000000,
             chiPhiKhac: 50000000
         },
         payoutDate: "18/09/2026",
-        payoutAmountReal: 450000000,
+        payoutAmountReal: 750000000,
         payoutMethod: "Nhận qua chuyển khoản",
         payoutRecName: "LÊ VĂN H",
         payoutRecAddress: "Số 45 phố Hai Bà Trưng, Hoàn Kiếm, Hà Nội",
@@ -1537,7 +1537,7 @@ function kpPayHistory(item) {
 function kpPaidTotal(item) { return kpPayHistory(item).reduce((s, x) => s + (Number(x && x.amount) || 0), 0); }
 function getPaidAmount(item) {
     // Chi trả tiền bồi thường: tổng đã chi các lần (bản ghi Chờ chi trả đã chi một phần vẫn có số đã chi)
-    if (item && item.type === 'Chi trả tiền bồi thường' && Array.isArray(item.payHistory)) return kpPaidTotal(item);
+    if (item && (item.type === 'Chi trả tiền bồi thường' || kpIsAdv(item)) && Array.isArray(item.payHistory)) return kpPaidTotal(item);
     return item.status === 'Hoàn thành' ? (item.payoutAmountReal || item.amount || 0) : 0;
 }
 
@@ -5632,6 +5632,76 @@ function kpTlnsCompleteClaim(item, dateText, amount) {
             c.thucthiNote = `Đã trả lại ngân sách nhà nước số tiền ${money} đồng (${item.code}).`;
         }
     });
+}
+// Quyết định không phát sinh chi trả (KH chốt 05/11/2026): Số tiền phải chi trả = Tổng số tiền bồi thường − Số tiền đã tạm ứng (đã chi thực tế) bằng 0
+// -> không tạo bản ghi Chi trả tiền bồi thường; lưu kho 'btnn_kp_qd_khong_chi_v1'; hồ sơ GQBT chuyển Hoàn thành (không còn bản ghi Tạm ứng chưa chi)
+const KP_NOPAY_KEY = 'btnn_kp_qd_khong_chi_v1';
+const KP_ADV_UNPAID = ['Chờ duyệt', 'Bị trả lại', 'Chờ chi trả'];
+function kpNoPayList() { try { const l = JSON.parse(localStorage.getItem(KP_NOPAY_KEY) || '[]'); return Array.isArray(l) ? l : []; } catch (e) { return []; } }
+function kpNoPaySave(l) { try { localStorage.setItem(KP_NOPAY_KEY, JSON.stringify(l)); } catch (e) { /* bỏ qua */ } }
+function kpNoPayHas(decId) { return kpNoPayList().some(x => x && x.decId === decId); }
+// Số tiền đã chi tạm ứng thực tế của 01 bản ghi Tạm ứng kinh phí (chi 01 lần: Hoàn thành = Số tiền tạm ứng kinh phí)
+function kpAdvPaidOf(p) {
+    const v = Math.max(kpPaidTotal(p), Number(p.payoutAmountReal) || 0);
+    return v || (kpNormStatus(p.status) === 'Hoàn thành' ? (Number(p.amount) || 0) : 0);
+}
+// Số tiền đã tạm ứng của vụ việc = tổng số tiền đã chi tạm ứng thực tế (KH chốt 05/11/2026); recs: bản ghi Tạm ứng kinh phí chưa hủy
+function kpAdvApproved(claimCode) {
+    const recs = (typeof proposalsList !== 'undefined' ? proposalsList : []).filter(p => p && kpIsAdv(p) && p.ycbtCode === claimCode && kpNormStatus(p.status) !== 'Đã hủy');
+    return { recs, sum: recs.reduce((s, p) => s + kpAdvPaidOf(p), 0) };
+}
+// Quyết định GQBT ban hành (cấp cuối Ký duyệt / Ký ngoài; hàng đợi 'btnn_kp_tu_huy_v1' do màn Quyết định GQBT ghi):
+// bản ghi Tạm ứng kinh phí chưa chi (Chờ duyệt, Bị trả lại, Chờ chi trả chưa chi) của vụ việc -> Đã hủy; hủy phiếu trình đang chờ duyệt. Mỗi Quyết định áp 01 lần.
+const KP_ADV_HUY_KEY = 'btnn_kp_tu_huy_v1', KP_ADV_HUY_DONE = 'btnn_kp_tu_huy_done_v1';
+function kpAdvCancelApply() {
+    let q, done;
+    try { q = JSON.parse(localStorage.getItem(KP_ADV_HUY_KEY) || '[]'); done = JSON.parse(localStorage.getItem(KP_ADV_HUY_DONE) || '[]'); } catch (e) { return false; }
+    if (!Array.isArray(q) || !q.length) return false;
+    if (!Array.isArray(done)) done = [];
+    let ch = false;
+    q.forEach(ev => {
+        if (!ev || !ev.decId || done.includes(ev.decId)) return;
+        proposalsList.forEach(p => {
+            if (!p || !kpIsAdv(p) || p.ycbtCode !== ev.claimCode) return;
+            const st = kpNormStatus(p.status);
+            if (!KP_ADV_UNPAID.includes(st) || kpAdvPaidOf(p) > 0) return;
+            const ap = p.qdtuApproval, wasPending = !!(ap && ap.pending);
+            if (wasPending) { ap.pending = null; ap.cancelled = { at: new Date().toLocaleString('vi-VN'), reason: 'Quyết định giải quyết bồi thường đã ban hành' }; }
+            p.status = 'Đã hủy';
+            p.kpAdvCancel = { decNo: ev.decNo || '', issueDate: ev.issueDate || '', at: ev.at || '', statusBefore: st };
+            const note = 'Căn cứ: Quyết định giải quyết bồi thường số ' + (ev.decNo || '-') + (ev.issueDate ? ' ngày ' + ev.issueDate : '') + ' đã ban hành; bản ghi tạm ứng chưa chi. Trạng thái trước: ' + st + '.' + (wasPending ? ' Hủy phiếu trình QĐ tạm ứng kinh phí đang chờ duyệt.' : '');
+            if (typeof qdtuHist === 'function' && p.qdtu) qdtuHist(p, 'Hủy theo Quyết định giải quyết bồi thường', note, '');
+            else { if (!Array.isArray(p.kpdcHistory)) p.kpdcHistory = []; p.kpdcHistory.push({ at: new Date().toLocaleString('vi-VN'), userId: '', userName: 'Hệ thống', action: 'Hủy theo Quyết định giải quyết bồi thường', note }); }
+            ch = true;
+        });
+        done.push(ev.decId);
+    });
+    try { localStorage.setItem(KP_ADV_HUY_DONE, JSON.stringify(done)); } catch (e) { /* bỏ qua */ }
+    return ch;
+}
+function kpNoPayAdd(dec, advSum) {
+    const l = kpNoPayList();
+    if (l.some(x => x && x.decId === dec.decId)) return;
+    l.push({ decId: dec.decId, claimCode: dec.claimCode, decNo: dec.decNo || '', total: Number(dec.total) || 0, advance: advSum, at: new Date().toLocaleString('vi-VN'), done: false });
+    kpNoPaySave(l);
+}
+// Đóng hồ sơ GQBT của Quyết định không phát sinh chi trả khi không còn bản ghi Tạm ứng kinh phí chưa chi
+function kpNoPayTryComplete(claimCode, dateText) {
+    const l = kpNoPayList();
+    const e = l.find(x => x && x.claimCode === claimCode && !x.done);
+    if (!e) return false;
+    const adv = kpAdvApproved(claimCode);
+    if (adv.recs.some(p => KP_ADV_UNPAID.includes(kpNormStatus(p.status)))) return false;
+    const money = (Number(e.total) || 0).toLocaleString('vi-VN');
+    kpCompleteClaim({ ycbtCode: claimCode, code: e.decNo }, c => {
+        c.timeline.push({ title: 'Hoàn thành chi trả tiền bồi thường', date: dateText, desc: `Quyết định ${e.decNo || ''} không phát sinh chi trả: số tiền bồi thường ${money} đồng đã được tạm ứng đủ. Trạng thái Giải quyết YCBT chuyển Hoàn thành.`, status: 'completed' });
+        c.moneyPaid = true;
+        c.thucthiDate = dateText;
+        c.thucthiNote = `Không phát sinh chi trả; đã tạm ứng đủ ${money} đồng.`;
+    });
+    e.done = true; e.doneAt = dateText;
+    kpNoPaySave(l);
+    return true;
 }
 function kpPayCompleteClaim(item, dateText, amount) {
     const money = (Number(amount) || 0).toLocaleString('vi-VN');
