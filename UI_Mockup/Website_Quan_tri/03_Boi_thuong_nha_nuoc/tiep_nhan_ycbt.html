@@ -903,8 +903,9 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261104mh1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109ro1"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261109ro1"></script>
+    <script src="btnn_phan_cong_ky_duyet.js?v=20261109ro1"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script>
         // Người dùng đăng nhập (giả lập) - cán bộ tiếp nhận
@@ -2050,7 +2051,7 @@
                     // Phân công: Lãnh đạo thuộc Nhóm lãnh đạo của đơn vị đang phân công; Thu hồi: bên nhận chưa xử lý
                     const canAssign = receptionTab === "pending" && rec && BTNN_WF.canAssign(rec, CURRENT_USER.id);
                     const canRecall = receptionTab === "done" && BTNN_LD.canRecall(rec, CURRENT_USER.id);
-                    const assignBtn = `<button class="icon-btn accept${canAssign ? "" : " disabled-action"}" data-ld="assign" title="${canAssign ? "Phân công" : "Phân công - Chỉ khả dụng khi hồ sơ Chờ phân công / Đang phân công và người dùng thuộc Nhóm lãnh đạo của đơn vị đang phân công"}" style="${canAssign ? "" : offStyle}" onclick="event.stopPropagation(); openAssignFromList('${escapeAttr(item.code)}')"><i class="fa-solid fa-diagram-project"></i></button>`;
+                    const assignBtn = `<button class="icon-btn accept${canAssign ? "" : " disabled-action"}" data-ld="assign" title="${canAssign ? "Phân công" : "Phân công - Chỉ khả dụng khi hồ sơ Chờ phân công / Đang phân công và người dùng là Lãnh đạo được giao của đơn vị đang phân công"}" style="${canAssign ? "" : offStyle}" onclick="event.stopPropagation(); openAssignFromList('${escapeAttr(item.code)}')"><i class="fa-solid fa-diagram-project"></i></button>`;
                     const recallBtn = `<button class="icon-btn edit${canRecall ? "" : " disabled-action"}" title="${canRecall ? "Thu hồi" : "Thu hồi - Chỉ khả dụng với Lãnh đạo đã chuyển/phân công khi bên nhận chưa xử lý"}" style="${canRecall ? "" : offStyle}" onclick="event.stopPropagation(); recallFromList('${escapeAttr(item.code)}')"><i class="fa-solid fa-rotate-left"></i></button>`;
 
                     // Sửa
@@ -2258,7 +2259,16 @@
                     btnFormAssign.style.cursor = "";
                     btnFormAssign.title = "Phân công";
                 }
-                if (btnFormRecall) btnFormRecall.style.display = canRecall ? "inline-flex" : "none";
+                // [ro1] Thu hồi: hiển thị với Lãnh đạo đã phân công / chuyển chuyên viên hồ sơ; không đủ điều kiện (bên nhận đã xử lý, không phải lượt gần nhất) -> mờ
+                const acted = leaderUser && !!rec && (rec.routes || []).some(r => r.fromUserId === CURRENT_USER.id);
+                if (btnFormRecall) {
+                    btnFormRecall.style.display = canRecall || acted ? "inline-flex" : "none";
+                    btnFormRecall.disabled = !canRecall;
+                    btnFormRecall.classList.toggle("disabled-action", !canRecall);
+                    btnFormRecall.style.opacity = canRecall ? "" : "0.5";
+                    btnFormRecall.style.cursor = canRecall ? "" : "not-allowed";
+                    btnFormRecall.title = canRecall ? "Thu hồi" : "Thu hồi - Bên nhận đã xử lý hồ sơ hoặc không phải lượt phân công gần nhất";
+                }
 
                 // 1. Nút Đóng
                 if (btnFormCancel) btnFormCancel.style.display = "none";
@@ -3085,7 +3095,7 @@
     <!-- [nbth] Văn bản yêu cầu bồi thường mặc định; Người bị thiệt hại Cá nhân/Tổ chức; địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại -->
     <script src="tiep_nhan_nbth.js?v=20261109tt1"></script>
     <!-- Trình ký Phiếu tiếp nhận (Mẫu 02/BTNN): thay thao tác In Phiếu tiếp nhận -->
-    <script src="tiep_nhan_ptn.js?v=20261104mh2"></script>
+    <script src="tiep_nhan_ptn.js?v=20261109ro1"></script>
     <!-- [dvc] Hồ sơ nguồn Dịch vụ công: Xem chi tiết đầy đủ theo bố cục Nhập liệu hồ sơ vụ việc; dữ liệu mẫu đầy đủ (bảng thiệt hại DM_27 dùng btnn_thiet_hai.js) -->
     <script src="btnn_thiet_hai.js?v=20261030dm28"></script>
     <script src="tiep_nhan_dvc.js?v=20261109sd1"></script>

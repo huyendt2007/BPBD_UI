@@ -914,11 +914,16 @@
                 <div class="grid-2-cols">
                     <div class="form-group">
                         <label class="form-label">Chức vụ <span class="required-mark">*</span></label>
-                        <select id="formTitle" class="form-select" required>
+                        <select id="formTitle" class="form-select" required onchange="tkSyncNhomLd()">
                             <option value="">-- Chọn chức vụ --</option>
                             <!-- Chức vụ thuộc Loại cơ quan của Đơn vị đã chọn, sinh bởi JS -->
                         </select>
                         <span class="form-text" id="formTitleHint" style="color: var(--text-muted); font-size: 12px;"></span>
+                    </div>
+                    <!-- [ro1] Nhóm Lãnh đạo: chỉ đọc, theo thuộc tính Nhóm Lãnh đạo của Chức vụ (DM_58) -->
+                    <div class="form-group">
+                        <label class="form-label">Nhóm Lãnh đạo</label>
+                        <input type="text" id="formNhomLd" class="form-control" value="Không" readonly style="background:#f8fafc;">
                     </div>
                 </div>
                 
@@ -1145,6 +1150,10 @@
                     <label class="form-label" style="color:var(--text-muted);">Chức vụ</label>
                     <div id="detailTitle" style="font-weight: 500;">-</div>
                 </div>
+                <div class="form-group" id="detailNhomLdGroup">
+                    <label class="form-label" style="color:var(--text-muted);">Nhóm Lãnh đạo</label>
+                    <div id="detailNhomLd" style="font-weight: 500;">Không</div>
+                </div>
             </div>
 
             <div class="grid-2-cols" style="margin-bottom: 12px;">
@@ -1183,7 +1192,7 @@
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261109sd1"></script>
+<script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261109ro1"></script>
 <script src="dm_loai_co_quan.js"></script>
 <script>
     // --- Mock Data ---
@@ -1224,6 +1233,17 @@
     function unitLoai(unitId) { const names = UNIT_LOAI_MAU[unitId] || []; return dmList('DM_57').find(l => names.includes(l.name)) || null; }
     function chucVuOfLoai(loaiCode) { return dmList('DM_58').filter(c => c.parentCode === loaiCode); }
     function chucVuName(code) { const c = dmList('DM_58').find(x => x.code === code); return c ? c.name : ''; }
+    // [ro1] Nhóm Lãnh đạo theo Chức vụ: thuộc tính đã lưu tại Quản lý danh mục; chưa có thì theo quy tắc (cấp trưởng, cấp phó)
+    function tkNhomLdOf(code) {
+        const c = dmList('DM_58').find(x => x.code === code);
+        if (!c) return false;
+        if (typeof c.nhomLanhDao === 'boolean') return c.nhomLanhDao;
+        return !!(window.BTNN_WF && BTNN_WF.nhomLanhDaoTheoQuyTac && BTNN_WF.nhomLanhDaoTheoQuyTac(c.name));
+    }
+    function tkSyncNhomLd() {
+        const s = document.getElementById('formTitle'), o = document.getElementById('formNhomLd');
+        if (o) o.value = s && s.value && tkNhomLdOf(s.value) ? 'Có' : 'Không';
+    }
     function noTone(s) { return (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().trim(); }
     // Chức vụ của tài khoản mẫu theo tên trong danh mục Chức vụ của Loại cơ quan
     const MOCK_TITLE_NAMES = {
@@ -1513,6 +1533,7 @@
         const sel = document.getElementById('formTitle');
         sel.innerHTML = '<option value="">-- Chọn chức vụ --</option>' + (loai ? chucVuOfLoai(loai.code).map(c => `<option value="${c.code}">${c.name}</option>`).join('') : '');
         sel.value = selectedId || '';
+        tkSyncNhomLd();
         document.getElementById('formTitleHint').innerText = unitId && !loai ? 'Đơn vị chưa được khai báo Loại cơ quan nên chưa có danh sách Chức vụ.' : '';
     }
 
@@ -1786,6 +1807,7 @@
         // Chức vụ & logic ẩn
         const titleGroup = document.getElementById('detailTitleGroup');
         const titleName = chucVuName(item.titleId);
+        document.getElementById('detailNhomLd').innerText = tkNhomLdOf(item.titleId) ? 'Có' : 'Không';
         if (titleName) {
             document.getElementById('detailTitle').innerText = titleName;
             titleGroup.style.display = 'block';

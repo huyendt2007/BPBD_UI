@@ -392,7 +392,7 @@ function sxmSeedSubmit() {
                 // Tải lại trang (claimsList dựng lại từ dữ liệu mẫu): bổ sung lịch sử trình / từ chối theo hồ sơ luồng
                 var dOf = function (at) { var m = /(\d{2}\/\d{2}\/\d{4})/.exec(String(at || '')); return m ? m[1] : today; };
                 (rec0.history || []).forEach(function (h) {
-                    var title = h.action === 'Trình phê duyệt' ? 'Trình Lãnh đạo: ' + p.kind : (h.action === 'Từ chối phê duyệt' ? 'Lãnh đạo từ chối: ' + p.kind : '');
+                    var title = /^Trình ký đến /.test(h.action || '') ? h.action : h.action === 'Trình phê duyệt' ? 'Trình Lãnh đạo: ' + p.kind : (h.action === 'Từ chối phê duyệt' ? 'Lãnh đạo từ chối: ' + p.kind : '');
                     if (!title || c.timeline.some(function (t) { return t.title === title; })) return;
                     c.timeline.push({ title: title, date: dOf(h.at), desc: title.indexOf('Trình') === 0 ? 'Trình Lãnh đạo ký duyệt ' + SXM_WF_TEXT[p.t].title + '. Hồ sơ chuyển sang trạng thái [Chờ duyệt].' : 'Lý do: ' + p.rejectReason + '. Hồ sơ chuyển sang trạng thái [Bị trả lại].', status: 'active', officer: h.userName || '' });
                     changed = true;
@@ -428,7 +428,7 @@ function sxmSeedSubmit() {
             var res = W.submitForApproval(c.code, p.kind, content, [], extra);
             if (!res || !res.ok) { console.warn('seedxm submit', p.code, res && res.message); return; }
             c.status = 'Chờ duyệt';
-            c.timeline.push({ title: 'Trình Lãnh đạo: ' + p.kind, date: today, desc: 'Trình Lãnh đạo ký duyệt ' + T.title + '. Hồ sơ chuyển sang trạng thái [Chờ duyệt].', status: 'active', officer: SDX_CB });
+            c.timeline.push({ title: (typeof gqTrinhTitle === 'function' ? gqTrinhTitle(assignees[0], p.kind) : 'Trình Lãnh đạo: ' + p.kind), date: today, desc: 'Trình Lãnh đạo ký duyệt ' + T.title + '. Hồ sơ chuyển sang trạng thái [Chờ duyệt].', status: 'active', officer: SDX_CB });
             if (p.mode === 'reject' && assignees[0]) {
                 W.setCurrentUser(assignees[0]);
                 var rr = W.rejectApproval(c.code, p.rejectReason);

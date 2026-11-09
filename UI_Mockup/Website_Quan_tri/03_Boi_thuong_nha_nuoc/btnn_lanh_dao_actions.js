@@ -238,6 +238,8 @@
 
     // Tài khoản Lãnh đạo: thuộc Nhóm lãnh đạo của ít nhất 01 đơn vị tại Cấu hình luồng xử lý (xét cả 03 Loại luồng)
     function isLeaderUser(userId) {
+        // [ro1] Lãnh đạo theo Chức vụ (Nhóm Lãnh đạo)
+        if (typeof WF.isLeaderUser === 'function') return WF.isLeaderUser(userId);
         return WF.FLOW_TYPE_ORDER.some(ft => {
             const cfg = WF.getFlowConfig(ft);
             return Object.keys(cfg).some(root => Object.values(cfg[root]).some(n => (n.leaders || []).includes(userId)));
@@ -496,11 +498,14 @@
         const body = a.kind === WF.KIND_KQXD
             ? `<p>${esc(WF.unitName(root))} xác định cơ quan giải quyết bồi thường là: <strong>${esc(WF.unitName(WF.xdTargetUnitId(rec)))}</strong>.</p><p>Căn cứ pháp lý: ${esc(rec.procBasis || '--')}.</p><p>Lý do: ${esc(rec.procReason || '--')}</p>`
             : `<p>${esc(WF.unitName(root))} thông báo ${a.kind === 'Yêu cầu bổ sung' ? 'và đề nghị Ông/Bà bổ sung các nội dung sau' : 'không thụ lý yêu cầu với lý do sau'}:</p><p style="margin-left:20px;">${esc(a.reason || '--').replace(/\n/g, '<br>')}</p>`;
-        const box = (k, idx, cls, tag) => {
+        // Ô ký: Cấp [n] - [Họ tên Lãnh đạo]; nhãn Ký nháy khi cấp đó được cấu hình Ký nháy tại Cấu hình luồng xử lý (ký số theo luồng đã cấu hình)
+        const ft = WF.flowTypeOf ? WF.flowTypeOf(rec) : undefined;
+        const box = (k, idx, cls) => {
             const c = sc[k]; if (!c) return '';
             const uid = assignees[idx] || '';
             const done = steps[idx];
-            return `<div class="ld-sigbox ${cls}${done ? ' done' : ''}" style="left:${c.x}px; top:${c.y}px; width:${c.w}px; height:${c.h}px;"><strong>${esc(tag)}</strong><br>Cấp ${idx + 1} - ${esc(uid ? WF.userName(uid) : '')}${done ? `<br><span style="color:#16a34a;">✔ Đã ký duyệt ${esc(done.at || '')}</span>` : ''}</div>`;
+            const kn = WF.isKyNhayUnit && path[idx] && WF.isKyNhayUnit(path[idx], ft);
+            return `<div class="ld-sigbox ${cls}${done ? ' done' : ''}" style="left:${c.x}px; top:${c.y}px; width:${c.w}px; height:${c.h}px;">${kn ? '<span class="badge" style="float:right; font-size:9.5px; background:#dbeafe; color:#1e40af;">Ký nháy</span>' : ''}<strong>Cấp ${idx + 1} - ${esc(uid ? WF.userName(uid) : '')}</strong>${done ? `<br><span style="color:#16a34a;">✔ Đã ký duyệt ${esc(done.at || '')}</span>` : ''}</div>`;
         };
         const last = Math.max(path.length - 1, 0);
         document.getElementById('ldDPreview').innerHTML = `<div style="color:#e2e8f0; font-size:12px; margin-bottom:8px;"><i class="fa-solid fa-file-pdf"></i> ${esc(sd.file || 'Van_ban_trinh_ky.pdf')} · Trang 1/1</div>
@@ -510,9 +515,9 @@
                 <p><strong>Kính gửi:</strong> ${esc(rec.nycName || '--')}</p>
                 <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước năm 2017; xét yêu cầu (Mã hồ sơ: <strong>${esc(rec.code)}</strong>),</p>
                 ${body}
-                ${path.length > 1 && sd.enableRoomSig !== false ? box('room', 0, '', 'KÝ NHÁY') : ''}
-                ${path.slice(1, -1).map((u, k) => box('l' + (k + 1), k + 1, '', 'KÝ NHÁY')).join('')}
-                ${box('agency', last, 'agency', 'KÝ SỐ & CON DẤU')}
+                ${path.length > 1 && sd.enableRoomSig !== false ? box('room', 0, '') : ''}
+                ${path.slice(1, -1).map((u, k) => box('l' + (k + 1), k + 1, '')).join('')}
+                ${box('agency', last, 'agency')}
             </div>`;
     }
     // Khối thông tin tổng quan của lượt trình đang chờ ký duyệt
@@ -561,7 +566,7 @@
             const current = gi === groups.length - 1 && a.pending;
             const items = [];
             // Trình ký
-            const firstTo = pick(/Trình ([^.]+)\./, g.root.note) || (current && a.assignees && a.assignees[0] ? WF.userName(a.assignees[0]) : '');
+            const firstTo = pick(/^Trình ký đến (.+)$/, g.root.action) || pick(/Trình ([^.]+)\./, g.root.note) || (current && a.assignees && a.assignees[0] ? WF.userName(a.assignees[0]) : '');
             items.push(item('done', g.root.userId, g.root.userName, g.root.at, '', 'fa-solid fa-circle-arrow-right', `Trình ký${firstTo ? ` đến <strong>${esc(shortName(firstTo))}</strong>` : ''}`, pick(/Nội dung: (.*)$/, g.root.note) || (current ? a.content : ''), g.root.attachments));
             // Kết quả xử lý của từng cấp
             g.children.forEach(h => {
@@ -667,6 +672,7 @@
             ${row('Đơn vị gốc', esc(WF.unitName(rec.rootUnitId)))}
             ${row('Đơn vị đang xử lý', esc(WF.unitName(rec.currentUnitId || rec.rootUnitId)))}
             ${row('Cán bộ chủ trì', rec.chuTri ? esc(WF.userLabel(rec.chuTri)) : '<span class="ld-muted">Chưa phân công</span>')}
+            ${(rec.phoiHop || []).length ? row('Cán bộ phối hợp', esc(rec.phoiHop.map(WF.userLabel).join('; '))) : ''}
             ${row('Trạng thái', WF.statusBadge(rec.status))}
         </div>${WF.renderRoutesHtml(rec)}<div style="font-weight:700; color:#1e3a8a; margin:16px 0 8px; text-transform:uppercase; font-size:13px;">Lịch sử xử lý</div>${WF.renderHistoryHtml(rec)}`;
         open('ldDetailOverlay');

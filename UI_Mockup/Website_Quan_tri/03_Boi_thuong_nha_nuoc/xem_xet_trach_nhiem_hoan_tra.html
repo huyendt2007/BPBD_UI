@@ -1594,7 +1594,8 @@
     <!-- ============================================== -->
     <!-- JAVASCRIPT CONTROLLERS -->
     <!-- ============================================== -->
-    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109ro1"></script>
+    <script src="btnn_phan_cong_ky_duyet.js?v=20261109ro1"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script>
         // Xem xét trách nhiệm hoàn trả: đơn vị người xem theo vai trò giả lập (htMockScope); Lãnh đạo (ký duyệt) xem được mọi khối.
@@ -3739,6 +3740,15 @@
             const list = loai === 'QĐ hoàn trả' ? d.qdTlkt : (['Đình chỉ xem xét hoàn trả', 'QĐ đình chỉ', 'QĐ chấm dứt'].includes(loai) ? (d.dcht && d.dcht.attachments) : (loai === 'Thành lập hội đồng' ? (d.tlhd && d.tlhd.attachments) : null));
             return list && list.length && typeof tlktViewHtml === 'function' ? tlktViewHtml(list) : '';
         }
+        // Họ tên Lãnh đạo cấp 1 của lượt trình: theo thiết lập các cấp trình ký đã lưu; chưa có thì Lãnh đạo đầu tiên của cơ quan của hồ sơ
+        function htkdLeader1(d) {
+            const lv = x => (x && x.levels && x.levels[0]) ? ((x.levels[0].leaders || []).find(l => l.id === (x.assignees || [])[0]) || {}).label : '';
+            let n = lv(d.tlhd) || lv(d.dcht) || '';
+            if (!n && window.BTNN_WF) {
+                try { const W = BTNN_WF; const u = W.resolveAgencyUnit(d.agency || ''); const id = u && (u.id || u); const ld = id ? (W.getLeaders(id) || [])[0] : ''; n = ld ? W.userName(ld) : ''; } catch (e) { n = ''; }
+            }
+            return String(n || '').split(/ - | [(]/)[0].trim();
+        }
         // Lịch sử trình ký: giảm dần theo thời gian; lượt hiện hành: Lãnh đạo Chờ ký duyệt
         function htkdHistHtml(d) {
             const icon = { done: 'fa-solid fa-circle-check', no: 'fa-solid fa-circle-xmark', wait: 'fa-regular fa-clock' };
@@ -3746,10 +3756,12 @@
             const loai = htkdLoai(d);
             const past = (d.kdHist || []).filter(h => h.loai === loai).map(h => h.type === 'reject'
                 ? item('no', h.name, h.at, 'no', '<i class="fa-solid fa-ban"></i> Từ chối - trả lại cán bộ trình', h.msg)
-                : h.type === 'submit' ? item('done', h.name, h.at, '', '<i class="fa-solid fa-circle-arrow-right"></i> Trình ký', h.msg)
+                : h.type === 'submit' ? item('done', h.name, h.at, '', '<i class="fa-solid fa-circle-arrow-right"></i> Trình ký' + (htkdLeader1(d) ? ' đến <strong>' + htkdE(htkdLeader1(d)) + '</strong>' : ''), h.msg)
                     : item('done', h.name, h.at, 'ok', '<i class="fa-regular fa-circle-check"></i> Ký duyệt', h.msg));
-            const html = item('wait', 'Lãnh đạo ký duyệt', '', 'wait', '<i class="fa-solid fa-hourglass-half"></i> Chờ ký duyệt', '')
-                + item('done', d.kdSubmittedBy || HTKD_STAFF, d.kdSubmittedAt || '', '', '<i class="fa-solid fa-circle-arrow-right"></i> Trình ký', htkdContent(d))
+            const ld1 = htkdLeader1(d);
+            const trinh = '<i class="fa-solid fa-circle-arrow-right"></i> Trình ký' + (ld1 ? ' đến <strong>' + htkdE(ld1) + '</strong>' : '');
+            const html = item('wait', ld1 || 'Lãnh đạo ký duyệt', '', 'wait', '<i class="fa-solid fa-hourglass-half"></i> Chờ ký duyệt', '')
+                + item('done', d.kdSubmittedBy || HTKD_STAFF, d.kdSubmittedAt || '', '', trinh, htkdContent(d))
                 + past.join('');
             return `<div class="htkd-box hist"><div class="htkd-box-title"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử trình ký</div>${html}</div>`;
         }
@@ -3964,7 +3976,7 @@
     </script>
     <!-- Phạm vi dữ liệu theo đơn vị + trạng thái 02 tầng (chi tiết / chung) của màn danh sách -->
     <script src="ht_du_lieu_mau.js?v=20261106dc2"></script>
-    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261106vt2"></script>
+    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261109ro1"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="ht_mock_role_bar.js?v=20261105tc1"></script>
     <script src="admin-ui-standardizer.js"></script>

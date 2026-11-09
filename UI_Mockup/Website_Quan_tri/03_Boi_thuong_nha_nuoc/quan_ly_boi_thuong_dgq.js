@@ -187,9 +187,9 @@ function dgqEnsureModal() {
         + '<div style="font-size:12.5px; color:#64748b; margin-top:4px; padding-left:38px;">Hồ sơ: <strong id="dgqClaimCode" style="color:var(--primary-color);">--</strong><span style="margin:0 6px;">•</span> Người yêu cầu: <span id="dgqClaimNYC" style="font-weight:600; color:#334155;">--</span><span style="margin:0 6px;">•</span> Đơn vị: <span id="dgqClaimAgency" style="font-weight:500; color:#475569;">--</span></div>'
         + '</div><button type="button" onclick="closeDgqModal()" style="border:none; background:transparent; font-size:22px; color:#94a3b8; cursor:pointer; line-height:1; padding:4px;" title="Đóng">&times;</button></div>'
         + '<div id="dgqStepperBar" class="ktl-stepper-fullwidth"><div id="dgqStep1Tab" class="ktl-step-tab active" onclick="dgqGoStep1()"><span class="ktl-step-badge" id="dgqStep1Badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div>'
-        + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="dgqStep2Tab" class="ktl-step-tab" onclick="dgqGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div></div>'
+        + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="dgqStep2Tab" class="ktl-step-tab" onclick="dgqGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Thiết lập các cấp trình ký</span></div></div>'
         + '<div id="dgqStep1Body" class="sticky-modal-body gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
-        + '<div id="dgqReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ VỀ YÊU CẦU CHỈNH SỬA</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả về: <strong id="dgqReturnedReason">--</strong><br>Người trả về: <span id="dgqReturnedOfficer">--</span> • Thời điểm: <span id="dgqReturnedDate">--</span></div></div>'
+        + '<div id="dgqReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="dgqReturnedReason">--</strong><br>Lãnh đạo trả lại: <span id="dgqReturnedOfficer">--</span> • Thời điểm trả lại: <span id="dgqReturnedDate">--</span></div></div>'
         + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
         + card('online', 'Ký số trên hệ thống', 'Trình Lãnh đạo ký duyệt trên phần mềm', 'fa-file-signature', false)
         + card('offline', 'Ký ngoài (Ban hành trực tiếp)', 'Tải lên văn bản PDF đã ký và đóng dấu', 'fa-stamp', true)
@@ -437,7 +437,7 @@ function dgqGoStep1() {
     dgqEl('dgqBtnBackStep1').style.display = 'none';
     dgqEl('dgqBtnSubmitOnline').style.display = 'none';
 }
-// Tiếp tục: kiểm tra Bước 1 -> Bước 2 (Kéo ô ký & chọn Lãnh đạo)
+// Tiếp tục: kiểm tra Bước 1 -> Bước 2 (Thiết lập các cấp trình ký)
 function dgqGoStep2() {
     if (!dgqClaim || dgqIsOffline()) return;
     if (ktlxConverting.dgq) { showToast('Đang chuyển đổi tệp sang PDF, vui lòng chờ hoàn tất.', 'warning'); return; }
@@ -696,7 +696,7 @@ function dgqSeed() {
             var res = W.submitForApproval(c.code, DGQ_KIND, DGQ_CONTENT_DEFAULT, [], { assignee: assignees[0] || '', assignees: assignees, reason: dgqReasonFull(x), resultStatus: DGQ_RESULT, draftDoc: draftDoc, signDoc: signDoc });
             if (!res || !res.ok) return;
             c.status = 'Chờ duyệt';
-            c.timeline.push({ title: 'Trình Lãnh đạo: ' + DGQ_KIND, date: dgqToday(), desc: 'Trình Lãnh đạo ký duyệt ' + DGQ_DOC_TITLE + '. Hồ sơ chuyển sang trạng thái [Chờ duyệt].', status: 'active' });
+            c.timeline.push({ title: (typeof gqTrinhTitle === 'function' ? gqTrinhTitle(assignees[0], DGQ_KIND) : 'Trình Lãnh đạo: ' + DGQ_KIND), date: dgqToday(), desc: 'Trình Lãnh đạo ký duyệt ' + DGQ_DOC_TITLE + '. Hồ sơ chuyển sang trạng thái [Chờ duyệt].', status: 'active' });
             if (s.mode === 'reject' && assignees[0]) {
                 W.setCurrentUser(assignees[0]);
                 var rr = W.rejectApproval(c.code, s.rejectReason);

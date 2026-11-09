@@ -4,7 +4,7 @@
  * Bố cục như Popup Không thụ lý hồ sơ / Popup Thành lập Hội đồng (tlhd):
  *   - Hình thức ký 02 thẻ đầu form; Stepper 2 bước chỉ hiển thị khi Ký số trên hệ thống.
  *   - Ký số: Bước 1 Nhập thông tin (Sinh văn bản theo mẫu 39/BTNN | Tải lên từ máy, Tài liệu đính kèm không bắt buộc)
- *            Bước 2 Kéo ô ký & chọn Lãnh đạo -> Trình Lãnh đạo.
+ *            Bước 2 Thiết lập các cấp trình ký -> Trình Lãnh đạo.
  *   - Ký ngoài: đính kèm PDF đã ký & đóng dấu, Ban hành văn bản (có xác nhận).
  * Luồng trạng thái (giả định, bổ sung vào luồng hiện có của module hoàn trả):
  *   Hồ sơ trước khi chốt ý kiến Hội đồng (Chờ duyệt / Bị trả lại QĐ thành lập, Họp hội đồng - xem DCHT_ALLOWED)
@@ -173,13 +173,13 @@ function dchtModalHtml() {
         <div id="dchtStepperBar" class="ktl-stepper-fullwidth">
             <div id="dchtStep1Tab" class="ktl-step-tab active" onclick="dchtGoStep1()"><span class="ktl-step-badge" id="dchtStep1Badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div>
             <div class="ktl-stepper-sep"></div>
-            <div id="dchtStep2Tab" class="ktl-step-tab" onclick="dchtGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div>
+            <div id="dchtStep2Tab" class="ktl-step-tab" onclick="dchtGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Thiết lập các cấp trình ký</span></div>
         </div>
 
         <div id="dchtStep1Body" class="gqx-body" style="overflow-y:auto; flex:1; padding:24px;">
             <div id="dchtReturnedBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
-                <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> <span id="dchtReturnedTitle">QUYẾT ĐỊNH ĐÌNH CHỈ BỊ LÃNH ĐẠO TRẢ LẠI</span></div>
-                <div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do bị trả lại: <strong id="dchtReturnedReason">--</strong><br>Người từ chối: <span id="dchtReturnedBy">--</span> • Thời điểm: <span id="dchtReturnedAt">--</span></div>
+                <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> <span id="dchtReturnedTitle">Lý do bị trả lại</span></div>
+                <div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="dchtReturnedReason">--</strong><br>Lãnh đạo trả lại: <span id="dchtReturnedBy">--</span> • Thời điểm trả lại: <span id="dchtReturnedAt">--</span></div>
             </div>
 
             <div class="gqx-sec">
@@ -364,7 +364,7 @@ function dchtApplyMode() {
     const cd = dchtIsCd();
     const set = (id, v) => { const e = dchtEl(id); if (e) e.innerHTML = v; };
     set('dchtTitle', cd ? 'TRÌNH KÝ QUYẾT ĐỊNH CHẤM DỨT VIỆC XEM XÉT TRÁCH NHIỆM HOÀN TRẢ' : 'TRÌNH KÝ QUYẾT ĐỊNH ĐÌNH CHỈ VIỆC XEM XÉT TRÁCH NHIỆM HOÀN TRẢ');
-    set('dchtReturnedTitle', cd ? 'QUYẾT ĐỊNH CHẤM DỨT BỊ LÃNH ĐẠO TRẢ LẠI' : 'QUYẾT ĐỊNH ĐÌNH CHỈ BỊ LÃNH ĐẠO TRẢ LẠI');
+    set('dchtReturnedTitle', 'Lý do bị trả lại');
     set('dchtOffNote', '<i class="fa-solid fa-circle-info"></i> Khi bấm <strong>Ban hành văn bản</strong>, văn bản được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống) và hồ sơ chuyển sang trạng thái <strong>' + (cd ? CDHT_ST_DONE : DCHT_ST_DONE) + '</strong>.');
     const show = (id, on) => { const e = dchtEl(id); if (e) e.style.display = on ? '' : 'none'; };
     show('dchtCanCuHint', !cd);
@@ -681,7 +681,7 @@ function dchtGoStep2() {
     dchtSignRefresh();
 }
 
-// ---------------- Bước 2: Kéo ô ký & chọn Lãnh đạo ----------------
+// ---------------- Bước 2: Thiết lập các cấp trình ký ----------------
 function dchtSignIsLast(i) { return i === dchtSign.levels.length - 1; }
 function dchtSignDefault(i) {
     const last = dchtSignIsLast(i);
@@ -702,7 +702,7 @@ function dchtSignCardHtml(lv, i, n, prevId) {
             ${lv.kyNhay ? '<span class="badge" style="background:#dbeafe; color:#1e40af; font-size:10.5px; white-space:nowrap;">Ký nháy</span>' : ''}
         </div>
         <div style="margin-bottom:8px;">
-            <select id="dchtSignLeader${i}" class="form-control" style="font-size:13px; height:36px; width:100%;" onchange="dchtClearErr('dchtSignLeader${i}'); dchtSignSyncNames()" ${lv.leaders.length ? '' : 'disabled'}><option value="">${lv.leaders.length ? '-- Chọn Lãnh đạo --' : 'Cấp này chưa cấu hình nhóm lãnh đạo'}</option>${opts}</select>
+            <select id="dchtSignLeader${i}" class="form-control" style="font-size:13px; height:36px; width:100%;" onchange="dchtClearErr('dchtSignLeader${i}'); dchtSignSyncNames()" ${lv.leaders.length ? '' : 'disabled'}><option value="">${lv.leaders.length ? '-- Chọn Lãnh đạo --' : 'Cấp này chưa có tài khoản thuộc Nhóm Lãnh đạo'}</option>${opts}</select>
             <div id="dchtSignLeader${i}Err" class="gqx-err">${DCHT_REQ_MSG}</div>
         </div>
         ${i === 0 && !last ? `<label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12.5px; color:#1e40af; margin:0 0 6px 0;"><input type="checkbox" id="dchtSignNhay" checked onchange="dchtSign.enableNhay = this.checked; dchtSignRefresh();"><span>Áp dụng ký nháy Lãnh đạo cấp 1</span></label>` : ''}
@@ -718,13 +718,20 @@ function dchtSignCardHtml(lv, i, n, prevId) {
         </div>
     </div>`;
 }
+// [ro1] Bước 2: khối "Thiết lập các cấp trình ký" dùng chung (BTNN_PCKD.levelSetup)
 function dchtSignInit(prevAssignees) {
-    const levels = typeof tlhdLevels === 'function' ? tlhdLevels() : [];
-    dchtSign.levels = levels; dchtSign.placed = {}; dchtSign.coords = {}; dchtSign.enableNhay = true;
-    levels.forEach((lv, i) => { dchtSign.coords[i] = dchtSignDefault(i); });
-    const prev = Array.isArray(prevAssignees) ? prevAssignees : [];
-    const host = dchtEl('dchtSignLevels');
-    if (host) host.innerHTML = levels.map((lv, i) => dchtSignCardHtml(lv, i, levels.length, prev[i])).join('');
+    const P = window.BTNN_PCKD;
+    const page = dchtEl('dchtA4Page');
+    if (page) page.querySelectorAll('.gq-sign-box, .pc-sig').forEach(b => b.remove());
+    if (!P) return;
+    dchtSign.ui = P.legacyUi('dcht', {
+        host: () => dchtEl('dchtSignLevels'), page: () => dchtEl('dchtA4Page'), method: () => 'Ký số',
+        userId: () => P.submitterFor(typeof tlhdRootUnitId === 'function' ? tlhdRootUnitId() : ''),
+        onChange: levels => { const l = levels[levels.length - 1]; const W = window.BTNN_WF; const nm = dchtEl('dchtA4SignerName'); if (nm) nm.textContent = l && l.leader && W ? W.userName(l.leader).toUpperCase() : ''; }
+    });
+    const prev = prevAssignees && activeDossier && activeDossier.dcht ? P.prevFromLegacy(activeDossier.dcht) : null;
+    dchtSign.ui.reset(prev);
+    dchtSign.levels = [];
 }
 function dchtSignEnsureBox(i) {
     const page = dchtEl('dchtA4Page'); if (!page) return null;
@@ -734,9 +741,9 @@ function dchtSignEnsureBox(i) {
     box.id = 'dchtSignBox' + i;
     box.className = 'sig-drag-box gq-sign-box';
     box.style.cssText = last ? 'border:2px dashed #dc2626; background:rgba(254,242,242,0.94); z-index:10;' : 'border:2px dashed #2563eb; background:rgba(239,246,255,0.94); z-index:10;';
-    box.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:10.5px; font-weight:700; color:${last ? '#991b1b' : '#1e40af'};"><i class="fa-solid ${last ? 'fa-stamp' : 'fa-pen-nib'}"></i> ${last ? 'KÝ SỐ &amp; CON DẤU' : 'KÝ NHÁY'}</span><span class="badge" style="background:${last ? '#dc2626' : '#2563eb'}; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp ${i + 1}</span></div>
+    box.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><span></span><span class="badge" style="${dchtSign.levels[i] && dchtSign.levels[i].kyNhay ? '' : 'display:none; '}background:#dbeafe; color:#1e40af; font-size:9.5px; padding:1px 5px;">Ký nháy</span></div>
         <div style="text-align:center; font-weight:700; color:#1e293b; font-size:12px;" id="dchtSignBoxName${i}"></div>
-        <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>${last ? 'Chữ ký số &amp; Con dấu' : 'Chữ ký nháy'}</span><span id="dchtSignBoxXY${i}"></span></div>
+        <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>Tọa độ</span><span id="dchtSignBoxXY${i}"></span></div>
         <div class="sig-resize-handle" title="Kéo chuột để co giãn khung chữ ký"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>`;
     page.appendChild(box);
     box.addEventListener('mousedown', function (e) {
@@ -765,18 +772,7 @@ function dchtSignApply(i) {
     const pn = dchtEl('dchtSignCoord' + i); if (pn) pn.textContent = `Trang 1 • Tọa độ: (${c.x}, ${c.y}) • Cỡ: ${c.w} x ${c.h} px`;
 }
 function dchtSignRefresh() {
-    const st = dchtSign; if (!st.levels) return;
-    st.levels.forEach((lv, i) => {
-        const nhayOff = i === 0 && st.levels.length > 1 && !st.enableNhay;
-        const on = !!st.placed[i] && !nhayOff;
-        let box = dchtEl('dchtSignBox' + i);
-        if (on && !box) box = dchtSignEnsureBox(i);
-        if (box) box.style.display = on ? 'flex' : 'none';
-        const ctr = dchtEl('dchtSignCtrls' + i); if (ctr) ctr.style.display = on ? 'block' : 'none';
-        const btn = dchtEl('dchtSignPlace' + i); if (btn) btn.style.display = (on || nhayOff) ? 'none' : '';
-        if (on) dchtSignApply(i);
-    });
-    dchtSignSyncNames();
+    if (dchtSign.ui) { dchtSign.ui.render(); dchtSign.ui.renderSigs(); }
 }
 function dchtSignPlace(i) { dchtSign.placed[i] = true; dchtSignRefresh(); const b = dchtEl('dchtSignBox' + i); if (b && b.scrollIntoView) b.scrollIntoView({ block: 'center' }); }
 function dchtSignResize(i, w, h) { const c = dchtSign.coords[i]; if (!c) return; c.w = w; c.h = h; dchtSignApply(i); }
@@ -784,26 +780,20 @@ function dchtSignReset(i) { dchtSign.coords[i] = dchtSignDefault(i); dchtSignApp
 function dchtSignLeaderText(i) { const s = dchtEl('dchtSignLeader' + i); return s && s.value && s.selectedIndex >= 0 ? s.options[s.selectedIndex].text : ''; }
 function dchtSignSyncNames() {
     const st = dchtSign; if (!st.levels) return;
-    st.levels.forEach((lv, i) => { const el = dchtEl('dchtSignBoxName' + i); if (el) el.textContent = dchtSignLeaderText(i).split(' - ')[0].trim() || ('Cấp ' + (i + 1)); });
+    st.levels.forEach((lv, i) => { const el = dchtEl('dchtSignBoxName' + i); if (el) { const nm = dchtSignLeaderText(i).split(' - ')[0].trim(); el.textContent = (dchtSignIsLast(i) ? 'Cấp cuối' : 'Cấp ' + (i + 1)) + (nm ? ' - ' + nm : ''); } });
     const nm = dchtEl('dchtA4SignerName'); if (nm) nm.textContent = (dchtSignLeaderText(st.levels.length - 1).split(' - ')[0] || '').trim().toUpperCase();
 }
 function dchtSignCollect() {
-    const st = dchtSign; let first = null;
-    const assignees = st.levels.map((lv, i) => {
-        const s = dchtEl('dchtSignLeader' + i); const v = s ? s.value : '';
-        const bad = lv.leaders.length > 0 && !v;
-        if (s) s.classList.toggle('is-invalid', bad);
-        const er = dchtEl('dchtSignLeader' + i + 'Err'); if (er) er.style.display = bad ? 'block' : 'none';
-        if (bad && !first) first = s;
-        return v;
-    });
+    const st = dchtSign;
+    if (!st.ui) return null;
+    const okLv = st.ui.validate();
     const ct = dchtEl('dchtSignContent'); const content = ct ? ct.value.trim() : '';
     if (ct) ct.classList.toggle('is-invalid', !content);
     const ce = dchtEl('dchtSignContentErr'); if (ce) ce.style.display = content ? 'none' : 'block';
-    if (!content && !first) first = ct;
-    if (first) { if (first.focus) first.focus(); return null; }
-    const coords = st.levels.map((lv, i) => Object.assign({ level: i + 1, unitId: lv.unitId, placed: !!st.placed[i] && !(i === 0 && st.levels.length > 1 && !st.enableNhay) }, st.coords[i]));
-    return { assignees, content, enableNhay: st.enableNhay, coords };
+    if (!okLv || !content) { if (okLv && ct && ct.focus) ct.focus(); return null; }
+    const lg = window.BTNN_PCKD.toLegacy(st.ui.collect());
+    st.levels = lg.levels;
+    return Object.assign({ content }, lg);
 }
 function dchtLeaderLabel(a, i) { const lv = a.levels[i]; if (!lv) return ''; const l = lv.leaders.find(x => x.id === a.assignees[i]); return l ? l.label : ''; }
 
@@ -829,11 +819,12 @@ function dchtSubmitOnline() {
         uploadMeta: gen ? null : { name: f.name, size: f.size, note: f.note || '', keepId },
         attachments: typeof tlktGet === 'function' ? tlktGet('dcht') : [],
         levels: dchtSign.levels, assignees: sign.assignees, coords: sign.coords, enableNhay: sign.enableNhay, content: sign.content, level: 0,
+        tuThietLap: !!sign.tuThietLap, pcLevels: sign.pcLevels || null, pcSig: sign.pcSig || null,
         submittedAt: dchtNow(), returned: null
     });
     activeDossier.status = S.P;
     const lead1 = dchtLeaderLabel(activeDossier.dcht, 0) || 'Lãnh đạo cấp 1';
-    dchtLog(`Trình Lãnh đạo ${lead1} ký duyệt ${S.qd} (Mẫu 39/BTNN).` + (typeof tlktNote === 'function' ? tlktNote(activeDossier.dcht.attachments) : ''));
+    dchtLog(`Trình ký đến ${String(lead1).split(/ - | [(]/)[0].trim()} - ${S.qd} (Mẫu 39/BTNN).` + (typeof tlktNote === 'function' ? tlktNote(activeDossier.dcht.attachments) : ''));
     dchtClose();
     // Chế độ chấm dứt: [MSG-SUC-BTNN-HT-026]
     dchtToast(cd ? 'Trình ký Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả thành công.' : `Đã trình Lãnh đạo ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Hồ sơ chuyển sang trạng thái [Chờ duyệt (QĐ đình chỉ)].`, 'success');
@@ -891,8 +882,9 @@ function dchtApproveLevel() {
     const a = activeDossier && activeDossier.dcht;
     if (!a || !a.levels || a.level >= a.levels.length - 1) return false;
     const who = dchtLeaderLabel(a, a.level) || ('Lãnh đạo cấp ' + (a.level + 1));
+    const how = (window.BTNN_PCKD && BTNN_PCKD.howText(a)) || 'ký nháy'; // [ro1] theo thiết lập cấp khi trình
     a.level += 1;
-    dchtLog(`Lãnh đạo ${who} ký duyệt (ký nháy) ${dchtSt().ngan}, chuyển Lãnh đạo cấp tiếp theo.`);
+    dchtLog(`Lãnh đạo ${who} ký duyệt (${how}) ${dchtSt().ngan}, chuyển Lãnh đạo cấp tiếp theo.`);
     dchtToast('Ký duyệt thành công. ' + dchtSt().ngan + ' được chuyển Lãnh đạo cấp tiếp theo.', 'success');
     dchtAfter();
     return true;

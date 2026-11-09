@@ -4,6 +4,7 @@
  * 2. Tên 03 tab cố định: Thông tin hồ sơ vụ việc | Chi tiết giải quyết bồi thường | Phục hồi danh dự.
  * 3. Tab "Phục hồi danh dự": bắt đầu từ thanh tiến trình; bước Thông báo: Trình ký Thông báo tổ chức thực hiện phục hồi danh dự (Mẫu số 26/BTNN);
  *    Thành phần tham gia tổ chức phục hồi danh dự: 02 bảng như Thương lượng.
+ *    [pdchet] Người bị thiệt hại đã chết (phddVictimDead): Thông báo ban hành -> bỏ qua bước Ý kiến phản hồi, sang thẳng bước Tổ chức thực hiện.
  * 4. Bảng "Tài liệu đính kèm" đồng nhất (chuẩn màn Tham mưu kết quả xác định cơ quan giải quyết bồi thường):
  *    STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file / Xóa - xóa thẳng); nút Thêm tài liệu dưới bảng;
  *    chế độ xem: Thao tác Xem file / Tải file, bảng rỗng thì không hiển thị.
@@ -757,9 +758,9 @@ function ctvvmEnsureModal() {
         + '<div style="font-size:12.5px; color:#64748b; margin-top:4px; padding-left:38px;">Mã vụ việc: <strong id="ctvvmClaimCode" style="color:var(--primary-color);">--</strong><span style="margin:0 6px;">•</span> Người yêu cầu: <span id="ctvvmClaimNYC" style="font-weight:600; color:#334155;">--</span><span style="margin:0 6px;">•</span> Đơn vị: <span id="ctvvmClaimAgency" style="font-weight:500; color:#475569;">--</span></div>'
         + '</div><button type="button" onclick="closeCtvvmModal()" style="border:none; background:transparent; font-size:22px; color:#94a3b8; cursor:pointer; line-height:1; padding:4px;" title="Đóng">&times;</button></div>'
         + '<div id="ctvvmStepperBar" class="ktl-stepper-fullwidth"><div id="ctvvmStep1Tab" class="ktl-step-tab active" onclick="ctvvmGoStep1()"><span class="ktl-step-badge" id="ctvvmStep1Badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div>'
-        + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="ctvvmStep2Tab" class="ktl-step-tab" onclick="ctvvmGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div></div>'
+        + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="ctvvmStep2Tab" class="ktl-step-tab" onclick="ctvvmGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Thiết lập các cấp trình ký</span></div></div>'
         + '<div id="ctvvmStep1Body" class="sticky-modal-body gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
-        + '<div id="ctvvmReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ LẠI</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do bị trả lại: <strong id="ctvvmReturnedReason">--</strong><br>Người từ chối: <span id="ctvvmReturnedOfficer">--</span> • Thời điểm: <span id="ctvvmReturnedDate">--</span></div></div>'
+        + '<div id="ctvvmReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="ctvvmReturnedReason">--</strong><br>Lãnh đạo trả lại: <span id="ctvvmReturnedOfficer">--</span> • Thời điểm trả lại: <span id="ctvvmReturnedDate">--</span></div></div>'
         + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
         + card('ctvvmCardSignOnline', 'online', 'Ký số trên hệ thống', 'Trình Lãnh đạo ký duyệt trên phần mềm', 'fa-file-signature', false, true)
         + card('ctvvmCardSignOffline', 'offline', 'Ký ngoài (Ban hành trực tiếp)', 'Tải lên văn bản PDF đã ký và đóng dấu', 'fa-stamp', true, false)
@@ -1132,9 +1133,18 @@ function ctvvmApplyIssued(claim, m26, signerName, signerTitle) {
     claim.phddStep1File = m26.signedFile;
     if (!Array.isArray(claim.phddTimeline)) claim.phddTimeline = [];
     claim.phddTimeline.push({ title: 'Ban hành Thông báo tổ chức thực hiện phục hồi danh dự', date: gqToday(), desc: (m26.method === 'Ký ngoài' ? 'Ban hành văn bản đã ký ngoài hệ thống' : 'Lãnh đạo ký duyệt') + ' (' + m26.signedFile + ').' });
-    setPhddStatus(claim, 'Chờ phản hồi');
-    if (claim.victimAlive === 'no') setPhddStatus(claim, 'Chờ thực hiện');
+    // [pdchet] Người bị thiệt hại đã chết: bỏ qua bước Ý kiến phản hồi của người yêu cầu, sang thẳng bước Tổ chức thực hiện
+    if (phddVictimDead(claim)) {
+        setPhddStatus(claim, 'Chờ thực hiện');
+        claim.phddTimeline.push({ title: 'Bỏ qua bước Ý kiến phản hồi của người yêu cầu', date: gqToday(), desc: 'Người bị thiệt hại đã chết: không lấy ý kiến phản hồi, chuyển sang bước Tổ chức thực hiện phục hồi danh dự.' });
+    } else setPhddStatus(claim, 'Chờ phản hồi');
     try { gqSaveData(claim, { ctvvM26: m26 }); } catch (e) { /* mockup */ }
+}
+// [pdchet] Người bị thiệt hại đã chết: Trạng thái người bị thiệt hại = "Đã chết" (DM_59) hoặc cờ victimAlive = 'no'
+function phddVictimDead(claim) {
+    if (!claim) return false;
+    if (claim.victimAlive === 'no') return true;
+    try { return typeof victimAliveLabel === 'function' ? victimAliveLabel(claim) === 'Đã chết' : claim.victimAliveStatus === 'Đã chết'; } catch (e) { return false; }
 }
 // Kết quả Lãnh đạo xử lý phiếu trình (đồng bộ từ hồ sơ luồng): Ký duyệt cấp cuối -> ban hành; Từ chối -> Bị trả lại
 (function () {

@@ -73,8 +73,10 @@
         return false;
     }
     // Chỉ Bộ Tư pháp/Cục và Sở Tư pháp thao tác trên bản ghi của đơn vị mình; UBND cấp tỉnh chỉ xem
-    const canEdit = owner => ['BTP', 'STP'].includes(level()) && owner === root();
-    // stpOnly: chức năng thuộc nhóm "Nghiệp vụ dùng cho STP" (Bộ Tư pháp chỉ xem)
+    // stpOnly: chức năng chỉ Sở Tư pháp được thao tác, Bộ Tư pháp/Cục chỉ xem (chốt 09/11/2026: Kiểm tra; Theo dõi, đôn đốc;
+    // Tập huấn, bồi dưỡng; Hướng dẫn nghiệp vụ; Khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN)
+    const canEdit = (owner, stpOnly) => (stpOnly ? level() === 'STP' : ['BTP', 'STP'].includes(level())) && owner === root();
+    // stpOnly: chức năng chỉ Sở Tư pháp được thêm mới (nhóm "Nghiệp vụ dùng cho STP" và các chức năng nêu trên; Bộ Tư pháp chỉ xem)
     function canCreate(stpOnly) { const lv = level(); return lv === 'STP' || (lv === 'BTP' && !stpOnly); }
     const DENY_MSG = 'Đơn vị của người dùng không thuộc phạm vi dữ liệu của chức năng này.';
     const denyRow = colspan => `<tr><td colspan="${colspan}" style="text-align:center; color:var(--text-muted); font-style:italic; padding:26px;"><i class="fa-solid fa-circle-info"></i> ${DENY_MSG}</td></tr>`;

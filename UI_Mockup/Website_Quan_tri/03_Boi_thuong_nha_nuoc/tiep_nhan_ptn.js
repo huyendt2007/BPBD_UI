@@ -364,14 +364,35 @@ function levelsOf(claim, userId) {
     const path = (W.computeApprovalPath && W.computeApprovalPath(rl)) || [];
     return path.map((u, i) => ({ unitId: u, leaders: i === 0 ? W.firstLevelLeaders(rl) : W.getLeaders(u, ft) }));
 }
+// [ro1] Thiết lập các cấp trình ký dùng chung (BTNN_PCKD.levelSetup): cán bộ tự thêm cấp, chọn Lãnh đạo, Ký nháy, Ký số, Đặt chữ ký
+function lvPrev(re) {
+    const a = re && re.approval;
+    if (!a || !a.tuThietLap || !Array.isArray(a.levels)) return null;
+    return a.levels.map((l, i) => Object.assign({}, l, { sig: (re.pcSig || [])[i] || null }));
+}
+function lvMount(st, hostId, pageId, onChange) {
+    const P = global.BTNN_PCKD;
+    if (!P) return false;
+    if (!st.ui) { st.ui = P.levelSetup({ host: () => el(hostId), page: () => el(pageId), method: () => 'Ký số', onChange }); st.ui.reset(st.prevLv || null); }
+    st.ui.render(); st.ui.renderSigs();
+    return true;
+}
+function lvApply(p, col) {
+    p.assignees = col.assignees.slice(); p.pcSig = col.pcSig; p.levels = col.levels; p.enableRoomSig = !!col.pcSig[0];
+    Object.assign(p.approval, { path: col.path.slice(), assignees: col.assignees.slice(), leaders: col.levels.map(l => [l.leader]), levels: col.levels, tuThietLap: true, signDoc: { pcSig: col.pcSig } });
+}
+function lvHow(a) { const l = a && a.tuThietLap ? (a.levels || [])[a.level] : null; return l ? (l.kySo ? ' - đã ký số' : (l.kyNhay ? ' - đã gán chữ ký nháy' : ' - đã gán chữ ký')) : ''; }
+// MSG-ERR-BTNN-LXL-007: đơn vị cán bộ trình và đơn vị cấp trên chưa có tài khoản thuộc Nhóm Lãnh đạo
+function noLeaderMsg() { const u = W.getCurrentUser(); const root = u ? (W.getRootId(u.unitId) || u.unitId) : ''; return `Đơn vị ${W.unitName(root)} chưa có tài khoản thuộc Nhóm Lãnh đạo. Vui lòng liên hệ Quản trị hệ thống.`; }
 function canAct(p, uid) {
     if (!p || p.status !== ST.REVIEW || !p.approval) return false;
     const a = p.approval;
     const who = (a.assignees || [])[a.level];
     if (who) return who === uid;
-    // [tnd] Phiếu tự trình: Lãnh đạo thuộc Nhóm lãnh đạo của cấp đang ký duyệt (theo luồng đã cấu hình)
+    // [R3] Chỉ Lãnh đạo được giao đích danh; phiếu cũ chưa có Lãnh đạo được giao: Lãnh đạo đầu tiên của Nhóm lãnh đạo cấp đó
     const grp = (a.leaders || [])[a.level];
-    return Array.isArray(grp) ? grp.indexOf(uid) >= 0 : W.isLeaderOf(uid, a.path[a.level]);
+    const list = Array.isArray(grp) && grp.length ? grp : (W.getLeaders(a.path[a.level]) || []);
+    return !!list.length && list[0] === uid;
 }
 
 // ======================= Văn bản Mẫu 02/BTNN =======================
@@ -445,7 +466,7 @@ function ensureModal() {
         <div class="ptn-stepper-fullwidth" id="ptnSgStepper">
             <div class="ptn-step-tab active" id="ptnSgTab1" onclick="if (PTN._s() && PTN._s().step === 2) PTN.goStep(1);"><span class="ptn-step-badge" id="ptnSgTab1Badge">1</span><span class="ptn-step-title">Nhập thông tin</span></div>
             <div class="ptn-stepper-sep"></div>
-            <div class="ptn-step-tab" id="ptnSgTab2" onclick="if (PTN._s() && PTN._s().step === 1) PTN.next();"><span class="ptn-step-badge">2</span><span class="ptn-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div>
+            <div class="ptn-step-tab" id="ptnSgTab2" onclick="if (PTN._s() && PTN._s().step === 1) PTN.next();"><span class="ptn-step-badge">2</span><span class="ptn-step-title">Thiết lập các cấp trình ký</span></div>
         </div>
         <div class="ptn-qs-body ptn-gqx-body" id="ptnSgStep1">
             <div class="ptn-gqx-sec" id="ptnSgReturn" style="display:none; border-color:#fecaca; background:#fff7f7;"></div>
@@ -533,7 +554,7 @@ function open(id) {
 // [ptnxd] Thêm mới hồ sơ Loại hồ sơ Xác định CQGQBT: Lưu thông tin -> mở Popup Trình ký; hồ sơ chỉ lưu khi Trình Lãnh đạo / Ban hành văn bản thành công
 // claim: hồ sơ chưa lưu; wfData: dữ liệu tạo hồ sơ luồng khi ban hành; onSaved(trạng thái hồ sơ): trang Tiếp nhận lưu hồ sơ, đóng form
 function openNew(claim, wfData, onSaved) {
-    if (!levelsOf(claim).length) { toast('Chưa xác định được cấp ký duyệt Phiếu tiếp nhận theo luồng đã cấu hình. Vui lòng liên hệ Quản trị hệ thống.', 'error'); return; }
+    if (!levelsOf(claim).length) { toast(noLeaderMsg(), 'error'); return; }
     openFor(claim.id, claim, { wfData: wfData || null, onSaved });
 }
 // [ptnmh02] Cập nhật hồ sơ Bị trả lại: draft = bản sao hồ sơ đã gán dữ liệu form; onSaved(): trang Tiếp nhận ghi nhận dữ liệu form khi trình / ban hành thành công
@@ -550,7 +571,7 @@ function openFor(id, c, nw) {
     const prev = isNew ? null : get(c.code);
     const re = prev && prev.status === ST.REJECT ? prev : null;
     const levels = levelsOf(c);
-    S = { id, claim: c, code: c.code, method: 'Ký số', docSrc: 'gen', step: 1, levels, assignees: levels.map((lv, i) => (re && re.assignees && re.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null,
+    S = { id, claim: c, code: c.code, method: 'Ký số', docSrc: 'gen', step: 1, levels, assignees: levels.map((lv, i) => (re && re.assignees && re.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null, ui: null, prevLv: lvPrev(re),
         enableNhay: re && re.enableRoomSig !== undefined ? re.enableRoomSig !== false : true,
         noTpl: noTpl(c), isNew, wfData: isNew ? nw.wfData : null, onSaved: nw ? nw.onSaved : null };
     el('ptnSgSubCode').innerText = c.maVuViec || c.code || '--';
@@ -732,8 +753,9 @@ function next() {
     if (!okTlkt) return;
     const f = S.docFile;
     el('ptnSgA4').innerHTML = f.generated ? f.html : `<div style="text-align:center; color:#64748b; padding-top:300px; font:14px Inter, sans-serif;"><i class="fa-solid fa-file-lines" style="font-size:48px;"></i><br><br>${esc(f.name)}<br>(Văn bản tải lên)</div>`;
-    renderLevels();
     goStep(2);
+    if (lvMount(S, 'ptnSgLevels', 'ptnSgA4')) return;
+    renderLevels();
     S.levels.forEach((lv, i) => { if (S.placed[i]) drawBox(i); });
 }
 function renderLevels() {
@@ -771,7 +793,7 @@ function drawBox(i) {
     const c = S.coords[i];
     Object.assign(b.style, { left: c.x + 'px', top: c.y + 'px', width: c.w + 'px', height: c.h + 'px', display: nhayOff(i) ? 'none' : '' });
     const who = S.assignees[i] ? W.userName(S.assignees[i]) : '';
-    b.innerHTML = `<b>${last ? 'KÝ SỐ &amp; CON DẤU' : 'KÝ NHÁY'}</b><br>Cấp ${i + 1}${who ? ' - ' + esc(who) : ''}`;
+    b.innerHTML = `<b>${last ? 'Cấp cuối' : 'Cấp ' + (i + 1)}${who ? ' - ' + esc(who) : ''}</b>${kyNhayOf(S.levels[i].unitId) ? '<br><span class="badge" style="font-size:10px;">Ký nháy</span>' : ''}`;
 }
 function baseRecord(c, prev) {
     return {
@@ -808,7 +830,13 @@ function toggleNhay(on) {
 // Ký số: mỗi cấp chọn Lãnh đạo và đặt chữ ký (cấp 1 theo needPlace) -> Phiếu tiếp nhận "Chờ duyệt"
 function submit() {
     let ok = true; let first = null;
-    S.levels.forEach((lv, i) => {
+    if (S.ui) {
+        if (!S.ui.validate()) return;
+        const col = S.ui.collect();
+        S.lvCol = col; S.assignees = col.assignees.slice(); S.levels = col.path.map((u, i) => ({ unitId: u, leaders: [col.assignees[i]] })); S.enableNhay = true;
+        S.placed = {}; S.coords = {}; col.pcSig.forEach((s, i) => { if (s) { S.placed[i] = true; S.coords[i] = Object.assign({}, s); } });
+    }
+    (S.ui ? [] : S.levels).forEach((lv, i) => {
         const bad = !el('ptnSgLeader' + i).value; mark('ptnSgLeader' + i, bad); if (bad) { ok = false; first = first || el('ptnSgLeader' + i); }
         const pe = el('ptnSgPlace' + i + 'Err'); if (!S.placed[i] && needPlace(i)) { if (pe) pe.style.display = 'block'; ok = false; }
     });
@@ -832,9 +860,10 @@ function submit() {
     // [ptnxd] Thêm mới hồ sơ Xác định CQGQBT: phiếu thuộc luồng Duyệt tiếp nhận (hồ sơ Chờ duyệt tiếp nhận; cấp cuối Ký duyệt -> Chờ phân công)
     const nw = S.isNew;
     if (nw) Object.assign(p, { flow: FLOW, wfData: S.wfData, returns: [] }, { approval: Object.assign(p.approval, { leaders: S.levels.map(l => l.leaders.slice()) }) });
+    if (S.lvCol) lvApply(p, S.lvCol);
     if (S.noTpl) p.noTpl = true;
     const nextText = path.length > 1 ? ' Lãnh đạo cấp tiếp theo: ' + path.slice(1).map((u, i) => `${W.userName(S.assignees[i + 1])} - ${W.unitName(u)}`).join('; ') + '.' : '';
-    hist(p, prev && prev.status === ST.REJECT ? 'Trình ký lại Phiếu tiếp nhận' : 'Trình ký Phiếu tiếp nhận', `Ký số trên hệ thống. Trình ${W.userName(S.assignees[0])} - ${W.unitName(path[0])}.${nextText}${content ? ' Nội dung: ' + content : ''}${nw ? ' Hồ sơ chuyển [' + REC_ST.REVIEW + '].' : ''}`);
+    hist(p, 'Trình ký đến ' + W.userName(S.assignees[0]), `${KIND}. Ký số trên hệ thống. Trình ${W.userName(S.assignees[0])} - ${W.unitName(path[0])}.${nextText}${content ? ' Nội dung: ' + content : ''}${nw ? ' Hồ sơ chuyển [' + REC_ST.REVIEW + '].' : ''}`);
     put(p);
     const st = S;
     close();
@@ -1058,9 +1087,9 @@ function renderDetail(id, isReadOnly) {
         const ib = el('wfInfoBlock'); if (ib) ib.style.display = 'block';
     }
 }
-// MH03: nút Ký duyệt / Từ chối tại thanh thao tác; chỉ cho phép khi Lãnh đạo thuộc Nhóm lãnh đạo của cấp đang ký duyệt
+// MH03: nút Ký duyệt / Từ chối tại thanh thao tác; chỉ cho phép khi người dùng là Lãnh đạo được giao đích danh ở cấp đang ký duyệt
 // [mh03btn] MH03: chỉ hiển thị khi được phép; không đủ điều kiện thì không hiển thị (không hiển thị mờ / disabled)
-const LD_DENY = ' - Chỉ khả dụng khi hồ sơ Chờ duyệt tiếp nhận và người dùng thuộc Nhóm lãnh đạo của cấp đang ký duyệt Phiếu tiếp nhận';
+const LD_DENY = ' - Chỉ khả dụng khi hồ sơ Chờ duyệt tiếp nhận và người dùng là Lãnh đạo được giao đích danh ở cấp đang ký duyệt Phiếu tiếp nhận';
 function isLeaderMe() { try { return !!(global.BTNN_LD && global.BTNN_LD.isLeaderUser(me())); } catch (e) { return false; } }
 function setDetailBtn(b, visible, can, title) {
     b.style.display = visible ? 'inline-flex' : 'none';
@@ -1097,7 +1126,7 @@ function afterPageAction() {
     if (cur && ro && fv && fv.style.display !== 'none' && typeof global.openReceptionForm === 'function') global.openReceptionForm(cur, true);
 }
 // Nút Ký duyệt / Từ chối trên lưới Tiếp nhận hồ sơ (giả lập Lãnh đạo, cả 02 tab)
-// [tnld2] Luôn hiển thị, cố định vị trí; chỉ cho phép khi hồ sơ Chờ duyệt tiếp nhận và người dùng thuộc Nhóm lãnh đạo của cấp đang ký duyệt; trường hợp khác hiển thị mờ
+// [tnld2] Luôn hiển thị, cố định vị trí; chỉ cho phép khi hồ sơ Chờ duyệt tiếp nhận và người dùng là Lãnh đạo được giao đích danh ở cấp đang ký duyệt; trường hợp khác hiển thị mờ
 function gridLeaderButtonsHtml(item, offStyle) {
     if (!item) return '';
     const can = canActCode(item.code);
@@ -1178,55 +1207,9 @@ function ldOpen(code, mode, cb) {
     const p = get(code);
     const uid = W.getCurrentUserId();
     if (!p) return;
-    if (mode !== 'view' && !canAct(p, uid)) { toast('Phiếu tiếp nhận đã được xử lý bởi người khác. Danh sách đã được tải lại.', 'error'); if (typeof global.renderAll === 'function') global.renderAll(); return; }
-    // [ptnxs] Phiếu tiếp nhận hồ sơ Xác định CQGQBT: màn Ký duyệt / Từ chối như Xác định CQGQBT
-    if (isXs(p)) { ptxLdOpen(code, mode, cb); return; }
-    LD = { code, mode, cb };
-    const old = el('ptnLdOverlay'); if (old) old.remove();
-    const a = p.approval;
-    const approve = mode === 'approve', reject = mode === 'reject';
-    const last = a && a.level >= a.path.length - 1;
-    const row = (k, v) => `<div class="ptnld-row"><span>${esc(k)}</span><span>${v}</span></div>`;
-    const f = p.method === 'Ký ngoài' ? { name: p.signedFile } : (p.docFile || {});
-    const preview = p.method !== 'Ký ngoài' && f.generated && p.docHtml
-        ? `<div style="background:#fff; width:794px; max-width:100%; min-height:1060px; margin:0 auto; padding:56px 64px; box-sizing:border-box;">${p.docHtml}</div>`
-        : `<div class="ptnld-uploaded"><i class="fa-solid fa-file-lines" style="font-size:42px; color:#64748b;"></i><br><br>${esc(f.name || '--')}<br>(Văn bản tải lên)<br><br><button type="button" class="btn btn-secondary btn-sm" onclick="PTN.viewIssued('${esc(code)}')"><i class="fa-solid fa-eye"></i> Xem file</button></div>`;
-    const tl = typeof global.tlktViewHtml === 'function' ? global.tlktViewHtml(p.attachments || [], { boxClass: 'ptnld-box', titleClass: 'ptnld-box-title' }) : '';
-    const flow = isFlow(p);
-    const nextWho = a && !last ? nextLevelText(a) : '';
-    const signBox = approve ? `<div class="ptnld-sign"><b>Hình thức ký:</b> Ký số trên hệ thống<br>${last ? 'Cấp ký duyệt cuối cùng: hệ thống ký số Phiếu tiếp nhận bằng chứng thư số của <b>' + esc(W.userLabel(uid)) + '</b> (giả lập). Phiếu tiếp nhận chuyển [Đã ban hành].' + (flow ? ' Hồ sơ chuyển [' + REC_ST.ASSIGN + '], chuyển Lãnh đạo ' + esc(W.unitName(p.rootUnitId)) + ' phân công theo luồng đã cấu hình.' : '') : 'Ký duyệt cấp hiện tại; Phiếu tiếp nhận chuyển Lãnh đạo cấp tiếp theo: <b>' + esc(nextWho) + '</b>.'}</div>` : '';
-    const input = approve
-        ? `<div class="ptnld-group"><label class="ptnld-label" for="ptnLdNote">Ý kiến ký duyệt</label><textarea class="ptnld-input" id="ptnLdNote" rows="4" maxlength="2000" placeholder="Nhập ý kiến ký duyệt..."></textarea></div>`
-        : reject ? `<div class="ptnld-group"><label class="ptnld-label" for="ptnLdNote">Lý do từ chối<span class="ptnld-req">*</span></label><textarea class="ptnld-input" id="ptnLdNote" rows="4" maxlength="2000" placeholder="Nhập lý do từ chối..." oninput="this.classList.remove('is-invalid'); document.getElementById('ptnLdNoteErr').style.display='none';"></textarea><div class="ptnld-err" id="ptnLdNoteErr">${MSG_REQ}</div><div class="ptnld-hint">${flow ? 'Sau khi từ chối, hồ sơ chuyển [' + REC_ST.REJECT + '] cho Cán bộ tiếp nhận cập nhật, trình lại.' : 'Sau khi từ chối, Phiếu tiếp nhận chuyển [Bị trả lại] cho Cán bộ tiếp nhận cập nhật, trình lại.'}</div></div>` : '';
-    const can = canAct(p, uid);
-    const foot = approve ? `<button type="button" class="btn btn-secondary" onclick="PTN.ldClose()">Hủy bỏ</button><button type="button" class="btn btn-primary" onclick="PTN.ldSubmit()"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button>`
-        : reject ? `<button type="button" class="btn btn-secondary" onclick="PTN.ldClose()">Hủy bỏ</button><button type="button" class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="PTN.ldSubmit()"><i class="fa-solid fa-circle-xmark"></i> Từ chối</button>`
-        : `<button type="button" class="btn btn-secondary" onclick="PTN.ldClose()">Đóng</button>${can && LD.cb !== 'done' ? `<button type="button" class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="PTN.ldOpen('${esc(code)}','reject')"><i class="fa-solid fa-circle-xmark"></i> Từ chối</button><button type="button" class="btn btn-primary" onclick="PTN.ldOpen('${esc(code)}','approve')"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button>` : ''}`;
-    const ov = document.createElement('div');
-    ov.className = 'ptnld-overlay'; ov.id = 'ptnLdOverlay';
-    ov.innerHTML = `<div class="ptnld-modal">
-        <div class="ptnld-head"><h3><i class="fa-solid fa-file-signature"></i> ${approve ? 'Ký duyệt' : reject ? 'Từ chối' : 'Chi tiết'} Phiếu tiếp nhận hồ sơ ${esc(p.maVuViec || code)}</h3><button type="button" class="ptnld-x" onclick="PTN.ldClose()">&times;</button></div>
-        <div class="ptnld-body">
-            <div class="ptnld-preview"><div class="ptnld-doc-bar"><span>${esc(f.name || '--')}</span></div><div style="flex:1; overflow:auto;">${preview}</div></div>
-            <div class="ptnld-right">
-                <div class="ptnld-box"><div class="ptnld-box-title">Thông tin trình ký</div>
-                    ${row('Loại trình', esc(KIND))}
-                    ${row('Mã vụ việc', `<b>${esc(p.maVuViec || code)}</b>`)}
-                    ${row('Người yêu cầu', esc(p.nycName || '--'))}
-                    ${row('Hình thức tiếp nhận', esc(p.nopKenh || '--'))}
-                    ${flow ? row('Trạng thái hồ sơ', W.statusBadge(recStatusOf(code))) : row('Trạng thái', statusBadge(p.status))}
-                    ${p.method === 'Ký số' ? row('Cán bộ trình', `${esc(W.userName(p.submittedBy))} - ${esc(p.submittedAt || '')}`) : ''}
-                    ${a ? row('Cấp ký duyệt', `${a.level + 1}/${a.path.length} - ${esc(W.unitName(a.path[a.level]))}`) : ''}
-                    ${p.content ? row('Nội dung trình', esc(p.content)) : ''}
-                </div>
-                ${tl}
-                <div class="ptnld-box hist"><div class="ptnld-box-title">Lịch sử trình ký</div>${ldHistoryHtml(p)}</div>
-                ${signBox}${input}
-            </div>
-        </div>
-        <div class="ptnld-foot">${foot}</div>
-    </div>`;
-    document.body.appendChild(ov);
+    if (mode !== 'view' && !canAct(p, uid)) { toast('Hồ sơ đã được xử lý bởi người khác. Danh sách đã được tải lại.', 'error'); if (typeof global.renderAll === 'function') global.renderAll(); return; }
+    // [R1] Màn Ký duyệt / Từ chối giống Xác định CQGQBT cho cả 02 Loại hồ sơ; khác biệt: văn bản, Thông tin tổng quan, kết quả sau ký
+    ptxLdOpen(code, mode, cb);
 }
 // Lãnh đạo của một cấp ký duyệt: Lãnh đạo được chọn khi trình (phiếu cũ) hoặc Nhóm lãnh đạo của cấp theo luồng đã cấu hình
 function levelText(a, i) {
@@ -1237,19 +1220,19 @@ function levelText(a, i) {
 }
 function nextLevelText(a) { return levelText(a, a.level + 1); }
 function workStatusHtml(t) { return t && isFlow(t.ptn) ? W.statusBadge(recStatusOf(t.code)) : statusBadge(t && t.ptn ? t.ptn.status : ''); }
-function ldClose() { const o = el('ptnLdOverlay'); if (o) o.remove(); }
+function ldClose() { const o = el('ptnLdOverlay'); if (o) o.remove(); ptxLdClose(); }
 function ldSubmit() {
     const p = get(LD.code);
     const uid = W.getCurrentUserId();
-    if (!canAct(p, uid)) { ldClose(); toast('Phiếu tiếp nhận đã được xử lý bởi người khác. Danh sách đã được tải lại.', 'error'); ldDone(); return; }
-    const noteEl = el('ptnLdNote');
+    if (!canAct(p, uid)) { ldClose(); toast('Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phê duyệt. Vui lòng tải lại danh sách.', 'error'); ldDone(); return; }
+    const noteEl = el('ptxLdNote');
     const note = noteEl ? noteEl.value.trim() : '';
     const a = p.approval;
     if (LD.mode === 'reject') {
-        if (!note) { noteEl.classList.add('is-invalid'); el('ptnLdNoteErr').style.display = 'block'; noteEl.focus(); return; }
+        if (!note) { el('ptxLdErr').style.display = 'block'; noteEl.focus(); return; }
         p.status = ST.REJECT; p.reason = note; p.rejectedBy = uid; p.rejectedAt = W.nowText();
         a.steps.push({ level: a.level, unitId: a.path[a.level], userId: uid, at: p.rejectedAt, result: 'Từ chối', note });
-        hist(p, 'Từ chối Phiếu tiếp nhận', `Cấp ${a.level + 1}/${a.path.length} - ${W.unitName(a.path[a.level])}. Lý do: ${note}`, uid);
+        hist(p, 'Từ chối phê duyệt', `${KIND}: cấp ${a.level + 1}/${a.path.length} - ${W.unitName(a.path[a.level])}. Lý do: ${note}`, uid);
         put(p); ldClose();
         if (isFlow(p)) updateClaim(p.code, x => { x.status = REC_ST.REJECT; });
         toast(`Đã từ chối Phiếu tiếp nhận hồ sơ ${p.maVuViec}. ${isFlow(p) ? 'Hồ sơ chuyển [' + REC_ST.REJECT + '].' : 'Phiếu tiếp nhận chuyển [' + ST.REJECT + '].'}`, 'success');
@@ -1262,9 +1245,9 @@ function ldSubmit() {
         p.status = ST.DONE; p.signedAt = at; p.signedBy = uid; p.issuedAt = at;
         p.digitalSign = { by: uid, at };
         if (isFlow(p)) p.docHtml = signDoc(p.docHtml, uid);
-        hist(p, 'Ký duyệt Phiếu tiếp nhận', `Cấp ${a.level + 1}/${a.path.length} - ${W.unitName(a.path[a.level])}; ký số và ban hành.${note ? ' Ý kiến: ' + note : ''}`, uid);
+        hist(p, 'Ký duyệt', `${KIND}: cấp ${a.level + 1}/${a.path.length} - ${W.unitName(a.path[a.level])}; ký số và ban hành.${note ? ' Ý kiến: ' + note : ''}`, uid);
     } else {
-        hist(p, 'Ký duyệt Phiếu tiếp nhận', `Cấp ${a.level + 1}/${a.path.length} - ${W.unitName(a.path[a.level])}; chuyển ${nextLevelText(a)}.${note ? ' Ý kiến: ' + note : ''}`, uid);
+        hist(p, 'Ký duyệt', `${KIND}: cấp ${a.level + 1}/${a.path.length} - ${W.unitName(a.path[a.level])}${lvHow(a)}; chuyển ${nextLevelText(a)}.${note ? ' Ý kiến: ' + note : ''}`, uid);
         a.level += 1;
     }
     put(p); ldClose();
@@ -1389,10 +1372,10 @@ function tndSeedTickets(d) {
             flow: FLOW, seed: true, status: ST.REVIEW, method: 'Ký số', docSrc: 'gen', docFile: { name: docBaseName(c.code) + '.pdf', generated: true }, docHtml: '',
             meta: { docNo: s.docNo, docDate: c.date, noiNhan: NN }, assignees: asg.slice(), content: '', attachments: [], submittedBy: TND_OFFICER, submittedAt: at, reason: '',
             wfData: tndWfData(c), returns: [], approval: { kind: KIND, path, assignees: asg.slice(), leaders, level: 0, steps: [] },
-            history: [H('Trình ký Phiếu tiếp nhận', TND_OFFICER, `Hệ thống sinh Phiếu tiếp nhận (Dự thảo) theo Mẫu 02/BTNN, trình Lãnh đạo ký duyệt theo luồng đã cấu hình: ${pathText(path)}. Hồ sơ chuyển [${REC_ST.REVIEW}].`)]
+            history: [H('Trình ký đến ' + W.userName(asg[0]), TND_OFFICER, `${KIND}. Trình ${W.userName(asg[0])} - ${W.unitName(path[0])}. Phiếu tiếp nhận (Dự thảo) sinh theo Mẫu 02/BTNN. Hồ sơ chuyển [${REC_ST.REVIEW}].`)]
         });
         // [ptnxd] Hồ sơ Xác định CQGQBT: tệp Phiếu tiếp nhận đính kèm khi trình (Ký số trên hệ thống), không sinh theo Mẫu 02/BTNN
-        // [ptnxs] Luồng trình như Không thụ lý - Xác định CQGQBT: Lãnh đạo từng cấp do cán bộ chọn, vị trí ô ký, lịch sử "Trình phê duyệt"
+        // [ptnxs] Luồng trình như Không thụ lý - Xác định CQGQBT: Lãnh đạo từng cấp do cán bộ chọn, vị trí ô ký, lịch sử "Trình ký đến [Lãnh đạo cấp 1]"
         if (s.xd) {
             const sc = PTX_SIG();
             path.slice(1, -1).forEach((u, k) => { sc['l' + (k + 1)] = PTX_MID_DEF(k + 1); });
@@ -1401,14 +1384,14 @@ function tndSeedTickets(d) {
             Object.assign(p, {
                 xs: true, noTpl: true, docSrc: 'upload', docFile: { name: `Phieu_tiep_nhan_${c.code}.pdf`, generated: false, size: '245 KB', note: '', keepId: '' }, meta: null,
                 enableRoomSig: true, sigCoords: sc, assignees: asg.slice(), content,
-                history: [H('Trình phê duyệt', TND_OFFICER, `${KIND}. Trình ${W.userName(l1)} - ${W.unitName(path[0])}.${nextText} Nội dung: ${content}`)]
+                history: [H('Trình ký đến ' + W.userName(l1), TND_OFFICER, `${KIND}. Trình ${W.userName(l1)} - ${W.unitName(path[0])}.${nextText} Nội dung: ${content}`)]
             });
             p.approval.assignees = asg.slice();
         }
         const a = p.approval;
         const sign = (uid, lvl, last) => {
             a.steps.push({ level: lvl, unitId: path[lvl], userId: uid, at, result: 'Ký duyệt', note: '' });
-            p.history.push(H('Ký duyệt Phiếu tiếp nhận', uid, last ? `Cấp ${lvl + 1}/${path.length} - ${W.unitName(path[lvl])}; ký số và ban hành.` : `Cấp ${lvl + 1}/${path.length} - ${W.unitName(path[lvl])}; chuyển ${levelText(a, lvl + 1)}.`));
+            p.history.push(H('Ký duyệt', uid, last ? `${KIND}: cấp ${lvl + 1}/${path.length} - ${W.unitName(path[lvl])}; ký số và ban hành.` : `${KIND}: cấp ${lvl + 1}/${path.length} - ${W.unitName(path[lvl])}; chuyển ${levelText(a, lvl + 1)}.`));
         };
         if (s.state === 'review2' || s.state === 'done') { sign(l1, 0, path.length === 1); a.level = Math.min(1, path.length - 1); }
         if (s.state === 'done') {
@@ -1421,7 +1404,7 @@ function tndSeedTickets(d) {
         if (s.state === 'reject') {
             Object.assign(p, { status: ST.REJECT, reason: TND_REJECT, rejectedBy: l1, rejectedAt: at });
             a.steps.push({ level: 0, unitId: path[0], userId: l1, at, result: s.xd ? 'Từ chối phê duyệt' : 'Từ chối', note: TND_REJECT });
-            p.history.push(s.xd ? H('Từ chối phê duyệt', l1, `Trả lại Cán bộ tiếp nhận. Lý do: ${TND_REJECT}`) : H('Từ chối Phiếu tiếp nhận', l1, `Cấp 1/${path.length} - ${W.unitName(path[0])}. Lý do: ${TND_REJECT}`));
+            p.history.push(s.xd ? H('Từ chối phê duyệt', l1, `Trả lại Cán bộ tiếp nhận. Lý do: ${TND_REJECT}`) : H('Từ chối phê duyệt', l1, `${KIND}: cấp 1/${path.length} - ${W.unitName(path[0])}. Lý do: ${TND_REJECT}`));
         }
         return p;
     });
@@ -1567,6 +1550,9 @@ const PTX_CSS = `#ptxModal { position: fixed; inset: 0; background-color: rgba(0
 #ptxLdOverlay .ld-hv-round { display: flex; justify-content: space-between; align-items: center; margin: 8px 0 0; padding: 4px 8px; background: #f8fafc; border-radius: 6px; font-size: 12px; color: #475569; font-weight: 600; }
 #ptxLdOverlay .ld-modal-footer { padding: 14px 22px 18px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px; background: #f8fafc; border-radius: 0 0 10px 10px; }
 #ptxLdOverlay .ld-close { cursor: pointer; font-size: 20px; color: #64748b; }
+#ptxLdOverlay .ld-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #cbd5e1; background: #fff; color: #334155; border-radius: 6px; padding: 8px 16px; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+#ptxLdOverlay .ld-btn.primary { background: #1e40af; border-color: #1e40af; color: #fff; }
+#ptxLdOverlay .ld-btn.danger { background: #ef4444; border-color: #ef4444; color: #fff; }
 #ptxLdOverlay .ld-label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; color: #334155; }
 #ptxLdOverlay .ld-req { color: #dc2626; margin-left: 2px; }
 #ptxLdOverlay .ld-group { margin-bottom: 14px; }
@@ -1604,7 +1590,7 @@ function ptxEnsure() {
     const sz = (k, a, b, c, x, y) => `<button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="PTN.x.resize('${k}', ${a[0]}, ${a[1]})">Nhỏ</button><button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="PTN.x.resize('${k}', ${b[0]}, ${b[1]})">Vừa</button><button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="PTN.x.resize('${k}', ${c[0]}, ${c[1]})">Lớn</button><button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="PTN.x.move('${k}', ${x}, ${y})"><i class="fa-solid fa-rotate-left"></i> Đặt lại</button>`;
     m.innerHTML = `<div id="ptxContainer" class="xs-modal-box">
         <div class="xs-head"><div><div class="xs-head-title"><i class="fa-solid fa-file-signature"></i> <span>TRÌNH KÝ PHIẾU TIẾP NHẬN HỒ SƠ</span></div></div><span class="ptx-x" onclick="PTN.x.close()" title="Đóng">&times;</span></div>
-        <div id="ptxStepperBar" class="xs-stepper"><div id="ptxStep1Tab" class="xs-step"><span class="require-step-badge" id="ptxStep1Badge">1</span><span>Nhập thông tin</span></div><div class="xs-stepper-divider"></div><div id="ptxStep2Tab" class="xs-step"><span class="require-step-badge" id="ptxStep2Badge">2</span><span>Kéo ô ký &amp; chọn Lãnh đạo</span></div></div>
+        <div id="ptxStepperBar" class="xs-stepper"><div id="ptxStep1Tab" class="xs-step"><span class="require-step-badge" id="ptxStep1Badge">1</span><span>Nhập thông tin</span></div><div class="xs-stepper-divider"></div><div id="ptxStep2Tab" class="xs-step"><span class="require-step-badge" id="ptxStep2Badge">2</span><span>Thiết lập các cấp trình ký</span></div></div>
         <div id="ptxStep1Body" class="xs-body">
             <div id="ptxReturned" style="display:none; margin-bottom:16px; padding:14px 16px; background:#fffbeb; border:1px solid #fde68a; border-left:5px solid #f59e0b; border-radius:8px;"></div>
             <div class="xs-sec"><div class="xs-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="xs-req">*</span></div>
@@ -1628,15 +1614,15 @@ function ptxEnsure() {
                     <div style="width:50%; text-align:center;" id="ptxA4SignerArea"><div style="font-weight:bold; text-transform:uppercase; font-size:13px;" id="ptxA4SignerTitle"></div><div style="font-style:italic; font-size:12.5px; color:#475569;">(Ký, ghi rõ họ tên và đóng dấu)</div><div style="height:80px;"></div><div style="font-weight:bold; font-size:13.5px; text-transform:uppercase;" id="ptxA4SignerName"></div></div>
                 </div>
                 <div id="ptxSigBoxRoom" class="sig-drag-box" style="left:60px; top:860px; width:220px; height:90px; border:2px dashed #2563eb; background:rgba(239, 246, 255, 0.94); box-shadow:0 4px 12px rgba(37,99,235,0.18);">
-                    <div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:10.5px; font-weight:700; color:#1e40af;"><i class="fa-solid fa-pen-nib"></i> KÝ DUYỆT (LĐ PHÒNG)</span><span class="badge" style="background:#2563eb; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp 1</span></div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;"><span></span><span class="badge" id="ptxSigRoomKyNhay" style="display:none; background:#dbeafe; color:#1e40af; font-size:9.5px; padding:1px 5px;">Ký nháy</span></div>
                     <div style="text-align:center; font-weight:700; color:#1e293b; font-size:12px;" id="ptxSigBoxRoomOfficer"></div>
-                    <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>Chữ ký nháy / Ý kiến</span><span id="ptxCoordRoomLabel">X: 60, Y: 860</span></div>
+                    <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>Tọa độ</span><span id="ptxCoordRoomLabel">X: 60, Y: 860</span></div>
                     <div class="sig-resize-handle" title="Kéo chuột để co giãn khung chữ ký"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>
                 </div>
                 <div id="ptxSigBoxAgency" class="sig-drag-box" style="left:480px; top:860px; width:245px; height:110px; border:2px dashed #dc2626; background:rgba(254, 242, 242, 0.94); box-shadow:0 4px 12px rgba(220,38,38,0.18);">
-                    <div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:10.5px; font-weight:700; color:#991b1b;"><i class="fa-solid fa-stamp"></i> KÝ SỐ &amp; CON DẤU</span><span class="badge" style="background:#dc2626; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp cuối (Ký số CA)</span></div>
-                    <div style="text-align:center; margin:3px 0;"><div style="font-weight:700; color:#1e293b; font-size:12.5px;" id="ptxSigBoxAgencyOfficer"></div><div style="font-size:10.5px; color:#dc2626; font-style:italic;"><i class="fa-solid fa-certificate"></i> SmartCA / Token hợp lệ</div></div>
-                    <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>Chữ ký số &amp; Con dấu</span><span id="ptxCoordAgencyLabel">X: 480, Y: 860</span></div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;"><span></span><span class="badge" id="ptxSigAgencyKyNhay" style="display:none; background:#dbeafe; color:#1e40af; font-size:9.5px; padding:1px 5px;">Ký nháy</span></div>
+                    <div style="text-align:center; margin:3px 0;"><div style="font-weight:700; color:#1e293b; font-size:12.5px;" id="ptxSigBoxAgencyOfficer"></div></div>
+                    <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>Tọa độ</span><span id="ptxCoordAgencyLabel">X: 480, Y: 860</span></div>
                     <div class="sig-resize-handle" title="Kéo chuột để co giãn khung chữ ký"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>
                 </div>
             </div></div>
@@ -1661,7 +1647,7 @@ function ptxEnsure() {
     document.body.appendChild(m);
     ptxBindDrag();
 }
-// Khối THÔNG TIN HỒ SƠ BỊ TRẢ LẠI (như Popup Trình ký - Xác định CQGQBT): các lần Lãnh đạo Từ chối Phiếu tiếp nhận
+// Khối Lý do bị trả lại (như Popup Trình ký - Xác định CQGQBT): các lần Lãnh đạo Từ chối Phiếu tiếp nhận
 function ptxReturnList(p) {
     if (!p) return [];
     const list = (p.returns || []).filter(r => r && r.reason).map(r => ({ at: r.at, by: r.by, unitId: p.approval && p.approval.path ? p.approval.path[r.level || 0] : '', reason: r.reason }));
@@ -1676,7 +1662,7 @@ function ptxReturnedHtml(p) {
     return `<div style="font-weight:700; color:#b45309; font-size:14px; margin-bottom:8px;"><i class="fa-solid fa-rotate-left"></i> Lý do bị trả lại</div><div class="ptn-ro-grid"><div><div class="k">Lý do trả lại</div><div class="v">${esc(e.reason || '-')}</div></div><div><div class="k">Lãnh đạo trả lại</div><div class="v">${esc(W.userLabel(e.by))}</div></div><div><div class="k">Thời điểm trả lại</div><div class="v">${esc(e.at || '-')}</div></div></div>`;
 }
 function ptxFt() { return W.flowTypeOf ? W.flowTypeOf(X.claim.requestType || XD_TYPE, X.claim.rootUnitId) : undefined; }
-// Lãnh đạo các cấp: cấp 1 = Lãnh đạo Phòng duyệt, cấp cuối = Lãnh đạo Đơn vị ký số (như fillTwoLeaderSelects - Xác định CQGQBT)
+// Lãnh đạo các cấp: cấp 1 = Lãnh đạo Phòng duyệt; cấp trung gian, cấp cuối: -- Chọn Lãnh đạo -- (ký số theo luồng đã cấu hình)
 function ptxFillLeaders(prev) {
     const path = X.path, lv = X.levels, pv = Array.isArray(prev) ? prev : [];
     const one = path.length === 1;
@@ -1686,10 +1672,12 @@ function ptxFillLeaders(prev) {
     const kn = (id, u) => { el(id).style.display = u && W.isKyNhayUnit && W.isKyNhayUnit(u, ptxFt()) ? '' : 'none'; };
     kn('ptxRoomKyNhayBadge', path.length >= 2 ? path[0] : '');
     kn('ptxAgencyKyNhayBadge', path.length ? path[path.length - 1] : '');
+    kn('ptxSigRoomKyNhay', path.length >= 2 ? path[0] : '');
+    kn('ptxSigAgencyKyNhay', path.length ? path[path.length - 1] : '');
     const pick = (list, w) => (w && list.indexOf(w) >= 0 ? w : (list[0] || ''));
     const fill = (id, list, ph, w) => { const s = el(id); s.innerHTML = list.length ? `<option value="">${ph}</option>` + list.map(u => `<option value="${esc(u)}">${esc(W.userLabel(u))}</option>`).join('') : ''; s.value = pick(list, w); };
     fill('ptxOfficerRoomSelect', one ? [] : ((lv[0] && lv[0].leaders) || []), '-- Chọn Lãnh đạo Phòng duyệt --', pv[0]);
-    fill('ptxOfficerAgencySelect', (lv[lv.length - 1] && lv[lv.length - 1].leaders) || [], '-- Chọn Lãnh đạo Đơn vị ký số --', pv[path.length - 1]);
+    fill('ptxOfficerAgencySelect', (lv[lv.length - 1] && lv[lv.length - 1].leaders) || [], '-- Chọn Lãnh đạo --', pv[path.length - 1]);
     ptxRenderMids(pv, fill);
 }
 // Cấp trung gian (Cấp 2 .. Cấp n-1): mỗi cấp 01 thẻ "Cấp [n] - [Đơn vị]" (chọn Lãnh đạo, Đặt chữ ký) và 01 ô ký trên văn bản; khóa ô ký 'l[chỉ số cấp]'
@@ -1727,10 +1715,11 @@ function ptxRenderMids(pv, fill) {
         const box = document.createElement('div');
         box.id = 'ptxSigBoxL' + i;
         box.className = 'sig-drag-box ptx-mid-sig';
+        const kn = false; // [ro1] lỗi cũ: biến kn chưa khai báo (luồng có cấp trung gian); nhãn Ký nháy theo khối Thiết lập các cấp trình ký
         box.style.cssText = 'display:none; border:2px dashed #4f46e5; background:rgba(238, 242, 255, 0.94); box-shadow:0 4px 12px rgba(79,70,229,0.18);';
-        box.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:10.5px; font-weight:700; color:#3730a3;"><i class="fa-solid fa-pen-nib"></i> KÝ NHÁY</span><span class="badge" style="background:#4f46e5; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp ${i + 1}</span></div>
+        box.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><span></span><span class="badge" style="${kn ? '' : 'display:none; '}background:#dbeafe; color:#1e40af; font-size:9.5px; padding:1px 5px;">Ký nháy</span></div>
             <div style="text-align:center; font-weight:700; color:#1e293b; font-size:12px;" id="ptxSigBoxL${i}Officer"></div>
-            <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>Chữ ký nháy</span><span id="ptxCoordL${i}Label"></span></div>
+            <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>Tọa độ</span><span id="ptxCoordL${i}Label"></span></div>
             <div class="sig-resize-handle" title="Kéo chuột để co giãn khung chữ ký"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>`;
         page.appendChild(box);
         ptxBindBox(box.id, 'l' + i);
@@ -1744,7 +1733,7 @@ function ptxOpen(id, c, nw) {
     const re = prev && prev.status === ST.REJECT ? prev : null;
     const levels = levelsOf(c);
     const hasSig = !!(re && re.sigCoords && re.sigCoords.room);
-    X = { id, claim: c, code: c.code, isNew, wfData: isNew ? nw.wfData : null, onSaved: nw ? nw.onSaved : null, prev, levels, path: levels.map(l => l.unitId),
+    X = { id, claim: c, code: c.code, isNew, wfData: isNew ? nw.wfData : null, onSaved: nw ? nw.onSaved : null, prev, levels, path: levels.map(l => l.unitId), ui: null, prevLv: lvPrev(re),
         method: 'Ký số', file: '', fileObj: null, fileSize: '', fileNote: '', fileKeepId: '', step: 1, converting: false, convToken: 0,
         enableRoomSig: re && re.enableRoomSig !== undefined ? re.enableRoomSig : true,
         sigCoords: hasSig ? JSON.parse(JSON.stringify(re.sigCoords)) : PTX_SIG(), placed: hasSig ? Object.fromEntries(Object.keys(re.sigCoords).map(k => [k, true])) : {} };
@@ -1885,7 +1874,7 @@ function ptxStep(step) {
 }
 // Bước 2: văn bản trình ký (mô phỏng trang A4) và ô ký Lãnh đạo Phòng / Lãnh đạo Đơn vị
 function ptxNext() {
-    if (!X.path.length) { toast('Chưa xác định được cấp ký duyệt Phiếu tiếp nhận theo luồng đã cấu hình. Vui lòng liên hệ Quản trị hệ thống.', 'error'); return; }
+    if (!X.path.length) { toast(noLeaderMsg(), 'error'); return; }
     const data = ptxCollect(true);
     if (!data) return;
     const c = X.claim, root = c.rootUnitId, last = X.path[X.path.length - 1];
@@ -1902,8 +1891,22 @@ function ptxNext() {
     el('ptxA4SignerTitle').textContent = agText.includes('Cục trưởng') ? 'CỤC TRƯỞNG' : (agText.includes('Giám đốc') ? 'GIÁM ĐỐC SỞ' : 'THỦ TRƯỞNG CƠ QUAN');
     ptxSyncNames();
     ptxStep(2);
+    if (ptxLvMount()) return;
     ptxApplyCoords();
     ptxRefreshPlaced();
+}
+// [ro1] Bước 2: khối Thiết lập các cấp trình ký thay thẻ cấp theo luồng; dòng ký của văn bản theo Lãnh đạo cấp cuối
+function ptxLvMount() {
+    if (!global.BTNN_PCKD) return false;
+    ['ptxPanelRoomCard', 'ptxPanelMidCards', 'ptxPanelAgencyCard', 'ptxSigBoxRoom', 'ptxSigBoxAgency', 'ptxA4RoomSigPlaceholder'].forEach(id => { const e = el(id); if (e) e.style.display = 'none'; });
+    document.querySelectorAll('#ptxA4Page .xs-mid-sig, #ptxA4Page [id^="ptxSigBoxL"]').forEach(b => { b.style.display = 'none'; });
+    let w = el('ptxLvWrap');
+    if (!w) { const ag = el('ptxPanelAgencyCard'); w = document.createElement('div'); w.id = 'ptxLvWrap'; if (ag && ag.parentNode) ag.parentNode.insertBefore(w, ag.nextSibling); }
+    return lvMount(X, 'ptxLvWrap', 'ptxA4Page', levels => {
+        const last = levels[levels.length - 1]; const u = last && W.getUser(last.leader);
+        if (el('ptxA4SignerName')) el('ptxA4SignerName').textContent = u ? u.name.toUpperCase() : '';
+        if (el('ptxA4SignerTitle') && u) el('ptxA4SignerTitle').textContent = u.title.toUpperCase();
+    });
 }
 function ptxRefreshPlaced() {
     ptxLevelKeys().forEach(([k, K]) => {
@@ -1964,8 +1967,11 @@ function ptxBindDrag() {
 }
 // Trình Lãnh đạo (Ký số) / Ban hành văn bản (Ký ngoài), như xsSubmit - Xác định CQGQBT
 function ptxSubmit(confirmed) {
-    const data = ptxCollect(false);
+    const lvOn = !!X.ui && X.method !== 'Ký ngoài';
+    const data = ptxCollect(lvOn);
     if (!data) return;
+    if (lvOn && !X.ui.validate()) return;
+    const col = lvOn ? X.ui.collect() : null;
     const st = X, c = X.claim;
     if (st.method === 'Ký ngoài' && confirmed !== true) {
         confirmBox('Xác nhận ban hành văn bản', `Văn bản ký ngoài sẽ được ban hành trực tiếp, bỏ qua bước duyệt của Lãnh đạo trên hệ thống; hồ sơ chuyển sang trạng thái ${REC_ST.ASSIGN}. Bạn có chắc chắn muốn ban hành văn bản?`, 'Ban hành', () => ptxSubmit(true));
@@ -1991,9 +1997,9 @@ function ptxSubmit(confirmed) {
         afterChange(p.code);
         return;
     }
-    const path = st.path;
+    const path = col ? col.path : st.path;
     // Lãnh đạo mọi cấp do cán bộ chọn tại thẻ cấp tương ứng
-    const assignees = path.map((u, i) => (i === path.length - 1 ? data.agencyLeader : (i === 0 ? data.roomLeader : (data.midLeaders || {})[i])) || '');
+    const assignees = col ? col.assignees.slice() : path.map((u, i) => (i === path.length - 1 ? data.agencyLeader : (i === 0 ? data.roomLeader : (data.midLeaders || {})[i])) || '');
     if (!assignees[0]) { toast('Vui lòng chọn Lãnh đạo phê duyệt.', 'error'); return; }
     const content = data.content || 'Kính trình Lãnh đạo xem xét, phê duyệt.';
     const p = Object.assign(baseRecord(c, prev), flowData, {
@@ -2003,8 +2009,9 @@ function ptxSubmit(confirmed) {
         submittedBy: me(), submittedAt: W.nowText(), reason: '',
         approval: { kind: KIND, path: path.slice(), assignees: assignees.slice(), leaders: st.levels.map(l => l.leaders.slice()), level: 0, steps: [] }
     });
+    if (col) lvApply(p, col);
     const nextText = path.length > 1 ? ' Lãnh đạo cấp tiếp theo: ' + path.slice(1).map((u, i) => (assignees[i + 1] ? W.userName(assignees[i + 1]) + ' - ' : '') + W.unitName(u)).join('; ') + '.' : '';
-    hist(p, 'Trình phê duyệt', `${KIND}. Trình ${W.userName(assignees[0])} - ${W.unitName(path[0])}.${nextText} Nội dung: ${content}`);
+    hist(p, 'Trình ký đến ' + W.userName(assignees[0]), `${KIND}. Trình ${W.userName(assignees[0])} - ${W.unitName(path[0])}.${nextText} Nội dung: ${content}`);
     if (attachments.length) p.history[p.history.length - 1].attachments = attachments;
     put(p);
     ptxClose();
@@ -2036,12 +2043,7 @@ function ptxLdPreview(p) {
     const path = a.path || [], asg = a.assignees || [], steps = a.steps || [], root = p.rootUnitId;
     // Ô ký cấp trung gian: phiếu trình trước khi có thẻ cấp trung gian dùng vị trí mặc định
     path.slice(1, -1).forEach((u, k) => { if (!sc['l' + (k + 1)]) sc['l' + (k + 1)] = PTX_MID_DEF(k + 1); });
-    const box = (k, idx, cls, tag) => {
-        const c = sc[k]; if (!c) return '';
-        const uid = asg[idx] || ((a.leaders || [])[idx] || [])[0] || '';
-        const done = steps.filter(s => s.result === 'Ký duyệt')[idx];
-        return `<div class="ld-sigbox ${cls}${done ? ' done' : ''}" style="left:${c.x}px; top:${c.y}px; width:${c.w}px; height:${c.h}px;"><strong>${esc(tag)}</strong><br>Cấp ${idx + 1} - ${esc(uid ? W.userName(uid) : '')}${done ? `<br><span style="color:#16a34a;">✔ Đã ký duyệt ${esc(done.at || '')}</span>` : ''}</div>`;
-    };
+    const box = (k, idx, cls) => ldSigBox(p, sc[k], idx, cls);
     const last = Math.max(path.length - 1, 0);
     const f = p.docFile || {};
     return `<div style="color:#e2e8f0; font-size:12px; margin-bottom:8px; display:flex; gap:10px; align-items:center;"><span><i class="fa-solid fa-file-pdf"></i> ${esc(f.name || 'Van_ban_trinh_ky.pdf')} · Trang 1/1</span><button type="button" class="ld-btn" style="padding:3px 10px;" onclick="PTN.viewIssued('${esc(p.code)}')"><i class="fa-solid fa-eye"></i> Xem file</button></div>
@@ -2051,10 +2053,32 @@ function ptxLdPreview(p) {
             <p><strong>Kính gửi:</strong> ${esc(p.nycName || '--')}</p>
             <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước năm 2017; xét yêu cầu xác định cơ quan giải quyết bồi thường (Mã vụ việc: <strong>${esc(p.maVuViec || p.code)}</strong>),</p>
             <p>${esc(W.unitName(root))} đã tiếp nhận hồ sơ yêu cầu xác định cơ quan giải quyết bồi thường của Ông/Bà.</p>
-            ${path.length > 1 && p.enableRoomSig !== false ? box('room', 0, '', 'KÝ NHÁY') : ''}
-            ${path.slice(1, -1).map((u, k) => box('l' + (k + 1), k + 1, '', 'KÝ NHÁY')).join('')}
-            ${box('agency', last, 'agency', 'KÝ SỐ & CON DẤU')}
+            ${path.length > 1 && p.enableRoomSig !== false ? box('room', 0, '') : ''}
+            ${path.slice(1, -1).map((u, k) => box('l' + (k + 1), k + 1, '')).join('')}
+            ${box('agency', last, 'agency')}
         </div>`;
+}
+// Ô ký trên văn bản tại màn Ký duyệt / Từ chối: Cấp [n] - [Họ tên Lãnh đạo]; nhãn Ký nháy khi cấp đó được cấu hình Ký nháy
+function ldSigBox(p, c, idx, cls) {
+    if (!c) return '';
+    const a = p.approval || {}, path = a.path || [];
+    const uid = (a.assignees || [])[idx] || ((a.leaders || [])[idx] || [])[0] || '';
+    const done = (a.steps || []).filter(s => s.result === 'Ký duyệt')[idx];
+    const ft = W.flowTypeOf ? W.flowTypeOf(p.loaiYeuCau, p.rootUnitId) : undefined;
+    const kn = !!(W.isKyNhayUnit && W.isKyNhayUnit(path[idx], ft));
+    return `<div class="ld-sigbox ${cls}${done ? ' done' : ''}" style="left:${c.x}px; top:${c.y}px; width:${c.w}px; height:${c.h}px;">${kn ? '<span class="badge" style="float:right; font-size:9.5px; background:#dbeafe; color:#1e40af;">Ký nháy</span>' : ''}<strong>Cấp ${idx + 1} - ${esc(uid ? W.userName(uid) : '')}</strong>${done ? `<br><span style="color:#16a34a;">✔ Đã ký duyệt ${esc(done.at || '')}</span>` : ''}</div>`;
+}
+// Vùng xem văn bản - hồ sơ Giải quyết YCBT: Phiếu tiếp nhận (Dự thảo) sinh theo Mẫu 02/BTNN hoặc tệp tải lên, kèm ô ký các cấp
+function gqLdPreview(p) {
+    const a = p.approval || {}, path = a.path || [], sc = p.sigCoords || {};
+    const f = p.method === 'Ký ngoài' ? { name: p.signedFile } : (p.docFile || {});
+    const body = f.generated && p.docHtml ? p.docHtml : `<div style="text-align:center; color:#64748b; padding-top:220px;"><i class="fa-solid fa-file-lines" style="font-size:42px;"></i><br><br>${esc(f.name || '--')}<br>(Văn bản tải lên)</div>`;
+    const last = path.length - 1;
+    // Phiếu chưa lưu vị trí ô ký (dữ liệu mẫu): vị trí mặc định; cấp 1 bỏ ký nháy thì không có ô ký
+    const has = Object.keys(sc).length > 0;
+    const def = i => (i === 0 && last > 0 && p.enableRoomSig === false) ? null : { x: i === last ? 470 : (i === 0 ? 60 : 290), y: 860 + (i > 0 && i < last ? (i - 1) * 105 : 0), w: 230, h: 90 };
+    const boxes = path.map((u, i) => ldSigBox(p, has ? sc[i] : def(i), i, i === last ? 'agency' : '')).join('');
+    return `<div style="color:#e2e8f0; font-size:12px; margin-bottom:8px; display:flex; gap:10px; align-items:center;"><span><i class="fa-solid fa-file-pdf"></i> ${esc(f.name || '--')} · Trang 1/1</span><button type="button" class="ld-btn" style="padding:3px 10px;" onclick="PTN.viewIssued('${esc(p.code)}')"><i class="fa-solid fa-eye"></i> Xem file</button></div><div class="ld-a4">${body}${boxes}</div>`;
 }
 function ptxLdSummary(p) {
     const a = p.approval || {};
@@ -2110,7 +2134,7 @@ function ptxLdOpen(code, mode, cb) {
     XL = { code, mode, cb };
     const approve = mode === 'approve', reject = mode === 'reject';
     const can = canAct(p, uid);
-    el('ptxLdPreview').innerHTML = ptxLdPreview(p);
+    el('ptxLdPreview').innerHTML = isXs(p) ? ptxLdPreview(p) : gqLdPreview(p);
     el('ptxLdSummary').innerHTML = ptxLdSummary(p);
     el('ptxLdHistory').innerHTML = ptxLdHistory(p);
     const mv = esc(p.maVuViec || code);
@@ -2124,13 +2148,17 @@ function ptxLdOpen(code, mode, cb) {
         : reject ? `<button class="ld-btn" onclick="PTN.x.ldClose()">Hủy bỏ</button><button class="ld-btn danger" onclick="PTN.x.ldSubmit()"><i class="fa-solid fa-circle-xmark"></i> Từ chối</button>`
         : `<button class="ld-btn" onclick="PTN.x.ldClose()">Đóng</button>${can && cb !== 'done' ? `<button class="ld-btn danger" onclick="PTN.ldOpen('${c}','reject')"><i class="fa-solid fa-circle-xmark"></i> Từ chối</button><button class="ld-btn primary" onclick="PTN.ldOpen('${c}','approve')"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button>` : ''}`;
     el('ptxLdOverlay').classList.add('open');
+    // [ro1] Phiếu trình tự thiết lập các cấp: ô ký theo cấp; cấp bật Ký số -> khối Ký số, không bật -> gán chữ ký / chữ ký nháy
+    const pkb = document.getElementById('pcKyBlock'); if (pkb) pkb.remove();
+    if (p && p.approval && p.approval.tuThietLap && global.BTNN_PCKD) global.BTNN_PCKD.decorateDecision({ approval: Object.assign({}, p.approval, { signDoc: { pcSig: p.pcSig || [] } }) }, approve && can ? 'approve' : 'reject', { page: el('ptxLdPreview').querySelector('.ld-a4'), scroller: el('ptxLdPreview'), right: el('ptxLdRight'), before: el('ptxLdNoteGroup'), title: el('ptxLdTitle') });
 }
 function ptxLdClose() { const o = el('ptxLdOverlay'); if (o) o.classList.remove('open'); }
 // Ký duyệt / Từ chối (như WF.approve / WF.rejectApproval - Xác định CQGQBT); kết quả theo Tiếp nhận hồ sơ
 function ptxLdSubmit() {
     const p = get(XL.code), uid = me();
     LD = XL;
-    if (!canAct(p, uid)) { ptxLdClose(); toast('Phiếu tiếp nhận đã được xử lý bởi người khác. Danh sách đã được tải lại.', 'error'); ldDone(); return; }
+    if (!isXs(p)) { ldSubmit(); return; }
+    if (!canAct(p, uid)) { ptxLdClose(); toast('Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phê duyệt. Vui lòng tải lại danh sách.', 'error'); ldDone(); return; }
     const note = el('ptxLdNote').value.trim();
     const a = p.approval, unitId = a.path[a.level], at = W.nowText();
     if (XL.mode === 'reject') {
@@ -2148,9 +2176,10 @@ function ptxLdSubmit() {
         const nextLeaders = (a.leaders || [])[a.level + 1] || W.getLeaders(a.path[a.level + 1]) || [];
         const preset = (a.assignees || [])[a.level + 1];
         const nx = preset && (!nextLeaders.length || nextLeaders.indexOf(preset) >= 0) ? preset : (nextLeaders[0] || '');
+        const how = lvHow(a);
         a.level += 1;
         a.assignees = a.assignees || []; a.assignees[a.level] = nx; p.assignees = a.assignees.slice();
-        hist(p, 'Ký duyệt', `${KIND}: ký duyệt cấp ${W.unitName(unitId)}; chuyển ${nx ? W.userName(nx) + ' - ' : ''}${W.unitName(a.path[a.level])}.${note ? ' Ý kiến: ' + note : ''}`, uid);
+        hist(p, 'Ký duyệt', `${KIND}: ký duyệt cấp ${W.unitName(unitId)}${how}; chuyển ${nx ? W.userName(nx) + ' - ' : ''}${W.unitName(a.path[a.level])}.${note ? ' Ý kiến: ' + note : ''}`, uid);
         put(p); ptxLdClose();
         toast(`Hồ sơ ${p.maVuViec}: [${REC_ST.REVIEW}] - chuyển ${nx ? W.userName(nx) + ' - ' : ''}${W.unitName(a.path[a.level])}.`, 'success');
         ldDone(); return;

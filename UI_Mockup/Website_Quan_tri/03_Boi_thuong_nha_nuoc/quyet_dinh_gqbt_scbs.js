@@ -157,7 +157,7 @@ function scbfOpen(id) {
     var rb = document.getElementById('qdFormReturnedBlock');
     if (resubmit && d.returned) {
         rb.style.display = 'block';
-        rb.innerHTML = '<div style="font-weight:700; color:#b45309; margin-bottom:6px; font-size:12.5px;"><i class="fa-solid fa-circle-exclamation"></i> LÝ DO BỊ TRẢ LẠI</div><div style="font-size:13px; color:#92400e; line-height:1.7;">Người từ chối: ' + esc(W.userLabel(d.returned.by)) + ' - ' + esc(d.returned.at) + '<br>' + esc(d.returned.reason) + '</div>';
+        rb.innerHTML = '<div style="font-weight:700; color:#b45309; margin-bottom:6px; font-size:12.5px;"><i class="fa-solid fa-circle-exclamation"></i> LÝ DO BỊ TRẢ LẠI</div><div style="font-size:13px; color:#92400e; line-height:1.7;">Lý do trả lại: ' + esc(d.returned.reason) + '<br>Lãnh đạo trả lại: ' + esc(W.userLabel(d.returned.by)) + '<br>Thời điểm trả lại: ' + esc(d.returned.at) + '</div>';
     }
     if (typeof ctqdCss === 'function') ctqdCss(); // Kiểu dòng File (thẻ tệp, nút Xem file / Tải file) như màn Chi tiết
     var fileHtml = typeof ctqdFileRow === 'function' ? ctqdFileRow(d.signedFile || '', '', d.id, 'signed') : esc(d.signedFile || '-');

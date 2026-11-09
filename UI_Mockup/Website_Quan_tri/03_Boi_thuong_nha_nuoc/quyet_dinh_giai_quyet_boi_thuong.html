@@ -1729,7 +1729,7 @@
                 <div class="ktl-stepper-sep" id="hqdStepSep"></div>
                 <div class="ktl-step-tab" id="hqdTab2" onclick="if (hqd && hqd.step === 1) hqdNext();">
                     <span class="ktl-step-badge">2</span>
-                    <span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span>
+                    <span class="ktl-step-title">Thiết lập các cấp trình ký</span>
                 </div>
             </div>
 
@@ -1840,7 +1840,7 @@
                 <div id="hqdTlkt"></div>
             </div>
 
-            <!-- Bước 2: Kéo ô ký & chọn Lãnh đạo -->
+            <!-- Bước 2: Thiết lập các cấp trình ký -->
             <div class="scb-step2" id="hqdStep2">
                 <div class="scb-preview"><div class="scb-a4" id="hqdA4"></div></div>
                 <div class="scb-side">
@@ -1896,7 +1896,7 @@
                 <div class="ktl-stepper-sep" id="scbStepSep"></div>
                 <div class="ktl-step-tab" id="scbTab2" onclick="if (scb && scb.step === 1) scbNext();">
                     <span class="ktl-step-badge">2</span>
-                    <span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span>
+                    <span class="ktl-step-title">Thiết lập các cấp trình ký</span>
                 </div>
             </div>
 
@@ -1997,7 +1997,7 @@
                 <div id="scbTlkt"></div>
             </div>
 
-            <!-- Bước 2: Kéo ô ký & chọn Lãnh đạo -->
+            <!-- Bước 2: Thiết lập các cấp trình ký -->
             <div class="scb-step2" id="scbStep2">
                 <div class="scb-preview"><div class="scb-a4" id="scbA4"></div></div>
                 <div class="scb-side">
@@ -2138,7 +2138,7 @@
                 <div class="ktl-stepper-sep" id="qsStepSep"></div>
                 <div class="ktl-step-tab" id="qsTab2" onclick="if (qs && qs.step === 1) qsNext();">
                     <span class="ktl-step-badge">2</span>
-                    <span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span>
+                    <span class="ktl-step-title">Thiết lập các cấp trình ký</span>
                 </div>
             </div>
 
@@ -2252,7 +2252,7 @@
                 <div id="qdgqTlkt"></div>
             </div>
 
-            <!-- Bước 2: Kéo ô ký & chọn Lãnh đạo -->
+            <!-- Bước 2: Thiết lập các cấp trình ký -->
             <div class="qs-step2" id="qsStep2">
                 <div class="qs-preview"><div class="qs-a4" id="qsA4"></div></div>
                 <div class="qs-side">
@@ -2278,7 +2278,8 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109ro1"></script>
+    <script src="btnn_phan_cong_ky_duyet.js?v=20261109ro1"></script>
     <script src="btnn_dvc_sync.js?v=20261106dvc11"></script>
     <!-- [th2c] Danh mục Loại thiệt hại 2 cấp (DM_27) + bảng 2 cấp dùng chung -->
     <script src="btnn_thiet_hai.js?v=20261030dm28"></script>
@@ -2643,7 +2644,7 @@
                 seedDec({ id: 'QD-01', claimCode: 'BT-2026-003', nycName: 'Công ty Hải Phát', nycAddress: 'Số 15 Trần Thái Tông, Phường Dịch Vọng, Thành phố Hà Nội', unitId: 'UBND-CG', leaderId: 'ct_cg', approvedBy: 'ct_cg', status: ST.DA_BH, decNo: '12/QĐ-UBND', issueDate: '02/07/2026', signedFile: 'QD_12_GQBT_da_ky.pdf',
                     items: seedItems([['Tài sản bị xâm phạm', 5000000000, 4800000000, 4800000000]]), recipient: { name: 'Công ty Hải Phát', idNo: '0106899234', account: '1100223344', bank: 'Vietcombank', branch: 'Chi nhánh Hà Tây' },
                     amendments: [{ kind: KIND_SC, content: 'Đính chính tên ngân hàng nhận tiền tại Điều 2: "Vietinbank" thành "Vietcombank".', draftDoc: { source: 'uploaded', uploadedName: 'QD_dinh_chinh_12.pdf' }, approvedBy: 'ct_cg', at: '09:30 11/07/2026' }],
-                    history: [{ at: '08:00 25/06/2026', userId: 'cv_cg1', userName: W.userName('cv_cg1'), action: 'Trình ký duyệt', note: 'Trình Bùi Đức Thắng - Chủ tịch UBND ký duyệt.' }, { at: '14:00 02/07/2026', userId: 'ct_cg', userName: W.userName('ct_cg'), action: 'Phê duyệt cấp cuối', note: 'Quyết định GQBT. Quyết định chuyển [Đã ban hành]. Số 12/QĐ-UBND ngày 02/07/2026.' }], createdBy: 'cv_cg1' }),
+                    history: [{ at: '08:00 25/06/2026', userId: 'cv_cg1', userName: W.userName('cv_cg1'), action: 'Trình ký đến ' + W.userName('ct_cg'), note: 'Trình Bùi Đức Thắng - Chủ tịch UBND ký duyệt.' }, { at: '14:00 02/07/2026', userId: 'ct_cg', userName: W.userName('ct_cg'), action: 'Phê duyệt cấp cuối', note: 'Quyết định GQBT. Quyết định chuyển [Đã ban hành]. Số 12/QĐ-UBND ngày 02/07/2026.' }], createdBy: 'cv_cg1' }),
                 seedDec({ id: 'QD-02', claimCode: 'BT-2026-006', nycName: 'Lý Thị K', nycAddress: 'KĐT Times City, Phường Vĩnh Tuy, Thành phố Hà Nội', unitId: 'UBND-HM', leaderId: 'ct_hm', approvedBy: 'ct_hm', status: ST.DA_HUY, decNo: '18/QĐ-UBND', issueDate: '20/07/2026', signedFile: 'QD_18_GQBT_da_ky.pdf',
                     items: seedItems([['Tài sản bị xâm phạm', 150000000, 150000000, 150000000], ['Thu nhập thực tế bị mất/giảm sút', 70000000, 70000000, 70000000]]), recipient: { name: 'Lý Thị K', idNo: '001090112233', account: '0451000123456', bank: 'Vietinbank', branch: '' },
                     cancel: { kind: KIND_HUY, content: 'Quyết định hành chính làm căn cứ yêu cầu bồi thường đã được cơ quan có thẩm quyền bãi bỏ toàn bộ.', decNo: '39/QĐ-HGQBT', draftDoc: { source: 'generated', generatedName: 'Du_thao_Huy_QD_BT-2026-006.doc' }, approvedBy: 'ct_hm', at: '15:00 15/08/2026' },
@@ -2653,7 +2654,7 @@
                     history: [{ at: '16:00 02/04/2026', userId: 'cv_hp1', userName: W.userName('cv_hp1'), action: 'Ban hành', note: 'Số 104/QĐ-BT ngày 02/04/2026.' }], createdBy: 'cv_hp1' }),
                 seedDec({ id: 'QD-04', claimCode: 'BT-2026-012', nycName: 'Lê Văn H', nycAddress: 'Lê Đại Hành, Hai Bà Trưng, Hà Nội', unitId: 'THADS-HN', leaderId: 'ct_thadshn', approvedBy: 'ct_thadshn', approvedAt: '10:00 05/07/2026', status: ST.DA_BH, decNo: '56/QĐ-BT', issueDate: '05/07/2026', signedFile: 'QD_GQBT_BT-2026-012_ky_so.pdf', signMethod: 'Ký số', advance: 100000000, lastKind: KIND_QD,
                     items: seedItems([['Tài sản bị xâm phạm', 900000000, 850000000, 850000000]]), recipient: { name: 'Lê Văn H', idNo: '001091002934', account: '0021000998877', bank: 'BIDV', branch: '' },
-                    history: [{ at: '08:30 02/07/2026', userId: 'chv_thadshn1', userName: W.userName('chv_thadshn1'), action: 'Trình ký duyệt', note: 'Trình ' + W.userLabel('ct_thadshn') + ' ký duyệt.' }, { at: '10:00 05/07/2026', userId: 'ct_thadshn', userName: W.userName('ct_thadshn'), action: 'Phê duyệt cấp cuối', note: 'Quyết định GQBT. Quyết định chuyển [Đã ban hành]. Số 56/QĐ-BT ngày 05/07/2026.' }], createdBy: 'chv_thadshn1' }),
+                    history: [{ at: '08:30 02/07/2026', userId: 'chv_thadshn1', userName: W.userName('chv_thadshn1'), action: 'Trình ký đến ' + W.userName('ct_thadshn'), note: 'Trình ' + W.userLabel('ct_thadshn') + ' ký duyệt.' }, { at: '10:00 05/07/2026', userId: 'ct_thadshn', userName: W.userName('ct_thadshn'), action: 'Phê duyệt cấp cuối', note: 'Quyết định GQBT. Quyết định chuyển [Đã ban hành]. Số 56/QĐ-BT ngày 05/07/2026.' }], createdBy: 'chv_thadshn1' }),
                 // [gql] Bỏ QD-05 (BT-2026-518): hồ sơ mẫu Bị trả lại Loại trình Quyết định GQBT tại Giải quyết YCBT sai quy tắc đã xóa
                 // [gql] QD-07 (BT-2026-011): Hủy quyết định, bản ghi Chi trả KP-2026-012 Hoàn thành giữ nguyên, bị chặn thao tác chi trả
                 seedDec({ id: 'QD-07', claimCode: 'BT-2026-011', nycName: 'Trần Thị G', nycAddress: 'Phường Tràng Tiền, Thành phố Hà Nội', unitId: 'STP-HN', leaderId: 'gdso_hn', approvedBy: 'gdso_hn', status: ST.DA_HUY, decNo: '26/QĐ-GQBT', issueDate: '06/07/2026', signedFile: 'Quyet_dinh_26_GQBT_signed.pdf', hieuLuc: 'Có hiệu lực',
@@ -2680,9 +2681,9 @@
                     items: seedItems([['Tài sản bị xâm phạm', 173000000, 160000000, 155000000, 155000000]]), adjustReason: 'Mức bồi thường theo Biên bản kết quả thương lượng ngày 01/10/2026.', recipient: { name: 'Kiều Văn Nghĩa', idNo: '001077003563', account: '0123456563', bank: 'Agribank', branch: 'Chi nhánh Hoàng Mai' },
                     sourceType: 'negotiation', sourceLabel: 'Kết quả thương lượng', participation: 'DONG_Y', participationLabel: 'Đồng ý thương lượng', sourceNote: 'Số tiền được xác định căn cứ theo Biên bản thương lượng giải quyết bồi thường', draftDoc: { source: 'generated', generatedName: 'Du_thao_QD_GQBT_BT-2026-563.doc' }, signMethod: 'Ký số',
                     returned: { reason: 'Đề nghị bổ sung căn cứ Biên bản kết quả thương lượng và rà soát thông tin tài khoản nhận tiền.', by: 'gdso_hn', at: '15:00 29/10/2026', kind: KIND_QD },
-                    history: [{ at: '08:00 28/10/2026', userId: 'cv_hn1', userName: W.userName('cv_hn1'), action: 'Trình ký duyệt', note: 'Trình ' + W.userLabel('gdso_hn') + ' ký duyệt.' }, { at: '15:00 29/10/2026', userId: 'gdso_hn', userName: W.userName('gdso_hn'), action: 'Từ chối phê duyệt', note: 'Quyết định GQBT: Đề nghị bổ sung căn cứ Biên bản kết quả thương lượng và rà soát thông tin tài khoản nhận tiền.' }], createdBy: 'cv_hn1' }),                seedDec({ id: 'QD-06', claimCode: 'BT-2026-023', nycName: 'Phạm Văn Nam', nycAddress: 'Số 56 đường Lê Lợi, Ngô Quyền, Hải Phòng', unitId: 'VKS-HP', leaderId: 'vt_vkshp', status: ST.CHO_DUYET, wfKind: KIND_QD, wfSubmittedAt: '09:00 10/10/2026',
+                    history: [{ at: '08:00 28/10/2026', userId: 'cv_hn1', userName: W.userName('cv_hn1'), action: 'Trình ký đến ' + W.userName('gdso_hn'), note: 'Trình ' + W.userLabel('gdso_hn') + ' ký duyệt.' }, { at: '15:00 29/10/2026', userId: 'gdso_hn', userName: W.userName('gdso_hn'), action: 'Từ chối phê duyệt', note: 'Quyết định GQBT: Đề nghị bổ sung căn cứ Biên bản kết quả thương lượng và rà soát thông tin tài khoản nhận tiền.' }], createdBy: 'cv_hn1' }),                seedDec({ id: 'QD-06', claimCode: 'BT-2026-023', nycName: 'Phạm Văn Nam', nycAddress: 'Số 56 đường Lê Lợi, Ngô Quyền, Hải Phòng', unitId: 'VKS-HP', leaderId: 'vt_vkshp', status: ST.CHO_DUYET, wfKind: KIND_QD, wfSubmittedAt: '09:00 10/10/2026',
                     items: seedItems([['Thu nhập thực tế bị mất/giảm sút', 100000000, 90000000, 90000000], ['Thiệt hại về tinh thần', 60000000, 70000000, 70000000]]), recipient: { name: 'Phạm Văn Nam', idNo: '001093004832', account: '9704229200112233', bank: 'MB Bank', branch: 'Chi nhánh Hải Phòng' },
-                    history: [{ at: '09:00 10/10/2026', userId: 'ksv_vkshp1', userName: W.userName('ksv_vkshp1'), action: 'Trình ký duyệt', note: 'Trình ' + W.userLabel('vt_vkshp') + ' ký duyệt.' }], createdBy: 'ksv_vkshp1' })
+                    history: [{ at: '09:00 10/10/2026', userId: 'ksv_vkshp1', userName: W.userName('ksv_vkshp1'), action: 'Trình ký đến ' + W.userName('vt_vkshp'), note: 'Trình ' + W.userLabel('vt_vkshp') + ' ký duyệt.' }], createdBy: 'ksv_vkshp1' })
             ];
         }
         // Hồ sơ luồng của Quyết định mẫu đang Chờ duyệt (để Lãnh đạo được giao phê duyệt được)
@@ -2694,7 +2695,7 @@
                 rootUnitId: 'VKS-HP', currentUnitId: 'VKS-HP', status: W.STATUS.CHO_PHE_DUYET, linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', hanhVi: 'Bắt giữ oan sai do sai sót nghiệp vụ công tố.',
                 routes: [],
                 approval: { kind: KIND_QD, content: 'Kính trình Lãnh đạo ký duyệt dự thảo Quyết định giải quyết bồi thường.', files: [], draftDoc: { source: 'generated', generatedName: 'Du_thao_QD_GQBT_BT-2026-023.doc', formNo: 'Mẫu số 18/BTNN', bodyHtml: buildQdDocHtml(seedDecs.find(x => x.claimCode === 'BT-2026-023')) }, resultStatus: RESULT_STATUS[KIND_QD], action: null, prevStatus: 'Chờ ban hành QĐ', path: ['VKS-HP'], level: 0, steps: [], assignees: ['vt_vkshp'], submittedBy: 'ksv_vkshp1', submittedAt: at, pending: { since: at } },
-                history: [{ at, userId: 'ksv_vkshp1', userName: W.userName('ksv_vkshp1'), action: 'Trình phê duyệt', note: 'Quyết định GQBT. Trình ' + W.userName('vt_vkshp') + ' - ' + W.unitName('VKS-HP') + '.' }]
+                history: [{ at, userId: 'ksv_vkshp1', userName: W.userName('ksv_vkshp1'), action: 'Trình ký đến ' + W.userName('vt_vkshp'), note: 'Quyết định GQBT. Trình ' + W.userName('vt_vkshp') + ' - ' + W.unitName('VKS-HP') + '.' }]
             });
         }
         const QD_SEED_VER = '20261104gql4';
@@ -2825,6 +2826,7 @@
         let qdTab = 'pending';
         function qdRole() { try { return localStorage.getItem(QD_ROLE_KEY) === 'lanh-dao' ? 'lanh-dao' : 'can-bo'; } catch (e) { return 'can-bo'; } }
         function isLeaderAccount(userId) {
+            if (typeof W.isLeaderUser === 'function') return W.isLeaderUser(userId); // [ro1] Lãnh đạo theo Chức vụ
             const cfg = W.getFlowConfig();
             return Object.keys(cfg).some(root => Object.values(cfg[root]).some(n => (n.leaders || []).includes(userId)));
         }
@@ -2883,6 +2885,8 @@
             const me = W.getCurrentUserId();
             const u = W.getUser(me);
             if (!u || !d) return false;
+            // [ro1] Cán bộ phối hợp của vụ việc: không có dòng tại danh sách (chỉ xem QĐ qua liên kết tại màn chi tiết Giải quyết YCBT)
+            if (W.isPhoiHopOnly && W.isPhoiHopOnly(d.claimCode, me)) return false;
             const myRoot = W.getRootId(u.unitId) || u.unitId;
             const decUnit = d.unitId || (W.resolveAgencyUnit ? W.resolveAgencyUnit(d.agency || '') : '');
             const decRoot = decUnit ? (W.getRootId(decUnit) || decUnit) : '';
@@ -3313,7 +3317,7 @@
             const signMethod = d.signMethod || 'Ký số';
             const signText = signMethod === 'Ký số' ? 'Ký số trên hệ thống' : 'Ký ngoài';
             let alerts = '';
-            if (d.status === ST.TRA_LAI && d.returned) alerts += `<div style="background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:16px; color:#92400e; font-size:13px; line-height:1.7;"><b style="color:#b45309;"><i class="fa-solid fa-circle-exclamation"></i> BỊ TRẢ LẠI - ${esc(d.returned.kind || d.wfKind)}</b><br>Người từ chối: ${esc(W.userLabel(d.returned.by))} - ${esc(d.returned.at)}<br>Lý do: ${esc(d.returned.reason)}</div>`;
+            if (d.status === ST.TRA_LAI && d.returned) alerts += `<div style="background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:16px; color:#92400e; font-size:13px; line-height:1.7;"><b style="color:#b45309;"><i class="fa-solid fa-circle-exclamation"></i> LÝ DO BỊ TRẢ LẠI</b><br>Lý do trả lại: ${esc(d.returned.reason)}<br>Lãnh đạo trả lại: ${esc(W.userLabel(d.returned.by))}<br>Thời điểm trả lại: ${esc(d.returned.at)}</div>`;
             // [ctqd] Khối Quyết định đã bị hủy (thông tin hủy tách riêng dòng File Quyết định hủy); Khối Dự thảo Quyết định hủy đang trình
             ctqdCss();
             if (d.status === ST.DA_HUY && d.cancel) alerts += ctqdCancelHtml(d);
@@ -3459,7 +3463,7 @@
             const rb = $('qdFormReturnedBlock');
             if (d && d.returned) {
                 rb.style.display = 'block';
-                rb.innerHTML = `<div style="font-weight:700; color:#b45309; margin-bottom:6px; font-size:12.5px;"><i class="fa-solid fa-circle-exclamation"></i> LÝ DO BỊ TRẢ LẠI</div><div style="font-size:13px; color:#92400e; line-height:1.7;">Người từ chối: ${esc(W.userLabel(d.returned.by))} - ${esc(d.returned.at)}<br>${esc(d.returned.reason)}</div>`;
+                rb.innerHTML = `<div style="font-weight:700; color:#b45309; margin-bottom:6px; font-size:12.5px;"><i class="fa-solid fa-circle-exclamation"></i> LÝ DO BỊ TRẢ LẠI</div><div style="font-size:13px; color:#92400e; line-height:1.7;">Lý do trả lại: ${esc(d.returned.reason)}<br>Lãnh đạo trả lại: ${esc(W.userLabel(d.returned.by))}<br>Thời điểm trả lại: ${esc(d.returned.at)}</div>`;
             } else { rb.style.display = 'none'; rb.innerHTML = ''; }
             document.querySelectorAll('input[name="qdDraftSrc"]').forEach(r => { r.checked = false; });
             $('qdDraftFile').value = '';
@@ -3920,18 +3924,43 @@
             if (!d) { d = { id: 'QD-' + Date.now().toString(36), decisionType: 'Quyết định giải quyết bồi thường', amendments: [], history: [], createdBy: W.getCurrentUserId(), createdAt: W.nowText() }; decisions.unshift(d); }
             delete data.note;
             Object.assign(d, data, { status: ST.CHO_DUYET, wfKind: KIND_QD, wfSubmittedAt: res.record.approval.submittedAt, returned: null, request: null, decNo: '', issueDate: '', updatedAt: new Date().toISOString() });
-            addDecHistory(d, isNew ? 'Trình ký duyệt' : 'Trình lại', `Trình ${W.userLabel(data.leaderId)} ký duyệt dự thảo Quyết định giải quyết bồi thường. Văn bản: ${draftDocName(data.draftDoc)}.`);
+            addDecHistory(d, 'Trình ký đến ' + W.userName(data.leaderId), `Trình ${W.userLabel(data.leaderId)} ký duyệt dự thảo Quyết định giải quyết bồi thường. Văn bản: ${draftDocName(data.draftDoc)}.`);
             saveDecisions();
             showToast('Đã trình Lãnh đạo ký duyệt Quyết định giải quyết bồi thường.', 'success');
             showList();
         }
         // Trình Lãnh đạo ký duyệt Quyết định (từ Popup Trình ký): extra = { assignees, signDoc, bodyHtml }
+        // [ro1] Bước 2 = khối "Thiết lập các cấp trình ký" dùng chung (BTNN_PCKD.levelSetup) cho 03 popup Trình ký QĐ GQBT / Hủy QĐ / Sửa chữa, bổ sung QĐ
+        function qdLvPrev(claimCode) {
+            const r = W.getRecord(claimCode);
+            return r && r.status === 'Bị trả lại' && r.approval && window.BTNN_PCKD ? BTNN_PCKD.prevLevelsOf(r.approval) : null;
+        }
+        function qdLvMount(st, prefix) {
+            const P = window.BTNN_PCKD;
+            if (!P) return false;
+            const first = !st.ui;
+            st.ui = P.legacyUi(prefix, { host: () => $(prefix + 'Levels'), page: () => $(prefix + 'A4'), method: () => 'Ký số' });
+            if (first) st.ui.reset(st.prevLv || null);
+            st.ui.render(); st.ui.renderSigs();
+            return true;
+        }
+        // Trả về: null (không dùng khối thiết lập cấp), false (còn lỗi), col (các cấp đã thiết lập)
+        function qdLvCollect(st) {
+            if (!st.ui) return null;
+            if (!st.ui.validate()) return false;
+            const col = st.ui.collect();
+            st.assignees = col.assignees.slice();
+            st.levels = col.path.map((u, i) => ({ unitId: u, leaders: [col.assignees[i]] }));
+            st.placed = {}; st.coords = {};
+            col.pcSig.forEach((s, i) => { if (s) { st.placed[i] = true; st.coords[i] = Object.assign({}, s); } });
+            return col;
+        }
         function qdSubmitDecision(data, extra) {
             const claim = claimByCode(data.claimCode);
             ensureWorkflowRecord(data.claimCode, data.unitId, (claim && claim.status) || 'Chờ ban hành QĐ');
             const wfDraft = Object.assign({ formNo: 'Mẫu số 18/BTNN' }, data.draftDoc);
             if (wfDraft.source === 'generated') wfDraft.bodyHtml = extra.bodyHtml || buildQdDocHtml(data);
-            const res = W.submitForApproval(data.claimCode, KIND_QD, data.note || 'Trình Lãnh đạo ký duyệt dự thảo Quyết định giải quyết bồi thường.', [], { assignee: data.leaderId, assignees: extra.assignees, draftDoc: wfDraft, signDoc: extra.signDoc, resultStatus: RESULT_STATUS[KIND_QD] });
+            const res = W.submitForApproval(data.claimCode, KIND_QD, data.note || 'Trình Lãnh đạo ký duyệt dự thảo Quyết định giải quyết bồi thường.', [], { assignee: data.leaderId, assignees: extra.assignees, draftDoc: wfDraft, signDoc: extra.signDoc, resultStatus: RESULT_STATUS[KIND_QD], levels: extra.levels, pcSig: extra.pcSig });
             if (!res.ok) { showToast(res.message, 'error'); return false; }
             // Gắn Tài liệu đính kèm vào sự kiện Trình của lần trình này (Lịch sử trình ký)
             if (extra.signDoc && (extra.signDoc.attachments || []).length && typeof tlktTagHistory === 'function') tlktTagHistory(W, res.record, extra.signDoc.attachments);
@@ -3940,7 +3969,7 @@
             if (!d) { d = { id: 'QD-' + Date.now().toString(36), decisionType: 'Quyết định giải quyết bồi thường', amendments: [], history: [], createdBy: W.getCurrentUserId(), createdAt: W.nowText() }; decisions.unshift(d); }
             delete data.note;
             Object.assign(d, data, { status: ST.CHO_DUYET, wfKind: KIND_QD, wfSubmittedAt: res.record.approval.submittedAt, returned: null, request: null, decNo: '', issueDate: '', updatedAt: new Date().toISOString() });
-            addDecHistory(d, isNew ? 'Trình ký duyệt' : 'Trình lại', `Trình ${W.userLabel(data.leaderId)} ký duyệt dự thảo Quyết định giải quyết bồi thường. Văn bản: ${draftDocName(data.draftDoc)}.`);
+            addDecHistory(d, 'Trình ký đến ' + W.userName(data.leaderId), `Trình ${W.userLabel(data.leaderId)} ký duyệt dự thảo Quyết định giải quyết bồi thường. Văn bản: ${draftDocName(data.draftDoc)}.`);
             saveDecisions();
             showToast('Đã trình Lãnh đạo ký duyệt Quyết định giải quyết bồi thường.', 'success');
             showList();
@@ -3949,7 +3978,7 @@
         // ---------------- Tiện ích bố cục dùng chung popup Trình ký QĐ / Sửa chữa, bổ sung / Hủy QĐ (prefix qdx) ----------------
         const QDX_MAX_BYTES = 50 * 1024 * 1024;
         function qdxFmtSize(b) { return b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; }
-        // Stepper 2 bước (Nhập thông tin → Kéo ô ký & chọn Lãnh đạo) chỉ hiển thị khi Ký số; Ký ngoài thu gọn ẩn hẳn
+        // Stepper 2 bước (Nhập thông tin → Thiết lập các cấp trình ký) chỉ hiển thị khi Ký số; Ký ngoài thu gọn ẩn hẳn
         function qdxRenderStepper(p, isOnline) {
             const bar = $(p + 'Stepper');
             if (bar) { bar.classList.toggle('is-collapsed', !isOnline); bar.setAttribute('aria-hidden', isOnline ? 'false' : 'true'); }
@@ -4035,7 +4064,7 @@
             $('customConfirmOkBtn').className = 'btn btn-sm btn-success';
         }
         // ---------------- MH07 - Popup Trình ký Quyết định giải quyết bồi thường ----------------
-        // Bố cục giống popup Không thụ lý hồ sơ. Bước 1: Hình thức ký, Tệp văn bản trình ký (Sinh văn bản theo mẫu 18/BTNN / Tải lên từ máy) hoặc Văn bản ban hành (Ký ngoài); Bước 2: Kéo ô ký & chọn Lãnh đạo
+        // Bố cục giống popup Không thụ lý hồ sơ. Bước 1: Hình thức ký, Tệp văn bản trình ký (Sinh văn bản theo mẫu 18/BTNN / Tải lên từ máy) hoặc Văn bản ban hành (Ký ngoài); Bước 2: Thiết lập các cấp trình ký
         const QS_NOI_NHAN_DEFAULT = '- Như Điều 6;\n-………(12)……;\n-..…......(13)..........;\n- Lưu: VT, HSVV.';
         const QS_SIG = { w: 230, h: 90 };
         // Căn cứ điền sẵn theo Mẫu 18/BTNN; cán bộ nhập / sửa toàn bộ căn cứ
@@ -4050,7 +4079,7 @@
             const ft = W.flowTypeOf ? W.flowTypeOf(recLike.loaiYeuCau, recLike.rootUnitId) : undefined;
             const levels = path.map((u, i) => ({ unitId: u, leaders: i === 0 ? W.firstLevelLeaders(recLike) : W.getLeaders(u, ft) }));
             const sd = d && d.signDoc ? d.signDoc : {};
-            qs = { method: 'Ký số', docSrc: 'gen', step: 1, levels, assignees: levels.map((lv, i) => (sd.assignees && sd.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null };
+            qs = { method: 'Ký số', docSrc: 'gen', step: 1, levels, assignees: levels.map((lv, i) => (sd.assignees && sd.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null, ui: null, prevLv: qdLvPrev(form.claimCode) };
             const c = claimByCode(form.claimCode);
             $('qsSubCode').innerText = qdVvCode(form.claimCode) || form.claimCode || '--';
             $('qsSubNyc').innerText = $('qdNycName').value.trim() || claimName(c) || '--';
@@ -4190,8 +4219,9 @@
             if (typeof tlktValidate === 'function' && !tlktValidate('qdgq')) return;
             const f = qs.docFile;
             $('qsA4').innerHTML = f.generated ? f.html : `<div style="text-align:center; color:#64748b; padding-top:300px; font:14px Inter, sans-serif;"><i class="fa-solid fa-file-lines" style="font-size:48px;"></i><br><br>${esc(f.name)}<br>(Văn bản tải lên)</div>`;
-            qsRenderLevels();
             qsGoStep(2);
+            if (qdLvMount(qs, 'qs')) return;
+            qsRenderLevels();
             qs.levels.forEach((lv, i) => { if (qs.placed[i]) qsDrawBox(i); });
         }
         function qsRenderLevels() {
@@ -4236,7 +4266,9 @@
         // Trình Lãnh đạo: mỗi cấp chọn Lãnh đạo và đặt chữ ký
         function qsSubmit() {
             let ok = true;
-            qs.levels.forEach((lv, i) => {
+            const lv = qdLvCollect(qs);
+            if (lv === false) return;
+            (lv ? [] : qs.levels).forEach((lv, i) => {
                 const sel = $('qsLeader' + i); const bad = !sel.value; qsErr('qsLeader' + i, bad); if (bad) ok = false;
                 const pe = $('qsPlace' + i + 'Err'); if (!qs.placed[i]) { if (pe) pe.style.display = 'block'; ok = false; }
             });
@@ -4249,7 +4281,7 @@
             data.note = $('qsContent').value.trim();
             data.signMethod = 'Ký số';
             data.signDoc = { method: 'Ký số', file: f.name, docNo: data.docNo, docDate: data.docDate, canCu: data.canCu, noiNhan: $('qsNoiNhan').value, assignees: qs.assignees.slice(), sigCoords: JSON.parse(JSON.stringify(qs.coords)), attachments: typeof tlktGet === 'function' ? tlktGet('qdgq') : [] };
-            if (qdSubmitDecision(data, { assignees: qs.assignees.slice(), signDoc: data.signDoc, bodyHtml: f.generated ? f.html : '' })) closeQdSign();
+            if (qdSubmitDecision(data, { assignees: qs.assignees.slice(), signDoc: data.signDoc, bodyHtml: f.generated ? f.html : '', levels: lv ? lv.levels : undefined, pcSig: lv ? lv.pcSig : undefined })) closeQdSign();
         }
         // Ký ngoài: ban hành trực tiếp, không trình Lãnh đạo
         function qsIssueOffline(confirmed) {
@@ -4330,7 +4362,7 @@
         }
 
         // ---------------- MH05 - Popup Hủy Quyết định giải quyết bồi thường (Mẫu 20/BTNN) ----------------
-        // Bước 1: Hình thức ký, Tệp văn bản trình ký (Sinh văn bản theo mẫu 20/BTNN / Tải lên từ máy); Bước 2: Kéo ô ký & chọn Lãnh đạo
+        // Bước 1: Hình thức ký, Tệp văn bản trình ký (Sinh văn bản theo mẫu 20/BTNN / Tải lên từ máy); Bước 2: Thiết lập các cấp trình ký
         // Ký ngoài: chỉ đính kèm tệp PDF đã ký & đóng dấu, ban hành trực tiếp (không trình Lãnh đạo)
         const HQD_CAN_CU_DEFAULT = 'Căn cứ khoản ...(4)..  Điều 48 Luật Trách nhiệm bồi thường của Nhà nước năm 2017 (được sửa đổi, bổ sung bởi Luật số 15/2026/QH16);\nCăn cứ ………………………………(5)………..……………………….,';
         const HQD_NOI_NHAN_DEFAULT = '- Như Điều 4;\n- ……..(10)…….;\n- ……...(11)……;\n- Lưu: VT, HSVV.';
@@ -4346,7 +4378,7 @@
             const levels = path.map((u, i) => ({ unitId: u, leaders: i === 0 ? W.firstLevelLeaders(recLike) : W.getLeaders(u, ft) }));
             const prev = resubmit && d.request ? d.request : null;
             const sd = prev && prev.signDoc ? prev.signDoc : {};
-            hqd = { id, resubmit, method: 'Ký số', docSrc: 'gen', step: 1, levels, assignees: levels.map((lv, i) => (sd.assignees && sd.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null };
+            hqd = { id, resubmit, method: 'Ký số', docSrc: 'gen', step: 1, levels, assignees: levels.map((lv, i) => (sd.assignees && sd.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null, ui: null, prevLv: resubmit ? qdLvPrev(d.claimCode) : null };
             $('hqdSubCode').innerText = qdVvCode(d.claimCode) || d.claimCode || '--';
             $('hqdSubNyc').innerText = d.nycName || claimName(claimByCode(d.claimCode)) || '--';
             $('hqdSubUnit').innerText = unitLabel(d) || '--';
@@ -4479,8 +4511,9 @@
             if (!okTlkt) return;
             const f = hqd.docFile;
             $('hqdA4').innerHTML = f.generated ? f.html : `<div style="text-align:center; color:#64748b; padding-top:300px; font:14px Inter, sans-serif;"><i class="fa-solid fa-file-lines" style="font-size:48px;"></i><br><br>${esc(f.name)}<br>(Văn bản tải lên)</div>`;
-            hqdRenderLevels();
             hqdGoStep(2);
+            if (qdLvMount(hqd, 'hqd')) return;
+            hqdRenderLevels();
             hqd.levels.forEach((lv, i) => { if (hqd.placed[i]) hqdDrawBox(i); });
         }
         function hqdRenderLevels() {
@@ -4523,7 +4556,9 @@
         // Trình Lãnh đạo: mỗi cấp chọn Lãnh đạo và đặt chữ ký; kết quả khi cấp cuối phê duyệt: Quyết định Hủy quyết định
         function hqdSubmit() {
             let ok = true;
-            hqd.levels.forEach((lv, i) => {
+            const lv = qdLvCollect(hqd);
+            if (lv === false) return;
+            (lv ? [] : hqd.levels).forEach((lv, i) => {
                 const bad = !$('hqdLeader' + i).value; hqdErr('hqdLeader' + i, bad); if (bad) ok = false;
                 const pe = $('hqdPlace' + i + 'Err'); if (!hqd.placed[i]) { if (pe) pe.style.display = 'block'; ok = false; }
             });
@@ -4539,12 +4574,12 @@
             ensureWorkflowRecord(d.claimCode, d.unitId, ST.DA_BH);
             const wfDraft = Object.assign({ formNo: 'Mẫu số 20/BTNN' }, draftDoc);
             if (f.generated) wfDraft.bodyHtml = f.html;
-            const res = W.submitForApproval(d.claimCode, KIND_HUY, note || `Lý do hủy Quyết định: ${data.reason}`, [], { assignee: leaderId, assignees: hqd.assignees.slice(), draftDoc: wfDraft, signDoc, resultStatus: RESULT_STATUS[KIND_HUY] });
+            const res = W.submitForApproval(d.claimCode, KIND_HUY, note || `Lý do hủy Quyết định: ${data.reason}`, [], { assignee: leaderId, assignees: hqd.assignees.slice(), draftDoc: wfDraft, signDoc, resultStatus: RESULT_STATUS[KIND_HUY], levels: lv ? lv.levels : undefined, pcSig: lv ? lv.pcSig : undefined });
             if (!res.ok) { showToast(res.message, 'error'); return; }
             if (typeof tlktTagHistory === 'function') tlktTagHistory(W, res.record, signDoc.attachments);
             d.request = { kind: KIND_HUY, content: data.reason, effectiveDate: data.effectiveDate, draftDoc, bodyHtml: f.generated ? f.html : '', leaderId, signMethod: 'Ký số', signDoc, note, submittedAt: res.record.approval.submittedAt, submittedBy: W.getCurrentUserId() };
             d.status = ST.CHO_DUYET; d.wfKind = KIND_HUY; d.wfSubmittedAt = res.record.approval.submittedAt; d.returned = null; d.updatedAt = new Date().toISOString();
-            addDecHistory(d, hqd.resubmit ? `Trình lại ${KIND_HUY}` : `Trình ${KIND_HUY}`, `Lý do hủy Quyết định: ${data.reason}. Hiệu lực: kể từ ngày ký. Trình ${W.userLabel(leaderId)}. Văn bản: ${draftDocName(draftDoc)}.${typeof tlktNote === 'function' ? tlktNote(signDoc.attachments) : ''}`);
+            addDecHistory(d, 'Trình ký đến ' + W.userName(leaderId), `Lý do hủy Quyết định: ${data.reason}. Hiệu lực: kể từ ngày ký. Trình ${W.userLabel(leaderId)}. Văn bản: ${draftDocName(draftDoc)}.${typeof tlktNote === 'function' ? tlktNote(signDoc.attachments) : ''}`);
             saveDecisions();
             closeHqdModal();
             showToast(`Đã trình Lãnh đạo phê duyệt ${KIND_HUY}.`, 'success');
@@ -4622,7 +4657,7 @@
         }
 
         // ---------------- MH05b - Popup Trình ký Quyết định Sửa chữa, Bổ sung QĐ GQBT (Mẫu 21/BTNN) ----------------
-        // Bước 1: Hình thức ký, Tệp văn bản trình ký (Sinh văn bản theo mẫu 21/BTNN / Tải lên từ máy); Bước 2: Kéo ô ký & chọn Lãnh đạo
+        // Bước 1: Hình thức ký, Tệp văn bản trình ký (Sinh văn bản theo mẫu 21/BTNN / Tải lên từ máy); Bước 2: Thiết lập các cấp trình ký
         // Ký ngoài: chỉ đính kèm tệp PDF đã ký & đóng dấu, ban hành trực tiếp (không trình Lãnh đạo)
         const SCB_NOI_NHAN_DEFAULT = '- Như Điều 3;\n- …….(7)……..;\n- …….(8)…......;\n- Lưu: VT, HSVV.';
         // Nội dung sửa chữa, bổ sung mặc định theo Mẫu 21/BTNN (đoạn (4), (5) của Điều 1)
@@ -4642,7 +4677,7 @@
             const levels = path.map((u, i) => ({ unitId: u, leaders: i === 0 ? W.firstLevelLeaders(recLike) : W.getLeaders(u, ft) }));
             const prev = resubmit && d.request ? d.request : null;
             const sd = prev && prev.signDoc ? prev.signDoc : {};
-            scb = { id, resubmit, method: 'Ký số', docSrc: 'gen', step: 1, levels, assignees: levels.map((lv, i) => (sd.assignees && sd.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null };
+            scb = { id, resubmit, method: 'Ký số', docSrc: 'gen', step: 1, levels, assignees: levels.map((lv, i) => (sd.assignees && sd.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null, ui: null, prevLv: resubmit ? qdLvPrev(d.claimCode) : null };
             $('scbSubCode').innerText = qdVvCode(d.claimCode) || d.claimCode || '--';
             $('scbSubNyc').innerText = d.nycName || claimName(claimByCode(d.claimCode)) || '--';
             $('scbSubUnit').innerText = unitLabel(d) || '--';
@@ -4776,8 +4811,9 @@
             if (!okTlkt) return;
             const f = scb.docFile;
             $('scbA4').innerHTML = f.generated ? f.html : `<div style="text-align:center; color:#64748b; padding-top:300px; font:14px Inter, sans-serif;"><i class="fa-solid fa-file-lines" style="font-size:48px;"></i><br><br>${esc(f.name)}<br>(Văn bản tải lên)</div>`;
-            scbRenderLevels();
             scbGoStep(2);
+            if (qdLvMount(scb, 'scb')) return;
+            scbRenderLevels();
             scb.levels.forEach((lv, i) => { if (scb.placed[i]) scbDrawBox(i); });
         }
         function scbRenderLevels() {
@@ -4822,7 +4858,9 @@
         // Trình Lãnh đạo: mỗi cấp chọn Lãnh đạo và đặt chữ ký
         function scbSubmit() {
             let ok = true;
-            scb.levels.forEach((lv, i) => {
+            const lv = qdLvCollect(scb);
+            if (lv === false) return;
+            (lv ? [] : scb.levels).forEach((lv, i) => {
                 const bad = !$('scbLeader' + i).value; scbErr('scbLeader' + i, bad); if (bad) ok = false;
                 const pe = $('scbPlace' + i + 'Err'); if (!scb.placed[i]) { if (pe) pe.style.display = 'block'; ok = false; }
             });
@@ -4838,12 +4876,12 @@
             ensureWorkflowRecord(d.claimCode, d.unitId, ST.DA_BH);
             const wfDraft = Object.assign({ formNo: 'Mẫu số 21/BTNN' }, draftDoc);
             if (f.generated) wfDraft.bodyHtml = f.html;
-            const res = W.submitForApproval(d.claimCode, KIND_SC, note || `Nội dung sửa chữa, bổ sung: ${data.content}`, [], { assignee: leaderId, assignees: scb.assignees.slice(), draftDoc: wfDraft, signDoc, resultStatus: RESULT_STATUS[KIND_SC] });
+            const res = W.submitForApproval(d.claimCode, KIND_SC, note || `Nội dung sửa chữa, bổ sung: ${data.content}`, [], { assignee: leaderId, assignees: scb.assignees.slice(), draftDoc: wfDraft, signDoc, resultStatus: RESULT_STATUS[KIND_SC], levels: lv ? lv.levels : undefined, pcSig: lv ? lv.pcSig : undefined });
             if (!res.ok) { showToast(res.message, 'error'); return; }
             if (typeof tlktTagHistory === 'function') tlktTagHistory(W, res.record, signDoc.attachments);
             d.request = { kind: KIND_SC, content: data.content, effectiveDate: data.effectiveDate, draftDoc, bodyHtml: f.generated ? f.html : '', leaderId, signMethod: 'Ký số', signDoc, note, submittedAt: res.record.approval.submittedAt, submittedBy: W.getCurrentUserId() };
             d.status = ST.CHO_DUYET; d.wfKind = KIND_SC; d.wfSubmittedAt = res.record.approval.submittedAt; d.returned = null; d.updatedAt = new Date().toISOString();
-            addDecHistory(d, scb.resubmit ? `Trình lại ${KIND_SC}` : `Trình ${KIND_SC}`, `Nội dung sửa chữa, bổ sung: ${data.content}. Hiệu lực của Quyết định: ${data.effectiveDate}. Trình ${W.userLabel(leaderId)}. Văn bản: ${draftDocName(draftDoc)}.${typeof tlktNote === 'function' ? tlktNote(signDoc.attachments) : ''}`);
+            addDecHistory(d, 'Trình ký đến ' + W.userName(leaderId), `Nội dung sửa chữa, bổ sung: ${data.content}. Hiệu lực của Quyết định: ${data.effectiveDate}. Trình ${W.userLabel(leaderId)}. Văn bản: ${draftDocName(draftDoc)}.${typeof tlktNote === 'function' ? tlktNote(signDoc.attachments) : ''}`);
             saveDecisions();
             closeScbModal();
             showToast(`Đã trình Lãnh đạo phê duyệt ${KIND_SC}.`, 'success');
@@ -5027,7 +5065,7 @@
                 const current = gi === qdGroups.length - 1 && a.pending && a.kind === g.kind;
                 const items = [];
                 const firstTo = pick(/Trình ([^.]+)\./, g.root.note) || (current && a.assignees && a.assignees[0] ? W.userName(a.assignees[0]) : '');
-                items.push(item('done', g.root.userId, g.root.userName, g.root.at, '', 'fa-solid fa-circle-arrow-right', `Trình ký ${esc(g.kind)}${firstTo ? ` đến <strong>${esc(shortName(firstTo))}</strong>` : ''}`, pick(/Nội dung: (.*)$/, g.root.note) || (current ? a.content : ''), g.root.attachments));
+                items.push(item('done', g.root.userId, g.root.userName, g.root.at, '', 'fa-solid fa-circle-arrow-right', (firstTo ? `Trình ký đến <strong>${esc(shortName(firstTo))}</strong>` : 'Trình ký'), pick(/Nội dung: (.*)$/, g.root.note) || (current ? a.content : ''), g.root.attachments));
                 g.children.forEach(h => {
                     if (/Từ chối/.test(h.action)) { items.push(item('no', h.userId, h.userName, h.at, 'no', 'fa-solid fa-ban', 'Từ chối - trả lại cán bộ trình', pick(/Lý do: (.*)$/, h.note))); return; }
                     const to = pick(/; chuyển ([^.]+)\./, h.note);
@@ -5092,6 +5130,8 @@
             document.body.appendChild(ov);
             const fr = document.getElementById('qdldFrame');
             if (fr && info.html) fr.srcdoc = W.docPageHtml(info.html, info.name.replace(/\.[a-z]+$/i, ''), false);
+            // [ro1] Phiếu trình tự thiết lập các cấp: cấp bật Ký số -> khối Ký số, không bật -> gán chữ ký / chữ ký nháy (văn bản xem trong khung riêng)
+            if (a.tuThietLap && window.BTNN_PCKD) BTNN_PCKD.decorateDecision(rec, approve ? 'approve' : 'reject', { page: null, right: ov.querySelector('.qdld-right'), before: ov.querySelector('.qdld-right .qdld-hint'), title: ov.querySelector('#qdldTitle') });
         }
         function qdldClose() { const el = document.getElementById('qdldOverlay'); if (el) el.remove(); }
         function qdldMark(idEl, invalid) {
@@ -5114,6 +5154,7 @@
             const rec = wfRecFor(d);
             const a = rec.approval;
             const kind = a.kind, unitId = a.path[a.level], last = W.isLastApprovalLevel(rec);
+            const howNow = a.tuThietLap && window.BTNN_PCKD ? BTNN_PCKD.howText({ tuThietLap: true, pcLevels: a.levels, level: a.level }) : '';
             const me = W.getCurrentUserId();
             let res;
             if (c.approve) {
@@ -5124,7 +5165,7 @@
                     d.digitalSign = { by: me, at: W.nowText(), cert: `Chứng thư số ${W.userName(me)} - Ban Cơ yếu Chính phủ (giả lập)` };
                     pushHistory(d, d.digitalSign.at, me, 'Ký số', `Ký số Quyết định giải quyết bồi thường. ${d.digitalSign.cert}.`);
                 }
-                if (res.ok && !last) pushHistory(d, W.nowText(), me, 'Phê duyệt', `${kind}: phê duyệt cấp ${W.unitName(unitId)}; chuyển ${next ? W.userLabel(next) : W.unitName(a.path[a.level])}.${fullNote ? ' Ý kiến: ' + fullNote : ''}`);
+                if (res.ok && !last) pushHistory(d, W.nowText(), me, 'Ký duyệt', `${kind}: ký duyệt cấp ${W.unitName(unitId)}${howNow ? ' (' + howNow + ')' : ''}; chuyển ${next ? W.userLabel(next) : W.unitName(a.path[a.level])}.${fullNote ? ' Ý kiến: ' + fullNote : ''}`);
             } else {
                 res = W.rejectApproval(d.claimCode, note);
             }
@@ -5150,14 +5191,14 @@
                     id: 'WF-' + code, code, module: 'YCBT', loaiYeuCau: W.REQUEST_TYPE_YCBT, nycName: nyc, chuTri: 'canbonv', createdBy: 'canbonv', maVuViec: vv,
                     rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', status: W.STATUS.CHO_PHE_DUYET, linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', routes: [],
                     approval: { kind, content, files: [], draftDoc: { source: 'generated', generatedName: draftName }, resultStatus: RESULT_STATUS[kind], action: null, prevStatus: kind === KIND_QD ? 'Chờ ban hành QĐ' : 'Đã ban hành', path: PATH.slice(), level: 0, steps: [], assignees: ['tpbt', 'cuctruong'], submittedBy: 'canbonv', submittedAt: at, pending: { since: at } },
-                    history: [{ at, userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình phê duyệt', note: `${kind}. ${toTp} Nội dung: ${content}`, kind }]
+                    history: [{ at, userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình ký đến ' + W.userName('tpbt'), note: `${kind}. ${toTp} Nội dung: ${content}`, kind }]
                 }, extra || {})
             });
             const s1 = mk('BT-2026-071', 'Trịnh Văn Long', 'VVBT-2026-071', KIND_HUY, '08:30 14/10/2026', 'Kính trình Lãnh đạo ký duyệt Quyết định hủy Quyết định giải quyết bồi thường số 25/QĐ-BTP.', 'Du_thao_Huy_QD_BT-2026-071.doc');
             s1.dec = seedDec({ id: 'QD-LD1', claimCode: 'BT-2026-071', nycName: 'Trịnh Văn Long', nycAddress: 'Số 12 Nguyễn Trãi, Phường Thanh Xuân, Thành phố Hà Nội', unitId: 'BTP-01', leaderId: 'tpbt', approvedBy: 'cuctruong', status: ST.CHO_DUYET, wfKind: KIND_HUY, wfSubmittedAt: '08:30 14/10/2026', lastKind: KIND_QD, decNo: '25/QĐ-BTP', issueDate: '15/09/2026', signedFile: 'QD_25_GQBT_da_ky.pdf',
                 items: seedItems([['Thu nhập thực tế bị mất/giảm sút', 120000000, 110000000, 110000000]]), recipient: { name: 'Trịnh Văn Long', idNo: '001085006677', account: '0011004455667', bank: 'Vietcombank', branch: 'Chi nhánh Thanh Xuân' },
                 request: { kind: KIND_HUY, content: 'Căn cứ ban hành Quyết định không chính xác theo kết luận kiểm tra của cơ quan có thẩm quyền.', effectiveDate: '20/10/2026', draftDoc: { source: 'generated', generatedName: 'Du_thao_Huy_QD_BT-2026-071.doc' }, bodyHtml: '', leaderId: 'tpbt', signMethod: 'Ký số', note: s1.rec.approval.content, submittedAt: '08:30 14/10/2026', submittedBy: 'canbonv' },
-                history: [{ at: '16:00 15/09/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Ban hành', note: 'Số 25/QĐ-BTP ngày 15/09/2026.' }, { at: '08:30 14/10/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: `Trình ${KIND_HUY}`, note: `Lý do hủy Quyết định: Căn cứ ban hành Quyết định không chính xác theo kết luận kiểm tra của cơ quan có thẩm quyền. Trình ${W.userLabel('tpbt')}.` }],
+                history: [{ at: '16:00 15/09/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Ban hành', note: 'Số 25/QĐ-BTP ngày 15/09/2026.' }, { at: '08:30 14/10/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình ký đến ' + W.userName('tpbt'), note: `Lý do hủy Quyết định: Căn cứ ban hành Quyết định không chính xác theo kết luận kiểm tra của cơ quan có thẩm quyền. Trình ${W.userLabel('tpbt')}.` }],
                 updatedAt: '2026-10-14T08:30:00.000Z' });
             // Tài liệu của lần trình Hủy QĐ: 01 ban hành kèm theo + 01 không ban hành kèm theo - Lãnh đạo xem tại màn Ký duyệt/Từ chối
             s1.tlkt = [
@@ -5171,7 +5212,7 @@
             s2.dec = seedDec({ id: 'QD-08', claimCode: 'BT-2026-072', nycName: 'Ngô Thị Thanh Hương', nycAddress: 'Số 45 Kim Mã, Phường Giảng Võ, Thành phố Hà Nội', unitId: 'BTP-01', leaderId: 'tpbt', approvedBy: 'cuctruong', status: ST.CHO_DUYET, wfKind: KIND_SC, wfSubmittedAt: '10:15 15/10/2026', lastKind: KIND_QD, decNo: '27/QĐ-BTP', issueDate: '25/09/2026', signedFile: 'QD_27_GQBT_da_ky.pdf',
                 items: seedItems([['Tài sản bị xâm phạm', 300000000, 280000000, 280000000]]), recipient: { name: 'Ngô Thị Thanh Hương', idNo: '001190007788', account: '1903344556677', bank: 'Techcombank', branch: 'Chi nhánh Ba Đình' },
                 request: { kind: KIND_SC, content: 'Sửa chữa số tài khoản nhận tiền bồi thường tại Điều 2 do sai sót trong quá trình soạn thảo.', effectiveDate: 'kể từ ngày ký', draftDoc: { source: 'generated', generatedName: 'Du_thao_Sua_chua_bo_sung_QD_BT-2026-072.doc' }, bodyHtml: '', leaderId: 'tpbt', signMethod: 'Ký số', note: s2.rec.approval.content, submittedAt: '10:15 15/10/2026', submittedBy: 'canbonv' },
-                history: [{ at: '15:00 25/09/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Ban hành', note: 'Số 27/QĐ-BTP ngày 25/09/2026.' }, { at: '10:15 15/10/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: `Trình ${KIND_SC}`, note: `Nội dung sửa chữa, bổ sung: Sửa chữa số tài khoản nhận tiền bồi thường tại Điều 2 do sai sót trong quá trình soạn thảo. Trình ${W.userLabel('tpbt')}.` }],
+                history: [{ at: '15:00 25/09/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Ban hành', note: 'Số 27/QĐ-BTP ngày 25/09/2026.' }, { at: '10:15 15/10/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình ký đến ' + W.userName('tpbt'), note: `Nội dung sửa chữa, bổ sung: Sửa chữa số tài khoản nhận tiền bồi thường tại Điều 2 do sai sót trong quá trình soạn thảo. Trình ${W.userLabel('tpbt')}.` }],
                 updatedAt: '2026-10-15T10:15:00.000Z' });
             const at3 = '14:00 13/10/2026', ok3 = '09:20 15/10/2026', y3 = 'Đồng ý mức bồi thường theo kết quả xác minh thiệt hại.';
             const s3 = mk('BT-2026-073', 'Đinh Quang Huy', 'VVBT-2026-073', KIND_QD, at3, 'Kính trình Lãnh đạo ký duyệt dự thảo Quyết định giải quyết bồi thường.', 'Du_thao_QD_GQBT_BT-2026-073.doc', { currentUnitId: 'CĐK-01' });
@@ -5180,7 +5221,7 @@
             s3.rec.history.push({ at: ok3, userId: 'tpbt', userName: W.userName('tpbt'), action: 'Phê duyệt', note: `${KIND_QD}: phê duyệt cấp ${W.unitName('PLN-02')}; chuyển ${W.userName('cuctruong')} - ${W.unitName('CĐK-01')}. Ý kiến: ${y3}`, kind: KIND_QD });
             s3.dec = seedDec({ id: 'QD-09', claimCode: 'BT-2026-073', nycName: 'Đinh Quang Huy', nycAddress: 'Số 8 Trần Phú, Phường Hà Đông, Thành phố Hà Nội', unitId: 'BTP-01', leaderId: 'tpbt', status: ST.CHO_DUYET, wfKind: KIND_QD, wfSubmittedAt: at3, signMethod: 'Ký số', signDoc: { method: 'Ký số', docSrc: 'gen', docNo: '32/QĐ-BTP', docDate: '13/10/2026', assignees: ['tpbt', 'cuctruong'] },
                 items: seedItems([['Thu nhập thực tế bị mất/giảm sút', 180000000, 160000000, 160000000], ['Thiệt hại về tinh thần', 50000000, 45000000, 45000000]]), recipient: { name: 'Đinh Quang Huy', idNo: '001088009900', account: '0451000778899', bank: 'Vietinbank', branch: 'Chi nhánh Hà Đông' },
-                history: [{ at: at3, userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình ký duyệt', note: `Trình ${W.userLabel('tpbt')} ký duyệt.` }, { at: ok3, userId: 'tpbt', userName: W.userName('tpbt'), action: 'Phê duyệt', note: `${KIND_QD}: phê duyệt cấp ${W.unitName('PLN-02')}; chuyển ${W.userLabel('cuctruong')}. Ý kiến: ${y3}` }],
+                history: [{ at: at3, userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình ký đến ' + W.userName('tpbt'), note: `Trình ${W.userLabel('tpbt')} ký duyệt.` }, { at: ok3, userId: 'tpbt', userName: W.userName('tpbt'), action: 'Phê duyệt', note: `${KIND_QD}: phê duyệt cấp ${W.unitName('PLN-02')}; chuyển ${W.userLabel('cuctruong')}. Ý kiến: ${y3}` }],
                 updatedAt: '2026-10-15T09:20:00.000Z' });
             return [s1, s2, s3];
         }
@@ -5222,7 +5263,7 @@
                     returned: { reason: o.reason, by: 'tp_hctp_hn', unitId: 'STP-HN-HCTP', at: rejAt, kind: o.kind, prevStatus: 'Đã ban hành' },
                     returnHistory: [{ kind: o.kind, reason: o.reason, by: 'tp_hctp_hn', unitId: 'STP-HN-HCTP', at: rejAt, attachments: [] }],
                     history: [
-                        { at, userId: 'cv_hn1', userName: W.userName('cv_hn1'), action: 'Trình phê duyệt', note: `${o.kind}. Trình ${W.userName('tp_hctp_hn')} - ${W.unitName('STP-HN-HCTP')}. Nội dung: ${o.content}`, kind: o.kind },
+                        { at, userId: 'cv_hn1', userName: W.userName('cv_hn1'), action: 'Trình ký đến ' + W.userName('tp_hctp_hn'), note: `${o.kind}. Trình ${W.userName('tp_hctp_hn')} - ${W.unitName('STP-HN-HCTP')}. Nội dung: ${o.content}`, kind: o.kind },
                         { at: rejAt, userId: 'tp_hctp_hn', userName: W.userName('tp_hctp_hn'), action: 'Từ chối phê duyệt', note: `Trả lại cán bộ chủ trì. Lý do: ${o.reason}`, kind: o.kind }
                     ]
                 };
@@ -5234,7 +5275,7 @@
                     returned: { reason: o.reason, by: 'tp_hctp_hn', at: rejAt, kind: o.kind },
                     history: [
                         { at: o.issuedAt, userId: 'cv_hn1', userName: W.userName('cv_hn1'), action: 'Ban hành', note: `Số ${o.decNo} ngày ${o.issueDate}.` },
-                        { at, userId: 'cv_hn1', userName: W.userName('cv_hn1'), action: `Trình ${o.kind}`, note: o.reqContent },
+                        { at, userId: 'cv_hn1', userName: W.userName('cv_hn1'), action: 'Trình ký đến ' + W.userName('tp_hctp_hn'), note: o.reqContent },
                         { at: rejAt, userId: 'tp_hctp_hn', userName: W.userName('tp_hctp_hn'), action: 'Từ chối phê duyệt', note: `${o.kind}: ${o.reason}` }
                     ],
                     createdBy: 'cv_hn1', updatedAt: o.updatedAt });
@@ -5324,11 +5365,11 @@
         });
         window.addEventListener('storage', e => { if (e.key === W.KEYS.RECORDS || e.key === KEY_DEC) { decisions = loadDecisions(); if ($('contentListDecisions').style.display !== 'none') showList(); } });
     </script>
-    <script src="quyet_dinh_gqbt_ctqd.js?v=20261106hqdhl1"></script>
+    <script src="quyet_dinh_gqbt_ctqd.js?v=20261109ro1"></script>
     <!-- [hlqd] Cập nhật hiệu lực QĐ: Đã ban hành -> Có hiệu lực (tạo bản ghi Chi trả tiền bồi thường) / Không có hiệu lực -->
     <script src="quyet_dinh_gqbt_hlqd.js?v=20261106vt1"></script>
     <!-- [scbf] Sửa chữa, bổ sung QĐ theo Form (điền sẵn nội dung QĐ, tự sinh Nội dung sửa chữa, bổ sung); liên thông kinh phí khi QĐ sửa chữa, bổ sung ban hành (Hủy QĐ không liên thông Kinh phí) -->
-    <script src="quyet_dinh_gqbt_scbs.js?v=20261104huy1"></script>
+    <script src="quyet_dinh_gqbt_scbs.js?v=20261109ro1"></script>
     <script src="quyet_dinh_gqbt_schl.js?v=20261105kp2"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>

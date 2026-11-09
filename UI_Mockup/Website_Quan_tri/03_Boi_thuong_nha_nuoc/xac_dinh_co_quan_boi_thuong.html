@@ -185,17 +185,17 @@
                 <span id="formScreenTitle"><i class="fa-solid fa-file-signature"></i> TIẾP NHẬN YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG</span>
             </div>
 
-            <!-- Khối THÔNG TIN HỒ SƠ BỊ TRẢ LẠI (hồ sơ đang Bị trả lại hoặc từng bị trả lại; nội dung dựng bằng JS) -->
+            <!-- Khối LÝ DO BỊ TRẢ LẠI (hồ sơ đang Bị trả lại hoặc từng bị trả lại; nội dung dựng bằng JS) -->
             <div id="formReturnedAlertBlock" style="display: none; margin-bottom: 20px; padding: 16px 20px; background: #fffbeb; border: 1px solid #fde68a; border-left: 5px solid #f59e0b; border-radius: var(--border-radius-md);">
                 <div style="display: flex; align-items: flex-start; gap: 14px;">
                     <i class="fa-solid fa-rotate-left" style="font-size: 22px; color: #b45309; margin-top: 3px;"></i>
                     <div style="flex: 1;">
                         <div style="font-weight: 700; color: #b45309; font-size: 15px; margin-bottom: 4px;">
-                            HỒ SƠ BỊ TRẢ LẠI - YÊU CẦU CẬP NHẬT LẠI
+                            LÝ DO BỊ TRẢ LẠI
                         </div>
                         <div id="formReturnedMeta" style="font-size: 13px; color: #92400e; margin-bottom: 6px;"></div>
                         <div style="font-size: 13.5px; color: #92400e; line-height: 1.5; background: #fffbeb; padding: 10px 14px; border-radius: 6px; border: 1px dashed #fde68a;">
-                            <strong>Lý do bị trả lại:</strong> <span id="formReturnedReason"></span>
+                            <strong>Lý do trả lại:</strong> <span id="formReturnedReason"></span>
                         </div>
                     </div>
                 </div>
@@ -1019,12 +1019,12 @@
             <div id="xsStepperBar" class="xs-stepper">
                 <div id="xsStep1Tab" class="xs-step"><span class="require-step-badge" id="xsStep1Badge">1</span><span>Nhập thông tin</span></div>
                 <div class="xs-stepper-divider"></div>
-                <div id="xsStep2Tab" class="xs-step"><span class="require-step-badge" id="xsStep2Badge">2</span><span>Kéo ô ký &amp; chọn Lãnh đạo</span></div>
+                <div id="xsStep2Tab" class="xs-step"><span class="require-step-badge" id="xsStep2Badge">2</span><span>Thiết lập các cấp trình ký</span></div>
             </div>
 
             <!-- Bước 1 -->
             <div id="xsStep1Body" class="xs-body">
-                <!-- Khối THÔNG TIN HỒ SƠ BỊ TRẢ LẠI (hiển thị khi hồ sơ đang bị trả lại hoặc từng bị trả lại) -->
+                <!-- Khối LÝ DO BỊ TRẢ LẠI (hiển thị khi hồ sơ đang bị trả lại hoặc từng bị trả lại) -->
                 <div id="xsReturnedAlertBlock" style="display: none; margin-bottom: 16px; padding: 14px 16px; background: #fffbeb; border: 1px solid #fde68a; border-left: 5px solid #f59e0b; border-radius: var(--border-radius-md);"></div>
 
                 <!-- Hình thức ký (đầu form; Ký số hiện stepper 2 bước, Ký ngoài ẩn stepper) -->
@@ -1117,12 +1117,12 @@
                         <!-- Hộp chữ ký 1: Lãnh đạo Phòng (Duyệt chuyển tiếp / Ký nháy) -->
                         <div id="xsSigBoxRoom" class="sig-drag-box" style="left:60px; top:860px; width:220px; height:90px; border:2px dashed #2563eb; background:rgba(239, 246, 255, 0.94); box-shadow:0 4px 12px rgba(37,99,235,0.18);">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:10.5px; font-weight:700; color:#1e40af;"><i class="fa-solid fa-pen-nib"></i> KÝ DUYỆT (LĐ PHÒNG)</span>
-                                <span class="badge" style="background:#2563eb; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp 1</span>
+                                <span></span>
+                                <span class="badge" id="xsSigRoomKyNhay" style="display:none; background:#dbeafe; color:#1e40af; font-size:9.5px; padding:1px 5px;">Ký nháy</span>
                             </div>
                             <div style="text-align:center; font-weight:700; color:#1e293b; font-size:12px;" id="xsSigBoxRoomOfficer"></div>
                             <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;">
-                                <span>Chữ ký nháy / Ý kiến</span>
+                                <span>Tọa độ</span>
                                 <span id="xsCoordRoomLabel">X: 60, Y: 860</span>
                             </div>
                             <div class="sig-resize-handle" data-target="room" title="Kéo chuột để co giãn khung chữ ký"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>
@@ -1131,15 +1131,14 @@
                         <!-- Hộp chữ ký 2: Lãnh đạo Đơn vị (Ký số CA & Con dấu) -->
                         <div id="xsSigBoxAgency" class="sig-drag-box" style="left:480px; top:860px; width:245px; height:110px; border:2px dashed #dc2626; background:rgba(254, 242, 242, 0.94); box-shadow:0 4px 12px rgba(220,38,38,0.18);">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:10.5px; font-weight:700; color:#991b1b;"><i class="fa-solid fa-stamp"></i> KÝ SỐ &amp; CON DẤU</span>
-                                <span class="badge" style="background:#dc2626; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp cuối (Ký số CA)</span>
+                                <span></span>
+                                <span class="badge" id="xsSigAgencyKyNhay" style="display:none; background:#dbeafe; color:#1e40af; font-size:9.5px; padding:1px 5px;">Ký nháy</span>
                             </div>
                             <div style="text-align:center; margin:3px 0;">
                                 <div style="font-weight:700; color:#1e293b; font-size:12.5px;" id="xsSigBoxAgencyOfficer"></div>
-                                <div style="font-size:10.5px; color:#dc2626; font-style:italic;"><i class="fa-solid fa-certificate"></i> SmartCA / Token hợp lệ</div>
                             </div>
                             <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;">
-                                <span>Chữ ký số &amp; Con dấu</span>
+                                <span>Tọa độ</span>
                                 <span id="xsCoordAgencyLabel">X: 480, Y: 860</span>
                             </div>
                             <div class="sig-resize-handle" data-target="agency" title="Kéo chuột để co giãn khung chữ ký"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>
@@ -1242,13 +1241,14 @@
     </div>
 
     <!-- External javascript logic -->
-    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109ro1"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261104mh1"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261109ro1"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261109tt2"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261109ro1"></script>
     <script src="quan_ly_boi_thuong_ktlc.js?v=20261030k3"></script>
+    <script src="btnn_phan_cong_ky_duyet.js?v=20261109ro1"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
     <script>

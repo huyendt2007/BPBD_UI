@@ -1178,6 +1178,12 @@
         <span id="toastMessage"></span>
     </div>
 
+    <!-- Menu BTNN (?system=btnn): Tài liệu đính kèm dùng bảng chuẩn btnn_tai_lieu_kem_theo.js (như Văn bản quy phạm pháp luật); BPBD giữ vùng tải tệp cũ -->
+    <script>
+        if ((new URLSearchParams(window.location.search).get('system') || '').toLowerCase() === 'btnn') {
+            document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_tai_lieu_kem_theo.js?v=20261109tl1"><\/script>');
+        }
+    </script>
     <!-- JavaScript logic -->
     <script>
         // SYSTEM DETECTION FROM URL (?system=btnn or ?system=bpbd)
@@ -1192,6 +1198,34 @@
                 // BTNN: bỏ nút đóng (X) góc phải tiêu đề màn hình Thêm mới/Sửa/Xem chi tiết; thoát bằng nút ở chân màn hình
                 const x = document.querySelector('#modalTitle + .modal-close-btn'); if (x) x.style.display = 'none';
                 const grid = document.getElementById('uploadGrid'); if (grid) grid.style.gridTemplateColumns = 'minmax(0, 1fr)';
+            });
+        }
+        // BTNN (?system=btnn): khối Tài liệu đính kèm dùng bảng chuẩn (STT | Tên tài liệu, văn bản | File đính kèm | Thao tác, nút Thêm tài liệu),
+        // thay vùng kéo thả tệp; không hiển thị dòng ghi chú định dạng/dung lượng; kiểm tra tệp giữ theo [BR-BTNN-FAQ-001] (.pdf, .jpg, .jpeg, .png; 10MB/tệp; tối đa 5 tệp)
+        const FAQ_TLKT_ON = (urlParams.get('system') || '').toLowerCase() === 'btnn';
+        const FAQ_TLKT = 'faqTl', FAQ_TLKT_MAX = 5;
+        const FAQ_TLKT_EXTS = ['.pdf', '.jpg', '.jpeg', '.png'];
+        // Dữ liệu cũ chỉ có tên tệp: 01 dòng/tệp, Tên tài liệu, văn bản là tên tệp bỏ phần mở rộng
+        const faqTlktRows = files => (files || []).map(f => typeof f === 'string'
+            ? { name: f.replace(/\.[^.]+$/, ''), file: { name: f } }
+            : { name: (f && f.name) || '', file: (f && f.file) || null }).filter(d => d.name || d.file);
+        function renderFaqTlkt(viewMode) {
+            const sec = document.getElementById('uploadSection');
+            let host = document.getElementById('faqTlktHost');
+            if (!host && sec) { host = document.createElement('div'); host.id = 'faqTlktHost'; sec.parentNode.insertBefore(host, sec.nextSibling); }
+            if (sec) sec.style.display = 'none';
+            if (!host) return;
+            if (viewMode) {
+                host.innerHTML = typeof tlktViewHtml === 'function'
+                    ? tlktViewHtml(faqTlktRows(tempDocFiles), { split: false, title: 'Tài liệu đính kèm', boxClass: 'form-section', titleClass: 'form-section-title' }) : '';
+                return;
+            }
+            tlktMount(FAQ_TLKT, 'faqTlktHost', {
+                split: false, noLeader: true, noHint: true, rows: faqTlktRows(tempDocFiles), exts: FAQ_TLKT_EXTS,
+                maxBytes: 10 * 1024 * 1024,
+                fmtMsg: 'Định dạng tệp tài liệu FAQ không hợp lệ. Chỉ chấp nhận .pdf, .jpg, .jpeg, .png.', // [MSG-ERR-BTNN-FAQ-001]
+                sizeMsg: 'Dung lượng tệp tài liệu FAQ không được vượt quá 10MB.', // [MSG-ERR-BTNN-FAQ-002]
+                title: 'Tài liệu đính kèm', secClass: 'form-section', titleClass: 'form-section-title'
             });
         }
 
@@ -1998,6 +2032,7 @@
 
         function renderUploadedFiles() {
             const isViewOnly = document.getElementById('faqQuestion').disabled;
+            if (FAQ_TLKT_ON && typeof tlktMount === 'function') { renderFaqTlkt(isViewOnly); return; }
             
             // Render Docs List
             const docsContainer = document.getElementById('docFilesList');
@@ -2449,10 +2484,24 @@
                 }
             }
 
+            // Tài liệu đính kèm (bảng chuẩn BTNN): dòng đã nhập phải đủ Tên + tệp; tối đa 5 tệp [BR-BTNN-FAQ-001]
+            let tlktFiles = null;
+            if (FAQ_TLKT_ON && typeof tlktValidate === 'function') {
+                if (!tlktValidate(FAQ_TLKT)) isValid = false;
+                else {
+                    tlktFiles = tlktGet(FAQ_TLKT);
+                    if (tlktFiles.length > FAQ_TLKT_MAX) {
+                        const e = document.getElementById('tlkt_' + FAQ_TLKT + '_err');
+                        if (e) { e.textContent = 'Hệ thống chỉ hỗ trợ tối đa 5 tệp tài liệu FAQ.'; e.classList.add('on'); } // [MSG-ERR-BTNN-FAQ-003]
+                        isValid = false;
+                    }
+                }
+            }
             if (!isValid) {
                 if (firstInvalid) firstInvalid.focus();
                 return;
             }
+            if (tlktFiles) tempDocFiles = tlktFiles;
 
             const id = document.getElementById('faqId').value;
             if (id) {

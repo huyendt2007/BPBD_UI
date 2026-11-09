@@ -1218,10 +1218,11 @@
         <!-- Khối thông tin cảnh báo từ chối (Alert box Danger) - CHỈ hiển thị khi hồ sơ ở trạng thái Bị trả lại thành lập HĐ (State 1.3) -->
         <div class="alert-box danger" id="rejectionAlertBox" style="display: none; margin-bottom: 20px; border-left: 4px solid #f59e0b; padding: 16px 20px; background-color: #fffbeb; border-radius: 8px;">
             <h4 style="color:#b45309; font-weight: 800; font-size:15px; margin-bottom: 8px; display:flex; align-items:center; gap:8px;">
-                <i class="fa-solid fa-circle-xmark"></i> Yêu cầu trình ký Quyết định thành lập bị trả lại
+                <i class="fa-solid fa-circle-xmark"></i> Lý do bị trả lại
             </h4>
-            <p style="font-size:13.5px; color:#4b5563; margin-bottom: 4px;"><strong>Người từ chối:</strong> <span id="rejectionActorText">Giám đốc Sở - Trần Văn Lãnh Đạo</span> (<span id="rejectionTimeText">17/07/2026 - 15:30</span>)</p>
-            <p style="font-size:13.5px; color:#4b5563; margin-bottom: 0;"><strong>Lý do bị trả lại:</strong> <span style="color:#b45309; font-style:italic;" id="rejectionReasonText">"Cần bổ sung thêm đại diện Sở Tài chính vào thành phần Hội đồng để đảm bảo tính khách quan."</span></p>
+            <p style="font-size:13.5px; color:#4b5563; margin-bottom: 4px;"><strong>Lãnh đạo trả lại:</strong> <span id="rejectionActorText">Giám đốc Sở - Trần Văn Lãnh Đạo</span></p>
+            <p style="font-size:13.5px; color:#4b5563; margin-bottom: 4px;"><strong>Thời điểm trả lại:</strong> <span id="rejectionTimeText">17/07/2026 - 15:30</span></p>
+            <p style="font-size:13.5px; color:#4b5563; margin-bottom: 0;"><strong>Lý do trả lại:</strong> <span style="color:#b45309; font-style:italic;" id="rejectionReasonText">"Cần bổ sung thêm đại diện Sở Tài chính vào thành phần Hội đồng để đảm bảo tính khách quan."</span></p>
         </div>
 
         <!-- Khối thông báo chưa thành lập Hội đồng (CTA Card) - CHỈ hiển thị khi Chờ thành lập hội đồng (State 1) -->
@@ -1488,10 +1489,11 @@
         <!-- Khối thông tin cảnh báo từ chối QĐ (Alert box Danger) - CHỈ hiển thị khi hồ sơ ở Bị trả lại QĐ hoàn trả (State 3.2) -->
         <div class="alert-box danger" id="s3RejectedAlert" style="display: none; margin-bottom: 20px; border-left: 4px solid #f59e0b; padding: 16px 20px; background-color: #fffbeb; border-radius: 8px;">
             <h4 style="color:#b45309; font-weight: 800; font-size:15px; margin-bottom: 8px; display:flex; align-items:center; gap:8px;">
-                <i class="fa-solid fa-circle-xmark"></i> Dự thảo Quyết định hoàn trả bị trả lại
+                <i class="fa-solid fa-circle-xmark"></i> Lý do bị trả lại
             </h4>
-            <p style="font-size:13.5px; color:#4b5563; margin-bottom: 4px;"><strong>Người từ chối:</strong> <span id="s3RejectActorText">Giám đốc Sở - Trần Văn Lãnh Đạo</span> (<span id="s3RejectTimeText">21/07/2026 - 17:20</span>)</p>
-            <p style="font-size:13.5px; color:#4b5563; margin-bottom: 0;"><strong>Lý do bị trả lại:</strong> <span style="color:#b45309; font-style:italic;" id="s3RejectReasonText">"Cần rà soát lại mức hoàn trả của cán bộ có lỗi vô ý và bổ sung căn cứ pháp lý trong phần trích yếu."</span></p>
+            <p style="font-size:13.5px; color:#4b5563; margin-bottom: 4px;"><strong>Lãnh đạo trả lại:</strong> <span id="s3RejectActorText">Giám đốc Sở - Trần Văn Lãnh Đạo</span></p>
+            <p style="font-size:13.5px; color:#4b5563; margin-bottom: 4px;"><strong>Thời điểm trả lại:</strong> <span id="s3RejectTimeText">21/07/2026 - 17:20</span></p>
+            <p style="font-size:13.5px; color:#4b5563; margin-bottom: 0;"><strong>Lý do trả lại:</strong> <span style="color:#b45309; font-style:italic;" id="s3RejectReasonText">"Cần rà soát lại mức hoàn trả của cán bộ có lỗi vô ý và bổ sung căn cứ pháp lý trong phần trích yếu."</span></p>
         </div>
 
         <!-- Khối CTA Chưa ban hành QĐ hoàn trả - CHỈ hiển thị khi ở Chờ ban hành QĐ hoàn trả nhưng chưa tạo quyết định (State 3) -->
@@ -2711,7 +2713,8 @@
     <div class="toast-container" id="toastContainer"></div>
 
 
-        <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
+        <script src="btnn_luong_xu_ly.js?v=20261109ro1"></script>
+        <script src="btnn_phan_cong_ky_duyet.js?v=20261109ro1"></script>
         <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
         <script>
             // Xem xét trách nhiệm hoàn trả: đơn vị người xem theo vai trò giả lập (htMockScope); Lãnh đạo (ký duyệt) xem được mọi khối.
@@ -4594,6 +4597,10 @@
                 return { kind: 'Quyết định hoàn trả', title: 'QUYẾT ĐỊNH VỀ VIỆC HOÀN TRẢ', content: d.qdSummary || '', hist, levels: [], level: 0, label: () => '', staff, okStatus: 'Thu tiền hoàn trả', noStatus: 'Bị trả lại QĐ hoàn trả' };
             }
             // Lịch sử trình ký: giảm dần theo thời gian; cấp đang chờ: Chờ ký duyệt, cấp chưa tới: chỉ tên
+            // Lịch sử trình ký / Lịch sử xử lý Quyết định: nhãn "Trình ký đến [Họ tên Lãnh đạo cấp 1]" (họ tên lấy từ mục lịch sử hoặc Lãnh đạo cấp 1 của lượt trình)
+            function htTrinhTo(item, fallback) { const s = String((item && (item.to || item.detail || item.msg)) || ''); const m = (item && item.to) ? [0, item.to] : (/Trình ký đến (.+?)(?:[.]|$)/.exec(s) || /Trình Lãnh đạo (.+?) ký duyệt/.exec(s)); const raw = (m && m[1]) || fallback || ''; return String(raw).replace(/<[^>]*>/g, '').split(/ - | [(]/)[0].trim(); }
+            function htTrinhLabel(item, fallback) { const to = htTrinhTo(item, fallback); return to && !/^Lãnh đạo/.test(to) ? 'Trình ký đến ' + to : 'Trình ký'; }
+            window.htTrinhLabel = htTrinhLabel;
             function kdtcHtHistHtml(c) {
                 const icon = { done: 'fa-solid fa-circle-check', no: 'fa-solid fa-circle-xmark', wait: 'fa-regular fa-clock', todo: 'fa-regular fa-circle' };
                 const item = (st, name, at, cls, act, msg) => `<div class="kdtc-ht-hv ${st}"><div class="kdtc-ht-hv-step"><i class="${icon[st]}"></i></div><div class="kdtc-ht-hv-main"><div class="kdtc-ht-hv-head"><span class="kdtc-ht-hv-name">${kdtcHtE(name || '--')}</span>${at ? `<span class="kdtc-ht-hv-time"><i class="fa-regular fa-clock"></i> ${kdtcHtE(at)}</span>` : ''}</div>${act ? `<div class="kdtc-ht-hv-act ${cls}">${act}</div>` : ''}${msg ? `<div class="kdtc-ht-hv-msg">${kdtcHtE(msg)}</div>` : ''}</div></div>`;
@@ -4603,7 +4610,7 @@
                 } else pend.push(item('wait', 'Lãnh đạo ký duyệt', '', 'wait', '<i class="fa-solid fa-hourglass-half"></i> Chờ ký duyệt', ''));
                 const past = c.hist.map(h => h.type === 'reject'
                     ? item('no', h.name, h.at, 'no', '<i class="fa-solid fa-ban"></i> Từ chối - trả lại cán bộ trình', h.msg)
-                    : h.type === 'submit' ? item('done', h.name, h.at, '', '<i class="fa-solid fa-circle-arrow-right"></i> Trình ký', h.msg)
+                    : h.type === 'submit' ? item('done', h.name, h.at, '', '<i class="fa-solid fa-circle-arrow-right"></i> ' + kdtcHtE(htTrinhLabel(h, c.label(0))), h.msg)
                         : item('done', h.name, h.at, 'ok', '<i class="fa-regular fa-circle-check"></i> Ký duyệt', h.msg));
                 return `<div class="kdtc-ht-box hist"><div class="kdtc-ht-box-title"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử trình ký</div>${pend.reverse().join('') + past.join('') || '<div style="color:#64748b;">Chưa có lịch sử.</div>'}</div>`;
             }
@@ -4619,7 +4626,7 @@
                         <div style="text-align:center; font-weight:bold; margin:28px 0 18px;">${kdtcHtE(c.title)}</div>
                         <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước năm 2017; xét hồ sơ xem xét trách nhiệm hoàn trả (Mã hồ sơ: <strong>${kdtcHtE(d.code || '')}</strong>),</p>
                         <p>${kdtcHtE(c.content || '--')}</p>
-                        <div style="display:flex; justify-content:flex-end; margin-top:48px;"><div style="text-align:center; min-width:240px; border:2px dashed #dc2626; background:rgba(254,242,242,.9); color:#991b1b; padding:10px; font:12px Inter, sans-serif;"><strong>KÝ SỐ &amp; CON DẤU</strong><br>Lãnh đạo ký duyệt cấp cuối</div></div>
+                        <div style="display:flex; justify-content:flex-end; margin-top:48px;"><div style="text-align:center; min-width:240px; border:2px dashed #dc2626; background:rgba(254,242,242,.9); color:#991b1b; padding:10px; font:12px Inter, sans-serif;"><strong>Cấp cuối${c.levels.length && c.label(c.levels.length - 1) ? ' - ' + kdtcHtE(String(c.label(c.levels.length - 1)).split(' - ')[0].trim()) : ''}</strong></div></div>
                     </div>`;
             }
             function kdtcHtRender(mode, target) {
@@ -4640,6 +4647,7 @@
                     set('kdtcHtHist', kdtcHtHistHtml(c));
                     set('kdtcHtHint', kdtcHtE(`Cấp ký duyệt cuối cùng. Sau khi ký duyệt, hệ thống ký số văn bản bằng chứng thư số của Lãnh đạo và hồ sơ chuyển [${c.okStatus}].`));
                     const n = document.getElementById('kdtcHtNote'); if (n) n.value = '';
+                    htLvDecorate(target, 'approve', c);
                     return;
                 }
                 set('kdtcHtRjTitle', `Từ chối - ${kdtcHtE(c.kind)} - ${kdtcHtE(d.code || '')}`);
@@ -4652,6 +4660,22 @@
                     + `<div class="kdtc-ht-row"><span>Nội dung trình</span><span>${kdtcHtE(c.content || '--')}</span></div></div>`);
                 set('kdtcHtRjHist', kdtcHtHistHtml(c));
                 set('kdtcHtRjHint', kdtcHtE(`Sau khi từ chối, hồ sơ chuyển [${c.noStatus}] cho cán bộ trình.`));
+                htLvDecorate(target, 'reject', c);
+            }
+            // [ro1] Phiếu trình tự thiết lập các cấp: ô ký theo cấp trên văn bản; cấp bật Ký số -> khối Ký số, không bật -> gán chữ ký / chữ ký nháy
+            function htLvDecorate(target, mode, c) {
+                const d = activeDossier || {};
+                const st = target === 'council' ? d.tlhd : (target === 'dcht' ? d.dcht : (typeof window.ht3StateOf === 'function' ? window.ht3StateOf(target) : null));
+                const kb = document.getElementById('pcKyBlock'); if (kb) kb.remove();
+                if (!st || !st.tuThietLap || !window.BTNN_PCKD) return;
+                const approve = mode === 'approve';
+                const prv = document.getElementById(approve ? 'kdtcHtPreview' : 'kdtcHtRjPreview');
+                const hint = document.getElementById(approve ? 'kdtcHtHint' : 'kdtcHtRjHint');
+                const lv = Math.min(st.level || 0, st.pcLevels.length - 1);
+                if (approve && hint && lv < st.pcLevels.length - 1) hint.textContent = `Sau khi ký duyệt, hồ sơ chuyển ${String(c.label(lv + 1) || ('Lãnh đạo cấp ' + (lv + 2))).split(' - ')[0]} (Cấp ${lv + 2 === st.pcLevels.length ? 'cuối' : lv + 2}) ký duyệt.`;
+                const right = hint ? hint.parentNode : (prv && prv.parentNode ? prv.parentNode.querySelector('.kdtc-ht-right') : null);
+                const before = hint || (right ? Array.from(right.children).filter(x => x.classList.contains('form-group')).pop() || null : null);
+                BTNN_PCKD.decorateLegacy(st, mode, { page: prv ? prv.querySelector('.kdtc-ht-a4') : null, scroller: prv, right, before, title: document.getElementById(approve ? 'kdtcHtTitle' : 'kdtcHtRjTitle') });
             }
 
             function submitRejectReason() {
@@ -4989,8 +5013,8 @@
                 councilSignHistory.forEach(item => {
                     const tr = document.createElement('tr');
                     let actionBadge = '';
-                    if (item.type === 'approve') actionBadge = '<span class="badge badge-success" style="font-weight:700;">Phê duyệt</span>';
-                    else if (item.type === 'submit') actionBadge = '<span class="badge badge-info" style="font-weight:700;">Trình ký</span>';
+                    if (item.type === 'approve') actionBadge = '<span class="badge badge-success" style="font-weight:700;">Ký duyệt</span>';
+                    else if (item.type === 'submit') actionBadge = '<span class="badge badge-info" style="font-weight:700;">' + htTrinhLabel(item, activeDossier && activeDossier.tlhd && typeof tlhdLeaderLabelOf === 'function' && activeDossier.tlhd.levels ? tlhdLeaderLabelOf(activeDossier.tlhd.levels, activeDossier.tlhd.assignees || [], 0) : '') + '</span>';
                     else if (item.type === 'reject') actionBadge = '<span class="badge" style="background:#fee2e2; color:#b91c1c; font-weight:700;">Từ chối</span>';
 
                     tr.innerHTML = `
@@ -5710,10 +5734,10 @@
                     let badgeStyle = 'background:#f1f5f9; color:#475569;';
 
                     if (item.type === 'approve') {
-                        title = 'Phê duyệt';
+                        title = 'Ký duyệt';
                         badgeStyle = 'background:#dcfce7; color:#15803d;';
                     } else if (item.type === 'submit') {
-                        title = 'Trình ký';
+                        title = htTrinhLabel(item);
                         badgeStyle = 'background:#e0f2fe; color:#0369a1;';
                     } else if (item.type === 'reject') {
                         title = 'Từ chối';
@@ -8026,14 +8050,14 @@
         </script>
     <!-- Popup Thành lập Hội đồng xem xét trách nhiệm hoàn trả (Mẫu 33/BTNN) - bố cục như Popup Không thụ lý hồ sơ -->
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
-    <script src="chi_tiet_ho_so_hoan_tra_tlhd.js?v=20261030s2"></script>
-    <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261106m2"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_tlhd.js?v=20261109ro1"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261109ro1"></script>
     <!-- Dữ liệu mẫu bổ sung phủ các trạng thái của Ma trận chuyển trạng thái (dùng chung màn Danh sách) -->
     <script src="ht_du_lieu_mau.js?v=20261106dc2"></script>
     <!-- Bước 1 / Bước 2 Ý kiến của Hội đồng, Stepper 04 bước, phạm vi người xem theo đơn vị -->
     <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261106dc2"></script>
     <!-- Bước 3: trình ký 02 tầng tại đơn vị (QĐ hoàn trả Mẫu 36; QĐ miễn Mẫu 38 / QĐ giảm Mẫu 37; QĐ đình chỉ Mẫu 39 cấp cán bộ) -->
-    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261106dc3"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261109ro1"></script>
     <!-- Bước 4: thu tiền hoàn trả theo phần đơn vị (nộp tiền nhiều đợt, miễn / giảm bổ sung, trả lại tiền) -->
     <script src="chi_tiet_ho_so_hoan_tra_thu.js?v=20261105tc1"></script>
     <!-- Thanh giả lập người dùng dùng chung màn Danh sách / Chi tiết, Khôi phục dữ liệu mẫu -->

@@ -583,24 +583,6 @@
         <div class="section-head">
             <div class="section-title" id="formTitle"><i class="fa-solid fa-pen-to-square"></i> Thêm mới/Cập nhật</div>
         </div>
-        <div class="info-strip">
-            <div>
-                <div class="info-label" id="codeLabel">Mã hồ sơ</div>
-                <div class="info-value" id="formCode">Hệ thống tự sinh</div>
-            </div>
-            <div>
-                <div class="info-label">Trạng thái</div>
-                <div class="info-value" id="formStatus">Đang nhập</div>
-            </div>
-            <div>
-                <div class="info-label">Cán bộ xử lý</div>
-                <div class="info-value" id="formOfficer">Nguyễn Văn Cán Bộ</div>
-            </div>
-            <div>
-                <div class="info-label">Ngày tạo/cập nhật</div>
-                <div class="info-value" id="formDate">10/08/2026</div>
-            </div>
-        </div>
         <form id="businessForm">
             <div class="grid-3" id="formFields"></div>
             <div class="form-group">
@@ -653,10 +635,10 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109ro1"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
-    <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
-    <script src="btnn_badge_cho_xu_ly.js?v=20261106kn1"></script>
+    <script src="btnn_pham_vi_don_vi.js?v=20261109stp1"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261109stp1"></script>
     <script src="btnn_popup_xoa.js?v=20261106ro1"></script>
     <script>
         // Phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp (btnn_pham_vi_don_vi.js)
@@ -728,38 +710,38 @@
                     'HD-BTNN-2026-003': { field: 'Giải quyết yêu cầu bồi thường', coordinationAgency: 'Viện kiểm sát nhân dân Thành phố Hải Phòng' },
                     'HD-BTNN-2026-005': { field: 'Khác', fieldOther: 'Xác định thiệt hại được bồi thường' },
                     // Hồ sơ Đang xử lý đã cập nhật kết quả (Nội dung hướng dẫn/giải đáp): icon Hoàn thành sáng
-                    'HD-BTNN-2026-009': { field: 'Xác định và thực hiện trách nhiệm hoàn trả', coordinationAgency: 'Tòa án nhân dân tối cao', resultContent: 'Đã có văn bản hướng dẫn xác định trách nhiệm hoàn trả của người thi hành công vụ gửi Sở Tư pháp tỉnh Thanh Hóa.' },
+                    'HD-BTNN-2026-009': { field: 'Xác định và thực hiện trách nhiệm hoàn trả', coordinationAgency: 'Tòa án nhân dân Thành phố Hà Nội', resultContent: 'Đã có văn bản hướng dẫn xác định trách nhiệm hoàn trả của người thi hành công vụ gửi Cục Thi hành án dân sự Thành phố Hà Nội.' },
                     'HD-BTNN-2026-013': { field: 'Phục hồi danh dự', methodOther: 'Điện thoại', resultContent: 'Đã giải đáp qua điện thoại về tổ chức phục hồi danh dự cho người bị thiệt hại.' },
                     'HD-BTNN-2026-014': { resultContent: 'Đã trả lời công dân về thời hiệu yêu cầu bồi thường qua Cổng thông tin điện tử.' },
                     'HD-BTNN-2026-002': { resultContent: 'Đã có văn bản giải đáp vướng mắc về xác định thiệt hại do tài sản bị xâm phạm gửi UBND phường Cầu Giấy.' },
-                    'HD-BTNN-2026-004': { resultContent: 'Đã ban hành văn bản hướng dẫn trình tự thụ lý, xác minh thiệt hại cho Sở Tư pháp TP. Hồ Chí Minh.' },
-                    'HD-BTNN-2026-006': { resultContent: 'Đã hướng dẫn trực tiếp cách xác định cơ quan giải quyết bồi thường trong vụ việc tại UBND phường Hồng Gai.' },
+                    'HD-BTNN-2026-004': { resultContent: 'Đã ban hành văn bản hướng dẫn trình tự thụ lý, xác minh thiệt hại cho UBND phường Sài Gòn.' },
+                    'HD-BTNN-2026-006': { resultContent: 'Đã hướng dẫn trực tiếp cách xác định cơ quan giải quyết bồi thường trong vụ việc tại Công an phường Thanh Xuân.' },
                     'HD-BTNN-2026-008': { resultContent: 'Đã trả lời qua hòm thư điện tử về hồ sơ đề nghị cấp kinh phí bồi thường.' },
                     'HD-BTNN-2026-010': { resultContent: 'Đã có văn bản hướng dẫn việc phối hợp cung cấp hồ sơ vụ án hình sự phục vụ giải quyết bồi thường.' },
                     'HD-BTNN-2026-012': { resultContent: 'Đã đăng tải nội dung hướng dẫn trên Cổng thông tin điện tử về thời hiệu yêu cầu bồi thường.' },
-                    'HD-BTNN-2026-015': { resultContent: 'Đã tổ chức lớp bồi dưỡng kỹ năng giải quyết bồi thường cho 60 công chức.' }
+                    'HD-BTNN-2026-015': { resultContent: 'Đã tổ chức lớp bồi dưỡng kỹ năng giải quyết bồi thường cho 60 công chức tư pháp trên địa bàn Thành phố.' }
                 },
-                // Đơn vị thực hiện của hồ sơ (đơn vị gốc của người tạo); mã không có trong danh sách: Bộ Tư pháp
-                units: { 'HD-BTNN-2026-002': 'STP-HN', 'HD-BTNN-2026-003': 'STP-HP', 'HD-BTNN-2026-007': 'STP-HCM', 'HD-BTNN-2026-010': 'STP-HCM', 'HD-BTNN-2026-012': 'STP-HP', 'HD-BTNN-2026-014': 'STP-HN', 'HD-BTNN-2026-016': 'STP-HN' },
+                // Đơn vị thực hiện của hồ sơ (Sở Tư pháp của người tạo; chốt 09/11/2026: chỉ Sở Tư pháp thao tác, Bộ Tư pháp/Cục chỉ xem)
+                units: { 'HD-BTNN-2026-001': 'STP-HN', 'HD-BTNN-2026-002': 'STP-HN', 'HD-BTNN-2026-003': 'STP-HP', 'HD-BTNN-2026-004': 'STP-HCM', 'HD-BTNN-2026-005': 'STP-HP', 'HD-BTNN-2026-006': 'STP-HN', 'HD-BTNN-2026-007': 'STP-HCM', 'HD-BTNN-2026-008': 'STP-HCM', 'HD-BTNN-2026-009': 'STP-HN', 'HD-BTNN-2026-010': 'STP-HCM', 'HD-BTNN-2026-011': 'STP-HP', 'HD-BTNN-2026-012': 'STP-HP', 'HD-BTNN-2026-013': 'STP-HCM', 'HD-BTNN-2026-014': 'STP-HN', 'HD-BTNN-2026-015': 'STP-HN', 'HD-BTNN-2026-016': 'STP-HN' },
                 mainContentLabel: 'Nội dung đề nghị',
                 resultLabel: 'Nội dung hướng dẫn/giải đáp',
                 rows: [
-                    ['HD-BTNN-2026-001', 'Sở Tư pháp TP. Hà Nội', 'Hướng dẫn nghiệp vụ', 'Văn bản', '02/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
+                    ['HD-BTNN-2026-001', 'UBND phường Hoàn Kiếm, Thành phố Hà Nội', 'Hướng dẫn nghiệp vụ', 'Văn bản', '02/08/2026', 'Ngô Thị Lan', 'Đang xử lý'],
                     ['HD-BTNN-2026-002', 'UBND phường Cầu Giấy, Thành phố Hà Nội', 'Giải đáp vướng mắc', 'Hòm thư điện tử', '31/07/2026', 'Đỗ Văn Chung', 'Hoàn thành'],
                     ['HD-BTNN-2026-003', 'Cục THADS TP. Hải Phòng', 'Hướng dẫn nghiệp vụ', 'Họp liên ngành', '25/07/2026', 'Tăng Thị Diệu', 'Đang xử lý'],
-                    ['HD-BTNN-2026-004', 'Sở Tư pháp TP. Hồ Chí Minh', 'Hướng dẫn nghiệp vụ', 'Văn bản', '22/07/2026', 'Phạm Minh Đức', 'Hoàn thành'],
-                    ['HD-BTNN-2026-005', 'UBND tỉnh Đồng Nai', 'Giải đáp vướng mắc', 'Cổng thông tin điện tử', '18/07/2026', 'Trần Thị Thu Hà', 'Đang xử lý'],
-                    ['HD-BTNN-2026-006', 'Sở Tư pháp tỉnh Quảng Ninh', 'Hướng dẫn nghiệp vụ', 'Trực tiếp', '15/07/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
+                    ['HD-BTNN-2026-004', 'UBND phường Sài Gòn, Thành phố Hồ Chí Minh', 'Hướng dẫn nghiệp vụ', 'Văn bản', '22/07/2026', 'Châu Ngọc Ánh', 'Hoàn thành'],
+                    ['HD-BTNN-2026-005', 'UBND phường Hồng Bàng, Thành phố Hải Phòng', 'Giải đáp vướng mắc', 'Cổng thông tin điện tử', '18/07/2026', 'Quách Minh Tuấn', 'Đang xử lý'],
+                    ['HD-BTNN-2026-006', 'Công an phường Thanh Xuân, Thành phố Hà Nội', 'Hướng dẫn nghiệp vụ', 'Trực tiếp', '15/07/2026', 'Đỗ Văn Chung', 'Hoàn thành'],
                     ['HD-BTNN-2026-007', 'Chi cục Thi hành án dân sự quận Bình Tân, Thành phố Hồ Chí Minh', 'Giải đáp vướng mắc', 'Văn bản', '10/07/2026', 'Châu Ngọc Ánh', 'Đang xử lý'],
-                    ['HD-BTNN-2026-008', 'UBND TP. Đà Nẵng', 'Hướng dẫn nghiệp vụ', 'Hòm thư điện tử', '05/07/2026', 'Trần Thị Thu Hà', 'Hoàn thành'],
-                    ['HD-BTNN-2026-009', 'Sở Tư pháp tỉnh Thanh Hóa', 'Giải đáp vướng mắc', 'Họp liên ngành', '28/06/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
+                    ['HD-BTNN-2026-008', 'Tòa án nhân dân Thành phố Hồ Chí Minh', 'Hướng dẫn nghiệp vụ', 'Hòm thư điện tử', '05/07/2026', 'Châu Ngọc Ánh', 'Hoàn thành'],
+                    ['HD-BTNN-2026-009', 'Cục Thi hành án dân sự Thành phố Hà Nội', 'Giải đáp vướng mắc', 'Họp liên ngành', '28/06/2026', 'Ngô Thị Lan', 'Đang xử lý'],
                     ['HD-BTNN-2026-010', 'Viện kiểm sát nhân dân Quận 1, Thành phố Hồ Chí Minh', 'Hướng dẫn nghiệp vụ', 'Văn bản', '20/06/2026', 'Châu Ngọc Ánh', 'Hoàn thành'],
-                    ['HD-BTNN-2026-011', 'Sở Tư pháp tỉnh Bình Dương', 'Giải đáp vướng mắc', 'Trực tiếp', '15/06/2026', 'Trần Thị Thu Hà', 'Đang xử lý'],
+                    ['HD-BTNN-2026-011', 'UBND phường Lê Chân, Thành phố Hải Phòng', 'Giải đáp vướng mắc', 'Trực tiếp', '15/06/2026', 'Tăng Thị Diệu', 'Đang xử lý'],
                     ['HD-BTNN-2026-012', 'Viện kiểm sát nhân dân Thành phố Hải Phòng', 'Hướng dẫn nghiệp vụ', 'Cổng thông tin điện tử', '10/06/2026', 'Tăng Thị Diệu', 'Hoàn thành'],
-                    ['HD-BTNN-2026-013', 'Sở Tư pháp tỉnh Thừa Thiên Huế', 'Giải đáp vướng mắc', 'Khác', '02/06/2026', 'Phạm Minh Đức', 'Hoàn thành'],
+                    ['HD-BTNN-2026-013', 'Bà Trần Thị Hoa (Công dân)', 'Giải đáp vướng mắc', 'Khác', '02/06/2026', 'Châu Ngọc Ánh', 'Hoàn thành'],
                     ['HD-BTNN-2026-014', 'Ông Lê Văn Hoàng (Công dân)', 'Giải đáp vướng mắc', 'Cổng thông tin điện tử', '28/05/2026', 'Đỗ Văn Chung', 'Đang xử lý'],
-                    ['HD-BTNN-2026-015', 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', 'Bồi dưỡng kỹ năng, nghiệp vụ', 'Trực tiếp', '20/05/2026', 'Phạm Minh Đức', 'Hoàn thành'],
-                    ['HD-BTNN-2026-016', 'Sở Tư pháp TP. Hà Nội', 'Truyền thông, tuyên truyền, phổ biến pháp luật', 'Cổng thông tin điện tử', '12/05/2026', 'Đỗ Văn Chung', 'Đang xử lý']
+                    ['HD-BTNN-2026-015', 'Phòng Tư pháp - UBND phường Cầu Giấy', 'Bồi dưỡng kỹ năng, nghiệp vụ', 'Trực tiếp', '20/05/2026', 'Đỗ Văn Chung', 'Hoàn thành'],
+                    ['HD-BTNN-2026-016', 'UBND phường Ba Đình, Thành phố Hà Nội', 'Truyền thông, tuyên truyền, phổ biến pháp luật', 'Cổng thông tin điện tử', '12/05/2026', 'Đỗ Văn Chung', 'Đang xử lý']
                 ]
             },
             theo_doi_don_doc: {
@@ -895,15 +877,15 @@
                     ['handler', 'Đơn vị/cán bộ xử lý', 'text', true],
                     ['deadline', 'Hạn xử lý', 'date', false]
                 ],
-                // Đơn vị thực hiện của hồ sơ (đơn vị gốc của người tạo); mã không có trong danh sách: Bộ Tư pháp
-                units: { 'KNTC-BTNN-2026-003': 'STP-HN', 'KNTC-BTNN-2026-004': 'STP-HCM', 'KNTC-BTNN-2026-005': 'STP-HCM', 'KNTC-BTNN-2026-006': 'STP-HP', 'KNTC-BTNN-2026-008': 'STP-HN', 'KNTC-BTNN-2026-009': 'STP-HN', 'KNTC-BTNN-2026-011': 'STP-HCM', 'KNTC-BTNN-2026-012': 'STP-HP' },
+                // Đơn vị thực hiện của hồ sơ (Sở Tư pháp của người tạo; chốt 09/11/2026: chỉ Sở Tư pháp thao tác, Bộ Tư pháp/Cục chỉ xem)
+                units: { 'KNTC-BTNN-2026-001': 'STP-HN', 'KNTC-BTNN-2026-002': 'STP-HN', 'KNTC-BTNN-2026-007': 'STP-HP', 'KNTC-BTNN-2026-010': 'STP-HCM', 'KNTC-BTNN-2026-013': 'STP-HP', 'KNTC-BTNN-2026-014': 'STP-HN', 'KNTC-BTNN-2026-003': 'STP-HN', 'KNTC-BTNN-2026-004': 'STP-HCM', 'KNTC-BTNN-2026-005': 'STP-HCM', 'KNTC-BTNN-2026-006': 'STP-HP', 'KNTC-BTNN-2026-008': 'STP-HN', 'KNTC-BTNN-2026-009': 'STP-HN', 'KNTC-BTNN-2026-011': 'STP-HCM', 'KNTC-BTNN-2026-012': 'STP-HP' },
                 // Hồ sơ Đang xử lý đã cập nhật kết quả (Kết quả xác minh/xử lý): icon Hoàn thành sáng
                 extra: {
                     'KNTC-BTNN-2026-002': { resultContent: 'Đã xác minh nội dung kiến nghị; đề nghị cơ quan giải quyết bồi thường bổ sung hồ sơ theo quy định.' },
                     'KNTC-BTNN-2026-008': { resultContent: 'Đã xác minh, khiếu nại có cơ sở; yêu cầu cơ quan giải quyết bồi thường thụ lý lại hồ sơ.' },
                     'KNTC-BTNN-2026-003': { resultContent: 'Đã xác minh phản ánh; đôn đốc cơ quan giải quyết bồi thường thực hiện đúng thời hạn.' },
                     'KNTC-BTNN-2026-005': { resultContent: 'Khiếu nại không có cơ sở; giữ nguyên quyết định hoàn trả, đã trả lời bằng văn bản.' },
-                    'KNTC-BTNN-2026-007': { resultContent: 'Đã tiếp thu kiến nghị, hướng dẫn Sở Tư pháp tỉnh Bình Thuận thực hiện thống nhất.' },
+                    'KNTC-BTNN-2026-007': { resultContent: 'Đã tiếp thu kiến nghị, hướng dẫn UBND phường Hồng Bàng thực hiện thống nhất.' },
                     'KNTC-BTNN-2026-010': { resultContent: 'Tố cáo đúng một phần; đã kiến nghị xử lý kỷ luật người thi hành công vụ.' },
                     'KNTC-BTNN-2026-012': { resultContent: 'Đã xác minh, yêu cầu cơ quan giải quyết bồi thường bổ sung tài liệu cho người yêu cầu.' },
                     'KNTC-BTNN-2026-014': { resultContent: 'Đã có văn bản trả lời kiến nghị về quản lý nhà nước công tác bồi thường.' }
@@ -911,20 +893,20 @@
                 mainContentLabel: 'Nội dung tiếp nhận',
                 resultLabel: 'Kết quả xác minh/xử lý và biện pháp xử lý/khắc phục',
                 rows: [
-                    ['KNTC-BTNN-2026-001', 'Ông Nguyễn Văn D', 'Khiếu nại', 'Giải quyết yêu cầu bồi thường', 'BT-2026-012', '02/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
-                    ['KNTC-BTNN-2026-002', 'Sở Tư pháp TP. Hà Nội', 'Kiến nghị', 'Kiểm tra công tác BTNN', '—', '01/08/2026', 'Trần Thị Thu Hà', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-001', 'Ông Nguyễn Văn D', 'Khiếu nại', 'Giải quyết yêu cầu bồi thường', 'BT-2026-012', '02/08/2026', 'Ngô Thị Lan', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-002', 'UBND phường Hoàn Kiếm, Thành phố Hà Nội', 'Kiến nghị', 'Kiểm tra công tác BTNN', '—', '01/08/2026', 'Đỗ Văn Chung', 'Đang xử lý'],
                     ['KNTC-BTNN-2026-003', 'Công dân phản ánh qua Cổng TTĐT', 'Phản ánh', 'Đôn đốc công tác BTNN', 'BT-2026-021', '28/07/2026', 'Đỗ Văn Chung', 'Hoàn thành'],
                     ['KNTC-BTNN-2026-004', 'Bà Lê Thị Hương', 'Tố cáo', 'Xử lý kỷ luật', 'BT-2026-008', '25/07/2026', 'Châu Ngọc Ánh', 'Đang xử lý'],
                     ['KNTC-BTNN-2026-005', 'Công ty TNHH Hưng Phát', 'Khiếu nại', 'Xác định và thực hiện trách nhiệm hoàn trả', 'BT-2026-015', '20/07/2026', 'Châu Ngọc Ánh', 'Hoàn thành'],
                     ['KNTC-BTNN-2026-006', 'Ông Vũ Đình Trọng', 'Phản ánh', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', 'BT-2026-025', '15/07/2026', 'Tăng Thị Diệu', 'Đang xử lý'],
-                    ['KNTC-BTNN-2026-007', 'Sở Tư pháp tỉnh Bình Thuận', 'Kiến nghị', 'Quản lý nhà nước về công tác BTNN', '—', '10/07/2026', 'Phạm Minh Đức', 'Hoàn thành'],
+                    ['KNTC-BTNN-2026-007', 'UBND phường Hồng Bàng, Thành phố Hải Phòng', 'Kiến nghị', 'Quản lý nhà nước về công tác BTNN', '—', '10/07/2026', 'Quách Minh Tuấn', 'Hoàn thành'],
                     ['KNTC-BTNN-2026-008', 'Bà Phạm Thị Mai', 'Khiếu nại', 'Giải quyết yêu cầu bồi thường', 'BT-2026-030', '05/07/2026', 'Đỗ Văn Chung', 'Đang xử lý'],
                     ['KNTC-BTNN-2026-009', 'UBND phường Liễu Giai', 'Xử lý vi phạm', 'Giải quyết yêu cầu bồi thường', 'BT-2026-018', '28/06/2026', 'Đỗ Văn Chung', 'Đang xử lý'],
-                    ['KNTC-BTNN-2026-010', 'Ông Đỗ Quốc Cường', 'Tố cáo', 'Phục hồi danh dự', 'BT-2026-022', '22/06/2026', 'Phạm Minh Đức', 'Hoàn thành'],
+                    ['KNTC-BTNN-2026-010', 'Ông Đỗ Quốc Cường', 'Tố cáo', 'Phục hồi danh dự', 'BT-2026-022', '22/06/2026', 'Châu Ngọc Ánh', 'Hoàn thành'],
                     ['KNTC-BTNN-2026-011', 'Công ty CP Đầu tư Vĩnh An', 'Khiếu nại', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', 'BT-2026-019', '18/06/2026', 'Châu Ngọc Ánh', 'Đang xử lý'],
                     ['KNTC-BTNN-2026-012', 'Công dân gửi đơn qua Bưu điện', 'Phản ánh', 'Giải quyết yêu cầu bồi thường', 'BT-2026-014', '12/06/2026', 'Tăng Thị Diệu', 'Hoàn thành'],
-                    ['KNTC-BTNN-2026-013', 'Ông Hoàng Minh Tuấn', 'Khiếu nại', 'Xác định và thực hiện trách nhiệm hoàn trả', 'BT-2026-027', '05/06/2026', 'Phạm Minh Đức', 'Đang xử lý'],
-                    ['KNTC-BTNN-2026-014', 'Bà Nguyễn Thu Trang', 'Kiến nghị', 'Quản lý nhà nước về công tác BTNN', '—', '01/06/2026', 'Trần Thị Thu Hà', 'Hoàn thành']
+                    ['KNTC-BTNN-2026-013', 'Ông Hoàng Minh Tuấn', 'Khiếu nại', 'Xác định và thực hiện trách nhiệm hoàn trả', 'BT-2026-027', '05/06/2026', 'Tăng Thị Diệu', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-014', 'Bà Nguyễn Thu Trang', 'Kiến nghị', 'Quản lý nhà nước về công tác BTNN', '—', '01/06/2026', 'Ngô Thị Lan', 'Hoàn thành']
                 ]
             }
         };
@@ -1227,7 +1209,7 @@
         // Thao tác được phép của hồ sơ (dùng chung lưới và chân màn Xem chi tiết)
         function rowActs(row) {
             const status = row[row.length - 1];
-            const own = PV.canEdit(PV.ownerOf(row));
+            const own = PV.canEdit(PV.ownerOf(row), true);
             return {
                 edit: own && status !== 'Hoàn thành',
                 update: own && (status.includes('Đang') || status === 'Đã gửi' || status === 'Đang theo dõi phản hồi' || status === 'Theo dõi xử lý sau kiểm tra'),
@@ -1239,7 +1221,7 @@
             const status = row[row.length - 1];
             // Hồ sơ được lưu thẳng vào trạng thái xử lý, cho phép sửa khi chưa Hoàn thành
             // Hồ sơ của đơn vị khác (Bộ Tư pháp/Cục xem hồ sơ của Sở Tư pháp): mọi nút mờ, chỉ xem chi tiết bằng click dòng
-            const own = PV.canEdit(PV.ownerOf(row));
+            const own = PV.canEdit(PV.ownerOf(row), true);
             const acts = rowActs(row);
             const canEdit = acts.edit;
             const canUpdate = acts.update;
@@ -1259,7 +1241,7 @@
         // Xóa (Hướng dẫn nghiệp vụ): cùng điều kiện Sửa - hồ sơ của đơn vị mình, chưa Hoàn thành; popup xác nhận [MSG-CFM-SYS-001]
         function deleteRow(code) {
             const row = workingRows.find(item => item[0] === code);
-            if (!row || !PV.canEdit(PV.ownerOf(row)) || row[row.length - 1] === 'Hoàn thành') return;
+            if (!row || !PV.canEdit(PV.ownerOf(row), true) || row[row.length - 1] === 'Hoàn thành') return;
             // Popup Xác nhận xóa dùng chung (btnn_popup_xoa.js), giống popup xóa màn Tập huấn, bồi dưỡng
             BTNN_POPUP_XOA.open(code, () => {
                 workingRows = workingRows.filter(item => item[0] !== code);
@@ -1614,12 +1596,8 @@
             const row = workingRows.find(item => item[0] === code);
             const isNew = mode === 'new';
             document.getElementById('detailPanel').classList.add('visible');
-            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${isNew ? 'Thêm mới' : mode === 'view' ? 'Xem chi tiết' : mode === 'feedback' ? 'Cập nhật phản hồi' : mode === 'update' ? (moduleKey === 'theo_doi_don_doc' ? 'Cập nhật phản hồi' : 'Cập nhật kết quả') : 'Sửa'} ${currentConfig.title.charAt(0).toLowerCase() + currentConfig.title.slice(1)}`;
-            document.getElementById('codeLabel').innerText = currentConfig.codeLabel;
-            document.getElementById('formCode').innerText = isNew ? 'Hệ thống tự sinh' : code;
-            document.getElementById('formStatus').innerText = row ? row[row.length - 1] : 'Đang nhập';
-            // Cán bộ xử lý: người tạo hồ sơ; thêm mới: người dùng đang đăng nhập
-            document.getElementById('formOfficer').innerText = row ? row[row.length - 2] : PV.creatorOf(null);
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${isNew ? 'Thêm mới' : mode === 'view' ? 'Xem chi tiết' : mode === 'feedback' ? 'Cập nhật phản hồi' : mode === 'update' ? (moduleKey === 'theo_doi_don_doc' ? 'Cập nhật phản hồi' : 'Cập nhật kết quả') : 'Sửa'} ${currentConfig.title.charAt(0).toLowerCase() + currentConfig.title.slice(1)}${mode === 'view' && row ? `: ${escDoc(code)} <span class="badge ${statusClass(row[row.length - 1])}" style="margin-left:4px;">${escDoc(row[row.length - 1])}</span>` : ''}`;
+            // 09/11/2026: bỏ dải thông tin dưới tiêu đề form (hệ thống vẫn ghi nhận dữ liệu): Mã hồ sơ, Trạng thái; Xem chi tiết: Mã hồ sơ và badge Trạng thái hiển thị tại dòng tiêu đề
             formKeep = moduleKey === 'huong_dan' && row ? { field: hdRec(code).field } : {};
             document.getElementById('formFields').innerHTML = currentConfig.fields.map(fieldControl).join('');
             caseSelected = {};
@@ -1739,7 +1717,7 @@
         // Badge menu Khiếu nại, tố cáo, xử lý vi phạm: số hồ sơ Đang xử lý do đơn vị của người dùng tạo (đơn vị được thao tác); không có thì ẩn
         function reportMenuBadge() {
             if (moduleKey !== 'khieu_nai' || !window.BDG) return;
-            BDG.report('kntc', workingRows.filter(r => r[r.length - 1] === 'Đang xử lý' && PV.canEdit(PV.ownerOf(r))).length);
+            BDG.report('kntc', workingRows.filter(r => r[r.length - 1] === 'Đang xử lý' && PV.canEdit(PV.ownerOf(r), true)).length);
         }
 
         // ===== Lịch sử xử lý (theo hồ sơ) =====
@@ -1784,17 +1762,17 @@
 
         // ===== Phản hồi của cơ quan được hướng dẫn (góp ý khách hàng số 5) =====
         // Cán bộ đơn vị lập hồ sơ nhập theo văn bản/ý kiến nhận được sau khi đã hướng dẫn (hồ sơ Hoàn thành); nhập nhiều lần, lưu lịch sử
-        const FEEDBACK_KEY = 'btnn_hd_feedback_v1';
+        const FEEDBACK_KEY = 'btnn_hd_feedback_v2'; // v2: dữ liệu mẫu chuyển sang các Sở Tư pháp
         let feedbackStore = null;
         function loadFeedback() {
             if (feedbackStore) return feedbackStore;
             try { feedbackStore = JSON.parse(localStorage.getItem(FEEDBACK_KEY)) || null; } catch (e) { feedbackStore = null; }
             if (!feedbackStore) {
                 feedbackStore = {
-                    'HD-BTNN-2026-004': [{ date: '05/08/2026', docNo: '2310/STP-HCTP', content: 'Sở Tư pháp đã triển khai nội dung hướng dẫn tới các cơ quan giải quyết bồi thường trên địa bàn Thành phố.', by: 'Phạm Minh Đức', at: '09:00 06/08/2026' }],
+                    'HD-BTNN-2026-004': [{ date: '05/08/2026', docNo: '215/UBND-TP', content: 'UBND phường Sài Gòn đã áp dụng nội dung hướng dẫn trong quá trình thụ lý, xác minh thiệt hại.', by: 'Châu Ngọc Ánh', at: '09:00 06/08/2026' }],
                     'HD-BTNN-2026-006': [
-                        { date: '25/07/2026', docNo: '', content: 'Sở Tư pháp báo cáo đã áp dụng hướng dẫn trong vụ việc tại UBND phường Hồng Gai.', by: 'Nguyễn Văn Cán Bộ', at: '10:30 25/07/2026' },
-                        { date: '20/08/2026', docNo: '645/STP-HCTP', content: 'Báo cáo kết quả: vụ việc đã ban hành quyết định giải quyết bồi thường, đề nghị hướng dẫn thêm về chi trả.', by: 'Nguyễn Văn Cán Bộ', at: '14:00 21/08/2026' }
+                        { date: '25/07/2026', docNo: '', content: 'Công an phường Thanh Xuân báo cáo đã áp dụng hướng dẫn trong vụ việc.', by: 'Đỗ Văn Chung', at: '10:30 25/07/2026' },
+                        { date: '20/08/2026', docNo: '645/CAP-PC', content: 'Báo cáo kết quả: vụ việc đã ban hành quyết định giải quyết bồi thường, đề nghị hướng dẫn thêm về chi trả.', by: 'Đỗ Văn Chung', at: '14:00 21/08/2026' }
                     ]
                 };
                 saveFeedbackStore();
@@ -1875,7 +1853,7 @@
         const RESULT_MODULES = ['huong_dan', 'khieu_nai'];
         // Hướng dẫn nghiệp vụ / Khiếu nại: điều kiện Hoàn thành (icon trên lưới, nút ở Xem chi tiết) - hồ sơ của đơn vị mình, Đang xử lý, đã có kết quả
         function hdHasResult(code) { return !!String(hdRec(code).resultContent || '').trim(); }
-        function hdCanFinish(row) { return !!row && PV.canEdit(PV.ownerOf(row)) && row[row.length - 1] === 'Đang xử lý' && hdHasResult(row[0]); }
+        function hdCanFinish(row) { return !!row && PV.canEdit(PV.ownerOf(row), true) && row[row.length - 1] === 'Đang xử lý' && hdHasResult(row[0]); }
         // Hướng dẫn nghiệp vụ: Hoàn thành = popup xác nhận chuẩn của trang -> chuyển Hoàn thành, ghi lịch sử xử lý (như Theo dõi, đôn đốc)
         function hdFinish(code) {
             if (!RESULT_MODULES.includes(moduleKey)) return;
@@ -1949,7 +1927,7 @@
             document.getElementById('pageSubtitle').innerText = currentConfig.subtitle;
             // Bộ lọc Đơn vị thực hiện (chỉ người dùng thuộc Bộ Tư pháp/Cục) đặt sau 02 ô tìm kiếm đầu
             const filterHtml = currentConfig.filters.map(renderFilterControl);
-            filterHtml.splice(2, 0, PV.filterHtml({ label: 'Đơn vị thực hiện', includeBtp: true }));
+            filterHtml.splice(2, 0, PV.filterHtml({ label: 'Đơn vị thực hiện', includeBtp: false }));
             document.getElementById('filterGrid').innerHTML = filterHtml.join('');
             initDatePickers(document.getElementById('filterGrid'));
             const units = currentConfig.units || {};
@@ -1957,7 +1935,7 @@
             reportMenuBadge();
             { // setProperty important: btnn_uxu_dong_bo.js đặt display !important cho nút thanh công cụ
                 const addBtn = document.getElementById('btnAddNew');
-                if (PV.canCreate(false)) addBtn.style.removeProperty('display'); else addBtn.style.setProperty('display', 'none', 'important');
+                if (PV.canCreate(true)) addBtn.style.removeProperty('display'); else addBtn.style.setProperty('display', 'none', 'important');
             }
 
             const tabs = document.getElementById('moduleTabs');
@@ -1985,7 +1963,7 @@
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_form_page.js?v=20261026fp"></script>
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261109tl1"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_grid_toolbar.js?v=20261030gt1"></script>
     <script src="btnn_tieu_de_man.js?v=20261103td2"></script>

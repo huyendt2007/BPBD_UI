@@ -260,6 +260,9 @@
     // ===== Ghi đè các hàm của trang =====
     window.htInTab = function (tab, d) {
         const sc = scopeOf(d);
+        // [ro1] Cán bộ phối hợp của vụ việc Giải quyết YCBT: không có dòng hồ sơ hoàn trả tại danh sách
+        const Wh = window.BTNN_WF;
+        if (typeof htRoleKey === 'function' && htRoleKey() !== 'lanh_dao' && Wh && Wh.isPhoiHopOnly && d && Wh.isPhoiHopOnly(d.claimCode || d.maVuViec)) return false;
         if (!sc.visible) return false;
         const p = pendingOf(d, sc);
         return tab === 'pending' ? p : (!p && gatesOf(d, sc).length > 0);

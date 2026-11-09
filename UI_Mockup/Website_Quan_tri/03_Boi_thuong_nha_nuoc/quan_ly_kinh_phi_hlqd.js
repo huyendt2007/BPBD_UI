@@ -331,7 +331,7 @@
                     it.kptbApproval = { kind: 'Thông báo chi trả', path: levels.map(function (l) { return l.unitId; }), assignees: assignees, level: 0, steps: [], content: 'Kính trình Lãnh đạo ký Thông báo chi trả tiền bồi thường.', submittedBy: 'canbonv', submittedAt: '10:00 20/10/2026', pending: true, attachments: [] };
                     it.status = 'Chờ duyệt';
                     it.user = 'Nguyễn Văn Cán Bộ';
-                    it.kptbHistory.push({ at: '10:00 20/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Trình ký', note: 'Thông báo chi trả. Nội dung: Kính trình Lãnh đạo ký Thông báo chi trả tiền bồi thường.' });
+                    it.kptbHistory.push({ at: '10:00 20/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Trình ký đến ' + kptbUserName(assignees[0]), note: 'Thông báo chi trả. Nội dung: Kính trình Lãnh đạo ký Thông báo chi trả tiền bồi thường.' });
                 }
             }
             if (s.decId === 'QD-HL3') {

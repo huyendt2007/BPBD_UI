@@ -1,7 +1,7 @@
 /*
  * Popup Trình ký Quyết định Đình chỉ giải quyết yêu cầu bồi thường (Mẫu số 25/BTNN) - Giải quyết yêu cầu bồi thường (prefix dcgq)
  * Bố cục giống Popup Không thụ lý hồ sơ / Trình duyệt tiếp nhận hồ sơ:
- * - Hình thức ký (đầu form): Ký số trên hệ thống (02 bước: Nhập thông tin -> Kéo ô ký & chọn Lãnh đạo) | Ký ngoài (Ban hành trực tiếp)
+ * - Hình thức ký (đầu form): Ký số trên hệ thống (02 bước: Nhập thông tin -> Thiết lập các cấp trình ký) | Ký ngoài (Ban hành trực tiếp)
  * - Thông tin đình chỉ: Căn cứ đình chỉ (6), Diễn giải; Quyết định tạm ứng (Điều 3, chỉ đọc)
  * - Thu hồi kinh phí bồi thường đã chi (Thu hồi | Không thu hồi, mặc định Thu hồi): luôn hiển thị; có lựa chọn khi vụ việc có khoản kinh phí đã chi
  *   hoặc bản ghi kinh phí đang hiệu lực (kho proposalsList, kho trống -> dữ liệu mẫu Kinh phí), không có -> dòng chú thích chỉ đọc;
@@ -264,10 +264,10 @@ function dcgqEnsureModal() {
         + '</div><button type="button" onclick="closeDcgqModal()" style="border:none; background:transparent; font-size:22px; color:#94a3b8; cursor:pointer; line-height:1; padding:4px;" title="Đóng">&times;</button></div>'
         // Stepper
         + '<div id="dcgqStepperBar" class="ktl-stepper-fullwidth"><div id="dcgqStep1Tab" class="ktl-step-tab active" onclick="dcgqGoStep1()"><span class="ktl-step-badge" id="dcgqStep1Badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div>'
-        + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="dcgqStep2Tab" class="ktl-step-tab" onclick="dcgqGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div></div>'
+        + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="dcgqStep2Tab" class="ktl-step-tab" onclick="dcgqGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Thiết lập các cấp trình ký</span></div></div>'
         // Bước 1
         + '<div id="dcgqStep1Body" class="sticky-modal-body gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
-        + '<div id="dcgqReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ VỀ YÊU CẦU CHỈNH SỬA</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả về: <strong id="dcgqReturnedReason">--</strong><br>Người trả về: <span id="dcgqReturnedOfficer">--</span> • Thời điểm: <span id="dcgqReturnedDate">--</span></div></div>'
+        + '<div id="dcgqReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="dcgqReturnedReason">--</strong><br>Lãnh đạo trả lại: <span id="dcgqReturnedOfficer">--</span> • Thời điểm trả lại: <span id="dcgqReturnedDate">--</span></div></div>'
         + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
         + card('dcgqCardSignOnline', 'online', 'Ký số trên hệ thống', 'Trình Lãnh đạo ký duyệt trên phần mềm', 'fa-file-signature', false, true)
         + card('dcgqCardSignOffline', 'offline', 'Ký ngoài (Ban hành trực tiếp)', 'Tải lên văn bản PDF đã ký và đóng dấu', 'fa-stamp', true, false)
@@ -589,7 +589,7 @@ function dcgqSubmitOnline() {
     closeDcgqModal();
     gqAfterSubmit(claim, DCGQ_KIND);
 }
-// Lịch sử xử lý / tiến trình: ghi kèm lựa chọn Thu hồi kinh phí bồi thường đã chi vào mục "Trình phê duyệt" vừa tạo (trước phần Nội dung trình)
+// Lịch sử xử lý / tiến trình: ghi kèm lựa chọn Thu hồi kinh phí bồi thường đã chi vào mục trình ("Trình ký đến [Họ tên Lãnh đạo cấp 1]") vừa tạo (trước phần Nội dung trình)
 function dcgqTagHistory(claim, rec, th) {
     var t = dcgqThuHoiText(th);
     if (!t) return;
@@ -602,7 +602,7 @@ function dcgqTagHistory(claim, rec, th) {
         }
     } catch (e) { /* mockup */ }
     var tl = Array.isArray(claim.timeline) ? claim.timeline[claim.timeline.length - 1] : null;
-    if (tl && /^Trình Lãnh đạo/.test(tl.title || '')) tl.desc = String(tl.desc || '') + ' ' + t;
+    if (tl && /^Trình (Lãnh đạo|ký đến)/.test(tl.title || '')) tl.desc = String(tl.desc || '') + ' ' + t;
 }
 // Ký ngoài: kiểm tra Căn cứ đình chỉ + tệp PDF đã ký -> popup xác nhận -> ban hành trực tiếp
 function dcgqSubmitOffline() {

@@ -4,6 +4,7 @@
  *    Step chưa tới: không cuộn, thông báo "Chưa đến bước này."
  * 2. Các khối 1, 2, 3 (và khối Hoãn phục hồi danh dự) thu gọn / mở rộng như tab "Chi tiết giải quyết bồi thường":
  *    khối của bước hiện tại mở, khối bước đã qua thu gọn, khối bước chưa tới ẩn. "Lịch sử xử lý" thu gọn / mở rộng (mặc định thu gọn).
+ *    [pdchet] Người bị thiệt hại đã chết: ẩn Bước 2 (Phản hồi) và Khối 2, Stepper còn 03 bước; Khối 3 có ghi chú bỏ qua bước Ý kiến phản hồi.
  * 3. Khối "Hoãn phục hồi danh dự": danh sách các lần Hoãn / Tiếp tục (claim.phddHoanLogs), lần gần nhất ở trên;
  *    trạng thái Hoãn phục hồi danh dự + chế độ cập nhật: form "Tiếp tục thực hiện phục hồi danh dự" -> nhánh PHDD về bước trước khi hoãn.
  * Dùng tiện ích sẵn có: ctvvDocsMount / ctvvDocsValidate / ctvvDocsViewHtml (quan_ly_boi_thuong_ctvv.js), setPhddStatus, saveClaimsToLocal, showConfirmModal, showToast.
@@ -136,11 +137,13 @@ function phdxGoStep(n) {
 function phdxApply(claim) {
     var cur = phdxCurStep(claim);
     var openN = Math.min(cur, 3);
+    // [pdchet] Người bị thiệt hại đã chết: không có bước Ý kiến phản hồi (ẩn Bước 2 trên Stepper và Khối 2); dữ liệu cũ đang ở Bước 2 giữ nguyên hiển thị
+    var skip2 = typeof phddVictimDead === 'function' && phddVictimDead(claim) && cur !== 2;
     PHDX_SECS.forEach(function (id, i) {
         var sec = phdxEl(id); if (!sec) return;
         phdxDecorate(sec);
         var n = i + 1;
-        sec.style.display = n <= cur ? '' : 'none';
+        sec.style.display = n <= cur && !(skip2 && n === 2) ? '' : 'none';
         phdxSetOpen(sec, n === openN);
     });
     var bar = phdxEl('phddCompleteBar');
@@ -150,6 +153,26 @@ function phdxApply(claim) {
         el.classList.toggle('phdx-off', n > cur);
         el.title = n > cur ? 'Chưa đến bước này' : 'Xem thông tin bước này';
     });
+    phdxDeadStepper(skip2);
+}
+// [pdchet] Stepper còn 03 bước (Thông báo -> Thực hiện -> Hoàn thành), đánh lại số thứ tự bước; Khối 3 có dòng ghi chú bỏ qua bước Ý kiến phản hồi
+function phdxDeadStepper(skip2) {
+    var ind2 = phdxEl('phddStepIndicator2'), ln2 = phdxEl('phddStepLine2');
+    if (ind2) ind2.style.display = skip2 ? 'none' : 'flex';
+    if (ln2) ln2.style.display = skip2 ? 'none' : '';
+    [3, 4].forEach(function (n) {
+        var c = document.querySelector('#phddStepIndicator' + n + ' .step-circle');
+        if (c && /^\d+$/.test(c.textContent.trim())) c.textContent = skip2 ? n - 1 : n;
+    });
+    var sec3 = phdxEl('phddSection3'), note = phdxEl('phdxDeadNote');
+    if (!skip2) { if (note) note.remove(); return; }
+    if (!sec3 || note) return;
+    note = document.createElement('div');
+    note.id = 'phdxDeadNote';
+    note.style.cssText = 'display:flex; align-items:center; gap:8px; padding:10px 14px; background:#FFFBEB; border:1px solid #FBBF24; border-radius:6px; color:#B45309; font-size:13px; margin-bottom:12px;';
+    note.innerHTML = '<i class="fa-solid fa-circle-info"></i><span>Người bị thiệt hại đã chết: không lấy ý kiến phản hồi của người yêu cầu, tổ chức thực hiện phục hồi danh dự sau khi ban hành Thông báo tổ chức thực hiện phục hồi danh dự.</span>';
+    var head = sec3.children[0];
+    sec3.insertBefore(note, head ? head.nextSibling : sec3.firstChild);
 }
 
 // ---------- Các lần Hoãn / Tiếp tục phục hồi danh dự ----------

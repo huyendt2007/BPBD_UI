@@ -886,10 +886,10 @@
         <span id="toastMessage"></span>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109ro1"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261106kn1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261109tl1"></script>
     <script>
         // Hỏi đáp nghiệp vụ (góp ý khách hàng 02/11/2026)
         // Luồng: Chuyên viên STP soạn -> Lãnh đạo Phòng (Sở) duyệt -> Lãnh đạo Sở duyệt -> Lãnh đạo Cục phân công -> Lãnh đạo Phòng phân công -> Chuyên viên BTP trả lời
@@ -1265,7 +1265,7 @@
             : { name: (f && f.name) || '', file: (f && f.file) || null }).filter(d => d.name || d.file);
         function mountDocs(key, hostId, files, opts) {
             if (typeof tlktMount !== 'function') return;
-            tlktMount(key, hostId, Object.assign({ split: false, noLeader: true, rows: toDocRows(files), title: 'Tài liệu đính kèm', exts: TLKT_EXTS, hint: `Tối đa ${TLKT_MAX} tài liệu.` }, opts || {}));
+            tlktMount(key, hostId, Object.assign({ split: false, noLeader: true, rows: toDocRows(files), title: 'Tài liệu đính kèm', exts: TLKT_EXTS, noHint: true }, opts || {})); // 09/11/2026: bỏ dòng ghi chú định dạng/dung lượng; quy tắc kiểm tra giữ nguyên
         }
         // Kiểm tra bảng (dòng có dữ liệu phải đủ Tên + Tệp; định dạng do component kiểm tra) + giới hạn số tài liệu; trả về danh sách hoặc null nếu lỗi
         function readDocs(key) {

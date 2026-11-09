@@ -6,6 +6,8 @@
  * - Đình chỉ giải quyết: Ký số có Số/Ngày quyết định, chọn Thu hồi (BT-2026-407); Ký ngoài không Số/Ngày, chọn Không thu hồi (BT-2026-408)
  * - Đã chuyển CQGQBT: thao tác Chuyển CQGQBT sau Cử người (BT-2026-409); Không thụ lý lý do KTL_01 (BT-2026-410)
  * - Không thụ lý: KTL_02 Ký số (BT-2026-411); KTL_05 Ký ngoài (BT-2026-412)
+ * - [pdchet] Chỉ PHDD, người bị thiệt hại đã chết (bỏ qua bước Ý kiến phản hồi): đang Tổ chức thực hiện (BT-2026-413, Người thừa kế);
+ *   đang ở bước Thông báo, chưa trình ký Mẫu số 26/BTNN (BT-2026-414, Người đại diện cho những người thừa kế)
  * Nạp khi tải trang: quan_ly_boi_thuong.html gọi sdxSeedClaims() sau seedNycOrgSampleClaims(); chỉ thêm vụ việc chưa có (theo id / Mã hồ sơ),
  * không ghi đè bản ghi đã có. Ngày mẫu lập theo tháng 10/2026; mở ở tháng khác thì toàn bộ ngày được dời cùng số tháng
  * (Thời điểm tiếp nhận luôn thuộc tháng hiện tại -> qua bộ lọc Ngày tiếp nhận mặc định).
@@ -581,6 +583,58 @@ function sdxClaims() {
         ]
     });
     L.push(c12);
+
+    // ===== 13, 14. [pdchet] Chỉ yêu cầu phục hồi danh dự - người bị thiệt hại đã chết (bỏ qua bước Ý kiến phản hồi) =====
+    var dead = function (o) {
+        return sdxBase(Object.assign({
+            requestType: 'honor', fieldGroup: 'hình sự', victimAlive: 'no', victimAliveStatus: 'Đã chết',
+            phddForm: 'Đăng báo xin lỗi và cải chính công khai', phddFormApology: false, phddFormNews: true,
+            agency: 'Công an phường Hoàn Kiếm', appointedOfficers: sdxAppointed('Công an phường Hoàn Kiếm', '05/10/2026'),
+            hanhVi: 'Tạm giam đối với người không thực hiện hành vi phạm tội; người bị thiệt hại đã chết trước khi có văn bản làm căn cứ yêu cầu bồi thường.',
+            nhanQua: 'Danh dự, uy tín của người bị thiệt hại bị xâm phạm tại nơi cư trú.'
+        }, o));
+    };
+    // 13 - Tư cách Người thừa kế: đã ban hành Thông báo, bỏ qua Ý kiến phản hồi -> đang Tổ chức thực hiện
+    var c13 = dead({
+        id: 'SDX_PDCHET1', code: 'BT-2026-413', maVuViec: 'VVBT-2026-413', date: '01/10/2026', deadline: '30/11/2026', requestDocDate: '29/09/2026',
+        nycRole: 'Người thừa kế của người bị thiệt hại', role: 'Người thừa kế của người bị thiệt hại',
+        nyc: 'Nguyễn Thị Hạnh', nycBirth: '18/04/1982', nycCardNo: '001182004413', nycCardDate: '12/05/2021',
+        nycPhone: '0912413413', nycEmail: '', nycPhuongXa: 'Phường Hoàn Kiếm', nycAddressDetail: 'Số 21 phố Hàng Bạc',
+        nbth: { name: 'Nguyễn Văn Thịnh', dob: '02/02/1950', docType: 'CMND/CCCD/Chứng minh quân đội', docNo: '001050001413', docDate: '', docPlace: '', phone: '', email: '', country: 'Việt Nam', city: 'Thành phố Hà Nội', ward: '00004 - Phường Hoàn Kiếm', address: 'Số 21 phố Hàng Bạc' },
+        docBase: 'Quyết định đình chỉ điều tra số 22/QĐ-CQĐT ngày 15/08/2026 (người bị tạm giam không thực hiện hành vi phạm tội)',
+        vanBanCanCu: [{ name: 'Quyết định đình chỉ điều tra số 22/QĐ-CQĐT', file: 'QD_22_CQDT_dinh_chi_dieu_tra.pdf' }],
+        status: 'Đang phục hồi danh dự', phddStatus: 'Chờ thực hiện', slaText: 'Tổ chức thực hiện phục hồi danh dự',
+        files: [{ name: 'Van_ban_yeu_cau_phuc_hoi_danh_du_BT-2026-413.pdf', url: '#' }],
+        timeline: [
+            sdxT('Tiếp nhận hồ sơ', '01/10/2026', 'Tiếp nhận văn bản yêu cầu phục hồi danh dự trực tiếp tại trụ sở.', 'Hệ thống / Người nộp đơn'),
+            sdxT('Thông báo thụ lý hồ sơ', '05/10/2026', 'Ban hành Thông báo thụ lý số 105/TB-CAP; cử ông Nguyễn Văn Chuyên Viên giải quyết.', 'Trần Minh Đức (Trưởng Công an phường)')
+        ]
+    });
+    sdxM26(c13, { no: '44/TB-CAP', date: '09/10/2026', send: '10/10/2026', signer: 'Trần Minh Đức', title: 'Trưởng Công an phường', paper: 'Báo Công an nhân dân' });
+    c13.phddTimeline = [
+        sdxP('Thụ lý hồ sơ', '05/10/2026', 'Thủ trưởng cơ quan giải quyết bồi thường thụ lý hồ sơ, cử người giải quyết. Bắt đầu tiến trình phục hồi danh dự.'),
+        sdxP('Ban hành Thông báo tổ chức thực hiện phục hồi danh dự', '09/10/2026', 'Lãnh đạo ký số Thông báo số 44/TB-CAP (Mẫu số 26/BTNN).'),
+        sdxP('Bỏ qua bước Ý kiến phản hồi của người yêu cầu', '09/10/2026', 'Người bị thiệt hại đã chết: không lấy ý kiến phản hồi, chuyển sang bước Tổ chức thực hiện phục hồi danh dự.')
+    ];
+    L.push(c13);
+    // 14 - Tư cách Người đại diện cho những người thừa kế: đang ở bước Thông báo (chưa trình ký Mẫu số 26/BTNN)
+    var c14 = dead({
+        id: 'SDX_PDCHET2', code: 'BT-2026-414', maVuViec: 'VVBT-2026-414', date: '03/10/2026', deadline: '02/12/2026', requestDocDate: '01/10/2026',
+        nycRole: 'Người đại diện cho những người thừa kế của người bị thiệt hại', role: 'Người đại diện cho những người thừa kế của người bị thiệt hại',
+        nyc: 'Lê Văn Phúc', nycBirth: '11/11/1979', nycCardNo: '001079004414', nycCardDate: '08/03/2022',
+        nycPhone: '0912414414', nycEmail: 'levanphuc79@gmail.com', nycPhuongXa: 'Phường Hoàn Kiếm', nycAddressDetail: 'Số 9 phố Hàng Gai',
+        nbth: { name: 'Lê Văn Khoa', dob: '20/06/1948', docType: 'CMND/CCCD/Chứng minh quân đội', docNo: '001048001414', docDate: '', docPlace: '', phone: '', email: '', country: 'Việt Nam', city: 'Thành phố Hà Nội', ward: '00004 - Phường Hoàn Kiếm', address: 'Số 9 phố Hàng Gai' },
+        docBase: 'Quyết định hủy bỏ quyết định tạm giữ số 37/QĐ-CQĐT ngày 20/08/2026',
+        vanBanCanCu: [{ name: 'Quyết định hủy bỏ quyết định tạm giữ số 37/QĐ-CQĐT', file: 'QD_37_CQDT_huy_tam_giu.pdf' }],
+        status: 'Đang phục hồi danh dự', phddStatus: 'Đang thực hiện', slaText: 'Lập Thông báo tổ chức thực hiện phục hồi danh dự',
+        files: [{ name: 'Van_ban_yeu_cau_phuc_hoi_danh_du_BT-2026-414.pdf', url: '#' }],
+        timeline: [
+            sdxT('Tiếp nhận hồ sơ', '03/10/2026', 'Tiếp nhận văn bản yêu cầu phục hồi danh dự trực tiếp tại trụ sở.', 'Hệ thống / Người nộp đơn'),
+            sdxT('Thông báo thụ lý hồ sơ', '07/10/2026', 'Ban hành Thông báo thụ lý số 112/TB-CAP; cử ông Nguyễn Văn Chuyên Viên giải quyết.', 'Trần Minh Đức (Trưởng Công an phường)')
+        ],
+        phddTimeline: [sdxP('Thụ lý hồ sơ', '07/10/2026', 'Thủ trưởng cơ quan giải quyết bồi thường thụ lý hồ sơ, cử người giải quyết. Bắt đầu tiến trình phục hồi danh dự.')]
+    });
+    L.push(c14);
     return L;
 }
 // Dời toàn bộ ngày dd/mm/yyyy của dữ liệu mẫu theo số tháng chênh lệch với tháng 10/2026

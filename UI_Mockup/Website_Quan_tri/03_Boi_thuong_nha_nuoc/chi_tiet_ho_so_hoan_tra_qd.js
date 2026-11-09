@@ -364,8 +364,8 @@
         }
         let h = '<div style="margin-bottom:16px;">';
         if (u.st === 'BTC' && r && r.reject) {
-            h += '<div class="alert-box danger" style="border-left:4px solid #f59e0b; padding:12px 16px; background:#fffbeb; border-radius:8px; margin-bottom:12px;"><div style="font-weight:800; color:#b45309;">Quyết định hoàn trả bị trả lại</div>'
-                + '<div style="font-size:13px;"><strong>Người từ chối:</strong> ' + esc(r.reject.by) + ' (' + esc(r.reject.at) + ')</div><div style="font-size:13px;"><strong>Lý do bị trả lại:</strong> ' + esc(r.reject.reason) + '</div></div>';
+            h += '<div class="alert-box danger" style="border-left:4px solid #f59e0b; padding:12px 16px; background:#fffbeb; border-radius:8px; margin-bottom:12px;"><div style="font-weight:800; color:#b45309;">Lý do bị trả lại</div>'
+                + '<div style="font-size:13px;"><strong>Lý do trả lại:</strong> ' + esc(r.reject.reason) + '</div><div style="font-size:13px;"><strong>Lãnh đạo trả lại:</strong> ' + esc(r.reject.by) + '</div><div style="font-size:13px;"><strong>Thời điểm trả lại:</strong> ' + esc(r.reject.at) + '</div></div>';
         }
         // Dải ngang 01 hàng: Hình thức ký | Số, ký hiệu văn bản | Ngày văn bản | Tệp văn bản Quyết định
         const cell = (k, v) => '<div style="flex:1 1 0; min-width:160px;"><div style="font-size:12px; color:#64748b; margin-bottom:2px;">' + k + '</div><div style="font-weight:600; font-size:13px; overflow-wrap:anywhere;">' + v + '</div></div>';
@@ -455,7 +455,7 @@
             const sub = (r.hist || []).find(h => h.type === 'submit');
             st = r.reject ? 'Bị trả lại' : 'Chờ duyệt';
             body = tien + lyDo + item('Lãnh đạo được trình', esc(leaderLabel(r, r.level || 0))) + item('Thời điểm trình', esc(sub ? sub.at : (r.ngay || '-'))) + item('Tệp văn bản', file('Bản dự thảo'))
-                + (r.reject ? item('Lý do bị trả lại', '<span style="color:#b45309;">' + esc(r.reject.reason) + '</span>') + item('Người từ chối', esc(r.reject.by)) + item('Thời điểm từ chối', esc(r.reject.at)) : '');
+                + (r.reject ? item('Lý do trả lại', '<span style="color:#b45309;">' + esc(r.reject.reason) + '</span>') + item('Lãnh đạo trả lại', esc(r.reject.by)) + item('Thời điểm trả lại', esc(r.reject.at)) : '');
         }
         const old = (r.hist || []).slice(1);
         return '<div class="ht-qd-block" style="margin-top:16px; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px;"><div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;"><strong style="color:var(--primary-color);"><i class="fa-solid fa-file-contract"></i> ' + esc(k.doc) + (k.base ? ' (bổ sung)' : '') + '</strong>' + (window.htPill ? window.htPill(st) : esc(st)) + '</div>'
@@ -729,7 +729,7 @@
         return '<div id="ht3Modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); z-index:1050; justify-content:center; align-items:center;">'
             + '<div id="ht3Box" style="background:#fff; width:960px; max-width:96%; border-radius:10px; display:flex; flex-direction:column; max-height:94vh; overflow:hidden;">'
             + '<div style="background:#f8fafc; border-bottom:1px solid #e2e8f0; padding:18px 24px; display:flex; justify-content:space-between;"><div><div id="ht3Title" style="font-size:16.5px; font-weight:700; color:#1e293b;"></div><div id="ht3Sub" style="font-size:12.5px; color:#64748b; margin-top:4px;"></div></div><button type="button" onclick="ht3Close()" style="border:none; background:transparent; font-size:22px; color:#94a3b8; cursor:pointer;">&times;</button></div>'
-            + '<div id="ht3Stepper" class="ktl-stepper-fullwidth"><div id="ht3Tab1" class="ktl-step-tab active"><span class="ktl-step-badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div><div class="ktl-stepper-sep"></div><div id="ht3Tab2" class="ktl-step-tab"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div></div>'
+            + '<div id="ht3Stepper" class="ktl-stepper-fullwidth"><div id="ht3Tab1" class="ktl-step-tab active"><span class="ktl-step-badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div><div class="ktl-stepper-sep"></div><div id="ht3Tab2" class="ktl-step-tab"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Thiết lập các cấp trình ký</span></div></div>'
             + '<div id="ht3Body1" class="gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
             + '<div id="ht3Returned" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"></div>'
             // Thứ tự chuẩn của popup trình ký: Hình thức ký -> thông tin nghiệp vụ (số tiền / cán bộ) -> Tệp văn bản trình ký (Nguồn tệp, Thông tin điền vào Mẫu, Xem trước) -> Tài liệu đính kèm
@@ -806,12 +806,14 @@
         const ctx = ctxOf(kind, key), prev = recOf(kind, key), k = KIND[kind];
         const rejected = prev && prev.reject && (kind === 'DC' || isBatch(kind) ? prev.st === 'BTC' : kind === 'HT' ? activeDossier.htUnits[key].st === 'BTC' : (k.base ? /^BTC_/.test(activeDossier.refundOfficers[key].trinh || '') : /^BTC_/.test(activeDossier.refundOfficers[key].ct)));
         const levels = levelsOf(ctx.issuer || ctx.unit);
-        S = { kind, key, ctx, method: rejected ? prev.method : 'online', src: rejected ? prev.docSrc : 'gen', file: null, step: 1, levels, assignees: rejected ? prev.assignees.slice() : levels.map(l => l.leaders[0].id), placed: {} };
+        S = { kind, key, ctx, method: rejected ? prev.method : 'online', src: rejected ? prev.docSrc : 'gen', file: null, step: 1, levels, assignees: rejected ? prev.assignees.slice() : levels.map(l => l.leaders[0].id), placed: {},
+            // [ro1] Thiết lập các cấp trình ký: trình lại điền sẵn thiết lập lần trước
+            ui: null, prevLv: rejected && window.BTNN_PCKD ? BTNN_PCKD.prevFromLegacy(prev) : null };
         el('ht3Title').innerText = 'TRÌNH KÝ ' + k.doc.toUpperCase();
         el('ht3Sub').innerHTML = 'Hồ sơ: <strong>' + esc(activeDossier.code) + '</strong> • Đơn vị ban hành: ' + esc(ctx.issuer || ctx.unit) + (ctx.officer ? ' • Cán bộ: ' + esc(ctx.officer.name) : '');
         const rb = el('ht3Returned');
         rb.style.display = rejected ? 'block' : 'none';
-        if (rejected) rb.innerHTML = '<div style="font-weight:700; color:#b45309;">' + esc(k.doc.toUpperCase()) + ' BỊ LÃNH ĐẠO TRẢ LẠI</div><div style="font-size:12.5px; color:#92400e;">Lý do bị trả lại: <strong>' + esc(prev.reject.reason) + '</strong><br>Người từ chối: ' + esc(prev.reject.by) + ' • Thời điểm: ' + esc(prev.reject.at) + '</div>';
+        if (rejected) rb.innerHTML = '<div style="font-weight:700; color:#b45309;">Lý do bị trả lại</div><div style="font-size:12.5px; color:#92400e;">Lý do trả lại: <strong>' + esc(prev.reject.reason) + '</strong><br>Lãnh đạo trả lại: ' + esc(prev.reject.by) + ' • Thời điểm trả lại: ' + esc(prev.reject.at) + '</div>';
         el('ht3SegGenText').innerText = 'Sinh văn bản theo mẫu ' + k.mau + '/BTNN';
         el('ht3MetaTitle').innerHTML = '<i class="fa-solid fa-sliders" style="color:#2563eb;"></i> Thông tin điền vào Mẫu ' + k.mau + '/BTNN';
         el('ht3GenHint').innerText = 'Hệ thống tự động sinh ' + k.doc + ' theo Mẫu ' + k.mau + '/BTNN từ thông tin đang nhập.';
@@ -1072,13 +1074,28 @@
             + '<button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px;" onclick="ht3Place(' + i + ')">' + (S.placed[i] ? '<i class="fa-solid fa-check"></i> Đã đặt chữ ký' : '<i class="fa-solid fa-signature"></i> Đặt chữ ký') + '</button>'
             + (i === S.levels.length - 1 ? '<div id="ht3PlaceErr" class="gqx-err">Vui lòng đặt chữ ký của Lãnh đạo cấp cuối.</div>' : '') + '</div>').join('');
     }
-    window.ht3Pick = (i, v) => { S.assignees[i] = v; };
+    // Ô ký: Cấp [n] - [Họ tên Lãnh đạo] (cấp cuối: Cấp cuối - [Họ tên Lãnh đạo]); Tọa độ; nhãn Ký nháy khi cấp đó được cấu hình Ký nháy
+    function sigName(i) {
+        const lv = S.levels[i], ld = (lv.leaders || []).find(x => x.id === S.assignees[i]);
+        const nm = ld ? String(ld.label || '').split(' - ')[0].trim() : '';
+        return (i === S.levels.length - 1 ? 'Cấp cuối' : 'Cấp ' + (i + 1)) + (nm ? ' - ' + nm : '');
+    }
+    function sigSync(i) {
+        const b = el('ht3A4') && el('ht3A4').querySelector('[data-lv="' + i + '"]'); if (!b) return;
+        b.querySelector('.ht3-sig-name').textContent = sigName(i);
+        b.querySelector('.ht3-sig-xy').textContent = 'X: ' + b.offsetLeft + ', Y: ' + b.offsetTop;
+    }
+    window.ht3Pick = (i, v) => { S.assignees[i] = v; sigSync(i); };
     window.ht3Place = function (i) {
         S.placed[i] = true;
         const a4 = el('ht3A4');
         if (!a4.querySelector('[data-lv="' + i + '"]')) {
             const lv = S.levels[i], last = i === S.levels.length - 1;
-            a4.insertAdjacentHTML('beforeend', '<div data-lv="' + i + '" style="position:absolute; right:' + (last ? 90 : 330) + 'px; bottom:' + (last ? 120 : 60) + 'px; border:2px dashed ' + (last ? '#dc2626' : '#2563eb') + '; padding:8px 12px; font:12px Arial; background:rgba(255,255,255,.9);">' + (last ? 'KÝ SỐ &amp; CON DẤU' : 'KÝ NHÁY') + '<br>Cấp ' + (i + 1) + '</div>');
+            a4.insertAdjacentHTML('beforeend', '<div data-lv="' + i + '" style="position:absolute; right:' + (last ? 90 : 330) + 'px; bottom:' + (last ? 120 : 60) + 'px; width:' + (last ? 245 : 220) + 'px; box-sizing:border-box; border:2px dashed ' + (last ? '#dc2626' : '#2563eb') + '; border-radius:6px; padding:6px 10px; font:12px Inter, Arial, sans-serif; background:' + (last ? 'rgba(254,242,242,.94)' : 'rgba(239,246,255,.94)') + ';">'
+                + '<div style="display:flex; justify-content:flex-end; min-height:16px;">' + (lv.kyNhay ? '<span class="badge" style="background:#dbeafe; color:#1e40af; font-size:9.5px; padding:1px 5px;">Ký nháy</span>' : '') + '</div>'
+                + '<div class="ht3-sig-name" style="text-align:center; font-weight:700; color:#1e293b; margin:4px 0;"></div>'
+                + '<div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>Tọa độ</span><span class="ht3-sig-xy"></span></div></div>');
+            sigSync(i);
         }
         const e = el('ht3PlaceErr'); if (e && i === S.levels.length - 1) e.style.display = 'none';
         renderLevels();
@@ -1093,6 +1110,15 @@
         el('ht3Body1').style.display = 'none'; el('ht3Body2').style.display = 'flex';
         el('ht3BtnNext').style.display = 'none'; el('ht3BtnIssue').style.display = 'none';
         el('ht3BtnBack').style.display = 'inline-flex'; el('ht3BtnSubmit').style.display = 'inline-flex';
+        // [ro1] Khối Thiết lập các cấp trình ký dùng chung (BTNN_PCKD.levelSetup)
+        const P = window.BTNN_PCKD, W = window.BTNN_WF;
+        if (P && W) {
+            const first = !S.ui;
+            S.ui = P.legacyUi('ht3', { host: () => el('ht3Levels'), page: () => el('ht3A4'), method: () => 'Ký số', userId: () => P.submitterFor(W.resolveAgencyUnit(S.ctx.issuer || S.ctx.unit)) });
+            if (first) S.ui.reset(S.prevLv);
+            S.ui.render(); S.ui.renderSigs();
+            return;
+        }
         renderLevels();
     };
     function newRec(method) {
@@ -1112,10 +1138,14 @@
         if (!S) return;
         let bad = false;
         if (!el('ht3Content').value.trim()) { el('ht3Content').classList.add('is-invalid'); el('ht3ContentErr').style.display = 'block'; bad = true; }
-        if (!S.placed[S.levels.length - 1]) { const e = el('ht3PlaceErr'); if (e) e.style.display = 'block'; bad = true; }
+        if (S.ui) { if (!S.ui.validate()) bad = true; }
+        else if (!S.placed[S.levels.length - 1]) { const e = el('ht3PlaceErr'); if (e) e.style.display = 'block'; bad = true; }
         if (bad) return;
+        const lg = S.ui ? BTNN_PCKD.toLegacy(S.ui.collect()) : null;
+        if (lg) { S.levels = lg.levels; S.assignees = lg.assignees; }
         const r = newRec('online');
-        r.hist.unshift({ type: 'submit', name: 'Cán bộ ' + (S.ctx.issuer || S.ctx.unit), at: nowShort(), msg: 'Trình Lãnh đạo ' + leaderLabel(r, 0) + ' ký duyệt. Nội dung trình: ' + r.content });
+        if (lg) Object.assign(r, { tuThietLap: true, pcLevels: lg.pcLevels, pcSig: lg.pcSig });
+        r.hist.unshift({ type: 'submit', name: 'Cán bộ ' + (S.ctx.issuer || S.ctx.unit), at: nowShort(), to: String(leaderLabel(r, 0)).split(/ - | [(]/)[0].trim(), msg: 'Trình ký đến ' + String(leaderLabel(r, 0)).split(/ - | [(]/)[0].trim() + '. Nội dung trình: ' + r.content });
         const kind = S.kind, key = S.key;
         setRec(kind, key, r);
         if (kind === 'DC') { r.st = 'CD'; S.ctx.list.forEach(o => { o.trinh = 'CD_DC'; o.dcKey = key; }); DC_DRAFT = null; }
@@ -1228,6 +1258,8 @@
         const ok = p.kind === 'DC' ? 'Đình chỉ hoàn trả' : p.kind === 'HT' ? 'Đã ban hành QĐ hoàn trả' : (baseKind(p.kind) === 'MIEN' ? 'Miễn hoàn trả' : 'Thu tiền hoàn trả');
         return { kind: k.doc + ' (Mẫu số ' + k.mau + '/BTNN)', title: k.title, content: r.content, hist: r.hist.map(h => ({ type: h.type, name: h.name, at: h.at, msg: h.msg })), levels: r.levels, level: Math.min(r.level, r.levels.length - 1), label: i => r.levels[i].unit + ': ' + leaderLabel(r, i), staff: 'Cán bộ ' + ctxOf(p.kind, p.key).unit, okStatus: ok, noStatus: 'Bị trả lại (' + k.label + ')' };
     };
+    // [ro1] Phiếu trình của màn Ký duyệt / Từ chối chung (khối Ký số / gán chữ ký theo cấp)
+    window.ht3StateOf = function (target) { const p = parse(target); return p ? recOf(p.kind, p.key) : null; };
     const baseDocInfo = window.htkdDocInfo;
     window.htkdDocInfo = function (target) {
         const p = parse(target); if (!p) return baseDocInfo(target);
@@ -1241,7 +1273,8 @@
         closeLeaderSignModal();
         const r = recOf(p.kind, p.key);
         const note = (el('kdtcHtNote') || {}).value || '';
-        r.hist.unshift({ type: 'approve', name: leaderLabel(r, r.level), at: nowShort(), msg: note ? 'Ý kiến: ' + note : 'Ký duyệt' });
+        const how = window.BTNN_PCKD ? BTNN_PCKD.howText(r) : ''; // [ro1] cách ký theo thiết lập cấp
+        r.hist.unshift({ type: 'approve', name: leaderLabel(r, r.level), at: nowShort(), msg: (how ? 'Ký duyệt (' + how + ').' : 'Ký duyệt') + (note ? ' Ý kiến: ' + note : '') });
         if (r.level < r.levels.length - 1) {
             r.level++;
             commit('Ký duyệt thành công. Hồ sơ chuyển Lãnh đạo cấp ' + (r.level + 1) + ' - ' + r.levels[r.level].unit + '.');

@@ -1708,8 +1708,8 @@
                 + (r.phanCongSo && r.phanCongSo.canBo ? '<br>Lãnh đạo Phòng giao Cán bộ: ' + esc(r.phanCongSo.canBo.ten) + ' (' + esc(r.phanCongSo.canBo.by) + ', ' + esc(r.phanCongSo.canBo.at) + ')' + (r.phanCongSo.canBo.note ? ' - ' + esc(r.phanCongSo.canBo.note) : '') : '') + '</div>' : '')
             + (r.status === ST.TC && r.reject ? (function () {
                 var k = 'tra-lai|' + r.id + '|' + r.reject.at;
-                return '<div class="bctt-alert' + tgLop(k) + '" id="bcttRejectBox" data-tg="' + esc(k) + '"><div class="tg-dau"><b class="t">' + (traVe(r) ? 'BÁO CÁO BỊ LÃNH ĐẠO TRẢ LẠI, ĐANG CHỜ LÃNH ĐẠO XEM XÉT LẠI' : 'BÁO CÁO BỊ LÃNH ĐẠO TRẢ LẠI') + '</b>' + tgNut(k) + '</div>'
-                    + '<div class="tg-than">Lý do bị trả lại: <strong>' + esc(r.reject.reason) + '</strong><br>Người từ chối: ' + esc(r.reject.byName) + ' (Cấp ' + r.reject.level + ') • Thời điểm: ' + esc(r.reject.at) + '</div></div>';
+                return '<div class="bctt-alert' + tgLop(k) + '" id="bcttRejectBox" data-tg="' + esc(k) + '"><div class="tg-dau"><b class="t">' + (traVe(r) ? 'LÝ DO BỊ TRẢ LẠI, ĐANG CHỜ LÃNH ĐẠO XEM XÉT LẠI' : 'LÝ DO BỊ TRẢ LẠI') + '</b>' + tgNut(k) + '</div>'
+                    + '<div class="tg-than">Lý do trả lại: <strong>' + esc(r.reject.reason) + '</strong><br>Lãnh đạo trả lại: ' + esc(r.reject.byName) + ' (Cấp ' + r.reject.level + ') • Thời điểm trả lại: ' + esc(r.reject.at) + '</div></div>';
             })() : '')
             // Văn bản yêu cầu điều chỉnh của Bộ Tư pháp đặt trên khối Tệp báo cáo; tiêu đề khối tệp chỉ ghi «Tệp báo cáo» (04/11/2026, nhanhl2)
             + (!isBtpReport(r) && dsYC(r).length ? '<div class="bctt-files">' + ycBangHtml(r) + '</div>' : '')
@@ -2622,7 +2622,7 @@
         sub.step = 1; $('bcttS1').classList.add('on'); $('bcttS2').classList.remove('on');
         $('bcttSubBody1').style.display = ''; $('bcttSubBody2').style.display = 'none';
         var info = { m41: m41Count(r.m41) + ' vụ việc', m42: m42Filled(r.m42) + '/' + M42_ITEMS.length + ' mục đã nhập nội dung', m43: 'Tổng số ' + m43Total(r.m43)[2] + ' vụ việc (Cột 2)', m04: 'Tổng số ' + m04Total(r.m04)[3] + ' vụ việc xem xét trách nhiệm hoàn trả (Cột 3)' };
-        var html = (r.status === ST.TC && r.reject ? '<div class="bctt-alert" style="margin:0 0 14px;"><b class="t">BÁO CÁO BỊ LÃNH ĐẠO TRẢ LẠI</b>Lý do bị trả lại: <strong>' + esc(r.reject.reason) + '</strong><br>Người từ chối: ' + esc(r.reject.byName) + ' • Thời điểm: ' + esc(r.reject.at) + '</div>' : '')
+        var html = (r.status === ST.TC && r.reject ? '<div class="bctt-alert" style="margin:0 0 14px;"><b class="t">LÝ DO BỊ TRẢ LẠI</b>Lý do trả lại: <strong>' + esc(r.reject.reason) + '</strong><br>Lãnh đạo trả lại: ' + esc(r.reject.byName) + ' • Thời điểm trả lại: ' + esc(r.reject.at) + '</div>' : '')
             + '<div class="bctt-sec"><div class="h">Hình thức ký</div><div><strong>Ký số trên hệ thống</strong> <span class="formula-hint">- Cố định, không chọn; báo cáo không ký duyệt ở ngoài. Trình 01 lần cho cả bộ báo cáo theo luồng đã cấu hình tại Cấu hình luồng xử lý.</span></div></div>'
             + '<div class="bctt-sec"><div class="h">Bộ báo cáo trình ký</div><div class="table-container"><table class="custom-table" id="bcttSubForms"><thead><tr><th>STT</th><th>Biểu mẫu</th><th>Tình trạng dữ liệu</th><th>Thao tác</th></tr></thead><tbody>'
             + FORMS.map(function (f, i) { return '<tr><td>' + (i + 1) + '</td><td class="text-left">' + f.code + ' - ' + f.title + '</td><td class="text-left">' + info[f.id] + '</td><td><button class="bctt-link" data-fview="' + f.id + '">Xem trước PDF</button></td></tr>'; }).join('')

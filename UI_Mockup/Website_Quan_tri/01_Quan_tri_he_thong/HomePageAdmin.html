@@ -801,8 +801,8 @@
     </div>
 
     <!-- Luồng xử lý BTNN dùng chung: đếm hồ sơ tab Chờ xử lý cho badge menu Tiếp nhận hồ sơ -->
-    <script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261109sd1"></script>
-    <script src="../03_Boi_thuong_nha_nuoc/btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
+    <script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261109ro1"></script>
+    <script src="../03_Boi_thuong_nha_nuoc/btnn_badge_cho_xu_ly.js?v=20261109stp1"></script>
     <script>
         // Menu Data Model without numerical headers in titles
         const menuData = [
@@ -905,7 +905,7 @@
                         // Badge nhóm = tổng badge 2 mục con (bdg_gqGroup, tính trong BDG.mountMenu)
                         title: "Giải quyết bồi thường", badgeKey: "bdg_gqGroup", badgeType: "danger",
                         children: [
-                            { title: "Giải quyết yêu cầu bồi thường", badgeKey: "bdg_gqYcbt", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/quan_ly_boi_thuong.html?v=20261109sd1" },
+                            { title: "Giải quyết yêu cầu bồi thường", badgeKey: "bdg_gqYcbt", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/quan_ly_boi_thuong.html?v=20261109pd1" },
                             { title: "Quyết định giải quyết bồi thường", badgeKey: "bdg_qdGqbt", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/quyet_dinh_giai_quyet_boi_thuong.html?v=20261106q1" }
                         ]
                     },
@@ -938,11 +938,11 @@
                     },
                     {
                         title: "Nghiệp vụ quản lý nhà nước về công tác BTNN", children: [
-                            { title: "Kiểm tra công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_kiem_tra_cong_tac_btnn.html?v=20261106db3" },
+                            { title: "Kiểm tra công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_kiem_tra_cong_tac_btnn.html?v=20261109stp1" },
                             { title: "Phối hợp thực hiện công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=phoi_hop_tand_vksnd&v=20261106db3" },
-                            { title: "Theo dõi, đôn đốc công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_theo_doi_don_doc_btnn.html?v=20261106db3" },
-                            { title: "Tập huấn, bồi dưỡng", url: "../03_Boi_thuong_nha_nuoc/tap_huan_boi_duong_btnn.html?v=20261106db3" },
-                            { title: "Hướng dẫn nghiệp vụ", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_tt08.html?module=huong_dan&v=20261106db3" },
+                            { title: "Theo dõi, đôn đốc công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_theo_doi_don_doc_btnn.html?v=20261109stp1" },
+                            { title: "Tập huấn, bồi dưỡng", url: "../03_Boi_thuong_nha_nuoc/tap_huan_boi_duong_btnn.html?v=20261109stp1" },
+                            { title: "Hướng dẫn nghiệp vụ", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_tt08.html?module=huong_dan&v=20261109stp1" },
                             // Menu cha cấp 3, 02 menu con cấp 4: Sở Tư pháp lập báo cáo tại «Báo cáo công tác BTNN», Bộ Tư pháp xử lý báo cáo các Sở gửi lên tại «Xử lý báo cáo Công tác BTNN»
                             // Badge nhóm = tổng badge 2 mục con (bdg_bcttGroup, tính trong BDG.mountMenu)
                             {
@@ -978,7 +978,7 @@
                             { title: "Kiến nghị Thủ trưởng cơ quan xem xét lại quyết định hoàn trả", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_xem_xet_qd_hoan_tra&v=20261106db3" }
                         ]
                     },
-                    { title: "Khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_tt08.html?module=khieu_nai&v=20261106db3" },
+                    { title: "Khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_tt08.html?module=khieu_nai&v=20261109stp1" },
                     {
                         title: "Hỏi đáp", children: [
                             { title: "Hỏi đáp nghiệp vụ", url: "../03_Boi_thuong_nha_nuoc/hoi_dap_nghiep_vu.html?v=20261106db3" },
@@ -1088,7 +1088,6 @@
                     { title: "Quản lý danh mục", url: "quan_ly_danh_muc.html" },
                     { title: "Danh mục Địa bàn", url: "quan_ly_danh_muc_dia_ban.html" },
                     { title: "Quản lý cấu hình", url: "quan_ly_cau_hinh.html" },
-                    { title: "Cấu hình luồng xử lý", url: "../03_Boi_thuong_nha_nuoc/cau_hinh_luong_xu_ly.html" },
                     { title: "Nhật ký đồng bộ Dịch vụ công", url: "nhat_ky_dong_bo_dvc.html?v=20261030dvc7" },
                     { title: "Quản lý nhật ký hệ thống", url: "../temp_placeholder.html" },
                     { title: "Quản lý sao lưu, phục hồi dữ liệu", url: "../temp_placeholder.html" }
@@ -1442,7 +1441,6 @@
             'bao_cao_thong_ke_btnn_tt08.html': '../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html',
             'bao_cao_thong_ke_ho_so_dang_ky.html': '../02_Bien_phap_bao_dam/bao_cao_thong_ke_ho_so_dang_ky.html',
             'btnn.html': '../03_Boi_thuong_nha_nuoc/btnn.html',
-            'cau_hinh_luong_xu_ly.html': '../03_Boi_thuong_nha_nuoc/cau_hinh_luong_xu_ly.html',
             'chi_tiet_ho_so_hoan_tra.html': '../03_Boi_thuong_nha_nuoc/chi_tiet_ho_so_hoan_tra.html',
             'dang_ky_bpbd_can_bo.html': '../02_Bien_phap_bao_dam/dang_ky_bpbd_can_bo.html',
             'dashboard_btnn.html': '../03_Boi_thuong_nha_nuoc/dashboard_btnn.html',

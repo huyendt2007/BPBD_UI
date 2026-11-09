@@ -48,6 +48,8 @@
         if (module === 'bctt') return u + '|' + (lsGet('bctt_role_v1') || 'cb_stp');
         if (module === 'bctt_bo') return u + '|' + (lsGet('bctt_role_v1_bo') || 'ld_cuc');
         if (module === 'kpTamUng' || module === 'kpChiTra') return u + '|' + (lsGet('kp_role_v1') || 'chuyen-vien');
+        // 09/11/2026: Khiếu nại, tố cáo chỉ Sở Tư pháp thao tác - đổi ngữ cảnh để tính lại số đã lưu theo quy tắc cũ
+        if (module === 'kntc') return u + '|stp';
         return u;
     }
     // Dấu vân tay dữ liệu (bỏ qua khóa badge): thay đổi thì số lượng đã lưu được tính lại

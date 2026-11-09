@@ -409,7 +409,7 @@ function hdcvSeedSubmit() {
             var res = W.submitForApproval(c.code, T.kind, signDoc.submitContent, [], { assignee: assignees[0] || '', assignees: assignees, reason: reasonFull, resultStatus: T.status, draftDoc: draftDoc, signDoc: signDoc });
             if (!res || !res.ok) return;
             c.status = 'Chờ duyệt';
-            c.timeline.push({ title: 'Trình Lãnh đạo: ' + T.kind, date: hdcvDay(18), desc: 'Trình Lãnh đạo ký duyệt ' + draftDoc.docTitle + '. Hồ sơ chuyển sang trạng thái [Chờ duyệt].', status: 'active' });
+            c.timeline.push({ title: (typeof gqTrinhTitle === 'function' ? gqTrinhTitle(assignees[0], T.kind) : 'Trình Lãnh đạo: ' + T.kind), date: hdcvDay(18), desc: 'Trình Lãnh đạo ký duyệt ' + draftDoc.docTitle + '. Hồ sơ chuyển sang trạng thái [Chờ duyệt].', status: 'active' });
             if (p.mode === 'reject' && assignees[0]) {
                 W.setCurrentUser(assignees[0]);
                 var rr = W.rejectApproval(c.code, p.rejectReason);

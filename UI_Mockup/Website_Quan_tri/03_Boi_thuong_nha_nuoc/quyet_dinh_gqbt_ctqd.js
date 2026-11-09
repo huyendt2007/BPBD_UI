@@ -206,9 +206,9 @@ function ctqdEnsureSeeds() {
                 items: seedItems([['Tài sản bị xâm phạm', 420000000, 400000000, 400000000]]), recipient: { name: 'Vũ Thị Mai Lan', idNo: '001186004455', account: '0491000556677', bank: 'Vietcombank', branch: 'Chi nhánh Cầu Giấy' },
                 amendments: [{ kind: KIND_SC, content: sc, effectiveDate: 'kể từ ngày ký', decNo: '05/QĐ-BTP', issueDate: '12/10/2026', signMethod: 'Ký số', signedFile: 'QD_SCBS_BT-2026-074_ky_so.pdf', draftDoc: { source: 'generated', generatedName: 'Du_thao_Sua_chua_bo_sung_QD_BT-2026-074.doc' }, submittedBy: 'canbonv', submittedAt: '09:00 08/10/2026', approvedBy: 'cuctruong', at: '10:30 12/10/2026' }],
                 history: [
-                    { at: '08:30 22/09/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình ký duyệt', note: 'Trình ' + W.userLabel('tpbt') + ' ký duyệt.' },
+                    { at: '08:30 22/09/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình ký đến ' + W.userName('tpbt'), note: 'Trình ' + W.userLabel('tpbt') + ' ký duyệt.' },
                     { at: '16:00 26/09/2026', userId: 'cuctruong', userName: W.userName('cuctruong'), action: 'Phê duyệt cấp cuối', note: KIND_QD + '. Quyết định chuyển [Đã ban hành]. Số 28/QĐ-BTP ngày 26/09/2026.' },
-                    { at: '09:00 08/10/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình ' + KIND_SC, note: 'Nội dung sửa chữa, bổ sung: ' + sc + ' Trình ' + W.userLabel('tpbt') + '.' },
+                    { at: '09:00 08/10/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình ký đến ' + W.userName('tpbt'), note: 'Nội dung sửa chữa, bổ sung: ' + sc + ' Trình ' + W.userLabel('tpbt') + '.' },
                     { at: '10:30 12/10/2026', userId: 'cuctruong', userName: W.userName('cuctruong'), action: 'Phê duyệt cấp cuối', note: KIND_SC + '. Quyết định sửa chữa, bổ sung số 05/QĐ-BTP ngày 12/10/2026. Quyết định giữ [Đã ban hành].' }
                 ],
                 createdBy: 'canbonv', updatedAt: '2026-10-12T10:30:00.000Z'

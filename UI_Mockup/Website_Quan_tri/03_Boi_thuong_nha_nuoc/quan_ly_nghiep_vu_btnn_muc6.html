@@ -726,24 +726,7 @@
         <div class="section-head">
             <div class="section-title" id="formTitle"><i class="fa-solid fa-pen-to-square"></i> Thêm mới/Sửa</div>
         </div>
-        <div class="info-strip">
-            <div>
-                <div class="info-label" id="statusLabel">Trạng thái</div>
-                <div class="info-value" id="formStatus">Đang nhập</div>
-            </div>
-            <div>
-                <div class="info-label">Cán bộ xử lý</div>
-                <div class="info-value" id="formOfficer">Nguyễn Văn Cán Bộ</div>
-            </div>
-            <div>
-                <div class="info-label">Ngày tạo/cập nhật</div>
-                <div class="info-value" id="formDate">10/08/2026</div>
-            </div>
-            <div>
-                <div class="info-label">Chế độ</div>
-                <div class="info-value" id="formMode">Thêm mới</div>
-            </div>
-        </div>
+        <!-- 09/11/2026: bỏ dải thông tin dưới tiêu đề form (hệ thống vẫn ghi nhận dữ liệu); Xem chi tiết: badge Trạng thái hiển thị tại dòng tiêu đề khi form không có trường Trạng thái -->
 
         <form id="businessForm">
             <div class="grid-3" id="formFields"></div>
@@ -910,7 +893,7 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109ro1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script src="btnn_popup_xoa.js?v=20261106ro1"></script>
     <script>
@@ -961,7 +944,7 @@
                 ],
                 columns: ['Họ và tên người được hỗ trợ', 'Số điện thoại', 'Hình thức hỗ trợ', 'Vụ việc liên quan', 'Ngày hỗ trợ', 'Cán bộ xử lý', 'Trạng thái', 'Thao tác'],
                 // 06/11/2026 (góp ý người dùng): chia 02 nhóm thông tin; Số điện thoại không bắt buộc; thêm Tỉnh/Thành phố, Phường/Xã (Danh mục địa bàn, không bắt buộc);
-                // bỏ trường Cán bộ xử lý trên form (đã có ở dải thông tin phía trên); tài liệu đính kèm không có dòng mặc định
+                // bỏ trường Cán bộ xử lý trên form (hệ thống tự ghi nhận người tạo); tài liệu đính kèm không có dòng mặc định
                 fields: [
                     ['secPerson', 'Thông tin người được hỗ trợ', 'section'],
                     ['name', 'Họ và tên người được hỗ trợ', 'text', true],
@@ -2256,13 +2239,12 @@
             const row = rowIndex !== null ? rows[rowIndex] : null;
             document.getElementById('detailPanel').classList.add('visible');
             document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${mode === 'new' ? 'Thêm mới' : mode === 'edit' ? 'Sửa' : 'Xem chi tiết'} ${config.title.charAt(0).toLowerCase() + config.title.slice(1)}`;
-            document.getElementById('formMode').innerText = mode === 'new' ? 'Thêm mới' : mode === 'edit' ? 'Sửa' : 'Chỉ xem';
-            // Cán bộ xử lý: người tạo bản ghi; thêm mới: người dùng đang đăng nhập
-            document.getElementById('formOfficer').innerText = row ? creatorOfRow(row) : PV.creatorOf(null);
-            // Ô Trạng thái: lấy theo cột trạng thái của module; module không có trạng thái thì ẩn ô này
+            // Xem chi tiết: badge Trạng thái của bản ghi tại dòng tiêu đề; module không có trạng thái hoặc form đã có trường Trạng thái (Hỗ trợ người bị thiệt hại, Đầu mối) thì không hiển thị
             const statusIdx = config.columns.findIndex(c => isStatusColumn(c));
-            const statusBox = document.getElementById('formStatus').parentElement;
-            statusBox.style.display = statusIdx >= 0 ? '' : 'none';
+            const rowStatus = row && statusIdx >= 0 && Array.isArray(row) ? String(row[statusIdx] == null ? '' : row[statusIdx]).replace(/<[^>]*>/g, '').trim() : '';
+            if (mode === 'view' && rowStatus && !config.fields.some(f => f[1] === 'Trạng thái')) {
+                document.getElementById('formTitle').insertAdjacentHTML('beforeend', ` <span class="badge ${getStatusClass(rowStatus)}" style="margin-left:4px;">${escDoc(rowStatus)}</span>`);
+            }
             if (currentFeature === 'csdl_lien_quan_btnn') {
                 document.getElementById('formFields').className = 'grid-4';
             } else {
@@ -3002,7 +2984,7 @@
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_form_page.js?v=20261026fp"></script>
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261109tl1"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_grid_toolbar.js?v=20261030gt1"></script>
     <script src="btnn_tieu_de_man.js?v=20261103td2"></script>

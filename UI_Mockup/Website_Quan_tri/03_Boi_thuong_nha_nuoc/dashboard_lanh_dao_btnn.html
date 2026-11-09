@@ -48,7 +48,7 @@
         <div class="dash-grid" id="dashGrid"></div>
     </main>
 
-    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109ro1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script src="bctt_chuong.js?v=20261105nv"></script>
     <script>
@@ -88,8 +88,8 @@
         ];
 
         // Báo cáo công tác BTNN: việc chờ của Lãnh đạo đang đăng nhập, cùng quy tắc chuông thông báo (bctt_chuong.js):
-        // Lãnh đạo Sở, Lãnh đạo Phòng (Sở) ký duyệt hoặc phân công báo cáo bị Bộ trả lại; Lãnh đạo Cục phân công báo cáo mới;
-        // Lãnh đạo Phòng (Bộ) phân công cán bộ; Lãnh đạo Phòng, Lãnh đạo Cục ký duyệt yêu cầu điều chỉnh.
+        // Lãnh đạo Sở, Lãnh đạo Phòng (Sở) ký duyệt báo cáo; Bộ Tư pháp không phân công, không rà soát, không trả lại báo cáo (06/11/2026)
+        // nên người dùng thuộc Bộ Tư pháp không có việc chờ phân công tại khối này.
         const KY_BC = { thuc_te: 'Báo cáo năm số liệu thực tế', chinh_thuc: 'Số liệu thống kê năm chính thức' };
         function bcttTrang() {
             const V = window.BCTT_VIEC, vai = V ? V.vaiTro(WF.getCurrentUserId()) : { vt: '', vb: '' };

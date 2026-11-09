@@ -1046,9 +1046,9 @@
     <!-- Menu BTNN (?system=btnn): người dùng giả lập và phạm vi đơn vị để phân quyền Thêm mới / Sửa / Xóa -->
     <script>
         if ((new URLSearchParams(window.location.search).get('system') || '').toLowerCase() === 'btnn') {
-            document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261109sd1"><\/script>');
+            document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261109ro1"><\/script>');
             document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_pham_vi_don_vi.js?v=20261030dvth2"><\/script>');
-            document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_tai_lieu_kem_theo.js?v=20261029stt48"><\/script>');
+            document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_tai_lieu_kem_theo.js?v=20261109tl1"><\/script>');
         }
     </script>
     <!-- Danh mục Tình trạng hiệu lực [DM_61] dùng chung VBQPPL và Văn bản chỉ đạo, điều hành -->
@@ -1875,8 +1875,9 @@
                 return;
             }
             if (typeof tlktMount === 'function') tlktMount(TLKT_KEY, 'docTlktHost', {
-                split: false, noLeader: true, required: true, rows: tlktRows,
-                title: 'Tài liệu đính kèm', secClass: 'form-section', titleClass: 'form-section-title', hint: `Tối đa ${TLKT_MAX} tài liệu.`
+                // 09/11/2026: Văn bản QPPL (menu BTNN) chỉ nhận tệp .pdf; ghi chú chỉ nêu định dạng (không nêu dung lượng, số lượng tối đa); sai định dạng: [MSG-ERR-FILE-007]
+                split: false, noLeader: true, required: true, rows: tlktRows, exts: ['.pdf'], hintText: 'Chỉ nhận tệp .pdf.',
+                title: 'Tài liệu đính kèm', secClass: 'form-section', titleClass: 'form-section-title'
             });
         }
 
@@ -2149,7 +2150,7 @@
                 return;
             }
 
-            // BTNN - Tài liệu đính kèm: bắt buộc tối thiểu 01 dòng đủ Tên + Tệp; dòng có dữ liệu phải đủ Tên + Tệp; tối đa 10 tài liệu
+            // BTNN - Tài liệu đính kèm: bắt buộc tối thiểu 01 dòng đủ Tên + Tệp; dòng có dữ liệu phải đủ Tên + Tệp; chỉ nhận .pdf, không giới hạn số tài liệu (user chốt 09/11/2026)
             let docFiles = null;
             if (IS_BTNN) {
                 if (typeof tlktValidate === 'function' && !tlktValidate(TLKT_KEY)) {
@@ -2158,11 +2159,6 @@
                     return;
                 }
                 docFiles = typeof tlktGet === 'function' ? tlktGet(TLKT_KEY) : [];
-                if (docFiles.length > TLKT_MAX) {
-                    const e = document.getElementById('tlkt_' + TLKT_KEY + '_err');
-                    if (e) { e.textContent = 'Hệ thống chỉ hỗ trợ tối đa 10 tài liệu đính kèm.'; e.classList.add('on'); if (e.scrollIntoView) e.scrollIntoView({ block: 'center' }); }
-                    return;
-                }
             }
 
             const persist = () => {

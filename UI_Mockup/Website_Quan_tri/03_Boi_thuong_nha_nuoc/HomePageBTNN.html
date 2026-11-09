@@ -885,8 +885,8 @@
     </div>
 
     <!-- Luồng xử lý BTNN dùng chung + tiện ích badge tab Chờ xử lý / badge menu 06 phân hệ -->
-    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
-    <script src="btnn_badge_cho_xu_ly.js?v=20261106kn1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109ro1"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261109stp1"></script>
     <script>
         // Menu Data Model: Bồi thường nhà nước, Quản lý nhà nước & Quản trị hệ thống
         const menuData = [
@@ -902,7 +902,7 @@
                         // Badge nhóm = tổng badge 2 mục con (bdg_gqGroup, tính trong BDG.mountMenu)
                         title: "Giải quyết bồi thường", icon: "fa-solid fa-gavel", badgeKey: "bdg_gqGroup", badgeType: "danger",
                         children: [
-                            { title: "Giải quyết yêu cầu bồi thường", icon: "fa-solid fa-file-pen", badgeKey: "bdg_gqYcbt", badgeType: "danger", url: "quan_ly_boi_thuong.html?v=20261109sd1" },
+                            { title: "Giải quyết yêu cầu bồi thường", icon: "fa-solid fa-file-pen", badgeKey: "bdg_gqYcbt", badgeType: "danger", url: "quan_ly_boi_thuong.html?v=20261109pd1" },
                             { title: "Quyết định giải quyết bồi thường", icon: "fa-solid fa-file-signature", badgeKey: "bdg_qdGqbt", badgeType: "danger", url: "quyet_dinh_giai_quyet_boi_thuong.html?v=20261106q1" }
                         ]
                     },
@@ -938,11 +938,11 @@
                     {
                         title: "Nghiệp vụ quản lý nhà nước về công tác BTNN", icon: "fa-solid fa-briefcase",
                         children: [
-                            { title: "Kiểm tra công tác BTNN", icon: "fa-solid fa-clipboard-check", url: "quan_ly_kiem_tra_cong_tac_btnn.html?v=20261106db3" },
+                            { title: "Kiểm tra công tác BTNN", icon: "fa-solid fa-clipboard-check", url: "quan_ly_kiem_tra_cong_tac_btnn.html?v=20261109stp1" },
                             { title: "Phối hợp thực hiện công tác BTNN", icon: "fa-solid fa-handshake", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=phoi_hop_tand_vksnd&v=20261106db3" },
-                            { title: "Theo dõi, đôn đốc công tác BTNN", icon: "fa-solid fa-list-check", url: "quan_ly_theo_doi_don_doc_btnn.html?v=20261106db3" },
-                            { title: "Tập huấn, bồi dưỡng", icon: "fa-solid fa-chalkboard-user", url: "tap_huan_boi_duong_btnn.html?v=20261106db3" },
-                            { title: "Hướng dẫn nghiệp vụ", icon: "fa-solid fa-book-open", url: "quan_ly_nghiep_vu_btnn_tt08.html?module=huong_dan&v=20261106db3" },
+                            { title: "Theo dõi, đôn đốc công tác BTNN", icon: "fa-solid fa-list-check", url: "quan_ly_theo_doi_don_doc_btnn.html?v=20261109stp1" },
+                            { title: "Tập huấn, bồi dưỡng", icon: "fa-solid fa-chalkboard-user", url: "tap_huan_boi_duong_btnn.html?v=20261109stp1" },
+                            { title: "Hướng dẫn nghiệp vụ", icon: "fa-solid fa-book-open", url: "quan_ly_nghiep_vu_btnn_tt08.html?module=huong_dan&v=20261109stp1" },
                             // Menu cha cấp 3, 02 menu con cấp 4: Sở Tư pháp lập báo cáo tại «Báo cáo công tác BTNN», Bộ Tư pháp xử lý báo cáo các Sở gửi lên tại «Xử lý báo cáo Công tác BTNN»
                             // Badge nhóm = tổng badge 2 mục con (bdg_bcttGroup, tính trong BDG.mountMenu)
                             {
@@ -979,7 +979,7 @@
                             { title: "Kiến nghị Thủ trưởng cơ quan xem xét lại quyết định hoàn trả", icon: "fa-solid fa-arrows-rotate", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_xem_xet_qd_hoan_tra&v=20261106db3" }
                         ]
                     },
-                    { title: "Khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN", icon: "fa-solid fa-person-circle-exclamation", badgeKey: "bdg_kntc", badgeType: "danger", url: "quan_ly_nghiep_vu_btnn_tt08.html?module=khieu_nai&v=20261106db3" },
+                    { title: "Khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN", icon: "fa-solid fa-person-circle-exclamation", badgeKey: "bdg_kntc", badgeType: "danger", url: "quan_ly_nghiep_vu_btnn_tt08.html?module=khieu_nai&v=20261109stp1" },
                     {
                         // Badge nhóm = badge Hỏi đáp nghiệp vụ (bdg_hoiDapGroup, tính trong BDG.mountMenu)
                         title: "Hỏi đáp", icon: "fa-solid fa-circle-question", badgeKey: "bdg_hoiDapGroup", badgeType: "danger",
@@ -1091,7 +1091,6 @@
                     { title: "Quản lý danh mục", icon: "fa-solid fa-list-ul", url: "../01_Quan_tri_he_thong/quan_ly_danh_muc.html" },
                     { title: "Danh mục Địa bàn", icon: "fa-solid fa-earth-asia", url: "../01_Quan_tri_he_thong/quan_ly_danh_muc_dia_ban.html" },
                     { title: "Quản lý cấu hình", icon: "fa-solid fa-sliders", url: "../01_Quan_tri_he_thong/quan_ly_cau_hinh.html" },
-                    { title: "Cấu hình luồng xử lý", icon: "fa-solid fa-diagram-project", url: "cau_hinh_luong_xu_ly.html", comingSoon: true },
                     { title: "Quản lý nhật ký hệ thống", url: "../temp_placeholder.html", hidden: true },
                     { title: "Quản lý sao lưu, phục hồi dữ liệu", url: "../temp_placeholder.html", hidden: true }
                 ]

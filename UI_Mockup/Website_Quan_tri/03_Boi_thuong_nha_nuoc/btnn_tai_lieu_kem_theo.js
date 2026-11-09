@@ -314,7 +314,7 @@
             + '<div class="tlkt-wrap"><table class="tlkt-table"><thead><tr><th class="tlkt-c" style="width:48px;">STT</th><th>' + esc(s.nameLabel) + (s.required ? '<span class="tlkt-req">*</span>' : '') + '</th><th style="width:220px;">File đính kèm' + (s.required ? '<span class="tlkt-req">*</span>' : '') + '</th><th class="tlkt-c" style="width:90px;">Thao tác</th></tr></thead><tbody>' + body + '</tbody></table></div>'
             + '<div class="tlkt-err" id="tlkt_' + key + '_err">' + MSG_REQ + '</div>'
             + '<div><button type="button" class="tlkt-btn tlkt-btn-add tlkt-add" onclick="tlktAdd(\'' + key + '\')"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button></div>'
-            + '<div class="tlkt-hint"><i class="fa-solid fa-circle-info"></i> Chấp nhận tệp ' + s.exts.join(', ') + ' (tối đa 50MB/tệp).' + (s.hint ? ' ' + esc(s.hint) : (s.noLeader ? '' : ' Lãnh đạo xem được các tài liệu này khi Ký duyệt/Từ chối.')) + '</div>'
+            + (s.noHint ? '' : s.hintText ? '<div class="tlkt-hint"><i class="fa-solid fa-circle-info"></i> ' + esc(s.hintText) + '</div>' : '<div class="tlkt-hint"><i class="fa-solid fa-circle-info"></i> Chấp nhận tệp ' + s.exts.join(', ') + ' (tối đa 50MB/tệp).' + (s.hint ? ' ' + esc(s.hint) : (s.noLeader ? '' : ' Lãnh đạo xem được các tài liệu này khi Ký duyệt/Từ chối.')) + '</div>')
             + '</div>';
         host.style.display = s.visible === false ? 'none' : '';
     }
@@ -326,11 +326,15 @@
     function setErr(id, on, msg) { var e = document.getElementById(id); if (!e) return; if (msg) e.textContent = msg; e.classList.toggle('on', !!on); }
 
     // Khởi tạo bảng trong vùng hostId; opts: { required, rows, secClass, titleClass, visible, title, nameLabel (tên cột Tên ...; mặc định "Tên tài liệu, văn bản"; lưới Văn bản làm căn cứ dùng "Tên văn bản căn cứ") }
+    // Tùy chọn riêng (chỉ trang truyền mới áp dụng; mặc định giữ nguyên hành vi chung):
+    //   noHint: true  -> không hiển thị dòng ghi chú định dạng/dung lượng dưới bảng (module nghiệp vụ dùng chung BTNN, chốt 09/11)
+    //   hintText -> thay toàn bộ nội dung dòng ghi chú (VD Văn bản quy phạm pháp luật BTNN: "Chỉ nhận tệp .pdf.")
+    //   maxBytes, sizeMsg, fmtMsg -> giới hạn dung lượng / thông báo lỗi riêng của module (VD Câu hỏi thường gặp: 10MB, [MSG-ERR-BTNN-FAQ-001/002])
     // Popup trình ký Lãnh đạo (không truyền noLeader) mặc định dựng 02 khối: Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo
     // (opts.split = false để giữ 01 bảng). opts.rows: danh sách cũ/lần trình trước (tách theo scope; chưa có scope -> không ban hành kèm theo).
     // opts.required (quy tắc bắt buộc riêng của phân hệ) áp cho khối opts.requiredBlock ('internal' mặc định | 'issued').
     function mountOne(key, hostId, opts) {
-        S[key] = { hostId: hostId, required: !!opts.required, rows: cloneList(opts.rows), secClass: opts.secClass || 'gqx-sec', titleClass: opts.titleClass || 'tlkt-sec-title', visible: opts.visible !== false, noLeader: !!opts.noLeader, exts: (opts.exts && opts.exts.length) ? opts.exts : EXTS, title: opts.title || 'Tài liệu đính kèm', nameLabel: opts.nameLabel || STD_NAME, hint: opts.hint || '' };
+        S[key] = { hostId: hostId, required: !!opts.required, rows: cloneList(opts.rows), secClass: opts.secClass || 'gqx-sec', titleClass: opts.titleClass || 'tlkt-sec-title', visible: opts.visible !== false, noLeader: !!opts.noLeader, exts: (opts.exts && opts.exts.length) ? opts.exts : EXTS, title: opts.title || 'Tài liệu đính kèm', nameLabel: opts.nameLabel || STD_NAME, hint: opts.hint || '', noHint: !!opts.noHint, hintText: opts.hintText || '', maxBytes: opts.maxBytes || MAX_BYTES, sizeMsg: opts.sizeMsg || MSG_SIZE, fmtMsg: opts.fmtMsg || '' };
         render(key);
     }
     window.tlktMount = function (key, hostId, opts) {
@@ -378,7 +382,7 @@
         if (!f || !s.rows[i]) return;
         sync(key);
         var ext = (String(f.name).match(/\.[^.]+$/) || [''])[0].toLowerCase();
-        var msg = s.exts.indexOf(ext) < 0 ? 'Tệp không đúng định dạng. Chỉ chấp nhận ' + s.exts.join(', ') + '.' : (f.size > MAX_BYTES ? MSG_SIZE : '');
+        var msg = s.exts.indexOf(ext) < 0 ? (s.fmtMsg || 'Tệp không đúng định dạng. Chỉ chấp nhận ' + s.exts.join(', ') + '.') : (f.size > (s.maxBytes || MAX_BYTES) ? (s.sizeMsg || MSG_SIZE) : '');
         input.value = '';
         if (msg) { setErr('tlkt_' + key + '_fe' + i, true, msg); var b = document.getElementById('tlkt_' + key + '_b' + i); if (b) b.classList.add('is-invalid'); return; }
         var id = 'tlkt_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);

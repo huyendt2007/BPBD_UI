@@ -17,6 +17,7 @@
  * 4. Lưới / bộ lọc / chi tiết: nhãn "Cán bộ chủ động PHDD" dưới Nguồn hồ sơ; bộ lọc Hình thức tiếp nhận có giá trị CAN_BO_PHUC_HOI_DANH_DU.
  * 5. Dữ liệu mẫu (người tạo Đỗ Văn Chung - cv_hn1, Sở Tư pháp TP. Hà Nội): Chờ duyệt, Bị trả lại, Cử người phục hồi danh dự (cấp Sở; cấp Phòng),
  *    Đang phục hồi danh dự (phân công Ngô Thị Lan - cv_hn2), theo phiên bản CDPD_SEED_VER.
+ *    [pdchet] BT-2026-528: người bị thiệt hại đã chết, Cử người phục hồi danh dự (cấp Sở); chưa có thì bổ sung, không đổi phiên bản.
  * Dùng tiện ích sẵn có: gq*, ktlx*, tlkt*, ctvvm* (quan_ly_boi_thuong_ctvv.js), saveNewClaim, openInlineClaimForm.
  */
 var CDPD_KIND = 'Chủ động phục hồi danh dự'; // Nội dung trình (Loại trình)
@@ -30,7 +31,7 @@ var CDPD_REQ = 'Đây là trường bắt buộc';
 var CDPD_OFF_MSG = 'Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.';
 var CDPD_VBCC_MSG = 'Vui lòng nhập tối thiểu 01 văn bản làm căn cứ có tệp đính kèm.';
 
-var CDPD_SEED_VER = '20261030cdpd6';
+var CDPD_SEED_VER = '20261109ro1';
 var CDPD_SEED_CREATOR = 'cv_hn1'; // Đỗ Văn Chung - Phòng Hành chính tư pháp, Sở Tư pháp TP. Hà Nội
 var CDPD_SEED_KEY = 'btnn_cdpd_seed_v';
 var CDPD_NBTH = 'Người bị thiệt hại';
@@ -370,7 +371,7 @@ function cdpdEnsureModal() {
         + '<div style="font-size:12.5px; color:#64748b; margin-top:4px; padding-left:38px;">Mã vụ việc: <strong id="cdpdClaimCode" style="color:var(--primary-color);">--</strong><span style="margin:0 6px;">•</span> Người bị thiệt hại: <span id="cdpdClaimNYC" style="font-weight:600; color:#334155;">--</span><span style="margin:0 6px;">•</span> Đơn vị: <span id="cdpdClaimAgency" style="font-weight:600; color:#334155;">--</span></div>'
         + '</div><button type="button" onclick="closeCdpdModal(true)" style="border:none; background:transparent; font-size:22px; color:#94a3b8; cursor:pointer; line-height:1; padding:4px;" title="Đóng">&times;</button></div>'
         + '<div id="cdpdStepperBar" class="ktl-stepper-fullwidth"><div id="cdpdStep1Tab" class="ktl-step-tab active" onclick="cdpdGoStep1()"><span class="ktl-step-badge" id="cdpdStep1Badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div>'
-        + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="cdpdStep2Tab" class="ktl-step-tab" onclick="cdpdGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div></div>'
+        + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="cdpdStep2Tab" class="ktl-step-tab" onclick="cdpdGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Thiết lập các cấp trình ký</span></div></div>'
         + '<div id="cdpdStep1Body" class="sticky-modal-body gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
         + '<div id="cdpdReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div>'
         + '<div style="font-size:13px; color:#92400e;"><b>Lý do trả lại:</b> <span id="cdpdReturnedReason">--</span></div><div style="font-size:12px; color:#b45309; margin-top:2px;">Lãnh đạo trả lại: <span id="cdpdReturnedOfficer">--</span> • Thời điểm trả lại: <span id="cdpdReturnedDate">--</span></div></div>'
@@ -580,8 +581,9 @@ function cdpdSubmitOnline() {
     var sign = gqSignCollect('cdpd', true);
     if (!sign) return;
     // Cấp chưa đặt chữ ký: hiển thị dưới nút Đặt chữ ký của cấp đó
+    // [ro1] Ô ký bắt buộc (cấp cuối, cấp Ký nháy) đã kiểm tra tại khối Thiết lập các cấp trình ký (gqSignCollect)
     var st = gqSignState.cdpd, miss = null;
-    (st ? st.levels : []).forEach(function (lv, i) {
+    (st && Array.isArray(st.levels) && st.placed ? st.levels : []).forEach(function (lv, i) {
         var off = i === 0 && st.levels.length > 1 && !st.enableNhay;
         var bad = !off && !st.placed[i];
         var host = cdpdEl('cdpdSignCard' + i), er = cdpdEl('cdpdSignPlaceErr' + i);
@@ -715,6 +717,34 @@ function cdpdOpenAssign(id) {
         if (detail && detail.style.display === 'block' && typeof selectedClaimId !== 'undefined' && selectedClaimId === id) showCaseDetail(id, false);
     }, W.PHDD_ASSIGN);
 }
+// [ro1] Thu hồi (MSG-CFM-BTNN-LXL-001): hồ sơ về Cử người phục hồi danh dự tại đơn vị đã phân công, trở lại tab Chờ xử lý của Lãnh đạo thu hồi
+function cdpdRecall(id) {
+    var c = gqClaim(id), W = gqW();
+    if (!c || !W) return;
+    if (typeof gqAsLeader === 'function') gqAsLeader();
+    var rec = gqRecord(c), info = rec ? W.getRecallInfo(rec, W.getCurrentUserId()) : null;
+    if (!info) { showToast('Không thể thu hồi: bên nhận đã xử lý hồ sơ.', 'error'); renderClaimsTable(); return; }
+    var msg = 'Bạn có chắc chắn muốn thu hồi hồ sơ ' + (typeof claimVvCode === 'function' ? claimVvCode(c) : c.code) + '?' + (info.route.viewedAt ? ' Bên nhận đã xem lúc ' + info.route.viewedAt + '.' : '');
+    showConfirmModal(msg, function () {
+        var res = W.recall(c.code);
+        if (!res.ok) { showToast(res.message, 'error'); renderClaimsTable(); return; }
+        var r = res.record;
+        c.status = r.status;
+        if (r.status === CDPD_CU_NGUOI) {
+            c.phddStarted = false; c.phddStatus = '';
+            ['appointedOfficers', 'assignedOfficer', 'assignedOfficerPosition', 'assignedOfficerUnit', 'assignedOfficerEmail', 'officer', 'phddAssignedAt'].forEach(function (k) { delete c[k]; });
+        }
+        if (!Array.isArray(c.timeline)) c.timeline = [];
+        var h = (r.history || [])[(r.history || []).length - 1];
+        c.timeline.push({ title: 'Thu hồi', date: gqToday(), desc: h ? h.note : 'Thu hồi hồ sơ.', status: 'completed' });
+        saveClaimsToLocal();
+        renderClaimsTable();
+        var detail = cdpdEl('caseDetailSection');
+        if (detail && detail.style.display === 'block' && typeof selectedClaimId !== 'undefined' && selectedClaimId === id) showCaseDetail(id, false);
+        showToast('Đã thu hồi hồ sơ ' + (typeof claimVvCode === 'function' ? claimVvCode(c) : c.code) + '. Trạng thái: [' + r.status + '].', 'success');
+    }, { title: 'Xác nhận', btnYesText: 'Đồng ý', btnNoText: 'Hủy bỏ' });
+}
+window.cdpdRecall = cdpdRecall;
 // Nhận kết quả Phân công cán bộ phục hồi danh dự từ hồ sơ luồng: cán bộ được phân công, tiến trình phục hồi danh dự từ Bước 1
 function cdpdApplyAssigned(c, r) {
     var W = gqW();
@@ -817,7 +847,8 @@ function cdpdApplyAssigned(c, r) {
         if (role === 'thu-truong' || !cdpdIs(item)) return oTab.apply(this, arguments);
         var creator = !!officer && cdpdNorm(item.cdpdCreatedBy || '') === cdpdNorm(officer);
         if (!cdpdApproved(item)) return creator && tab !== 'da-xu-ly';
-        if (cdpdIsAssignee(item, officer)) return oTab.apply(this, arguments);
+        // [ro1] Cán bộ phối hợp: theo tab của cán bộ chủ trì (chỉ xem)
+        if (cdpdIsAssignee(item, officer) || (typeof gqIsPhoiHop === 'function' && gqIsPhoiHop(item, officer))) return oTab.apply(this, arguments);
         return creator && tab === 'da-xu-ly';
     };
     var oGate = window.gqldGateReason;
@@ -825,7 +856,7 @@ function cdpdApplyAssigned(c, r) {
         if (role === 'thu-truong' || !cdpdIs(item)) return oGate.apply(this, arguments);
         var why = 'Hồ sơ đã giao cán bộ khác giải quyết';
         if (!cdpdApproved(item)) return cdpdNorm(item.cdpdCreatedBy || '') === cdpdNorm(officer || '') ? '' : why;
-        return cdpdIsAssignee(item, officer) ? '' : why;
+        return cdpdIsAssignee(item, officer) || (typeof gqIsPhoiHop === 'function' && gqIsPhoiHop(item, officer)) ? '' : why;
     };
     // Người tạo hồ sơ xem được chi tiết hồ sơ đã phân công cán bộ khác (chỉ xem)
     var oOther = window.isClaimAssignedToOther;
@@ -847,7 +878,17 @@ function cdpdApplyAssigned(c, r) {
         if (oActed.apply(this, arguments)) return true;
         if (!item || !cdpdIs(item) || leaderCanActOn(item)) return false;
         var me = gqLeaderId(), rec = gqRecord(item);
-        return !!(me && rec && (rec.history || []).some(function (h) { return h.userId === me && /phục hồi danh dự/.test(h.action || '') && /Chuyển đơn vị|Phân công/.test(h.action || ''); }));
+        return !!(me && rec && (rec.history || []).some(function (h) { return h.userId === me && ((/phục hồi danh dự/.test(h.action || '') && /Chuyển đơn vị|Phân công/.test(h.action || '')) || (h.kind === CDPD_CU_NGUOI && /Chuyển chuyên viên phụ trách trực tiếp|Thu hồi/.test(h.action || ''))); }));
+    };
+    // [ro1] Thu hồi lượt phân công gần nhất của bước Cử người phục hồi danh dự (MH01 tab Đã xử lý, MH04): hiển thị với Lãnh đạo đã phân công; không đủ điều kiện -> mờ
+    var cdpdRecallBtn = function (item, big) {
+        var W = gqW(), rec = gqRecord(item), me = gqLeaderId();
+        if (!W || !rec || !me || !(rec.phddRoutes || []).some(function (r) { return r.fromUserId === me; })) return '';
+        var info = W.getRecallInfo(rec, me);
+        var ok = !!(info && info.kind === 'phdd');
+        if (big) return ok ? '<button class="btn btn-outline-primary" data-action="phddRecall" onclick="cdpdRecall(\'' + item.id + '\')"><i class="fa-solid fa-rotate-left"></i> Thu hồi</button>' : '';
+        return ok ? gqldBtn('phddRecall', 'edit', 'fa-solid fa-rotate-left', 'Thu hồi', "cdpdRecall('" + item.id + "');")
+            : gqldBtnOff('phddRecall', 'edit', 'fa-solid fa-rotate-left', 'Thu hồi', 'Bên nhận đã xử lý hồ sơ hoặc không phải lượt phân công gần nhất của bạn');
     };
     var cdpdAssignBtn = function (item, big) {
         var ok = leaderCanActOn(item);
@@ -857,13 +898,15 @@ function cdpdApplyAssigned(c, r) {
     };
     var oBuild = window.gqldBuildActions;
     if (typeof oBuild === 'function') window.gqldBuildActions = function (item, role) {
-        if (role === 'thu-truong' && cdpdIs(item) && gqldCaseStatus(item) === CDPD_CU_NGUOI) return cdpdAssignBtn(item, false).replace(/<button /g, '<button data-admin-icon-normalized="1" ');
+        if (role === 'thu-truong' && cdpdIs(item) && gqldCaseStatus(item) === CDPD_CU_NGUOI && leaderCanActOn(item)) return cdpdAssignBtn(item, false).replace(/<button /g, '<button data-admin-icon-normalized="1" ');
+        if (role === 'thu-truong' && cdpdIs(item)) { var rb = cdpdRecallBtn(item, false); if (rb) return rb.replace(/<button /g, '<button data-admin-icon-normalized="1" '); }
         return oBuild.apply(this, arguments);
     };
     var oBar = window.gqldDetailBar;
     if (typeof oBar === 'function') window.gqldDetailBar = function (claim, role, officer, closeBtnHtml) {
         var h = oBar.apply(this, arguments);
-        if (role === 'thu-truong' && !isDetailEditMode && cdpdIs(claim) && gqldCaseStatus(claim) === CDPD_CU_NGUOI && typeof h === 'string') return cdpdAssignBtn(claim, true) + h;
+        if (role === 'thu-truong' && !isDetailEditMode && cdpdIs(claim) && gqldCaseStatus(claim) === CDPD_CU_NGUOI && leaderCanActOn(claim) && typeof h === 'string') return cdpdAssignBtn(claim, true) + h;
+        if (role === 'thu-truong' && !isDetailEditMode && cdpdIs(claim) && typeof h === 'string') return cdpdRecallBtn(claim, true) + h;
         return h;
     };
     // Nhãn riêng dưới Nguồn hồ sơ (lưới, màn chi tiết)
@@ -903,7 +946,9 @@ var CDPD_SEEDS = [
     { id: 'CDPD-525', code: 'BT-2026-525', nyc: 'Hoàng Thị Mai', birth: '14/02/1990', card: '001190056789', phone: '0912345605', ward: 'Phường Hai Bà Trưng', addr: 'Số 41 phố Lò Đúc', field: 'hình sự', hanhVi: 'Bà Hoàng Thị Mai bị khởi tố bị can; viện kiểm sát ra quyết định đình chỉ vụ án do hành vi không cấu thành tội phạm.', vb: 'Quyết định đình chỉ vụ án số 17/QĐ-VKS ngày 12/10/2026', state: 'officer' },
     // Bổ sung 2 hồ sơ Cử người phục hồi danh dự chờ Lãnh đạo Sở (gdso_hn) phân công, phục vụ thử nghiệm
     { id: 'CDPD-526', code: 'BT-2026-526', nyc: 'Nguyễn Văn Khải', birth: '09/07/1975', card: '001075076543', phone: '0912345606', ward: 'Phường Thanh Xuân', addr: 'Số 18 phố Khương Trung', field: 'hình sự', hanhVi: 'Ông Nguyễn Văn Khải bị khởi tố, tạm giam; cơ quan điều tra ra quyết định đình chỉ điều tra do hành vi không cấu thành tội phạm.', vb: 'Quyết định đình chỉ điều tra số 21/QĐ-CSĐT ngày 15/10/2026', state: 'approve' },
-    { id: 'CDPD-527', code: 'BT-2026-527', nyc: 'Đặng Thị Thu', birth: '22/12/1988', card: '001188087654', phone: '0912345607', ward: 'Phường Láng Hạ', addr: 'Số 5 ngõ 120 Láng Hạ', field: 'hình sự', hanhVi: 'Bà Đặng Thị Thu bị truy tố, xét xử sơ thẩm; bản án phúc thẩm hủy bản án sơ thẩm, tuyên không phạm tội.', vb: 'Bản án hình sự phúc thẩm số 52/2026/HS-PT ngày 20/10/2026', state: 'approve' }
+    { id: 'CDPD-527', code: 'BT-2026-527', nyc: 'Đặng Thị Thu', birth: '22/12/1988', card: '001188087654', phone: '0912345607', ward: 'Phường Láng Hạ', addr: 'Số 5 ngõ 120 Láng Hạ', field: 'hình sự', hanhVi: 'Bà Đặng Thị Thu bị truy tố, xét xử sơ thẩm; bản án phúc thẩm hủy bản án sơ thẩm, tuyên không phạm tội.', vb: 'Bản án hình sự phúc thẩm số 52/2026/HS-PT ngày 20/10/2026', state: 'approve' },
+    // [pdchet] Người bị thiệt hại đã chết: chờ Lãnh đạo Sở (gdso_hn) phân công; sau Thông báo bỏ qua bước Ý kiến phản hồi, sang thẳng Tổ chức thực hiện
+    { id: 'CDPD-528', code: 'BT-2026-528', nyc: 'Vũ Đình Lộc', birth: '15/08/1949', card: '001049028528', phone: '0912345608', ward: 'Phường Tây Hồ', addr: 'Số 12 ngõ 31 Xuân Diệu', field: 'hình sự', hanhVi: 'Ông Vũ Đình Lộc bị khởi tố, tạm giam; cơ quan điều tra ra quyết định đình chỉ điều tra do không phạm tội. Ông Vũ Đình Lộc đã chết trước khi cơ quan giải quyết bồi thường lập hồ sơ.', vb: 'Quyết định đình chỉ điều tra số 26/QĐ-CSĐT ngày 22/10/2026', state: 'approve', dead: true }
 ];
 function cdpdSeedClaim(s) {
     var agency = 'Sở Tư pháp TP. Hà Nội';
@@ -914,7 +959,7 @@ function cdpdSeedClaim(s) {
         id: s.id, code: s.code, maVuViec: '', date: today, deadline: today, cdpd: true, cdpdSeed: CDPD_SEED_VER,
         cdpdCreatedBy: me, assignedOfficer: me, cdpdCreatedById: CDPD_SEED_CREATOR,
         nguonHoSo: 'Tiếp nhận mới', hinhThucTiepNhan: CDPD_HTTN, requestType: 'honor', restoreHonor: true, phddStarted: false,
-        phddFormApology: true, phddFormNews: s.state === 'approve', victimAlive: 'yes',
+        phddFormApology: !s.dead, phddFormNews: !!s.dead || s.state === 'approve', victimAlive: s.dead ? 'no' : 'yes', victimAliveStatus: s.dead ? 'Đã chết' : 'Còn sống',
         fieldGroup: s.field, nyc: s.nyc, nycType: 'Cá nhân', nycBirth: s.birth,
         nycCardType: 'CMND/CCCD/Chứng minh quân đội', cardType: 'CMND/CCCD/Chứng minh quân đội', nycCardNo: s.card, cardNo: s.card, nycCardPlace: 'Cục Cảnh sát QLHC về TTXH',
         nycPhone: s.phone, phone: s.phone, nycCountry: 'Việt Nam', nycTinhThanh: 'Hà Nội', nycPhuongXa: s.ward, nycAddressDetail: s.addr, address: s.addr,
@@ -956,7 +1001,7 @@ function cdpdSeed() {
             if (!res || !res.ok) return;
             c.status = 'Chờ duyệt';
             c.cdpdDoc = { state: 'Chờ duyệt', method: 'Ký số', docSrc: 'upload', draftFile: file, draftFileId: '', signFile: file, attachments: [], submittedAt: res.record.approval.submittedAt };
-            c.timeline.push({ title: 'Trình Lãnh đạo: ' + CDPD_KIND, date: gqToday(), desc: 'Trình Lãnh đạo phê duyệt [' + CDPD_KIND + '] (' + file + '). Hồ sơ chuyển sang trạng thái [Chờ duyệt].', status: 'active' });
+            c.timeline.push({ title: (typeof gqTrinhTitle === 'function' ? gqTrinhTitle(assignees[0], CDPD_KIND) : 'Trình Lãnh đạo: ' + CDPD_KIND), date: gqToday(), desc: 'Trình Lãnh đạo phê duyệt [' + CDPD_KIND + '] (' + file + '). Hồ sơ chuyển sang trạng thái [Chờ duyệt].', status: 'active' });
             if (s.state === 'reject' && assignees[0]) { W.setCurrentUser(assignees[0]); W.rejectApproval(c.code, s.reason); }
             if (['approve', 'unit', 'officer'].indexOf(s.state) >= 0) {
                 for (var i = 0; i < 6; i++) {
@@ -977,7 +1022,8 @@ function cdpdSeed() {
                     W.setCurrentUser(who);
                     if (node.allowUnit && (node.units || []).length) return !!W.assignPhddToUnit(c.code, node.units[0], 'Giao ' + W.unitName(node.units[0]) + ' cử cán bộ phục hồi danh dự.').ok;
                     var off = (node.officers || []).indexOf('cv_hn2') >= 0 ? 'cv_hn2' : (node.officers || [])[0];
-                    return n && !!off && !!W.assignPhddToOfficer(c.code, off, 'Chủ trì tổ chức phục hồi danh dự cho người bị thiệt hại.').ok;
+                    // [ro1] Dữ liệu mẫu có Cán bộ phối hợp (Phó Trưởng phòng HCTP - chỉ xem hồ sơ)
+                    return n && !!off && !!W.assignPhddToOfficer(c.code, off, 'Chủ trì tổ chức phục hồi danh dự cho người bị thiệt hại.', (node.officers || []).indexOf('pp_hctp_hn') >= 0 && off !== 'pp_hctp_hn' ? ['pp_hctp_hn'] : []).ok;
                 };
                 if (s.state === 'unit') phddStep(false);
                 if (s.state === 'officer') { for (var k = 0; k < 4; k++) { var r2 = W.getRecord(c.code); if (!r2 || r2.status !== CDPD_CU_NGUOI || !phddStep(true)) break; } }

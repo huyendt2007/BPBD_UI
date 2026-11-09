@@ -517,7 +517,8 @@ function kpdtSanitize() {
     const openFromUrl = () => {
         const q = new URLSearchParams(window.location.search);
         if (q.get('view') === 'detail' && q.get('id')) kpdtOpen(q.get('id'), { noPush: true });
-        else if (kpdtIsOpen()) { kpdtShow(false); renderProposalsTable(); }
+        // [ro1] Mở từ Giải quyết YCBT bằng ?viewCode= (checkAndHandleUrlParams đã mở chi tiết): không đóng lại
+        else if (kpdtIsOpen() && !q.get('viewCode')) { kpdtShow(false); renderProposalsTable(); }
     };
     // Mở trực tiếp bằng URL (?view=detail&id=...): chạy sau initKinhPhiApp
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(openFromUrl, 0)); else setTimeout(openFromUrl, 0);

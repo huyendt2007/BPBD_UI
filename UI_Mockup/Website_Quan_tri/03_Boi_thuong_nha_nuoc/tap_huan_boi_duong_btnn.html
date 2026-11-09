@@ -636,7 +636,7 @@
         <!-- GridView -->
         <div class="card-section" id="th-list-card">
             <div class="grid-action-toolbar">
-                <button class="btn btn-primary" onclick="openCreateThForm()"><i class="fa fa-plus"></i> Thêm mới</button>
+                <button class="btn btn-primary" id="th-btn-add" onclick="openCreateThForm()"><i class="fa fa-plus"></i> Thêm mới</button>
                 <button class="btn btn-outline-primary" onclick="exportExcelTh()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
             </div>
             
@@ -651,6 +651,8 @@
                             <th width="180px">Thời gian dự kiến</th>
                             <th width="130px">Hình thức</th>
                             <th width="150px">Kinh phí dự kiến</th>
+                            <!-- Cán bộ xử lý: người tạo hồ sơ (mọi người dùng); Đơn vị thực hiện (chỉ Bộ Tư pháp/Cục) chèn ngay sau bằng JS -->
+                            <th width="140px">Cán bộ xử lý</th>
                             <th width="150px">Trạng thái</th>
                             <th width="100px" style="text-align: center;">Thao tác</th>
                         </tr>
@@ -700,8 +702,7 @@
                             <label class="form-label">Đơn vị chủ trì <span class="required">*</span></label>
                             <select id="th-donvi-chutri" class="form-select">
                                 <option value="">-- Chọn đơn vị --</option>
-                                <option value="Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước">Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</option>
-                                <option value="Phòng Quản lý nghiệp vụ về bồi thường nhà nước">Phòng Quản lý nghiệp vụ về bồi thường nhà nước</option>
+                                <!-- Sở Tư pháp của người dùng và đơn vị trực thuộc Sở: nạp theo Cơ cấu tổ chức (thFillChuTri) -->
                             </select>
                         </div>
                         <div class="form-group">
@@ -787,7 +788,7 @@
 
                 <!-- Khối 3: Tài liệu đính kèm (01 bảng chung: tài liệu kế hoạch + Tài liệu kết quả đính kèm), bảng chuẩn btnn_tai_lieu_kem_theo.js (key thTl) -->
                 <div class="th-block" id="th-tl-block">
-                    <div class="th-block-title">Tài liệu đính kèm</div>
+                    <div class="th-block-title"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</div>
                     <div id="th-tlkt"></div>
                 </div>
 
@@ -1408,19 +1409,29 @@
     </div>
 </div>
 
-<script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
+<script src="btnn_tai_lieu_kem_theo.js?v=20261109tl1"></script>
+<!-- Giả lập người dùng, phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp (như màn Kiểm tra công tác BTNN) -->
+<script src="btnn_luong_xu_ly.js?v=20261109ro1"></script>
+<script src="btnn_pham_vi_don_vi.js?v=20261109stp1"></script>
 <script>
+    // Phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp (btnn_pham_vi_don_vi.js): chỉ Sở Tư pháp thao tác trên hồ sơ của Sở mình;
+    // Bộ Tư pháp/Cục xem hồ sơ của mọi Sở Tư pháp; UBND cấp tỉnh xem hồ sơ của Sở Tư pháp trực thuộc; đơn vị khác không xem
+    const PV = window.BTNN_PHAMVI;
     // Global Mock Data - Tập huấn, Hội nghị, Hội thảo
+    // 09/11/2026: chỉ Sở Tư pháp thêm mới, sửa, hoàn thành, xóa; Bộ Tư pháp/Cục chỉ xem. Dữ liệu mẫu thuộc các Sở Tư pháp:
+    // unit = Đơn vị thực hiện (Sở Tư pháp của người tạo), creator = cán bộ đã nhập hồ sơ (người tạo)
     let thData = [
         {
             "id": "KH-TH-2026-0001",
+            "unit": "STP-HN",
+            "creator": "Đỗ Văn Chung",
             "ten": "Tập huấn chuyên sâu Luật Trách nhiệm bồi thường của Nhà nước năm 2017 và các văn bản hướng dẫn thi hành",
             "loai": "Tập huấn",
-            "donViChuTri": "Phòng Quản lý nghiệp vụ về bồi thường nhà nước",
-            "donViPhoiHop": "Sở Tư pháp Thành phố Hà Nội",
+            "donViChuTri": "Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hà Nội",
+            "donViPhoiHop": "UBND phường Cầu Giấy, UBND phường Hoàn Kiếm",
             "kinhPhiDukien": 50000000,
             "hinhThuc": "Trực tiếp",
-            "diaDiem": "Hội trường tầng 3, Bộ Tư pháp",
+            "diaDiem": "Hội trường Sở Tư pháp Thành phố Hà Nội",
             "batDauDukien": "10/03/2026",
             "ketThucDukien": "11/03/2026",
             "noiDung": "Hướng dẫn trình tự thụ lý, xác minh thiệt hại, thương lượng và ban hành quyết định giải quyết bồi thường.",
@@ -1435,7 +1446,7 @@
             "tinhTrang": "Hoàn thành",
             "lyDo": "",
             "daibieuThucte": 110,
-            "thanhPhan": "Công chức làm công tác BTNN của Sở Tư pháp, cơ quan giải quyết bồi thường khu vực phía Bắc",
+            "thanhPhan": "Công chức làm công tác BTNN của các cơ quan giải quyết bồi thường trên địa bàn Thành phố Hà Nội",
             "danhGia": "Xuất sắc",
             "baocaoKq": "Đại biểu nắm vững quy trình giải quyết bồi thường; nêu 25 vướng mắc, đã được giải đáp tại hội nghị.",
             "filesKq": [
@@ -1447,10 +1458,12 @@
         },
         {
             "id": "KH-TH-2026-0002",
-            "ten": "Tập huấn trực tuyến kỹ năng thương lượng việc bồi thường cho công chức Sở Tư pháp",
+            "unit": "STP-HCM",
+            "creator": "Châu Ngọc Ánh",
+            "ten": "Tập huấn trực tuyến kỹ năng thương lượng việc bồi thường cho công chức các cơ quan giải quyết bồi thường trên địa bàn Thành phố",
             "loai": "Tập huấn",
-            "donViChuTri": "Phòng Quản lý nghiệp vụ về bồi thường nhà nước",
-            "donViPhoiHop": "Các Sở Tư pháp",
+            "donViChuTri": "Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hồ Chí Minh",
+            "donViPhoiHop": "UBND các phường, xã trên địa bàn Thành phố",
             "kinhPhiDukien": 15000000,
             "hinhThuc": "Trực tuyến",
             "diaDiem": "",
@@ -1468,9 +1481,9 @@
             "tinhTrang": "Hoàn thành",
             "lyDo": "",
             "daibieuThucte": 260,
-            "thanhPhan": "Công chức làm công tác BTNN của 34 Sở Tư pháp",
+            "thanhPhan": "Công chức làm công tác BTNN của UBND các phường, xã trên địa bàn Thành phố Hồ Chí Minh",
             "danhGia": "Đạt yêu cầu",
-            "baocaoKq": "Tập huấn kết nối 34 điểm cầu; tài liệu và video bài giảng đã gửi các Sở Tư pháp.",
+            "baocaoKq": "Tập huấn kết nối 168 điểm cầu phường, xã; tài liệu và video bài giảng đã gửi các đơn vị tham dự.",
             "filesKq": [
                 {
                     "name": "Tai_lieu_bai_giang_thuong_luong.pptx",
@@ -1480,16 +1493,18 @@
         },
         {
             "id": "KH-TH-2026-0003",
-            "ten": "Hội nghị sơ kết 05 năm thi hành Luật Trách nhiệm bồi thường của Nhà nước năm 2017",
+            "unit": "STP-HN",
+            "creator": "Ngô Thị Lan",
+            "ten": "Hội nghị sơ kết 05 năm thi hành Luật Trách nhiệm bồi thường của Nhà nước năm 2017 trên địa bàn Thành phố Hà Nội",
             "loai": "Hội nghị",
-            "donViChuTri": "Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước",
-            "donViPhoiHop": "Tòa án nhân dân tối cao, Viện kiểm sát nhân dân tối cao",
-            "kinhPhiDukien": 120000000,
+            "donViChuTri": "Sở Tư pháp Thành phố Hà Nội",
+            "donViPhoiHop": "Tòa án nhân dân Thành phố Hà Nội, Cục Thi hành án dân sự Thành phố Hà Nội",
+            "kinhPhiDukien": 80000000,
             "hinhThuc": "Trực tiếp",
-            "diaDiem": "Trung tâm Hội nghị Quốc gia, Hà Nội",
+            "diaDiem": "Hội trường UBND Thành phố Hà Nội",
             "batDauDukien": "18/06/2026",
             "ketThucDukien": "18/06/2026",
-            "noiDung": "Đánh giá kết quả thi hành Luật, kiến nghị sửa đổi, bổ sung các quy định còn vướng mắc.",
+            "noiDung": "Đánh giá kết quả thi hành Luật trên địa bàn Thành phố, kiến nghị sửa đổi, bổ sung các quy định còn vướng mắc.",
             "filesKh": [
                 {
                     "name": "De_an_Hoi_nghi_so_ket.pdf",
@@ -1501,9 +1516,9 @@
             "tinhTrang": "Hoàn thành",
             "lyDo": "",
             "daibieuThucte": 180,
-            "thanhPhan": "Lãnh đạo Bộ Tư pháp, TANDTC, VKSNDTC, đại diện các Bộ, ngành, Sở Tư pháp",
+            "thanhPhan": "Lãnh đạo UBND Thành phố, Tòa án nhân dân, cơ quan thi hành án dân sự, các sở, ngành và UBND các phường, xã",
             "danhGia": "Xuất sắc",
-            "baocaoKq": "Thống nhất 12 nhóm kiến nghị hoàn thiện pháp luật về trách nhiệm bồi thường của Nhà nước.",
+            "baocaoKq": "Thống nhất 12 nhóm kiến nghị hoàn thiện pháp luật về trách nhiệm bồi thường của Nhà nước, gửi Bộ Tư pháp tổng hợp.",
             "filesKq": [
                 {
                     "name": "Bao_cao_so_ket_05_nam_signed.pdf",
@@ -1513,13 +1528,15 @@
         },
         {
             "id": "KH-TH-2026-0004",
+            "unit": "STP-HP",
+            "creator": "Tăng Thị Diệu",
             "ten": "Hội thảo về xác định thiệt hại và hoàn trả trong công tác bồi thường nhà nước",
             "loai": "Hội thảo",
-            "donViChuTri": "Phòng Quản lý nghiệp vụ về bồi thường nhà nước",
-            "donViPhoiHop": "Bộ Tài chính",
+            "donViChuTri": "Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hải Phòng",
+            "donViPhoiHop": "Sở Tài chính Thành phố Hải Phòng",
             "kinhPhiDukien": 60000000,
             "hinhThuc": "Trực tiếp",
-            "diaDiem": "Khách sạn Mường Thanh, Đà Nẵng",
+            "diaDiem": "Hội trường Sở Tư pháp Thành phố Hải Phòng",
             "batDauDukien": "15/09/2026",
             "ketThucDukien": "16/09/2026",
             "noiDung": "Trao đổi vướng mắc trong xác định thiệt hại, cấp kinh phí bồi thường và xem xét trách nhiệm hoàn trả.",
@@ -1541,10 +1558,12 @@
         },
         {
             "id": "KH-TH-2026-0005",
-            "ten": "Tọa đàm giải quyết vụ việc bồi thường tồn đọng, kéo dài tại địa phương",
+            "unit": "STP-HCM",
+            "creator": "Châu Ngọc Ánh",
+            "ten": "Tọa đàm giải quyết vụ việc bồi thường tồn đọng, kéo dài trên địa bàn Thành phố",
             "loai": "Tọa đàm",
-            "donViChuTri": "Phòng Quản lý nghiệp vụ về bồi thường nhà nước",
-            "donViPhoiHop": "Sở Tư pháp Thành phố Hồ Chí Minh",
+            "donViChuTri": "Sở Tư pháp Thành phố Hồ Chí Minh",
+            "donViPhoiHop": "Chi cục Thi hành án dân sự quận Bình Tân, Viện kiểm sát nhân dân Quận 1",
             "kinhPhiDukien": 20000000,
             "hinhThuc": "Trực tuyến",
             "diaDiem": "",
@@ -1569,10 +1588,12 @@
         },
         {
             "id": "KH-TH-2026-0006",
-            "ten": "Tập huấn hướng dẫn sử dụng Hệ thống quản lý bồi thường nhà nước cho cán bộ Sở Tư pháp",
+            "unit": "STP-HP",
+            "creator": "Quách Minh Tuấn",
+            "ten": "Tập huấn hướng dẫn sử dụng Hệ thống quản lý bồi thường nhà nước cho công chức các cơ quan giải quyết bồi thường trên địa bàn Thành phố",
             "loai": "Tập huấn",
-            "donViChuTri": "Phòng Quản lý nghiệp vụ về bồi thường nhà nước",
-            "donViPhoiHop": "Sở Tư pháp Thành phố Hải Phòng",
+            "donViChuTri": "Sở Tư pháp Thành phố Hải Phòng",
+            "donViPhoiHop": "Cục Thi hành án dân sự Thành phố Hải Phòng",
             "kinhPhiDukien": 25000000,
             "hinhThuc": "Trực tuyến",
             "diaDiem": "",
@@ -1592,26 +1613,28 @@
         },
         {
             "id": "KH-TH-2026-0007",
-            "ten": "Hội nghị tập huấn nghiệp vụ BTNN khu vực phía Nam",
+            "unit": "STP-HCM",
+            "creator": "Châu Ngọc Ánh",
+            "ten": "Hội nghị tập huấn nghiệp vụ BTNN cho các cơ quan giải quyết bồi thường trên địa bàn Thành phố",
             "loai": "Hội nghị",
-            "donViChuTri": "Phòng Quản lý nghiệp vụ về bồi thường nhà nước",
-            "donViPhoiHop": "Sở Tư pháp Thành phố Hồ Chí Minh",
+            "donViChuTri": "Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hồ Chí Minh",
+            "donViPhoiHop": "UBND phường Sài Gòn",
             "kinhPhiDukien": 70000000,
             "hinhThuc": "Trực tiếp",
             "diaDiem": "Hội trường Sở Tư pháp Thành phố Hồ Chí Minh",
             "batDauDukien": "14/05/2026",
             "ketThucDukien": "15/05/2026",
-            "noiDung": "Tập huấn nghiệp vụ giải quyết bồi thường cho công chức các cơ quan giải quyết bồi thường khu vực phía Nam.",
+            "noiDung": "Tập huấn nghiệp vụ giải quyết bồi thường cho công chức các cơ quan giải quyết bồi thường trên địa bàn Thành phố.",
             "filesKh": [
                 {
-                    "name": "Ke_hoach_Hoi_nghi_phia_Nam.pdf",
+                    "name": "Ke_hoach_Hoi_nghi_tap_huan_nghiep_vu.pdf",
                     "size": "1.0 MB"
                 }
             ],
             "batDauThucte": "",
             "ketThucThucte": "",
             "tinhTrang": "Chưa thực hiện",
-            "lyDo": "Điều chỉnh kế hoạch, gộp vào Hội nghị sơ kết 05 năm thi hành Luật.",
+            "lyDo": "Điều chỉnh kế hoạch, gộp vào Tọa đàm giải quyết vụ việc bồi thường tồn đọng, kéo dài.",
             "daibieuThucte": 0,
             "thanhPhan": "",
             "danhGia": "",
@@ -1620,19 +1643,21 @@
         },
         {
             "id": "KH-TH-2026-0008",
-            "ten": "Tập huấn nghiệp vụ xác minh thiệt hại cho công chức các cơ quan giải quyết bồi thường khu vực miền Trung",
+            "unit": "STP-HN",
+            "creator": "Đỗ Văn Chung",
+            "ten": "Tập huấn nghiệp vụ xác minh thiệt hại cho công chức các cơ quan giải quyết bồi thường trên địa bàn Thành phố",
             "loai": "Tập huấn",
-            "donViChuTri": "Phòng Quản lý nghiệp vụ về bồi thường nhà nước",
-            "donViPhoiHop": "Sở Tư pháp Thành phố Đà Nẵng",
+            "donViChuTri": "Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hà Nội",
+            "donViPhoiHop": "UBND phường Ba Đình, UBND phường Bạch Mai",
             "kinhPhiDukien": 40000000,
             "hinhThuc": "Trực tiếp",
-            "diaDiem": "Hội trường Sở Tư pháp Thành phố Đà Nẵng",
+            "diaDiem": "Hội trường Sở Tư pháp Thành phố Hà Nội",
             "batDauDukien": "27/10/2026",
             "ketThucDukien": "28/10/2026",
             "noiDung": "Kỹ năng xác minh thiệt hại, lập biên bản xác minh, xác định thiệt hại thực tế được bồi thường.",
             "filesKh": [
                 {
-                    "name": "Ke_hoach_Tap_huan_mien_Trung.pdf",
+                    "name": "Ke_hoach_Tap_huan_xac_minh_thiet_hai.pdf",
                     "size": "0.9 MB"
                 }
             ],
@@ -1641,12 +1666,12 @@
             "tinhTrang": "Đang thực hiện",
             "lyDo": "",
             "daibieuThucte": 95,
-            "thanhPhan": "Công chức làm công tác BTNN của các Sở Tư pháp, cơ quan giải quyết bồi thường khu vực miền Trung",
+            "thanhPhan": "Công chức làm công tác BTNN của UBND các phường, xã, cơ quan thi hành án dân sự trên địa bàn Thành phố Hà Nội",
             "danhGia": "Đạt yêu cầu",
-            "baocaoKq": "Đại biểu nắm được trình tự xác minh thiệt hại; tổng hợp 14 vướng mắc gửi Cục để hướng dẫn.",
+            "baocaoKq": "Đại biểu nắm được trình tự xác minh thiệt hại; tổng hợp 14 vướng mắc đề nghị Bộ Tư pháp hướng dẫn.",
             "filesKq": [
                 {
-                    "name": "Bao_cao_ket_qua_tap_huan_mien_Trung.pdf",
+                    "name": "Bao_cao_ket_qua_tap_huan_xac_minh_thiet_hai.pdf",
                     "size": "1.5 MB"
                 }
             ]
@@ -2243,6 +2268,10 @@
             flatpickr("#th-filter-denngay", { dateFormat: "d/m/Y", allowInput: true });
         }
 
+        // Bộ lọc Đơn vị thực hiện (chỉ người dùng thuộc Bộ Tư pháp/Cục), đặt sau ô Tên kế hoạch; thanh Người dùng giả lập (đổi người dùng: tải lại trang)
+        const tenGroup = document.getElementById("th-filter-ten").closest(".form-group");
+        if (tenGroup) tenGroup.insertAdjacentHTML("afterend", PV.filterHtml({ id: "th-filter-unit", label: "Đơn vị thực hiện", includeBtp: false }));
+        if (window.BTNN_WF) BTNN_WF.mountUserSwitcher();
         thData.forEach(thNormalize);
         renderThTable(thData);
         renderKhTable(khData);
@@ -2447,7 +2476,19 @@
     // PHÂN HỆ 1: TẬP HUẤN, HỘI NGHỊ, HỘI THẢO, TỌA ĐÀM
     // ========================================================
     function renderThTable(data) {
+        // Phạm vi dữ liệu: chỉ bản ghi người dùng được xem
+        data = (data || []).filter(th => PV.canSee(th.unit));
         thFilteredData = data;
+        // Cột Đơn vị thực hiện: chỉ người dùng thuộc Bộ Tư pháp/Cục; Thêm mới: chỉ người dùng thuộc Sở Tư pháp
+        const showUnit = PV.isBtp(), colCount = showUnit ? 11 : 10;
+        // Thêm/bỏ hẳn ô tiêu đề (không ẩn bằng display) để chỉ số cột Thao tác khớp với dòng dữ liệu (admin-ui-standardizer.js)
+        const unitTh = document.getElementById("th-col-unit");
+        if (showUnit && !unitTh) {
+            const stTh = [...document.querySelectorAll("#th-table thead th")].find(t => t.textContent.trim() === "Trạng thái");
+            if (stTh) stTh.insertAdjacentHTML("beforebegin", `<th width="200px" id="th-col-unit">Đơn vị thực hiện</th>`);
+        } else if (!showUnit && unitTh) unitTh.remove();
+        const addBtn = document.getElementById("th-btn-add");
+        if (addBtn) { if (PV.canCreate(true)) addBtn.style.removeProperty("display"); else addBtn.style.setProperty("display", "none", "important"); }
         const total = data.length;
         const totalPages = Math.ceil(total / thPageSize) || 1;
         if (thCurrentPage > totalPages) thCurrentPage = totalPages;
@@ -2461,7 +2502,7 @@
         tbody.innerHTML = "";
         
         if(pageData.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 30px;">Không tìm thấy kế hoạch phù hợp.</td></tr>`;
+            tbody.innerHTML = PV.level() === "OTHER" ? PV.denyRow(colCount) : `<tr><td colspan="${colCount}" style="text-align: center; color: var(--text-muted); padding: 30px;">Không tìm thấy kế hoạch phù hợp.</td></tr>`;
             renderThPaginationControls(0);
             return;
         }
@@ -2480,13 +2521,15 @@
                 <td>${th.batDauDukien} - ${th.ketThucDukien}</td>
                 <td>${th.hinhThuc}</td>
                 <td>${th.kinhPhiDukien ? Number(th.kinhPhiDukien).toLocaleString('vi-VN') + " đ" : "-"}</td>
+                <td>${thEsc(th.creator || "")}</td>
+                ${showUnit ? `<td>${thEsc(PV.unitName(th.unit))}</td>` : ""}
                 <td><span class="badge ${badgeClass}">${th.tinhTrang}</span></td>
                 <td style="text-align: center;">
                     <div class="action-icons">
                         <button class="action-icon" title="Xem chi tiết" onclick="openViewThForm('${th.id}')"><i class="fa-solid fa-eye"></i></button>
                         ${thActs(th).edit
                             ? `<button data-admin-icon-normalized="1" class="icon-btn edit" title="Sửa" onclick="openEditThForm('${th.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`
-                            : `<button data-admin-icon-normalized="1" class="icon-btn edit disabled" title="Hồ sơ đã Hoàn thành, không được sửa"><i class="fa-solid fa-pen-to-square"></i></button>`}
+                            : `<button data-admin-icon-normalized="1" class="icon-btn edit disabled" title="${thActs(th).editTitle}"><i class="fa-solid fa-pen-to-square"></i></button>`}
                         ${thActs(th).finish
                             ? `<button data-admin-icon-normalized="1" class="icon-btn finish" title="Hoàn thành" onclick="finishTh('${th.id}')"><i class="fa-solid fa-circle-check"></i></button>`
                             : `<button data-admin-icon-normalized="1" class="icon-btn finish disabled" title="${thActs(th).finishTitle}"><i class="fa-solid fa-circle-check"></i></button>`}
@@ -2575,6 +2618,8 @@
             if(ten && !th.ten.toLowerCase().includes(ten)) return false;
             if(loai && th.loai !== loai) return false;
             if(tinhtrang && th.tinhTrang !== tinhtrang) return false;
+            // Đơn vị thực hiện (người dùng thuộc Bộ Tư pháp/Cục): Đơn vị thực hiện hoặc đơn vị công tác của người tạo thuộc các đơn vị đã chọn
+            if (!PV.matchFilter(th.unit, th.creator, "th-filter-unit")) return false;
             // Thời gian dự kiến [Từ - Đến] giao với khoảng lọc; chỉ có 1 ngày dự kiến thì so ngày đó
             if (from || to) {
                 const s = pd(th.batDauDukien) || pd(th.ketThucDukien), e = pd(th.ketThucDukien) || s;
@@ -2593,6 +2638,7 @@
         document.getElementById("th-filter-ten").value = "";
         document.getElementById("th-filter-loai").value = "";
         document.getElementById("th-filter-tinhtrang").value = "";
+        PV.setFilter([], "th-filter-unit");
         ["th-filter-tungay", "th-filter-denngay"].forEach(id => { const el = document.getElementById(id); if (el._flatpickr) el._flatpickr.clear(); el.value = ""; });
         thCurrentPage = 1;
         renderThTable(thData);
@@ -2615,7 +2661,22 @@
     // Quy đổi giá trị cũ: Đang triển khai -> Đang thực hiện; Đã hoàn thành -> Hoàn thành; Hoãn/Hủy -> Chưa thực hiện
     const TH_ST_OLD = { "Đang triển khai": TH_ST.DOING, "Đã hoàn thành": TH_ST.DONE, "Hoãn/Hủy": TH_ST.NEW };
     const TH_KQ_NAME = "Tài liệu kết quả đính kèm";
-    const TH_USER = "Nguyễn Văn Cán Bộ"; // người thực hiện (mockup)
+    const thUser = () => PV.creatorOf(null); // người thực hiện: người dùng đang đăng nhập (giả lập)
+    // Đơn vị chủ trì: Sở Tư pháp của người dùng và các đơn vị trực thuộc Sở (Cơ cấu tổ chức); giá trị đã lưu ngoài danh sách vẫn hiển thị khi xem
+    function thChuTriOptions() {
+        const W = window.BTNN_WF, stp = PV.isStp() ? PV.root() : "";
+        if (!W || !stp) return [];
+        const out = [];
+        (function walk(id) { const u = W.getUnit(id); if (u) out.push(u.name); W.getChildren(id).forEach(c => walk(c.id)); })(stp);
+        return out;
+    }
+    function thFillChuTri(val) {
+        const sel = document.getElementById("th-donvi-chutri");
+        const opts = thChuTriOptions();
+        if (val && !opts.includes(val)) opts.push(val);
+        sel.innerHTML = `<option value="">-- Chọn đơn vị --</option>` + opts.map(n => `<option value="${thEsc(n)}">${thEsc(n)}</option>`).join("");
+        sel.value = val || "";
+    }
     function thNow() {
         const d = new Date(), p = n => String(n).padStart(2, "0");
         return `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
@@ -2641,7 +2702,7 @@
             th.files = thToRows(th.filesKh).concat(thToRows(th.filesKq).map(r => ({ name: TH_KQ_NAME, file: r.file })));
         }
         delete th.filesKh; delete th.filesKq;
-        if (!Array.isArray(th.history)) th.history = (TH_SEED_HISTORY[th.id] || []).map(x => ({ at: x[0], by: TH_USER, action: x[1] }));
+        if (!Array.isArray(th.history)) th.history = (TH_SEED_HISTORY[th.id] || []).map(x => ({ at: x[0], by: th.creator || thUser(), action: x[1] }));
         return th;
     }
     // Đã đủ kết quả bắt buộc khi Hoàn thành: Số lượng đại biểu, Đánh giá kết quả, Thành phần tham dự chính, Báo cáo tổng kết kết quả, dòng "Tài liệu kết quả đính kèm" có file
@@ -2654,12 +2715,15 @@
     function thActs(th) {
         thNormalize(th);
         const st = th.tinhTrang, ok = thHasResult(th);
+        // Chỉ người dùng thuộc Sở Tư pháp thao tác trên hồ sơ của Sở mình; Bộ Tư pháp/Cục, UBND cấp tỉnh chỉ xem (mọi icon mờ)
+        const own = PV.canEdit(th.unit, true);
         return {
-            edit: st !== TH_ST.DONE,
-            finish: st === TH_ST.DOING && ok,
-            finishTitle: st === TH_ST.DOING && !ok ? "Cần cập nhật đầy đủ kết quả trước khi hoàn thành" : "Hoàn thành",
-            del: st === TH_ST.NEW,
-            delTitle: st === TH_ST.DONE ? "Hồ sơ đã Hoàn thành, không được xóa" : "Hồ sơ Đang thực hiện, không được xóa"
+            edit: own && st !== TH_ST.DONE,
+            editTitle: own ? "Hồ sơ đã Hoàn thành, không được sửa" : "Sửa",
+            finish: own && st === TH_ST.DOING && ok,
+            finishTitle: own && st === TH_ST.DOING && !ok ? "Cần cập nhật đầy đủ kết quả trước khi hoàn thành" : "Hoàn thành",
+            del: own && st === TH_ST.NEW,
+            delTitle: !own ? "Xóa" : st === TH_ST.DONE ? "Hồ sơ đã Hoàn thành, không được xóa" : "Hồ sơ Đang thực hiện, không được xóa"
         };
     }
     function thRenderHistory(list) {
@@ -2705,10 +2769,11 @@
     function thCurrentRows() { return typeof tlktGet === "function" ? tlktGet("thTl").map(r => ({ name: r.name, file: r.file })) : []; }
     function thMountFiles(rows) {
         if (typeof tlktMount !== "function") return;
-        tlktMount("thTl", "th-tlkt", { split: false, noLeader: true, title: "Tài liệu đính kèm", titleClass: "th-tlkt-notitle", exts: TH_FILE_EXTS, rows: rows || [] });
+        tlktMount("thTl", "th-tlkt", { split: false, noLeader: true, noHint: true, title: "Tài liệu đính kèm", titleClass: "th-tlkt-notitle", exts: TH_FILE_EXTS, rows: rows || [] });
     }
 
     function openCreateThForm() {
+        if (!PV.canCreate(true)) return;
         setThViewMode(false);
         document.getElementById("th-form-title").innerHTML = `<i class="fa-solid fa-circle-plus"></i> Thêm mới tập huấn, bồi dưỡng`;
         document.getElementById("th-id").value = "";
@@ -2717,6 +2782,7 @@
         document.getElementById("th-ma").value = `KH-TH-2026-${num}`;
 
         ["th-ten", "th-loai", "th-donvi-chutri", "th-donvi-phoihop", "th-kinhphi-dukien", "th-diadiem", "th-batdau-dukien", "th-ketthuc-dukien", "th-noidung"].forEach(id => { document.getElementById(id).value = ""; });
+        thFillChuTri("");
         document.getElementById("th-hinhthuc").value = "Trực tiếp";
         toggleThDiaDiem("Trực tiếp");
         thMountFiles([]);
@@ -2739,7 +2805,8 @@
         const th = thNormalize(thData.find(item => item.id === id));
         if(!th) return;
         // Hồ sơ Hoàn thành (trạng thái kết thúc): không được sửa, chỉ mở Xem chi tiết
-        const view = !!viewOnly || th.tinhTrang === TH_ST.DONE;
+        // Hồ sơ không được sửa (Hoàn thành hoặc không thuộc Sở của người dùng): chỉ mở Xem chi tiết
+        const view = !!viewOnly || !thActs(th).edit;
         setThViewMode(false);
 
         document.getElementById("th-form-title").innerHTML = view
@@ -2749,7 +2816,7 @@
         document.getElementById("th-ma").value = th.id;
         document.getElementById("th-ten").value = th.ten;
         document.getElementById("th-loai").value = th.loai;
-        document.getElementById("th-donvi-chutri").value = th.donViChuTri;
+        thFillChuTri(th.donViChuTri);
         document.getElementById("th-donvi-phoihop").value = th.donViPhoiHop;
         document.getElementById("th-kinhphi-dukien").value = th.kinhPhiDukien;
         document.getElementById("th-hinhthuc").value = th.hinhThuc;
@@ -2880,13 +2947,15 @@
             // Lịch sử xử lý: Sửa / cập nhật kết quả; đổi trạng thái ghi thêm dòng riêng
             const at = thNow();
             th.history = th.history || [];
-            th.history.push({ at, by: TH_USER, action: "Sửa thông tin tập huấn, bồi dưỡng" });
-            if (oldStatus !== status) th.history.push({ at, by: TH_USER, action: `Cập nhật trạng thái thực hiện: ${oldStatus} → ${status}` });
+            th.history.push({ at, by: thUser(), action: "Sửa thông tin tập huấn, bồi dưỡng" });
+            if (oldStatus !== status) th.history.push({ at, by: thUser(), action: `Cập nhật trạng thái thực hiện: ${oldStatus} → ${status}` });
 
             showToast("Cập nhật thông tin tập huấn, bồi dưỡng thành công.");
         } else {
             thData.push({
                 id: ma,
+                unit: PV.root(),
+                creator: thUser(),
                 ten: ten,
                 loai: loai,
                 donViChuTri: donviChutri,
@@ -2906,7 +2975,7 @@
                 thanhPhan: "",
                 danhGia: "",
                 baocaoKq: "",
-                history: [{ at: thNow(), by: TH_USER, action: "Thêm mới tập huấn, bồi dưỡng" }]
+                history: [{ at: thNow(), by: thUser(), action: "Thêm mới tập huấn, bồi dưỡng" }]
             });
             showToast("Thêm mới tập huấn, bồi dưỡng thành công.");
         }
@@ -2951,7 +3020,7 @@
         if (!th) return;
         th.tinhTrang = TH_ST.DONE;
         th.history = th.history || [];
-        th.history.push({ at: thNow(), by: TH_USER, action: "Hoàn thành" });
+        th.history.push({ at: thNow(), by: thUser(), action: "Hoàn thành" });
         if (document.getElementById("th-form-card").style.display === "block") closeThForm();
         renderThTable(thData);
         showToast(`Đã hoàn thành hồ sơ ${id}.`);

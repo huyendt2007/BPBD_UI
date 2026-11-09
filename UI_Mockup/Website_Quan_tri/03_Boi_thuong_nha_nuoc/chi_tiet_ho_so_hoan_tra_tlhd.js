@@ -1,7 +1,7 @@
 /*
  * Popup Thành lập Hội đồng xem xét trách nhiệm hoàn trả (tiền tố tlhd) - Màn hình Cập nhật / Xem chi tiết hồ sơ hoàn trả.
  * Bố cục như Popup Không thụ lý hồ sơ (quan_ly_boi_thuong.html - modalGqKtl):
- *   - Ký số trên hệ thống: Wizard 2 bước (1) Nhập thông tin ── (2) Kéo ô ký & chọn Lãnh đạo; văn bản sinh theo Mẫu 33/BTNN hoặc tải lên từ máy.
+ *   - Ký số trên hệ thống: Wizard 2 bước (1) Nhập thông tin ── (2) Thiết lập các cấp trình ký; văn bản sinh theo Mẫu 33/BTNN hoặc tải lên từ máy.
  *   - Ký ngoài: 01 bước, đính kèm PDF đã ký & đóng dấu, Ban hành văn bản trực tiếp.
  * Luồng trạng thái (chốt 23/10): hồ sơ chưa thành lập Hội đồng (mới khởi tạo, chưa có trạng thái) -> (Trình Lãnh đạo) Chờ duyệt [Thành lập hội đồng]
  *   -> Lãnh đạo các cấp ký duyệt (cấp cuối ký số) -> Họp hội đồng; Từ chối -> Bị trả lại thành lập HĐ; Ký ngoài -> Họp hội đồng.
@@ -192,13 +192,13 @@ function tlhdModalHtml() {
         <div id="tlhdStepperBar" class="ktl-stepper-fullwidth">
             <div id="tlhdStep1Tab" class="ktl-step-tab active" onclick="tlhdGoStep1()"><span class="ktl-step-badge" id="tlhdStep1Badge">1</span><span class="ktl-step-title" id="tlhdStep1Title">Nhập thông tin</span></div>
             <div class="ktl-stepper-sep" id="tlhdStepperSep"></div>
-            <div id="tlhdStep2Tab" class="ktl-step-tab" onclick="tlhdGoStep2()"><span class="ktl-step-badge" id="tlhdStep2Badge">2</span><span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div>
+            <div id="tlhdStep2Tab" class="ktl-step-tab" onclick="tlhdGoStep2()"><span class="ktl-step-badge" id="tlhdStep2Badge">2</span><span class="ktl-step-title">Thiết lập các cấp trình ký</span></div>
         </div>
 
         <div id="tlhdStep1Body" class="gqx-body" style="overflow-y:auto; flex:1; padding:24px;">
             <div id="tlhdReturnedBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
-                <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> QUYẾT ĐỊNH THÀNH LẬP HỘI ĐỒNG BỊ LÃNH ĐẠO TRẢ LẠI</div>
-                <div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do bị trả lại: <strong id="tlhdReturnedReason">--</strong><br>Người từ chối: <span id="tlhdReturnedBy">--</span> • Thời điểm: <span id="tlhdReturnedAt">--</span></div>
+                <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div>
+                <div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="tlhdReturnedReason">--</strong><br>Lãnh đạo trả lại: <span id="tlhdReturnedBy">--</span> • Thời điểm trả lại: <span id="tlhdReturnedAt">--</span></div>
             </div>
 
             <div class="gqx-sec">
@@ -670,7 +670,7 @@ function tlhdRemoveFile(kind, silent) {
     const drop = tlhdEl('tlhdOfflineDrop'); if (drop) { drop.style.display = 'flex'; drop.classList.remove('is-error'); }
     if (!silent) { const e = tlhdEl('tlhdOfflineFileErr'); if (e) { e.textContent = TLHD_OFF_FILE_MSG; e.style.display = 'none'; } }
 }
-// Stepper 2 bước (Nhập thông tin → Kéo ô ký & chọn Lãnh đạo) chỉ hiển thị khi Ký số; Ký ngoài thu gọn ẩn hẳn
+// Stepper 2 bước (Nhập thông tin → Thiết lập các cấp trình ký) chỉ hiển thị khi Ký số; Ký ngoài thu gọn ẩn hẳn
 function tlhdRenderStepper(on) {
     const bar = tlhdEl('tlhdStepperBar');
     if (bar) { bar.classList.toggle('is-collapsed', !on); bar.setAttribute('aria-hidden', on ? 'false' : 'true'); }
@@ -900,7 +900,7 @@ function tlhdGoStep2() {
     tlhdSignRefresh();
 }
 
-// ---------------- Bước 2: Kéo ô ký & chọn Lãnh đạo (như gqSign* của Popup Không thụ lý) ----------------
+// ---------------- Bước 2: Thiết lập các cấp trình ký (như gqSign* của Popup Không thụ lý) ----------------
 function tlhdSignIsLast(i) { return i === tlhdSignState.levels.length - 1; }
 function tlhdSignDefault(i) {
     const last = tlhdSignIsLast(i);
@@ -921,7 +921,7 @@ function tlhdSignCardHtml(lv, i, n, prevId) {
             ${lv.kyNhay ? '<span class="badge" style="background:#dbeafe; color:#1e40af; font-size:10.5px; white-space:nowrap;">Ký nháy</span>' : ''}
         </div>
         <div style="margin-bottom:8px;">
-            <select id="tlhdSignLeader${i}" class="form-control" style="font-size:13px; height:36px; width:100%;" onchange="tlhdClearErr('tlhdSignLeader${i}'); tlhdSignSyncNames()" ${lv.leaders.length ? '' : 'disabled'}><option value="">${lv.leaders.length ? '-- Chọn Lãnh đạo --' : 'Cấp này chưa cấu hình nhóm lãnh đạo'}</option>${opts}</select>
+            <select id="tlhdSignLeader${i}" class="form-control" style="font-size:13px; height:36px; width:100%;" onchange="tlhdClearErr('tlhdSignLeader${i}'); tlhdSignSyncNames()" ${lv.leaders.length ? '' : 'disabled'}><option value="">${lv.leaders.length ? '-- Chọn Lãnh đạo --' : 'Cấp này chưa có tài khoản thuộc Nhóm Lãnh đạo'}</option>${opts}</select>
             <div id="tlhdSignLeader${i}Err" class="gqx-err">${TLHD_REQ_MSG}</div>
         </div>
         ${i === 0 && !last ? `<label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12.5px; color:#1e40af; margin:0 0 6px 0;"><input type="checkbox" id="tlhdSignNhay" checked onchange="tlhdSignToggleNhay(this.checked)"><span>Áp dụng ký nháy Lãnh đạo cấp 1</span></label>` : ''}
@@ -937,18 +937,21 @@ function tlhdSignCardHtml(lv, i, n, prevId) {
         </div>
     </div>`;
 }
+// [ro1] Bước 2: khối "Thiết lập các cấp trình ký" dùng chung (BTNN_PCKD.levelSetup) - cán bộ tự thêm cấp, chọn Lãnh đạo (đơn vị mình và cấp trên), Ký nháy, Ký số, Đặt chữ ký
 function tlhdSignInit(prevAssignees) {
-    const levels = tlhdLevels();
-    tlhdSignState.levels = levels;
-    tlhdSignState.placed = {};
-    tlhdSignState.coords = {};
-    tlhdSignState.enableNhay = true;
-    levels.forEach((lv, i) => { tlhdSignState.coords[i] = tlhdSignDefault(i); });
-    const prev = Array.isArray(prevAssignees) ? prevAssignees : [];
-    const host = tlhdEl('tlhdSignLevels');
-    if (host) host.innerHTML = levels.map((lv, i) => tlhdSignCardHtml(lv, i, levels.length, prev[i])).join('');
+    const P = window.BTNN_PCKD;
     const page = tlhdEl('tlhdA4Page');
-    if (page) page.querySelectorAll('.gq-sign-box').forEach(b => b.remove());
+    if (page) page.querySelectorAll('.gq-sign-box, .pc-sig').forEach(b => b.remove());
+    if (!P) return;
+    tlhdSignState.ui = P.legacyUi('tlhd', {
+        host: () => tlhdEl('tlhdSignLevels'), page: () => tlhdEl('tlhdA4Page'), method: () => 'Ký số',
+        userId: () => P.submitterFor(tlhdRootUnitId()),
+        onChange: levels => { const l = levels[levels.length - 1]; const W = tlhdW(); const nm = tlhdEl('tlhdA4SignerName'); if (nm) nm.textContent = l && l.leader && W ? W.userName(l.leader).toUpperCase() : ''; }
+    });
+    // Trình lại sau Bị trả lại: điền sẵn thiết lập lần trước
+    const prev = prevAssignees && activeDossier && activeDossier.tlhd ? P.prevFromLegacy(activeDossier.tlhd) : null;
+    tlhdSignState.ui.reset(prev);
+    tlhdSignState.levels = [];
 }
 function tlhdSignEnsureBox(i) {
     const page = tlhdEl('tlhdA4Page');
@@ -962,9 +965,9 @@ function tlhdSignEnsureBox(i) {
     box.style.cssText = last
         ? 'border:2px dashed #dc2626; background:rgba(254,242,242,0.94); box-shadow:0 4px 12px rgba(220,38,38,0.18); z-index:10;'
         : 'border:2px dashed #2563eb; background:rgba(239,246,255,0.94); box-shadow:0 4px 12px rgba(37,99,235,0.18); z-index:10;';
-    box.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:10.5px; font-weight:700; color:${last ? '#991b1b' : '#1e40af'};"><i class="fa-solid ${last ? 'fa-stamp' : 'fa-pen-nib'}"></i> ${last ? 'KÝ SỐ &amp; CON DẤU' : 'KÝ NHÁY'}</span><span class="badge" style="background:${last ? '#dc2626' : '#2563eb'}; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp ${i + 1}</span></div>
+    box.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><span></span><span class="badge" style="${tlhdSignState.levels[i] && tlhdSignState.levels[i].kyNhay ? '' : 'display:none; '}background:#dbeafe; color:#1e40af; font-size:9.5px; padding:1px 5px;">Ký nháy</span></div>
         <div style="text-align:center; font-weight:700; color:#1e293b; font-size:12px;" id="tlhdSignBoxName${i}"></div>
-        <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>${last ? 'Chữ ký số &amp; Con dấu' : 'Chữ ký nháy'}</span><span id="tlhdSignBoxXY${i}"></span></div>
+        <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>Tọa độ</span><span id="tlhdSignBoxXY${i}"></span></div>
         <div class="sig-resize-handle" title="Kéo chuột để co giãn khung chữ ký"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>`;
     page.appendChild(box);
     box.addEventListener('mousedown', function (e) {
@@ -997,19 +1000,7 @@ function tlhdSignApply(i) {
     const pn = tlhdEl('tlhdSignCoord' + i); if (pn) pn.textContent = `Trang 1 • Tọa độ: (${c.x}, ${c.y}) • Cỡ: ${c.w} x ${c.h} px`;
 }
 function tlhdSignRefresh() {
-    const st = tlhdSignState;
-    if (!st.levels) return;
-    st.levels.forEach((lv, i) => {
-        const nhayOff = i === 0 && st.levels.length > 1 && !st.enableNhay;
-        const on = !!st.placed[i] && !nhayOff;
-        let box = tlhdEl('tlhdSignBox' + i);
-        if (on && !box) box = tlhdSignEnsureBox(i);
-        if (box) box.style.display = on ? 'flex' : 'none';
-        const ctr = tlhdEl('tlhdSignCtrls' + i); if (ctr) ctr.style.display = on ? 'block' : 'none';
-        const btn = tlhdEl('tlhdSignPlace' + i); if (btn) btn.style.display = (on || nhayOff) ? 'none' : '';
-        if (on) tlhdSignApply(i);
-    });
-    tlhdSignSyncNames();
+    if (tlhdSignState.ui) { tlhdSignState.ui.render(); tlhdSignState.ui.renderSigs(); }
 }
 function tlhdSignPlace(i) {
     tlhdSignState.placed[i] = true;
@@ -1030,31 +1021,23 @@ function tlhdSignSyncNames() {
     if (!st.levels) return;
     st.levels.forEach((lv, i) => {
         const el = tlhdEl('tlhdSignBoxName' + i);
-        if (el) el.textContent = tlhdSignLeaderText(i).split(' - ')[0].trim() || ('Cấp ' + (i + 1));
+        if (el) { const nm = tlhdSignLeaderText(i).split(' - ')[0].trim(); el.textContent = (tlhdSignIsLast(i) ? 'Cấp cuối' : 'Cấp ' + (i + 1)) + (nm ? ' - ' + nm : ''); }
     });
     const nm = tlhdEl('tlhdA4SignerName');
     if (nm) nm.textContent = (tlhdSignLeaderText(st.levels.length - 1).split(' - ')[0] || '').trim().toUpperCase();
 }
 function tlhdSignCollect() {
     const st = tlhdSignState;
-    let first = null;
-    const assignees = st.levels.map((lv, i) => {
-        const s = tlhdEl('tlhdSignLeader' + i);
-        const v = s ? s.value : '';
-        const bad = lv.leaders.length > 0 && !v;
-        if (s) s.classList.toggle('is-invalid', bad);
-        const er = tlhdEl('tlhdSignLeader' + i + 'Err'); if (er) er.style.display = bad ? 'block' : 'none';
-        if (bad && !first) first = s;
-        return v;
-    });
+    if (!st.ui) return null;
+    const okLv = st.ui.validate();
     const ct = tlhdEl('tlhdSignContent');
     const content = ct ? ct.value.trim() : '';
     if (ct) ct.classList.toggle('is-invalid', !content);
     const ce = tlhdEl('tlhdSignContentErr'); if (ce) ce.style.display = content ? 'none' : 'block';
-    if (!content && !first) first = ct;
-    if (first) { if (first.focus) first.focus(); return null; }
-    const coords = st.levels.map((lv, i) => Object.assign({ level: i + 1, unitId: lv.unitId, placed: !!st.placed[i] && !(i === 0 && st.levels.length > 1 && !st.enableNhay) }, st.coords[i]));
-    return { assignees, content, enableNhay: st.enableNhay, coords };
+    if (!okLv || !content) { if (okLv && ct && ct.focus) ct.focus(); return null; }
+    const lg = window.BTNN_PCKD.toLegacy(st.ui.collect());
+    st.levels = lg.levels;
+    return Object.assign({ content }, lg);
 }
 
 // ---------------- Trình Lãnh đạo / Ban hành văn bản ----------------
@@ -1077,6 +1060,7 @@ function tlhdSubmitOnline() {
         method: 'online', docSrc: tlhdState.docSrc, soQD: d.soQD, ngayQD: d.ngayQD, members: tlhdState.docSrc === 'gen' ? d.members : [],
         fileName, onlineFile: tlhdState.docSrc === 'upload' ? tlhdState.onlineFile : null,
         levels, assignees: sign.assignees, coords: sign.coords, enableNhay: sign.enableNhay, content: sign.content, level: 0,
+        tuThietLap: !!sign.tuThietLap, pcLevels: sign.pcLevels || null, pcSig: sign.pcSig || null,
         attachments: typeof tlktGet === 'function' ? tlktGet('tlhd') : []
     };
     activeDossier.hdPublishType = 'digital';
@@ -1089,7 +1073,7 @@ function tlhdSubmitOnline() {
     activeDossier.status = 'Chờ duyệt QĐ thành lập';
     const now = tlhdNow();
     const lead1 = tlhdLeaderLabelOf(levels, sign.assignees, 0) || ('Lãnh đạo cấp 1 - ' + (levels[0] ? levels[0].unit : ''));
-    if (typeof councilSignHistory !== 'undefined') councilSignHistory.unshift({ type: 'submit', actor: 'Cán bộ xử lý', time: now, detail: `Trình Lãnh đạo ${tlhdE(lead1)} ký duyệt Quyết định thành lập Hội đồng. Nội dung trình: "${tlhdE(sign.content)}"` });
+    if (typeof councilSignHistory !== 'undefined') councilSignHistory.unshift({ type: 'submit', actor: 'Cán bộ xử lý', time: now, to: String(lead1).split(/ - | [(]/)[0].trim(), detail: `Trình ký đến ${tlhdE(String(lead1).split(/ - | [(]/)[0].trim())} - Quyết định thành lập Hội đồng. Nội dung trình: "${tlhdE(sign.content)}"` });
     if (!activeDossier.timeline) activeDossier.timeline = [];
     activeDossier.timeline.unshift({ time: now, text: 'Trình Lãnh đạo ký duyệt Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả.' });
     tlhdClose();
@@ -1184,6 +1168,8 @@ function tlhdMe(a) {
     try { const p = new URLSearchParams(window.location.search).get('ld'); if (p) return p; } catch (e) { /* bỏ qua */ }
     const W = tlhdW();
     const cur = W ? W.getCurrentUserId() : '';
+    // [ro1] Phiếu trình tự thiết lập các cấp: chỉ Lãnh đạo được giao đích danh ở cấp hiện hành (tài khoản đang đăng nhập)
+    if (a && a.tuThietLap && W) return cur;
     const inFlow = a && a.levels && a.levels.some(l => l.leaders.some(x => x.id === cur));
     return inFlow ? cur : (a ? a.assignees[a.level] : '');
 }
@@ -1207,11 +1193,13 @@ function tlhdApproveLevel(note) {
     const a = tlhdEnsureApproval();
     if (!a || a.level >= a.levels.length - 1) return false;
     const who = tlhdLeaderLabelOf(a.levels, a.assignees, a.level) || ('Lãnh đạo cấp ' + (a.level + 1));
+    // [ro1] Cách ký của cấp theo thiết lập khi trình (Ký số / gán chữ ký nháy / gán chữ ký)
+    const how = (window.BTNN_PCKD && BTNN_PCKD.howText(a)) || 'ký nháy';
     a.level += 1;
     const next = tlhdLeaderLabelOf(a.levels, a.assignees, a.level) || ('Lãnh đạo cấp ' + (a.level + 1));
     const now = tlhdNow();
     const y = String(note || '').trim();
-    if (typeof councilSignHistory !== 'undefined') councilSignHistory.unshift({ type: 'approve', actor: who, time: now, detail: `Ký duyệt (ký nháy) Quyết định thành lập Hội đồng, chuyển Lãnh đạo ${tlhdE(next)} (Cấp ${a.level + 1}) ký số.` + (y ? ` Ý kiến: ${tlhdE(y)}` : '') });
+    if (typeof councilSignHistory !== 'undefined') councilSignHistory.unshift({ type: 'approve', actor: who, time: now, detail: `Ký duyệt (${how}) Quyết định thành lập Hội đồng, chuyển Lãnh đạo ${tlhdE(next)} (Cấp ${a.level + 1}).` + (y ? ` Ý kiến: ${tlhdE(y)}` : '') });
     if (!activeDossier.timeline) activeDossier.timeline = [];
     activeDossier.timeline.unshift({ time: now, text: `Lãnh đạo ${who} ký duyệt Quyết định thành lập Hội đồng, chuyển Lãnh đạo cấp tiếp theo.` });
     tlhdToast('Ký duyệt thành công. Quyết định thành lập Hội đồng được chuyển Lãnh đạo cấp tiếp theo.', 'success');

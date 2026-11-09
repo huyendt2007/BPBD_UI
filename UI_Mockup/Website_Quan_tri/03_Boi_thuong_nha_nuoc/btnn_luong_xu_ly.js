@@ -213,6 +213,8 @@
         { id: 'BTP-01', name: 'Bộ Tư pháp', parentId: null, loaiCoQuan: 'Bộ' },
         { id: 'CĐK-01', name: 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', parentId: 'BTP-01', loaiCoQuan: 'Cục' },
         { id: 'PLN-02', name: 'Phòng Quản lý nghiệp vụ về bồi thường nhà nước', parentId: 'CĐK-01', loaiCoQuan: 'Phòng / Ban' },
+        // [ro1] Đơn vị con của Cục chưa có Lãnh đạo (không có trong danh sách Đơn vị nhận khi Phân công)
+        { id: 'CĐK-01-VP', name: 'Văn phòng Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', parentId: 'CĐK-01', loaiCoQuan: 'Văn phòng', tinhThanh: 'Hà Nội', phuongXa: '00001 - Phường Ba Đình' },
         { id: 'STP-HN', name: 'Sở Tư pháp Thành phố Hà Nội', parentId: null, loaiCoQuan: 'Sở' },
         { id: 'STP-HN-HCTP', name: 'Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hà Nội', parentId: 'STP-HN', loaiCoQuan: 'Phòng / Ban' },
         { id: 'STP-HCM', name: 'Sở Tư pháp Thành phố Hồ Chí Minh', parentId: null, loaiCoQuan: 'Sở' },
@@ -257,14 +259,21 @@
     ];
 
     const USERS = [
-        { id: 'oanhdh', name: 'Đặng Hoàng Oanh', unitId: 'BTP-01', title: 'Lãnh đạo Bộ', email: 'oanhdh@moj.gov.vn' },
-        { id: 'khoiml', name: 'Mai Lương Khôi', unitId: 'BTP-01', title: 'Lãnh đạo Bộ', email: 'khoiml@moj.gov.vn' },
+        { id: 'oanhdh', name: 'Đặng Hoàng Oanh', unitId: 'BTP-01', title: 'Bộ trưởng', email: 'oanhdh@moj.gov.vn' },
+        { id: 'khoiml', name: 'Mai Lương Khôi', unitId: 'BTP-01', title: 'Thứ trưởng', email: 'khoiml@moj.gov.vn' },
         { id: 'cuctruong', name: 'Nguyễn Văn Cục Trưởng', unitId: 'CĐK-01', title: 'Cục trưởng', email: 'cuctruong@moj.gov.vn' },
         { id: 'cucpho', name: 'Phạm Thị Hồng Vân', unitId: 'CĐK-01', title: 'Phó Cục trưởng', email: 'cucpho@moj.gov.vn' },
         { id: 'tpbt', name: 'Trần Văn Bồi Thường', unitId: 'PLN-02', title: 'Trưởng phòng', email: 'tpbt@moj.gov.vn' },
         { id: 'canbonv', name: 'Nguyễn Văn Cán Bộ', unitId: 'PLN-02', title: 'Chuyên viên', email: 'canbonv@moj.gov.vn' },
         { id: 'hatt', name: 'Trần Thị Thu Hà', unitId: 'PLN-02', title: 'Chuyên viên', email: 'hatt@moj.gov.vn' },
         { id: 'ducpm', name: 'Phạm Minh Đức', unitId: 'PLN-02', title: 'Chuyên viên', email: 'ducpm@moj.gov.vn' },
+        // [ro1] Tài khoản bổ sung (Nhóm Lãnh đạo theo Chức vụ - thí điểm 09/11/2026, dùng chung mọi trang)
+        { id: 'ptp_bt', name: 'Lê Thị Minh Phương', unitId: 'PLN-02', title: 'Phó Trưởng phòng', email: 'ptp_bt@moj.gov.vn' },
+        { id: 'cv_cuc1', name: 'Hoàng Minh Tâm', unitId: 'CĐK-01', title: 'Chuyên viên', email: 'cv_cuc1@moj.gov.vn' },
+        { id: 'cv_vpcuc1', name: 'Phan Thị Ngọc', unitId: 'CĐK-01-VP', title: 'Chuyên viên', email: 'cv_vpcuc1@moj.gov.vn' },
+        { id: 'pgdso_hn', name: 'Nguyễn Thị Thu Hằng', unitId: 'STP-HN', title: 'Phó Giám đốc Sở', email: 'pgdso_hn@sotuphap.hanoi.gov.vn' },
+        { id: 'cv_so_hn1', name: 'Lê Anh Tuấn', unitId: 'STP-HN', title: 'Chuyên viên', email: 'cv_so_hn1@sotuphap.hanoi.gov.vn' },
+        { id: 'pp_hctp_hn', name: 'Trịnh Văn Khoa', unitId: 'STP-HN-HCTP', title: 'Phó Trưởng phòng', email: 'pp_hctp_hn@sotuphap.hanoi.gov.vn' },
         { id: 'gdso_hn', name: 'Phạm Quang Huy', unitId: 'STP-HN', title: 'Giám đốc Sở', email: 'gdso_hn@sotuphap.hanoi.gov.vn' },
         { id: 'tp_hctp_hn', name: 'Vũ Thị Thanh', unitId: 'STP-HN-HCTP', title: 'Trưởng phòng', email: 'tp_hctp_hn@sotuphap.hanoi.gov.vn' },
         { id: 'cv_hn1', name: 'Đỗ Văn Chung', unitId: 'STP-HN-HCTP', title: 'Chuyên viên', email: 'cv_hn1@sotuphap.hanoi.gov.vn' },
@@ -599,11 +608,64 @@
         }
         return (cfg[rootId] && cfg[rootId][unitId]) || null;
     }
-    function getLeaders(unitId, ft) {
+    // [ro1] Nhóm Lãnh đạo theo Chức vụ (Danh mục Chức vụ DM_58, thuộc tính "Nhóm Lãnh đạo"); không dùng Cấu hình luồng xử lý.
+    // Lãnh đạo của đơn vị = tài khoản Đang hoạt động thuộc đơn vị có Chức vụ thuộc Nhóm Lãnh đạo.
+    // Ngoại lệ: trang Báo cáo công tác BTNN, Cấu hình luồng xử lý giữ Nhóm lãnh đạo theo Cấu hình luồng (chờ người dùng quyết định).
+    const LEADER_BY_FLOW = (() => { try { return /bao_cao_cong_tac|xu_ly_bao_cao_cong_tac|cau_hinh_luong_xu_ly/i.test(String(global.location && global.location.pathname || '')) || !!global.BTNN_LEADER_BY_FLOW; } catch (e) { return false; } })();
+    // Có: chức vụ cấp trưởng, cấp phó (người đứng đầu, cấp phó của người đứng đầu cơ quan, đơn vị; trưởng, phó phòng, ban, khoa, đội, trạm).
+    // Không: các chức vụ còn lại (Ủy viên, thành viên, Kế toán trưởng, Thư ký, chức vụ chuyên môn).
+    const NHOM_LANH_DAO_RE = /^(Phó\s+)?(Bộ trưởng|Thứ trưởng|Cục trưởng|Chi cục trưởng|Vụ trưởng|Viện trưởng|Giám đốc|Chủ tịch|Chánh án|Chánh tòa|Chánh Văn phòng|Chánh Thanh tra|Chủ nhiệm|Tổng Thanh tra|Thống đốc|Tổng cục trưởng|Tổng biên tập|Thủ trưởng|Hiệu trưởng|Đội trưởng|Trạm trưởng|Trưởng\s)/i;
+    const KHONG_LANH_DAO_RE = /Ủy viên|Uỷ viên|thành viên|Kế toán trưởng|Thư ký|Thẩm phán|Kiểm sát viên|Chấp hành viên|Chuyên viên/i;
+    // Giá trị thuộc tính "Nhóm Lãnh đạo" đã lưu tại Quản lý danh mục (DM_58) được ưu tiên; chưa có thì theo quy tắc trên
+    let DM58_CACHE = null;
+    function dm58Flags() {
+        if (DM58_CACHE) return DM58_CACHE;
+        const m = new Map();
+        try {
+            const cats = JSON.parse(localStorage.getItem('masterCategories') || '[]');
+            (Array.isArray(cats) ? cats : []).forEach(c => { if (c && c.typeCode === 'DM_58' && typeof c.nhomLanhDao === 'boolean') m.set(String(c.name || '').trim().toLowerCase(), c.nhomLanhDao); });
+        } catch (e) { /* bỏ qua */ }
+        DM58_CACHE = m;
+        setTimeout(() => { DM58_CACHE = null; }, 0);
+        return m;
+    }
+    function laNhomLanhDao(chucVu) {
+        const t = String(chucVu || '').trim();
+        if (!t) return false;
+        const f = dm58Flags().get(t.toLowerCase());
+        if (typeof f === 'boolean') return f;
+        return NHOM_LANH_DAO_RE.test(t) && !KHONG_LANH_DAO_RE.test(t);
+    }
+    // Quy tắc mặc định (không xét giá trị đã lưu tại Quản lý danh mục): dùng khởi tạo thuộc tính Nhóm Lãnh đạo của Danh mục Chức vụ
+    function nhomLanhDaoTheoQuyTac(chucVu) { const t = String(chucVu || '').trim(); return !!t && NHOM_LANH_DAO_RE.test(t) && !KHONG_LANH_DAO_RE.test(t); }
+    const isActiveUser = u => !!u && u.trangThai !== 'Ngừng hoạt động';
+    function isNhomLanhDaoUser(userId) { const u = getUser(userId); return isActiveUser(u) && laNhomLanhDao(u.title); }
+    function leadersOfUnit(unitId) { return unitId ? USERS.filter(u => u.unitId === unitId && isActiveUser(u) && laNhomLanhDao(u.title)).map(u => u.id) : []; }
+    function getLeadersByFlow(unitId, ft) {
         const node = getNodeConfig(unitId, ft);
         return node ? (node.leaders || []) : [];
     }
+    function getLeaders(unitId, ft) {
+        return LEADER_BY_FLOW ? getLeadersByFlow(unitId, ft) : leadersOfUnit(unitId);
+    }
     function isLeaderOf(userId, unitId, ft) { return getLeaders(unitId, ft).includes(userId); }
+    function usersOfUnit(unitId) { return USERS.filter(u => u.unitId === unitId && isActiveUser(u)).map(u => u.id); }
+    // Đơn vị cấp trên trên cây đơn vị; Sở Tư pháp trực thuộc UBND cấp tỉnh (mockup khai báo tại UBND_TINH_STP)
+    function parentUnitOf(unitId) { const u = getUnit(unitId); return u ? (u.parentId || ubndTinhOfStp(unitId) || '') : ''; }
+    function unitChainUp(unitId) {
+        const out = [];
+        let id = unitId;
+        while (id && !out.includes(id) && out.length < 20) { out.push(id); id = parentUnitOf(id); }
+        return out;
+    }
+    // Đơn vị trực thuộc cấp dưới trực tiếp có ít nhất 01 Lãnh đạo
+    function childUnitsWithLeaders(unitId) { return getChildren(unitId).map(u => u.id).filter(id => leadersOfUnit(id).length); }
+    // Lãnh đạo được chọn tại các cấp trình ký: Lãnh đạo của đơn vị cán bộ trình và các đơn vị cấp trên (không có đơn vị khác nhánh)
+    function signLeaderCandidates(userId) {
+        const u = getUser(userId);
+        if (!u) return [];
+        return unitChainUp(u.unitId).reduce((acc, id) => acc.concat(leadersOfUnit(id)), []).filter(id => id !== userId);
+    }
     // Cấu hình luồng xử lý - cờ "Ký nháy" của từng đơn vị (cấp phê duyệt): tích thì thẻ cấp tại Bước 2 popup Trình ký hiển thị nhãn "Ký nháy"; không tích: không hiển thị nhãn.
     // Cấu hình đã lưu chưa có cờ: lấy theo cấu hình mặc định (giả lập).
     function isKyNhayUnit(unitId, ft) {
@@ -617,6 +679,8 @@
     }
     // Đơn vị đã cấu hình luồng khi nút đơn vị gốc có nhóm lãnh đạo và có ít nhất một hình thức phân công (mặc định luồng Giải quyết YCBT)
     function isUnitConfigured(rootId, ft) {
+        // [ro1] Nhóm Lãnh đạo theo Chức vụ: đơn vị gốc có ít nhất 01 Lãnh đạo
+        if (!LEADER_BY_FLOW) return leadersOfUnit(rootId).length > 0;
         const node = getNodeConfig(rootId, ft);
         return !!(node && node.leaders && node.leaders.length && ((node.allowUnit && node.units && node.units.length) || (node.allowOfficer && node.officers && node.officers.length)));
     }
@@ -800,8 +864,9 @@
     // Hàm bỏ qua dữ liệu cũ: xóa thuộc tính phoiHop của hồ sơ/lượt phân công và đoạn "; Phối hợp: ..." trong ghi chú lịch sử
     function stripLegacyCoop(r) {
         let changed = false;
-        if (r && 'phoiHop' in r) { delete r.phoiHop; changed = true; }
-        (r && r.routes || []).forEach(x => { if (x && 'phoiHop' in x) { delete x.phoiHop; changed = true; } });
+        // [ro1] Cán bộ phối hợp mới (Chuyển chuyên viên phụ trách trực tiếp, đánh dấu phoiHopV = 2) được giữ
+        if (r && 'phoiHop' in r && r.phoiHopV !== 2) { delete r.phoiHop; changed = true; }
+        (r && r.routes || []).forEach(x => { if (x && 'phoiHop' in x && x.phoiHopV !== 2) { delete x.phoiHop; changed = true; } });
         (r && r.history || []).forEach(x => {
             const n = x && typeof x.note === 'string' ? x.note.replace(/; Phối hợp: [^.]*\./g, '.') : null;
             if (n !== null && n !== x.note) { x.note = n; changed = true; }
@@ -915,11 +980,46 @@
     // Nội dung trình của chức năng Quyết định giải quyết bồi thường (Lãnh đạo từ chối -> Bị trả lại; dữ liệu cũ Bị từ chối đọc thành Bị trả lại)
     const YCBT_QD_KINDS = ['Quyết định GQBT', 'Hủy QĐ', 'Sửa chữa, bổ sung QĐ'];
     function isYcbtRec(r) { return !!r && r.module === 'YCBT'; }
+    // Nhãn lịch sử Ký duyệt ("Trình ký đến [Họ tên Lãnh đạo cấp 1]" / "Ký duyệt"): Xác định CQGQBT, Giải quyết YCBT
+    // (trừ phiếu trình Quyết định GQBT / Hủy QĐ / Sửa chữa, bổ sung QĐ của chức năng Quyết định giải quyết bồi thường)
+    function kyLabelRec(rec, kind) { return isXdRec(rec) || (isYcbtRec(rec) && !YCBT_QD_KINDS.includes(kind || '')); }
+    // Họ tên Lãnh đạo cấp 1 trong ghi chú trình cũ ("[Loại trình]. Trình [Họ tên] - [Đơn vị]."); chỉ nhận tên tài khoản có thật
+    function trinhNoteLeader(note) {
+        const m = /Trình ?([^-.(]+?) (?:-|\()/.exec(note || '');
+        const nm = m ? m[1].trim() : '';
+        return nm && USERS.some(u => u.name === nm) ? nm : '';
+    }
+    // Dữ liệu cũ Giải quyết YCBT: "Trình phê duyệt" -> "Trình ký đến [Họ tên Lãnh đạo cấp 1]"; "Phê duyệt" -> "Ký duyệt"
+    function migrateYcbtKyLabels(r) {
+        let ch = false;
+        const kindOf = h => h.kind || String(h.note || '').split(/[.:]/)[0].trim();
+        const isQd = h => YCBT_QD_KINDS.includes(kindOf(h));
+        ((r.approval && !YCBT_QD_KINDS.includes(r.approval.kind) && r.approval.steps) || []).forEach(s => { if (s.action === 'Phê duyệt') { s.action = 'Ký duyệt'; ch = true; } });
+        const hs = r.history || [];
+        const lastTrinh = hs.map(h => h && h.action).lastIndexOf('Trình phê duyệt');
+        hs.forEach((h, i) => {
+            if (!h || isQd(h)) return;
+            if (h.action === 'Trình phê duyệt') {
+                const a0 = i === lastTrinh && r.approval && !YCBT_QD_KINDS.includes(r.approval.kind) && r.approval.assignees && r.approval.assignees[0];
+                const nm = a0 ? userName(a0) : trinhNoteLeader(h.note);
+                if (!nm) return;
+                h.action = 'Trình ký đến ' + nm;
+                h.note = String(h.note || '').replace(/\. Trình(?=\S)/, '. Trình ');
+                ch = true;
+            } else if (h.action === 'Phê duyệt') {
+                h.action = 'Ký duyệt';
+                h.note = String(h.note || '').replace(/Phê duyệt cấp/g, 'Ký duyệt cấp').replace(/phê duyệt cấp/g, 'ký duyệt cấp');
+                ch = true;
+            }
+        });
+        return ch;
+    }
     function migrateYcbtRecord(r) {
         let ch = false;
+        if (migrateYcbtKyLabels(r)) ch = true;
         // Phiếu trình Quyết định GQBT / Hủy QĐ / Sửa chữa QĐ (chức năng Quyết định giải quyết bồi thường): giữ nguyên
         const kind = (r.approval && r.approval.kind) || (r.returned && r.returned.kind) || '';
-        if (YCBT_QD_KINDS.includes(kind) && r.status === STATUS.CHO_PHE_DUYET) return false;
+        if (YCBT_QD_KINDS.includes(kind) && r.status === STATUS.CHO_PHE_DUYET) return ch;
         if (YCBT_OLD_STATUS[r.status]) { r.status = YCBT_OLD_STATUS[r.status]; ch = true; }
         // Vụ việc Chỉ yêu cầu phục hồi danh dự đã cử người giải quyết: trạng thái cũ "Đang thực hiện" -> Đang phục hồi danh dự
         if (r.status === STATUS.DANG_THUC_HIEN && r.requestKind === 'honor' && r.thuLy && !r.thuLy.rejected) { r.status = YCBT_STATUS.DANG_PHDD; ch = true; }
@@ -956,12 +1056,13 @@
         const byName = findRootUnitByName(rec.procTargetAgency);
         return (byName && byName.id) || resolveAgencyUnit(rec.procTargetAgency) || '';
     }
-    // Danh sách CQGQBT được chọn: đơn vị gốc đã cấu hình luồng Giải quyết YCBT
+    // Danh sách CQGQBT được chọn: đơn vị gốc có ít nhất 01 tài khoản thuộc Nhóm Lãnh đạo
     function gqConfiguredRoots() { return flowRootIds(FLOW_TYPES.GQ).filter(id => isUnitConfigured(id, FLOW_TYPES.GQ)); }
     function xdTargetConfigured(rec) { const id = xdTargetUnitId(rec); return !!id && isUnitConfigured(id, FLOW_TYPES.GQ); }
     function xdTargetNotConfiguredMsg(rec) {
         const id = xdTargetUnitId(rec);
-        return `Cơ quan ${id ? unitName(id) : (rec && rec.procTargetAgency) || '--'} chưa được cấu hình luồng Giải quyết YCBT. Vui lòng chọn cơ quan khác hoặc liên hệ Quản trị hệ thống.`;
+        // [ro1] MSG-ERR-BTNN-LXL-007
+        return `Đơn vị ${id ? unitName(id) : (rec && rec.procTargetAgency) || '--'} chưa có tài khoản thuộc Nhóm Lãnh đạo. Vui lòng liên hệ Quản trị hệ thống.`;
     }
     // Tài liệu chuyển kèm: văn bản Kết quả xác định CQGQBT đã ký + toàn bộ tài liệu hồ sơ
     function xdTransferFiles(rec) {
@@ -1013,6 +1114,16 @@
             if (h.action !== 'Phê duyệt') return;
             h.action = 'Ký duyệt';
             h.note = String(h.note || '').replace(/Phê duyệt cấp/g, 'Ký duyệt cấp').replace(/phê duyệt cấp/g, 'ký duyệt cấp');
+            ch = true;
+        });
+        // Nhãn trình: dữ liệu cũ "Trình phê duyệt" -> "Trình ký đến [Họ tên Lãnh đạo cấp 1]"
+        (r.history || []).forEach(h => {
+            if (h.action !== 'Trình phê duyệt') return;
+            const a0 = r.approval && r.approval.assignees && r.approval.assignees[0];
+            const m = /Người nhận: ([^(.]+?) \(|Trình ([^-.(]+?) (?:-|\()/.exec(h.note || '');
+            const nm = a0 ? userName(a0) : (m ? (m[1] || m[2]).trim() : '');
+            if (!nm || /^Lãnh đạo/.test(nm)) return;
+            h.action = 'Trình ký đến ' + nm;
             ch = true;
         });
         if (r.status === LEGACY_BI_TU_CHOI && !r.returned && !r.ktlReason && r.rejectionReason) { r.ktlReason = r.rejectionReason; ch = true; }
@@ -1336,56 +1447,103 @@
     }
 
     // ---------------- Phân công ----------------
+    // [ro1] Phân công theo Nhóm Lãnh đạo (Chức vụ): 02 hình thức "Phân công" (đơn vị trực thuộc cấp dưới trực tiếp có Lãnh đạo + Lãnh đạo nhận)
+    // / "Chuyển chuyên viên phụ trách trực tiếp" (01 tài khoản của đơn vị đang phân công, kể cả Lãnh đạo).
+    function pendingUnitRoute(rec) {
+        const r = latestRoute(rec);
+        return r && r.type === 'unit' && r.state === 'Chưa xử lý' && r.toUnitId === rec.currentUnitId ? r : null;
+    }
+    // Người được Phân công tiếp: Lãnh đạo nhận đã chọn đích danh; để trống -> cả Nhóm lãnh đạo của đơn vị đang phân công
+    function assignersOf(rec) {
+        if (!rec) return [];
+        const r = pendingUnitRoute(rec);
+        const group = getLeaders(rec.currentUnitId, recFt(rec));
+        const named = r && Array.isArray(r.toLeaders) ? r.toLeaders.filter(id => group.includes(id)) : [];
+        return named.length ? named : group;
+    }
     function canAssign(rec, userId) {
-        return !!rec && [STATUS.CHO_PHAN_CONG, STATUS.DANG_PHAN_CONG].includes(rec.status) && isLeaderOf(userId, rec.currentUnitId, recFt(rec));
+        return !!rec && [STATUS.CHO_PHAN_CONG, STATUS.DANG_PHAN_CONG].includes(rec.status) && assignersOf(rec).includes(userId);
     }
     function markViewed(rec, userId) {
-        const r = latestRoute(rec);
-        if (rec.status === STATUS.CHO_PHE_DUYET && rec.approval && isLeaderOf(userId, rec.approval.path[rec.approval.level], recFt(rec))) {
+        if (!rec) return false;
+        if (rec.status === STATUS.CHO_PHE_DUYET && rec.approval) {
+            if (!canApprove(rec, userId)) return false;
             const p = rec.approval.pending;
             if (p && !p.viewedAt) { p.viewedAt = nowText(); p.viewedBy = userId; return true; }
             return false;
         }
+        const r = latestRoute(rec);
         if (r && r.state === 'Chưa xử lý' && !r.viewedAt) {
-            const target = r.type === 'unit' ? isLeaderOf(userId, r.toUnitId, recFt(rec)) : (r.chuTri === userId);
+            const target = r.type === 'unit' ? canAssign(rec, userId) : (r.chuTri === userId);
             if (target) { r.viewedAt = nowText(); r.viewedBy = userId; return true; }
         }
         return false;
     }
-    function assignToUnit(code, toUnitId, note) {
+    // toLeaders: Lãnh đạo nhận (chọn nhiều, không bắt buộc; để trống = cả Nhóm lãnh đạo của đơn vị nhận)
+    function assignToUnit(code, toUnitId, note, toLeaders) {
         const rec = getRecord(code);
         const me = getCurrentUserId();
         if (!canAssign(rec, me)) return { ok: false, message: 'Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phân công. Vui lòng tải lại danh sách.' };
-        const node = getNodeConfig(rec.currentUnitId, recFt(rec));
-        if (!node || !node.allowUnit || !(node.units || []).includes(toUnitId)) return { ok: false, message: 'Đơn vị nhận không thuộc cấu hình luồng của đơn vị hiện tại.' };
+        const group = leadersOfUnit(toUnitId);
+        if (!childUnitsWithLeaders(rec.currentUnitId).includes(toUnitId) || (toLeaders || []).some(id => !group.includes(id))) return { ok: false, message: MSG_LXL_020, code: 'MSG-ERR-BTNN-LXL-020' };
+        const leaders = (toLeaders || []).filter(id => group.includes(id));
         const prev = latestRoute(rec);
         if (prev) prev.state = 'Đã xử lý';
-        rec.routes.push({ id: uid('R'), type: 'unit', fromUnitId: rec.currentUnitId, fromUserId: me, toUnitId, note: note || '', at: nowText(), state: 'Chưa xử lý' });
+        rec.routes = rec.routes || [];
+        rec.routes.push({ id: uid('R'), type: 'unit', fromUnitId: rec.currentUnitId, fromUserId: me, toUnitId, toLeaders: leaders, note: note || '', at: nowText(), state: 'Chưa xử lý' });
         rec.currentUnitId = toUnitId;
         rec.status = STATUS.DANG_PHAN_CONG;
         if (!rec.receivedBy) rec.receivedBy = userName(me);
-        addHistory(rec, 'Chuyển đơn vị', `Chuyển ${unitName(toUnitId)} phân công.${note ? ' Ý kiến chỉ đạo: ' + note : ''}`);
+        addHistory(rec, 'Phân công', `Phân công ${unitName(toUnitId)} - ${leaders.length ? leaders.map(userName).join(', ') : 'Nhóm Lãnh đạo'}.${note ? ' Ý kiến chỉ đạo: ' + note : ''}`);
         upsertRecord(rec);
         return { ok: true, record: rec };
     }
-    function assignToOfficers(code, chuTri, note) {
+    // [ro1] Chuyển chuyên viên phụ trách trực tiếp: 01 Cán bộ chủ trì (bắt buộc) + Cán bộ phối hợp (chọn nhiều, không bắt buộc; chỉ xem hồ sơ)
+    const MSG_LXL_020 = 'Đơn vị nhận hoặc Lãnh đạo nhận không còn hợp lệ. Vui lòng chọn lại.';
+    const MSG_LXL_021 = 'Cán bộ chủ trì hoặc cán bộ phối hợp không còn thuộc đơn vị đang phân công hoặc đã ngừng hoạt động. Vui lòng chọn lại.';
+    function officerNote(chuTri, phoiHop, note) {
+        return `Chủ trì: ${userName(chuTri)}.${phoiHop && phoiHop.length ? ' Phối hợp: ' + phoiHop.map(userName).join(', ') + '.' : ''}${note ? ' Ý kiến chỉ đạo: ' + note : ''}`;
+    }
+    // Cán bộ phối hợp của hồ sơ (Tiếp nhận / Xác định CQGQBT / Giải quyết YCBT; bước Cử người phục hồi danh dự: phddPhoiHop)
+    function isPhoiHop(rec, userId) {
+        return !!rec && !!userId && rec.chuTri !== userId && ((rec.phoiHop || []).includes(userId) || (rec.phddPhoiHop || []).includes(userId));
+    }
+    // [ro1] Cán bộ phối hợp (chỉ phối hợp) của vụ việc: không có dòng tại danh sách Quyết định GQBT, Kinh phí, Hoàn trả;
+    // chỉ xem QĐ / Kinh phí qua liên kết tại màn chi tiết Giải quyết YCBT. Cán bộ có tên trong Danh sách cán bộ giải quyết bồi thường không chỉ là phối hợp
+    function isPhoiHopOnly(code, userId) {
+        const uid = userId || getCurrentUserId();
+        const rec = code ? getRecord(code) : null;
+        if (!isPhoiHop(rec, uid)) return false;
+        try {
+            const cl = JSON.parse(localStorage.getItem('claimsList') || 'null');
+            const c = Array.isArray(cl) ? cl.find(x => x && x.code === code) : null;
+            const u = getUser(uid);
+            if (c && (c.appointedOfficers || []).some(o => o && !o.freeText && (o.userId ? o.userId === uid : !!(u && o.name === u.name)))) return false;
+        } catch (e) { /* dữ liệu hỏng: coi như chỉ phối hợp */ }
+        return true;
+    }
+    function assignToOfficers(code, chuTri, note, phoiHop) {
         const rec = getRecord(code);
         const me = getCurrentUserId();
         if (!canAssign(rec, me)) return { ok: false, message: 'Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phân công. Vui lòng tải lại danh sách.' };
-        const node = getNodeConfig(rec.currentUnitId, recFt(rec));
-        if (!node || !node.allowOfficer) return { ok: false, message: 'Đơn vị hiện tại không được cấu hình phân công cán bộ.' };
-        if (!chuTri) return { ok: false, message: 'Vui lòng chọn cán bộ chủ trì.' };
+        if (!chuTri) return { ok: false, message: 'Vui lòng chọn Cán bộ chủ trì.' };
+        const ph = (phoiHop || []).filter(id => id && id !== chuTri);
+        const okUsers = usersOfUnit(rec.currentUnitId);
+        if (!okUsers.includes(chuTri) || ph.some(id => !okUsers.includes(id))) return { ok: false, message: MSG_LXL_021, code: 'MSG-ERR-BTNN-LXL-021' };
         const prev = latestRoute(rec);
         if (prev) prev.state = 'Đã xử lý';
-        rec.routes.push({ id: uid('R'), type: 'officer', fromUnitId: rec.currentUnitId, fromUserId: me, chuTri, note: note || '', at: nowText(), state: 'Chưa xử lý' });
+        rec.routes = rec.routes || [];
+        rec.routes.push({ id: uid('R'), type: 'officer', fromUnitId: rec.currentUnitId, fromUserId: me, chuTri, phoiHop: ph, phoiHopV: 2, note: note || '', at: nowText(), state: 'Chưa xử lý' });
         rec.chuTri = chuTri;
+        rec.phoiHop = ph;
+        rec.phoiHopV = 2;
         rec.status = STATUS.CHO_TIEP_NHAN;
         // Hồ sơ nguồn khác Tiếp nhận mới: người phân công đầu tiên tại Tiếp nhận hồ sơ là Cán bộ tiếp nhận
         if (!rec.receivedBy) rec.receivedBy = userName(me);
         // Hồ sơ vào phân hệ (mọi Nguồn hồ sơ): hồ sơ còn mang Mã vụ việc được sinh Mã hồ sơ theo Loại hồ sơ (XD- / BT-), giữ nguyên Mã vụ việc
         const oldCode = rec.code;
         const newCode = assignHoSoCode(rec);
-        addHistory(rec, 'Phân công cán bộ', `Chủ trì: ${userName(chuTri)}.${newCode ? ` Mã hồ sơ: ${newCode}.` : ''}${note ? ' Ý kiến chỉ đạo: ' + note : ''}`);
+        addHistory(rec, 'Chuyển chuyên viên phụ trách trực tiếp', officerNote(chuTri, ph, note));
         if (newCode) replaceRecord(oldCode, rec); else upsertRecord(rec);
         return { ok: true, record: rec };
     }
@@ -1404,9 +1562,10 @@
     // Ghi hồ sơ đã đổi Mã hồ sơ vào đúng vị trí bản ghi cũ
     function replaceRecord(oldCode, rec) {
         const list = loadRecords();
-        const idx = list.findIndex(r => r.code === oldCode);
+        // [ro1] Danh sách đọc từ bộ nhớ đệm có thể chứa chính đối tượng rec (đã đổi mã): so khớp cả đối tượng để không ghi trùng
+        const idx = list.findIndex(r => r === rec || r.code === oldCode);
         if (idx >= 0) list[idx] = rec; else list.unshift(rec);
-        saveRecords(list);
+        saveRecords(list.filter((r, i) => i === (idx >= 0 ? idx : 0) || r.code !== rec.code));
         return rec;
     }
 
@@ -1415,6 +1574,10 @@
     // Luồng trình ký - ký duyệt không có Thu hồi: Lãnh đạo đã Ký duyệt chuyển cấp tiếp theo thì không lấy lại được.
     function getRecallInfo(rec, userId) {
         if (!rec || rec.status === STATUS.CHO_PHE_DUYET) return null;
+        // [ro1] Cử người phục hồi danh dự: lượt phân công gần nhất của bước Cử người phục hồi danh dự
+        const pi = phddRecallInfo(rec, userId);
+        if (pi) return pi;
+        if (rec.phddRoutes && rec.phddRoutes.length) return null;
         const r = latestRoute(rec);
         if (!r || r.state !== 'Chưa xử lý' || !isLeaderOf(userId, r.fromUnitId, recFt(rec))) return null;
         if (r.type === 'unit' && rec.status === STATUS.DANG_PHAN_CONG && rec.currentUnitId === r.toUnitId) return { kind: 'route', route: r };
@@ -1426,13 +1589,14 @@
         const me = getCurrentUserId();
         const info = getRecallInfo(rec, me);
         if (!info) return { ok: false, message: 'Không thể thu hồi: bên nhận đã xử lý hồ sơ.' };
+        if (info.kind === 'phdd') return recallPhdd(rec, info.route);
         const r = rec.routes.pop();
         rec.currentUnitId = r.fromUnitId;
-        if (r.type === 'officer') { rec.chuTri = null; }
+        if (r.type === 'officer') { rec.chuTri = null; rec.phoiHop = []; }
         const prev = latestRoute(rec);
         if (prev) prev.state = 'Chưa xử lý';
         rec.status = rec.routes.length ? STATUS.DANG_PHAN_CONG : STATUS.CHO_PHAN_CONG;
-        addHistory(rec, 'Thu hồi', r.type === 'unit' ? `Thu hồi hồ sơ đã chuyển ${unitName(r.toUnitId)}.` : `Thu hồi phân công cán bộ ${userName(r.chuTri)}.`);
+        addHistory(rec, 'Thu hồi', r.type === 'unit' ? `Thu hồi hồ sơ đã phân công ${unitName(r.toUnitId)}.` : `Thu hồi hồ sơ đã chuyển chuyên viên ${userName(r.chuTri)}.`);
         upsertRecord(rec);
         return { ok: true, record: rec };
     }
@@ -1477,6 +1641,8 @@
     function xdFillAssignees(r) {
         const a = r && r.approval;
         if (!a || !Array.isArray(a.path) || !a.path.length) return false;
+        // [pc1] Phiếu trình do cán bộ tự thiết lập các cấp (btnn_phan_cong_ky_duyet.js): giữ nguyên Lãnh đạo đã chọn
+        if (a.tuThietLap) return false;
         const ft = recFt(r);
         const steps = Array.isArray(a.steps) ? a.steps : [];
         const old = Array.isArray(a.assignees) ? a.assignees : [];
@@ -1496,6 +1662,8 @@
     function xdExtendApproval(r) {
         const a = r && r.approval;
         if (!a || !Array.isArray(a.path) || !a.path.length || r.module !== 'XD') return false;
+        // [pc1] Phiếu trình tự thiết lập các cấp: không bổ sung cấp theo luồng
+        if (a.tuThietLap) return false;
         const ft = recFt(r);
         if (ft !== FLOW_TYPES.XD_BTP && ft !== FLOW_TYPES.XD_STP) return false;
         const full = xdFinalLevels(a.path, ft, r);
@@ -1546,6 +1714,10 @@
         // Giải quyết YCBT: hồ sơ "Hoàn thành" vẫn được trình Đình chỉ giải quyết bồi thường
         const dcFromDone = isYcbtRec(rec) && rec.status === STATUS.HOAN_THANH && kind === 'Đình chỉ giải quyết bồi thường';
         if (closed.includes(rec.status) && !dcFromDone) return { ok: false, message: 'Trạng thái hồ sơ không cho phép trình phê duyệt.' };
+        if (Array.isArray(extra.levels) && extra.levels.length) {
+            if (isXdRec(rec) && kind === KIND_KQXD && !xdTargetConfigured(rec)) return { ok: false, message: xdTargetNotConfiguredMsg(rec) };
+            return submitLevelsCore(rec, kind, content, files, extra);
+        }
         const path = computeApprovalPath(rec);
         if (!path.length) return { ok: false, message: 'Chưa xác định được cấp phê duyệt. Vui lòng liên hệ Quản trị hệ thống.' };
         // extra.assignees: Lãnh đạo được chọn cho mọi cấp theo thứ tự luồng phê duyệt (Xác định CQGQBT: cán bộ chọn tất cả cấp khi trình)
@@ -1553,12 +1725,12 @@
         if (preset && !extra.assignee) extra.assignee = preset[0];
         const firstLeaders = getLeaders(path[0], recFt(rec));
         if (firstLeaders.length && !extra.assignee) return { ok: false, message: 'Vui lòng chọn Lãnh đạo phê duyệt.' };
-        if (extra.assignee && firstLeaders.length && !firstLeaders.includes(extra.assignee)) return { ok: false, message: 'Lãnh đạo phê duyệt không thuộc nhóm lãnh đạo của cấp phê duyệt đầu tiên.' };
+        if (extra.assignee && firstLeaders.length && !firstLeaders.includes(extra.assignee)) return { ok: false, message: 'Lãnh đạo phê duyệt không thuộc Nhóm Lãnh đạo của cấp phê duyệt đầu tiên.' };
         if (preset) {
             for (let i = 1; i < path.length; i++) {
                 const lv = getLeaders(path[i], recFt(rec));
                 if (lv.length && !preset[i]) return { ok: false, message: `Vui lòng chọn Lãnh đạo ${unitName(path[i])}.` };
-                if (preset[i] && lv.length && !lv.includes(preset[i])) return { ok: false, message: `Lãnh đạo được chọn không thuộc nhóm lãnh đạo của ${unitName(path[i])}.` };
+                if (preset[i] && lv.length && !lv.includes(preset[i])) return { ok: false, message: `Lãnh đạo được chọn không thuộc Nhóm Lãnh đạo của ${unitName(path[i])}.` };
             }
             preset[0] = extra.assignee || '';
         }
@@ -1577,7 +1749,48 @@
         };
         rec.status = STATUS.CHO_PHE_DUYET;
         const nextText = preset && path.length > 1 ? ' Lãnh đạo cấp tiếp theo: ' + path.slice(1).map((u, i) => (preset[i + 1] ? userName(preset[i + 1]) + ' - ' : '') + unitName(u)).join('; ') + '.' : '';
-        addHistory(rec, 'Trình phê duyệt', `${kind}. Trình ${extra.assignee ? userName(extra.assignee) + ' - ' : ''}${unitName(path[0])}.${nextText}${content ? ' Nội dung: ' + content : ''}`);
+        // Xác định CQGQBT, Giải quyết YCBT: nhãn lịch sử "Trình ký đến [Họ tên Lãnh đạo cấp 1]"
+        const submitLabel = kyLabelRec(rec, kind) && extra.assignee ? 'Trình ký đến ' + userName(extra.assignee) : 'Trình phê duyệt';
+        addHistory(rec, submitLabel, `${kind}. Trình ${extra.assignee ? userName(extra.assignee) + ' - ' : ''}${unitName(path[0])}.${nextText}${content ? ' Nội dung: ' + content : ''}`);
+        upsertRecord(rec);
+        return { ok: true, record: rec };
+    }
+    // [ro1] Thiết lập các cấp trình ký: extra.levels = [{ leader, kyNhay, kySo }] theo thứ tự Cấp 1 (sát cán bộ trình) -> cấp cuối (ký ban hành, luôn Ký số).
+    // Lãnh đạo mỗi cấp: Nhóm Lãnh đạo của đơn vị cán bộ trình hoặc đơn vị cấp trên; không trùng giữa các cấp. Ký duyệt: chỉ Lãnh đạo được giao đích danh ở cấp hiện hành.
+    function normalizeLevels(levels) {
+        return (levels || []).map((l, i, arr) => ({ leader: l.leader || '', kyNhay: !!l.kyNhay, kySo: i === arr.length - 1 ? true : !!l.kySo }));
+    }
+    function validateLevels(levels, submitter) {
+        if (!levels.length) return 'Vui lòng thiết lập ít nhất 01 cấp trình ký.';
+        const cand = signLeaderCandidates(submitter);
+        for (let i = 0; i < levels.length; i++) {
+            if (!levels[i].leader) return `Vui lòng chọn Lãnh đạo Cấp ${i + 1}.`;
+            if (!cand.includes(levels[i].leader)) return `Lãnh đạo Cấp ${i + 1} không thuộc Nhóm Lãnh đạo của đơn vị trình hoặc đơn vị cấp trên.`;
+            if (levels.findIndex(x => x.leader === levels[i].leader) !== i) return `Lãnh đạo Cấp ${i + 1} đã được chọn ở cấp khác.`;
+        }
+        return '';
+    }
+    function levelsNextText(levels, path) {
+        return levels.length > 1 ? ' Lãnh đạo cấp tiếp theo: ' + levels.slice(1).map((l, i) => `${userName(l.leader)} - ${unitName(path[i + 1])}`).join('; ') + '.' : '';
+    }
+    function submitLevelsCore(rec, kind, content, files, extra) {
+        const me = getCurrentUserId();
+        const levels = normalizeLevels(extra.levels);
+        const err = validateLevels(levels, me);
+        if (err) return { ok: false, message: err };
+        const path = levels.map(l => getUser(l.leader).unitId);
+        if (rec.status === STATUS.CHO_TIEP_NHAN) { const r = latestRoute(rec); if (r) r.state = 'Đã xử lý'; }
+        const now = nowText();
+        const signDoc = extra.signDoc ? Object.assign({}, extra.signDoc) : null;
+        if (signDoc && Array.isArray(extra.pcSig)) signDoc.pcSig = extra.pcSig;
+        rec.approval = {
+            kind, content: content || '', files: files || [], draftDoc: extra.draftDoc || null, signDoc, reason: extra.reason || '',
+            resultStatus: extra.resultStatus || '', action: extra.action || null, prevStatus: rec.status,
+            path, level: 0, steps: [], assignees: levels.map(l => l.leader), levels, tuThietLap: true,
+            submittedBy: me, submittedAt: now, pending: { since: now }
+        };
+        rec.status = STATUS.CHO_PHE_DUYET;
+        addHistory(rec, 'Trình ký đến ' + userName(levels[0].leader), `${kind}. Trình ${userName(levels[0].leader)} - ${unitName(path[0])}.${levelsNextText(levels, path)}${content ? ' Nội dung: ' + content : ''}`);
         upsertRecord(rec);
         return { ok: true, record: rec };
     }
@@ -1645,6 +1858,19 @@
         const a = rec.approval;
         const unitId = a.path[a.level];
         if (!a.assignees) a.assignees = [];
+        // [ro1] Phiếu trình tự thiết lập các cấp: cấp trước cấp cuối Ký duyệt (Ký số / gán chữ ký / chữ ký nháy theo thiết lập) -> chuyển Lãnh đạo cấp tiếp theo đã chọn
+        const lvCfg = a.tuThietLap ? ((a.levels || [])[a.level] || {}) : null;
+        if (lvCfg && a.level < a.path.length - 1) {
+            const lv = a.level;
+            const next = a.assignees[lv + 1];
+            const how = lvCfg.kySo ? ' - đã ký số' : (lvCfg.kyNhay ? ' - đã gán chữ ký nháy' : ' - đã gán chữ ký');
+            a.steps.push({ unitId, userId: me, action: 'Ký duyệt', note: note || '', at: nowText(), kySo: !!lvCfg.kySo, kyNhay: !!lvCfg.kyNhay });
+            a.level = lv + 1;
+            a.pending = { since: nowText() };
+            addHistory(rec, 'Ký duyệt', `${a.kind}: ký duyệt Cấp ${lv + 1}${how}; chuyển ${userName(next)} - ${unitName(a.path[lv + 1])}.${note ? ' Ý kiến: ' + note : ''}`, null, { kind: a.kind });
+            upsertRecord(rec);
+            return { ok: true, record: rec };
+        }
         if (a.level < a.path.length - 1) {
             const nextLeaders = getLeaders(a.path[a.level + 1], recFt(rec));
             // Mọi phân hệ: chuyển tới Lãnh đạo cấp tiếp theo đã được cán bộ chọn khi trình, Lãnh đạo cấp trước không chọn
@@ -1653,9 +1879,9 @@
                 nextAssignee = preset && (!nextLeaders.length || nextLeaders.includes(preset)) ? preset : (nextLeaders[0] || '');
             }
             if (nextLeaders.length && !nextAssignee) return { ok: false, message: 'Vui lòng chọn Lãnh đạo phê duyệt cấp tiếp theo.' };
-            if (nextAssignee && nextLeaders.length && !nextLeaders.includes(nextAssignee)) return { ok: false, message: 'Lãnh đạo được chọn không thuộc nhóm lãnh đạo của cấp tiếp theo.' };
+            if (nextAssignee && nextLeaders.length && !nextLeaders.includes(nextAssignee)) return { ok: false, message: 'Lãnh đạo được chọn không thuộc Nhóm Lãnh đạo của cấp tiếp theo.' };
             // Xác định CQGQBT: cấp trước Ký duyệt = đồng ý chuyển cấp tiếp theo, không ký số
-            const verb = isXdRec(rec) ? 'Ký duyệt' : 'Phê duyệt';
+            const verb = kyLabelRec(rec, a.kind) ? 'Ký duyệt' : 'Phê duyệt';
             a.steps.push({ unitId, userId: me, action: verb, note: note || '', at: nowText() });
             a.level += 1;
             a.assignees[a.level] = nextAssignee || '';
@@ -1665,7 +1891,7 @@
             // Xác định CQGQBT - cấp cuối Ký duyệt: Ký số -> hệ thống ký số văn bản tại vị trí đã định; Ký ngoài -> dùng văn bản đã ký cán bộ tải lên
             const isKq = a.kind === KIND_KQXD;
             if (isKq && !xdTargetConfigured(rec)) return { ok: false, message: xdTargetNotConfiguredMsg(rec) };
-            a.steps.push({ unitId, userId: me, action: 'Ký duyệt', note: note || '', at: nowText() });
+            a.steps.push(Object.assign({ unitId, userId: me, action: 'Ký duyệt', note: note || '', at: nowText() }, lvCfg ? { kySo: true, kyNhay: !!lvCfg.kyNhay } : {}));
             if (a.signDoc) {
                 const sd = a.signDoc;
                 sd.signedFile = sd.method === 'Ký ngoài' ? sd.file : String(sd.file || `Van_ban_${rec.code}.pdf`).replace(/\.[^.]+$/, '') + '_da_ky.pdf';
@@ -1690,7 +1916,14 @@
             const sdNote = a.signDoc ? ` ${a.signDoc.method === 'Ký ngoài' ? 'Văn bản ký ngoài' : 'Văn bản đã ký số'}: ${a.signDoc.signedFile}.` : '';
             addHistory(rec, 'Ký duyệt', `Ký duyệt cấp cuối (${unitName(unitId)}) - đã ký số văn bản: ${a.kind}.${sdNote}${extraNote} Hồ sơ chuyển [${rec.status}].${note ? ' Ý kiến: ' + note : ''}`, null, { kind: a.kind });
         } else {
-            a.steps.push({ unitId, userId: me, action: 'Phê duyệt', note: note || '', at: nowText() });
+            const verbLast = lvCfg || kyLabelRec(rec, a.kind) ? 'Ký duyệt' : 'Phê duyệt';
+            a.steps.push(Object.assign({ unitId, userId: me, action: verbLast, note: note || '', at: nowText() }, lvCfg ? { kySo: true, kyNhay: !!lvCfg.kyNhay } : {}));
+            if (lvCfg && a.signDoc) {
+                const sd = a.signDoc;
+                sd.signedFile = sd.method === 'Ký ngoài' ? sd.file : String(sd.file || `Van_ban_${rec.code}.pdf`).replace(/\.[^.]+$/, '') + '_da_ky.pdf';
+                sd.signedBy = me;
+                sd.signedAt = nowText();
+            }
             rec.status = a.resultStatus || SUBMIT_KINDS[a.kind] || a.prevStatus || STATUS.DANG_THUC_HIEN;
             a.done = true;
             a.pending = null;
@@ -1699,7 +1932,7 @@
             if (a.kind === KIND_CU_NGUOI && a.action && Array.isArray(a.action.officers)) applyCuNguoi(rec, a.action.officers, a.submittedBy);
             // [cdpd] Chủ động phục hồi danh dự: Ký duyệt cấp cuối -> Cử người phục hồi danh dự tại đơn vị phê duyệt cấp cuối
             if (a.kind === KIND_CDPD) startPhddAssign(rec);
-            addHistory(rec, 'Phê duyệt', `Phê duyệt cấp cuối (${unitName(unitId)}): ${a.kind}. Hồ sơ chuyển [${rec.status}].${note ? ' Ý kiến: ' + note : ''}`, null, { kind: a.kind });
+            addHistory(rec, verbLast, `${verbLast} cấp cuối (${unitName(unitId)})${lvCfg ? ' - đã ký số văn bản' : ''}: ${a.kind}. Hồ sơ chuyển [${rec.status}].${note ? ' Ý kiến: ' + note : ''}`, null, { kind: a.kind });
         }
         upsertRecord(rec);
         return { ok: true, record: rec };
@@ -1740,7 +1973,7 @@
             return { ok: false, message: 'Vui lòng chọn hình thức chuyển cơ quan tiếp nhận mới.' };
         }
         const tRoot = getRootId(target) || target;
-        if (!isUnitConfigured(tRoot, ft)) return { ok: false, message: `Đơn vị ${unitName(tRoot)} chưa được cấu hình luồng ${FLOW_TYPE_NAMES[ft]}. Vui lòng liên hệ Quản trị hệ thống.` };
+        if (!isUnitConfigured(tRoot, ft)) return { ok: false, message: `Đơn vị ${unitName(tRoot)} chưa có tài khoản thuộc Nhóm Lãnh đạo. Vui lòng liên hệ Quản trị hệ thống.` };
         return { ok: true, mode, targetUnitId: target, rootUnitId: tRoot, loaiYeuCau: loai, label: KTL_TRANSFER_LABELS[mode] };
     }
     // Khối "Chuyển cơ quan tiếp nhận mới" dùng chung (Popup Không thụ lý hồ sơ của cán bộ / Thủ trưởng):
@@ -2005,7 +2238,7 @@
     }
     const histRow = (k, v) => `<div style="display:flex; gap:8px; margin-top:4px;"><span style="color:#64748b; min-width:170px; flex-shrink:0;">${esc(k)}:</span><span style="flex:1; min-width:0; white-space:pre-line;">${v}</span></div>`;
     const histFileLink = name => name ? `<i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> <b>${esc(name)}</b> <a href="#" onclick="event.preventDefault(); if (window.previewNamedFile) previewNamedFile(${esc(JSON.stringify(name))});" style="color:#2563eb; text-decoration:none; margin-left:8px; white-space:nowrap; font-weight:600;"><i class="fa-solid fa-eye"></i> Xem file</a>` : '--';
-    // Khối THÔNG TIN HỒ SƠ BỊ TRẢ LẠI: kê đầy đủ các lần bị trả lại theo thứ tự thời gian; không ghi "Lần 1, Lần 2"
+    // Khối LÝ DO BỊ TRẢ LẠI: kê đầy đủ các lần bị trả lại theo thứ tự thời gian; không ghi "Lần 1, Lần 2"
     // opts.withDocs (MH04): mỗi lần hiển thị bảng Tài liệu đính kèm của lần trình bị trả lại (ẩn khi không có)
     function renderXdReturnHistoryHtml(rec, opts) {
         const list = returnHistoryOf(rec, true);
@@ -2021,17 +2254,14 @@
             const isLatest = (i === list.length - 1);
             const docsHtml = opts && opts.withDocs && typeof window.tlktViewHtml === 'function' ? window.tlktViewHtml(trinhDocs(e), { boxClass: 'tlkt-view', titleClass: 'tlkt-sec-title' }) : '';
             return `<div style="background:#fff; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:6px; padding:12px 14px; margin-top:8px; font-size:13px; line-height:1.55;">
-                <div style="margin-bottom:6px;">
-                    <div style="font-weight:700; color:#b45309;"><i class="fa-solid fa-clock"></i> Thời điểm: ${esc(e.at || '--')}</div>
-                </div>
+                ${histRow('Lý do trả lại', `<span style="color:#b45309; font-weight:500;">${esc(e.reason || '--')}</span>`)}
                 ${histRow('Lãnh đạo trả lại', `<b>${esc(userName(e.by))}</b>${e.unitId ? ' - ' + esc(unitName(e.unitId)) : ''}`)}
-                ${histRow('Loại trình bị trả lại', `<b style="color:#b45309;">${esc(e.kind || '--')}</b>`)}
-                ${histRow('Lý do chi tiết', `<span style="color:#b45309; font-weight:500;">${esc(e.reason || '--')}</span>`)}
+                ${histRow('Thời điểm trả lại', esc(e.at || '--'))}
                 ${docsHtml ? `<div style="margin-top:8px;">${docsHtml}</div>` : ''}
             </div>`;
         }).join('');
         return `<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">
-                <div style="font-weight:700; color:#b45309; font-size:14px;"><i class="fa-solid fa-rotate-left"></i> THÔNG TIN HỒ SƠ BỊ TRẢ LẠI</div>
+                <div style="font-weight:700; color:#b45309; font-size:14px;"><i class="fa-solid fa-rotate-left"></i> LÝ DO BỊ TRẢ LẠI</div>
             </div>${items}`;
     }
     // Khối THÔNG TIN YÊU CẦU BỔ SUNG: danh sách các lần ban hành Yêu cầu bổ sung (mới nhất trước); rỗng khi hồ sơ chưa từng Yêu cầu bổ sung
@@ -2076,10 +2306,7 @@
     function thuLyOfficerOptions(rec) {
         if (!rec) return [];
         const root = getRootId(rec.rootUnitId) || rec.rootUnitId;
-        const cfg = getFlowConfig(FLOW_TYPES.GQ)[root] || {};
-        const leaders = new Set();
-        Object.values(cfg).forEach(n => (n.leaders || []).forEach(u => leaders.add(u)));
-        return usersInUnitTree(root).filter(u => !leaders.has(u.id)).map(u => u.id);
+        return usersInUnitTree(root).filter(u => !isNhomLanhDaoUser(u.id)).map(u => u.id);
     }
     // Cán bộ lập, trình (hoặc cập nhật, trình lại) Cử người giải quyết bồi thường: hồ sơ Cử người giải quyết bồi thường, hoặc Bị trả lại với Nội dung trình Cử người giải quyết bồi thường.
     // Người trình: cán bộ chủ trì hoặc cán bộ thuộc cơ quan giải quyết bồi thường của hồ sơ (Lãnh đạo chỉ Ký duyệt / Từ chối phiếu trình)
@@ -2137,16 +2364,60 @@
     const STATUS_CU_NGUOI_PHDD = 'Cử người phục hồi danh dự';
     YCBT_STATUS.CU_NGUOI_PHDD = STATUS_CU_NGUOI_PHDD;
     const FLOW_KEY_PHDD = 'PHDD';
+    // [ro1] Cử người phục hồi danh dự theo Nhóm Lãnh đạo (Chức vụ), giống popup Phân công của Tiếp nhận hồ sơ:
+    // "Phân công" (đơn vị trực thuộc cấp dưới trực tiếp có Lãnh đạo + Lãnh đạo nhận) / "Chuyển chuyên viên phụ trách trực tiếp" (-> Đang phục hồi danh dự).
+    // phddFlowNode giữ cho trang cũ: trả về nút giả lập theo cây đơn vị.
     function phddFlowNode(unitId) {
         if (!unitId) return null;
-        const all = readJson(KEY_FLOW, null) || {};
-        const p = all[FLOW_KEY_PHDD];
-        const root = getRootId(unitId) || unitId;
-        return (p && p[root] && p[root][unitId]) || getNodeConfig(unitId, FLOW_TYPES.GQ);
+        const units = childUnitsWithLeaders(unitId);
+        return { leaders: leadersOfUnit(unitId), allowUnit: units.length > 0, units, allowOfficer: true, officers: usersOfUnit(unitId) };
     }
-    function phddLeaders(unitId) { const n = phddFlowNode(unitId); return n ? (n.leaders || []) : []; }
+    function phddLeaders(unitId) { return leadersOfUnit(unitId); }
+    function phddLatestRoute(rec) { const l = rec && rec.phddRoutes; return l && l.length ? l[l.length - 1] : null; }
+    function phddAssignersOf(rec) {
+        if (!rec || !rec.phddUnitId) return [];
+        const group = leadersOfUnit(rec.phddUnitId);
+        const r = phddLatestRoute(rec);
+        const named = r && r.type === 'unit' && r.state === 'Chưa xử lý' && r.toUnitId === rec.phddUnitId && Array.isArray(r.toLeaders) ? r.toLeaders.filter(id => group.includes(id)) : [];
+        return named.length ? named : group;
+    }
     function canAssignPhdd(rec, userId) {
-        return !!rec && rec.module === 'YCBT' && rec.status === STATUS_CU_NGUOI_PHDD && !!rec.phddUnitId && phddLeaders(rec.phddUnitId).includes(userId);
+        return !!rec && rec.module === 'YCBT' && rec.status === STATUS_CU_NGUOI_PHDD && !!rec.phddUnitId && phddAssignersOf(rec).includes(userId);
+    }
+    // Thu hồi lượt phân công gần nhất của bước Cử người phục hồi danh dự khi bên nhận chưa xử lý (người thu hồi: Lãnh đạo đơn vị đã phân công)
+    function phddRecallInfo(rec, userId) {
+        const r = phddLatestRoute(rec);
+        if (!r || r.state !== 'Chưa xử lý' || !leadersOfUnit(r.fromUnitId).includes(userId)) return null;
+        if (r.type === 'unit' && rec.status === STATUS_CU_NGUOI_PHDD && rec.phddUnitId === r.toUnitId) return { kind: 'phdd', route: r };
+        if (r.type === 'officer' && rec.status === YCBT_STATUS.DANG_PHDD && !phddStep1Updated(rec)) return { kind: 'phdd', route: r };
+        return null;
+    }
+    // Chuyên viên đã cập nhật Bước 1 "Thông báo" của tiến trình phục hồi danh dự: bước PHDD của vụ việc đã qua "Mới" / "Đang thực hiện"
+    function phddStep1Updated(rec) {
+        let st = '';
+        try {
+            const claims = readJson('claimsList', []);
+            const c = Array.isArray(claims) ? claims.find(x => x && (x.code === rec.code || (rec.gqClaimId && x.id === rec.gqClaimId))) : null;
+            if (c) st = c.phddStatus || '';
+        } catch (e) { /* bỏ qua */ }
+        if (!st && rec.gqData) st = rec.gqData.phddStatus || '';
+        return !!st && !['Mới', 'Đang thực hiện', STATUS.DANG_THUC_HIEN].includes(st);
+    }
+    function recallPhdd(rec, r) {
+        rec.phddRoutes.pop();
+        rec.phddUnitId = r.fromUnitId;
+        const prev = phddLatestRoute(rec);
+        if (prev) prev.state = 'Chưa xử lý';
+        if (r.type === 'officer') {
+            rec.status = STATUS_CU_NGUOI_PHDD;
+            rec.chuTri = r.prevChuTri || rec.chuTri;
+            rec.phddAssignee = null;
+            rec.phddPhoiHop = [];
+            if (rec.gqData) { ['appointedOfficers', 'assignedOfficer', 'assignedOfficerPosition', 'assignedOfficerUnit', 'assignedOfficerEmail', 'officer', 'phddAssignedAt'].forEach(k => { delete rec.gqData[k]; }); rec.gqData.phddStarted = false; rec.gqData.phddStatus = ''; }
+        }
+        addHistory(rec, 'Thu hồi', r.type === 'unit' ? `Thu hồi hồ sơ đã phân công ${unitName(r.toUnitId)} cử người phục hồi danh dự.` : `Thu hồi hồ sơ đã chuyển chuyên viên ${userName(r.chuTri)}.`, null, { kind: STATUS_CU_NGUOI_PHDD });
+        upsertRecord(rec);
+        return { ok: true, record: rec };
     }
     // Bắt đầu bước Cử người phục hồi danh dự tại đơn vị phê duyệt cấp cuối
     function startPhddAssign(rec) {
@@ -2155,47 +2426,52 @@
         rec.phddRoutes = [];
         return rec;
     }
-    function assignPhddToUnit(code, toUnitId, note) {
+    // toLeaders: Lãnh đạo nhận (chọn nhiều, không bắt buộc; để trống = cả Nhóm lãnh đạo của đơn vị nhận)
+    function assignPhddToUnit(code, toUnitId, note, toLeaders) {
         const rec = getRecord(code);
         const me = getCurrentUserId();
         if (!canAssignPhdd(rec, me)) return { ok: false, message: 'Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phân công. Vui lòng tải lại danh sách.' };
-        const node = phddFlowNode(rec.phddUnitId);
-        if (!node || !node.allowUnit || !(node.units || []).includes(toUnitId)) return { ok: false, message: 'Đơn vị nhận không thuộc cấu hình luồng của đơn vị hiện tại.' };
+        const group = leadersOfUnit(toUnitId);
+        if (!childUnitsWithLeaders(rec.phddUnitId).includes(toUnitId) || (toLeaders || []).some(id => !group.includes(id))) return { ok: false, message: MSG_LXL_020, code: 'MSG-ERR-BTNN-LXL-020' };
+        const leaders = (toLeaders || []).filter(id => group.includes(id));
         if (!Array.isArray(rec.phddRoutes)) rec.phddRoutes = [];
         const prev = rec.phddRoutes[rec.phddRoutes.length - 1];
         if (prev) prev.state = 'Đã xử lý';
-        rec.phddRoutes.push({ id: uid('P'), type: 'unit', fromUnitId: rec.phddUnitId, fromUserId: me, toUnitId, note: note || '', at: nowText(), state: 'Chưa xử lý' });
+        rec.phddRoutes.push({ id: uid('P'), type: 'unit', fromUnitId: rec.phddUnitId, fromUserId: me, toUnitId, toLeaders: leaders, note: note || '', at: nowText(), state: 'Chưa xử lý' });
         rec.phddUnitId = toUnitId;
-        addHistory(rec, 'Chuyển đơn vị phục hồi danh dự', `Chuyển ${unitName(toUnitId)} cử người phục hồi danh dự.${note ? ' Ý kiến chỉ đạo: ' + note : ''}`, null, { kind: STATUS_CU_NGUOI_PHDD });
+        addHistory(rec, 'Phân công phục hồi danh dự', `Phân công ${unitName(toUnitId)} - ${leaders.length ? leaders.map(userName).join(', ') : 'Nhóm Lãnh đạo'}.${note ? ' Ý kiến chỉ đạo: ' + note : ''}`, null, { kind: STATUS_CU_NGUOI_PHDD });
         upsertRecord(rec);
         return { ok: true, record: rec };
     }
-    function assignPhddToOfficer(code, chuTri, note) {
+    function assignPhddToOfficer(code, chuTri, note, phoiHop) {
         const rec = getRecord(code);
         const me = getCurrentUserId();
         if (!canAssignPhdd(rec, me)) return { ok: false, message: 'Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phân công. Vui lòng tải lại danh sách.' };
-        const node = phddFlowNode(rec.phddUnitId);
-        if (!node || !node.allowOfficer) return { ok: false, message: 'Đơn vị hiện tại không được cấu hình phân công cán bộ.' };
         const u = getUser(chuTri);
-        if (!u) return { ok: false, message: 'Vui lòng chọn cán bộ chủ trì.' };
+        if (!u) return { ok: false, message: 'Vui lòng chọn Cán bộ chủ trì.' };
+        const ph = (phoiHop || []).filter(id => id && id !== chuTri);
+        const okUsers = usersOfUnit(rec.phddUnitId);
+        if (!okUsers.includes(chuTri) || ph.some(id => !okUsers.includes(id))) return { ok: false, message: MSG_LXL_021, code: 'MSG-ERR-BTNN-LXL-021' };
         if (!Array.isArray(rec.phddRoutes)) rec.phddRoutes = [];
         const prev = rec.phddRoutes[rec.phddRoutes.length - 1];
         if (prev) prev.state = 'Đã xử lý';
         const at = nowText();
-        rec.phddRoutes.push({ id: uid('P'), type: 'officer', fromUnitId: rec.phddUnitId, fromUserId: me, chuTri, note: note || '', at, state: 'Chưa xử lý' });
+        rec.phddRoutes.push({ id: uid('P'), type: 'officer', fromUnitId: rec.phddUnitId, fromUserId: me, chuTri, phoiHop: ph, prevChuTri: rec.chuTri || '', note: note || '', at, state: 'Chưa xử lý' });
         rec.chuTri = chuTri;
+        rec.phddPhoiHop = ph;
         rec.phddAssignee = chuTri;
         rec.status = YCBT_STATUS.DANG_PHDD;
         const off = { userId: chuTri, name: u.name, position: u.title || '', email: u.email || '', unit: unitName(u.unitId), appointedAt: at };
         // Cán bộ được phân công: cán bộ chủ trì; tiến trình phục hồi danh dự bắt đầu từ Bước 1 (Thông báo tổ chức thực hiện phục hồi danh dự)
         rec.gqData = Object.assign({}, rec.gqData || {}, { appointedOfficers: [off], assignedOfficer: u.name, assignedOfficerPosition: off.position, assignedOfficerUnit: off.unit, assignedOfficerEmail: off.email, officer: u.name, phddStarted: true, phddStatus: STATUS.DANG_THUC_HIEN, phddAssignedAt: at });
-        addHistory(rec, 'Phân công phục hồi danh dự', `Chủ trì: ${u.name}. Hồ sơ chuyển [${rec.status}].${note ? ' Ý kiến chỉ đạo: ' + note : ''}`, null, { kind: STATUS_CU_NGUOI_PHDD });
+        addHistory(rec, 'Chuyển chuyên viên phụ trách trực tiếp', officerNote(chuTri, ph, note), null, { kind: STATUS_CU_NGUOI_PHDD });
         upsertRecord(rec);
         return { ok: true, record: rec };
     }
     // Tham số popup Phân công dùng chung (btnn_lanh_dao_actions.js - BTNN_LD.openAssign)
     const PHDD_ASSIGN = {
         title: 'Cử người phục hồi danh dự',
+        phdd: true,
         unitOf: rec => rec.phddUnitId,
         nodeOf: rec => phddFlowNode(rec.phddUnitId) || {},
         canAssign: canAssignPhdd,
@@ -2246,7 +2522,7 @@
         const assign = visible.filter(r => canAssign(r, me));
         const approveList = visible.filter(r => canApprove(r, me));
         const thuly = []; // Cử người giải quyết bồi thường do cán bộ lập, trình; Lãnh đạo chỉ Ký duyệt / Từ chối
-        const done = visible.filter(r => (r.routes || []).some(x => x.fromUserId === me) || (r.approval && (r.approval.steps || []).some(s => s.userId === me)) || (r.history || []).some(h => h.userId === me && /Phê duyệt|Ký duyệt|Từ chối phê duyệt|Chuyển đơn vị|Phân công|Thụ lý/.test(h.action)));
+        const done = visible.filter(r => (r.routes || []).some(x => x.fromUserId === me) || (r.approval && (r.approval.steps || []).some(s => s.userId === me)) || (r.history || []).some(h => h.userId === me && /Phê duyệt|Ký duyệt|Từ chối phê duyệt|Chuyển đơn vị|Phân công|Chuyển chuyên viên phụ trách trực tiếp|Thụ lý/.test(h.action)));
         return { assign, approve: approveList, thuly, done };
     }
 
@@ -2266,9 +2542,9 @@
     // Xác định CQGQBT: chỉ cấp cuối hệ thống ký số văn bản; các cấp trước Ký duyệt = đồng ý chuyển cấp tiếp theo
     function approveVerb(rec) {
         const a = rec && rec.approval;
-        if (!a) return isXdRec(rec) ? 'Ký duyệt' : 'Phê duyệt';
+        if (!a) return kyLabelRec(rec, '') ? 'Ký duyệt' : 'Phê duyệt';
         if (QD_KINDS.includes(a.kind)) return 'Ký duyệt';
-        return isXdRec(rec) ? 'Ký duyệt' : 'Phê duyệt';
+        return kyLabelRec(rec, a.kind) ? 'Ký duyệt' : 'Phê duyệt';
     }
     // Nội dung trình của 01 dòng lịch sử (dữ liệu cũ chưa lưu kind: dò theo nội dung ghi chú)
     function historyKind(rec, h) {
@@ -2405,7 +2681,7 @@
             (rec.history || []).forEach((h, idx) => {
                 if (h.userId !== me) return;
                 let type = '';
-                if (['Chuyển đơn vị', 'Phân công cán bộ', 'Thu hồi', 'Chuyển đơn vị phục hồi danh dự', 'Phân công phục hồi danh dự'].includes(h.action)) type = WORK_TYPES.PHAN_CONG;
+                if (['Chuyển đơn vị', 'Phân công cán bộ', 'Phân công', 'Chuyển chuyên viên phụ trách trực tiếp', 'Thu hồi', 'Chuyển đơn vị phục hồi danh dự', 'Phân công phục hồi danh dự'].includes(h.action)) type = WORK_TYPES.PHAN_CONG;
                 else if (['Phê duyệt', 'Ký duyệt', 'Từ chối phê duyệt'].includes(h.action)) type = workTypeOfKind(historyKind(rec, h));
                 else if (['Thụ lý', 'Không thụ lý', KIND_CU_NGUOI].includes(h.action)) type = WORK_TYPES.THU_LY;
                 if (!type) return;
@@ -2602,9 +2878,11 @@
         const s = STATUS_STYLE[status] || ['#f1f5f9', '#475569'];
         return `<span class="badge wf-badge" style="background:${s[0]}; color:${s[1]}; border:1px solid ${s[1]}33; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:600; white-space:nowrap;">${esc(status)}</span>`;
     }
+    // [ro1] Quá trình phân công: "Phân công [Đơn vị] - [Lãnh đạo nhận…]" / "Phân công [Đơn vị] - Nhóm Lãnh đạo";
+    // "Chuyển chuyên viên phụ trách trực tiếp [Họ tên chủ trì]" kèm "Phối hợp: [Họ tên…]"
     function routeText(r) {
-        if (r.type === 'unit') return `${userName(r.fromUserId)} (${unitName(r.fromUnitId)}) chuyển ${unitName(r.toUnitId)}`;
-        return `${userName(r.fromUserId)} (${unitName(r.fromUnitId)}) phân công chủ trì ${userName(r.chuTri)}`;
+        if (r.type === 'unit') return `Phân công ${unitName(r.toUnitId)} - ${Array.isArray(r.toLeaders) && r.toLeaders.length ? r.toLeaders.map(userName).join(', ') : 'Nhóm Lãnh đạo'}`;
+        return `Chuyển chuyên viên phụ trách trực tiếp ${userName(r.chuTri)}${Array.isArray(r.phoiHop) && r.phoiHop.length ? '. Phối hợp: ' + r.phoiHop.map(userName).join(', ') : ''}`;
     }
     function routeStateText(r) {
         if (r.state === 'Đã xử lý') return 'Đã xử lý';
@@ -2890,19 +3168,23 @@
         if (!sd.thuHoi) return '';
         return `<div style="margin-top:8px; color:#334155;"><b>Thu hồi kinh phí bồi thường đã chi:</b> ${esc(sd.thuHoi)}${sd.thuHoi === 'Không thu hồi' ? `<br><b>Lý do không thu hồi:</b> ${esc(sd.thuHoiReason || '-')}` : ''}</div>`;
     }
+    // [ro1] Luồng phê duyệt: Cấp | Lãnh đạo (Lãnh đạo được giao đích danh khi thiết lập cấp) | Đơn vị (đơn vị của Lãnh đạo) | Kết quả
     function renderApprovalTableHtml(rec) {
         const a = rec.approval;
+        const td = 'padding:8px; border:1px solid #e2e8f0;';
         const rows = a.path.map((u, i) => {
             const step = a.steps[i];
+            const lv = (a.levels || [])[i];
+            const uid = (a.assignees || [])[i] || (lv && lv.leader) || (step && step.userId) || '';
+            const usr = uid ? getUser(uid) : null;
+            const unit = usr && usr.unitId ? unitName(usr.unitId) : unitName(u);
             let state = 'Chưa đến lượt';
-            if (step) state = `${step.action} - ${userName(step.userId)} - ${step.at}${step.note ? ' (' + step.note + ')' : ''}`;
+            if (step) state = `${step.action} - ${step.at}${step.note ? ' (' + step.note + ')' : ''}`;
             else if (i === a.level && rec.status === STATUS.CHO_PHE_DUYET) state = a.pending && a.pending.viewedAt ? `Đang chờ phê duyệt - Đã xem lúc ${a.pending.viewedAt}` : 'Đang chờ phê duyệt';
-            const assigned = (a.assignees || [])[i];
-            if (assigned && !step) state += ` (Giao: ${userName(assigned)})`;
-            return `<tr><td style="padding:8px; border:1px solid #e2e8f0; text-align:center;">${i + 1}</td><td style="padding:8px; border:1px solid #e2e8f0;">${esc(unitName(u))}</td><td style="padding:8px; border:1px solid #e2e8f0;">${esc(getLeaders(u).map(userName).join(', ') || '--')}</td><td style="padding:8px; border:1px solid #e2e8f0;">${esc(state)}</td></tr>`;
+            return `<tr><td style="${td} text-align:center;">${i + 1}</td><td style="${td}">${esc(uid ? userName(uid) : '--')}</td><td style="${td}">${esc(unit || '--')}</td><td style="${td}">${esc(state)}</td></tr>`;
         }).join('');
         return `<div style="margin-bottom:8px; font-size:13px;"><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(userName(a.submittedBy))} - ${esc(a.submittedAt)}${a.content ? `<div style="color:#334155; margin-top:2px;">${esc(a.content)}</div>` : ''}</div>
-            <table style="width:100%; border-collapse:collapse; font-size:13px;"><thead><tr style="background:#f8fafc;"><th style="padding:8px; border:1px solid #e2e8f0; width:44px;">Cấp</th><th style="padding:8px; border:1px solid #e2e8f0; text-align:left;">Đơn vị phê duyệt</th><th style="padding:8px; border:1px solid #e2e8f0; text-align:left;">Nhóm lãnh đạo</th><th style="padding:8px; border:1px solid #e2e8f0; text-align:left;">Kết quả</th></tr></thead><tbody>${rows}</tbody></table>`;
+            <table style="width:100%; border-collapse:collapse; font-size:13px;"><thead><tr style="background:#f8fafc;"><th style="${td} width:44px;">Cấp</th><th style="${td} text-align:left;">Lãnh đạo</th><th style="${td} text-align:left;">Đơn vị</th><th style="${td} text-align:left;">Kết quả</th></tr></thead><tbody>${rows}</tbody></table>`;
     }
 
     // Thanh chọn người dùng giả lập (chỉ phục vụ demo phân quyền theo đơn vị)
@@ -3131,8 +3413,8 @@
             rootUnitId, currentUnitId: rootUnitId, status: STATUS_CHO_THU_LY, chuTri, routes: [], approval: null, returned: null,
             linhVuc, hanhVi, date, receivedAt: '08:00 ' + date, createdBy: chuTri,
             history: [
-                h('Trình phê duyệt', chuTri, '09:00 ' + date, `Tiếp nhận hồ sơ. Trình ${userName(leader)} - ${unitName(rootUnitId)}.`),
-                h('Phê duyệt', leader, '15:00 ' + date, `Phê duyệt cấp cuối (${unitName(rootUnitId)}): Tiếp nhận hồ sơ. Hồ sơ chuyển [${STATUS_CHO_THU_LY}].`)
+                h('Trình ký đến ' + userName(leader), chuTri, '09:00 ' + date, `Tiếp nhận hồ sơ. Trình ${userName(leader)} - ${unitName(rootUnitId)}.`),
+                h('Ký duyệt', leader, '15:00 ' + date, `Ký duyệt cấp cuối (${unitName(rootUnitId)}): Tiếp nhận hồ sơ. Hồ sơ chuyển [${STATUS_CHO_THU_LY}].`)
             ]
         });
         const HC = 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', THADS = 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ', HS = 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', DS = 'TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ';
@@ -3154,7 +3436,7 @@
             rootUnitId: 'VKS-HP', currentUnitId: 'VKS-HP', status: STATUS.CHO_PHE_DUYET, linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', hanhVi: 'Bắt giữ oan sai do sai sót nghiệp vụ công tố.',
             routes: [],
             approval: { kind: 'Quyết định GQBT', content: 'Kính trình Lãnh đạo ký duyệt dự thảo Quyết định giải quyết bồi thường.', files: [], draftDoc: { source: 'uploaded', uploadedName: 'Du_thao_QD_GQBT_BT-2026-023.docx', formNo: 'Mẫu số 18/BTNN' }, resultStatus: 'Đã ban hành', action: null, prevStatus: 'Chờ ban hành QĐ', path: ['VKS-HP'], level: 0, steps: [], assignees: ['vt_vkshp'], submittedBy: 'ksv_vkshp1', submittedAt: qdAt, pending: { since: qdAt } },
-            history: [{ at: qdAt, userId: 'ksv_vkshp1', userName: userName('ksv_vkshp1'), action: 'Trình phê duyệt', note: 'Quyết định GQBT. Trình ' + userName('vt_vkshp') + ' - ' + unitName('VKS-HP') + '.', kind: 'Quyết định GQBT' }]
+            history: [{ at: qdAt, userId: 'ksv_vkshp1', userName: userName('ksv_vkshp1'), action: 'Trình ký đến ' + userName('vt_vkshp'), note: 'Quyết định GQBT. Trình ' + userName('vt_vkshp') + ' - ' + unitName('VKS-HP') + '.', kind: 'Quyết định GQBT' }]
         });
         // Hồ sơ Giải quyết YCBT của Quyết định mẫu QD-10 (Đã ban hành, 01 lần sửa chữa, bổ sung): Bộ Tư pháp, Chờ chi trả
         seed.push({
@@ -3174,7 +3456,7 @@
             linhVuc, hanhVi, date, receivedAt: '08:00 ' + date, createdBy: chuTri, transferContent,
             history: [
                 h('Nhận hồ sơ từ Xác định CQGQBT', chuTri, '08:00 ' + date, `Hồ sơ ${xdCode} chuyển đến ${unitName(rootUnitId)}.`),
-                h('Phê duyệt', leader, '15:00 ' + date, `Phê duyệt cấp cuối (${unitName(rootUnitId)}): Tiếp nhận hồ sơ.`)
+                h('Ký duyệt', leader, '15:00 ' + date, `Ký duyệt cấp cuối (${unitName(rootUnitId)}): Tiếp nhận hồ sơ.`)
             ]
         });
         seed.push(
@@ -3366,32 +3648,32 @@
                 return [
                     gq('BT-2026-020', 'Trần Văn Q', u20, THADS, STATUS.CHO_PHE_DUYET, {
                         approval: appr(u20, 'Tiếp nhận hồ sơ', 'Hồ sơ đầy đủ, đề nghị tiếp nhận và thụ lý.', 0, [], '08:30 09/10/2026', { prevStatus: 'Chờ tiếp nhận', resultStatus: YCBT_STATUS.CU_NGUOI }),
-                        history: [h('Trình phê duyệt', u20.officer, '08:30 09/10/2026', 'Tiếp nhận hồ sơ. ' + trinh(u20))]
+                        history: [h('Trình ký đến ' + userName(leadersOf(u20)[0]), u20.officer, '08:30 09/10/2026', 'Tiếp nhận hồ sơ. ' + trinh(u20))]
                     }),
                     gq('BT-2026-019', 'Phạm Văn P', u19, HS, STATUS.CHO_PHE_DUYET, {
                         approval: appr(u19, 'Yêu cầu bổ sung', 'Đề nghị người yêu cầu bổ sung bản sao bản án có hiệu lực và chứng từ chứng minh thiệt hại thu nhập.', 0, [], '10:00 09/10/2026', { resultStatus: 'Yêu cầu bổ sung' }),
-                        history: [h('Trình phê duyệt', u19.officer, '10:00 09/10/2026', 'Yêu cầu bổ sung. ' + trinh(u19))]
+                        history: [h('Trình ký đến ' + userName(leadersOf(u19)[0]), u19.officer, '10:00 09/10/2026', 'Yêu cầu bổ sung. ' + trinh(u19))]
                     }),
                     gq('BT-2026-018', 'Trần Thu O', u18, HC, STATUS.CHO_PHE_DUYET, {
                         ktlReasonCode: 'KTL_02',
                         approval: appr(u18, 'Không thụ lý', 'Không thụ lý hồ sơ yêu cầu bồi thường theo khoản 2 Điều 43 Luật TNBTCNN.', 0, [], '09:00 08/10/2026', { resultStatus: 'Không thụ lý' }),
-                        history: [h('Trình phê duyệt', u18.officer, '09:00 08/10/2026', 'Không thụ lý. ' + trinh(u18))]
+                        history: [h('Trình ký đến ' + userName(leadersOf(u18)[0]), u18.officer, '09:00 08/10/2026', 'Không thụ lý. ' + trinh(u18))]
                     }),
                     gq('BT-2026-029', 'Đỗ Thị Ngọc', u29, HC, STATUS.CHO_PHE_DUYET, {
                         approval: appr(u29, 'Chuyển CQGQBT', 'Hành vi gây thiệt hại thuộc phạm vi trách nhiệm của UBND phường Bạch Mai; đề nghị chuyển hồ sơ.', 1,
-                            [{ unitId: u29.sub, userId: u29.subLeader, action: 'Phê duyệt', note: '', at: '16:00 09/10/2026' }], '14:00 09/10/2026',
+                            [{ unitId: u29.sub, userId: u29.subLeader, action: 'Ký duyệt', note: '', at: '16:00 09/10/2026' }], '14:00 09/10/2026',
                             { resultStatus: 'Đã chuyển CQGQBT', action: { type: 'transfer', targetUnitId: 'UBND-HM', content: 'Chuyển hồ sơ để UBND phường Bạch Mai giải quyết theo thẩm quyền.', files: [] } }),
-                        history: [h('Trình phê duyệt', u29.officer, '14:00 09/10/2026', 'Chuyển CQGQBT. ' + trinh(u29)), h('Phê duyệt', u29.subLeader, '16:00 09/10/2026', 'Phê duyệt cấp ' + unitName(u29.sub) + '; chuyển ' + unitName(u29.unit) + '.')]
+                        history: [h('Trình ký đến ' + userName(leadersOf(u29)[0]), u29.officer, '14:00 09/10/2026', 'Chuyển CQGQBT. ' + trinh(u29)), h('Ký duyệt', u29.subLeader, '16:00 09/10/2026', 'Ký duyệt cấp ' + unitName(u29.sub) + '; chuyển ' + unitName(u29.unit) + '.')]
                     }),
                     gq('BT-2026-021', 'Hoàng Văn R', u21, HS, YCBT_STATUS.BI_TU_CHOI, {
                         approval: appr(u21, 'Tiếp nhận hồ sơ', '', 0, [{ unitId: u21.unit, userId: u21.leader, action: 'Từ chối phê duyệt', note: 'Bổ sung bản chụp giấy tờ tùy thân của người yêu cầu.', at: '16:00 08/10/2026' }], '09:30 08/10/2026', { prevStatus: 'Chờ tiếp nhận', pending: null }),
                         returned: { reason: 'Bổ sung bản chụp giấy tờ tùy thân của người yêu cầu.', by: u21.leader, unitId: u21.unit, at: '16:00 08/10/2026', kind: 'Tiếp nhận hồ sơ', prevStatus: 'Chờ tiếp nhận' },
-                        history: [h('Trình phê duyệt', u21.officer, '09:30 08/10/2026', 'Tiếp nhận hồ sơ.'), h('Từ chối phê duyệt', u21.leader, '16:00 08/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Bổ sung bản chụp giấy tờ tùy thân của người yêu cầu.')]
+                        history: [h('Trình ký đến ' + userName(leadersOf(u21)[0]), u21.officer, '09:30 08/10/2026', 'Tiếp nhận hồ sơ.'), h('Từ chối phê duyệt', u21.leader, '16:00 08/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Bổ sung bản chụp giấy tờ tùy thân của người yêu cầu.')]
                     }),
                     gq('BT-2026-030', 'Bùi Văn Khánh', u30, HS, YCBT_STATUS.BI_TU_CHOI, {
                         approval: appr(u30, 'Yêu cầu bổ sung', '', 0, [{ unitId: u30.unit, userId: u30.leader, action: 'Từ chối phê duyệt', note: 'Nội dung yêu cầu bổ sung cần nêu rõ thời hạn và căn cứ pháp lý.', at: '15:30 07/10/2026' }], '08:00 07/10/2026', { pending: null }),
                         returned: { reason: 'Nội dung yêu cầu bổ sung cần nêu rõ thời hạn và căn cứ pháp lý.', by: u30.leader, unitId: u30.unit, at: '15:30 07/10/2026', kind: 'Yêu cầu bổ sung', prevStatus: YCBT_STATUS.CU_NGUOI },
-                        history: [h('Trình phê duyệt', u30.officer, '08:00 07/10/2026', 'Yêu cầu bổ sung.'), h('Từ chối phê duyệt', u30.leader, '15:30 07/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Nội dung yêu cầu bổ sung cần nêu rõ thời hạn và căn cứ pháp lý.')]
+                        history: [h('Trình ký đến ' + userName(leadersOf(u30)[0]), u30.officer, '08:00 07/10/2026', 'Yêu cầu bổ sung.'), h('Từ chối phê duyệt', u30.leader, '15:30 07/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Nội dung yêu cầu bổ sung cần nêu rõ thời hạn và căn cứ pháp lý.')]
                     })
                 ];
             })()
@@ -3405,6 +3687,8 @@
     const RECEPTION_STATUSES = [STATUS.CHO_PHAN_CONG, STATUS.DANG_PHAN_CONG];
     // Người dùng thuộc Nhóm lãnh đạo của ít nhất một nút cấu hình luồng
     function isLeaderUser(userId) {
+        // [ro1] Lãnh đạo = tài khoản có Chức vụ thuộc Nhóm Lãnh đạo
+        if (!LEADER_BY_FLOW) return isNhomLanhDaoUser(userId);
         return FLOW_TYPE_ORDER.some(ft => {
             const cfg = getFlowConfig(ft);
             return Object.keys(cfg).some(root => Object.values(cfg[root]).some(n => (n.leaders || []).includes(userId)));
@@ -3673,11 +3957,13 @@
         getUser, userName, userLabel, usersInUnitTree,
         getCurrentUserId, getCurrentUser, setCurrentUser,
         getFlowConfig, saveFlowConfig, resetFlowConfig, getNodeConfig, getLeaders, isLeaderOf, isKyNhayUnit, kyNhayBadgeHtml, isUnitConfigured, findRootUnitByName,
+        LEADER_BY_FLOW, laNhomLanhDao, nhomLanhDaoTheoQuyTac, isNhomLanhDaoUser, leadersOfUnit, getLeadersByFlow, usersOfUnit, parentUnitOf, unitChainUp, childUnitsWithLeaders, signLeaderCandidates,
+        assignersOf, pendingUnitRoute, normalizeLevels, validateLevels, phddAssignersOf, phddRecallInfo, isPhoiHop, isPhoiHopOnly, MSG_LXL_020, MSG_LXL_021,
         getRequestTypeCatalog, getRequestTypesForUser, getKtlReasons, xdAuthorityType, ensureClaimRecord,
         NYC_TYPES, DEFAULT_NYC_ROLES, getNycRoles, nycRoleCode, nycRoleName, nycTypeConstraint, nycTypeOf, nycRolesForType, isNbthOrgRole, joinAddress, stripAdminCode, getCountries, isValidEmail,
         DEFAULT_PERSONAL_DOC_TYPES, getPersonalDocTypes, normalizePersonalDocType, fillPersonalDocTypeSelect,
         loadRecords, saveRecords, getRecord, upsertRecord, removeRecord, addHistory, nextCode, createPendingRecord,
-        latestRoute, canEditAtReception, canAssign, markViewed, assignToUnit, assignToOfficers,
+        latestRoute, canEditAtReception, canAssign, markViewed, assignToUnit, assignToOfficers, assignHoSoCode, isLeaderUser,
         getRecallInfo, recall, computeApprovalPath, submitForApproval, canApprove, isLastApprovalLevel, nextLevelLeaders, xdPresetNextAssignee, firstLevelLeaders, approvalKindOf, approvalLabel, kindDisplay, approvalPathText, approvalPathLineHtml, KIND_KQXD, approve, approveVerb, isXdRec, gqConfiguredRoots, xdTargetUnitId, xdTargetConfigured, xdTargetNotConfiguredMsg, renderSignDocHtml, rejectApproval, performTransfer,
         transferToAgency, issueXdOffline, returnHistoryOf, supplementHistoryOf, renderXdReturnHistoryHtml, renderXdSupplementHistoryHtml, getLeaderTasks, thuLyUnitOf, thuLyLeaders, canThuLy, canCuNguoi, applyCuNguoi, KIND_CU_NGUOI, thuLyOfficerOptions, acceptCase, rejectCase,
         KIND_CDPD, STATUS_CU_NGUOI_PHDD, phddFlowNode, phddLeaders, canAssignPhdd, startPhddAssign, assignPhddToUnit, assignPhddToOfficer, PHDD_ASSIGN,

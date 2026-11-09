@@ -4806,26 +4806,6 @@ const systemPermissions = [
                                                                ]
                                               },
 {
- "id":  "WebAdmin-29-13",
- "name":  "Cấu hình luồng xử lý",
- "children":  [
-{
- "id":  "WebAdmin-29-13-01",
- "name":  "Tra cứu cấu hình luồng xử lý",
- "children":  [
-
- ]
- },
-{
- "id":  "WebAdmin-29-13-02",
- "name":  "Cập nhật cấu hình luồng xử lý",
- "children":  [
-
- ]
- }
- ]
- },
-{
  "id":  "WebAdmin-29-14",
  "name":  "Nhật ký đồng bộ Dịch vụ công",
  "children":  [
@@ -4855,6 +4835,4 @@ const systemPermissions = [
                                           ]
                          }
                      ]
-    }
-]
 ;

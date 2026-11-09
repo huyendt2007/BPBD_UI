@@ -5520,6 +5520,9 @@ function kpRole() { const s = document.getElementById('roleSelector'); return s 
 function kpNormStatus(st) { return (st === 'Đã sung quỹ' || st === 'Sung quỹ nhà nước') ? 'Trả lại ngân sách nhà nước' : (st === 'Chi trả một phần' ? 'Chờ chi trả' : st); }
 function kpInTab(tab, item) {
     const st = kpNormStatus(item.status);
+    // [ro1] Cán bộ phối hợp của vụ việc: không có dòng tại danh sách (chỉ xem Kinh phí qua liên kết tại màn chi tiết Giải quyết YCBT)
+    const Wk = window.BTNN_WF;
+    if (kpRole() !== 'lanh-dao' && Wk && Wk.isPhoiHopOnly && Wk.isPhoiHopOnly(item.claimCode || item.ycbtCode)) return false;
     if (kpRole() === 'lanh-dao') {
         if (tab === 'pending') return st === 'Chờ duyệt';
         return ['Chờ chi trả', 'Bị trả lại', 'Chờ thu hồi', 'Hoàn thành', 'Trả lại ngân sách nhà nước', 'Đã thu hồi'].includes(st) || (st === 'Đã hủy' && !!item.approvedDate);

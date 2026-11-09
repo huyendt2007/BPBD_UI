@@ -40,11 +40,13 @@ function kptbHist(item, action, note, userId) {
 // Tài khoản thuộc Nhóm lãnh đạo trong Cấu hình luồng xử lý
 function kptbIsLeaderAccount(uid) {
     const W = kptbW(); if (!W || !uid) return false;
+    if (typeof W.isLeaderUser === 'function') return W.isLeaderUser(uid); // [ro1] Lãnh đạo theo Chức vụ
     const cfg = W.getFlowConfig() || {};
     return Object.keys(cfg).some(root => Object.values(cfg[root] || {}).some(n => (n && n.leaders || []).includes(uid)));
 }
 function kptbLeaderAccounts() {
     const W = kptbW(); if (!W) return [];
+    if (typeof W.isLeaderUser === 'function') return W.USERS.filter(u => W.isLeaderUser(u.id)).map(u => u.id); // [ro1]
     const cfg = W.getFlowConfig() || {};
     const ids = [];
     Object.keys(cfg).forEach(root => Object.values(cfg[root] || {}).forEach(n => (n && n.leaders || []).forEach(u => { if (!ids.includes(u)) ids.push(u); })));
@@ -224,7 +226,7 @@ function kptbSeed() {
                 it.kptbApproval = { kind: KPTB_KIND, path: levels.map(l => l.unitId), assignees, level: 0, steps: [], content: 'Kính trình Lãnh đạo ký Thông báo chi trả tiền bồi thường.', submittedBy: 'canbonv', submittedAt: '10:05 17/10/2026', pending: true, prevStatus: KPTB_ST.WAIT };
                 it.status = KPTB_ST.REVIEW;
                 it.user = 'Nguyễn Văn Cán Bộ';
-                it.kptbHistory.push({ at: '10:05 17/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Trình ký', note: `${KPTB_KIND}. Trình ${kptbUserName(assignees[0])} - ${kptbUnitName(levels[0].unitId)}. Nội dung: Kính trình Lãnh đạo ký Thông báo chi trả tiền bồi thường.` });
+                it.kptbHistory.push({ at: '10:05 17/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Trình ký đến ' + kptbUserName(assignees[0]), note: `${KPTB_KIND}. Trình ${kptbUserName(assignees[0])} - ${kptbUnitName(levels[0].unitId)}. Nội dung: Kính trình Lãnh đạo ký Thông báo chi trả tiền bồi thường.` });
             }
         }
         // KPTB-S2: Thông báo chi trả Bị trả lại (Lãnh đạo cấp 1 Từ chối) - thử Cập nhật, trình lại từ cấp 1
@@ -240,7 +242,7 @@ function kptbSeed() {
                 it.kptbReturned = { by: assignees[0], at: '15:30 27/10/2026', reason };
                 it.leaderOpinion = reason; it.approvedDate = '15:30 27/10/2026'; it.approvedLeader = kptbUserName(assignees[0]); it.approvedLeaderId = assignees[0];
                 it.rejectHistory = [{ date: '15:30 27/10/2026', leader: kptbUserName(assignees[0]), opinion: reason }];
-                it.kptbHistory.push({ at: '09:00 27/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Trình ký', note: `${KPTB_KIND}. Trình ${kptbUserName(assignees[0])} - ${kptbUnitName(levels[0].unitId)}.` });
+                it.kptbHistory.push({ at: '09:00 27/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Trình ký đến ' + kptbUserName(assignees[0]), note: `${KPTB_KIND}. Trình ${kptbUserName(assignees[0])} - ${kptbUnitName(levels[0].unitId)}.` });
                 it.kptbHistory.push({ at: '15:30 27/10/2026', userId: assignees[0], userName: kptbUserName(assignees[0]), action: 'Từ chối', note: `${KPTB_KIND}: từ chối tại cấp ${kptbUnitName(levels[0].unitId)}. Lý do: ${reason}` });
             }
         }
@@ -610,7 +612,7 @@ function kptbEnsureSignModal() {
         <div class="kptb-stepper-fullwidth" id="kptbSgStepper">
             <div class="kptb-step-tab active" id="kptbSgTab1" onclick="if (kptbSg && kptbSg.step === 2) kptbSgGoStep(1);"><span class="kptb-step-badge" id="kptbSgTab1Badge">1</span><span class="kptb-step-title">Nhập thông tin</span></div>
             <div class="kptb-stepper-sep"></div>
-            <div class="kptb-step-tab" id="kptbSgTab2" onclick="if (kptbSg && kptbSg.step === 1) kptbSgNext();"><span class="kptb-step-badge">2</span><span class="kptb-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div>
+            <div class="kptb-step-tab" id="kptbSgTab2" onclick="if (kptbSg && kptbSg.step === 1) kptbSgNext();"><span class="kptb-step-badge">2</span><span class="kptb-step-title">Thiết lập các cấp trình ký</span></div>
         </div>
         <div class="kptb-qs-body kptb-gqx-body" id="kptbSgStep1">
             <div class="kptb-gqx-sec">
@@ -722,7 +724,9 @@ function kptbOpenSign(id, draft) {
     kptbEnsureSignModal();
     const levels = kptbLevels(item.ycbtCode);
     const prev = item.kptbNotice || {};
-    kptbSg = { id: item.id, draft: draft || null, method: 'Ký số', docSrc: 'gen', step: 1, levels, assignees: levels.map((lv, i) => (prev.assignees && prev.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null };
+    kptbSg = { id: item.id, draft: draft || null, method: 'Ký số', docSrc: 'gen', step: 1, levels, assignees: levels.map((lv, i) => (prev.assignees && prev.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null,
+        // [ro1] Thiết lập các cấp trình ký: trình lại điền sẵn thiết lập lần trước
+        ui: null, prevLv: item.status === KPTB_ST.REJECT && window.BTNN_PCKD ? BTNN_PCKD.prevFromSign(prev) : null };
     kptbEl('kptbSgNoiNhan').value = prev.noiNhan || KPTB_NOI_NHAN_DEFAULT;
     kptbEl('kptbSgSubCode').innerText = kptbVv(item.ycbtCode) || item.ycbtCode || '--';
     kptbEl('kptbSgSubNyc').innerText = item.nycName || '--';
@@ -923,8 +927,9 @@ function kptbSgNext() {
     if (!okTlkt) return;
     const f = kptbSg.docFile;
     kptbEl('kptbSgA4').innerHTML = f.generated ? f.html : `<div style="text-align:center; color:#64748b; padding-top:300px; font:14px Inter, sans-serif;"><i class="fa-solid fa-file-lines" style="font-size:48px;"></i><br><br>${kpEsc(f.name)}<br>(Văn bản tải lên)</div>`;
-    kptbSgRenderLevels();
     kptbSgGoStep(2);
+    if (window.BTNN_PCKD && BTNN_PCKD.simpleMount(kptbSg, 'kptbSg', 'kptbSgLevels', 'kptbSgA4')) return;
+    kptbSgRenderLevels();
     kptbSg.levels.forEach((lv, i) => { if (kptbSg.placed[i]) kptbSgDrawBox(i); });
 }
 function kptbSgRenderLevels() {
@@ -969,7 +974,9 @@ function kptbSgDrawBox(i) {
 // Trình Lãnh đạo: mỗi cấp chọn Lãnh đạo và đặt chữ ký -> "Chờ duyệt", Loại trình "Thông báo chi trả"
 function kptbSgSubmit() {
     let ok = true; let first = null;
-    kptbSg.levels.forEach((lv, i) => {
+    const lv = window.BTNN_PCKD ? BTNN_PCKD.simpleCollect(kptbSg) : null;
+    if (lv === false) return;
+    (lv ? [] : kptbSg.levels).forEach((lv, i) => {
         const bad = !kptbEl('kptbSgLeader' + i).value; kptbMark('kptbSgLeader' + i, bad); if (bad) { ok = false; first = first || kptbEl('kptbSgLeader' + i); }
         const pe = kptbEl('kptbSgPlace' + i + 'Err'); if (!kptbSg.placed[i]) { if (pe) pe.style.display = 'block'; ok = false; }
     });
@@ -983,14 +990,15 @@ function kptbSgSubmit() {
     const f = kptbSg.docFile;
     const content = kptbEl('kptbSgContent').value.trim();
     const path = kptbSg.levels.map(l => l.unitId);
-    item.kptbNotice = Object.assign({ signMethod: 'Ký số' }, data, { docFile: { name: f.name, generated: !!f.generated }, assignees: kptbSg.assignees.slice(), sigCoords: JSON.parse(JSON.stringify(kptbSg.coords)), attachments });
+    item.kptbNotice = Object.assign({ signMethod: 'Ký số' }, data, { docFile: { name: f.name, generated: !!f.generated }, assignees: kptbSg.assignees.slice(), sigCoords: JSON.parse(JSON.stringify(kptbSg.coords)), attachments },
+        lv ? { tuThietLap: true, pcLevels: lv.levels, pcSig: lv.pcSig } : {});
     if (!f.generated) { item.kptbNotice.docNo = ''; item.kptbNotice.docDate = ''; }
     item.kptbApproval = { kind: KPTB_KIND, path, assignees: kptbSg.assignees.slice(), level: 0, steps: [], content, submittedBy: me, submittedAt: kptbNow(), pending: true, prevStatus: item.status, attachments };
     item.kptbReturned = null;
     item.status = KPTB_ST.REVIEW;
     item.user = kptbUserName(me);
     const nextText = path.length > 1 ? ' Lãnh đạo cấp tiếp theo: ' + path.slice(1).map((u, i) => `${kptbUserName(kptbSg.assignees[i + 1])} - ${kptbUnitName(u)}`).join('; ') + '.' : '';
-    kptbHist(item, 'Trình ký', `${KPTB_KIND}. Trình ${kptbUserName(kptbSg.assignees[0])} - ${kptbUnitName(path[0])}.${nextText}${content ? ' Nội dung: ' + content : ''}`);
+    kptbHist(item, 'Trình ký đến ' + kptbUserName(kptbSg.assignees[0]), `${KPTB_KIND}. Trình ${kptbUserName(kptbSg.assignees[0])} - ${kptbUnitName(path[0])}.${nextText}${content ? ' Nội dung: ' + content : ''}`);
     if (attachments.length) item.kptbHistory[item.kptbHistory.length - 1].attachments = attachments;
     saveProposalsToLocal();
     kptbCloseSign();
@@ -1052,7 +1060,7 @@ function kptbLdHistoryHtml(item) {
     const pick = (re, s) => { const m = re.exec(s || ''); return m ? m[1].trim() : ''; };
     const items = [];
     (item.kptbHistory || []).filter(h => /^(Trình ký|Ký duyệt|Từ chối)/.test(h.action || '')).forEach(h => {
-        if (/^Trình ký/.test(h.action)) items.push(row('done', h.userId, h.userName, h.at, '', 'fa-solid fa-circle-arrow-right', `Trình ký ${kpEsc(KPTB_KIND)}`, pick(/Nội dung: (.*)$/, h.note), h.attachments));
+        if (/^Trình ký/.test(h.action)) items.push(row('done', h.userId, h.userName, h.at, '', 'fa-solid fa-circle-arrow-right', (t => t ? `Trình ký đến <strong>${kpEsc(t)}</strong>` : 'Trình ký')((/^Trình ký đến (.+)$/.exec(h.action || '') || [])[1] || pick(/Trình ([^.]+?) - /, h.note)), pick(/Nội dung: (.*)$/, h.note), h.attachments));
         else if (/^Từ chối/.test(h.action)) items.push(row('no', h.userId, h.userName, h.at, 'no', 'fa-solid fa-ban', 'Từ chối - trả lại cán bộ trình', pick(/Lý do: (.*)$/, h.note)));
         else {
             const to = pick(/; chuyển ([^.]+)\./, h.note);
@@ -1122,6 +1130,8 @@ function kptbLdOpen(id, mode) {
     kptbFrameFull(true);
     const fr = kptbEl('kptbLdFrame');
     if (fr && W) fr.srcdoc = W.docPageHtml(kptbBuildDocHtml(item, n), docName.replace(/\.[a-z]+$/i, ''), false);
+    // [ro1] Cấp bật Ký số -> khối Ký số; không bật -> gán chữ ký / chữ ký nháy
+    if (item.kptbNotice && item.kptbNotice.tuThietLap && window.BTNN_PCKD) { const sb = ov.querySelector('.kptbld-sign'); if (sb) sb.remove(); BTNN_PCKD.decorateSimple(a, item.kptbNotice, approve ? 'approve' : 'reject', { page: null, right: ov.querySelector('.kptbld-right'), before: ov.querySelector('.kptbld-right .kptbld-group'), title: ov.querySelector('#kptbLdTitle') }); }
 }
 function kptbLdClose() { const el = kptbEl('kptbLdOverlay'); if (el) { el.remove(); kptbFrameFull(false); } }
 function kptbLdMark(idEl, invalid) { kptbMark(idEl, invalid); }
@@ -1149,7 +1159,8 @@ function kptbLdSubmit() {
         if (!last) {
             if (next) a.assignees[a.level + 1] = next;
             a.level += 1;
-            kptbHist(item, 'Ký duyệt', `${KPTB_KIND}: ký duyệt cấp ${kptbUnitName(unitId)}; chuyển ${next ? kptbUserLabel(next) : kptbUnitName(a.path[a.level])}.${fullNote ? ' Ý kiến: ' + fullNote : ''}`);
+            const how = window.BTNN_PCKD ? BTNN_PCKD.howOf(item.kptbNotice, a.level - 1) : '';
+            kptbHist(item, 'Ký duyệt', `${KPTB_KIND}: ký duyệt cấp ${kptbUnitName(unitId)}${how ? ' (' + how + ')' : ''}; chuyển ${next ? kptbUserLabel(next) : kptbUnitName(a.path[a.level])}.${fullNote ? ' Ý kiến: ' + fullNote : ''}`);
             msg = `Đã ký duyệt ${KPTB_KIND}, chuyển ${next ? kptbUserLabel(next) : 'cấp tiếp theo'} ký duyệt.`;
         } else {
             a.pending = false;
@@ -1352,7 +1363,7 @@ function kptbView(id) {
         if (typeof tlktViewHtml === 'function') noticeBody += tlktViewHtml(n.attachments || [], { boxClass: 'tlkt-view', titleClass: 'tlkt-sec-title' });
     }
     const supBody = item.kptbSupp ? `<div class="kptb-dtl-grid">${it('Ngày đề nghị', kpEsc(item.kptbSupp.at))}${it('Cán bộ đề nghị', kpEsc(kptbUserName(item.kptbSupp.by)))}${it('Văn bản đề nghị', kpEsc(item.kptbSupp.file))}</div><div class="kptb-dtl-item" style="margin-top:8px;"><div class="k">Nội dung đề nghị</div><div class="v" style="font-weight:500;">${kpEsc(item.kptbSupp.content || '-')}</div></div>` : '';
-    const rejBody = item.status === KPTB_ST.REJECT && item.kptbReturned ? `<div class="kptb-dtl-grid">${it('Người từ chối', kpEsc(kptbUserName(item.kptbReturned.by)))}${it('Thời điểm', kpEsc(item.kptbReturned.at))}</div><div class="kptb-dtl-item" style="margin-top:8px;"><div class="k">Lý do bị trả lại</div><div class="v" style="font-weight:500;">${kpEsc(item.kptbReturned.reason)}</div></div>` : '';
+    const rejBody = item.status === KPTB_ST.REJECT && item.kptbReturned ? `<div class="kptb-dtl-grid">${it('Lãnh đạo trả lại', kpEsc(kptbUserName(item.kptbReturned.by)))}${it('Thời điểm trả lại', kpEsc(item.kptbReturned.at))}</div><div class="kptb-dtl-item" style="margin-top:8px;"><div class="k">Lý do bị trả lại</div><div class="v" style="font-weight:500;">${kpEsc(item.kptbReturned.reason)}</div></div>` : '';
     const p = item.kptbPayment;
     const payBody = p ? `<div class="kptb-dtl-grid">${it('Phương thức chi trả', kpEsc(p.method))}${p.method === KPTB_CASH ? it('Người nhận tiền', kpEsc(p.recName)) + it('Số định danh cá nhân/CCCD', kpEsc(p.recIdNo)) : it('Chủ tài khoản', kpEsc(p.accHolder)) + it('Số tài khoản', kpEsc(p.account)) + it('Ngân hàng', kpEsc([p.bank, p.branch].filter(Boolean).join(' - ')))}${it('Ngày chi trả', kpEsc(p.payDate))}${it('Số tiền chi trả', kptbFmt(p.amount) + ' đồng')}${it('Tệp đính kèm', kpEsc((p.files || []).join(', ')))}</div>` : '';
     const hist = (item.kptbHistory || []).slice().reverse().map(h => `<div class="kptb-hist-row"><span style="color:#64748b;">${kpEsc(h.at)}</span><span style="font-weight:600;">${kpEsc(h.userName)}</span><span><b>${kpEsc(h.action)}</b>${h.note ? ': ' + kpEsc(h.note) : ''}</span></div>`).join('');

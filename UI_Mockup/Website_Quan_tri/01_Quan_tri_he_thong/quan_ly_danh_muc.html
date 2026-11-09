@@ -676,6 +676,14 @@
         /* Đồng bộ từ TTDLQG (Loại danh mục DM_09, DM_10, DM_23, DM_59) */
         .list-actions { display: flex; align-items: center; gap: 10px; }
         .sync-meta { font-size: 12px; font-weight: 400; color: #64748B; }
+        /* [ro1] Toggle Nhóm Lãnh đạo (Chức vụ) */
+        .dm-switch { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; position: relative; }
+        .dm-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+        .dm-slider { width: 38px; height: 20px; border-radius: 999px; background: #cbd5e1; position: relative; transition: .2s; flex-shrink: 0; }
+        .dm-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 2px; top: 2px; background: #fff; border-radius: 50%; transition: .2s; }
+        .dm-switch input:checked + .dm-slider { background: #16a34a; }
+        .dm-switch input:checked + .dm-slider::before { transform: translateX(18px); }
+        .dm-switch-txt { font-size: 13px; color: #334155; }
     </style>
 </head>
 <body>
@@ -746,12 +754,13 @@
                             <th width="3.5%" style="text-align:center">STT</th>
                             <th width="9%" class="sortable" onclick="handleSort('code')">Mã danh mục <span id="sort-code"><i class="fas fa-sort"></i></span></th>
                             <th width="13%" class="sortable" onclick="handleSort('name')">Tên danh mục <span id="sort-name"><i class="fas fa-sort"></i></span></th>
-                            <th width="12%" class="sortable" onclick="handleSort('nameEn')">Tên danh mục (EN) <span id="sort-nameEn"><i class="fas fa-sort"></i></span></th>
+                            <th width="9%" class="sortable" onclick="handleSort('nameEn')">Tên danh mục (EN) <span id="sort-nameEn"><i class="fas fa-sort"></i></span></th>
                             <th width="13%" class="sortable" onclick="handleSort('typeName')">Loại danh mục <span id="sort-typeName"><i class="fas fa-sort"></i></span></th>
                             <th width="9.5%">Viết tắt/Mô tả</th>
-                            <th width="9.5%">Viết tắt/Mô tả (EN)</th>
+                            <th width="8%">Viết tắt/Mô tả (EN)</th>
                             <th width="9.5%">Đơn vị áp dụng</th>
                             <th width="12%" class="sortable" onclick="handleSort('parentName')">Áp dụng theo danh mục cha <span id="sort-parentName"><i class="fas fa-sort"></i></span></th>
+                            <th width="6%" style="text-align:center">Nhóm Lãnh đạo</th>
                             <th width="8%" class="sortable" onclick="handleSort('status')">Trạng thái <span id="sort-status"><i class="fas fa-sort"></i></span></th>
                             <th width="8%" style="text-align:center; min-width: 105px;">Thao tác</th>
                         </tr>
@@ -804,6 +813,10 @@
                 <div class="form-group" id="detParentGroup">
                     <label class="form-label" id="detLblParent">Trực thuộc (Danh mục cha)</label>
                     <input type="text" id="detParent" class="form-control" readonly>
+                </div>
+                <div class="form-group" id="detNhomLdGroup" style="display:none;">
+                    <label class="form-label">Nhóm Lãnh đạo</label>
+                    <input type="text" id="detNhomLd" class="form-control" readonly>
                 </div>
                 <div class="form-group" id="detUnitGroup" style="display:none;">
                     <label class="form-label">Đơn vị áp dụng</label>
@@ -880,6 +893,12 @@
                         <div class="error-message" id="errParent">Vui lòng chọn Loại cơ quan.</div>
                     </div>
 
+                    <!-- [ro1] Chức vụ (DM_58): thuộc tính Nhóm Lãnh đạo (Có / Không, mặc định Không) -->
+                    <div class="form-group" id="nhomLdGroup" style="display:none;">
+                        <label class="form-label" for="inpNhomLd">Nhóm Lãnh đạo</label>
+                        <label class="dm-switch"><input type="checkbox" id="inpNhomLd" onchange="dmSetNhomLd(this.checked)"><span class="dm-slider"></span><span class="dm-switch-txt" id="inpNhomLdTxt">Không</span></label>
+                    </div>
+
                     <!-- Đơn vị áp dụng: dùng cho loại danh mục có Phân quyền theo đơn vị = Mở -->
                     <div class="form-group" id="unitGroup" style="display:none;">
                         <label class="form-label">Đơn vị áp dụng <span class="required-mark">*</span></label>
@@ -952,7 +971,7 @@
     <!-- CUSTOM FLOATING TOOLTIP -->
     <div id="customTooltip" class="custom-tooltip"></div>
 
-    <script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261109sd1"></script>
+    <script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261109ro1"></script>
     <script>
         // Custom Tooltip functions
         function showCellTooltip(event, text) {
@@ -1647,6 +1666,11 @@
                 INITIAL_CATEGORIES.filter(d => d.typeCode === 'DM_57' || d.typeCode === 'DM_58').forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
                 localStorage.setItem('dmLoaiCoQuanSeedV', 'v4');
             }
+            // [ro1] Chức vụ (DM_58): khởi tạo thuộc tính Nhóm Lãnh đạo theo quy tắc (cấp trưởng, cấp phó = Có; ủy viên, thành viên, Kế toán trưởng, Thư ký, chức vụ chuyên môn = Không)
+            if (localStorage.getItem('dmNhomLdSeedV') !== 'v1') {
+                savedCats.forEach(c => { if (c && c.typeCode === 'DM_58' && typeof c.nhomLanhDao !== 'boolean') c.nhomLanhDao = !!(window.BTNN_WF && BTNN_WF.nhomLanhDaoTheoQuyTac && BTNN_WF.nhomLanhDaoTheoQuyTac(c.name)); });
+                localStorage.setItem('dmNhomLdSeedV', 'v1');
+            }
             // Mã số thuế (DM_10): giá trị bổ sung của hệ thống, không đồng bộ từ TTDLQG
             const mst = savedCats.find(c => c.typeCode === 'DM_10' && c.code === 'GT_04');
             if (mst && !mst.notes) mst.notes = 'Giá trị bổ sung của hệ thống, không đồng bộ từ TTDLQG';
@@ -1818,7 +1842,7 @@
             // Render Rows
             tableBody.innerHTML = '';
             if (pageItems.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:var(--text-muted); padding:30px; font-style:italic;">Không tìm thấy kết quả phù hợp với điều kiện tìm kiếm.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="12" style="text-align:center; color:var(--text-muted); padding:30px; font-style:italic;">Không tìm thấy kết quả phù hợp với điều kiện tìm kiếm.</td></tr>`;
                 renderPagination(totalItems, 0, 0, totalPages);
                 return;
             }
@@ -1893,6 +1917,7 @@
                     <td style="word-break: break-word;">${displayValEn}</td>
                     <td style="word-break: break-word; font-size:12.5px;">${displayUnits || '<span style="color:var(--text-muted);">-</span>'}</td>
                     <td>${parentDisplay}</td>
+                    <td style="text-align:center">${item.typeCode === 'DM_58' ? (dmNhomLd(item) ? 'Có' : 'Không') : '<span style="color:var(--text-muted);">-</span>'}</td>
                     <td style="text-align:center">${statusBadge}</td>
                     <td style="text-align:center">
                         <div class="action-cell">
@@ -1964,6 +1989,16 @@
             return null;
         }
 
+        // [ro1] Thuộc tính Nhóm Lãnh đạo của Chức vụ (DM_58): giá trị đã lưu; chưa có thì theo quy tắc (cấp trưởng, cấp phó = Có)
+        function dmNhomLd(item) {
+            if (!item || item.typeCode !== 'DM_58') return false;
+            if (typeof item.nhomLanhDao === 'boolean') return item.nhomLanhDao;
+            return !!(window.BTNN_WF && BTNN_WF.nhomLanhDaoTheoQuyTac && BTNN_WF.nhomLanhDaoTheoQuyTac(item.name));
+        }
+        function dmSetNhomLd(on) {
+            const cb = document.getElementById('inpNhomLd'); if (cb) cb.checked = !!on;
+            const t = document.getElementById('inpNhomLdTxt'); if (t) t.textContent = on ? 'Có' : 'Không';
+        }
         function handleTypeChangeInForm() {
             const typeCode = document.getElementById('inpType').value;
             const parentGroup = document.getElementById('parentGroup');
@@ -1982,6 +2017,7 @@
 
             document.getElementById('unitGroup').style.display = hasUnitScope(typeCode) ? 'block' : 'none';
             if (hasUnitScope(typeCode)) renderUnitTree(formUnits);
+            document.getElementById('nhomLdGroup').style.display = typeCode === 'DM_58' ? 'block' : 'none';
 
             const parentTypeCode = getParentTypeCode(typeCode);
             if (parentTypeCode) {
@@ -2211,6 +2247,8 @@
             const parentObj = catList.find(c => c.code === item.parentCode && c.typeCode === parentTypeCode);
             
             document.getElementById('detParentGroup').style.display = parentTypeCode ? 'block' : 'none';
+            document.getElementById('detNhomLdGroup').style.display = item.typeCode === 'DM_58' ? 'block' : 'none';
+            document.getElementById('detNhomLd').value = dmNhomLd(item) ? 'Có' : 'Không';
             document.getElementById('detLblParent').innerText = `Áp dụng theo danh mục cha (${parentTypeName})`;
             document.getElementById('detParent').value = parentObj ? `${parentObj.name} (${parentObj.code})` : (item.parentCode ? item.parentCode : 'Mọi giá trị của loại cha');
 
@@ -2243,6 +2281,7 @@
 
             document.getElementById('inpCode').value = '';
             document.getElementById('inpCode').readOnly = false;
+            dmSetNhomLd(false);
             document.getElementById('inpName').value = '';
             document.getElementById('inpNameEn').value = '';
             document.getElementById('inpVal').value = '';
@@ -2303,6 +2342,7 @@
                 const parentItem = catList.find(c => c.typeCode === 'DM_57' && c.code === item.parentCode);
                 if (item.typeCode === 'DM_58') document.getElementById('inpParentSearch').value = parentItem ? parentItem.name : '';
             }
+            dmSetNhomLd(dmNhomLd(item));
 
             document.getElementById('formModal').classList.add('active');
         }
@@ -2408,7 +2448,8 @@
                     parentCode,
                     notes,
                     status,
-                    donViApDung: hasUnitScope(typeCode) ? formUnits.slice() : undefined
+                    donViApDung: hasUnitScope(typeCode) ? formUnits.slice() : undefined,
+                    nhomLanhDao: typeCode === 'DM_58' ? !!document.getElementById('inpNhomLd').checked : undefined
                 });
                 showToast("Thêm mới danh mục thành công!", "success");
             } else {
@@ -2422,6 +2463,7 @@
                     item.notes = notes;
                     item.status = status;
                     if (hasUnitScope(item.typeCode)) item.donViApDung = formUnits.slice();
+                    if (item.typeCode === 'DM_58') item.nhomLanhDao = !!document.getElementById('inpNhomLd').checked;
                 }
                 showToast("Cập nhật danh mục thành công!", "success");
             }

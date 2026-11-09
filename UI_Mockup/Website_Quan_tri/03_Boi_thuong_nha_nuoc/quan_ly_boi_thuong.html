@@ -4156,21 +4156,21 @@
     </div>
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
-    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109ro1"></script>
     <script src="btnn_dvc_sync.js?v=20261106dvc11"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
-    <script src="quan_ly_boi_thuong_dcgq.js?v=20261104gql2"></script>
-    <script src="quan_ly_kinh_phi_kpdc.js?v=20261105kp1"></script>
+    <script src="quan_ly_boi_thuong_dcgq.js?v=20261109ro1"></script>
+    <script src="quan_ly_kinh_phi_kpdc.js?v=20261109ro1"></script>
     <!-- [th2c] Danh mục Loại thiệt hại 2 cấp (DM_27) + bảng 2 cấp dùng chung -->
     <script src="btnn_thiet_hai.js?v=20261030dm28"></script>
-    <script src="quan_ly_boi_thuong_seedx.js?v=20261104gql1"></script>
+    <script src="quan_ly_boi_thuong_seedx.js?v=20261109pd1"></script>
     <!-- [hlqd] Hồ sơ mẫu BT-2026-191..194 cho Quyết định GQBT mẫu thử Hiệu lực -->
     <script src="quan_ly_boi_thuong_hlqd.js?v=20261029sn1"></script>
     <script src="quan_ly_boi_thuong_seedht.js?v=20261104dc1"></script>
-    <script src="quan_ly_boi_thuong_hgq.js?v=20261029tlcam2"></script>
+    <script src="quan_ly_boi_thuong_hgq.js?v=20261109ro1"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <!-- Cử người giải quyết (nhiều cán bộ theo Cơ cấu tổ chức), Xác minh thiệt hại nhiều lần, Văn bản làm căn cứ yêu cầu bồi thường -->
     <script>
@@ -4768,6 +4768,8 @@
         function gqIsLeaderUser(userId) {
             const W = window.BTNN_WF;
             if (!W || !userId) return false;
+            // [ro1] Lãnh đạo theo Chức vụ (Nhóm Lãnh đạo)
+            if (typeof W.isLeaderUser === 'function') return W.isLeaderUser(userId);
             const types = Array.isArray(W.FLOW_TYPE_ORDER) && W.FLOW_TYPE_ORDER.length ? W.FLOW_TYPE_ORDER : [undefined];
             return types.some(ft => {
                 const cfg = W.getFlowConfig(ft) || {};
@@ -9225,6 +9227,15 @@
             if (c.phddStep1No && (c.phddStep1Date || c.phddStep1SendDate)) return 'Chờ phản hồi';
             return PHDD_START_STATUS;
         }
+        // Người bị thiệt hại đã chết: bỏ qua bước Ý kiến phản hồi (dữ liệu mẫu cũ đang ở Chờ phản hồi -> Tổ chức thực hiện; ghi Lịch sử xử lý 01 lần)
+        function phddSkipOpinionIfDead(c) {
+            if (!c || c.victimAlive !== 'no' || phddCanonicalStatus(c.phddStatus) !== 'Chờ phản hồi') return;
+            c.phddStatus = 'Chờ thực thi';
+            if (!Array.isArray(c.phddTimeline)) c.phddTimeline = [];
+            if (!c.phddTimeline.some(t => t && t.title === 'Bỏ qua bước Ý kiến phản hồi của người yêu cầu')) {
+                c.phddTimeline.push({ title: 'Bỏ qua bước Ý kiến phản hồi của người yêu cầu', date: c.phddStep1SendDate || c.phddStep1Date || '', desc: 'Người bị thiệt hại đã chết: không lấy ý kiến phản hồi, chuyển sang bước Tổ chức thực hiện phục hồi danh dự.' });
+            }
+        }
         // Đồng bộ 2 nhánh của 01 vụ việc (chạy khi nạp/chuẩn hóa dữ liệu)
         function syncClaimTracks(c) {
             if (!c) return;
@@ -9239,6 +9250,7 @@
             if (kind === 'money') return;
             // Chuẩn hóa bước Phục hồi danh dự đã lưu (dữ liệu cũ Tạm hoãn / Từ chối -> Hoãn / Từ chối phục hồi danh dự)
             if (c.phddStatus) c.phddStatus = phddCanonicalStatus(c.phddStatus);
+            phddSkipOpinionIfDead(c);
             const s = canonicalClaimStatus(c.status);
             if (kind === 'honor') {
                 if (c.phddStarted) {
@@ -9249,7 +9261,7 @@
                 return;
             }
             const afterThuLy = CLAIM_STATUSES_FROM_VERIFICATION.includes(s);
-            if (afterThuLy && !c.phddStatus) { c.phddStatus = phddDeriveStatus(c); c.phddStarted = true; }
+            if (afterThuLy && !c.phddStatus) { c.phddStatus = phddDeriveStatus(c); c.phddStarted = true; phddSkipOpinionIfDead(c); }
             // Đình chỉ / Hoãn / Tạm đình chỉ giải quyết bồi thường chỉ áp dụng nhánh Giải quyết bồi thường thiệt hại: nhánh Phục hồi danh dự giữ nguyên
         }
         // Cấp Mã hồ sơ BT-yyyy-xxx chưa dùng
@@ -11051,7 +11063,7 @@
                 const leaderSel = document.getElementById('inlineClaimLeader');
                 if (leaderSel) {
                     const opts = ids.map(uid => `<option value="${gqE(uid)}">${gqE(W.userLabel(uid))}</option>`).join('');
-                    leaderSel.innerHTML = `<option value="">${ids.length ? '-- Chọn Lãnh đạo phê duyệt --' : 'Cấp phê duyệt đầu tiên chưa cấu hình nhóm lãnh đạo'}</option>${opts}`;
+                    leaderSel.innerHTML = `<option value="">${ids.length ? '-- Chọn Lãnh đạo phê duyệt --' : 'Cấp phê duyệt đầu tiên chưa có tài khoản thuộc Nhóm Lãnh đạo'}</option>${opts}`;
                     const rec = typeof gqRecord === 'function' ? gqRecord(claim) : null;
                     if (rec && rec.approval && rec.approval.assignees && rec.approval.assignees[0]) {
                         leaderSel.value = rec.approval.assignees[0];
@@ -13811,9 +13823,34 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             return claim.assignedOfficer || "Chuyên viên giải quyết";
         }
 
+        // Lịch sử xử lý - nhãn trình: "Trình ký đến [Họ tên Lãnh đạo cấp 1]" (không có Lãnh đạo cấp 1: "Trình Lãnh đạo: [Loại trình]")
+        function gqTrinhTitle(leaderId, kind) {
+            const W = typeof gqW === 'function' ? gqW() : null;
+            const nm = leaderId && W ? W.userName(leaderId) : '';
+            return nm && nm !== '--' ? 'Trình ký đến ' + nm : 'Trình Lãnh đạo: ' + kind;
+        }
+        // Dữ liệu cũ (localStorage): "Trình Lãnh đạo: [Loại trình]" -> "Trình ký đến [Họ tên]" theo lịch sử luồng trình ký của hồ sơ
+        function gqMigrateTrinhTitles(claim) {
+            const evs = (claim && claim.timeline) || [];
+            if (!evs.some(ev => /^Trình Lãnh đạo: /.test((ev && ev.title) || ''))) return false;
+            let rec = null; try { rec = typeof gqRecord === 'function' ? gqRecord(claim) : null; } catch (e) { rec = null; }
+            const hs = ((rec && rec.history) || []).filter(h => /^Trình ký đến /.test(h.action || ''));
+            let ch = false;
+            evs.forEach(ev => {
+                const m = /^Trình Lãnh đạo: (.+)$/.exec((ev && ev.title) || '');
+                if (!m) return;
+                const h = hs.filter(x => String(x.note || '').indexOf(m[1]) === 0).pop();
+                const d = /^Trình ([^[-]+?) - /.exec(ev.desc || '');
+                const nm = h ? h.action.replace(/^Trình ký đến /, '') : (d && !/^Lãnh đạo/.test(d[1]) ? d[1].trim() : '');
+                if (nm) { ev.title = 'Trình ký đến ' + nm; ch = true; }
+            });
+            return ch;
+        }
+
         function renderKqxlTimeline(claim) {
             const container = document.getElementById('kqxlTimelineContainer');
             if (!container) return;
+            if (gqMigrateTrinhTitles(claim) && typeof saveClaimsToLocal === 'function') { try { saveClaimsToLocal(); } catch (e) { /* mockup */ } }
 
             const events = claim.timeline || [];
 
@@ -18752,7 +18789,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 <div class="ktl-stepper-sep" id="mraStepperSep"><i class="fa-solid fa-chevron-right"></i></div>
                 <div id="mraStep2Tab" class="ktl-step-tab" onclick="goToMraStep2()">
                     <span class="ktl-step-badge" id="mraStep2Badge">2</span>
-                    <span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span>
+                    <span class="ktl-step-title">Thiết lập các cấp trình ký</span>
                 </div>
             </div>
 
@@ -18762,11 +18799,11 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 <!-- Báo động hồ sơ bị Lãnh đạo trả về -->
                 <div id="mraReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
                     <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;">
-                        <i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ VỀ YÊU CẦU CHỈNH SỬA
+                        <i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại
                     </div>
                     <div style="font-size:12.5px; color:#92400e; line-height:1.5;">
-                        Lý do trả về: <strong id="mraReturnedReason">--</strong><br>
-                        Người trả về: <span id="mraReturnedOfficer">--</span> • Thời điểm: <span id="mraReturnedDate">--</span>
+                        Lý do trả lại: <strong id="mraReturnedReason">--</strong><br>
+                        Lãnh đạo trả lại: <span id="mraReturnedOfficer">--</span> • Thời điểm trả lại: <span id="mraReturnedDate">--</span>
                     </div>
                 </div>
 
@@ -18877,7 +18914,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <div id="mraOfflineFileError" class="gqx-err">Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.</div>
                         <div id="mraxOffStatusNote" class="ktlx-status-note"><i class="fa-solid fa-circle-info"></i> Khi bấm <strong>Ban hành văn bản</strong>, văn bản được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống) và hồ sơ chuyển sang trạng thái <strong>Yêu cầu bổ sung</strong>.</div>
                     </div>
-                    <!-- Lãnh đạo các cấp ký duyệt: chọn tại Bước 2 "Kéo ô ký & chọn Lãnh đạo" -->
+                    <!-- Lãnh đạo các cấp ký duyệt: chọn tại Bước 2 "Thiết lập các cấp trình ký" -->
                 </div>
                 <!-- Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo (Ký số: 02 khối; Ký ngoài: chỉ khối ban hành kèm theo; không bắt buộc) - btnn_tai_lieu_kem_theo.js dựng -->
                 <div id="mraTlkt"></div>
@@ -19030,7 +19067,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 <div class="ktl-stepper-sep" id="ktlStepperSep"><i class="fa-solid fa-chevron-right"></i></div>
                 <div id="ktlStep2Tab" class="ktl-step-tab" onclick="goToKtlStep2()">
                     <span class="ktl-step-badge" id="ktlStep2Badge">2</span>
-                    <span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span>
+                    <span class="ktl-step-title">Thiết lập các cấp trình ký</span>
                 </div>
             </div>
 
@@ -19040,11 +19077,11 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 <!-- Báo động hồ sơ bị Lãnh đạo trả về -->
                 <div id="ktlReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
                     <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;">
-                        <i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ VỀ YÊU CẦU CHỈNH SỬA
+                        <i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại
                     </div>
                     <div style="font-size:12.5px; color:#92400e; line-height:1.5;">
-                        Lý do trả về: <strong id="ktlReturnedReason">--</strong><br>
-                        Người trả về: <span id="ktlReturnedOfficer">--</span> • Thời điểm: <span id="ktlReturnedDate">--</span>
+                        Lý do trả lại: <strong id="ktlReturnedReason">--</strong><br>
+                        Lãnh đạo trả lại: <span id="ktlReturnedOfficer">--</span> • Thời điểm trả lại: <span id="ktlReturnedDate">--</span>
                     </div>
                 </div>
 
@@ -19383,7 +19420,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 <div class="ktl-stepper-sep" id="tndStepperSep"><i class="fa-solid fa-chevron-right"></i></div>
                 <div id="tndStep2Tab" class="ktl-step-tab" onclick="tndGoStep2()">
                     <span class="ktl-step-badge" id="tndStep2Badge">2</span>
-                    <span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span>
+                    <span class="ktl-step-title">Thiết lập các cấp trình ký</span>
                 </div>
             </div>
 
@@ -19392,11 +19429,11 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
 
                 <div id="tndReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
                     <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;">
-                        <i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ VỀ YÊU CẦU CHỈNH SỬA
+                        <i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại
                     </div>
                     <div style="font-size:12.5px; color:#92400e; line-height:1.5;">
-                        Lý do trả về: <strong id="tndReturnedReason">--</strong><br>
-                        Người trả về: <span id="tndReturnedOfficer">--</span> • Thời điểm: <span id="tndReturnedDate">--</span>
+                        Lý do trả lại: <strong id="tndReturnedReason">--</strong><br>
+                        Lãnh đạo trả lại: <span id="tndReturnedOfficer">--</span> • Thời điểm trả lại: <span id="tndReturnedDate">--</span>
                     </div>
                 </div>
 
@@ -19494,7 +19531,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 <div id="tndTlkt"></div>
             </div>
 
-            <!-- BƯỚC 2: Kéo ô ký & chọn Lãnh đạo trên văn bản A4 Mẫu 04/BTNN (trường hợp Thụ lý) -->
+            <!-- BƯỚC 2: Thiết lập các cấp trình ký trên văn bản A4 Mẫu 04/BTNN (trường hợp Thụ lý) -->
             <div id="tndStep2Body" style="display:none; flex:1; overflow:hidden; flex-direction:row; background:#334155; position:relative;">
                 <div style="flex:1; overflow-y:auto; overflow-x:auto; padding:30px 20px; display:flex; justify-content:center; align-items:flex-start;">
                     <div id="tndA4Page" class="a4-document-page">
@@ -19587,7 +19624,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 <div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div>
                 <div id="cngStep2Tab" class="ktl-step-tab" onclick="cngGoStep2()">
                     <span class="ktl-step-badge" id="cngStep2Badge">2</span>
-                    <span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span>
+                    <span class="ktl-step-title">Thiết lập các cấp trình ký</span>
                 </div>
             </div>
 
@@ -19596,11 +19633,11 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
 
                 <div id="cngReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
                     <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;">
-                        <i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ VỀ YÊU CẦU CHỈNH SỬA
+                        <i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại
                     </div>
                     <div style="font-size:12.5px; color:#92400e; line-height:1.5;">
-                        Lý do trả về: <strong id="cngReturnedReason">--</strong><br>
-                        Người trả về: <span id="cngReturnedOfficer">--</span> • Thời điểm: <span id="cngReturnedDate">--</span>
+                        Lý do trả lại: <strong id="cngReturnedReason">--</strong><br>
+                        Lãnh đạo trả lại: <span id="cngReturnedOfficer">--</span> • Thời điểm trả lại: <span id="cngReturnedDate">--</span>
                     </div>
                 </div>
 
@@ -19716,7 +19753,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 <div id="cngTlkt"></div>
             </div>
 
-            <!-- BƯỚC 2: Kéo ô ký & chọn Lãnh đạo trên văn bản A4 Mẫu 06/BTNN -->
+            <!-- BƯỚC 2: Thiết lập các cấp trình ký trên văn bản A4 Mẫu 06/BTNN -->
             <div id="cngStep2Body" style="display:none; flex:1; overflow:hidden; flex-direction:row; background:#334155; position:relative;">
                 <div style="flex:1; overflow-y:auto; overflow-x:auto; padding:30px 20px; display:flex; justify-content:center; align-items:flex-start;">
                     <div id="cngA4Page" class="a4-document-page">
@@ -20515,7 +20552,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const W = gqW();
             const sel = document.getElementById('currentLeaderSelector');
             if (!W || !sel || sel.options.length) return;
-            const cfg = W.getFlowConfig();
+            // [ro1] Lãnh đạo = tài khoản có Chức vụ thuộc Nhóm Lãnh đạo, nhóm theo đơn vị gốc
+            const cfg = {};
+            (W.USERS || []).forEach(u => { if (W.isLeaderUser ? W.isLeaderUser(u.id) : false) { const root = W.getRootId(u.unitId) || u.unitId; (cfg[root] = cfg[root] || {})[u.unitId] = cfg[root][u.unitId] || { leaders: [] }; cfg[root][u.unitId].leaders.push(u.id); } });
             const seen = new Set();
             const groups = [];
             Object.keys(cfg).forEach(root => {
@@ -20568,16 +20607,24 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const rec = gqEnsureRecord(claim);
             if (rec && rec.chuTri && rec.chuTri !== acting) return { ok: false, message: `Chỉ cán bộ chủ trì (${W.userName(rec.chuTri)}) được trình phê duyệt hồ sơ ${claim.code}.` };
             if (W.getCurrentUserId() !== acting) W.setCurrentUser(acting);
+            // [ro1] Các cấp trình ký do cán bộ tự thiết lập tại Bước 2 (gqSignCollect): trình theo levels (Lãnh đạo, Ký nháy, Ký số mỗi cấp)
+            extra = extra || {};
+            if (!extra.levels && gqSignLast && Array.isArray(extra.assignees) && extra.assignees.join('|') === gqSignLast.assignees.join('|')) {
+                extra.levels = gqSignLast.levels;
+                extra.pcSig = gqSignLast.pcSig;
+                if (extra.signDoc) extra.signDoc = Object.assign({}, extra.signDoc, { pcSig: gqSignLast.pcSig });
+            }
+            gqSignLast = null;
             const res = W.submitForApproval(claim.code, kind, content, files, extra);
             if (!res.ok) return res;
-            // Tài liệu đính kèm của lần trình: gắn vào mục lịch sử "Trình phê duyệt" để Lịch sử trình ký hiển thị theo từng lần trình
+            // Tài liệu đính kèm của lần trình: gắn vào mục lịch sử trình ("Trình ký đến [Họ tên Lãnh đạo cấp 1]") để Lịch sử trình ký hiển thị theo từng lần trình
             const tlktDocs = extra && extra.signDoc && extra.signDoc.attachments;
             if (tlktDocs && tlktDocs.length && typeof tlktTagHistory === 'function') tlktTagHistory(W, res.record, tlktDocs);
             const a = res.record.approval;
             claim.status = 'Chờ duyệt';
             claim.wfReturned = null;
             if (!Array.isArray(claim.timeline)) claim.timeline = [];
-            claim.timeline.push({ title: `Trình Lãnh đạo: ${kind}`, date: gqToday(), desc: `Trình ${extra && extra.assignee ? W.userName(extra.assignee) + ' - ' : ''}${W.unitName(a.path[0])} phê duyệt [${kind}] (${a.path.length} cấp). Hồ sơ chuyển sang trạng thái [Chờ duyệt].`, status: 'active' });
+            claim.timeline.push({ title: gqTrinhTitle(extra && extra.assignee, kind), date: gqToday(), desc: `Trình ${extra && extra.assignee ? W.userName(extra.assignee) + ' - ' : ''}${W.unitName(a.path[0])} phê duyệt [${kind}] (${a.path.length} cấp). Hồ sơ chuyển sang trạng thái [Chờ duyệt].`, status: 'active' });
             gqRecMap[claim.code] = res.record;
             return res;
         }
@@ -20635,7 +20682,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const r = gqRecord(claim);
             if (!r || r.status !== 'Bị trả lại' || !r.returned) return '';
             const x = r.returned;
-            return `<div class="gq-returned"><b><i class="fa-solid fa-rotate-left"></i> Hồ sơ bị trả lại (${gqE(x.kind || '')}):</b> ${gqE(x.reason)}<br><span style="color:#b45309; font-size:12px;">${gqE(W.userName(x.by))} - ${gqE(W.unitName(x.unitId))} - ${gqE(x.at)}</span></div>`;
+            return `<div class="gq-returned"><b><i class="fa-solid fa-rotate-left"></i> Lý do bị trả lại</b><br>Lý do trả lại: <strong>${gqE(x.reason)}</strong><br>Lãnh đạo trả lại: ${gqE(W.userName(x.by))} - ${gqE(W.unitName(x.unitId))} • Thời điểm trả lại: ${gqE(x.at)}</div>`;
         }
         function gqLeaderFieldHtml(claim, selected) {
             const W = gqW();
@@ -20645,7 +20692,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const pathLine = W.approvalPathLineHtml(like) || '<div class="wf-path-line" style="font-size:12.5px; color:#b45309; margin:4px 0 0;">Chưa xác định được cấp phê duyệt. Vui lòng liên hệ Quản trị hệ thống.</div>';
             const opts = ids.map(id => `<option value="${gqE(id)}" ${id === selected ? 'selected' : ''}>${gqE(W.userLabel(id))}</option>`).join('');
             return gqField('gqLeader', 'Lãnh đạo phê duyệt', ids.length > 0,
-                `<select id="gqLeader" class="form-control" onchange="gqMark(this.id,false)" ${ids.length ? '' : 'disabled'}><option value="">${ids.length ? '-- Chọn Lãnh đạo phê duyệt --' : 'Cấp phê duyệt đầu tiên chưa cấu hình nhóm lãnh đạo'}</option>${opts}</select>`,
+                `<select id="gqLeader" class="form-control" onchange="gqMark(this.id,false)" ${ids.length ? '' : 'disabled'}><option value="">${ids.length ? '-- Chọn Lãnh đạo phê duyệt --' : 'Cấp phê duyệt đầu tiên chưa có tài khoản thuộc Nhóm Lãnh đạo'}</option>${opts}</select>`,
                 pathLine);
         }
         function gqValidateLeader() {
@@ -20943,7 +20990,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         // ==========================================
         // POPUP TRÌNH DUYỆT TIẾP NHẬN HỒ SƠ (tnd) - mở sau khi bấm Trình duyệt tại form Nhập liệu hồ sơ vụ việc
         // Văn bản: Mẫu 04/BTNN - trường hợp Thông báo thụ lý hồ sơ yêu cầu bồi thường (gqBuildMau04ThuLy)
-        // Ký số: Bước 1 Nhập thông tin -> Bước 2 Kéo ô ký & chọn Lãnh đạo (gqSignInit/gqSignRefresh/gqSignCollect)
+        // Ký số: Bước 1 Nhập thông tin -> Bước 2 Thiết lập các cấp trình ký (gqSignInit/gqSignRefresh/gqSignCollect)
         // Ký ngoài: đính kèm PDF đã ký -> Ban hành văn bản
         // ==========================================
         let tndClaim = null;
@@ -21104,7 +21151,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 : ktlxFileCardHtml(f.name, f.size, f.note, 'tndOnlineView()', 'tndOnlineRemove()');
         }
         // ===== Popup Trình duyệt tiếp nhận hồ sơ: tiện ích bố cục (prefix tndx) =====
-        // Stepper 2 bước (Nhập thông tin → Kéo ô ký & chọn Lãnh đạo) chỉ hiển thị khi Ký số; Ký ngoài thu gọn ẩn hẳn
+        // Stepper 2 bước (Nhập thông tin → Thiết lập các cấp trình ký) chỉ hiển thị khi Ký số; Ký ngoài thu gọn ẩn hẳn
         function tndxRenderStepper(isOnline) {
             const bar = tndEl('tndStepperBar');
             if (bar) { bar.classList.toggle('is-collapsed', !isOnline); bar.setAttribute('aria-hidden', isOnline ? 'false' : 'true'); }
@@ -21315,7 +21362,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         // ==========================================
         // POPUP CỬ NGƯỜI GIẢI QUYẾT BỒI THƯỜNG (cng) - Thủ trưởng cơ quan giải quyết bồi thường (vai trò Lãnh đạo đơn vị), hồ sơ "Cử người giải quyết bồi thường"
         // Văn bản: Mẫu 06/BTNN - Quyết định cử người giải quyết bồi thường (cngBuildMau06, theo Mau_06_BTNN_Template.docx)
-        // Ký số: Bước 1 Nhập thông tin -> Bước 2 Kéo ô ký & chọn Lãnh đạo -> Trình Lãnh đạo (Nội dung trình "Cử người giải quyết", hồ sơ Chờ duyệt);
+        // Ký số: Bước 1 Nhập thông tin -> Bước 2 Thiết lập các cấp trình ký -> Trình Lãnh đạo (Nội dung trình "Cử người giải quyết", hồ sơ Chờ duyệt);
         //        cấp cuối ký duyệt -> lưu cán bộ được cử, hồ sơ Xác minh thiệt hại (Chỉ yêu cầu phục hồi danh dự: Đang phục hồi danh dự);
         //        Lãnh đạo từ chối -> hồ sơ quay lại Cử người giải quyết bồi thường để Thủ trưởng cập nhật, trình lại
         // Ký ngoài: đính kèm PDF đã ký -> Ban hành văn bản (cử người ngay, không qua Lãnh đạo duyệt)
@@ -21936,7 +21983,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const cngDocs = typeof tlktGet === 'function' ? tlktGet('cng') : [];
             // Trình theo luồng chung (BTNN_WF.submitForApproval): Thủ trưởng trình được ở hồ sơ Cử người giải quyết bồi thường / Bị trả lại với Loại trình này
             const res = W.submitForApproval(claim.code, CNG_KIND, sign.content, [], {
-                assignee: sign.assignees[0] || '', assignees: sign.assignees,
+                assignee: sign.assignees[0] || '', assignees: sign.assignees, levels: sign.levels, pcSig: sign.pcSig, // [ro1] các cấp trình ký tự thiết lập
                 draftDoc: { source: gen ? 'generated' : 'uploaded', formNo: GQ_FORM_06, docTitle: 'Quyết định cử người giải quyết bồi thường', generatedName: gen ? fileName : '', uploadedName: gen ? '' : fileName, soKyHieu: action.soKyHieu, ngay: action.ngay, noiNhan: action.noiNhan, bodyHtml },
                 signDoc: { method: 'Ký số', file: gen ? cngDocBaseName(claim) + '.pdf' : fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords, attachments: cngDocs },
                 resultStatus: claimRequestKind(claim) === 'honor' ? 'Đang phục hồi danh dự' : 'Xác minh thiệt hại', action
@@ -21948,7 +21995,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             claim.status = 'Chờ duyệt';
             claim.wfReturned = null;
             if (!Array.isArray(claim.timeline)) claim.timeline = [];
-            claim.timeline.push({ title: `Trình Lãnh đạo: ${CNG_KIND}`, date: gqToday(), desc: `Trình ${sign.assignees[0] ? W.userName(sign.assignees[0]) + ' - ' : ''}${W.unitName(path[0])} ký duyệt [${CNG_KIND}] (${path.length} cấp). Hồ sơ chuyển sang trạng thái [Chờ duyệt].`, status: 'active' });
+            claim.timeline.push({ title: gqTrinhTitle(sign.assignees[0], CNG_KIND), date: gqToday(), desc: `Trình ${sign.assignees[0] ? W.userName(sign.assignees[0]) + ' - ' : ''}${W.unitName(path[0])} ký duyệt [${CNG_KIND}] (${path.length} cấp). Hồ sơ chuyển sang trạng thái [Chờ duyệt].`, status: 'active' });
             gqSaveData(claim, { qdCuNguoi: { status: 'Chờ ký duyệt', officers: f.officers, soKyHieu: action.soKyHieu, ngay: action.ngay, noiNhan: action.noiNhan, fileName, formNo: GQ_FORM_06, bodyHtml, signingMethod: 'Ký số', submittedAt: now, attachments: cngDocs } });
             closeCngModal();
             saveClaimsToLocal();
@@ -22029,10 +22076,11 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         let mraDragTarget = null;
         let mraDragOffset = { x: 0, y: 0 };
 
-        // ---------- Bước 2 "Kéo ô ký & chọn Lãnh đạo" dùng chung: popup Yêu cầu bổ sung (mra) / Không thụ lý (ktl) ----------
+        // ---------- Bước 2 "Thiết lập các cấp trình ký" dùng chung: popup Yêu cầu bổ sung (mra) / Không thụ lý (ktl) ----------
         // Các cấp ký duyệt theo luồng đã cấu hình tại Cấu hình luồng xử lý (số cấp theo cấu hình); mỗi cấp 01 thẻ "Cấp [n] - [Đơn vị]"
         // có ô chọn Lãnh đạo; nhãn "Ký nháy" chỉ hiển thị khi cấp đó được cấu hình Ký nháy tại Cấu hình luồng xử lý. Ô ký của cấp chỉ sinh khi bấm "Đặt chữ ký".
         const gqSignState = {};
+        let gqSignLast = null; // [ro1] thiết lập cấp của lần bấm Trình gần nhất (gqSignCollect -> gqSubmit)
         const GQ_SIGN_SIZES = { nhay: [[180, 75], [220, 90], [280, 110]], so: [[200, 85], [245, 110], [320, 130]] };
         function gqSignLevels(claim) {
             const W = gqW();
@@ -22069,7 +22117,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     ${lv.kyNhay ? '<span class="badge" style="background:#dbeafe; color:#1e40af; font-size:10.5px; white-space:nowrap;">Ký nháy</span>' : ''}
                 </div>
                 <div class="form-group" style="margin-bottom:8px;">
-                    <select id="${prefix}SignLeader${i}" class="form-control" style="font-size:13px;" onchange="this.classList.remove('is-invalid'); var e=document.getElementById('${prefix}SignLeader${i}Err'); if(e) e.style.display='none'; gqSignSyncNames('${prefix}')" ${lv.leaders.length ? '' : 'disabled'}><option value="">${lv.leaders.length ? '-- Chọn Lãnh đạo --' : 'Cấp này chưa cấu hình nhóm lãnh đạo'}</option>${opts}</select>
+                    <select id="${prefix}SignLeader${i}" class="form-control" style="font-size:13px;" onchange="this.classList.remove('is-invalid'); var e=document.getElementById('${prefix}SignLeader${i}Err'); if(e) e.style.display='none'; gqSignSyncNames('${prefix}')" ${lv.leaders.length ? '' : 'disabled'}><option value="">${lv.leaders.length ? '-- Chọn Lãnh đạo --' : 'Cấp này chưa có tài khoản thuộc Nhóm Lãnh đạo'}</option>${opts}</select>
                     <div id="${prefix}SignLeader${i}Err" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
                 </div>
                 ${i === 0 && !last ? `<label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12.5px; color:#1e40af; margin:0 0 6px 0;"><input type="checkbox" id="${prefix}SignNhay" checked onchange="gqSignToggleNhay('${prefix}', this.checked)"><span>Áp dụng ký nháy Lãnh đạo cấp 1</span></label>` : ''}
@@ -22086,20 +22134,33 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             </div>`;
         }
         // Mở popup: dựng các thẻ cấp ký, xóa ô ký cũ trên văn bản (chưa có ô ký nào cho tới khi bấm Đặt chữ ký)
+        // [ro1] Bước 2 = khối "Thiết lập các cấp trình ký" dùng chung (BTNN_PCKD.levelSetup): cán bộ tự thêm cấp, chọn Lãnh đạo (Nhóm Lãnh đạo của đơn vị mình
+        // và đơn vị cấp trên), Ký nháy, Ký số (cấp cuối bắt buộc Ký số), Đặt chữ ký. Trình lại sau Bị trả lại: điền sẵn thiết lập lần trước.
         function gqSignInit(prefix, claim, prevAssignees) {
-            const levels = gqSignLevels(claim);
-            const st = gqSignState[prefix] = { levels, placed: {}, coords: {}, enableNhay: true };
-            levels.forEach((lv, i) => { st.coords[i] = gqSignDefault(st, i); });
-            const prev = Array.isArray(prevAssignees) ? prevAssignees : [];
-            const host = document.getElementById(prefix + 'SignLevels');
-            if (host) host.innerHTML = levels.map((lv, i) => gqSignCardHtml(prefix, lv, i, levels.length, prev[i])).join('');
+            const P = window.BTNN_PCKD;
             const page = document.getElementById(prefix + 'A4Page');
-            if (page) page.querySelectorAll('.gq-sign-box').forEach(b => b.remove());
+            if (page) page.querySelectorAll('.gq-sign-box, .pc-sig').forEach(b => b.remove());
+            const rec = gqRecord(claim);
+            const a = rec && rec.approval;
+            const prev = P && rec && a && rec.status === 'Bị trả lại' ? P.prevLevelsOf(a) : null;
+            let st = gqSignState[prefix];
+            if (!st || !st.ui) {
+                st = gqSignState[prefix] = {
+                    ui: P ? P.levelSetup({
+                        host: () => document.getElementById(prefix + 'SignLevels'),
+                        page: () => document.getElementById(prefix + 'A4Page'),
+                        method: () => 'Ký số',
+                        userId: () => gqActingUserId(),
+                        onChange: () => gqSignSyncNames(prefix)
+                    }) : null
+                };
+            }
+            st.claimId = claim ? claim.id : '';
+            if (st.ui) { st.ui.reset(prev); st.ui.render(); st.ui.renderSigs(); }
             const ct = document.getElementById(prefix + 'SignContent');
             if (ct) ct.classList.remove('is-invalid');
             const ce = document.getElementById(prefix + 'SignContentErr');
             if (ce) ce.style.display = 'none';
-            gqSignRefresh(prefix);
         }
         function gqSignEnsureBox(prefix, i) {
             const page = document.getElementById(prefix + 'A4Page');
@@ -22114,9 +22175,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             box.style.cssText = last
                 ? 'border:2px dashed #dc2626; background:rgba(254,242,242,0.94); box-shadow:0 4px 12px rgba(220,38,38,0.18); z-index:10;'
                 : 'border:2px dashed #2563eb; background:rgba(239,246,255,0.94); box-shadow:0 4px 12px rgba(37,99,235,0.18); z-index:10;';
-            box.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:10.5px; font-weight:700; color:${last ? '#991b1b' : '#1e40af'};"><i class="fa-solid ${last ? 'fa-stamp' : 'fa-pen-nib'}"></i> ${last ? 'KÝ SỐ &amp; CON DẤU' : 'KÝ NHÁY'}</span><span class="badge" style="background:${last ? '#dc2626' : '#2563eb'}; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp ${i + 1}</span></div>
+            box.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><span></span><span class="badge" style="${st.levels[i] && st.levels[i].kyNhay ? '' : 'display:none; '}background:#dbeafe; color:#1e40af; font-size:9.5px; padding:1px 5px;">Ký nháy</span></div>
                 <div style="text-align:center; font-weight:700; color:#1e293b; font-size:12px;" id="${prefix}SignBoxName${i}"></div>
-                <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>${last ? 'Chữ ký số &amp; Con dấu' : 'Chữ ký nháy'}</span><span id="${prefix}SignBoxXY${i}"></span></div>
+                <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>Tọa độ</span><span id="${prefix}SignBoxXY${i}"></span></div>
                 <div class="sig-resize-handle" title="Kéo chuột để co giãn khung chữ ký"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>`;
             page.appendChild(box);
             box.addEventListener('mousedown', function (e) {
@@ -22154,19 +22215,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         function gqSignRefresh(prefix) {
             const st = gqSignState[prefix];
             if (!st) return;
-            st.levels.forEach((lv, i) => {
-                const nhayOff = i === 0 && st.levels.length > 1 && !st.enableNhay;
-                const on = !!st.placed[i] && !nhayOff;
-                let box = document.getElementById(prefix + 'SignBox' + i);
-                if (on && !box) box = gqSignEnsureBox(prefix, i);
-                if (box) box.style.display = on ? 'flex' : 'none';
-                const ctr = document.getElementById(prefix + 'SignCtrls' + i);
-                if (ctr) ctr.style.display = on ? 'block' : 'none';
-                const btn = document.getElementById(prefix + 'SignPlace' + i);
-                if (btn) btn.style.display = (on || nhayOff) ? 'none' : '';
-                if (on) gqSignApply(prefix, i);
-            });
-            gqSignSyncNames(prefix);
+            // [ro1] Khối Thiết lập các cấp trình ký: vẽ lại thẻ cấp và ô ký (khi chuyển sang Bước 2)
+            if (st.ui) { st.ui.render(); st.ui.renderSigs(); return; }
         }
         function gqSignPlace(prefix, i) {
             const st = gqSignState[prefix];
@@ -22199,49 +22249,43 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             return s && s.value && s.selectedIndex >= 0 ? s.options[s.selectedIndex].text : '';
         }
         // Tên Lãnh đạo đã chọn hiển thị trên ô ký; Lãnh đạo cấp cuối hiển thị tại dòng ký của văn bản
+        // Lãnh đạo cấp cuối hiển thị tại dòng ký của văn bản
         function gqSignSyncNames(prefix) {
             const st = gqSignState[prefix];
-            if (!st) return;
-            st.levels.forEach((lv, i) => {
-                const el = document.getElementById(prefix + 'SignBoxName' + i);
-                if (el) el.textContent = gqSignLeaderText(prefix, i).split(' - ')[0].trim() || ('Cấp ' + (i + 1));
-            });
-            const t = gqSignLeaderText(prefix, st.levels.length - 1);
-            const parts = t.split(' - ');
+            if (!st || !st.ui) return;
+            const W = gqW();
+            const lv = st.ui.levels;
+            const last = lv[lv.length - 1];
+            const u = last && last.leader && W ? W.getUser(last.leader) : null;
             const nm = document.getElementById(prefix + 'A4SignerName');
-            if (nm) nm.textContent = (parts[0] || '').trim().toUpperCase();
+            if (nm) nm.textContent = u ? u.name.toUpperCase() : '';
             const tt = document.getElementById(prefix + 'A4SignerTitle');
-            if (tt && parts[1]) tt.textContent = parts.slice(1).join(' - ').trim().toUpperCase();
+            if (tt && u) tt.textContent = u.title.toUpperCase();
         }
         // Trình: Lãnh đạo từng cấp (bắt buộc với cấp đã cấu hình nhóm lãnh đạo) và Nội dung trình (bắt buộc)
         // quiet = true: không hiển thị toast (lỗi hiển thị dưới ô / dải thông báo của popup gọi)
+        // Trình: Lãnh đạo từng cấp (bắt buộc), ô ký bắt buộc (cấp cuối, cấp Ký nháy) và Nội dung trình (bắt buộc)
+        // quiet = true: không hiển thị toast (lỗi hiển thị dưới ô / dải thông báo của popup gọi)
         function gqSignCollect(prefix, quiet) {
             const st = gqSignState[prefix];
-            if (!st) return null;
-            let first = null;
-            const assignees = st.levels.map((lv, i) => {
-                const s = document.getElementById(prefix + 'SignLeader' + i);
-                const v = s ? s.value : '';
-                const bad = lv.leaders.length > 0 && !v;
-                if (s) s.classList.toggle('is-invalid', bad);
-                const er = document.getElementById(prefix + 'SignLeader' + i + 'Err');
-                if (er) er.style.display = bad ? 'block' : 'none';
-                if (bad && !first) first = s;
-                return v;
-            });
+            if (!st || !st.ui) return null;
+            const okLevels = st.ui.validate();
             const ct = document.getElementById(prefix + 'SignContent');
             const content = ct ? ct.value.trim() : '';
             if (ct) ct.classList.toggle('is-invalid', !content);
             const ce = document.getElementById(prefix + 'SignContentErr');
             if (ce) ce.style.display = content ? 'none' : 'block';
-            if (!content && !first) first = ct;
-            if (first) {
-                if (first.focus) first.focus();
+            if (!okLevels || !content) {
+                if (okLevels && ct && ct.focus) ct.focus();
                 if (!quiet) showToast('Vui lòng nhập đầy đủ các trường bắt buộc.', 'warning');
                 return null;
             }
-            const coords = st.levels.map((lv, i) => Object.assign({ level: i + 1, unitId: lv.unitId, placed: !!st.placed[i] && !(i === 0 && st.levels.length > 1 && !st.enableNhay) }, st.coords[i]));
-            return { assignees, content, enableNhay: st.enableNhay, coords };
+            const col = st.ui.collect();
+            // Tọa độ ô ký theo cấp (giữ cấu trúc cũ để màn xem văn bản đã trình đọc được)
+            const coords = col.levels.map((l, i) => Object.assign({ level: i + 1, unitId: col.path[i], placed: !!col.pcSig[i], kyNhay: l.kyNhay, kySo: l.kySo }, col.pcSig[i] || {}));
+            const out = { assignees: col.assignees, content, enableNhay: !!col.levels[0].kyNhay, coords, levels: col.levels, pcSig: col.pcSig };
+            gqSignLast = { assignees: col.assignees.slice(), levels: col.levels, pcSig: col.pcSig };
+            return out;
         }
         window.gqSignPlace = gqSignPlace;
         window.gqSignResize = gqSignResize;
@@ -22431,7 +22475,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         }
 
         // ===== Popup Yêu cầu bổ sung: tiện ích bố cục (prefix mrax) =====
-        // Stepper 2 bước (Nhập thông tin → Kéo ô ký & chọn Lãnh đạo) chỉ hiển thị khi Ký số; Ký ngoài thu gọn ẩn hẳn
+        // Stepper 2 bước (Nhập thông tin → Thiết lập các cấp trình ký) chỉ hiển thị khi Ký số; Ký ngoài thu gọn ẩn hẳn
         function mraxRenderStepper(isOnline) {
             const bar = document.getElementById('mraStepperBar');
             if (bar) { bar.classList.toggle('is-collapsed', !isOnline); bar.setAttribute('aria-hidden', isOnline ? 'false' : 'true'); }
@@ -23488,7 +23532,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         }
 
         // ===== Popup Không thụ lý: tiện ích (prefix ktlx) =====
-        // Stepper 2 bước (Nhập thông tin → Kéo ô ký & chọn Lãnh đạo) chỉ hiển thị khi Ký số; Ký ngoài thu gọn ẩn hẳn
+        // Stepper 2 bước (Nhập thông tin → Thiết lập các cấp trình ký) chỉ hiển thị khi Ký số; Ký ngoài thu gọn ẩn hẳn
         function ktlxRenderStepper(isOnline) {
             const bar = document.getElementById('ktlStepperBar');
             const title = document.getElementById('ktlStep1Title');
@@ -24035,7 +24079,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     if (el._flatpickr) el._flatpickr.setDate(sd[key], false, 'd/m/Y');
                 });
                 const st = typeof gqSignState !== 'undefined' ? gqSignState[p] : null;
-                if (st && Array.isArray(sd.sigCoords)) {
+                if (st && !st.ui && Array.isArray(sd.sigCoords)) {
                     sd.sigCoords.forEach((c, i) => { if (!st.levels[i] || !c) return; st.coords[i] = { x: c.x, y: c.y, w: c.w, h: c.h }; if (c.placed) st.placed[i] = true; });
                     if (sd.enableRoomSig === false) { st.enableNhay = false; const cb = document.getElementById(p + 'SignNhay'); if (cb) cb.checked = false; }
                     gqSignRefresh(p);
@@ -24350,7 +24394,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             return `<div class="gq-returned-block" id="gqReturnedBlock" style="background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px; font-size:13px;">
                 <div style="font-weight:700; color:#b45309; margin-bottom:8px;"><i class="fa-solid fa-rotate-left"></i> Lý do bị trả lại</div>
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:8px 16px;">
-                    ${cell('Lý do trả lại', r.reason, true)}${cell('Lãnh đạo trả lại', leader)}${cell('Thời điểm trả lại', r.at)}${cell('Cấp ký duyệt', cap)}
+                    ${cell('Lý do trả lại', r.reason, true)}${cell('Lãnh đạo trả lại', leader)}${cell('Thời điểm trả lại', r.at)}
                 </div></div>`;
         }
         function gqWfInfoHtml(claim) {
@@ -24543,7 +24587,12 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         }
         function gqldInWorkflowTab(tab, item, currentRole, currentOfficer) {
             // Lãnh đạo: Chờ xử lý = hồ sơ Lãnh đạo đang đăng nhập được giao xử lý ở bước hiện tại; Đã xử lý = hồ sơ Lãnh đạo đã xử lý
-            if (currentRole === 'thu-truong') return tab === 'da-xu-ly' ? gqldLeaderActed(item) : leaderCanActOn(item);
+            // [ro1] Lãnh đạo được giao làm Cán bộ phối hợp: hồ sơ theo tab của cán bộ chủ trì (chỉ xem), khi Lãnh đạo không có việc trên hồ sơ
+            if (currentRole === 'thu-truong') {
+                const ldU = window.BTNN_WF ? BTNN_WF.getUser(gqLeaderId()) : null;
+                if (ldU && gqIsPhoiHop(item, ldU.name) && !leaderCanActOn(item)) return tab === 'da-xu-ly' ? GQLD_DONE_STATUSES.includes(gqldCaseStatus(item)) : !GQLD_DONE_STATUSES.includes(gqldCaseStatus(item));
+                return tab === 'da-xu-ly' ? gqldLeaderActed(item) : leaderCanActOn(item);
+            }
             const st = gqldCaseStatus(item);
             const done = GQLD_DONE_STATUSES.includes(st);
             // Giai đoạn trước khi cử người giải quyết: luôn hiển thị; từ khi cử người giải quyết chỉ cán bộ được cử thấy hồ sơ
@@ -24626,8 +24675,16 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const k = typeof gqApprovalKindOf === 'function' ? gqApprovalKindOf(item) : '';
             return ['Tiếp nhận hồ sơ', 'Yêu cầu bổ sung', 'Không thụ lý', 'Cử người giải quyết bồi thường'].includes(k);
         }
+        // [ro1] Cán bộ phối hợp (Chuyển chuyên viên phụ trách trực tiếp tại Tiếp nhận hồ sơ / Cử người phục hồi danh dự): chỉ xem hồ sơ
+        function gqIsPhoiHop(item, currentOfficer) {
+            const W = window.BTNN_WF;
+            const u = typeof gqSimUserOf === 'function' ? gqSimUserOf(currentOfficer) : null;
+            const rec = u && W && W.isPhoiHop ? gqRecord(item) : null;
+            return !!(rec && W.isPhoiHop(rec, u.id));
+        }
         function gqldGateReason(item, currentRole, currentOfficer) {
             if (currentRole === 'thu-truong') return '';
+            if (gqIsPhoiHop(item, currentOfficer)) return '';
             const why = 'Hồ sơ đã giao cán bộ khác giải quyết';
             // [vt1] Phạm vi đơn vị: người dùng chỉ thấy hồ sơ của cơ quan giải quyết bồi thường thuộc cây đơn vị gốc của mình
             // (cán bộ mẫu CB1/CB2/CB3 không có tài khoản trên Cơ cấu tổ chức: giữ như cũ)
@@ -24678,6 +24735,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const d = gqldActionDefs(item);
             const gate = gqldGateReason(item, currentRole, currentOfficer);
             const why = gate || `Không áp dụng ở trạng thái ${d.st}`;
+            // Cán bộ phối hợp: mọi nút xử lý hiển thị mờ (chỉ xem hồ sơ - click dòng -> Xem chi tiết)
+            if (currentRole !== 'thu-truong' && gqIsPhoiHop(item, currentOfficer)) return d.main.map(a => gqldBtnOff(a.key, a.cls, a.icon, a.label, 'Cán bộ phối hợp chỉ xem hồ sơ')).join('');
             const render = a => (a.allowed && !gate) ? gqldBtn(a.key, a.cls, a.icon, a.label, a.fn) : gqldBtnOff(a.key, a.cls, a.icon, a.label, why);
             // [gqld2] Giả lập Lãnh đạo: chỉ Ký duyệt / Từ chối, chỉ trên hồ sơ Chờ duyệt; hồ sơ khác chỉ xem (click dòng -> Xem chi tiết)
             if (currentRole === 'thu-truong' && d.st !== 'Chờ duyệt') return '';
@@ -24700,7 +24759,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (currentRole === 'thu-truong') {
                 html = d.leader.filter(a => a.allowed).map(a => a.key === 'approve' ? big(a, 'btn-primary')
                     : big(Object.assign({}, a, { icon: a.barIcon || a.icon }), 'btn-danger').replace('<button ', '<button style="background:#ef4444; color:#fff; border:none;" ')).join('');
-            } else if (!gqldGateReason(claim, currentRole, currentOfficer)) {
+            } else if (!gqldGateReason(claim, currentRole, currentOfficer) && !gqIsPhoiHop(claim, currentOfficer)) {
                 html = d.main.filter(a => a.allowed).map(a => {
                     if (a.key === 'update' && a.edit) return `<button class="btn btn-primary" data-action="update" onclick="switchToEditMode('${a.edit}')"><i class="${a.icon}"></i> ${gqldEsc(a.label)}</button>`;
                     return big(a, a.key === 'reject' ? 'btn-danger' : (a.key === 'supplement' ? 'btn-warning' : 'btn-primary'));
@@ -24868,6 +24927,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     : '<button type="button" class="btn btn-danger" onclick="gqldSubmitDecision()"><i class="fa-solid fa-circle-xmark"></i> Từ chối</button>'}</div>
             </div>`;
             document.body.appendChild(ov);
+            // [ro1] Phiếu trình tự thiết lập các cấp: ô ký theo cấp trên văn bản; cấp bật Ký số -> khối Ký số, không bật -> gán chữ ký / chữ ký nháy
+            if (a.tuThietLap && window.BTNN_PCKD) BTNN_PCKD.decorateDecision(rec, approve ? 'approve' : 'reject', { page: ov.querySelector('.gqld-a4'), scroller: ov.querySelector('.gqld-preview'), right: ov.querySelector('.gqld-right'), before: ov.querySelector('.gqld-right .gqld-group'), title: ov.querySelector('#gqldDTitle') });
         }
         function gqldCloseDecision() { const el = document.getElementById('gqldDecideOverlay'); if (el) el.remove(); }
         function gqldMark(idEl, invalid) {
@@ -24931,20 +24992,20 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
     <script src="filter_toggle_auto.js?v=20261012"></script>
     <!-- [ctvv] Chi tiết vụ việc: khối các bước đã qua, tên 03 tab, Trình ký Mẫu 26/BTNN, bảng Tài liệu đính kèm đồng nhất (đặt sau các script chính để bọc hàm) -->
-    <script src="quan_ly_boi_thuong_ctvv.js?v=20261030dvc8"></script>
+    <script src="quan_ly_boi_thuong_ctvv.js?v=20261109ro1"></script>
     <!-- [ttgq] Popup Trình ký Quyết định tiếp tục giải quyết bồi thường (Mẫu số 23/BTNN) -->
-    <script src="quan_ly_boi_thuong_ttgq.js?v=20261029tlcam2"></script>
+    <script src="quan_ly_boi_thuong_ttgq.js?v=20261109ro1"></script>
     <!-- [ycbs] Tiếp nhận hồ sơ bổ sung: nhãn Hồ sơ gốc / Bổ sung, Đã cập nhật bổ sung (bọc hàm màn Nhập liệu hồ sơ vụ việc) -->
     <script src="quan_ly_boi_thuong_ycbs.js?v=20261030s2"></script>
     <!-- [phdx] Tab Phục hồi danh dự: bấm Step -> khối tương ứng; thu gọn / mở rộng khối; khối Hoãn phục hồi danh dự + Tiếp tục thực hiện -->
-    <script src="quan_ly_boi_thuong_phdd.js?v=20261030phdf"></script>
+    <script src="quan_ly_boi_thuong_phdd.js?v=20261109pd1"></script>
     <script src="quan_ly_boi_thuong_phddxa.js?v=20261029tldk"></script>
     <!-- [hdcv] Khối xem Hoãn / Tạm đình chỉ / Đình chỉ giải quyết bồi thường (tab Chi tiết giải quyết bồi thường) + dữ liệu mẫu BT-2026-431..437 -->
-    <script src="quan_ly_boi_thuong_hdcv.js?v=20261104dgtu"></script>
+    <script src="quan_ly_boi_thuong_hdcv.js?v=20261109tk4"></script>
     <!-- [ktlv] Màn chi tiết hồ sơ: khối Thông tin không thụ lý hồ sơ / Thông tin chuyển CQGQBT (thẻ cảnh báo, lưới 2 cột, File Xem/Tải) -->
     <script src="quan_ly_boi_thuong_ktlv.js?v=20261029tldk"></script>
     <!-- [seedxm] Dữ liệu giả lập đủ các Trạng thái vụ việc Giải quyết YCBT (Xác minh thiệt hại, Thương lượng, Chờ chi trả, Chờ duyệt / Bị trả lại theo Nội dung trình) -->
-    <script src="quan_ly_boi_thuong_seedxm.js?v=20261109sd1"></script>
+    <script src="quan_ly_boi_thuong_seedxm.js?v=20261109tk4"></script>
     <script src="quan_ly_boi_thuong_seedgq.js?v=20261109sd1"></script>
     <!-- [tcvv] Xem chi tiết mở từ Tra cứu vụ việc (?readonly=1&returnUrl=tra_cuu...): tab mặc định, bỏ giới hạn cán bộ được cử; tcvvPreview=1: hồ sơ giả lập riêng của Tra cứu, không lưu vào claimsList -->
     <script src="tra_cuu_seed_tcvv.js?v=20261030s2"></script>
@@ -24961,10 +25022,12 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="btnn_noi_thu_ly.js?v=20261104ntl1"></script>
     <script src="quan_ly_boi_thuong_kttr.js?v=20261102kt1"></script>
     <!-- [cdpd] Tạo yêu cầu - Cán bộ chủ động phục hồi danh dự khi có đủ thông tin: form tối thiểu, trình Thông báo tổ chức thực hiện phục hồi danh dự (chỉ Tải lên từ máy / Ký ngoài) -->
-    <script src="btnn_lanh_dao_actions.js?v=20261104mh2"></script>
-    <script src="quan_ly_boi_thuong_cdpd.js?v=20261106cd7"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261109ro1"></script>
+    <script src="btnn_phan_cong_ky_duyet.js?v=20261109ro1"></script>
+    <script src="quan_ly_boi_thuong_ccq.js?v=20261109ro1"></script>
+    <script src="quan_ly_boi_thuong_cdpd.js?v=20261109ro1"></script>
     <!-- [dgq] Dừng giải quyết (Mẫu 05/BTNN): popup trình ký Thông báo dừng giải quyết, khối Thông tin dừng giải quyết, dữ liệu mẫu BT-2026-541..544 (đặt sau dcgq, hdcv) -->
-    <script src="quan_ly_boi_thuong_dgq.js?v=20261104gql2"></script>
+    <script src="quan_ly_boi_thuong_dgq.js?v=20261109ro1"></script>
     <!-- [mh05] Xem chi tiết hồ sơ: khối Lý do bị trả lại / Không thụ lý / Chuyển CQGQBT / Thông tin xử lý và trình duyệt tại Tab 2; hồ sơ Bị trả lại mở Tab 2 + cuộn tới khối; dải thông báo không được xem (đặt sau mọi script bọc showCaseDetail) -->
     <script src="quan_ly_boi_thuong_mh05.js?v=20261030m3"></script>
     <!-- [gql] Hủy QĐ -> Đình chỉ hoặc Giải quyết lại: thao tác Giải quyết lại (Thao tác khác MH01 / thanh thao tác MH04), dòng phụ "QĐ đã bị hủy", lần thương lượng, khối Quyết định đã bị hủy; dữ liệu mẫu BT-2026-561, BT-2026-562 -->

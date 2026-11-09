@@ -1032,9 +1032,9 @@
 
     <!-- Danh mục Tình trạng hiệu lực [DM_61] dùng chung VBQPPL và Văn bản chỉ đạo, điều hành -->
     <script src="../01_Quan_tri_he_thong/dm_tinh_trang_hieu_luc.js?v=20261106tthl1"></script>
-    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109ro1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261109tl1"></script>
     <script>
         // Văn bản chỉ đạo, điều hành (góp ý khách hàng 02/11/2026): kho lưu trữ, tra cứu văn bản; không có luồng xử lý
         // 01 trang dùng chung 02 menu, phân biệt bằng tham số menu: tw = Trung ương ban hành, dp = Địa phương ban hành
@@ -1538,7 +1538,7 @@
             }
             if (typeof tlktMount === 'function') tlktMount(TLKT_KEY, 'docTlktHost', {
                 split: false, noLeader: true, required: true, rows: tempDocFiles, exts: TLKT_EXTS,
-                title: 'Tài liệu đính kèm', secClass: 'form-section', titleClass: 'form-section-title', hint: 'Tối đa 10 tài liệu.'
+                title: 'Tài liệu đính kèm', secClass: 'form-section', titleClass: 'form-section-title', noHint: true // 09/11/2026: bỏ dòng ghi chú định dạng/dung lượng; quy tắc kiểm tra tệp, tối đa 10 tài liệu giữ nguyên
             });
         }
 

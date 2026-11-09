@@ -753,30 +753,30 @@ function buildFlowSeed() {
     const BTP = ['PLN-02', 'CĐK-01'], STP = ['STP-HN-HCTP', 'STP-HN'];
     // Luồng trình ký đủ cấp (chốt 2026-10-28): Bộ Tư pháp đến Lãnh đạo Bộ; Sở Tư pháp đến Lãnh đạo UBND cấp tỉnh. Hồ sơ mẫu trình theo luồng cũ (BTP / STP) được bổ sung cấp cuối khi nạp (BTNN_WF.loadRecords)
     const BTP3 = BTP.concat('BTP-01'), STP3 = STP.concat('UBND-HN');
-    const pd = (unitId, userId, at) => ({ unitId, userId, action: 'Phê duyệt', note: '', at });
+    const pd = (unitId, userId, at) => ({ unitId, userId, action: 'Ký duyệt', note: '', at });
     const p = (name, dob, docNo, phone, addr, hanhVi) => ({ nycName: name, nycDob: dob, nycDocNo: docNo, nycPhone: phone, nycEmail: '', nycPhuongXa: '00004 - Phường Hoàn Kiếm', nycAddressDetail: addr, hanhVi });
     return [
         // ----- Cán bộ canbonv (Bộ Tư pháp) -----
         base('XD-2026-141', true, Object.assign(p('Đinh Quang Hải', '11/03/1981', '001081005511', '0912141141', 'Số 14 Hàng Gai', 'Tạm giữ phương tiện quá thời hạn quy định của Đội Cảnh sát giao thông.'), {
             date: '12/10/2026', receivedAt: '08:30 12/10/2026', status: XD_ST.CHO_DUYET, routes: btpRoutes('12/10/2026'),
             approval: appr(XD_KIND.YCBS, BTP, 0, [], ['tpbt'], '09:00 15/10/2026', online('Thong_bao_YCBS_XD-2026-141.pdf'), 'Đề nghị bổ sung bản sao quyết định tạm giữ phương tiện và biên bản trả lại phương tiện.'),
-            history: [h('Tiếp nhận hồ sơ', 'canbonv', '15:00 12/10/2026', 'Hồ sơ chuyển [Xác minh CQGQBT].'), h('Trình phê duyệt', 'canbonv', '09:00 15/10/2026', 'Yêu cầu bổ sung. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.')]
+            history: [h('Tiếp nhận hồ sơ', 'canbonv', '15:00 12/10/2026', 'Hồ sơ chuyển [Xác minh CQGQBT].'), h('Trình ký đến ' + BTNN_WF.userName('tpbt'), 'canbonv', '09:00 15/10/2026', 'Yêu cầu bổ sung. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.')]
         })),
         base('XD-2026-142', true, Object.assign(p('Lương Thị Hạnh', '22/06/1990', '001190007722', '0912141142', 'Số 9 Hàng Bạc', 'Yêu cầu bồi thường thiệt hại do hành vi đã hết thời hiệu yêu cầu bồi thường.'), {
             nycGender: 'Nữ', date: '11/10/2026', receivedAt: '09:10 11/10/2026', status: XD_ST.CHO_DUYET, routes: btpRoutes('11/10/2026'),
             approval: appr(XD_KIND.KTL, BTP, 1, [pd('PLN-02', 'tpbt', '10:00 16/10/2026')], ['tpbt', 'cuctruong'], '08:00 16/10/2026', online('Thong_bao_khong_thu_ly_XD-2026-142.pdf'), 'Thời hiệu yêu cầu bồi thường đã hết theo quy định.'),
-            history: [h('Trình phê duyệt', 'canbonv', '08:00 16/10/2026', 'Không thụ lý. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.'), h('Phê duyệt', 'tpbt', '10:00 16/10/2026', 'Không thụ lý: phê duyệt cấp Phòng Quản lý nghiệp vụ về bồi thường nhà nước; chuyển Nguyễn Văn Cục Trưởng - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.', XD_KIND.KTL)]
+            history: [h('Trình ký đến ' + BTNN_WF.userName('tpbt'), 'canbonv', '08:00 16/10/2026', 'Không thụ lý. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.'), h('Ký duyệt', 'tpbt', '10:00 16/10/2026', 'Không thụ lý: ký duyệt cấp Phòng Quản lý nghiệp vụ về bồi thường nhà nước; chuyển Nguyễn Văn Cục Trưởng - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.', XD_KIND.KTL)]
         })),
         base('XD-2026-143', true, Object.assign(p('Tạ Văn Khánh', '05/09/1977', '001077008833', '0912141143', 'Số 3 Lò Sũ', 'Thu hồi giấy phép kinh doanh không đúng thẩm quyền của UBND phường Bạch Mai.'), kq('UBND-HM', 'Hành vi gây thiệt hại do người thi hành công vụ thuộc UBND phường Bạch Mai thực hiện.'), {
             date: '10/10/2026', receivedAt: '10:00 10/10/2026', status: XD_ST.CHO_DUYET, routes: btpRoutes('10/10/2026'),
             approval: appr(XD_KIND.KQ, BTP3, 2, [pd('PLN-02', 'tpbt', '14:00 17/10/2026'), { unitId: 'CĐK-01', userId: 'cuctruong', action: 'Ký duyệt', note: '', at: '16:00 17/10/2026' }], ['tpbt', 'cuctruong', 'oanhdh'], '09:00 17/10/2026', Object.assign(online('Ket_qua_xac_dinh_CQGQBT_XD-2026-143.pdf'), { attachments: xdDemoAttachments143() })),
-            history: [h('Trình phê duyệt', 'canbonv', '09:00 17/10/2026', 'Kết quả xác định CQGQBT. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.'), h('Phê duyệt', 'tpbt', '14:00 17/10/2026', 'Kết quả xác định CQGQBT: phê duyệt cấp Phòng Quản lý nghiệp vụ về bồi thường nhà nước; chuyển Nguyễn Văn Cục Trưởng - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.', XD_KIND.KQ), h('Ký duyệt', 'cuctruong', '16:00 17/10/2026', 'Kết quả xác định CQGQBT: ký duyệt cấp Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước; chuyển Đặng Hoàng Oanh - Bộ Tư pháp.', XD_KIND.KQ)]
+            history: [h('Trình ký đến ' + BTNN_WF.userName('tpbt'), 'canbonv', '09:00 17/10/2026', 'Kết quả xác định CQGQBT. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.'), h('Ký duyệt', 'tpbt', '14:00 17/10/2026', 'Kết quả xác định CQGQBT: ký duyệt cấp Phòng Quản lý nghiệp vụ về bồi thường nhà nước; chuyển Nguyễn Văn Cục Trưởng - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.', XD_KIND.KQ), h('Ký duyệt', 'cuctruong', '16:00 17/10/2026', 'Kết quả xác định CQGQBT: ký duyệt cấp Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước; chuyển Đặng Hoàng Oanh - Bộ Tư pháp.', XD_KIND.KQ)]
         })),
         base('XD-2026-144', true, Object.assign(p('Hà Minh Nhật', '19/01/1986', '001086009944', '0912141144', 'Số 21 Hàng Đào', 'Kê biên tài sản không thuộc sở hữu của người phải thi hành án.'), {
             date: '09/10/2026', receivedAt: '08:45 09/10/2026', status: XD_ST.BI_TRA_LAI, routes: btpRoutes('09/10/2026'),
             approval: Object.assign(appr(XD_KIND.YCBS, BTP, 0, [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Từ chối phê duyệt', note: 'Nội dung yêu cầu bổ sung chưa nêu rõ tài liệu cần cung cấp.', at: '15:00 14/10/2026' }], ['tpbt'], '09:00 14/10/2026', online('Thong_bao_YCBS_XD-2026-144.pdf'), 'Đề nghị bổ sung tài liệu chứng minh quyền sở hữu tài sản.'), { pending: null }),
             returned: { reason: 'Nội dung yêu cầu bổ sung chưa nêu rõ tài liệu cần cung cấp.', by: 'tpbt', unitId: 'PLN-02', at: '15:00 14/10/2026', kind: XD_KIND.YCBS, prevStatus: XD_ST.XAC_MINH },
-            history: [h('Tiếp nhận hồ sơ', 'canbonv', '08:45 09/10/2026', 'Tiếp nhận hồ sơ tại Bộ Tư pháp.'), h('Trình phê duyệt', 'canbonv', '09:00 14/10/2026', 'Loại trình: Yêu cầu bổ sung hồ sơ. Văn bản trình ký: Thong_bao_YCBS_XD-2026-144.pdf. Người nhận: Trần Văn Bồi Thường (Phòng Quản lý nghiệp vụ về BTNN).', XD_KIND.YCBS), h('Từ chối phê duyệt', 'tpbt', '15:00 14/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Nội dung yêu cầu bổ sung chưa nêu rõ tài liệu cần cung cấp.', XD_KIND.YCBS)]
+            history: [h('Tiếp nhận hồ sơ', 'canbonv', '08:45 09/10/2026', 'Tiếp nhận hồ sơ tại Bộ Tư pháp.'), h('Trình ký đến ' + BTNN_WF.userName('tpbt'), 'canbonv', '09:00 14/10/2026', 'Loại trình: Yêu cầu bổ sung hồ sơ. Văn bản trình ký: Thong_bao_YCBS_XD-2026-144.pdf. Người nhận: Trần Văn Bồi Thường (Phòng Quản lý nghiệp vụ về BTNN).', XD_KIND.YCBS), h('Từ chối phê duyệt', 'tpbt', '15:00 14/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Nội dung yêu cầu bổ sung chưa nêu rõ tài liệu cần cung cấp.', XD_KIND.YCBS)]
         })),
         base('XD-2026-145', true, Object.assign(p('Nguyễn Thị Mai', '14/08/1985', '001185002233', '0912141145', 'Số 55 Hàng Gai', 'Yêu cầu bồi thường thiếu tài liệu chứng minh quyền yêu cầu bồi thường hợp pháp.'), {
             date: '04/10/2026', receivedAt: '08:30 04/10/2026', status: XD_ST.YCBS, routes: btpRoutes('04/10/2026'),
@@ -784,8 +784,8 @@ function buildFlowSeed() {
             approval: Object.assign(appr(XD_KIND.YCBS, BTP, 1, [pd('PLN-02', 'tpbt', '11:00 07/10/2026'), { unitId: 'CĐK-01', userId: 'cuctruong', action: 'Ký duyệt', note: 'Đồng ý ban hành thông báo yêu cầu bổ sung hồ sơ.', at: '16:00 07/10/2026' }], ['tpbt', 'cuctruong'], '08:30 07/10/2026', Object.assign(online('Thong_bao_YCBS_XD-2026-145.pdf'), { signedFile: 'Thong_bao_YCBS_XD-2026-145_da_ky.pdf', signedBy: 'cuctruong', signedAt: '16:00 07/10/2026' }), 'Đề nghị bổ sung văn bản ủy quyền hợp pháp hoặc văn bản chứng minh tư cách thừa kế theo quy định của Luật Trách nhiệm bồi thường của Nhà nước.'), { pending: null, done: true }),
             history: [
                 h('Tiếp nhận hồ sơ', 'canbonv', '08:30 04/10/2026', 'Tiếp nhận hồ sơ tại Bộ Tư pháp; cán bộ chủ trì tiếp nhận: Nguyễn Văn Cán Bộ.'),
-                h('Trình phê duyệt', 'canbonv', '08:30 07/10/2026', 'Loại trình: Yêu cầu bổ sung hồ sơ. Cán bộ chủ trì: Nguyễn Văn Cán Bộ. Trình Lãnh đạo Phòng xem xét, ký duyệt. Văn bản trình ký: Thong_bao_YCBS_XD-2026-145.pdf.', XD_KIND.YCBS),
-                h('Phê duyệt', 'tpbt', '11:00 07/10/2026', 'Phê duyệt cấp Phòng (Phòng Quản lý nghiệp vụ về bồi thường nhà nước); Ý kiến: Đề xuất bổ sung đúng quy định; chuyển Cục trưởng Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước ký duyệt.', XD_KIND.YCBS),
+                h('Trình ký đến ' + BTNN_WF.userName('tpbt'), 'canbonv', '08:30 07/10/2026', 'Loại trình: Yêu cầu bổ sung hồ sơ. Cán bộ chủ trì: Nguyễn Văn Cán Bộ. Trình Lãnh đạo Phòng xem xét, ký duyệt. Văn bản trình ký: Thong_bao_YCBS_XD-2026-145.pdf.', XD_KIND.YCBS),
+                h('Ký duyệt', 'tpbt', '11:00 07/10/2026', 'Phê duyệt cấp Phòng (Phòng Quản lý nghiệp vụ về bồi thường nhà nước); Ý kiến: Đề xuất bổ sung đúng quy định; chuyển Cục trưởng Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước ký duyệt.', XD_KIND.YCBS),
                 h('Ký duyệt', 'cuctruong', '16:00 07/10/2026', 'Ký duyệt cấp cuối (Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước): Đã ký số Thông báo yêu cầu bổ sung hồ sơ. Văn bản đã ký số: Thong_bao_YCBS_XD-2026-145_da_ky.pdf. Hồ sơ chuyển trạng thái [Yêu cầu bổ sung].', XD_KIND.YCBS)
             ]
         })),
@@ -795,8 +795,8 @@ function buildFlowSeed() {
             approval: Object.assign(appr(XD_KIND.KTL, BTP, 1, [pd('PLN-02', 'tpbt', '10:00 05/10/2026'), { unitId: 'CĐK-01', userId: 'cuctruong', action: 'Ký duyệt', note: 'Thống nhất lý do không thụ lý.', at: '15:30 05/10/2026' }], ['tpbt', 'cuctruong'], '08:00 05/10/2026', Object.assign(online('Thong_bao_khong_thu_ly_XD-2026-146.pdf'), { signedFile: 'Thong_bao_khong_thu_ly_XD-2026-146_da_ky.pdf', signedBy: 'cuctruong', signedAt: '15:30 05/10/2026' }), 'Yêu cầu bồi thường thuộc vụ việc Tòa án nhân dân có thẩm quyền đã thụ lý giải quyết theo thủ tục tố tụng dân sự (điểm b khoản 1 Điều 35 Luật TNBTCNN năm 2017).'), { pending: null, done: true }),
             history: [
                 h('Tiếp nhận hồ sơ', 'canbonv', '09:15 02/10/2026', 'Tiếp nhận hồ sơ tại Bộ Tư pháp; cán bộ chủ trì: Nguyễn Văn Cán Bộ.'),
-                h('Trình phê duyệt', 'canbonv', '08:00 05/10/2026', 'Loại trình: Không thụ lý hồ sơ. Cán bộ chủ trì: Nguyễn Văn Cán Bộ. Lý do: Vụ việc đã được Tòa án nhân dân thụ lý giải quyết. Văn bản trình ký: Thong_bao_khong_thu_ly_XD-2026-146.pdf. Trình Trần Văn Bồi Thường.', XD_KIND.KTL),
-                h('Phê duyệt', 'tpbt', '10:00 05/10/2026', 'Phê duyệt cấp Phòng (Phòng Quản lý nghiệp vụ về bồi thường nhà nước); Ý kiến: Nhất trí căn cứ không thụ lý; chuyển Cục trưởng Nguyễn Văn Cục Trưởng ký duyệt.', XD_KIND.KTL),
+                h('Trình ký đến ' + BTNN_WF.userName('tpbt'), 'canbonv', '08:00 05/10/2026', 'Loại trình: Không thụ lý hồ sơ. Cán bộ chủ trì: Nguyễn Văn Cán Bộ. Lý do: Vụ việc đã được Tòa án nhân dân thụ lý giải quyết. Văn bản trình ký: Thong_bao_khong_thu_ly_XD-2026-146.pdf. Trình Trần Văn Bồi Thường.', XD_KIND.KTL),
+                h('Ký duyệt', 'tpbt', '10:00 05/10/2026', 'Phê duyệt cấp Phòng (Phòng Quản lý nghiệp vụ về bồi thường nhà nước); Ý kiến: Nhất trí căn cứ không thụ lý; chuyển Cục trưởng Nguyễn Văn Cục Trưởng ký duyệt.', XD_KIND.KTL),
                 h('Ký duyệt', 'cuctruong', '15:30 05/10/2026', 'Ký duyệt cấp cuối (Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước): Đã ký số Thông báo không thụ lý hồ sơ. Văn bản đã ký số: Thong_bao_khong_thu_ly_XD-2026-146_da_ky.pdf. Hồ sơ chuyển trạng thái [Không thụ lý].', XD_KIND.KTL)
             ]
         })),
@@ -807,7 +807,7 @@ function buildFlowSeed() {
             returned: null,
             history: [
                 h('Tiếp nhận hồ sơ', 'canbonv', '09:00 06/10/2026', 'Hồ sơ chuyển [Xác minh CQGQBT].'),
-                h('Trình phê duyệt', 'canbonv', '09:00 13/10/2026', 'Kết quả xác định CQGQBT. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.', XD_KIND.KQ),
+                h('Trình ký đến ' + BTNN_WF.userName('tpbt'), 'canbonv', '09:00 13/10/2026', 'Kết quả xác định CQGQBT. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.', XD_KIND.KQ),
                 h('Từ chối phê duyệt', 'tpbt', '16:00 13/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Đề nghị bổ sung căn cứ xác định cơ quan quản lý người thi hành công vụ.', XD_KIND.KQ),
                 h('Tham mưu kết quả xác định CQGQBT', 'canbonv', '10:00 14/10/2026', 'Tham mưu lại Kết quả xác định CQGQBT. Hồ sơ chuyển [Xác minh CQGQBT].')
             ]
@@ -820,7 +820,7 @@ function buildFlowSeed() {
             supplementHistory: [{ reason: 'Đề nghị bổ sung biên bản tạm giữ hàng hóa và quyết định xử lý tang vật của Đội Quản lý thị trường.', method: 'Ký số', file: 'Thong_bao_YCBS_XD-2026-148_da_ky.pdf', by: 'cuctruong', unitId: 'CĐK-01', at: '15:00 03/10/2026' }],
             history: [
                 h('Tiếp nhận hồ sơ', 'canbonv', '08:30 01/10/2026', 'Hồ sơ chuyển [Xác minh CQGQBT].'),
-                h('Trình phê duyệt', 'canbonv', '08:30 03/10/2026', 'Yêu cầu bổ sung. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.', XD_KIND.YCBS),
+                h('Trình ký đến ' + BTNN_WF.userName('tpbt'), 'canbonv', '08:30 03/10/2026', 'Yêu cầu bổ sung. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.', XD_KIND.YCBS),
                 h('Ký duyệt', 'tpbt', '10:00 03/10/2026', 'Yêu cầu bổ sung: ký duyệt cấp Phòng Quản lý nghiệp vụ về bồi thường nhà nước; chuyển Nguyễn Văn Cục Trưởng - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.', XD_KIND.YCBS),
                 h('Ký duyệt', 'cuctruong', '15:00 03/10/2026', 'Ký duyệt cấp cuối (Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước) - đã ký số văn bản: Yêu cầu bổ sung. Văn bản đã ký số: Thong_bao_YCBS_XD-2026-148_da_ky.pdf. Hồ sơ chuyển [Yêu cầu bổ sung].', XD_KIND.YCBS),
                 h('Tiếp nhận hồ sơ bổ sung', 'canbonv', '09:30 09/10/2026', 'Cán bộ xử lý tiếp nhận hồ sơ bổ sung, cập nhật hồ sơ. Hồ sơ chuyển [Xác minh CQGQBT].')
@@ -834,7 +834,7 @@ function buildFlowSeed() {
             returned: { reason: 'Chưa đủ căn cứ xác định thuộc thẩm quyền của Tòa án nhân dân; đề nghị cán bộ thụ lý thu thập thêm bản án/quyết định và xác minh lại cơ quan giải quyết bồi thường theo đúng Điều 40 Luật TNBTCNN.', by: 'tpbt', unitId: 'PLN-02', at: '15:30 14/10/2026', kind: XD_KIND.KTL, prevStatus: XD_ST.CHO_TIEP_NHAN },
             history: [
                 h('Tiếp nhận hồ sơ', 'canbonv', '09:00 08/10/2026', 'Tiếp nhận hồ sơ tại Bộ Tư pháp.'),
-                h('Trình phê duyệt', 'canbonv', '09:00 14/10/2026', 'Loại trình: Không thụ lý hồ sơ. Văn bản trình ký: Thong_bao_khong_thu_ly_XD-2026-149.pdf. Người nhận: Trần Văn Bồi Thường (Phòng Quản lý nghiệp vụ về BTNN).', XD_KIND.KTL),
+                h('Trình ký đến ' + BTNN_WF.userName('tpbt'), 'canbonv', '09:00 14/10/2026', 'Loại trình: Không thụ lý hồ sơ. Văn bản trình ký: Thong_bao_khong_thu_ly_XD-2026-149.pdf. Người nhận: Trần Văn Bồi Thường (Phòng Quản lý nghiệp vụ về BTNN).', XD_KIND.KTL),
                 h('Từ chối phê duyệt', 'tpbt', '15:30 14/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Chưa đủ căn cứ xác định thuộc thẩm quyền của Tòa án nhân dân; đề nghị cán bộ thụ lý thu thập thêm bản án/quyết định và xác minh lại cơ quan giải quyết bồi thường theo đúng Điều 40 Luật TNBTCNN.', XD_KIND.KTL)
             ]
         })),
@@ -846,23 +846,23 @@ function buildFlowSeed() {
         base('XD-2026-152', false, Object.assign(p('Khúc Văn Định', '02/02/1980', '001080001552', '0936151152', 'Số 18 Bà Triệu', 'Cưỡng chế tháo dỡ công trình khi chưa có quyết định có hiệu lực của UBND phường Cầu Giấy.'), kq('UBND-CG', 'Người thi hành công vụ gây thiệt hại thuộc UBND phường Cầu Giấy quản lý.'), {
             date: '13/10/2026', receivedAt: '09:00 13/10/2026', status: XD_ST.CHO_DUYET, routes: stpRoutes('13/10/2026'),
             approval: appr(XD_KIND.KQ, STP3, 2, [pd('STP-HN-HCTP', 'tp_hctp_hn', '14:00 17/10/2026'), { unitId: 'STP-HN', userId: 'gdso_hn', action: 'Ký duyệt', note: '', at: '09:00 18/10/2026' }], ['tp_hctp_hn', 'gdso_hn', 'ct_ubndhn'], '10:00 17/10/2026', online('Ket_qua_xac_dinh_CQGQBT_XD-2026-152.pdf')),
-            history: [h('Tiếp nhận hồ sơ', 'cv_hn1', '15:00 13/10/2026', 'Hồ sơ chuyển [Xác minh CQGQBT].'), h('Trình phê duyệt', 'cv_hn1', '10:00 17/10/2026', 'Kết quả xác định CQGQBT. Trình Vũ Thị Thanh - Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hà Nội.'), h('Ký duyệt', 'tp_hctp_hn', '14:00 17/10/2026', 'Kết quả xác định CQGQBT: ký duyệt cấp Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hà Nội; chuyển Phạm Quang Huy - Sở Tư pháp Thành phố Hà Nội.', XD_KIND.KQ), h('Ký duyệt', 'gdso_hn', '09:00 18/10/2026', 'Kết quả xác định CQGQBT: ký duyệt cấp Sở Tư pháp Thành phố Hà Nội; chuyển Tống Văn Đạt - UBND Thành phố Hà Nội.', XD_KIND.KQ)]
+            history: [h('Tiếp nhận hồ sơ', 'cv_hn1', '15:00 13/10/2026', 'Hồ sơ chuyển [Xác minh CQGQBT].'), h('Trình ký đến ' + BTNN_WF.userName('tp_hctp_hn'), 'cv_hn1', '10:00 17/10/2026', 'Kết quả xác định CQGQBT. Trình Vũ Thị Thanh - Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hà Nội.'), h('Ký duyệt', 'tp_hctp_hn', '14:00 17/10/2026', 'Kết quả xác định CQGQBT: ký duyệt cấp Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hà Nội; chuyển Phạm Quang Huy - Sở Tư pháp Thành phố Hà Nội.', XD_KIND.KQ), h('Ký duyệt', 'gdso_hn', '09:00 18/10/2026', 'Kết quả xác định CQGQBT: ký duyệt cấp Sở Tư pháp Thành phố Hà Nội; chuyển Tống Văn Đạt - UBND Thành phố Hà Nội.', XD_KIND.KQ)]
         })),
         base('XD-2026-153', false, Object.assign(p('Ông Văn Lộc', '27/07/1975', '001075001553', '0936151153', 'Số 30 Hàng Bông', 'Tạm giữ hành chính quá thời hạn quy định.'), {
             date: '12/10/2026', receivedAt: '10:30 12/10/2026', status: XD_ST.CHO_DUYET, routes: stpRoutes('12/10/2026'),
             approval: appr(XD_KIND.YCBS, STP, 1, [pd('STP-HN-HCTP', 'tp_hctp_hn', '11:00 16/10/2026')], ['tp_hctp_hn', 'gdso_hn'], '09:00 16/10/2026', online('Thong_bao_YCBS_XD-2026-153.pdf'), 'Đề nghị bổ sung quyết định tạm giữ và văn bản xác định hành vi trái pháp luật.'),
-            history: [h('Trình phê duyệt', 'cv_hn1', '09:00 16/10/2026', 'Yêu cầu bổ sung.'), h('Phê duyệt', 'tp_hctp_hn', '11:00 16/10/2026', 'Yêu cầu bổ sung: phê duyệt cấp Phòng Hành chính tư pháp; chuyển Phạm Quang Huy - Sở Tư pháp Thành phố Hà Nội.', XD_KIND.YCBS)]
+            history: [h('Trình ký đến ' + BTNN_WF.userName('tp_hctp_hn'), 'cv_hn1', '09:00 16/10/2026', 'Yêu cầu bổ sung.'), h('Ký duyệt', 'tp_hctp_hn', '11:00 16/10/2026', 'Yêu cầu bổ sung: ký duyệt cấp Phòng Hành chính tư pháp; chuyển Phạm Quang Huy - Sở Tư pháp Thành phố Hà Nội.', XD_KIND.YCBS)]
         })),
         base('XD-2026-154', false, Object.assign(p('Mẫn Thị Dung', '09/09/1988', '001188001554', '0936151154', 'Số 2 Tràng Thi', 'Yêu cầu bồi thường thuộc vụ việc Tòa án đã thụ lý theo thủ tục tố tụng dân sự.'), {
             nycGender: 'Nữ', date: '11/10/2026', receivedAt: '14:00 11/10/2026', status: XD_ST.CHO_DUYET, routes: stpRoutes('11/10/2026'),
             approval: appr(XD_KIND.KTL, STP, 0, [], ['tp_hctp_hn'], '16:00 17/10/2026', online('Thong_bao_khong_thu_ly_XD-2026-154.pdf'), 'Yêu cầu bồi thường đã được Tòa án có thẩm quyền thụ lý theo thủ tục tố tụng dân sự.'),
-            history: [h('Trình phê duyệt', 'cv_hn1', '16:00 17/10/2026', 'Không thụ lý.')]
+            history: [h('Trình ký đến ' + BTNN_WF.userName('tp_hctp_hn'), 'cv_hn1', '16:00 17/10/2026', 'Không thụ lý.')]
         })),
         base('XD-2026-155', false, Object.assign(p('Quản Văn Bình', '30/12/1983', '001083001555', '0936151155', 'Số 11 Lý Thường Kiệt', 'Thu hồi đất không đúng quy định của UBND phường Văn Miếu - Quốc Tử Giám.'), kq('UBND-DD', 'Quyết định thu hồi đất do UBND phường Văn Miếu - Quốc Tử Giám ban hành.'), {
             date: '08/10/2026', receivedAt: '08:00 08/10/2026', status: XD_ST.BI_TRA_LAI, routes: stpRoutes('08/10/2026'),
             approval: Object.assign(appr(XD_KIND.KQ, STP, 1, [pd('STP-HN-HCTP', 'tp_hctp_hn', '10:00 15/10/2026'), { unitId: 'STP-HN', userId: 'gdso_hn', action: 'Từ chối phê duyệt', note: 'Đề nghị làm rõ căn cứ xác định cơ quan quản lý người thi hành công vụ.', at: '15:00 15/10/2026' }], ['tp_hctp_hn', 'gdso_hn'], '08:30 15/10/2026', online('Ket_qua_xac_dinh_CQGQBT_XD-2026-155.pdf')), { pending: null }),
             returned: { reason: 'Đề nghị làm rõ căn cứ xác định cơ quan quản lý người thi hành công vụ.', by: 'gdso_hn', unitId: 'STP-HN', at: '15:00 15/10/2026', kind: XD_KIND.KQ, prevStatus: XD_ST.XAC_MINH },
-            history: [h('Trình phê duyệt', 'cv_hn1', '08:30 15/10/2026', 'Kết quả xác định CQGQBT.'), h('Phê duyệt', 'tp_hctp_hn', '10:00 15/10/2026', '', XD_KIND.KQ), h('Từ chối phê duyệt', 'gdso_hn', '15:00 15/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Đề nghị làm rõ căn cứ xác định cơ quan quản lý người thi hành công vụ.', XD_KIND.KQ)]
+            history: [h('Trình ký đến ' + BTNN_WF.userName('tp_hctp_hn'), 'cv_hn1', '08:30 15/10/2026', 'Kết quả xác định CQGQBT.'), h('Ký duyệt', 'tp_hctp_hn', '10:00 15/10/2026', '', XD_KIND.KQ), h('Từ chối phê duyệt', 'gdso_hn', '15:00 15/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Đề nghị làm rõ căn cứ xác định cơ quan quản lý người thi hành công vụ.', XD_KIND.KQ)]
         })),
         base('XD-2026-156', false, Object.assign(p('Chu Văn Tiến', '15/05/1979', '001079001556', '0936151156', 'Số 7 Hai Bà Trưng', 'Đình chỉ hoạt động kinh doanh trái pháp luật.'), {
             date: '05/10/2026', receivedAt: '09:00 05/10/2026', status: XD_ST.YCBS, routes: stpRoutes('05/10/2026'),
@@ -870,8 +870,8 @@ function buildFlowSeed() {
             approval: Object.assign(appr(XD_KIND.YCBS, STP, 1, [pd('STP-HN-HCTP', 'tp_hctp_hn', '10:00 08/10/2026'), { unitId: 'STP-HN', userId: 'gdso_hn', action: 'Ký duyệt', note: 'Đồng ý ban hành thông báo yêu cầu bổ sung hồ sơ.', at: '14:00 08/10/2026' }], ['tp_hctp_hn', 'gdso_hn'], '08:00 08/10/2026', Object.assign(online('Thong_bao_YCBS_XD-2026-156.pdf'), { signedFile: 'Thong_bao_YCBS_XD-2026-156_da_ky.pdf', signedBy: 'gdso_hn', signedAt: '14:00 08/10/2026' }), 'Đề nghị bổ sung quyết định đình chỉ hoạt động kinh doanh số 45/QĐ-UBND và các hóa đơn, chứng từ chứng minh thiệt hại thực tế phát sinh.'), { pending: null, done: true }),
             history: [
                 h('Tiếp nhận hồ sơ', 'cv_hn1', '09:00 05/10/2026', 'Tiếp nhận hồ sơ trực tiếp; cán bộ chủ trì: Đỗ Văn Chung; chuyển bước Xác minh cơ quan giải quyết bồi thường.'),
-                h('Trình phê duyệt', 'cv_hn1', '08:00 08/10/2026', 'Loại trình: Yêu cầu bổ sung hồ sơ. Cán bộ trình: Đỗ Văn Chung. Trình Lãnh đạo Phòng Hành chính tư pháp xem xét, phê duyệt. Văn bản trình ký: Thong_bao_YCBS_XD-2026-156.pdf.', XD_KIND.YCBS),
-                h('Phê duyệt', 'tp_hctp_hn', '10:00 08/10/2026', 'Phê duyệt cấp Phòng (Phòng Hành chính tư pháp); Ý kiến: Đồng ý với nội dung yêu cầu bổ sung; chuyển Giám đốc Sở Tư pháp Thành phố Hà Nội (Phạm Quang Huy) ký duyệt.', XD_KIND.YCBS),
+                h('Trình ký đến ' + BTNN_WF.userName('tp_hctp_hn'), 'cv_hn1', '08:00 08/10/2026', 'Loại trình: Yêu cầu bổ sung hồ sơ. Cán bộ trình: Đỗ Văn Chung. Trình Lãnh đạo Phòng Hành chính tư pháp xem xét, phê duyệt. Văn bản trình ký: Thong_bao_YCBS_XD-2026-156.pdf.', XD_KIND.YCBS),
+                h('Ký duyệt', 'tp_hctp_hn', '10:00 08/10/2026', 'Phê duyệt cấp Phòng (Phòng Hành chính tư pháp); Ý kiến: Đồng ý với nội dung yêu cầu bổ sung; chuyển Giám đốc Sở Tư pháp Thành phố Hà Nội (Phạm Quang Huy) ký duyệt.', XD_KIND.YCBS),
                 h('Ký duyệt', 'gdso_hn', '14:00 08/10/2026', 'Ký duyệt cấp cuối (Sở Tư pháp Thành phố Hà Nội): Đã ký số Thông báo yêu cầu bổ sung hồ sơ. Văn bản ký số: Thong_bao_YCBS_XD-2026-156_da_ky.pdf. Hồ sơ chuyển trạng thái [Yêu cầu bổ sung].', XD_KIND.YCBS)
             ]
         })),
@@ -881,8 +881,8 @@ function buildFlowSeed() {
             approval: Object.assign(appr(XD_KIND.KTL, STP, 1, [pd('STP-HN-HCTP', 'tp_hctp_hn', '09:00 06/10/2026'), { unitId: 'STP-HN', userId: 'gdso_hn', action: 'Ký duyệt', note: '', at: '15:00 06/10/2026' }], ['tp_hctp_hn', 'gdso_hn'], '08:00 06/10/2026', Object.assign(offline('Thong_bao_khong_thu_ly_XD-2026-157_da_ky.pdf'), { signedFile: 'Thong_bao_khong_thu_ly_XD-2026-157_da_ky.pdf', signedBy: 'gdso_hn', signedAt: '15:00 06/10/2026' }), 'Yêu cầu bồi thường không thuộc phạm vi trách nhiệm bồi thường của Nhà nước theo quy định tại Điều 17, 18, 19 Luật TNBTCNN năm 2017.'), { pending: null, done: true }),
             history: [
                 h('Tiếp nhận hồ sơ', 'cv_hn1', '10:00 02/10/2026', 'Tiếp nhận hồ sơ trực tiếp tại Sở Tư pháp; cán bộ chủ trì: Đỗ Văn Chung; chuyển bước Xác minh cơ quan giải quyết bồi thường.'),
-                h('Trình phê duyệt', 'cv_hn1', '08:00 06/10/2026', 'Loại trình: Không thụ lý hồ sơ. Cán bộ trình: Đỗ Văn Chung. Lý do: Yêu cầu bồi thường không thuộc phạm vi trách nhiệm bồi thường của Nhà nước. Văn bản trình ký: Thong_bao_khong_thu_ly_XD-2026-157.pdf. Trình Vũ Thị Thanh (Phòng Hành chính tư pháp).', XD_KIND.KTL),
-                h('Phê duyệt', 'tp_hctp_hn', '09:00 06/10/2026', 'Phê duyệt cấp Phòng (Phòng Hành chính tư pháp); Ý kiến: Thống nhất lý do không thuộc phạm vi bồi thường; chuyển Giám đốc Sở ký duyệt ban hành.', XD_KIND.KTL),
+                h('Trình ký đến ' + BTNN_WF.userName('tp_hctp_hn'), 'cv_hn1', '08:00 06/10/2026', 'Loại trình: Không thụ lý hồ sơ. Cán bộ trình: Đỗ Văn Chung. Lý do: Yêu cầu bồi thường không thuộc phạm vi trách nhiệm bồi thường của Nhà nước. Văn bản trình ký: Thong_bao_khong_thu_ly_XD-2026-157.pdf. Trình Vũ Thị Thanh (Phòng Hành chính tư pháp).', XD_KIND.KTL),
+                h('Ký duyệt', 'tp_hctp_hn', '09:00 06/10/2026', 'Phê duyệt cấp Phòng (Phòng Hành chính tư pháp); Ý kiến: Thống nhất lý do không thuộc phạm vi bồi thường; chuyển Giám đốc Sở ký duyệt ban hành.', XD_KIND.KTL),
                 h('Ký duyệt', 'gdso_hn', '15:00 06/10/2026', 'Ký duyệt cấp cuối (Sở Tư pháp Thành phố Hà Nội): Ban hành Thông báo không thụ lý hồ sơ (Ký ngoài). Văn bản đã ký & đóng dấu: Thong_bao_khong_thu_ly_XD-2026-157_da_ky.pdf. Hồ sơ chuyển trạng thái [Không thụ lý].', XD_KIND.KTL)
             ]
         })),
@@ -890,7 +890,7 @@ function buildFlowSeed() {
         base('XD-2026-158', false, Object.assign(p('Từ Văn Hưng', '21/08/1982', '001082001558', '0936151158', 'Số 25 Tông Đản', 'Tạm giữ tài sản quá thời hạn của Công an phường Bạch Mai.'), kq('CA-HM', 'Người thi hành công vụ gây thiệt hại thuộc Công an phường Bạch Mai quản lý.'), {
             date: '01/10/2026', receivedAt: '08:00 01/10/2026', status: 'Chờ chuyển CQGQBT', routes: stpRoutes('01/10/2026'),
             approval: Object.assign(appr(XD_KIND.KQ, STP, 1, [pd('STP-HN-HCTP', 'tp_hctp_hn', '09:00 05/10/2026'), { unitId: 'STP-HN', userId: 'gdso_hn', action: 'Ký duyệt', note: '', at: '14:00 05/10/2026' }], ['tp_hctp_hn', 'gdso_hn'], '08:00 05/10/2026', Object.assign(online('Ket_qua_xac_dinh_CQGQBT_XD-2026-158.pdf'), { signedFile: 'Ket_qua_xac_dinh_CQGQBT_XD-2026-158_da_ky.pdf', signedBy: 'gdso_hn', signedAt: '14:00 05/10/2026' })), { pending: null, done: true }),
-            history: [h('Trình phê duyệt', 'cv_hn1', '08:00 05/10/2026', 'Kết quả xác định CQGQBT.'), h('Phê duyệt', 'tp_hctp_hn', '09:00 05/10/2026', '', XD_KIND.KQ), h('Ký duyệt', 'gdso_hn', '14:00 05/10/2026', 'Ký duyệt cấp cuối (Sở Tư pháp Thành phố Hà Nội): Kết quả xác định CQGQBT.', XD_KIND.KQ)]
+            history: [h('Trình ký đến ' + BTNN_WF.userName('tp_hctp_hn'), 'cv_hn1', '08:00 05/10/2026', 'Kết quả xác định CQGQBT.'), h('Ký duyệt', 'tp_hctp_hn', '09:00 05/10/2026', '', XD_KIND.KQ), h('Ký duyệt', 'gdso_hn', '14:00 05/10/2026', 'Ký duyệt cấp cuối (Sở Tư pháp Thành phố Hà Nội): Kết quả xác định CQGQBT.', XD_KIND.KQ)]
         })),
         // Bị trả lại - Loại trình Không thụ lý (Sở Tư pháp)
         base('XD-2026-159', false, Object.assign(p('Ngô Thị Thu Trang', '12/11/1987', '001187001558', '0936151158', 'Số 18 Cửa Bắc', 'Cán bộ trình dự thảo Không thụ lý; Lãnh đạo Phòng từ chối do chưa tính thời gian gián đoạn do trở ngại khách quan của người yêu cầu.'), {
@@ -900,7 +900,7 @@ function buildFlowSeed() {
             returned: { reason: 'Chưa tính thời gian gián đoạn do trở ngại khách quan của người yêu cầu; thời hiệu vẫn còn. Đề nghị cán bộ thụ lý chuyển tiếp nhận và xác minh cơ quan giải quyết bồi thường.', by: 'tp_hctp_hn', unitId: 'STP-HN-HCTP', at: '16:00 12/10/2026', kind: XD_KIND.KTL, prevStatus: XD_ST.CHO_TIEP_NHAN },
             history: [
                 h('Tiếp nhận hồ sơ', 'cv_hn1', '08:30 07/10/2026', 'Tiếp nhận tại Sở Tư pháp Thành phố Hà Nội; cán bộ xử lý: Đỗ Văn Chung.'),
-                h('Trình phê duyệt', 'cv_hn1', '09:00 12/10/2026', 'Loại trình: Không thụ lý hồ sơ. Văn bản trình ký: Thong_bao_khong_thu_ly_XD-2026-159.pdf. Người nhận: Lãnh đạo Phòng Hành chính tư pháp.', XD_KIND.KTL),
+                h('Trình ký đến ' + BTNN_WF.userName('tp_hctp_hn'), 'cv_hn1', '09:00 12/10/2026', 'Loại trình: Không thụ lý hồ sơ. Văn bản trình ký: Thong_bao_khong_thu_ly_XD-2026-159.pdf. Người nhận: Lãnh đạo Phòng Hành chính tư pháp.', XD_KIND.KTL),
                 h('Từ chối phê duyệt', 'tp_hctp_hn', '16:00 12/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Chưa tính thời gian gián đoạn do trở ngại khách quan của người yêu cầu; thời hiệu vẫn còn. Đề nghị cán bộ thụ lý chuyển tiếp nhận và xác minh cơ quan giải quyết bồi thường.', XD_KIND.KTL)
             ]
         })),
@@ -914,8 +914,8 @@ function buildFlowSeed() {
             history: [
                 h('Tiếp nhận hồ sơ', 'canbonv', '09:10 07/10/2026', 'Cán bộ xử lý tiếp nhận, nhập liệu. Hồ sơ chuyển [Xác minh CQGQBT].'),
                 h('Tham mưu kết quả xác định CQGQBT', 'canbonv', '08:20 16/10/2026', 'Cơ quan giải quyết bồi thường: Ủy ban nhân dân phường Bạch Mai.'),
-                h('Trình phê duyệt', 'canbonv', '08:30 16/10/2026', 'Kết quả xác định CQGQBT. Văn bản trình ký: Ket_qua_xac_dinh_CQGQBT_XD-2026-185.pdf. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.', XD_KIND.KQ),
-                h('Phê duyệt', 'tpbt', '10:30 16/10/2026', 'Kết quả xác định CQGQBT: phê duyệt cấp Phòng Quản lý nghiệp vụ về bồi thường nhà nước; chuyển Nguyễn Văn Cục Trưởng - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.', XD_KIND.KQ),
+                h('Trình ký đến ' + BTNN_WF.userName('tpbt'), 'canbonv', '08:30 16/10/2026', 'Kết quả xác định CQGQBT. Văn bản trình ký: Ket_qua_xac_dinh_CQGQBT_XD-2026-185.pdf. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.', XD_KIND.KQ),
+                h('Ký duyệt', 'tpbt', '10:30 16/10/2026', 'Kết quả xác định CQGQBT: ký duyệt cấp Phòng Quản lý nghiệp vụ về bồi thường nhà nước; chuyển Nguyễn Văn Cục Trưởng - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.', XD_KIND.KQ),
                 h('Từ chối phê duyệt', 'cuctruong', '15:30 16/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Đề nghị bổ sung căn cứ pháp lý về thẩm quyền quản lý người thi hành công vụ (Điều 33 Luật TNBTCNN) trước khi ký ban hành.', XD_KIND.KQ)
             ]
         })),
@@ -926,7 +926,7 @@ function buildFlowSeed() {
             returned: { reason: 'Nội dung yêu cầu bổ sung chưa nêu rõ thời hạn và hình thức nộp tài liệu bổ sung; đề nghị cập nhật lại dự thảo thông báo.', by: 'tp_hctp_hn', unitId: 'STP-HN-HCTP', at: '16:30 15/10/2026', kind: XD_KIND.YCBS, prevStatus: XD_ST.XAC_MINH },
             history: [
                 h('Tiếp nhận hồ sơ', 'cv_hn1', '10:00 09/10/2026', 'Cán bộ xử lý tiếp nhận, nhập liệu. Hồ sơ chuyển [Xác minh CQGQBT].'),
-                h('Trình phê duyệt', 'cv_hn1', '09:30 15/10/2026', 'Loại trình: Yêu cầu bổ sung hồ sơ. Văn bản trình ký: Thong_bao_YCBS_XD-2026-186.pdf. Người nhận: Lãnh đạo Phòng Hành chính tư pháp.', XD_KIND.YCBS),
+                h('Trình ký đến ' + BTNN_WF.userName('tp_hctp_hn'), 'cv_hn1', '09:30 15/10/2026', 'Loại trình: Yêu cầu bổ sung hồ sơ. Văn bản trình ký: Thong_bao_YCBS_XD-2026-186.pdf. Người nhận: Lãnh đạo Phòng Hành chính tư pháp.', XD_KIND.YCBS),
                 h('Từ chối phê duyệt', 'tp_hctp_hn', '16:30 15/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Nội dung yêu cầu bổ sung chưa nêu rõ thời hạn và hình thức nộp tài liệu bổ sung; đề nghị cập nhật lại dự thảo thông báo.', XD_KIND.YCBS)
             ]
         }))
@@ -1278,6 +1278,8 @@ function isVisibleToMe(rec) {
     // UBND cấp tỉnh: chỉ hồ sơ của các Sở Tư pháp trực thuộc
     if (isXdViewOnly()) return BTNN_WF.xdViewOnlyStpRoots(me).includes(rec.rootUnitId);
     if (rec.chuTri === me || rec.createdBy === me) return true;
+    // [ro1] Cán bộ phối hợp: chỉ xem (thao tác chỉ dành cho cán bộ chủ trì - isChuTri)
+    if (BTNN_WF.isPhoiHop && BTNN_WF.isPhoiHop(rec, me)) return true;
     const units = (rec.routes || []).map(r => r.fromUnitId).concat(rec.approval ? rec.approval.path : []);
     const ft = BTNN_WF.flowTypeOf(rec);
     return units.some(u => BTNN_WF.isLeaderOf(me, u, ft));
@@ -1852,7 +1854,7 @@ function showFormScreen(id = null, mode = null) {
     formRequestId.value = id || '';
     setupVuViecFields(item);
 
-    // Khối THÔNG TIN YÊU CẦU BỔ SUNG / THÔNG TIN HỒ SƠ BỊ TRẢ LẠI trên cùng của form: hồ sơ đang hoặc từng Yêu cầu bổ sung / Bị trả lại
+    // Khối THÔNG TIN YÊU CẦU BỔ SUNG / LÝ DO BỊ TRẢ LẠI trên cùng của form: hồ sơ đang hoặc từng Yêu cầu bổ sung / Bị trả lại
     renderXdHistoryBlock('formSupplementBlock', item ? BTNN_WF.renderXdSupplementHistoryHtml(item) : '');
     renderXdHistoryBlock('formReturnedAlertBlock', item ? BTNN_WF.renderXdReturnHistoryHtml(item) : '');
 
@@ -2030,7 +2032,7 @@ function showProcessScreen(id) {
         markInvalid(document.getElementById('procTargetAgencyInput'), null);
     }
     document.getElementById('procReason').value = src.procReason || "";
-    // Khối THÔNG TIN HỒ SƠ BỊ TRẢ LẠI: hồ sơ đang Bị trả lại hoặc trước đó từng bị trả lại
+    // Khối LÝ DO BỊ TRẢ LẠI: hồ sơ đang Bị trả lại hoặc trước đó từng bị trả lại
     renderXdHistoryBlock('procReturnedNotice', BTNN_WF.renderXdReturnHistoryHtml(item));
 
     procDocRows = (src.procDocs && src.procDocs.length)
@@ -2269,9 +2271,10 @@ function xdActionBlockHtml(item, kind) {
     // Lý do bị trả lại: chỉ khi Bị trả lại với đúng Loại trình của khối
     if (isReturned && isDraft) {
         const ret = (item.returned && item.returned.reason) ? item.returned : (BTNN_WF.returnHistoryOf(item)[0] || {});
-        rows.push(xdDetailRowHtml('Lý do bị trả lại', `<span class="xd-return-reason" style="color:#b45309; font-weight:600;">${escapeHtml(ret.reason || '--')}</span>`));
+        rows.push(xdDetailRowHtml('Lý do trả lại', `<span class="xd-return-reason" style="color:#b45309; font-weight:600;">${escapeHtml(ret.reason || '--')}</span>`));
         const who = [ret.by ? BTNN_WF.userName(ret.by) : '', ret.unitId ? BTNN_WF.unitName(ret.unitId) : ''].filter(Boolean).join(' - ');
-        rows.push(xdDetailRowHtml('Người trả lại - Thời điểm', escapeHtml([who, ret.at || ''].filter(Boolean).join(' - ') || '--')));
+        rows.push(xdDetailRowHtml('Lãnh đạo trả lại', escapeHtml(who || '--')));
+        rows.push(xdDetailRowHtml('Thời điểm trả lại', escapeHtml(ret.at || '--')));
     }
 
     // Ngày thực hiện (khối Không thụ lý / Yêu cầu bổ sung; khối Thông tin tiếp nhận không có): ngày trình (Chờ duyệt / Bị trả lại); ngày ban hành (Không thụ lý / Yêu cầu bổ sung)
@@ -3036,7 +3039,7 @@ function renderAgencyOptions() {
     const ids = BTNN_WF.gqConfiguredRoots().slice().sort((a, b) => BTNN_WF.unitName(a).localeCompare(BTNN_WF.unitName(b), 'vi'));
     dropdown.innerHTML = ids.length
         ? ids.map(u => `<div class="searchable-select-option" data-id="${escapeAttr(u)}" onclick="selectAgencyOption('${escapeAttr(u)}')">${escapeHtml(BTNN_WF.unitName(u))}<span style="color:var(--text-muted); font-size:11.5px; margin-left:6px;">${escapeHtml(u)}</span></div>`).join('')
-        : '<div class="searchable-select-option" style="color:var(--text-muted); cursor:default;">Chưa có cơ quan được cấu hình luồng Giải quyết YCBT</div>';
+        : '<div class="searchable-select-option" style="color:var(--text-muted); cursor:default;">Chưa có cơ quan có tài khoản thuộc Nhóm Lãnh đạo</div>';
 }
 
 // Save spawned claim
@@ -3216,7 +3219,7 @@ function getActionButtons(item) {
     }
     return ['accept', 'update', 'supplement', 'ktl'].map(k => slots[k] || off(k)).join('');
 }
-// Khối lịch sử (THÔNG TIN YÊU CẦU BỔ SUNG / THÔNG TIN HỒ SƠ BỊ TRẢ LẠI): có nội dung thì hiển thị, rỗng thì ẩn
+// Khối lịch sử (THÔNG TIN YÊU CẦU BỔ SUNG / LÝ DO BỊ TRẢ LẠI): có nội dung thì hiển thị, rỗng thì ẩn
 function renderXdHistoryBlock(id, html) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -3423,6 +3426,7 @@ function approvalSummaryHtml(item, kind) {
         <div><span style="color:#64748b;">Ngày tiếp nhận:</span> <b>${escapeHtml(item.date || item.receivedAt || '--')}</b></div>
         <div><span style="color:#64748b;">Trạng thái:</span> ${statusCellHtml(item)}</div>
         <div><span style="color:#64748b;">Cán bộ xử lý:</span> <b>${escapeHtml(item.chuTri ? BTNN_WF.userName(item.chuTri) : '--')}</b></div>
+        ${(item.phoiHop || []).length ? `<div><span style="color:#64748b;">Cán bộ phối hợp:</span> <b>${escapeHtml(item.phoiHop.map(BTNN_WF.userName).join(', '))}</b></div>` : ''}
         <div><span style="color:#64748b;">Đơn vị tiếp nhận:</span> <b>${unitWithTypeHtml(item.rootUnitId)}</b></div>
         ${kind === XD_KIND.KQ ? `<div><span style="color:#64748b;">Cơ quan giải quyết bồi thường:</span> <b style="color:#0f766e;">${escapeHtml(agency ? BTNN_WF.unitName(agency) : (item.procTargetAgency || '--'))}</b></div>` : ''}
     </div>`;
@@ -3434,7 +3438,7 @@ function fillLeaderSelect(selectId, item) {
     const leaders = BTNN_WF.firstLevelLeaders(item);
     sel.innerHTML = leaders.length
         ? '<option value="">-- Chọn Lãnh đạo phê duyệt --</option>' + leaders.map(id => `<option value="${escapeAttr(id)}">${escapeHtml(BTNN_WF.userLabel(id))}</option>`).join('')
-        : '<option value="">Cấp phê duyệt đầu tiên chưa cấu hình nhóm lãnh đạo</option>';
+        : '<option value="">Cấp phê duyệt đầu tiên chưa có tài khoản thuộc Nhóm Lãnh đạo</option>';
     sel.disabled = !leaders.length;
     sel.value = leaders.length === 1 ? leaders[0] : '';
     return leaders;
@@ -3507,6 +3511,8 @@ function fillTwoLeaderSelects(item, prevAssignees) {
     const knBadge = (id, unitId) => { const el = document.getElementById(id); if (el) el.style.display = unitId && BTNN_WF.isKyNhayUnit && BTNN_WF.isKyNhayUnit(unitId, BTNN_WF.flowTypeOf(item)) ? '' : 'none'; };
     knBadge('xsRoomKyNhayBadge', path.length >= 2 ? path[0] : '');
     knBadge('xsAgencyKyNhayBadge', path.length ? path[path.length - 1] : '');
+    knBadge('xsSigRoomKyNhay', path.length >= 2 ? path[0] : '');
+    knBadge('xsSigAgencyKyNhay', path.length ? path[path.length - 1] : '');
     const pick = (list, wanted) => (wanted && list.includes(wanted) ? wanted : list[0]);
 
     if (roomLeaders.length) {
@@ -3598,13 +3604,14 @@ function xsRenderMidLevels(item, path, prev) {
         box.id = 'xsSigBoxL' + i;
         box.className = 'sig-drag-box xs-mid-sig';
         box.style.cssText = 'display:none; border:2px dashed #4f46e5; background:rgba(238, 242, 255, 0.94); box-shadow:0 4px 12px rgba(79,70,229,0.18);';
+        const kn = BTNN_WF.isKyNhayUnit && BTNN_WF.isKyNhayUnit(path[i], ft);
         box.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:10.5px; font-weight:700; color:#3730a3;"><i class="fa-solid fa-pen-nib"></i> KÝ NHÁY</span>
-                <span class="badge" style="background:#4f46e5; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp ${i + 1}</span>
+                <span></span>
+                <span class="badge" style="${kn ? '' : 'display:none; '}background:#dbeafe; color:#1e40af; font-size:9.5px; padding:1px 5px;">Ký nháy</span>
             </div>
             <div style="text-align:center; font-weight:700; color:#1e293b; font-size:12px;" id="xsSigBoxL${i}Officer"></div>
             <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;">
-                <span>Chữ ký nháy</span>
+                <span>Tọa độ</span>
                 <span id="xsCoordL${i}Label"></span>
             </div>
             <div class="sig-resize-handle" data-target="l${i}" title="Kéo chuột để co giãn khung chữ ký"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>`;
@@ -3669,7 +3676,7 @@ function openSignSubmitModal(id, kind) {
     if (chkRoom) chkRoom.checked = xsState.enableRoomSig;
     xsToggleRoomSig(xsState.enableRoomSig);
 
-    // Khối THÔNG TIN HỒ SƠ BỊ TRẢ LẠI: hiển thị trên form trình ký nếu hồ sơ đang bị trả lại hoặc từng bị trả lại
+    // Khối LÝ DO BỊ TRẢ LẠI: hiển thị trên form trình ký nếu hồ sơ đang bị trả lại hoặc từng bị trả lại
     renderXdHistoryBlock('xsReturnedAlertBlock', BTNN_WF.renderXdReturnHistoryHtml(item));
 
     // Trình lại: tệp văn bản trình ký đã tải lên lần trước (mở xem lại được) và Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo
