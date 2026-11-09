@@ -625,7 +625,7 @@ function buildOrgSeed() {
             date: '10/10/2026', receivedAt: '09:15 10/10/2026', receivedBy: 'Nguyễn Văn Cán Bộ', status: 'Xác minh CQGQBT',
             nycRole: 'Cá nhân, pháp nhân được ủy quyền hợp pháp',
             nycName: 'Công ty Luật TNHH Minh Phúc', nycOrgCode: '0108123456', nycOrgDocNo: '', nycOrgDocDate: '', nycOrgDocPlace: '',
-            nycRepName: 'Trần Minh Phúc', nycRepPosition: 'Giám đốc', nycPhone: '0243 8256 789', nycEmail: 'lienhe@minhphuclaw.vn',
+            nycRepName: 'Trần Minh Phúc', nycRepPosition: 'Giám đốc', nycPhone: '0938256789', nycEmail: 'lienhe@minhphuclaw.vn',
             nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: '00007 - Phường Cầu Giấy', nycAddressDetail: 'Tầng 6, Số 18 Trần Thái Tông',
             nbth: { name: 'Lương Văn Khải', dob: '02/03/1976', docType: 'CMND/CCCD/Chứng minh quân đội', docNo: '001076004455', docDate: '11/05/2021', docPlace: 'Cục Cảnh sát QLHC về trật tự xã hội', phone: '0912556677', email: '', country: 'Việt Nam', city: 'Thành phố Hà Nội', ward: '00010 - Phường Thanh Xuân', address: 'Số 5 ngõ 120 Khương Trung' },
             hinhThucTiepNhan: M.TRUC_TIEP, linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ',
@@ -1528,6 +1528,64 @@ function toggleNbthBlock() {
     document.getElementById('nbthOrgBlock').style.display = isOrgVictim ? 'grid' : 'none';
     document.getElementById('nbthPersonBlock').style.display = isOrgVictim ? 'none' : 'grid';
     document.getElementById('nbthBlockTitle').innerText = isOrgVictim ? 'THÔNG TIN TỔ CHỨC BỊ THIỆT HẠI ĐÃ CHẤM DỨT TỒN TẠI' : 'THÔNG TIN NGƯỜI BỊ THIỆT HẠI';
+    placeXdVictimAlive();
+}
+
+// ===== Trạng thái người bị thiệt hại (như Tiếp nhận hồ sơ / Giải quyết YCBT): giá trị theo danh mục Trạng thái của công dân [DM_59]
+// (localStorage masterCategories, giá trị đang hoạt động; chưa có thì dùng 02 giá trị TTCD_01 Còn sống, TTCD_02 Đã chết).
+// Vị trí: Tư cách = Người bị thiệt hại -> khối người yêu cầu; Tư cách khác -> khối Người bị thiệt hại (sau Ngày sinh).
+// Người bị thiệt hại là tổ chức (Loại người yêu cầu = Tổ chức với Tư cách Người bị thiệt hại; Tư cách TCNYC_03; người bị thiệt hại Loại Tổ chức kế thừa từ Tiếp nhận): ẩn, đặt lại Còn sống.
+// Tư cách người thừa kế / đại diện những người thừa kế: tự chọn Đã chết, khóa.
+// Hồ sơ luồng: victimAliveStatus = tên giá trị; victimAlive = 'no' khi Đã chết, còn lại 'yes'. Hồ sơ cũ chưa có: Còn sống.
+const XD_ALIVE_SONG = 'Còn sống', XD_ALIVE_CHET = 'Đã chết';
+let xdNbthIsOrg = false;
+function xdAliveOptions() {
+    let l = [];
+    try {
+        l = JSON.parse(localStorage.getItem('masterCategories') || '[]')
+            .filter(c => c && c.typeCode === 'DM_59' && (!c.status || c.status === 'Hoạt động'))
+            .map(c => c.name).filter(Boolean);
+    } catch (e) { l = []; }
+    if (!l.length) return [XD_ALIVE_SONG, XD_ALIVE_CHET];
+    if (!l.includes(XD_ALIVE_SONG)) l = [XD_ALIVE_SONG].concat(l);
+    if (!l.includes(XD_ALIVE_CHET)) l = l.concat([XD_ALIVE_CHET]);
+    return l;
+}
+function xdNormAlive(v) { return v === 'Đã mất' || v === 'no' ? XD_ALIVE_CHET : (v === 'yes' ? XD_ALIVE_SONG : v); }
+function xdAliveFlag(v) { return xdNormAlive(v) === XD_ALIVE_CHET ? 'no' : 'yes'; }
+function xdAliveOf(item) { const c = item || {}; return xdNormAlive(c.victimAliveStatus) || (c.victimAlive === 'no' ? XD_ALIVE_CHET : XD_ALIVE_SONG); }
+function xdAliveRadios() { return Array.from(document.getElementsByName('xdVictimAlive')); }
+function xdGetAlive() { const r = document.querySelector('input[name="xdVictimAlive"]:checked'); return r ? r.value : XD_ALIVE_SONG; }
+function xdSetAlive(v) {
+    const want = xdNormAlive(v) || XD_ALIVE_SONG;
+    let hit = false;
+    xdAliveRadios().forEach(r => { r.checked = r.value === want; if (r.checked) hit = true; });
+    if (!hit) xdAliveRadios().forEach(r => { r.checked = r.value === (xdAliveFlag(want) === 'no' ? XD_ALIVE_CHET : XD_ALIVE_SONG); });
+}
+function renderXdVictimAlive() {
+    const box = document.getElementById('xdVictimAliveOptions');
+    if (!box) return;
+    const cur = xdGetAlive();
+    const opts = xdAliveOptions();
+    box.innerHTML = opts.map(n => `<label class="nyc-type-radio"><input type="radio" name="xdVictimAlive" value="${escapeAttr(n)}"> <span>${escapeHtml(n)}</span></label>`).join('');
+    xdSetAlive(opts.includes(cur) ? cur : XD_ALIVE_SONG);
+}
+function placeXdVictimAlive() {
+    const g = document.getElementById('xdVictimAliveGroup');
+    if (!g) return;
+    const role = document.getElementById('formNYCRole').value || NYC_ROLE.NBTH;
+    const isNbthRole = role === NYC_ROLE.NBTH, orgRole = role === NYC_ROLE.TC_KE_THUA;
+    const target = document.getElementById(!isNbthRole && !orgRole ? 'xdNbthVictimAliveAnchor' : 'xdVictimAliveAnchor');
+    if (target && target.nextElementSibling !== g) target.insertAdjacentElement('afterend', g);
+    const orgVictim = orgRole || (isNbthRole ? getFormNycType() === NYC_TYPE.TO_CHUC : xdNbthIsOrg);
+    const lock = !orgVictim && [NYC_ROLE.THUA_KE, NYC_ROLE.DD_THUA_KE].includes(role);
+    g.style.display = orgVictim ? 'none' : '';
+    if (orgVictim) xdSetAlive(XD_ALIVE_SONG);
+    else if (lock) xdSetAlive(XD_ALIVE_CHET);
+    xdAliveRadios().forEach(r => {
+        r.disabled = lock;
+        r.title = lock ? 'Trường hợp người yêu cầu là Người thừa kế hoặc đại diện những người thừa kế, Trạng thái người bị thiệt hại bắt buộc là ' + XD_ALIVE_CHET + '.' : '';
+    });
 }
 
 // Đổi Tư cách: cập nhật khối Người bị thiệt hại
@@ -1598,7 +1656,7 @@ function fillNbth(nb) {
     nb = nb || {};
     document.getElementById('nbthName').value = nb.name || '';
     document.getElementById('nbthDob').value = nb.dob || '';
-    document.getElementById('nbthDocType').value = nb.docType || 'CMND/CCCD/Chứng minh quân đội';
+    document.getElementById('nbthDocType').value = nb.docType || '';
     document.getElementById('nbthDocNo').value = nb.docNo || '';
     document.getElementById('nbthDocDate').value = nb.docDate || '';
     document.getElementById('nbthDocPlace').value = nb.docPlace || '';
@@ -1819,7 +1877,7 @@ function showFormScreen(id = null, mode = null) {
     document.getElementById('formNYCRole').value = NYC_ROLE.NBTH;
     toggleNbthBlock();
     document.getElementById('formNYCDob').value = '';
-    document.getElementById('formNYCDocType').value = 'CMND/CCCD/Chứng minh quân đội';
+    document.getElementById('formNYCDocType').value = '';
     document.getElementById('formNYCDocNo').value = '';
     document.getElementById('formNYCDocDate').value = '';
     document.getElementById('formNYCDocPlace').value = '';
@@ -1883,7 +1941,7 @@ function showFormScreen(id = null, mode = null) {
         document.getElementById('nbthOrgCode').value = item.nbthOrgCode || '';
         refreshOrgDocRequired();
         document.getElementById('formNYCDob').value = item.nycDob || '';
-        document.getElementById('formNYCDocType').value = item.nycDocType || 'CMND/CCCD/Chứng minh quân đội';
+        document.getElementById('formNYCDocType').value = item.nycDocType || '';
         document.getElementById('formNYCDocNo').value = item.nycDocNo || '';
         document.getElementById('formNYCDocDate').value = item.nycDocDate || '';
         document.getElementById('formNYCDocPlace').value = item.nycDocPlace || '';
@@ -1915,6 +1973,10 @@ function showFormScreen(id = null, mode = null) {
             if (item.diaChiNhanThongBao) editDiaChiEl.value = item.diaChiNhanThongBao;
         }
         fillNbth(item.nbth);
+        // Trạng thái người bị thiệt hại: theo hồ sơ luồng (giá trị Tiếp nhận hồ sơ đã lưu); hồ sơ cũ chưa có: Còn sống (người thừa kế: Đã chết)
+        xdNbthIsOrg = Boolean(item.nbth && item.nbth.type === NYC_TYPE.TO_CHUC);
+        renderXdVictimAlive();
+        xdSetAlive(xdAliveOf(item));
 
         formDocRows = item.attachedDocs && item.attachedDocs.length
             ? item.attachedDocs.map(doc => ({ name: doc.name || "", file: doc.file || "", isSupplement: Boolean(doc.isSupplement) }))
@@ -2091,6 +2153,14 @@ function renderXdProfileBody(item) {
     document.getElementById('dtNYCName').innerText = item.nycName || '';
     document.querySelectorAll('#xdProfileCard .dt-nyc-individual').forEach(el => { el.style.display = isOrg ? 'none' : ''; });
     document.querySelectorAll('#xdProfileCard .dt-nyc-org').forEach(el => { el.style.display = isOrg ? '' : 'none'; });
+    // Trạng thái người bị thiệt hại: Tư cách = Người bị thiệt hại và Loại người yêu cầu = Cá nhân -> khối người yêu cầu; Tư cách khác -> khối Người bị thiệt hại
+    const dtRole = item.nycRole || NYC_ROLE.NBTH;
+    const dtAlive = xdAliveOf(item);
+    const dtAliveHtml = dtAlive === XD_ALIVE_CHET ? `<span style="color: var(--danger-color); font-weight: 600;">${escapeHtml(dtAlive)}</span>` : escapeHtml(dtAlive);
+    document.getElementById('dtNYCVictimAliveRow').style.display = dtRole === NYC_ROLE.NBTH && !isOrg ? '' : 'none';
+    document.getElementById('dtNYCVictimAlive').innerHTML = dtAliveHtml;
+    document.getElementById('dtNbthVictimAliveRow').style.display = dtRole !== NYC_ROLE.NBTH && dtRole !== NYC_ROLE.TC_KE_THUA && !(item.nbth && item.nbth.type === NYC_TYPE.TO_CHUC) ? '' : 'none';
+    document.getElementById('dtNbthVictimAlive').innerHTML = dtAliveHtml;
     function getDiffBadge(fieldKey) {
         if (!item || !item.supplementDiff || !item.supplementDiff.length) return '';
         const diff = item.supplementDiff.slice().reverse().find(d => d.field === fieldKey);
@@ -2726,6 +2796,18 @@ function readVuViecFields(item) {
     return out;
 }
 
+// Số điện thoại: kiểm tra định dạng theo Quốc gia của khối (Việt Nam: đúng 10 chữ số, đầu 03/05/07/08/09; quốc gia khác: 8-15 chữ số, cho phép + ở đầu)
+const XD_MSG_PHONE = 'Số điện thoại không hợp lệ (độ dài 8-15 ký tự, bắt đầu bằng 0 hoặc +)';
+function xdPhoneOk(v, country) {
+    const s = String(v || '').replace(/\s+/g, '');
+    return (country || 'Việt Nam') === 'Việt Nam' ? /^0[35789]\d{8}$/.test(s) : /^\+?[1-9]\d{7,14}$/.test(s);
+}
+function xdSetErrText(el, txt) {
+    const g = el && el.closest('.form-group');
+    const m = g && g.querySelector('.error-message');
+    if (m) m.textContent = txt;
+}
+
 function markInvalid(el, firstInvalid) {
     el.classList.add('is-invalid');
     const err = el.closest('.form-group').querySelector('.error-message');
@@ -2767,6 +2849,10 @@ function saveForm() {
     const isOrgVictim = role === NYC_ROLE.TC_KE_THUA;
     const hasNbth = Boolean(role) && role !== NYC_ROLE.NBTH && !isOrgVictim;
     const nbth = hasNbth ? readNbth() : null;
+    // Giữ Loại người bị thiệt hại kế thừa từ Tiếp nhận hồ sơ (form không có trường Loại)
+    const formItemNb = formRequestId ? (requestList.find(r => r.id === formRequestId) || {}).nbth : null;
+    if (nbth && formItemNb && formItemNb.type) nbth.type = formItemNb.type;
+    const victimAliveStatus = xdGetAlive();
     const nbthOrgName = isOrgVictim ? fv('nbthOrgName') : '';
     const nbthOrgCode = isOrgVictim ? fv('nbthOrgCode') : '';
     const cleanDocs = formDocRows
@@ -2783,15 +2869,23 @@ function saveForm() {
         // Cá nhân: Họ và tên, Ngày sinh, giấy tờ thân nhân; Tổ chức: Tên tổ chức, Mã số tổ chức, người đại diện (giấy tờ thành lập/đăng ký không bắt buộc)
         const req = isOrg
             ? [['formNYCName', name], ['formNYCOrgCode', orgCode], ['formNYCRepName', repName], ['formNYCRepPosition', repPosition]]
-            : [['formNYCName', name], ['formNYCDob', dob], ['formNYCDocNo', docNo]]; // [gqfx] Ngày cấp, Nơi cấp không bắt buộc
+            : [['formNYCName', name], ['formNYCDob', dob], ['formNYCDocType', document.getElementById('formNYCDocType').value], ['formNYCDocNo', docNo]]; // [gqfx] Ngày cấp, Nơi cấp không bắt buộc
         req.unshift(['formNYCRole', role]);
         req.push(['formNYCPhone', phone], ['formNYCAddressDetail', addressDetail], ['formHanhVi', hanhVi]);
+        xdSetErrText(document.getElementById('formNYCPhone'), 'Đây là trường bắt buộc');
         req.forEach(([fid, val]) => { if (!val) firstInvalid = markInvalid(document.getElementById(fid), firstInvalid); });
+        if (phone && !xdPhoneOk(phone, country)) {
+            const phoneEl = document.getElementById('formNYCPhone');
+            xdSetErrText(phoneEl, XD_MSG_PHONE);
+            firstInvalid = markInvalid(phoneEl, firstInvalid);
+        }
         if (!city) firstInvalid = markInvalid(country === 'Việt Nam' ? document.getElementById('formNYCTinhThanh') : document.getElementById('formNYCTinhThanhText'), firstInvalid);
         if (!ward) firstInvalid = markInvalid(country === 'Việt Nam' ? document.getElementById('formNYCPhuongXa') : document.getElementById('formNYCPhuongXaText'), firstInvalid);
         if (isOrgVictim && !nbthOrgName) firstInvalid = markInvalid(document.getElementById('nbthOrgName'), firstInvalid);
         if (hasNbth) {
-            [['nbthName', nbth.name], ['nbthDob', nbth.dob], ['nbthDocNo', nbth.docNo]].forEach(([fid, val]) => { if (!val) firstInvalid = markInvalid(document.getElementById(fid), firstInvalid); });
+            [['nbthName', nbth.name], ['nbthDob', nbth.dob], ['nbthDocType', nbth.docType], ['nbthDocNo', nbth.docNo]].forEach(([fid, val]) => { if (!val) firstInvalid = markInvalid(document.getElementById(fid), firstInvalid); });
+            // Số điện thoại người bị thiệt hại: không bắt buộc; có dữ liệu thì kiểm tra định dạng
+            if (nbth.phone && !xdPhoneOk(nbth.phone, nbth.country)) firstInvalid = markInvalid(document.getElementById('nbthPhone'), firstInvalid);
         }
         const diaChiNhanEl = document.getElementById('formDiaChiNhan');
         const diaChiNhan = (diaChiNhanEl ? diaChiNhanEl.value : '').trim();
@@ -2818,6 +2912,7 @@ function saveForm() {
         nycRepName: repName, nycRepPosition: repPosition,
         nycPhone: phone, nycEmail: email, nycCountry: country, nycTinhThanh: city, nycPhuongXa: ward, nycAddressDetail: addressDetail,
         nbth: nbth, nbthOrgName: nbthOrgName, nbthOrgCode: nbthOrgCode,
+        victimAliveStatus: victimAliveStatus, victimAlive: xdAliveFlag(victimAliveStatus),
         hanhVi: hanhVi,
         vanBanCanCu: getCleanBasisRows(),
         hinhThucNhan: notifyMethod,

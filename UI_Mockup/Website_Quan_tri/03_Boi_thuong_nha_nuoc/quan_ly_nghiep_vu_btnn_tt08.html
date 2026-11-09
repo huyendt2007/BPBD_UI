@@ -632,11 +632,8 @@
         <div style="margin-top:10px;" id="addDocBtnWrapper">
             <button type="button" class="tlkt-btn-add" onclick="addDocumentRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
         </div>
-        <!-- Lịch sử xử lý: luôn đặt cuối form -->
-        <div class="form-group" style="margin-top:16px;">
-            <span class="form-label">Lịch sử xử lý</span>
-            <textarea class="form-control" id="historyContent" disabled>10/08/2026 09:15 - Nguyễn Văn Cán Bộ khởi tạo hồ sơ.</textarea>
-        </div>
+        <!-- Lịch sử xử lý: bảng 03 cột chuẩn BTNN (Thời điểm | Người thực hiện | Nội dung), mới nhất ở trên, cuối màn hình; ẩn khi Thêm mới -->
+        <div id="historyHost"></div>
         <div class="footer-actions" id="formActions"></div>
     </div>
 
@@ -656,9 +653,10 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261106q1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261106kn1"></script>
     <script src="btnn_popup_xoa.js?v=20261106ro1"></script>
     <script>
         // Phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp (btnn_pham_vi_don_vi.js)
@@ -1122,6 +1120,7 @@
 
         function submitPrimary(label) {
             if (!validateBusinessForm(false)) return;
+            if (currentFormCode) { addHistory(currentFormCode, 'Cập nhật', 'Cập nhật thông tin xử lý.'); renderHistory(currentFormCode); }
             if (moduleKey === 'khieu_nai') {
                 knSave();
                 closeForm();
@@ -1210,7 +1209,7 @@
             confirmCallback = () => {
                 if (moduleKey === 'huong_dan') hdSave('Hoàn thành');
                 const row = workingRows.find(item => item[0] === code);
-                if (row) row[row.length - 1] = 'Hoàn thành';
+                if (row) { const prev = row[row.length - 1]; row[row.length - 1] = 'Hoàn thành'; addHistory(code, 'Hoàn thành', `Trạng thái: ${prev} → Hoàn thành.`); reportMenuBadge(); }
                 closeForm();
                 renderTable();
                 showToast(code ? `Đã hoàn thành hồ sơ ${code}.` : 'Đã hoàn thành hồ sơ.');
@@ -1710,10 +1709,11 @@
             // Chế độ xem chi tiết / cập nhật phản hồi: khóa toàn bộ trường hồ sơ
             const locked = mode === 'view' || mode === 'feedback';
             document.querySelectorAll('#businessForm input, #businessForm select, #businessForm textarea').forEach(el => {
-                if (el.id !== 'historyContent') el.disabled = locked;
+                el.disabled = locked;
             });
             document.querySelectorAll('#businessForm .case-btn').forEach(btn => { btn.disabled = locked; });
             renderFeedback(code, mode);
+            renderHistory(isNew ? '' : code);
             if (mode === 'view') {
                 // Hướng dẫn nghiệp vụ: Cập nhật phản hồi của cơ quan được hướng dẫn đặt tại Xem chi tiết (hồ sơ của đơn vị mình, đã Hoàn thành)
                 // 06/11/2026: bỏ Cập nhật phản hồi - hồ sơ Hoàn thành chỉ xem, chân màn hình chỉ có Đóng
@@ -1735,6 +1735,48 @@
             }
             document.getElementById('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+
+        // Badge menu Khiếu nại, tố cáo, xử lý vi phạm: số hồ sơ Đang xử lý do đơn vị của người dùng tạo (đơn vị được thao tác); không có thì ẩn
+        function reportMenuBadge() {
+            if (moduleKey !== 'khieu_nai' || !window.BDG) return;
+            BDG.report('kntc', workingRows.filter(r => r[r.length - 1] === 'Đang xử lý' && PV.canEdit(PV.ownerOf(r))).length);
+        }
+
+        // ===== Lịch sử xử lý (theo hồ sơ) =====
+        // Dữ liệu mẫu: dòng Thêm mới (Cán bộ xử lý, ngày đầu tiên của hồ sơ) và dòng Hoàn thành với hồ sơ đã hoàn thành
+        const historyStore = {};
+        const nowText = () => { const d = new Date(), p = x => String(x).padStart(2, '0'); return `${p(d.getHours())}:${p(d.getMinutes())} ${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`; };
+        function historyOf(code) {
+            if (!code) return [];
+            if (historyStore[code]) return historyStore[code];
+            const row = workingRows.find(item => item[0] === code);
+            const list = [];
+            if (row) {
+                const by = row[row.length - 2], st = row[row.length - 1];
+                const dates = row.filter(v => /^\d{2}\/\d{2}\/\d{4}$/.test(String(v)));
+                const d0 = dates[0] || '';
+                list.push({ at: d0 ? `09:00 ${d0}` : '', by, action: 'Thêm mới', note: 'Trạng thái: Đang xử lý.' });
+                if (st === 'Hoàn thành') list.push({ at: `16:00 ${dates[dates.length - 1] || d0}`, by, action: 'Hoàn thành', note: 'Trạng thái: Đang xử lý → Hoàn thành.' });
+            }
+            historyStore[code] = list;
+            return list;
+        }
+        function addHistory(code, action, note) {
+            if (!code) return;
+            historyOf(code).push({ at: nowText(), by: PV.creatorOf(null), action, note });
+        }
+        function renderHistory(code) {
+            const host = document.getElementById('historyHost');
+            const list = historyOf(code).slice().reverse();
+            if (!list.length) { host.innerHTML = ''; return; }
+            const cell = 'padding:8px 10px; border:1px solid var(--border-color, #E2E8F0); vertical-align:top; text-align:left;';
+            host.innerHTML = `<div class="section-title" style="margin:16px 0 12px 0;"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử xử lý</div>
+                <table style="width:100%; border-collapse:collapse; font-size:13px;"><thead><tr style="background:#F1F5F9;">
+                <th style="${cell} width:150px;">Thời điểm</th><th style="${cell} width:190px;">Người thực hiện</th><th style="${cell}">Nội dung</th></tr></thead><tbody>`
+                + list.map(h => `<tr><td style="${cell} white-space:nowrap;">${escH(h.at)}</td><td style="${cell}">${escH(h.by)}</td><td style="${cell}"><span style="font-weight:600;">${escH(h.action)}</span>${h.note ? `<div style="margin-top:2px;">${escH(h.note)}</div>` : ''}</td></tr>`).join('')
+                + '</tbody></table>';
+        }
+        const escH = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
         function closeForm() {
             document.getElementById('detailPanel').classList.remove('visible');
@@ -1845,6 +1887,7 @@
                 const d = new Date(), p2 = n => String(n).padStart(2, '0');
                 const rec = hdRec(code);
                 rec.log = [...(rec.log || []), `${p2(d.getDate())}/${p2(d.getMonth() + 1)}/${d.getFullYear()} ${p2(d.getHours())}:${p2(d.getMinutes())} - ${PV.creatorOf(null)}: Hoàn thành hồ sơ.`];
+                addHistory(code, 'Hoàn thành', 'Trạng thái: Đang xử lý → Hoàn thành.'); reportMenuBadge();
                 closeForm();
                 renderTable();
                 showToast(`Đã hoàn thành hồ sơ ${code}.`);
@@ -1911,6 +1954,7 @@
             initDatePickers(document.getElementById('filterGrid'));
             const units = currentConfig.units || {};
             workingRows = currentConfig.rows.map(row => { const r = [...row]; r.unit = units[row[0]] || PV.BTP; return r; });
+            reportMenuBadge();
             { // setProperty important: btnn_uxu_dong_bo.js đặt display !important cho nút thanh công cụ
                 const addBtn = document.getElementById('btnAddNew');
                 if (PV.canCreate(false)) addBtn.style.removeProperty('display'); else addBtn.style.setProperty('display', 'none', 'important');

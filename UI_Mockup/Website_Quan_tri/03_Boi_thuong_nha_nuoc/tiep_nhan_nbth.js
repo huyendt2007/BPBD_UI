@@ -7,6 +7,8 @@
  * 3. Khối Người bị thiệt hại: Loại Cá nhân/Tổ chức, bộ trường như khối Người yêu cầu (+ Ngày sinh với Cá nhân);
  *    Tiếp nhận không bắt buộc trường nào (chỉ kiểm tra định dạng Số điện thoại/Email khi đã nhập). Dữ liệu cũ không có loại -> Cá nhân.
  * 4. Dữ liệu mẫu (merge theo Mã, NBTH_SEED_VERSION).
+ * 5. Trạng thái người bị thiệt hại [DM_59]: vị trí theo Tư cách (khối Người yêu cầu / khối Người bị thiệt hại), ẩn khi người bị thiệt hại là tổ chức,
+ *    người thừa kế / đại diện những người thừa kế -> Đã chết, khóa; lưu claim.victimAliveStatus + victimAlive (như Giải quyết YCBT).
  * Dùng biến/hàm của trang: docRows, isFormReadOnly, wardsByCity, getValue, setValue, setSelectDisplay, stripAdministrativeCode,
  * normalizeCityOption, isValidVnPhone, normalizeVnPhone, isDamagedRole, escapeHtml, escapeAttr, claimsList, saveClaims, syncWorkflowRecords.
  */
@@ -18,7 +20,7 @@
     var T_CA_NHAN = 'Cá nhân', T_TO_CHUC = 'Tổ chức';
     var NEW_IDS = ['nbthTypeCaNhan', 'nbthTypeToChuc', 'nbthPOrgCode', 'nbthPhone', 'nbthEmail', 'nbthCountry',
         'nbthOrgCountry', 'nbthOrgCity', 'nbthOrgWard', 'nbthOrgAddress'];
-    var NBTH_SEED_VERSION = '20261027nbth2';
+    var NBTH_SEED_VERSION = '20261109tt1';
 
     function el(id) { return document.getElementById(id); }
     function gv(id) { var e = el(id); return e ? String(e.value || '').trim() : ''; }
@@ -102,7 +104,7 @@
     function emailOk(v) { return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(String(v || '').trim()); }
     function phoneOk(v, country) {
         var s = String(v || '').replace(/\s+/g, '');
-        return (country || VN) === VN ? /^0\d{9,10}$/.test(s) : /^\+?[1-9]\d{7,14}$/.test(s);
+        return (country || VN) === VN ? /^0[35789]\d{8}$/.test(s) : /^\+?[1-9]\d{7,14}$/.test(s);
     }
     window.isValidVnPhone = function (v) { return phoneOk(v, gv('formCountry')); };
     var origSave = window.saveReceptionInfo;
@@ -148,7 +150,70 @@
         var nm = el('nbthName'); if (nm) nm.placeholder = org ? 'Nhập tên tổ chức...' : 'Nhập họ và tên...';
         document.querySelectorAll('#nbthBlock .nbth-ca-nhan').forEach(function (e) { e.style.display = org ? 'none' : ''; });
         document.querySelectorAll('#nbthBlock .nbth-to-chuc').forEach(function (e) { e.style.display = org ? '' : 'none'; });
+        placeVictimAlive();
     };
+
+    // =====================================================================
+    // 5. Trạng thái người bị thiệt hại (giống Giải quyết YCBT): giá trị theo danh mục Trạng thái của công dân [DM_59]
+    //    (localStorage masterCategories, giá trị đang hoạt động; chưa có thì dùng 02 giá trị TTCD_01 Còn sống, TTCD_02 Đã chết).
+    //    Vị trí: Tư cách = Người bị thiệt hại -> khối Thông tin người yêu cầu; Tư cách khác -> khối Thông tin người bị thiệt hại (sau Ngày sinh).
+    //    Người bị thiệt hại là tổ chức (Loại người yêu cầu / Loại người bị thiệt hại = Tổ chức, Tư cách TCNYC_03): ẩn, đặt lại Còn sống.
+    //    Tư cách TCNYC_02, TCNYC_06 (người thừa kế / đại diện những người thừa kế): tự chọn Đã chết, khóa.
+    //    Lưu hồ sơ: victimAliveStatus = tên giá trị; victimAlive = 'no' khi Đã chết, còn lại 'yes' (cùng trường hồ sơ Giải quyết YCBT).
+    // =====================================================================
+    var ALIVE_SONG = 'Còn sống', ALIVE_CHET = 'Đã chết';
+    var ALIVE_LOCK_CHET = ['TCNYC_02', 'TCNYC_06'];
+    function aliveOptions() {
+        var l = [];
+        try {
+            l = JSON.parse(localStorage.getItem('masterCategories') || '[]')
+                .filter(function (c) { return c && c.typeCode === 'DM_59' && (!c.status || c.status === 'Hoạt động'); })
+                .map(function (c) { return c.name; }).filter(Boolean);
+        } catch (e) { l = []; }
+        if (!l.length) return [ALIVE_SONG, ALIVE_CHET];
+        if (l.indexOf(ALIVE_SONG) < 0) l = [ALIVE_SONG].concat(l);
+        if (l.indexOf(ALIVE_CHET) < 0) l = l.concat([ALIVE_CHET]);
+        return l;
+    }
+    function normAlive(v) { return v === 'Đã mất' || v === 'no' ? ALIVE_CHET : (v === 'yes' ? ALIVE_SONG : v); }
+    function aliveFlag(v) { return normAlive(v) === ALIVE_CHET ? 'no' : 'yes'; }
+    function aliveOfClaim(c) { c = c || {}; return normAlive(c.victimAliveStatus) || (c.victimAlive === 'no' ? ALIVE_CHET : ALIVE_SONG); }
+    function aliveRadios() { return Array.prototype.slice.call(document.getElementsByName('tnVictimAlive')); }
+    function renderAliveRadios() {
+        var box = el('tnVictimAliveOptions');
+        if (!box) return;
+        var cur = getAlive();
+        var opts = aliveOptions();
+        box.innerHTML = opts.map(function (n) {
+            return '<label class="nyc-type-radio"><input type="radio" name="tnVictimAlive" value="' + esc(n) + '"> <span>' + esc(n) + '</span></label>';
+        }).join('');
+        setAlive(opts.indexOf(cur) >= 0 ? cur : ALIVE_SONG);
+    }
+    function setAlive(v) {
+        var want = normAlive(v) || ALIVE_SONG, hit = false;
+        aliveRadios().forEach(function (r) { r.checked = r.value === want; if (r.checked) hit = true; });
+        if (!hit) aliveRadios().forEach(function (r) { r.checked = r.value === (aliveFlag(want) === 'no' ? ALIVE_CHET : ALIVE_SONG); });
+    }
+    function getAlive() { var r = document.querySelector('input[name="tnVictimAlive"]:checked'); return r ? r.value : ALIVE_SONG; }
+    // Đặt vị trí, hiển thị, khóa theo Tư cách / Loại người yêu cầu / Loại người bị thiệt hại
+    function placeVictimAlive() {
+        var g = el('tnVictimAliveGroup');
+        if (!g) return;
+        var role = getValue('formRequesterRole') || 'Người bị thiệt hại';
+        var damaged = isDamagedRole(role), orgRole = BTNN_WF.isNbthOrgRole(role);
+        var target = el(!damaged && !orgRole ? 'nbthVictimAliveAnchor' : 'tnVictimAliveAnchor');
+        if (target && target.nextElementSibling !== g) target.insertAdjacentElement('afterend', g);
+        var orgVictim = orgRole || (damaged ? getNycType() === T_TO_CHUC : getType() === T_TO_CHUC);
+        var lock = !orgVictim && ALIVE_LOCK_CHET.indexOf(BTNN_WF.nycRoleCode(role)) >= 0;
+        g.style.display = orgVictim ? 'none' : '';
+        if (orgVictim) setAlive(ALIVE_SONG);
+        else if (lock) setAlive(ALIVE_CHET);
+        aliveRadios().forEach(function (r) {
+            r.disabled = ro() || lock;
+            r.title = lock ? 'Trường hợp người yêu cầu là Người thừa kế hoặc đại diện những người thừa kế, Trạng thái người bị thiệt hại bắt buộc là ' + ALIVE_CHET + '.' : '';
+        });
+    }
+    window.tnPlaceVictimAlive = placeVictimAlive;
 
     // [E2] Ràng buộc Loại người bị thiệt hại theo Tư cách người yêu cầu (DM_26):
     //   NGUOI_THUA_KE (TCNYC_02), NGUOI_DAI_DIEN_THUA_KE (TCNYC_06) -> khóa Cá nhân; NGUOI_DAI_DIEN (TCNYC_04), NGUOI_DUOC_UY_QUYEN (TCNYC_05) -> chọn Cá nhân/Tổ chức
@@ -256,13 +321,20 @@
     window.readNycFields = function () {
         var r = origReadNyc.apply(this, arguments);
         r.nbthOrgAddr = BTNN_WF.isNbthOrgRole(getValue('formRequesterRole')) ? readAddr('nbthOrg') : null;
+        // Trạng thái người bị thiệt hại (DM_59)
+        r.victimAliveStatus = getAlive();
+        r.victimAlive = aliveFlag(r.victimAliveStatus);
         return r;
     };
     var origBuildWf = window.buildWorkflowData;
     if (typeof origBuildWf === 'function') {
         window.buildWorkflowData = function (claim) {
             var d = origBuildWf.apply(this, arguments);
-            if (d && claim) d.nbthOrgAddr = claim.nbthOrgAddr || null;
+            if (d && claim) {
+                d.nbthOrgAddr = claim.nbthOrgAddr || null;
+                // Trạng thái người bị thiệt hại: chuyển sang hồ sơ luồng (Xác định CQGQBT / Giải quyết YCBT)
+                if (claim.victimAliveStatus || claim.victimAlive) { d.victimAliveStatus = aliveOfClaim(claim); d.victimAlive = aliveFlag(d.victimAliveStatus); }
+            }
             return d;
         };
     }
@@ -270,7 +342,10 @@
     if (typeof origDetail === 'function') {
         window.detailFromRecord = function (rec) {
             var d = origDetail.apply(this, arguments);
-            if (d && rec && d.fromWorkflow) d.nbthOrgAddr = rec.nbthOrgAddr || null;
+            if (d && rec && d.fromWorkflow) {
+                d.nbthOrgAddr = rec.nbthOrgAddr || null;
+                if (rec.victimAliveStatus || rec.victimAlive) { d.victimAliveStatus = rec.victimAliveStatus || ''; d.victimAlive = rec.victimAlive || ''; }
+            }
             return d;
         };
     }
@@ -284,6 +359,9 @@
         NEW_IDS.forEach(function (i) { var e = el(i); if (e) e.disabled = readOnly; });
         // Người bị thiệt hại: dữ liệu cũ không có Loại -> Cá nhân
         fillNbth(claim ? claim.nbth : null);
+        // Trạng thái người bị thiệt hại: Thêm mới mặc định Còn sống; hồ sơ đã có theo dữ liệu bản ghi
+        renderAliveRadios();
+        setAlive(claim ? aliveOfClaim(claim) : ALIVE_SONG);
         nbthApplyRoleConstraint();
         if (readOnly && claim && claim.nbth && claim.nbth.docType) setSelectDisplay('nbthDocType', BTNN_WF.normalizePersonalDocType(claim.nbth.docType));
         fillAddr('nbthOrg', claim ? claim.nbthOrgAddr : null);
@@ -337,6 +415,8 @@
                 nycRole: 'Người thừa kế của người bị thiệt hại', nycPhone: '0988123456',
                 nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: '00010 - Phường Thanh Xuân', nycAddressDetail: 'Số 3 Nguyễn Trãi', address: 'Số 3 Nguyễn Trãi',
                 // Người bị thiệt hại chỉ có Họ và tên (Tiếp nhận không bắt buộc) -> bị chặn khi trình Thông báo thụ lý
+                // Tư cách người thừa kế: Trạng thái người bị thiệt hại = Đã chết (DM_59)
+                victimAlive: 'no', victimAliveStatus: ALIVE_CHET,
                 nbth: { type: T_CA_NHAN, name: 'Trần Văn Lộc', dob: '', docType: '', docNo: '', phone: '', email: '', country: VN, city: '', ward: '', address: '' },
                 hanhVi: 'Tạm giữ trái pháp luật.',
                 receptionDocs: [{ name: FIXED_NAME, file: 'Van_ban_yeu_cau_boi_thuong_Tran_Thi_Hanh.pdf' }]
@@ -350,6 +430,7 @@
                 nyc: 'Vương Thị Thu Trang', nycName: 'Vương Thị Thu Trang', nycType: T_CA_NHAN, nycDocType: 'CMND/CCCD/Chứng minh quân đội', nycDocNo: '001187006601',
                 nycRole: 'Người bị thiệt hại', nycDob: '08/05/1987', nycPhone: '0912601601',
                 nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: '', nycAddressDetail: 'Số 14 ngõ 4B Đặng Văn Ngữ', address: 'Số 14 ngõ 4B Đặng Văn Ngữ',
+                victimAlive: 'yes', victimAliveStatus: ALIVE_SONG,
                 nbth: null, hanhVi: 'Kê biên tài sản không thuộc sở hữu của người phải thi hành án.',
                 receptionDocs: [{ name: FIXED_NAME, file: 'Don_yeu_cau_VVBT-2026-951.pdf' }]
             })
@@ -366,10 +447,11 @@
             if (localStorage.getItem('nbthSeedVersion') === NBTH_SEED_VERSION) return;
             seeds().forEach(function (s) {
                 var cur = claimsList.find(function (c) { return c.code === s.code; });
-                if (cur) Object.assign(cur, { nbth: s.nbth, nbthOrgName: s.nbthOrgName || '', nbthOrgCode: s.nbthOrgCode || '', nbthOrgAddr: s.nbthOrgAddr || null, receptionDocs: s.receptionDocs });
+                if (cur) Object.assign(cur, { nbth: s.nbth, nbthOrgName: s.nbthOrgName || '', nbthOrgCode: s.nbthOrgCode || '', nbthOrgAddr: s.nbthOrgAddr || null, receptionDocs: s.receptionDocs },
+                    s.victimAliveStatus ? { victimAlive: s.victimAlive, victimAliveStatus: s.victimAliveStatus } : {});
                 else claimsList.push(s);
                 var rec = BTNN_WF.getRecord(s.code);
-                if (rec) { rec.nbth = s.nbth; rec.nbthOrgAddr = s.nbthOrgAddr || null; BTNN_WF.upsertRecord(rec); }
+                if (rec) { rec.nbth = s.nbth; rec.nbthOrgAddr = s.nbthOrgAddr || null; if (s.victimAliveStatus) { rec.victimAlive = s.victimAlive; rec.victimAliveStatus = s.victimAliveStatus; } BTNN_WF.upsertRecord(rec); }
             });
             syncWorkflowRecords();
             saveClaims();

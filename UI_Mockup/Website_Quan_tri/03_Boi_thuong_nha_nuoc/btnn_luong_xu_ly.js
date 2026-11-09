@@ -3009,7 +3009,7 @@
                 nycName: 'Công ty Cổ phần Đầu tư Thương mại Hưng Thịnh', nycOrgCode: '0109876543',
                 nycOrgDocNo: '', nycOrgDocDate: '', nycOrgDocPlace: '',
                 nycRepName: 'Nguyễn Hữu Thắng', nycRepPosition: 'Tổng Giám đốc',
-                nycPhone: '0243456789', nycEmail: 'phaply@hungthinh.com.vn',
+                nycPhone: '0943456789', nycEmail: 'phaply@hungthinh.com.vn',
                 nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: '00007 - Phường Cầu Giấy', nycAddressDetail: 'Tầng 8, số 25 Duy Tân',
                 nbth: null, nbthOrgName: 'Công ty TNHH Xây dựng Hưng Phát (đã sáp nhập)', nbthOrgCode: '0101234567',
                 linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Thu hồi giấy phép khai thác khoáng sản của tổ chức bị thiệt hại trái pháp luật trước khi sáp nhập.',
@@ -3022,7 +3022,7 @@
                 nycName: 'Công ty Luật TNHH Minh Chính', nycOrgCode: '0108765432',
                 nycOrgDocNo: '', nycOrgDocDate: '', nycOrgDocPlace: '',
                 nycRepName: 'Trần Minh Chính', nycRepPosition: 'Giám đốc',
-                nycPhone: '0247778899', nycEmail: '',
+                nycPhone: '0947778899', nycEmail: '',
                 nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: '00004 - Phường Hoàn Kiếm', nycAddressDetail: 'Số 12 Lý Thường Kiệt',
                 nbth: { name: 'Đỗ Văn Khải', dob: '02/03/1968', docType: 'CMND/CCCD/Chứng minh quân đội', docNo: '001068004321', docDate: '', docPlace: '', phone: '', email: '', country: 'Việt Nam', city: 'Thành phố Hà Nội', ward: '00010 - Phường Thanh Xuân', address: 'Số 30 Nguyễn Tuân' },
                 linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', hanhVi: 'Đề nghị xác định cơ quan giải quyết bồi thường đối với việc tạm giam oan người bị thiệt hại.',
@@ -3261,7 +3261,7 @@
             base('XD-2026-114', Object.assign(person('Phạm Quốc Bảo', '03/04/1988', '001088009911', '0978990011', 'baopq@vingroup.net', 'Thành phố Hà Nội', '00001 - Phường Ba Đình', 'Số 88 đường Liễu Giai'), {
                 status: STATUS.CHO_TIEP_NHAN, date: '05/10/2026', receivedAt: '14:20 05/10/2026', chuTri: 'canbonv',
                 linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ', nycRole: 'Cá nhân, pháp nhân được ủy quyền hợp pháp',
-                nbth: { name: 'Công ty Cổ phần Xây dựng & Thương mại Phúc An', dob: '15/09/2015', docType: 'ĐKKD', docNo: '0106899234', docDate: '15/09/2015', docPlace: 'Sở Kế hoạch và Đầu tư Hà Nội', phone: '02438889999', email: 'contact@phucan.vn', country: 'Việt Nam', city: 'Thành phố Hà Nội', ward: '00001 - Phường Ba Đình', address: 'Số 88 đường Liễu Giai' },
+                nbth: { name: 'Công ty Cổ phần Xây dựng & Thương mại Phúc An', dob: '15/09/2015', docType: 'ĐKKD', docNo: '0106899234', docDate: '15/09/2015', docPlace: 'Sở Kế hoạch và Đầu tư Hà Nội', phone: '0938889999', email: 'contact@phucan.vn', country: 'Việt Nam', city: 'Thành phố Hà Nội', ward: '00001 - Phường Ba Đình', address: 'Số 88 đường Liễu Giai' },
                 hanhVi: 'Tòa án áp dụng biện pháp khẩn cấp tạm thời phong tỏa toàn bộ tài khoản thanh toán của doanh nghiệp trái pháp luật gây thiệt hại lớn cho hoạt động kinh doanh.',
                 vanBanCanCu: [
                     { name: 'Quyết định hủy bỏ biện pháp khẩn cấp tạm thời số 09/2026/QĐ-BPKCTT', file: 'Quyet_dinh_huy_BPKCTT_09.pdf' },

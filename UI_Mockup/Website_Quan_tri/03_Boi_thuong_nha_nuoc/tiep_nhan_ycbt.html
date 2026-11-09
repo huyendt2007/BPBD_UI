@@ -578,6 +578,15 @@
                         </div>
                     </div>
 
+                    <!-- [nbth] Trạng thái người bị thiệt hại: giá trị theo danh mục Trạng thái của công dân [DM_59] (tiep_nhan_nbth.js).
+                         Vị trí: Tư cách = Người bị thiệt hại -> khối Thông tin người yêu cầu (tại mốc tnVictimAliveAnchor);
+                         Tư cách khác -> khối Thông tin người bị thiệt hại (sau Ngày sinh); người bị thiệt hại là tổ chức -> ẩn -->
+                    <div id="tnVictimAliveAnchor" style="display: none;"></div>
+                    <div class="form-group" id="tnVictimAliveGroup" style="margin-bottom: 14px;">
+                        <span class="form-label">Trạng thái người bị thiệt hại<span class="required">*</span></span>
+                        <div id="tnVictimAliveOptions" class="nyc-type-group"></div>
+                    </div>
+
                     <!-- Dòng 2: Họ và tên/Tên tổ chức & Giấy tờ thân nhân/Mã số tổ chức (2 thông tin) -->
                     <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
                         <div class="form-group" style="margin-bottom: 0;">
@@ -725,6 +734,8 @@
                                 <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
+                        <!-- [nbth] Mốc đặt Trạng thái người bị thiệt hại khi Tư cách khác Người bị thiệt hại (sau Ngày sinh) -->
+                        <div id="nbthVictimAliveAnchor" style="display: none;"></div>
 
                         <!-- Dòng 2: Họ và tên/Tên tổ chức & Giấy tờ thân nhân/Mã số tổ chức -->
                         <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
@@ -892,7 +903,7 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261106q1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261104mh1"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script>
@@ -1567,7 +1578,7 @@
         // của đơn vị tiếp nhận; chưa có Cán bộ tiếp nhận (gán người đầu tiên thao tác Phân công).
         const OTHER_SOURCE_SEEDS = [
             { key: "DVC-1", nguon: SOURCES.DVC, root: "BTP-01", nyc: "Lương Văn Toàn", phone: "0912003456", city: "Thành phố Hà Nội", ward: "00007 - Phường Cầu Giấy", addr: "Số 18 Trần Đăng Ninh", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Thu hồi giấy phép hoạt động không đúng thẩm quyền.", days: 1, time: "09:20" },
-            { key: "DVC-2", nguon: SOURCES.DVC, root: "BTP-01", nyc: "Công ty TNHH Minh Khang", type: "Tổ chức", orgCode: "0312345678", phone: "0283822991", city: "Thành phố Hồ Chí Minh", ward: "26737 - Phường Sài Gòn", addr: "Số 27 Lê Thánh Tôn", linhVuc: "TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ", hanhVi: "Kê biên tài sản vượt quá nghĩa vụ phải thi hành án.", days: 5, time: "14:05" },
+            { key: "DVC-2", nguon: SOURCES.DVC, root: "BTP-01", nyc: "Công ty TNHH Minh Khang", type: "Tổ chức", orgCode: "0312345678", phone: "0983822991", city: "Thành phố Hồ Chí Minh", ward: "26737 - Phường Sài Gòn", addr: "Số 27 Lê Thánh Tôn", linhVuc: "TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ", hanhVi: "Kê biên tài sản vượt quá nghĩa vụ phải thi hành án.", days: 5, time: "14:05" },
             { key: "DVC-3", nguon: SOURCES.DVC, root: "STP-HN", nyc: "Nguyễn Thị Hồng Nhung", phone: "0904556123", city: "Thành phố Hà Nội", ward: "00010 - Phường Thanh Xuân", addr: "Số 9 Vũ Trọng Phụng", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Chậm cấp Phiếu lý lịch tư pháp quá thời hạn quy định.", days: 2, time: "10:40" },
             { key: "CHUYEN-1", nguon: SOURCES.CHUYEN, root: "BTP-01", from: "UBND-HM", method: RECEIVE_METHODS.BUU_CHINH, nyc: "Đào Văn Hiển", phone: "0913224455", city: "Thành phố Hà Nội", ward: "00004 - Phường Hoàn Kiếm", addr: "Số 3 Hàng Gai", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Xử phạt vi phạm hành chính không đúng thẩm quyền.", days: 4, time: "08:50" },
             { key: "CHUYEN-2", nguon: SOURCES.CHUYEN, root: "STP-HN", from: "UBND-CG", method: RECEIVE_METHODS.TRUC_TIEP, nyc: "Phùng Thị Lan Anh", phone: "0967332211", city: "Thành phố Hà Nội", ward: "00007 - Phường Cầu Giấy", addr: "Số 66 Xuân Thủy", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Từ chối chứng thực hợp đồng trái quy định.", days: 6, time: "15:30" },
@@ -3009,12 +3020,12 @@
                 .filter(doc => (doc.name || "").trim() || (doc.file || "").trim())
                 .map(doc => ({ name: (doc.name || "").trim(), file: doc.file || "" }));
         }
-        // Số điện thoại Việt Nam: chỉ gồm chữ số, 10 số, bắt đầu bằng 0 (bỏ khoảng trắng)
+        // Số điện thoại Việt Nam: đúng 10 chữ số, bắt đầu bằng 03/05/07/08/09 (bỏ khoảng trắng)
         function normalizeVnPhone(value) {
             return String(value || "").replace(/\s+/g, "");
         }
         function isValidVnPhone(value) {
-            return /^0\d{9}$/.test(normalizeVnPhone(value));
+            return /^0[35789]\d{8}$/.test(normalizeVnPhone(value));
         }
 
         // Địa chỉ người yêu cầu theo bảng mapping Mẫu 02/BTNN: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố] (+ [Quốc gia] nếu khác Việt Nam)
@@ -3072,12 +3083,12 @@
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <!-- [nbth] Văn bản yêu cầu bồi thường mặc định; Người bị thiệt hại Cá nhân/Tổ chức; địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại -->
-    <script src="tiep_nhan_nbth.js?v=20261030s2"></script>
+    <script src="tiep_nhan_nbth.js?v=20261109tt1"></script>
     <!-- Trình ký Phiếu tiếp nhận (Mẫu 02/BTNN): thay thao tác In Phiếu tiếp nhận -->
     <script src="tiep_nhan_ptn.js?v=20261104mh2"></script>
     <!-- [dvc] Hồ sơ nguồn Dịch vụ công: Xem chi tiết đầy đủ theo bố cục Nhập liệu hồ sơ vụ việc; dữ liệu mẫu đầy đủ (bảng thiệt hại DM_27 dùng btnn_thiet_hai.js) -->
     <script src="btnn_thiet_hai.js?v=20261030dm28"></script>
-    <script src="tiep_nhan_dvc.js?v=20261104kt2"></script>
+    <script src="tiep_nhan_dvc.js?v=20261109sd1"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_grid_toolbar.js?v=20261030gt1"></script>
     <script src="btnn_tieu_de_man.js?v=20261103td2"></script>

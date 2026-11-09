@@ -2278,7 +2278,7 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261106q1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
     <script src="btnn_dvc_sync.js?v=20261106dvc11"></script>
     <!-- [th2c] Danh mục Loại thiệt hại 2 cấp (DM_27) + bảng 2 cấp dùng chung -->
     <script src="btnn_thiet_hai.js?v=20261030dm28"></script>
@@ -5140,7 +5140,8 @@
             if ($('qdDetailPanel').style.display === 'flex') openDetail(d.id); else showList();
         }
         // Dữ liệu mẫu cho Lãnh đạo: Chờ duyệt đủ 03 Loại trình tại Trần Văn Bồi Thường (cấp 1); 01 Quyết định GQBT đã được cấp 1 ký duyệt, chờ Cục trưởng ký số (cấp cuối)
-        const QDLD_SEED_KEY = 'btnn_qd_qdld_seed_v1';
+        // v2 (06/11/2026): mẫu Hủy QĐ Chờ duyệt (BT-2026-071) trước đây trùng mã QD-07 với Quyết định đã hủy BT-2026-011 nên không được nạp; đổi mã QD-LD1 và nạp lại
+        const QDLD_SEED_KEY = 'btnn_qd_qdld_seed_v2';
         function qdldSeedDefs() {
             const PATH = ['PLN-02', 'CĐK-01'];
             const toTp = `Trình ${W.userName('tpbt')} - ${W.unitName('PLN-02')}.`;
@@ -5153,7 +5154,7 @@
                 }, extra || {})
             });
             const s1 = mk('BT-2026-071', 'Trịnh Văn Long', 'VVBT-2026-071', KIND_HUY, '08:30 14/10/2026', 'Kính trình Lãnh đạo ký duyệt Quyết định hủy Quyết định giải quyết bồi thường số 25/QĐ-BTP.', 'Du_thao_Huy_QD_BT-2026-071.doc');
-            s1.dec = seedDec({ id: 'QD-07', claimCode: 'BT-2026-071', nycName: 'Trịnh Văn Long', nycAddress: 'Số 12 Nguyễn Trãi, Phường Thanh Xuân, Thành phố Hà Nội', unitId: 'BTP-01', leaderId: 'tpbt', approvedBy: 'cuctruong', status: ST.CHO_DUYET, wfKind: KIND_HUY, wfSubmittedAt: '08:30 14/10/2026', lastKind: KIND_QD, decNo: '25/QĐ-BTP', issueDate: '15/09/2026', signedFile: 'QD_25_GQBT_da_ky.pdf',
+            s1.dec = seedDec({ id: 'QD-LD1', claimCode: 'BT-2026-071', nycName: 'Trịnh Văn Long', nycAddress: 'Số 12 Nguyễn Trãi, Phường Thanh Xuân, Thành phố Hà Nội', unitId: 'BTP-01', leaderId: 'tpbt', approvedBy: 'cuctruong', status: ST.CHO_DUYET, wfKind: KIND_HUY, wfSubmittedAt: '08:30 14/10/2026', lastKind: KIND_QD, decNo: '25/QĐ-BTP', issueDate: '15/09/2026', signedFile: 'QD_25_GQBT_da_ky.pdf',
                 items: seedItems([['Thu nhập thực tế bị mất/giảm sút', 120000000, 110000000, 110000000]]), recipient: { name: 'Trịnh Văn Long', idNo: '001085006677', account: '0011004455667', bank: 'Vietcombank', branch: 'Chi nhánh Thanh Xuân' },
                 request: { kind: KIND_HUY, content: 'Căn cứ ban hành Quyết định không chính xác theo kết luận kiểm tra của cơ quan có thẩm quyền.', effectiveDate: '20/10/2026', draftDoc: { source: 'generated', generatedName: 'Du_thao_Huy_QD_BT-2026-071.doc' }, bodyHtml: '', leaderId: 'tpbt', signMethod: 'Ký số', note: s1.rec.approval.content, submittedAt: '08:30 14/10/2026', submittedBy: 'canbonv' },
                 history: [{ at: '16:00 15/09/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Ban hành', note: 'Số 25/QĐ-BTP ngày 15/09/2026.' }, { at: '08:30 14/10/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: `Trình ${KIND_HUY}`, note: `Lý do hủy Quyết định: Căn cứ ban hành Quyết định không chính xác theo kết luận kiểm tra của cơ quan có thẩm quyền. Trình ${W.userLabel('tpbt')}.` }],

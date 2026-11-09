@@ -55,9 +55,9 @@ var SXM_PERSONS = {
     p19: { nyc: 'Âu Đức Mạnh', nycBirth: '19/02/1984', nycCardNo: '001084009522', nycCardDate: '18/08/2021', nycPhone: '0976522522', nycEmail: 'auducmanh@gmail.com', nycPhuongXa: 'Phường Bạch Mai', nycAddressDetail: 'Số 6 ngõ 191 Bạch Mai' }
 };
 var SXM_ORGS = {
-    o1: { nyc: 'Công ty TNHH Thương mại Dịch vụ An Khang', nycOrgCode: '0108765501', nycRepName: 'Nguyễn Đức An', nycRepPosition: 'Giám đốc', nycPhone: '02437501501', nycEmail: 'lienhe@ankhang.vn', nycPhuongXa: 'Phường Cầu Giấy', nycAddressDetail: 'Tầng 3, số 22 Duy Tân' },
-    o2: { nyc: 'Công ty Cổ phần Vận tải Hồng Phúc', nycOrgCode: '0105432505', nycRepName: 'Trần Hồng Phúc', nycRepPosition: 'Tổng Giám đốc', nycPhone: '02438505505', nycEmail: 'info@hongphucvt.vn', nycPhuongXa: 'Phường Hoàng Mai', nycAddressDetail: 'Số 168 Tam Trinh' },
-    o3: { nyc: 'Hợp tác xã Nông nghiệp Xuân Phương', nycOrgCode: '0106677507', nycRepName: 'Đỗ Văn Xuân', nycRepPosition: 'Giám đốc', nycPhone: '02437507507', nycEmail: 'htxxuanphuong@gmail.com', nycPhuongXa: 'Phường Xuân Phương', nycAddressDetail: 'Số 12 Phương Canh' }
+    o1: { nyc: 'Công ty TNHH Thương mại Dịch vụ An Khang', nycOrgCode: '0108765501', nycRepName: 'Nguyễn Đức An', nycRepPosition: 'Giám đốc', nycPhone: '0937501501', nycEmail: 'lienhe@ankhang.vn', nycPhuongXa: 'Phường Cầu Giấy', nycAddressDetail: 'Tầng 3, số 22 Duy Tân' },
+    o2: { nyc: 'Công ty Cổ phần Vận tải Hồng Phúc', nycOrgCode: '0105432505', nycRepName: 'Trần Hồng Phúc', nycRepPosition: 'Tổng Giám đốc', nycPhone: '0938505505', nycEmail: 'info@hongphucvt.vn', nycPhuongXa: 'Phường Hoàng Mai', nycAddressDetail: 'Số 168 Tam Trinh' },
+    o3: { nyc: 'Hợp tác xã Nông nghiệp Xuân Phương', nycOrgCode: '0106677507', nycRepName: 'Đỗ Văn Xuân', nycRepPosition: 'Giám đốc', nycPhone: '0937507507', nycEmail: 'htxxuanphuong@gmail.com', nycPhuongXa: 'Phường Xuân Phương', nycAddressDetail: 'Số 12 Phương Canh' }
 };
 function sxmOrg(o) {
     return Object.assign({ nycType: 'Tổ chức', nycCardNo: '', cardNo: '', nycCardDate: '', nycBirth: '', nycOrgDocNo: '', nycOrgDocDate: '', nycOrgDocPlace: '', notifyMethod: 'Qua thư điện tử', notifyAddress: o.nycEmail }, o);

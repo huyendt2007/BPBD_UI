@@ -276,6 +276,15 @@
                         <div class="error-message">Đây là trường bắt buộc</div>
                     </div>
 
+                    <!-- Trạng thái người bị thiệt hại: giá trị theo danh mục Trạng thái của công dân [DM_59] (renderXdVictimAlive).
+                         Vị trí: Tư cách = Người bị thiệt hại -> khối người yêu cầu (tại mốc xdVictimAliveAnchor);
+                         Tư cách khác -> khối Người bị thiệt hại (sau Ngày sinh); người bị thiệt hại là tổ chức -> ẩn -->
+                    <div id="xdVictimAliveAnchor" style="display: none;"></div>
+                    <div class="form-group" id="xdVictimAliveGroup" style="margin-bottom: 0;">
+                        <span class="form-label">Trạng thái người bị thiệt hại<span class="required">*</span></span>
+                        <div class="nyc-type-group" id="xdVictimAliveOptions"></div>
+                    </div>
+
                     <div class="form-group" style="margin-bottom: 0;">
                         <span class="form-label" id="formNYCNameLabel">Họ và tên<span class="required">*</span></span>
                         <input type="text" class="form-control" id="formNYCName" placeholder="Nhập họ và tên...">
@@ -334,11 +343,13 @@
                     <div class="grid-2 nyc-individual" style="gap: 12px; margin-bottom: 0;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Loại giấy tờ thân nhân<span class="required">*</span></span>
-                            <select class="form-control" id="formNYCDocType">
+                            <select class="form-control" id="formNYCDocType" onchange="this.classList.remove('is-invalid'); this.closest('.form-group').querySelector('.error-message').style.display='none';">
+                                <option value="">-- Chọn loại giấy tờ --</option>
                                 <option value="CMND/CCCD/Chứng minh quân đội">CMND/CCCD/Chứng minh quân đội</option>
                                 <option value="Hộ chiếu">Hộ chiếu</option>
                                 <option value="Thẻ thường trú">Thẻ thường trú</option>
                             </select>
+                            <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Số giấy tờ thân nhân<span class="required">*</span></span>
@@ -466,10 +477,13 @@
                             </div>
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
+                        <!-- Mốc đặt Trạng thái người bị thiệt hại khi Tư cách khác Người bị thiệt hại (sau Ngày sinh) -->
+                        <div id="xdNbthVictimAliveAnchor" style="display: none;"></div>
                         <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Số điện thoại</span>
-                                <input type="text" class="form-control" id="nbthPhone" placeholder="Nhập số điện thoại...">
+                                <input type="text" class="form-control" id="nbthPhone" placeholder="Nhập số điện thoại..." oninput="this.classList.remove('is-invalid'); this.closest('.form-group').querySelector('.error-message').style.display='none';">
+                                <div class="error-message">Số điện thoại không hợp lệ (độ dài 8-15 ký tự, bắt đầu bằng 0 hoặc +)</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Email</span>
@@ -481,11 +495,13 @@
                         <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Loại giấy tờ thân nhân<span class="required">*</span></span>
-                                <select class="form-control" id="nbthDocType">
+                                <select class="form-control" id="nbthDocType" onchange="this.classList.remove('is-invalid'); this.closest('.form-group').querySelector('.error-message').style.display='none';">
+                                    <option value="">-- Chọn loại giấy tờ --</option>
                                     <option value="CMND/CCCD/Chứng minh quân đội">CMND/CCCD/Chứng minh quân đội</option>
                                     <option value="Hộ chiếu">Hộ chiếu</option>
                                     <option value="Thẻ thường trú">Thẻ thường trú</option>
                                 </select>
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Số giấy tờ thân nhân<span class="required">*</span></span>
@@ -830,6 +846,10 @@
                         <div class="detail-label">Tư cách người yêu cầu bồi thường</div>
                         <div class="detail-value" id="dtNYCRole"></div>
                     </div>
+                    <div class="detail-row" id="dtNYCVictimAliveRow" style="display: none;">
+                        <div class="detail-label">Trạng thái người bị thiệt hại</div>
+                        <div class="detail-value" id="dtNYCVictimAlive"></div>
+                    </div>
                     <div class="detail-row">
                         <div class="detail-label" id="dtNYCNameLabel">Họ và tên</div>
                         <div class="detail-value" style="font-weight: 700; text-transform: uppercase;" id="dtNYCName"></div>
@@ -893,6 +913,10 @@
                         <div class="detail-row dt-nbth-person">
                             <div class="detail-label">Ngày sinh</div>
                             <div class="detail-value" id="dtNbthDob"></div>
+                        </div>
+                        <div class="detail-row" id="dtNbthVictimAliveRow" style="display: none;">
+                            <div class="detail-label">Trạng thái người bị thiệt hại</div>
+                            <div class="detail-value" id="dtNbthVictimAlive"></div>
                         </div>
                         <div class="detail-row dt-nbth-person">
                             <div class="detail-label">Giấy tờ thân nhân</div>
@@ -1218,12 +1242,12 @@
     </div>
 
     <!-- External javascript logic -->
-    <script src="btnn_luong_xu_ly.js?v=20261106q1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261104mh1"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261106vt2"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261109tt2"></script>
     <script src="quan_ly_boi_thuong_ktlc.js?v=20261030k3"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>

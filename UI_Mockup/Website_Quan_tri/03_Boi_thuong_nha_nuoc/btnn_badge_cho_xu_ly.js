@@ -23,7 +23,11 @@
         hoanTra: { title: 'Xem xét trách nhiệm hoàn trả', page: 'xem_xet_trach_nhiem_hoan_tra.html', url: 'xem_xet_trach_nhiem_hoan_tra.html' },
         bctt: { title: 'Báo cáo công tác BTNN', page: 'bao_cao_cong_tac_btnn.html', url: 'bao_cao_cong_tac_btnn.html' },
         // 03/11/2026: Xử lý báo cáo Công tác BTNN của Bộ Tư pháp (bctt_bo_xu_ly.js báo số lượng; vai trò giả lập riêng bctt_role_v1_bo)
-        bctt_bo: { title: 'Tổng hợp báo cáo Công tác BTNN', page: 'xu_ly_bao_cao_cong_tac_btnn.html', url: 'xu_ly_bao_cao_cong_tac_btnn.html' }
+        bctt_bo: { title: 'Tổng hợp báo cáo Công tác BTNN', page: 'xu_ly_bao_cao_cong_tac_btnn.html', url: 'xu_ly_bao_cao_cong_tac_btnn.html' },
+        // 06/11/2026: Hỏi đáp nghiệp vụ (câu hỏi đang chờ người dùng xử lý theo vai trò)
+        hoiDap: { title: 'Hỏi đáp nghiệp vụ', page: 'hoi_dap_nghiep_vu.html', url: 'hoi_dap_nghiep_vu.html' },
+        // 06/11/2026: Khiếu nại, tố cáo, xử lý vi phạm (không có tab Chờ xử lý): số hồ sơ Đang xử lý do đơn vị của người dùng tạo
+        kntc: { title: 'Khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN', page: 'quan_ly_nghiep_vu_btnn_tt08.html', url: 'quan_ly_nghiep_vu_btnn_tt08.html?module=khieu_nai' }
     };
     const MODULE_IDS = Object.keys(MODULES);
 
@@ -122,7 +126,7 @@
             });
         }
         // Badge nhóm menu = tổng badge các mục con: "Giải quyết bồi thường" (02 mục con), "Kinh phí" (02 menu con)
-        const GROUPS = { gqGroup: ['gqYcbt', 'qdGqbt'], kpGroup: ['kpTamUng', 'kpChiTra'], bcttGroup: ['bctt', 'bctt_bo'] };
+        const GROUPS = { gqGroup: ['gqYcbt', 'qdGqbt'], kpGroup: ['kpTamUng', 'kpChiTra'], bcttGroup: ['bctt', 'bctt_bo'], hoiDapGroup: ['hoiDap'] };
         function setMenuBadge(module, n) {
             shown[module] = Number(n) || 0;
             paint(module, shown[module]);

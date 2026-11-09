@@ -2300,21 +2300,15 @@
                             </div>
                         </div>
 
-                        <!-- Trạng thái người bị thiệt hại (căn cứ Điều 57.6): áp dụng với người bị thiệt hại là cá nhân -->
+                        <!-- Trạng thái người bị thiệt hại (căn cứ Điều 57.6): áp dụng với người bị thiệt hại là cá nhân.
+                             Giá trị theo danh mục Trạng thái của công dân [DM_59] (renderVictimAliveRadios).
+                             Vị trí: Tư cách = Người bị thiệt hại -> khối Thông tin người yêu cầu (tại mốc claimVictimAliveAnchor);
+                             Tư cách khác -> khối Thông tin người bị thiệt hại (moveVictimAliveGroup) -->
+                        <div id="claimVictimAliveAnchor" style="display: none;"></div>
                         <div class="form-group" id="claimVictimAliveGroup" style="margin-bottom: 0;">
                             <span class="form-label">Trạng thái người bị thiệt hại <span class="required">*</span></span>
-                            <div
-                                style="display: flex; gap: 20px; align-items: center; height: 38px; padding-left: 5px;">
-                                <label
-                                    style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--text-main);">
-                                    <input type="radio" name="claimVictimAlive" value="yes" checked
-                                        onchange="handleVictimAliveChange(this.value)"> Còn sống
-                                </label>
-                                <label
-                                    style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--text-main);">
-                                    <input type="radio" name="claimVictimAlive" value="no"
-                                        onchange="handleVictimAliveChange(this.value)"> Đã mất
-                                </label>
+                            <div id="claimVictimAliveOptions"
+                                style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap; min-height: 38px; padding-left: 5px;">
                             </div>
                         </div>
 
@@ -2361,11 +2355,13 @@
                         <div class="grid-2 nyc-canhan-only" style="gap: 12px; margin-bottom: 0;">
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Loại giấy tờ thân nhân<span class="required">*</span></span>
-                                <select class="form-control" id="claimNYCCardType">
+                                <select class="form-control" id="claimNYCCardType" onchange="this.classList.remove('is-invalid'); this.closest('.form-group').querySelector('.error-message').style.display='none';">
+                                    <option value="">-- Chọn loại giấy tờ --</option>
                                     <option value="CMND/CCCD/Chứng minh quân đội">CMND/CCCD/Chứng minh quân đội</option>
                                     <option value="Hộ chiếu">Hộ chiếu</option>
                                     <option value="Thẻ thường trú">Thẻ thường trú</option>
                                 </select>
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Số giấy tờ thân nhân<span class="required">*</span></span>
@@ -4160,7 +4156,7 @@
     </div>
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
-    <script src="btnn_luong_xu_ly.js?v=20261106q1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
     <script src="btnn_dvc_sync.js?v=20261106dvc11"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
@@ -4858,9 +4854,75 @@
             }
         }
 
+        // Trạng thái người bị thiệt hại: giá trị theo danh mục Trạng thái của công dân [DM_59] (đồng bộ C12).
+        // Mockup: đọc giá trị đang hoạt động của DM_59 trong Quản lý danh mục (localStorage masterCategories); chưa có thì dùng 02 giá trị minh họa.
+        // Lưu hồ sơ: victimAliveStatus = tên giá trị; victimAlive = 'no' khi "Đã chết" (luồng người đã chết: Điều 57.6, phục hồi danh dự), còn lại 'yes'.
+        // Dữ liệu cũ (chỉ có victimAlive yes/no hoặc "Đã mất"): 'yes' -> Còn sống; 'no'/"Đã mất" -> Đã chết.
+        const VICTIM_ALIVE_SONG = 'Còn sống', VICTIM_ALIVE_CHET = 'Đã chết';
+        function victimAliveOptions() {
+            let l = [];
+            try {
+                l = JSON.parse(localStorage.getItem('masterCategories') || '[]')
+                    .filter(c => c && c.typeCode === 'DM_59' && (!c.status || c.status === 'Hoạt động'))
+                    .map(c => c.name).filter(Boolean);
+            } catch (e) { l = []; }
+            if (!l.length) return [VICTIM_ALIVE_SONG, VICTIM_ALIVE_CHET];
+            if (!l.includes(VICTIM_ALIVE_SONG)) l = [VICTIM_ALIVE_SONG].concat(l);
+            if (!l.includes(VICTIM_ALIVE_CHET)) l = l.concat([VICTIM_ALIVE_CHET]);
+            return l;
+        }
+        function normVictimAliveStatus(v) { return v === 'Đã mất' || v === 'no' ? VICTIM_ALIVE_CHET : (v === 'yes' ? VICTIM_ALIVE_SONG : v); }
+        function victimAliveFlag(v) { return normVictimAliveStatus(v) === VICTIM_ALIVE_CHET ? 'no' : 'yes'; }
+        // Tên giá trị hiển thị của hồ sơ
+        function victimAliveLabel(claim) {
+            const c = claim || {};
+            return normVictimAliveStatus(c.victimAliveStatus) || (c.victimAlive === 'no' ? VICTIM_ALIVE_CHET : VICTIM_ALIVE_SONG);
+        }
+        function victimAliveLabelHtml(claim) {
+            const v = victimAliveLabel(claim);
+            return v === VICTIM_ALIVE_CHET ? `<span style="color:var(--danger-color); font-weight:600;">${ycEsc(v)}</span>` : ycEsc(v);
+        }
+        function renderVictimAliveRadios() {
+            const box = document.getElementById('claimVictimAliveOptions');
+            if (!box) return;
+            const cur = document.querySelector('input[name="claimVictimAlive"]:checked');
+            const keep = cur ? cur.value : VICTIM_ALIVE_SONG;
+            const opts = victimAliveOptions();
+            box.innerHTML = opts.map(n => `<label style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--text-main);">`
+                + `<input type="radio" name="claimVictimAlive" value="${ycEsc(n)}" onchange="handleVictimAliveChange(this.value)"> ${ycEsc(n)}</label>`).join('');
+            setVictimAliveRadio(opts.includes(keep) ? keep : VICTIM_ALIVE_SONG, true);
+        }
+        // Chọn radio theo tên giá trị hoặc cờ yes/no (dữ liệu cũ)
+        function setVictimAliveRadio(v, silent) {
+            const want = normVictimAliveStatus(v) || VICTIM_ALIVE_SONG;
+            const radios = document.getElementsByName('claimVictimAlive');
+            let hit = false;
+            radios.forEach(r => { r.checked = r.value === want; if (r.checked) hit = true; });
+            if (!hit) radios.forEach(r => { r.checked = r.value === (victimAliveFlag(want) === 'no' ? VICTIM_ALIVE_CHET : VICTIM_ALIVE_SONG); });
+            if (!silent) handleVictimAliveChange(want);
+        }
+        function getVictimAliveFromForm() {
+            const cur = document.querySelector('input[name="claimVictimAlive"]:checked');
+            const status = cur ? cur.value : VICTIM_ALIVE_SONG;
+            return { status: status, flag: victimAliveFlag(status) };
+        }
+        // Đặt nhóm trường theo Tư cách: Người bị thiệt hại -> khối Thông tin người yêu cầu; Tư cách khác -> khối Thông tin người bị thiệt hại (sau Ngày sinh)
+        function moveVictimAliveGroup(role) {
+            const g = document.getElementById('claimVictimAliveGroup');
+            const anchor = document.getElementById('claimVictimAliveAnchor');
+            if (!g || !anchor) return;
+            const inNbth = !!role && role !== NBTH_ROLE && role !== NYC_ROLE_TO_CHUC_KE_THUA;
+            const birth = document.getElementById('claimNbthBirth');
+            const target = inNbth && birth ? birth.closest('.form-group') : anchor;
+            if (target && target.nextElementSibling !== g) target.insertAdjacentElement('afterend', g);
+        }
+
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderVictimAliveRadios); else renderVictimAliveRadios();
+
         function handleVictimAliveChange(val) {
             const apology = document.getElementById('claimPhddFormApology');
             const news = document.getElementById('claimPhddFormNews');
+            if (val !== 'yes' && val !== 'no') val = victimAliveFlag(val);
 
             if (val === 'no') {
                 if (apology) {
@@ -5241,7 +5303,7 @@
                 cardType: "Tổ chức",
                 cardNo: "0109988776",
                 address: "Khu công nghiệp Quang Minh, Mê Linh, Hà Nội",
-                phone: "0243999888",
+                phone: "0943999888",
                 role: "Tổ chức bị thiệt hại",
                 docBase: "Quyết định thi hành án bị hủy do trái pháp luật",
                 hanhVi: "Kê biên tài sản vượt quá phạm vi nghĩa vụ thi hành án.",
@@ -5477,7 +5539,7 @@
                 cardType: "Tổ chức",
                 cardNo: "0102030405",
                 address: "Khu đô thị mới An Hưng, Hà Đông, Hà Nội",
-                phone: "0243556677",
+                phone: "0943556677",
                 role: "Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại",
                 docBase: "Quyết định thu hồi đất trái pháp luật số 888/QD-UBND ngày 20/12/2022 của UBND thành phố",
                 hanhVi: "Thu hồi đất dự án xây dựng trái thẩm quyền làm ngưng trệ thi công.",
@@ -5553,7 +5615,7 @@
                 cardType: "Tổ chức",
                 cardNo: "0102030406",
                 address: "Khu đô thị mới An Hưng, Hà Đông, Hà Nội",
-                phone: "0243556678",
+                phone: "0943556678",
                 role: "Tổ chức bị thiệt hại",
                 docBase: "Quyết định thu hồi đất trái pháp luật",
                 hanhVi: "Thu hồi đất dự án xây dựng trái thẩm quyền",
@@ -5624,7 +5686,7 @@
                 cardType: "Cá nhân",
                 cardNo: "0102030407",
                 address: "Khu đô thị mới An Hưng, Hà Đông, Hà Nội",
-                phone: "0243556679",
+                phone: "0943556679",
                 role: "Người bị thiệt hại",
                 docBase: "Quyết định thu hồi đất",
                 hanhVi: "Thu hồi đất",
@@ -6626,7 +6688,7 @@
                 cardType: "Tổ chức",
                 cardNo: "0102567890",
                 address: "Cụm công nghiệp Ngọc Hồi, Thanh Trì, Hà Nội",
-                phone: "0243999888",
+                phone: "0943999888",
                 role: "Người bị thiệt hại",
                 docBase: "Quyết định kê biên tài sản vượt quá nghĩa vụ thi hành án",
                 hanhVi: "Kê biên toàn bộ dây chuyền sản xuất vượt quá giá trị nghĩa vụ phải thi hành.",
@@ -6727,7 +6789,7 @@
                 cardType: "Tổ chức",
                 cardNo: "0109887766",
                 address: "Phường Giáp Bát, Hoàng Mai, Hà Nội",
-                phone: "0243888777",
+                phone: "0943888777",
                 role: "Người bị thiệt hại",
                 docBase: "Quyết định giải quyết khiếu nại số 54/QĐ-GQKN kết luận việc tạm giữ sai luật",
                 hanhVi: "Tạm giữ đoàn xe vận tải hàng hóa nông sản quá thời hạn quy định làm hư hỏng hàng hóa.",
@@ -8404,7 +8466,7 @@
         }
 
         // Ràng buộc nghiệp vụ: Khi Tư cách người yêu cầu là Người thừa kế hoặc đại diện những người thừa kế,
-        // Trạng thái người bị thiệt hại BẮT BUỘC là "Đã mất" và KHÔNG CHO PHÉP SỬA.
+        // Trạng thái người bị thiệt hại BẮT BUỘC là "Đã chết" (DM_59) và KHÔNG CHO PHÉP SỬA.
         function applyVictimAliveRoleConstraint(role) {
             const r = role || (document.getElementById('claimNYCRole') ? document.getElementById('claimNYCRole').value : '');
             const isHeir = r === 'Người thừa kế của người bị thiệt hại' || 
@@ -8414,10 +8476,10 @@
             if (!radios.length) return;
 
             if (isHeir) {
+                setVictimAliveRadio(VICTIM_ALIVE_CHET, true);
                 radios.forEach(x => {
-                    x.checked = (x.value === 'no');
                     x.disabled = true;
-                    x.title = 'Trường hợp người yêu cầu là Người thừa kế hoặc đại diện những người thừa kế, Trạng thái người bị thiệt hại bắt buộc là Đã mất.';
+                    x.title = 'Trường hợp người yêu cầu là Người thừa kế hoặc đại diện những người thừa kế, Trạng thái người bị thiệt hại bắt buộc là ' + VICTIM_ALIVE_CHET + '.';
                 });
                 if (typeof handleVictimAliveChange === 'function') handleVictimAliveChange('no');
             } else {
@@ -8442,18 +8504,17 @@
             const nameInp = document.getElementById('claimNYCName');
             if (nameInp) nameInp.placeholder = isOrg ? 'Nhập tên tổ chức...' : 'Nhập họ và tên...';
             toggleNycOrgDocRequired();
-            // Trạng thái người bị thiệt hại (Còn sống / Đã mất) chỉ áp dụng khi người bị thiệt hại là cá nhân
+            // Trạng thái người bị thiệt hại (DM_59) chỉ áp dụng khi người bị thiệt hại là cá nhân;
+            // Tư cách = Người bị thiệt hại: nằm ở khối Thông tin người yêu cầu; Tư cách khác: nằm ở khối Thông tin người bị thiệt hại
             const role = document.getElementById('claimNYCRole') ? document.getElementById('claimNYCRole').value : NBTH_ROLE;
+            moveVictimAliveGroup(role);
             const aliveGroup = document.getElementById('claimVictimAliveGroup');
             if (aliveGroup) {
                 const orgVictim = isClaimOrgVictim(role, type);
                 aliveGroup.style.display = orgVictim ? 'none' : '';
                 if (orgVictim) {
                     const cur = document.querySelector('input[name="claimVictimAlive"]:checked');
-                    if (cur && cur.value !== 'yes') {
-                        document.getElementsByName('claimVictimAlive').forEach(x => { x.checked = (x.value === 'yes'); });
-                        if (typeof handleVictimAliveChange === 'function') handleVictimAliveChange('yes');
-                    }
+                    if (cur && cur.value !== VICTIM_ALIVE_SONG) setVictimAliveRadio(VICTIM_ALIVE_SONG);
                 } else {
                     applyVictimAliveRoleConstraint(role);
                 }
@@ -8527,10 +8588,10 @@
                     nyc: 'Công ty TNHH Thương mại Minh An', nycType: 'Tổ chức', nycRole: 'Người bị thiệt hại', role: 'Người bị thiệt hại',
                     nycOrgCode: '0101234567', nycOrgDocNo: '', nycOrgDocDate: '', nycOrgDocPlace: '',
                     nycRepName: 'Trần Minh An', nycRepPosition: 'Giám đốc',
-                    nycPhone: '02437654321', phone: '02437654321', nycEmail: 'lienhe@minhan.vn',
+                    nycPhone: '0937654321', phone: '0937654321', nycEmail: 'lienhe@minhan.vn',
                     nycCountry: 'Việt Nam', nycTinhThanh: 'Hà Nội', nycPhuongXa: 'Phường Cầu Giấy', nycAddressDetail: 'Số 15 Trần Thái Tông',
                     address: 'Số 15 Trần Thái Tông',
-                    nycCardType: 'CMND/CCCD/Chứng minh quân đội', cardType: 'CMND/CCCD/Chứng minh quân đội', nycCardNo: '', cardNo: '',
+                    nycCardType: '', cardType: '', nycCardNo: '', cardNo: '',
                     hinhThucTiepNhan: 'Trực tiếp', nguonHoSo: 'Tiếp nhận mới',
                     notifyMethod: 'Qua thư điện tử', notifyAddress: 'lienhe@minhan.vn',
                     requestDocDate: '01/07/2026', applicableLaw: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017',
@@ -8550,10 +8611,10 @@
                     nycOrgCode: '0102998877', nycOrgDocNo: '0102998877', nycOrgDocDate: '12/03/2015', nycOrgDocPlace: 'Sở Kế hoạch và Đầu tư TP. Hà Nội',
                     nycRepName: 'Phạm Văn Hòa', nycRepPosition: 'Tổng Giám đốc',
                     nbthOrgName: 'Công ty TNHH Xây dựng Hồng Phát', nbthOrgCode: '0100554433',
-                    nycPhone: '02438889999', phone: '02438889999', nycEmail: '',
+                    nycPhone: '0938889999', phone: '0938889999', nycEmail: '',
                     nycCountry: 'Việt Nam', nycTinhThanh: 'Hà Nội', nycPhuongXa: 'Phường Láng', nycAddressDetail: 'Tầng 5, số 88 Láng Hạ',
                     address: 'Tầng 5, số 88 Láng Hạ',
-                    nycCardType: 'CMND/CCCD/Chứng minh quân đội', cardType: 'CMND/CCCD/Chứng minh quân đội', nycCardNo: '', cardNo: '',
+                    nycCardType: '', cardType: '', nycCardNo: '', cardNo: '',
                     hinhThucTiepNhan: 'Qua dịch vụ bưu chính', nguonHoSo: 'Tiếp nhận mới',
                     notifyMethod: 'Qua dịch vụ bưu chính', notifyAddress: 'Tầng 5, số 88 Láng Hạ, Phường Láng, Hà Nội',
                     requestDocDate: '02/07/2026', applicableLaw: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017',
@@ -8762,8 +8823,8 @@
                 notifyMethod: (rec.notifyMethod || rec.hinhThucNhan) ? normalizeClaimNotifyMethod(rec.notifyMethod || rec.hinhThucNhan) : '',
                 notifyAddress: rec.notifyAddress || rec.diaChiNhanThongBao || '',
                 nycBirth: rec.nycDob || '',
-                nycCardType: normClaimDocType(rec.nycDocType) || 'CMND/CCCD/Chứng minh quân đội',
-                cardType: normClaimDocType(rec.nycDocType) || 'CMND/CCCD/Chứng minh quân đội',
+                nycCardType: normClaimDocType(rec.nycDocType),
+                cardType: normClaimDocType(rec.nycDocType),
                 nycCardNo: rec.nycDocNo || '',
                 cardNo: rec.nycDocNo || '',
                 nycCardDate: rec.nycDocDate || '',
@@ -8794,11 +8855,13 @@
                 // chưa có: để trống (màn chỉ đọc hiển thị "-"; form Nhập liệu hồ sơ mặc định chọn Yêu cầu cả hai, lưu mới ghi giá trị)
                 restoreHonor: rec.requestKind === 'both',
                 requestType: ['both', 'money', 'honor'].includes(rec.requestKind) ? rec.requestKind : '',
-                victimAlive: 'yes',
+                // [nbthTN] Trạng thái người bị thiệt hại: kế thừa giá trị Tiếp nhận hồ sơ / Xác định CQGQBT đã lưu trên hồ sơ luồng; chưa có: Còn sống
+                victimAlive: rec.victimAlive === 'no' ? 'no' : 'yes',
                 deadline: '--',
                 files,
                 timeline
             };
+            if (rec.victimAliveStatus) built.victimAliveStatus = rec.victimAliveStatus;
             // Hồ sơ nguồn Dịch vụ công: kế thừa toàn bộ thông tin người dân đã nhập trên Dịch vụ công (rec.dvcData, cùng cấu trúc hồ sơ Giải quyết YCBT):
             // Ngày văn bản, Pháp luật áp dụng, Mối quan hệ nhân quả, Trạng thái người bị thiệt hại, Bảng thiệt hại, Tạm ứng, Người nhận, Yêu cầu phục hồi danh dự...
             if (rec.dvcData && typeof rec.dvcData === 'object') Object.assign(built, JSON.parse(JSON.stringify(rec.dvcData)), { dvcDataApplied: true });
@@ -8839,6 +8902,11 @@
                     // Hồ sơ Dịch vụ công đã đồng bộ trước khi có dữ liệu đầy đủ: bổ sung 01 lần khi cán bộ chưa tiếp nhận
                     if (rec.dvcData && existed.wfSynced && existed.status === 'Chờ tiếp nhận' && !existed.dvcDataApplied) {
                         Object.assign(existed, JSON.parse(JSON.stringify(rec.dvcData)), { dvcDataApplied: true });
+                    }
+                    // [nbthTN] Hồ sơ đã đồng bộ trước khi Tiếp nhận lưu Trạng thái người bị thiệt hại: bổ sung khi cán bộ chưa tiếp nhận
+                    if (rec.victimAliveStatus && existed.wfSynced && existed.status === 'Chờ tiếp nhận' && !existed.victimAliveStatus && !existed.dvcDataApplied) {
+                        existed.victimAliveStatus = rec.victimAliveStatus;
+                        existed.victimAlive = rec.victimAlive === 'no' ? 'no' : 'yes';
                     }
                     return;
                 }
@@ -9003,7 +9071,12 @@
             claim.nycType = nycTypeOfGq(claim.nycRole, claim.nycType);
             if (claim.notifyMethod) claim.notifyMethod = normalizeClaimNotifyMethod(claim.notifyMethod);
             claim.nycPhone = claim.nycPhone || claim.phone || '';
-            claim.nycCardType = claim.nycCardType || claim.cardType || 'Cá nhân';
+            // [cardfx] Dữ liệu mẫu cũ ghi nhầm Loại người yêu cầu ("Cá nhân") vào Loại giấy tờ thân nhân: chuyển sang giá trị DM_10;
+            // giữ cardType "Tổ chức" (còn dùng để nhận biết người yêu cầu là tổ chức), Loại giấy tờ thân nhân của tổ chức để trống
+            if (claim.cardType === NYC_TYPE_CA_NHAN) claim.cardType = 'CMND/CCCD/Chứng minh quân đội';
+            if (claim.nycCardType === NYC_TYPE_CA_NHAN) claim.nycCardType = 'CMND/CCCD/Chứng minh quân đội';
+            if (claim.nycCardType === NYC_TYPE_TO_CHUC) claim.nycCardType = '';
+            claim.nycCardType = claim.nycCardType || (claim.cardType !== NYC_TYPE_TO_CHUC ? claim.cardType : '') || '';
             claim.nycCardNo = claim.nycCardNo || claim.cardNo || '';
             claim.timeline = claim.timeline || [];
             claim.reporting = getClaimReport(claim);
@@ -9316,7 +9389,7 @@
                     ${f('Loại giấy tờ thân nhân', e(person.docType))}
                     ${f('Số giấy tờ thân nhân', e(person.docNo))}
                     ${f('Số điện thoại', e(person.phone))}
-                    ${f('Tình trạng', claim.victimAlive === 'no' ? '<span style="color:var(--danger-color); font-weight:600;">Đã mất</span>' : 'Còn sống')}
+                    ${f('Tình trạng', victimAliveLabelHtml(claim))}
                     ${f('Địa chỉ', e(person.address), 2)}
                 </div>
                 ${nb ? `<div style="font-weight:700; font-size:12.5px; color:#1e293b; margin:14px 0 8px;">Người đại diện / Người thừa kế (người yêu cầu)</div>
@@ -10383,9 +10456,9 @@
             const requestType = document.querySelector('input[name="claimRequestType"]:checked')
                 ? document.querySelector('input[name="claimRequestType"]:checked').value
                 : 'both';
-            const victimAlive = document.querySelector('input[name="claimVictimAlive"]:checked')
-                ? document.querySelector('input[name="claimVictimAlive"]:checked').value
-                : 'yes';
+            const victimAliveForm = getVictimAliveFromForm();
+            const victimAlive = victimAliveForm.flag;
+            const victimAliveStatus = victimAliveForm.status;
 
             const fieldGroup = document.getElementById('claimFieldGroup').value;
             const requestDocDate = document.getElementById('claimRequestDocDate').value.trim();
@@ -10429,6 +10502,13 @@
             }
             if (!birth) {
                 const el = document.getElementById('claimNYCBirth');
+                el.classList.add('is-invalid');
+                el.closest('.form-group').querySelector('.error-message').style.display = 'block';
+                if (!firstInvalid) firstInvalid = el;
+            }
+            // [cardfx] Loại giấy tờ thân nhân: bắt buộc khi người yêu cầu là Cá nhân (giống Trình duyệt - saveNewClaim)
+            if (!cardType && getNycTypeFromForm() === NYC_TYPE_CA_NHAN) {
+                const el = document.getElementById('claimNYCCardType');
                 el.classList.add('is-invalid');
                 el.closest('.form-group').querySelector('.error-message').style.display = 'block';
                 if (!firstInvalid) firstInvalid = el;
@@ -10525,6 +10605,9 @@
             claim.role = role;
             claim.hanhVi = hanhVi;
             claim.nhanQua = nhanQua;
+            // [nbthTN] Trình lại: lưu Trạng thái người bị thiệt hại như Trình duyệt (saveNewClaim)
+            claim.victimAlive = victimAlive;
+            claim.victimAliveStatus = victimAliveStatus;
             claim.agency = cqNhan || "Chưa phân công";
             claim.totalNum = total;
             claim.vanBanCanCu = collectVanBanCanCuRows();
@@ -10746,7 +10829,7 @@
                 applyNycTypeConstraint(claimRoleVal);
                 toggleNbthBlock(document.getElementById('claimNYCRole').value);
                 document.getElementById('claimNYCBirth').value = claim.nycBirth || '';
-                document.getElementById('claimNYCCardType').value = claim.cardType || 'Cá nhân';
+                document.getElementById('claimNYCCardType').value = claim.cardType || claim.nycCardType || '';
                 document.getElementById('claimNYCCardNo').value = claim.cardNo || '';
                 document.getElementById('claimNYCCardDate').value = claim.nycCardDate || '';
                 document.getElementById('claimNYCCardPlace').value = claim.nycCardPlace || '';
@@ -10815,11 +10898,8 @@
                 });
                 handleRequestTypeChange(claim.requestType || 'both');
 
-                const victimAliveRadios = document.getElementsByName('claimVictimAlive');
-                victimAliveRadios.forEach(r => {
-                    r.checked = (r.value === (claim.victimAlive || 'yes'));
-                });
-                handleVictimAliveChange(claim.victimAlive || 'yes');
+                renderVictimAliveRadios();
+                setVictimAliveRadio(victimAliveLabel(claim));
 
                 document.getElementById('claimNeedRestoreHonor').checked = claim.restoreHonor || false;
                 document.getElementById('claimRestoreHonorDescWrapper').style.display = (claim.requestType || 'both') !== 'money' ? 'block' : 'none';
@@ -10880,6 +10960,7 @@
                 document.getElementById('claimApplicableLaw').value = 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017';
                 document.getElementById('claimNYCName').value = '';
                 document.getElementById('claimNYCBirth').value = '';
+                document.getElementById('claimNYCCardType').value = '';
                 document.getElementById('claimNYCCardNo').value = '';
                 document.getElementById('claimNYCCardDate').value = '';
                 document.getElementById('claimNYCCardPlace').value = '';
@@ -10933,11 +11014,8 @@
                 });
                 handleRequestTypeChange('both');
 
-                const victimAliveRadios = document.getElementsByName('claimVictimAlive');
-                victimAliveRadios.forEach(r => {
-                    r.checked = (r.value === 'yes');
-                });
-                handleVictimAliveChange('yes');
+                renderVictimAliveRadios();
+                setVictimAliveRadio(VICTIM_ALIVE_SONG);
 
                 document.getElementById('claimNeedRestoreHonor').checked = false;
                 document.getElementById('claimRestoreHonorDescWrapper').style.display = 'block';
@@ -11726,9 +11804,9 @@
             const requestType = document.querySelector('input[name="claimRequestType"]:checked')
                 ? document.querySelector('input[name="claimRequestType"]:checked').value
                 : 'both';
-            const victimAlive = document.querySelector('input[name="claimVictimAlive"]:checked')
-                ? document.querySelector('input[name="claimVictimAlive"]:checked').value
-                : 'yes';
+            const victimAliveForm = getVictimAliveFromForm();
+            const victimAlive = victimAliveForm.flag;
+            const victimAliveStatus = victimAliveForm.status;
 
             const nguonHoSo = getClaimNguonHoSoField();
             const hinhThucTiepNhan = getClaimHinhThucTiepNhanField();
@@ -11788,6 +11866,12 @@
             }
             if (isCaNhan && !birth) {
                 const el = document.getElementById('claimNYCBirth');
+                el.classList.add('is-invalid');
+                el.closest('.form-group').querySelector('.error-message').style.display = 'block';
+                if (!firstInvalid) firstInvalid = el;
+            }
+            if (isCaNhan && !cardType) {
+                const el = document.getElementById('claimNYCCardType');
                 el.classList.add('is-invalid');
                 el.closest('.form-group').querySelector('.error-message').style.display = 'block';
                 if (!firstInvalid) firstInvalid = el;
@@ -12087,6 +12171,7 @@
                     claim.phddFormNews = requestType !== 'money' ? document.getElementById('claimPhddFormNews').checked : false;
                     claim.requestType = requestType;
                     claim.victimAlive = victimAlive;
+                    claim.victimAliveStatus = victimAliveStatus;
                     claim.otherRestore = document.getElementById('claimNeedOtherRestore').checked ? document.getElementById('claimOtherRestore').value.trim() : '';
                     claim.vanBanCanCu = collectVanBanCanCuRows();
 
@@ -12211,6 +12296,7 @@
                 phddFormNews: requestType !== 'money' ? document.getElementById('claimPhddFormNews').checked : false,
                 requestType: requestType,
                 victimAlive: victimAlive,
+                victimAliveStatus: victimAliveStatus,
                 otherRestore: document.getElementById('claimNeedOtherRestore').checked ? document.getElementById('claimOtherRestore').value.trim() : '',
                 vanBanCanCu: collectVanBanCanCuRows(),
                 officers: JSON.parse(JSON.stringify(currentClaimOfficers)),
@@ -12816,7 +12902,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <i class="fa-solid fa-user-injured"></i> THÔNG TIN NGƯỜI BỊ THIỆT HẠI
                     </div>
                     <div class="grid-4-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
-                        ${typeof nbthGqDetailHtml === 'function' ? nbthGqDetailHtml(nbthData, dF, dE) : `
+                        ${typeof nbthGqDetailHtml === 'function' ? nbthGqDetailHtml(nbthData, dF, dE, nbthData.type === NYC_TYPE_TO_CHUC ? '' : victimAliveLabelHtml(claim)) : `
                         <div><strong style="color:var(--text-muted);">Họ và tên:</strong> <br><span style="text-transform:uppercase; font-weight:700; color:var(--text-main);">${nbthData.name || '--'}</span></div>
                         <div><strong style="color:var(--text-muted);">Ngày sinh:</strong> <br>${nbthData.dob || '--'}</div>
                         <div><strong style="color:var(--text-muted);">Loại giấy tờ thân nhân:</strong> <br>${ycEsc(normClaimDocType(nbthData.docType)) || '--'}</div>
@@ -12866,7 +12952,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <div><strong style="color:var(--text-muted);">Loại người yêu cầu:</strong> <br>${nycTypeDt}</div>
                         ${typeof cdpdIs === 'function' && cdpdIs(claim) ? '' : `<div><strong style="color:var(--text-muted);">Tư cách người yêu cầu:</strong> <br><span style="font-weight:600; color:var(--secondary-color);">${dE(nycRoleDt)}</span></div>`}
                         ${nycPersonFieldsHtml}
-                        ${orgVictimDt ? '' : dF('Trạng thái người bị hại', claim.victimAlive === 'no' ? '<span style="color:var(--danger-color); font-weight:600;">Đã mất</span>' : 'Còn sống')}
+                        ${orgVictimDt || nycRoleDt !== NBTH_ROLE ? '' : dF('Trạng thái người bị thiệt hại', victimAliveLabelHtml(claim))}
                         ${dF('Số điện thoại', dE(claim.nycPhone))}
                         ${dF('Email', dE(claim.nycEmail))}
                         ${dF('Quốc gia', dE(claim.nycCountry))}
@@ -19873,7 +19959,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             setInputValue('verdictOriginClaim', claim.code);
             setInputValue('claimNYCName', claim.nyc || '');
             setInputValue('claimNYCBirth', claim.nycBirth || '');
-            setInputValue('claimNYCCardType', claim.cardType || claim.nycCardType || 'Cá nhân');
+            setInputValue('claimNYCCardType', claim.cardType || claim.nycCardType || '');
             setInputValue('claimNYCCardNo', claim.cardNo || claim.nycCardNo || '');
             setInputValue('claimNYCCardDate', claim.nycCardDate || '');
             setInputValue('claimNYCCardPlace', claim.nycCardPlace || '');
@@ -24858,8 +24944,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <!-- [ktlv] Màn chi tiết hồ sơ: khối Thông tin không thụ lý hồ sơ / Thông tin chuyển CQGQBT (thẻ cảnh báo, lưới 2 cột, File Xem/Tải) -->
     <script src="quan_ly_boi_thuong_ktlv.js?v=20261029tldk"></script>
     <!-- [seedxm] Dữ liệu giả lập đủ các Trạng thái vụ việc Giải quyết YCBT (Xác minh thiệt hại, Thương lượng, Chờ chi trả, Chờ duyệt / Bị trả lại theo Nội dung trình) -->
-    <script src="quan_ly_boi_thuong_seedxm.js?v=20261104gql1"></script>
-    <script src="quan_ly_boi_thuong_seedgq.js?v=20261029gq2"></script>
+    <script src="quan_ly_boi_thuong_seedxm.js?v=20261109sd1"></script>
+    <script src="quan_ly_boi_thuong_seedgq.js?v=20261109sd1"></script>
     <!-- [tcvv] Xem chi tiết mở từ Tra cứu vụ việc (?readonly=1&returnUrl=tra_cuu...): tab mặc định, bỏ giới hạn cán bộ được cử; tcvvPreview=1: hồ sơ giả lập riêng của Tra cứu, không lưu vào claimsList -->
     <script src="tra_cuu_seed_tcvv.js?v=20261030s2"></script>
     <!-- [lth][th2c] Thiệt hại 02 cấp (nhóm / mục chi tiết DM_27) tại Nhập liệu hồ sơ, Xác minh thiệt hại, Thương lượng, Xem chi tiết; tích bổ sung mục / Yêu cầu phục hồi danh dự; popup xác nhận Hoàn thành xác minh -->
@@ -24867,9 +24953,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <!-- [ktlc] Không thụ lý KTL_01: Chuyển hồ sơ cho theo cấp đơn vị / số lần chuyển, tự tạo hồ sơ Xác định CQGQBT -->
     <script src="quan_ly_boi_thuong_ktlc.js?v=20261030k3"></script>
     <!-- [tptl] Thành phần tham gia thương lượng: 1. Cơ quan, tổ chức (thành phần bắt buộc theo Cấp đơn vị / Lĩnh vực, Không tham gia + Lý do; thành phần khác), 2. Người yêu cầu bồi thường / người đại diện / người bảo vệ quyền lợi ích hợp pháp (đặt sau lth, ktlc) -->
-    <script src="quan_ly_boi_thuong_tptl.js?v=20261104cv"></script>
+    <script src="quan_ly_boi_thuong_tptl.js?v=20261109sd1"></script>
     <!-- [nbth] Người bị thiệt hại Cá nhân/Tổ chức, địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại; bắt buộc khi trình Thông báo thụ lý (đặt trước cdpd) -->
-    <script src="quan_ly_boi_thuong_nbth.js?v=20261030lnyc1"></script>
+    <script src="quan_ly_boi_thuong_nbth.js?v=20261109sd1"></script>
     <!-- [kttr] Trước Popup Trình duyệt Thông báo thụ lý: Danh sách vụ việc của Người bị thiệt hại (chỉ khi có hồ sơ trùng; đặt sau nbth, trước cdpd) -->
     <!-- Nơi thụ lý (Thụ lý tại CQGQBT / Thụ lý tại Tòa án) + vụ việc tại Tòa án cho kiểm tra cùng số giấy tờ người bị thiệt hại (kttr) -->
     <script src="btnn_noi_thu_ly.js?v=20261104ntl1"></script>

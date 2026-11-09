@@ -28,7 +28,7 @@ var SGQ_CB = 'Nguyễn Văn Chuyên Viên';
         g12: { nyc: 'Ninh Thị Thanh Tâm', nycBirth: '16/11/1986', nycCardNo: '001186004612', nycCardDate: '03/02/2022', nycPhone: '0976612612', nycEmail: 'thanhtam.ninh@gmail.com', nycPhuongXa: 'Phường Bồ Đề', nycAddressDetail: 'Số 88 Nguyễn Văn Cừ' }
     });
     Object.assign(SXM_ORGS, {
-        go2: { nyc: 'Công ty TNHH Xây dựng Minh Đạt', nycOrgCode: '0109876602', nycRepName: 'Lê Minh Đạt', nycRepPosition: 'Giám đốc', nycPhone: '02437602602', nycEmail: 'lienhe@minhdat.vn', nycPhuongXa: 'Phường Tây Mỗ', nycAddressDetail: 'Số 15 Đại Mỗ' }
+        go2: { nyc: 'Công ty TNHH Xây dựng Minh Đạt', nycOrgCode: '0109876602', nycRepName: 'Lê Minh Đạt', nycRepPosition: 'Giám đốc', nycPhone: '0937602602', nycEmail: 'lienhe@minhdat.vn', nycPhuongXa: 'Phường Tây Mỗ', nycAddressDetail: 'Số 15 Đại Mỗ' }
     });
 
     // Loại trình "Tiếp nhận hồ sơ" (Thông báo thụ lý - Mẫu 04/BTNN) và "Yêu cầu bổ sung" (Mẫu 03/BTNN)

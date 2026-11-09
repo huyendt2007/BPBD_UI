@@ -1,8 +1,8 @@
 /*
  * [nbth] Giải quyết YCBT (quan_ly_boi_thuong.html) - form Nhập liệu hồ sơ vụ việc (bước Thụ lý = Trình duyệt Thông báo thụ lý)
  * - Khối Người bị thiệt hại: Loại Cá nhân/Tổ chức, bộ trường như khối Người yêu cầu; bắt buộc như khối Người yêu cầu:
- *   Cá nhân: Họ và tên, Ngày sinh, Loại/Số giấy tờ thân nhân, Số điện thoại, Quốc gia, Tỉnh/Thành phố, Phường/Xã, Địa chỉ chi tiết
- *   Tổ chức: Tên tổ chức, Mã số tổ chức, Họ và tên người đại diện theo pháp luật, Chức vụ người đại diện, Số điện thoại, Quốc gia, Tỉnh/Thành phố, Phường/Xã, Địa chỉ chi tiết
+ *   Cá nhân: Họ và tên, Ngày sinh, Loại/Số giấy tờ thân nhân, Quốc gia, Tỉnh/Thành phố, Phường/Xã, Địa chỉ chi tiết
+ *   Tổ chức: Tên tổ chức, Mã số tổ chức, Họ và tên người đại diện theo pháp luật, Chức vụ người đại diện, Quốc gia, Tỉnh/Thành phố, Phường/Xã, Địa chỉ chi tiết
  * - Tổ chức bị thiệt hại đã chấm dứt tồn tại (TCNYC_03): bổ sung địa bàn (claim.nbthOrgAddr); bắt buộc Tên tổ chức, Quốc gia, Tỉnh/Thành phố, Phường/Xã, Địa chỉ chi tiết
  * - Trình Thông báo thụ lý (openTndModal): hồ sơ thiếu thông tin -> chặn, mở form Nhập liệu, tô lỗi, focus ô lỗi đầu tiên
  * - Dữ liệu cũ (nbth không có type) -> Cá nhân. Dữ liệu mẫu: BT-2026-092 (bổ sung địa bàn), BT-2026-095 (NBTH tổ chức), BT-2026-096 (thiếu thông tin NBTH)
@@ -11,7 +11,7 @@
 (function () {
     'use strict';
     var VN = 'Việt Nam', T_CN = 'Cá nhân', T_TC = 'Tổ chức';
-    var SEED_VER = '20261027nbth3';
+    var SEED_VER = '20261109nb1';
     var MSG_EMAIL = 'Địa chỉ email không đúng định dạng (ví dụ: abc@domain.com)';
     var MSG_PHONE = 'Số điện thoại không hợp lệ (độ dài 8-15 ký tự, bắt đầu bằng 0 hoặc +)';
     var CLEAR = "this.classList.remove('is-invalid'); var g=this.closest('.form-group'); if(g&&g.querySelector('.error-message')) g.querySelector('.error-message').style.display='none';";
@@ -73,7 +73,6 @@
             + fg('Họ và tên người đại diện theo pháp luật', inp('claimNbthRepName', 'Nhập họ và tên người đại diện...'), '', true)
             + fg('Chức vụ người đại diện', inp('claimNbthRepPosition', 'Nhập chức vụ...'), '', true)
             + '</div>');
-        addStar('claimNbthPhone');
         // Cột phải: giấy tờ thân nhân chỉ Cá nhân; Tổ chức: giấy tờ thành lập/đăng ký
         var cardGrid = el('claimNbthCardType').closest('.grid-2');
         var cardDateGrid = el('claimNbthCardDate').closest('.grid-2');
@@ -117,7 +116,7 @@
     function emailOk(v) { return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(String(v || '').trim()); }
     function phoneOk(v, country) {
         var s = String(v || '').replace(/\s+/g, '');
-        return (country || VN) === VN ? /^0\d{9,10}$/.test(s) : /^\+?[1-9]\d{7,14}$/.test(s);
+        return (country || VN) === VN ? /^0[35789]\d{8}$/.test(s) : /^\+?[1-9]\d{7,14}$/.test(s);
     }
     // Ô có dữ liệu mà sai định dạng: tô lỗi, hiện câu lỗi định dạng; trả về ô lỗi
     function fmtCheck(id, ok) {
@@ -237,7 +236,7 @@
         if (role === NYC_ROLE_TO_CHUC_KE_THUA) {
             return ['claimNbthOrgName', 'claimNbthOrgCountry', isVn('claimNbthOrg') ? 'claimNbthOrgCity' : 'claimNbthOrgCityText', 'claimNbthOrgWard', 'claimNbthOrgAddress'];
         }
-        var addr = ['claimNbthPhone', 'claimNbthCountry', isVn('claimNbth') ? 'claimNbthCity' : 'claimNbthCityText', 'claimNbthWard', 'claimNbthAddress'];
+        var addr = ['claimNbthCountry', isVn('claimNbth') ? 'claimNbthCity' : 'claimNbthCityText', 'claimNbthWard', 'claimNbthAddress'];
         return getType() === T_TC
             ? ['claimNbthName', 'claimNbthPOrgCode', 'claimNbthRepName', 'claimNbthRepPosition'].concat(addr)
             : ['claimNbthName', 'claimNbthBirth', 'claimNbthCardType', 'claimNbthCardNo'].concat(addr);
@@ -288,7 +287,7 @@
         applyRoleConstraint(arguments[0]);
         return r;
     };
-    // Người bị thiệt hại là tổ chức: ẩn Trạng thái người bị thiệt hại (Còn sống / Đã mất) như khối Người yêu cầu
+    // Người bị thiệt hại là tổ chức: ẩn Trạng thái người bị thiệt hại (DM_59); Tư cách khác Người bị thiệt hại: trường nằm ở khối Người bị thiệt hại (moveVictimAliveGroup)
     var oOrgVictim = window.isClaimOrgVictim;
     if (typeof oOrgVictim === 'function') window.isClaimOrgVictim = function (role, type) {
         if (oOrgVictim.apply(this, arguments)) return true;
@@ -311,7 +310,7 @@
             return !claim.nbthOrgName || !a.city || !a.ward || !a.address;
         }
         var n = claim.nbth || {};
-        var base = [n.name, n.phone, n.city, n.ward, n.address];
+        var base = [n.name, n.city, n.ward, n.address];
         var more = n.type === T_TC ? [n.orgCode, n.repName, n.repPosition] : [n.dob, n.docType, n.docNo];
         return base.concat(more).some(function (v) { return !String(v || '').trim(); });
     }
@@ -335,7 +334,8 @@
     };
 
     // ---------- Xem chi tiết hồ sơ ----------
-    window.nbthGqDetailHtml = function (nb, dF, dE) {
+    // aliveHtml: Trạng thái người bị thiệt hại (DM_59), hiển thị sau Ngày sinh khi người bị thiệt hại là Cá nhân
+    window.nbthGqDetailHtml = function (nb, dF, dE, aliveHtml) {
         var addr = joinClaimAddress(nb.address, stripWardCode(nb.ward), nb.city);
         if (nb.type === T_TC) {
             return [dF('Loại người bị thiệt hại', T_TC), dF('Tên tổ chức', '<span style="text-transform:uppercase; font-weight:700; color:var(--text-main);">' + dE(nb.name) + '</span>', 2), dF('Mã số tổ chức', dE(nb.orgCode)),
@@ -344,6 +344,7 @@
                 dF('Số điện thoại', dE(nb.phone)), dF('Email', dE(nb.email)), dF('Quốc gia', dE(nb.country)), dF('Địa chỉ', dE(addr), 4)].join('');
         }
         return [dF('Loại người bị thiệt hại', T_CN), dF('Họ và tên', '<span style="text-transform:uppercase; font-weight:700; color:var(--text-main);">' + dE(nb.name) + '</span>', 2), dF('Ngày sinh', dE(nb.dob)),
+            aliveHtml ? dF('Trạng thái người bị thiệt hại', aliveHtml) : '',
             dF('Loại giấy tờ thân nhân', dE(normClaimDocType(nb.docType))), dF('Số giấy tờ thân nhân', dE(nb.docNo)), dF('Ngày cấp', dE(nb.docDate)), dF('Nơi cấp', dE(nb.docPlace)),
             dF('Số điện thoại', dE(nb.phone)), dF('Email', dE(nb.email)), dF('Quốc gia', dE(nb.country)), dF('Địa chỉ', dE(addr), 4)].join('');
     };
@@ -381,6 +382,8 @@
             }),
             Object.assign({}, base, {
                 id: 'HS_NBTH_THIEU', code: 'BT-2026-096', seedNbth: true,
+                // Tư cách người thừa kế: Trạng thái người bị thiệt hại = Đã chết (DM_59)
+                victimAlive: 'no', victimAliveStatus: 'Đã chết',
                 nyc: 'Trần Thị Hạnh', nycType: T_CN, nycRole: 'Người thừa kế của người bị thiệt hại', role: 'Người thừa kế của người bị thiệt hại',
                 nycBirth: '02/09/1990', nycCardType: 'CMND/CCCD/Chứng minh quân đội', cardType: 'CMND/CCCD/Chứng minh quân đội', nycCardNo: '001190004455', cardNo: '001190004455',
                 nycPhone: '0988123456', phone: '0988123456', nycEmail: '',
@@ -402,7 +405,7 @@
             seedList().forEach(function (s) {
                 var cur = claimsList.find(function (c) { return c && (c.id === s.id || c.code === s.code); });
                 if (!cur) claimsList.push(s);
-                else if (fresh) Object.assign(cur, { nbth: s.nbth, thietHaiList: s.thietHaiList, nycRole: s.nycRole, role: s.role });
+                else if (fresh) Object.assign(cur, { nbth: s.nbth, thietHaiList: s.thietHaiList, nycRole: s.nycRole, role: s.role, victimAlive: s.victimAlive, victimAliveStatus: s.victimAliveStatus });
             });
             // Tổ chức kế thừa (BT-2026-092): bổ sung địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại
             var tc = claimsList.find(function (c) { return c && c.code === 'BT-2026-092'; });

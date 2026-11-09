@@ -886,7 +886,8 @@
         <span id="toastMessage"></span>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261106q1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261109sd1"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261106kn1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script>
@@ -1159,7 +1160,9 @@
             const all = filteredList();
             const pending = all.filter(isMyTask);
             const done = all.filter(isDoneByMe);
-            document.getElementById('countPending').innerText = questions.filter(q => canSee(q) && isMyTask(q)).length; // quy ước 7: badge không phụ thuộc bộ lọc
+            // Badge tab Chờ xử lý và badge menu (BDG): số câu hỏi đang chờ người dùng xử lý trong phạm vi xem, không phụ thuộc bộ lọc
+            const myPending = questions.filter(canSee).filter(isMyTask).length;
+            if (window.BDG) BDG.report('hoiDap', myPending, 'countPending'); else document.getElementById('countPending').innerText = myPending;
             document.getElementById('countDone').innerText = done.length;
             const list = activeTab === 'pending' ? pending : done;
             const tbody = document.getElementById('tableBody');

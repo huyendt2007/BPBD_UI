@@ -408,7 +408,7 @@
         tp2: { nyc: 'Lương Thị Bích Ngọc', nycBirth: '02/12/1986', nycCardNo: '001186003572', nycCardDate: '20/05/2021', nycPhone: '0983572572', nycEmail: 'bichngoc.luong@gmail.com', nycPhuongXa: 'Phường Hoàn Kiếm', nycAddressDetail: 'Số 7 Lý Thường Kiệt' },
         tp3: { nyc: 'Vương Đình Khoa', nycBirth: '25/03/1975', nycCardNo: '001075002573', nycCardDate: '08/06/2021', nycPhone: '0904573573', nycEmail: 'vuongdinhkhoa@gmail.com', nycPhuongXa: 'Phường Đống Đa', nycAddressDetail: 'Số 120 Tây Sơn' },
         tp4: { nyc: 'Mạc Văn Toàn', nycBirth: '11/09/1990', nycCardNo: '001090004574', nycCardDate: '15/07/2021', nycPhone: '0977574574', nycEmail: 'macvantoan90@gmail.com', nycPhuongXa: 'Phường Hoàng Mai', nycAddressDetail: 'Số 25 Giải Phóng' },
-        tp5: { nyc: 'K\'Brơi Ha Nhi', nycBirth: '30/01/1988', nycCardNo: '068188001575', nycCardDate: '22/08/2021', nycPhone: '0263575575', nycEmail: 'kbroihanhi@gmail.com', nycPhuongXa: 'Phường Xuân Hương - Đà Lạt', nycAddressDetail: 'Số 9 Trần Phú' }
+        tp5: { nyc: 'K\'Brơi Ha Nhi', nycBirth: '30/01/1988', nycCardNo: '068188001575', nycCardDate: '22/08/2021', nycPhone: '0963575575', nycEmail: 'kbroihanhi@gmail.com', nycPhuongXa: 'Phường Xuân Hương - Đà Lạt', nycAddressDetail: 'Số 9 Trần Phú' }
     };
     function newClaims() {
         if (typeof sxmBuild !== 'function' || typeof SXM_PERSONS === 'undefined' || typeof SXM_TH_A === 'undefined') return [];

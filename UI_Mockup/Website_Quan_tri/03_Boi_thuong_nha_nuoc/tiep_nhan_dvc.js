@@ -300,14 +300,14 @@
         { key: 'TN-DVC-4', step: 1, nyc: 'Đỗ Thanh Bình', phone: '0915667238', ward: '00004 - Phường Hoàn Kiếm', addr: 'Số 32 Hàng Bông',
             hanhVi: 'Xử phạt vi phạm hành chính về hành vi gây rối trật tự công cộng không có căn cứ, thông báo công khai tại nơi cư trú.', at: ['08:45 26/10/2026', '14:20 26/10/2026'] },
         // Đang phân công tại Phòng (chờ Lãnh đạo Phòng phân công cán bộ)
-        { key: 'TN-DVC-5', step: 2, nyc: 'Công ty Cổ phần Nông sản Phú An', phone: '0243776512', ward: '00010 - Phường Thanh Xuân', addr: 'Số 45 Nguyễn Trãi',
+        { key: 'TN-DVC-5', step: 2, nyc: 'Công ty Cổ phần Nông sản Phú An', phone: '0943776512', ward: '00010 - Phường Thanh Xuân', addr: 'Số 45 Nguyễn Trãi',
             hanhVi: 'Tịch thu lô hàng nông sản và xử phạt vi phạm hành chính trái pháp luật.', at: ['09:05 21/10/2026', '10:30 21/10/2026', '15:00 22/10/2026'] },
         { key: 'TN-DVC-6', step: 2, nyc: 'Phạm Ngọc Hà', phone: '0904128765', ward: '00001 - Phường Ba Đình', addr: 'Số 12 Kim Mã',
             hanhVi: 'Áp dụng biện pháp đưa vào cơ sở cai nghiện bắt buộc trái pháp luật đối với người bị thiệt hại.', at: ['16:10 23/10/2026', '08:40 24/10/2026', '14:00 24/10/2026'] },
         // Chờ tiếp nhận (Lãnh đạo Phòng đã phân công cán bộ chủ trì, cán bộ chưa tiếp nhận)
         { key: 'TN-DVC-7', step: 3, chuTri: 'canbonv', nyc: 'Hoàng Minh Tuấn', phone: '0936452187', ward: '00004 - Phường Hoàn Kiếm', addr: 'Số 15 Hàng Bài',
             hanhVi: 'Thu hồi Chứng chỉ hành nghề luật sư trái pháp luật.', at: ['08:30 19/10/2026', '10:00 19/10/2026', '15:30 19/10/2026', '09:00 20/10/2026'] },
-        { key: 'TN-DVC-8', step: 3, chuTri: 'hatt', type: 'Tổ chức', nyc: 'Trung tâm Trọng tài Thương mại Hưng Việt', phone: '0243562890', ward: '00007 - Phường Cầu Giấy', addr: 'Tầng 6, số 88 Trần Thái Tông',
+        { key: 'TN-DVC-8', step: 3, chuTri: 'hatt', type: 'Tổ chức', nyc: 'Trung tâm Trọng tài Thương mại Hưng Việt', phone: '0943562890', ward: '00007 - Phường Cầu Giấy', addr: 'Tầng 6, số 88 Trần Thái Tông',
             hanhVi: 'Thu hồi Giấy phép thành lập Trung tâm trọng tài không đúng căn cứ pháp luật.', at: ['10:15 16/10/2026', '14:00 16/10/2026', '09:30 17/10/2026', '15:45 17/10/2026'] }
     ];
     // Bổ sung hồ sơ mẫu (01 lần theo phiên bản ADD_SEED_V) theo seedKey: không xóa, không ghi đè hồ sơ đã có trong kho của người dùng
@@ -494,29 +494,39 @@
             + row([fld('Loại giấy tờ thân nhân', p.docType), fld('Số giấy tờ thân nhân', p.docNo), fld('Ngày cấp', p.docDate), fld('Nơi cấp', p.docPlace)])
             + addrRows(p, true);
     }
+    // Trạng thái người bị thiệt hại: tên giá trị danh mục Trạng thái của công dân [DM_59] lưu trên hồ sơ (victimAliveStatus);
+    // dữ liệu cũ chỉ có victimAlive: 'no' / "Đã mất" -> Đã chết, 'yes' -> Còn sống
+    function aliveLabel(o) {
+        var v = o && o.victimAliveStatus;
+        if (v === 'Đã mất') return 'Đã chết';
+        if (v) return v;
+        return o && o.victimAlive === 'no' ? 'Đã chết' : (o && o.victimAlive ? 'Còn sống' : '');
+    }
     function partyHtml(p) {
         var role = p.role || ROLE_NBTH;
         var orgRole = !!(W.isNbthOrgRole && W.isNbthOrgRole(role));
         var nb = p.nb || {};
-        // Trạng thái người bị thiệt hại: chỉ hiển thị khi người bị thiệt hại là cá nhân (E-Form STT 10):
-        // Tư cách = Người bị thiệt hại và Loại người yêu cầu = Cá nhân; hoặc khối Người bị thiệt hại hiển thị và Loại người bị thiệt hại = Cá nhân
-        var personVictim = role === ROLE_NBTH ? !p.isOrg : (!orgRole && !nb.isOrg);
+        // Trạng thái người bị thiệt hại: chỉ hiển thị khi người bị thiệt hại là cá nhân (E-Form STT 10); vị trí theo Tư cách:
+        // Tư cách = Người bị thiệt hại và Loại người yêu cầu = Cá nhân: khối Thông tin người yêu cầu;
+        // Tư cách khác (trừ Tổ chức kế thừa) và Loại người bị thiệt hại = Cá nhân: khối Thông tin người bị thiệt hại
         var head = [fld('Loại người yêu cầu', p.isOrg ? 'Tổ chức' : 'Cá nhân'), fld('Tư cách người yêu cầu bồi thường', role, { span: 2 })];
-        if (personVictim) head.push(fld('Trạng thái người bị thiệt hại', p.alive));
+        if (role === ROLE_NBTH && !p.isOrg) head.push(fld('Trạng thái người bị thiệt hại', p.alive));
         var h = sec('Thông tin người yêu cầu', row(head) + personRows(p));
         if (role === ROLE_NBTH) return h;
         if (orgRole) {
             var o = p.org || {};
             return h + sec('Thông tin tổ chức bị thiệt hại đã chấm dứt tồn tại', row([fld('Tên tổ chức bị thiệt hại', o.name, { span: 3 }), fld('Mã số tổ chức', o.code)]) + addrRows(o, false));
         }
-        return h + sec('Thông tin người bị thiệt hại', row([fld('Loại người bị thiệt hại', nb.isOrg ? 'Tổ chức' : 'Cá nhân')]) + personRows(nb));
+        var nbHead = [fld('Loại người bị thiệt hại', nb.isOrg ? 'Tổ chức' : 'Cá nhân')];
+        if (!nb.isOrg) nbHead.push(fld('Trạng thái người bị thiệt hại', p.alive));
+        return h + sec('Thông tin người bị thiệt hại', row(nbHead) + personRows(nb));
     }
     // Hồ sơ nguồn Dịch vụ công: dữ liệu bản ghi luồng
     function partyFromRec(item, r, d) {
         var nb = r.nbth || {}, oa = r.nbthOrgAddr || {};
         return {
             isOrg: (r.nycType || item.nycType) === 'Tổ chức', role: r.nycRole || item.nycRole || ROLE_NBTH,
-            name: r.nycName || item.nyc, dob: r.nycDob, alive: d.victimAlive === 'no' ? 'Đã mất' : 'Còn sống',
+            name: r.nycName || item.nyc, dob: r.nycDob, alive: aliveLabel(d) || 'Còn sống',
             docType: r.nycDocType, docNo: r.nycDocNo, docDate: r.nycDocDate, docPlace: r.nycDocPlace,
             orgCode: r.nycOrgCode, orgDocNo: r.nycOrgDocNo, orgDocDate: r.nycOrgDocDate, orgDocPlace: r.nycOrgDocPlace, repName: r.nycRepName, repPosition: r.nycRepPosition,
             phone: r.nycPhone || item.nycPhone, email: r.nycEmail, country: r.nycCountry || 'Việt Nam', city: r.nycTinhThanh, ward: r.nycPhuongXa, address: r.nycAddressDetail,
@@ -542,7 +552,7 @@
         var c = item || {}, nb = c.nbth || {};
         return {
             isOrg: radioVal('formNycType') === 'Tổ chức', role: tv('formRequesterRole') || c.nycRole || ROLE_NBTH,
-            name: tv('formRequester'), dob: c.nycDob, alive: c.victimAlive === 'no' ? 'Đã mất' : (c.victimAlive ? 'Còn sống' : ''),
+            name: tv('formRequester'), dob: c.nycDob, alive: aliveLabel(c),
             docType: tv('formNycDocType'), docNo: tv('formNycDocNo'), docDate: c.nycDocDate, docPlace: c.nycDocPlace,
             orgCode: tv('formNycOrgCode'), orgDocNo: c.nycOrgDocNo, orgDocDate: c.nycOrgDocDate, orgDocPlace: c.nycOrgDocPlace, repName: c.nycRepName, repPosition: c.nycRepPosition,
             phone: tv('formPhone'), email: tv('formEmail'), country: tv('formCountry'), city: tv('formCity'), ward: tv('formWard'), address: tv('formAddress'),
