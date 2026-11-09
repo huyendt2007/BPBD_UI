@@ -3,12 +3,15 @@
  * - record(claim, stepCode, opt): ghi 01 bản tin (hồ sơ Nguồn hồ sơ = Dịch vụ công) vào localStorage 'btnn_dvc_sync_log_new';
  *   màn Nhật ký đồng bộ Dịch vụ công (nhat_ky_dong_bo_dvc.js) nạp vào danh sách.
  * - Theo dõi kho dữ liệu của trang khác (bọc localStorage.setItem):
- *   + 'btnn_qd_gqbt_v2' (Quyết định giải quyết bồi thường): Đã ban hành -> QUYET_DINH_GIAI_QUYET; Hủy quyết định -> QUYET_DINH_HUY;
- *     thêm 01 lần sửa chữa, bổ sung -> QUYET_DINH_SUA_DOI_BO_SUNG.
+ *   + 'btnn_qd_gqbt_v2' (Quyết định giải quyết bồi thường): Đã ban hành -> QUYET_DINH_GIAI_QUYET; Hủy quyết định -> QUYET_DINH_HUY (bị chặn);
+ *     thêm 01 lần sửa chữa, bổ sung -> QUYET_DINH_SUA_DOI_BO_SUNG (bị chặn).
  *   + 'claimsList': vụ việc chỉ yêu cầu phục hồi danh dự chuyển Trạng thái Phục hồi danh dự Hoàn thành -> VU_VIEC_HOAN_THANH (bước 19, mã 9).
  * - [dvc10] Không gửi: Thông báo chi trả (Mẫu 32/BTNN), vụ việc đổi trạng thái do kinh phí sau Quyết định giải quyết bồi thường
  *   (Hoàn thành chi trả / Trả lại ngân sách nhà nước, chi thêm, thu hồi tiền): record() bỏ qua THONG_BAO_CHI_TRA, VU_VIEC_HOAN_THANH không có opt.phddOnly.
- * - [dvc10] Mỗi bản tin ghi dvcStatusCode / dvcStatusName (mục 3.3): Chờ chi trả (bước 7) -> 10 Đã trả kết quả; bước 8, 9, 15 (vụ việc không chỉ PHDD) -> mã đã gửi gần nhất.
+ * - [dvc10] Mỗi bản tin ghi dvcStatusCode / dvcStatusName (mục 3.3) theo trạng thái vụ việc sau bước: Chờ chi trả (bước 7) -> 10 Đã trả kết quả.
+ * - [dvc11] Mã kết thúc (mục 3): hồ sơ đã gửi mã 8 (Dừng xử lý), 9 (Đã xử lý xong) hoặc 10 (Đã trả kết quả) -> record() không gửi bản tin nào khác.
+ *   Bước 8 (Quyết định hủy), 9 (Quyết định sửa chữa, bổ sung), 20 (Giải quyết lại) luôn sau bước 7 (mã 10) nên không bao giờ gửi;
+ *   vẫn theo dõi QUYET_DINH_HUY / QUYET_DINH_SUA_DOI_BO_SUNG để record() chặn tập trung. Bỏ cơ chế gửi lại mã gần nhất.
  * - Trang Giải quyết yêu cầu bồi thường ghi bản tin qua quan_ly_boi_thuong_lth.js (theo đổi trạng thái hồ sơ).
  * Bước, mã trạng thái: Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.1, 3.2, 3.3.
  */
@@ -34,26 +37,29 @@
     // [dvc10] Mã trạng thái DVC theo trạng thái vụ việc (Bảng trạng thái liên thông - mục 3.3)
     var DVC_NAME = { 2: 'Được tiếp nhận', 3: 'Không được tiếp nhận', 4: 'Đang xử lý', 5: 'Yêu cầu bổ sung', 8: 'Dừng xử lý', 9: 'Đã xử lý xong', 10: 'Đã trả kết quả' };
     var DVC_OF = { CU_NGUOI_GIAI_QUYET: 2, KHONG_THU_LY: 3, YEU_CAU_BO_SUNG: 5, TU_CHOI_PHUC_HOI_DANH_DU: 8, DINH_CHI_GIAI_QUYET: 8, DUNG_GIAI_QUYET: 8, HOAN_THANH: 9, CHO_CHI_TRA: 10 };
-    var KEEP_STEPS = { QUYET_DINH_HUY: 1, QUYET_DINH_SUA_DOI_BO_SUNG: 1, THONG_BAO_PHUC_HOI_DANH_DU: 1 };
-    function lastDvcCode(dossierCode) {
+    // [dvc11] Mã kết thúc: sau mã 8, 9, 10 không gửi bản tin nào khác của hồ sơ
+    var END_CODES = { 8: 1, 9: 1, 10: 1 };
+    var NEVER_STEPS = { QUYET_DINH_HUY: 1, QUYET_DINH_SUA_DOI_BO_SUNG: 1, GIAI_QUYET_LAI: 1 }; // bước 8, 9, 20: luôn sau mã 10
+    // Hồ sơ đã gửi mã kết thúc: bản tin đã ghi có mã 8/9/10 (bản tin chưa điền mã: suy theo caseStatus);
+    // mockup bổ sung: vụ việc đã có Quyết định giải quyết bồi thường ban hành (đã gửi mã 10 tại bước 7) - trừ chính bản tin bước 7
+    function isClosed(c, step) {
+        if (!c) return false;
         var all = (parse(localStorage.getItem('btnn_dvc_sync_log')) || []).concat(parse(localStorage.getItem(KEY_NEW)) || []);
-        var hit = all.filter(function (x) { return x && x.dossierCode === dossierCode && x.dvcStatusCode; }).pop();
-        return hit ? Number(hit.dvcStatusCode) : 0;
+        if (all.some(function (x) { return x && x.dossierCode === c.code && END_CODES[Number(x.dvcStatusCode) || DVC_OF[x.caseStatus] || 0]; })) return true;
+        if (step === 'QUYET_DINH_GIAI_QUYET') return false;
+        var decs = parse(localStorage.getItem('btnn_qd_gqbt_v2')) || [];
+        return decs.some(function (d) { return d && (d.claimCode === c.code || d.claimCode === c.id) && (d.status === 'Đã ban hành' || d.status === 'Hủy quyết định'); });
     }
-    function dvcCodeOf(c, step, caseCode) {
-        if (KEEP_STEPS[step] && !(step === 'THONG_BAO_PHUC_HOI_DANH_DU' && c.requestType === 'honor')) {
-            var last = lastDvcCode(c.code);
-            if (last) return last;
-            if (step !== 'THONG_BAO_PHUC_HOI_DANH_DU' || caseCode === 'HOAN_THANH') return 10; // đã ban hành Quyết định giải quyết bồi thường (bước 7)
-        }
-        return DVC_OF[caseCode] || 4;
-    }
+    function blocked(c, step) { return !!NEVER_STEPS[step] || isClosed(c, step); }
+    function dvcCodeOf(c, step, caseCode) { return DVC_OF[caseCode] || 4; }
     // opt: { fileName, fileSize, caseStatusName, phddOnly, doc: { docNo, docDate, signingMethod, signerName, signerPosition } | null }
     function record(c, step, opt) {
         if (!isDvc(c) || !step) return null;
         opt = opt || {};
         // [dvc10] Không gửi Thông báo chi trả; Hoàn thành chỉ gửi với vụ việc chỉ yêu cầu phục hồi danh dự
         if (step === 'THONG_BAO_CHI_TRA' || (step === 'VU_VIEC_HOAN_THANH' && !opt.phddOnly)) return null;
+        // [dvc11] Bước 8, 9, 20 không gửi; hồ sơ đã gửi mã kết thúc (8, 9, 10) không gửi bản tin nào khác
+        if (blocked(c, step)) return null;
         var now = nowText();
         var dig = (String(c.code || '').match(/\d+/g) || ['0']).join('').slice(-6).padStart(6, '0');
         var st = opt.caseStatusName || c.status || '';
@@ -111,5 +117,5 @@
             if (c.phddStatus === 'Hoàn thành' && p.phddStatus && p.phddStatus !== 'Hoàn thành') record(c, 'VU_VIEC_HOAN_THANH', { caseStatusName: 'Hoàn thành', phddOnly: true, fileName: '', fileSize: 0 });
         });
     };
-    window.BTNN_DVC = { record: record, isDvc: isDvc, claimOf: claimOf, dvcCodeOf: dvcCodeOf, dvcName: DVC_NAME, watch: function (k, fn) { WATCH[k] = fn; } };
+    window.BTNN_DVC = { record: record, isDvc: isDvc, claimOf: claimOf, dvcCodeOf: dvcCodeOf, isClosed: isClosed, blocked: blocked, dvcName: DVC_NAME, watch: function (k, fn) { WATCH[k] = fn; } };
 })();

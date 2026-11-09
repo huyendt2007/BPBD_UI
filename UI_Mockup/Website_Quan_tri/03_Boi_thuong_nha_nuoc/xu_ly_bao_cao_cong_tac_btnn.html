@@ -8,8 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
-    <style data-ui-chuan="44c249fd">
-/* Bộ thành phần chuẩn 44c249fd, nhúng từ btp_gdbd_kg/kg/ui-mau/ui-chuan.css. Không sửa tay khối này. */
+    <style data-ui-chuan="5cc5a842">
+/* Bộ thành phần chuẩn 5cc5a842, nhúng từ btp_bpbd_ui/kg/ui-mau/ui-chuan.css. Không sửa tay khối này. */
 /*
  * ui-chuan.css — Bộ thành phần giao diện chuẩn của Website Quản trị (BTNN, BPBĐ, Quản trị hệ thống).
  * Nguồn: Common/css.md + đo kiểu hiển thị thực tế của 77 trang mockup (kg/tools/ui_trich_xuat.py, 03/11/2026).
@@ -532,6 +532,15 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
 .alert-warning { background: #FFF7ED; border-color: #FED7AA; color: #9A3412; }
 .alert-danger  { background: #FEF2F2; border-color: #FECACA; color: #991B1B; }
 .alert-success { background: #ECFDF5; border-color: #A7F3D0; color: #065F46; }
+/* Nút Thu gọn / Mở rộng của khối thông báo trên trang (06/11/2026); thu gọn ẩn dòng nội dung */
+.alert-tg { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0;
+  border: 1px solid transparent; border-radius: 50%; background: transparent; color: inherit; font-size: 13px; cursor: pointer; }
+.alert-tg:hover { background: rgba(15, 23, 42, .07); border-color: rgba(15, 23, 42, .12); }
+.alert-tg:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
+.alert-dong { padding-top: 6px; padding-bottom: 6px; }
+.alert-dong .alert-text, .alert-dong .alert-action { display: none; }
+.alert-dong .alert-body { align-items: center; }
+.alert-dong .alert-body > i { font-size: 15px; margin-top: 0; }
 .alert-info    .alert-body > i, .alert-info > i    { color: #2563EB; }
 .alert-warning .alert-body > i, .alert-warning > i { color: #EA580C; }
 .alert-danger  .alert-body > i, .alert-danger > i  { color: #DC2626; }
@@ -827,8 +836,8 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/vn.js"></script>
-<script data-ui-chuan="44c249fd">
-/* Bộ thành phần chuẩn 44c249fd, nhúng từ btp_gdbd_kg/kg/ui-mau/ui-chuan.js. Không sửa tay khối này. */
+<script data-ui-chuan="5cc5a842">
+/* Bộ thành phần chuẩn 5cc5a842, nhúng từ btp_bpbd_ui/kg/ui-mau/ui-chuan.js. Không sửa tay khối này. */
 /*
  * ui-chuan.js — Hành vi dùng chung cho trang mockup do skill /tao-ui sinh ra (Website Quản trị).
  * Đi kèm ui-chuan.css. Bản gốc trong KG (kg/ui-mau/); skill /tao-ui nhúng nguyên nội dung vào khối <script data-ui-chuan> của từng trang.
@@ -837,12 +846,14 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
  *   - Tab: .tab-btn[data-tab] trong .tab-bar[data-tab-group] bật .tab-panel[data-tab-panel] cùng nhóm.
  *   - Popup: nút [data-mo="idPopup"] mở, [data-dong] đóng; Esc đóng popup trên cùng.
  *   - Khối thu gọn: .accordion-head.
+ *   - Khối thông báo .alert[data-thu-gon="khóa"]: nút Thu gọn / Mở rộng ở góc phải, nhớ trạng thái theo khóa (localStorage ui-alert-dong).
  *   - Ô ngày [data-ngay] (flatpickr nếu có, định dạng dd/mm/yyyy), ô tiền [data-tien], bộ đếm ký tự textarea[maxlength].
  *   - Kiểu dữ liệu [data-kieu="String(255)"] đặt maxlength; kiểm tra khi gọi UI.kiemTra(form).
  * API: UI.toast, UI.mo, UI.dong, UI.xacNhan, UI.luoi, UI.kiemTra, UI.xoaLoi, UI.combo, UI.taiTep, UI.giaLap, UI.trang, UI.dinhDangTien
  *      UI.lich(ô, tùy chọn flatpickr) gắn lịch chọn ngày chuẩn (chọn tháng, năm, nút Hôm nay, Xóa); ô [data-ngay] tự gắn
  *      UI.cuonNoi(khung .table-container) thêm thanh cuộn ngang nổi ở đáy màn hình cho bảng dài và rộng; khung có [data-cuon-noi] tự gắn
  *      UI.nutThaoTac(mã, tùy chọn) vẽ nút cột Thao tác theo bộ icon chuẩn; UI.timIcon(nhãn) tra mục chuẩn của một nhãn nút
+ *      UI.thuGon(khối .alert) gắn nút Thu gọn / Mở rộng cho khối thông báo (06/11/2026); khối có [data-thu-gon] tự gắn
  */
 (function () {
   'use strict';
@@ -1261,6 +1272,26 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
     return `<button type="button" data-admin-icon-normalized="1" class="icon-btn ${m.lop}${tc.tat ? ' disabled' : ''}" title="${esc(goiY)}" aria-label="${esc(tieuDe)}"${du}${tc.tat ? ' disabled' : ''}><i class="fa-solid ${m.icon}"></i></button>`;
   }
 
+  /* ------------------------------------------------------------ Khối thông báo thu gọn / mở rộng (06/11/2026) */
+  // Nút chỉ có icon. Thu gọn: còn một dòng (icon, tiêu đề), ẩn .alert-text và nút hành động. Mặc định mở; khóa thu gọn lưu trong localStorage ui-alert-dong
+  const ALERT_KHOA = 'ui-alert-dong';
+  const alertDong = () => { try { return JSON.parse(localStorage.getItem(ALERT_KHOA) || '{}') || {}; } catch (e) { return {}; } };
+  function thuGon(k) {
+    if (!k || k._tg) return; k._tg = 1;
+    const khoa = k.dataset.thuGon || (k.querySelector('.alert-title') || {}).textContent || '';
+    const nut = document.createElement('button'); nut.type = 'button'; nut.className = 'alert-tg';
+    const ve = mo => { k.classList.toggle('alert-dong', !mo); nut.setAttribute('aria-expanded', String(mo)); nut.title = mo ? 'Thu gọn thông báo' : 'Mở rộng thông báo';
+      nut.setAttribute('aria-label', nut.title); nut.innerHTML = `<i class="fa-solid fa-chevron-${mo ? 'up' : 'down'}"></i>`; };
+    nut.addEventListener('click', () => {
+      const mo = k.classList.contains('alert-dong'), m = alertDong();
+      if (mo) delete m[khoa]; else m[khoa] = 1;
+      try { localStorage.setItem(ALERT_KHOA, JSON.stringify(m)); } catch (e) { /* bỏ qua */ }
+      ve(mo);
+    });
+    ve(!alertDong()[khoa]);
+    k.appendChild(nut);
+  }
+
   /* ------------------------------------------------------------ Gắn tự động */
   function gan(g) {
     $$('.table-container[data-cuon-noi]', g).forEach(k => cuonNoi(k));
@@ -1269,6 +1300,7 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
     $$('[data-tien]', g).forEach(ganTien);
     $$('[data-kieu]', g).forEach(ganKieu);
     $$('textarea[maxlength]', g).forEach(ganDem);
+    $$('.alert[data-thu-gon]', g).forEach(thuGon);
     $$('.accordion-head', g).forEach(h => { if (!h._gan) { h._gan = 1; h.addEventListener('click', () => h.closest('.accordion').classList.toggle('closed')); } });
     $$('input, select, textarea', g).forEach(el => { if (!el._xl) { el._xl = 1; el.addEventListener('input', () => el.classList.contains('is-invalid') && xoaLoi(el)); el.addEventListener('change', () => el.classList.contains('is-invalid') && xoaLoi(el)); } });
   }
@@ -1283,7 +1315,7 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
   });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => gan(document)); else gan(document);
 
-  window.UI = { toast, mo, dong, xacNhan, chonTab, luoi, kiemTra, xoaLoi, baoLoi, combo, taiTep, giaLap, trang, gan, dinhDangTien, ngayHopLe, esc, ICON_THAO_TAC, timIcon, nutThaoTac, lich: lichChuan, cuonNoi };
+  window.UI = { toast, mo, dong, xacNhan, chonTab, luoi, kiemTra, xoaLoi, baoLoi, combo, taiTep, giaLap, trang, gan, dinhDangTien, ngayHopLe, esc, ICON_THAO_TAC, timIcon, nutThaoTac, lich: lichChuan, cuonNoi, thuGon };
 })();
 
 </script>
@@ -1292,7 +1324,7 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
 <script src="filter_toggle_auto.js"></script>
 <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
 <script src="btnn_grid_toolbar.js"></script>
-<script src="btnn_luong_xu_ly.js?v=20261105mg1"></script>
+<script src="btnn_luong_xu_ly.js?v=20261106q1"></script>
 <script src="btnn_tai_lieu_kem_theo.js?v=20261103mau1"></script>
 <script src="btnn_badge_cho_xu_ly.js?v=20261103nhanh"></script>
 <script>
@@ -1301,8 +1333,8 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
     // Thông báo của engine bctt_bao_cao.js (cần #toastContainer hoặc window.showToast) hiển thị bằng UI.toast của bộ mẫu
     window.showToast = function (msg, type) { UI.toast(msg, type || 'success'); };
 </script>
-<script src="bctt_bao_cao.js?v=20261106tw3"></script>
-<script src="bctt_bo_xu_ly.js?v=20261106loc1"></script>
+<script src="bctt_bao_cao.js?v=20261106ub1"></script>
+<script src="bctt_bo_xu_ly.js?v=20261106ub1"></script>
 <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
 <script src="../../Common/grid_align.js?v=20261030s2"></script>
 </body>

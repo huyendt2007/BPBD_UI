@@ -1,6 +1,7 @@
 /*
  * Tạo yêu cầu - Cán bộ chủ động phục hồi danh dự khi có đủ thông tin (prefix cdpd) - Giải quyết yêu cầu bồi thường
- * 1. Form Tạo yêu cầu: trường "Hình thức tạo hồ sơ" (Tiếp nhận yêu cầu bồi thường | Cán bộ chủ động phục hồi danh dự).
+ * 1. Form Tạo yêu cầu: trường "Hình thức tạo hồ sơ" chỉ còn "Cán bộ chủ động phục hồi danh dự" (06/11/2026: bỏ "Tiếp nhận yêu cầu bồi thường";
+ *    hồ sơ yêu cầu bồi thường tạo tại Tiếp nhận hồ sơ, vào Giải quyết YCBT qua Chờ tiếp nhận).
  *    Chọn "Cán bộ chủ động phục hồi danh dự": Loại yêu cầu khóa "Chỉ yêu cầu phục hồi danh dự"; Hình thức tiếp nhận hệ thống gán
  *    "Cán bộ chủ động phục hồi danh dự khi có đủ thông tin" (DM_25 - CAN_BO_PHUC_HOI_DANH_DU); Nguồn hồ sơ giữ "Tiếp nhận mới";
  *    ẩn Ngày văn bản yêu cầu bồi thường, Yêu cầu khôi phục quyền, lợi ích khác, Tư cách người yêu cầu (giữ nội bộ "Người bị thiệt hại");
@@ -111,8 +112,8 @@ function cdpdEnsureFormUi() {
     block.className = 'cdpd-mode';
     block.innerHTML = '<span class="form-label" style="font-weight:700; color:#0e7490;">Hình thức tạo hồ sơ <span class="required">*</span></span>'
         + '<div class="cdpd-opts">'
-        + '<label><input type="radio" name="cdpdModeRadio" value="tiepnhan" checked onchange="cdpdSetMode(false)"> Tiếp nhận yêu cầu bồi thường</label>'
-        + '<label><input type="radio" name="cdpdModeRadio" value="cdpd" onchange="cdpdSetMode(true)"> <i class="fa-solid fa-ribbon" style="color:#0891b2;"></i> Cán bộ chủ động phục hồi danh dự</label>'
+        // 06/11/2026: Tạo yêu cầu chỉ tạo hồ sơ Cán bộ chủ động phục hồi danh dự (01 lựa chọn, chọn sẵn, không đổi được)
+        + '<label><input type="radio" name="cdpdModeRadio" value="cdpd" checked disabled> <i class="fa-solid fa-ribbon" style="color:#0891b2;"></i> Cán bộ chủ động phục hồi danh dự</label>'
         + '</div>'
         + '<div class="cdpd-note" id="cdpdModeNote" style="display:none;"><i class="fa-solid fa-circle-info"></i> Hồ sơ do cán bộ chủ động lập khi có đủ thông tin để phục hồi danh dự cho người bị thiệt hại. '
         + 'Hồ sơ không qua Thông báo thụ lý (Mẫu 04/BTNN) và Cử người giải quyết bồi thường (Mẫu 06/BTNN); bấm <b>Trình Lãnh đạo</b> để trình Phê duyệt chủ động phục hồi danh dự '
@@ -267,9 +268,10 @@ function cdpdAfterOpenForm(id) {
     var ret = cdpdEl('cdpdFormReturned');
     cdpdShow(ret, false);
     if (!claim) {
+        // Tạo yêu cầu: luôn là hồ sơ Cán bộ chủ động phục hồi danh dự
         block.style.display = '';
-        radios.forEach(function (r) { r.disabled = false; r.checked = r.value === 'tiepnhan'; });
-        cdpdApplyMode(false, true);
+        radios.forEach(function (r) { r.checked = r.value === 'cdpd'; r.disabled = true; });
+        cdpdApplyMode(true, true);
     } else if (cdpdIs(claim)) {
         block.style.display = '';
         radios.forEach(function (r) { r.checked = r.value === 'cdpd'; r.disabled = true; });

@@ -5,7 +5,7 @@
  * - Thao tác "Giải quyết lại" (Thao tác khác MH01 / thanh thao tác MH04) - chốt 06/11/2026: Trạng thái Giải quyết YCBT thuộc GQL_REDO_SOURCE (Chờ chi trả / Hoàn thành),
  *   vụ việc có Quyết định hủy Có hiệu lực (tự Có hiệu lực khi cấp cuối Ký duyệt / Ký ngoài Hủy QĐ), chưa có QĐ GQBT khác ngoài Hủy quyết định (kể cả dự thảo); trường hợp khác: mục mờ trong Thao tác khác, không hiển thị tại thanh thao tác.
  * - Popup Giải quyết lại: Căn cứ (Số, Ngày QĐ hủy, Lý do hủy - chỉ đọc), Bước giải quyết lại (bắt buộc), Lý do giải quyết lại (bắt buộc, 2000 ký tự);
- *   Lưu -> popup xác nhận -> vụ việc chuyển ngay trạng thái của bước (không trình Lãnh đạo); Lịch sử xử lý "Giải quyết lại"; gửi Dịch vụ công (bước 20).
+ *   Lưu -> popup xác nhận -> vụ việc chuyển ngay trạng thái của bước (không trình Lãnh đạo); Lịch sử xử lý "Giải quyết lại"; không gửi Dịch vụ công (bước 20 sau mã kết thúc 10).
  * - Dữ liệu lần trước giữ nguyên, chỉ đọc: QĐ đã hủy (qdHuyList), kết quả thương lượng cũ (tlRounds - "Lịch sử các lần thương lượng"),
  *   QĐ cử người cũ (cngOld); các lần xác minh theo cơ chế nhiều lần sẵn có.
  * - Dữ liệu mẫu: BT-2026-561 (Chờ chi trả, QĐ hủy, KP-2026-561 đã chi một phần), BT-2026-562 (đã Giải quyết lại về Thương lượng, lần thương lượng cũ chỉ đọc).
@@ -21,7 +21,7 @@ var GQL_HUY = ['Hủy quyết định', 'Đã hủy'];
 var GQL_MAX = 2000;
 var GQL_SUB = 'QĐ đã bị hủy';
 var GQL_ACTION = 'Giải quyết lại';
-var GQL_DVC_STEP = 'GIAI_QUYET_LAI';
+var GQL_DVC_STEP = 'GIAI_QUYET_LAI'; // [dvc11] không gửi Dịch vụ công (btnn_dvc_sync.js NEVER_STEPS chặn tập trung)
 var GQL_SEED_VER = '20261106gql7';
 var GQL_SEED_KEY = 'btnn_gql_seed_v';
 var gqlClaim = null;
@@ -348,17 +348,9 @@ function gqlApply(c, step, reason) {
             }
         }
     } catch (e) { if (window.console) console.warn('gql wf', e); }
-    // Dịch vụ công: gửi trạng thái mới (bước 20, không gửi tệp); không suy bước theo đổi trạng thái
-    try {
-        if (window.LTH_DVC) {
-            LTH_DVC.snap();
-            var ent = LTH_DVC.record(c, GQL_DVC_STEP);
-            if (ent) {
-                var l = JSON.parse(localStorage.getItem('btnn_dvc_sync_log_new') || '[]'), last = l[l.length - 1];
-                if (last && last.transactionId === ent.transactionId) { last.document = null; last.fileName = ''; last.fileSize = 0; localStorage.setItem('btnn_dvc_sync_log_new', JSON.stringify(l)); }
-            }
-        }
-    } catch (e) { /* mockup */ }
+    // [dvc11] Dịch vụ công: Giải quyết lại (bước 20) không gửi - luôn sau bước 7 (đã gửi mã kết thúc 10);
+    // chỉ chụp lại trạng thái để không suy bước theo đổi trạng thái (VD Chờ chi trả -> Cử người không sinh bản tin Thông báo thụ lý)
+    try { if (window.LTH_DVC) LTH_DVC.snap(); } catch (e) { /* mockup */ }
     closeGqlModal();
     saveClaimsToLocal();
     try { renderClaimsTable(); } catch (e) { /* mockup */ }

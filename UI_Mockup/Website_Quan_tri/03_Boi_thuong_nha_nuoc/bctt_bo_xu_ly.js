@@ -46,7 +46,7 @@
         if (st.chinh === 'th') veTinhHinh();
     }
 
-    // ---------------- Tình hình gửi báo cáo (34 Sở Tư pháp) ----------------
+    // ---------------- Tình hình gửi báo cáo (34 Ủy ban nhân dân tỉnh, thành phố; 06/11/2026 (nhanhl2, QDDA_020): trước là 34 Sở Tư pháp) ----------------
     // 03/11/2026: 02 tình trạng gửi `Đã gửi BTP` / `Chưa gửi BTP`; lọc theo tình trạng gửi; cột Năm báo cáo, Gửi chậm; khối Tổng hợp dạng thẻ số liệu.
     // 06/11/2026: bỏ cột Trạng thái xử lý tại Bộ, Cán bộ chủ trì; báo cáo Sở đang trình phê duyệt lại sau khi đã gửi tính Chưa gửi BTP (dòng phụ ghi rõ)
     function veTinhHinh() {
@@ -55,7 +55,7 @@
         if (!st.thKy.nam) st.thKy = { nam: String(nam[0]), ky: 'thuc_te', tg: '' };
         const y = +st.thKy.nam, p = st.thKy.ky, han = B.hanGui(y, p), quaHan = new Date() >= han.han;
         const dong = B.PROVINCES.map(pr => {
-            const so = B.stpName(pr), r = db.reports.find(x => !B.isBtpReport(x) && x.unitName === so && x.year === y && x.period === p);
+            const so = B.dvName(pr), r = db.reports.find(x => !B.isBtpReport(x) && x.unitName === so && x.year === y && x.period === p);
             const daGui = !!r && r.status === ST.BH;
             return { so: so, r: r, daGui: daGui, cham: daGui && guiCham(r), trinhLai: !!r && !daGui && !!(r.bkKy && r.bkKy.length) };
         });
@@ -94,7 +94,7 @@
         UI.luoi({
             bang: '#boThBang', duLieu: dong.filter(loc), kichThuoc: 50, rong: 'Không có dữ liệu',
             cot: [{ hien: (d, i) => i }, { hien: () => y }, { hien: d => `<span class="cell-strong">${esc(d.so)}</span>` },
-                { hien: d => d.daGui ? '<span class="badge badge-success">Đã gửi BTP</span>' : `<span class="badge badge-secondary th-chua">Chưa gửi BTP</span>${d.trinhLai ? '<span class="badge-sub">Sở đang trình phê duyệt lại báo cáo đã gửi</span>' : ''}` },
+                { hien: d => d.daGui ? '<span class="badge badge-success">Đã gửi BTP</span>' : `<span class="badge badge-secondary th-chua">Chưa gửi BTP</span>${d.trinhLai ? '<span class="badge-sub">Đơn vị đang trình phê duyệt lại báo cáo đã gửi</span>' : ''}` },
                 { hien: d => d.daGui ? `<span class="nowrap">${esc(ngayGuiBo(d.r))}</span>` : '--' },
                 { hien: d => d.daGui ? (d.cham ? '<span class="badge badge-warning"><i class="fa-solid fa-clock"></i> Có</span>' : 'Không') : '--' }],
             // 06/11/2026 (yêu cầu khách hàng): bấm dòng của Sở Đã gửi BTP mở trang chi tiết báo cáo toàn trang. Dòng Chưa gửi BTP không bấm được.

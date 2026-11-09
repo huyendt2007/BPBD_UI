@@ -885,7 +885,7 @@
     </div>
 
     <!-- Luồng xử lý BTNN dùng chung + tiện ích badge tab Chờ xử lý / badge menu 06 phân hệ -->
-    <script src="btnn_luong_xu_ly.js?v=20261105tn1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261106q1"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261103bo2"></script>
     <script>
         // Menu Data Model: Bồi thường nhà nước, Quản lý nhà nước & Quản trị hệ thống
@@ -896,14 +896,14 @@
                 children: [
                     // Badge số lượng (badgeKey bdg_*) = badge tab Chờ xử lý của phân hệ, tính qua tiện ích dùng chung BDG (btnn_badge_cho_xu_ly.js)
                     { title: "Bàn làm việc Lãnh đạo", icon: "fa-solid fa-user-tie", url: "dashboard_lanh_dao_btnn.html?v=20261106vt1" },
-                    { title: "Tiếp nhận hồ sơ", icon: "fa-solid fa-inbox", url: "tiep_nhan_ycbt.html?v=20261106vt2", badgeKey: "bdg_tiepNhan", badgeType: "danger" },
+                    { title: "Tiếp nhận hồ sơ", icon: "fa-solid fa-inbox", url: "tiep_nhan_ycbt.html?v=20261106q1", badgeKey: "bdg_tiepNhan", badgeType: "danger" },
                     { title: "Xác định cơ quan giải quyết bồi thường", icon: "fa-solid fa-building-columns", badgeKey: "bdg_xdcq", badgeType: "danger", url: "xac_dinh_co_quan_boi_thuong.html?v=20261106vt2" },
                     {
                         // Badge nhóm = tổng badge 2 mục con (bdg_gqGroup, tính trong BDG.mountMenu)
                         title: "Giải quyết bồi thường", icon: "fa-solid fa-gavel", badgeKey: "bdg_gqGroup", badgeType: "danger",
                         children: [
-                            { title: "Giải quyết yêu cầu bồi thường", icon: "fa-solid fa-file-pen", badgeKey: "bdg_gqYcbt", badgeType: "danger", url: "quan_ly_boi_thuong.html?v=20261106db3" },
-                            { title: "Quyết định giải quyết bồi thường", icon: "fa-solid fa-file-signature", badgeKey: "bdg_qdGqbt", badgeType: "danger", url: "quyet_dinh_giai_quyet_boi_thuong.html?v=20261106vt1" }
+                            { title: "Giải quyết yêu cầu bồi thường", icon: "fa-solid fa-file-pen", badgeKey: "bdg_gqYcbt", badgeType: "danger", url: "quan_ly_boi_thuong.html?v=20261106q1" },
+                            { title: "Quyết định giải quyết bồi thường", icon: "fa-solid fa-file-signature", badgeKey: "bdg_qdGqbt", badgeType: "danger", url: "quyet_dinh_giai_quyet_boi_thuong.html?v=20261106q1" }
                         ]
                     },
                     {
@@ -911,8 +911,8 @@
                         // Badge nhóm = tổng badge 2 mục con (bdg_kpGroup, tính trong BDG.mountMenu)
                         title: "Kinh phí", icon: "fa-solid fa-coins", badgeKey: "bdg_kpGroup", badgeType: "danger",
                         children: [
-                            { title: "Tạm ứng kinh phí", icon: "fa-solid fa-money-bill-transfer", badgeKey: "bdg_kpTamUng", badgeType: "danger", url: "quan_ly_kinh_phi_boi_thuong.html?v=20261106vt2&menu=tam-ung" },
-                            { title: "Chi trả tiền bồi thường", icon: "fa-solid fa-money-check-dollar", badgeKey: "bdg_kpChiTra", badgeType: "danger", url: "quan_ly_kinh_phi_boi_thuong.html?v=20261106vt2&menu=chi-tra" }
+                            { title: "Tạm ứng kinh phí", icon: "fa-solid fa-money-bill-transfer", badgeKey: "bdg_kpTamUng", badgeType: "danger", url: "quan_ly_kinh_phi_boi_thuong.html?v=20261106q1&menu=tam-ung" },
+                            { title: "Chi trả tiền bồi thường", icon: "fa-solid fa-money-check-dollar", badgeKey: "bdg_kpChiTra", badgeType: "danger", url: "quan_ly_kinh_phi_boi_thuong.html?v=20261106q1&menu=chi-tra" }
                         ]
                     },
                     { title: "Xem xét trách nhiệm hoàn trả", icon: "fa-solid fa-rotate-left", badgeKey: "bdg_hoanTra", badgeType: "danger", url: "xem_xet_trach_nhiem_hoan_tra.html?v=20261106vt2" },

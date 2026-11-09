@@ -1057,6 +1057,8 @@
         return '';
     }
     function dvcRecord(c, step) {
+        // [dvc11] Chặn tập trung (btnn_dvc_sync.js): bước 8, 9, 20 không gửi; hồ sơ đã gửi mã kết thúc 8/9/10 không gửi bản tin nào khác
+        if (window.BTNN_DVC && BTNN_DVC.blocked && BTNN_DVC.blocked(c, step)) return null;
         var p = function (x) { return String(x).padStart(2, '0'); }, n = new Date();
         var now = p(n.getDate()) + '/' + p(n.getMonth() + 1) + '/' + n.getFullYear() + ' ' + p(n.getHours()) + ':' + p(n.getMinutes()) + ':' + p(n.getSeconds());
         var dig = (String(c.code || '').match(/\d+/g) || ['0']).join('').slice(-6).padStart(6, '0');
@@ -1068,6 +1070,7 @@
             dvcCode: c.dvcDossierCode || ('H48.12.2026.' + dig), receiptNo: c.dvcReceiptNo || ('API-2026-' + dig),
             caseCode: c.maVuViec || '', dossierCode: c.code, agency: c.agency || '', stepCode: step,
             caseStatus: DVC_CASE[c.status] || '', caseStatusName: c.status, eventTime: now,
+            dvcStatusCode: window.BTNN_DVC ? BTNN_DVC.dvcCodeOf(c, step, DVC_CASE[c.status] || '') : 0,
             document: (step === 'BAO_CAO_XAC_MINH' || step === 'BIEN_BAN_THUONG_LUONG') ? null : { docNo: '', docDate: now.slice(0, 10), signingMethod: 'KY_SO', signerName: '', signerPosition: '' },
             fileName: fileName, fileSize: size, result: 'SUCCESS', sentAt: now
         };
@@ -1100,6 +1103,7 @@
                 var r = origM26.apply(this, arguments);
                 try {
                     if (claim && dvcSource(claim)) {
+                        // Bước 15: gửi theo trạng thái vụ việc hiện hành; hồ sơ đã gửi mã 8/9/10 -> dvcRecord trả null
                         var e = dvcRecord(claim, 'THONG_BAO_PHUC_HOI_DANH_DU');
                         var l = JSON.parse(localStorage.getItem('btnn_dvc_sync_log_new') || '[]'), last = l[l.length - 1];
                         if (last && e && last.transactionId === e.transactionId && m26) {

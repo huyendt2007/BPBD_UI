@@ -2,15 +2,16 @@
  * Tách khỏi HomePageBTNN.html để khi gộp nhánh main không xung đột: trang chủ chỉ cần một dòng <script src="bctt_chuong.js"> đặt cuối trang.
  * Đọc dữ liệu dùng chung của hai trang (localStorage bctt_bao_cao_v1) và vai trò giả lập đang chọn ở từng trang:
  * - Báo cáo công tác BTNN (bctt_role_v1):
- *   + Lãnh đạo UBND tỉnh nhận thông báo báo cáo đã gửi Bộ Tư pháp (06/11/2026: bỏ thông báo báo cáo bị Bộ Tư pháp trả lại vì không còn luồng trả lại).
- *   + Lãnh đạo Phòng, Lãnh đạo Sở: báo cáo đến lượt mình ký duyệt (kể cả khi Lãnh đạo cấp trên trả về).
+ *   + 06/11/2026 (nhanhl2, QDDA_020): báo cáo đã gửi Bộ Tư pháp (Lãnh đạo UBND tỉnh ký số Cấp 3) thì thông báo Cán bộ lập báo cáo và Lãnh đạo Sở;
+ *     bỏ thông báo Lãnh đạo UBND tỉnh sau khi ký và bỏ vai trò UBND tỉnh chỉ xem.
+ *   + Lãnh đạo Phòng, Lãnh đạo Sở, Lãnh đạo UBND tỉnh: báo cáo đến lượt mình ký duyệt (kể cả khi Lãnh đạo cấp trên trả về).
  * - Tổng hợp báo cáo Công tác BTNN (bctt_role_v1_bo): 06/11/2026 bỏ quy trình rà soát (phân công, rà soát, ký duyệt yêu cầu điều chỉnh) nên không còn thông báo;
  *   báo cáo tổng hợp của Bộ không trình ký nên không có thông báo ký.
  * Bấm thông báo mở thẳng báo cáo (?mo=); tối đa 10 thông báo, mới nhất trước; ba thông báo mẫu có sẵn giữ nguyên. */
 (function () {
     'use strict';
     var NOTIF_MAU = 3, NOTIF_TOI_DA = 10;
-    var UID_SO = { cb_stp: 'cv_hn1', ld_phong: 'tp_hctp_hn', ld_so: 'gdso_hn' };
+    var UID_SO = { cb_stp: 'cv_hn1', ld_phong: 'tp_hctp_hn', ld_so: 'gdso_hn', ld_ubnd: 'pct_ubnd_hn' };   // 06/11/2026 (nhanhl2, QDDA_020): thêm Lãnh đạo UBND tỉnh (người ký Cấp 3)
     var UID_BO = { ld_cuc: 'cuctruong', ld_phong_btp: 'tpbt', cb_btp: 'canbonv', cb_btp2: 'hatt', ld_bo: 'oanhdh' };
     var TEN_MENU_CU = 'Xử lý báo cáo Công tác BTNN', TEN_MENU = 'Tổng hợp báo cáo Công tác BTNN';
     var KY = { thuc_te: 'Báo cáo năm số liệu thực tế', chinh_thuc: 'Số liệu thống kê năm chính thức' };
@@ -32,20 +33,24 @@
         var db = null;
         try { db = JSON.parse(localStorage.getItem('bctt_bao_cao_v1') || 'null'); } catch (e) { db = null; }
         var ds = [];
-        function them(icon, nen, mau, noiDung, at, trang, ts, nhan) {
+        function them(icon, nen, mau, noiDung, at, trang, ts, nhan, thongTin) {
             var ngan = String(noiDung).replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
-            ds.push({ icon: icon, nen: nen, mau: mau, noiDung: noiDung, ngan: ngan, at: at, url: trang[0] + '?' + ts, tieuDe: trang[1], nhan: nhan || ngan, r: ds.__r });
+            ds.push({ icon: icon, nen: nen, mau: mau, noiDung: noiDung, ngan: ngan, at: at, url: trang[0] + '?' + ts, tieuDe: trang[1], nhan: nhan || ngan, r: ds.__r, thongTin: !!thongTin });
         }
         (db && Array.isArray(db.reports) ? db.reports : []).forEach(function (r) {
             if (!r) return;
             ds.__r = r;
             // ---- Báo cáo công tác BTNN (Sở Tư pháp Hà Nội)
-            if (r.unitId === 'STP-HN' && vt !== 'ubnd') {
+            if (r.unitId === 'STP-HN') {   // 06/11/2026 (nhanhl2, QDDA_020): báo cáo của Ủy ban nhân dân thành phố Hà Nội (Sở Tư pháp Hà Nội lập; mã nội bộ STP-HN)
                 var mo = 'mo=' + encodeURIComponent(r.id), pc = r.phanCongSo || {};
                 var ly = String((r.returned && r.returned.reason) || ''), ngan = ly.length > 90 ? ly.slice(0, 88) + '…' : ly;
                 var traBo = !!r.returned && !r.reject && ['Bị trả lại', 'Đang phân công', 'Yêu cầu điều chỉnh'].indexOf(r.status) >= 0;
                 // 06/11/2026: bỏ luồng Bộ Tư pháp trả lại báo cáo nên không còn thông báo bị trả lại, phân công xử lý
-                if (vt === 'ld_ubnd' && r.status === 'Đã gửi BTP') them('fa-paper-plane', '#ECFDF5', '#047857', 'Báo cáo công tác BTNN ' + nam(r) + ' của ' + esc(r.unitName) + ' <b>đã gửi Bộ Tư pháp</b>.', (r.issued && r.issued.at) || r.sentAt, SO, mo, 'Đã gửi Bộ Tư pháp');
+                // 06/11/2026 (nhanhl2, QDDA_020): báo cáo đã gửi Bộ Tư pháp - thông báo Cán bộ lập báo cáo và Lãnh đạo Sở (thông tin, không phải việc chờ của Bàn làm việc Lãnh đạo)
+                // 06/11/2026 (nhanhl2): chỉ Lãnh đạo Sở đã ký nháy ở Cấp 2 của lần trình này nhận thông báo, không phải mọi Lãnh đạo Sở (khớp SRS quy tắc 14)
+                var cap2 = r.submit && Array.isArray(r.submit.levels) ? r.submit.levels.filter(function (l) { return l.level === 2; })[0] : null;
+                var guiBo = r.status === 'Đã gửi BTP' && ((vt === 'ld_so' && !!cap2 && cap2.leaderId === UID_SO.ld_so) || (vt === 'cb_stp' && (!r.preparer || r.preparer.userId === UID_SO.cb_stp)));
+                if (guiBo) them('fa-paper-plane', '#ECFDF5', '#047857', 'Báo cáo công tác BTNN ' + nam(r) + ' của ' + esc(r.unitName) + ' <b>đã được Lãnh đạo UBND tỉnh ký số và gửi Bộ Tư pháp</b>.', (r.issued && r.issued.at) || r.sentAt, SO, mo, 'Đã gửi Bộ Tư pháp', true);
                 else if (choKy(r) && UID_SO[vt]) {
                     var l = r.submit.levels[r.submit.current];
                     if (l && l.leaderId === UID_SO[vt]) them('fa-file-signature', '#F5F3FF', '#7C3AED', biTraVe(r)
@@ -131,7 +136,7 @@
             for (k in UID_BO) if (UID_BO[k] === uid) vb = k;
             return { vt: vt, vb: vb };
         },
-        cua: function (uid) { var v = this.vaiTro(uid); return v.vt || v.vb ? layViec(v.vt || '-', v.vb || '-') : []; }
+        cua: function (uid) { var v = this.vaiTro(uid); return v.vt || v.vb ? layViec(v.vt || '-', v.vb || '-').filter(function (x) { return !x.thongTin; }) : []; }   // 06/11/2026 (nhanhl2, QDDA_020): chỉ việc chờ, bỏ thông báo thông tin
     };
     window.addEventListener('storage', function (e) { if (!e.key || e.key === 'bctt_bao_cao_v1' || e.key === 'bctt_role_v1' || e.key === 'bctt_role_v1_bo') thongBaoBctt(); });
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', chay); else chay();

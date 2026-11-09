@@ -41,6 +41,50 @@
         try { document.addEventListener('DOMContentLoaded', () => { if (global.flatpickr && global.flatpickr.isStub) console.warn('[BTNN] Không tải được flatpickr từ CDN: dùng ô ngày nhập tay dd/mm/yyyy.'); }); } catch (e) { /* bỏ qua */ }
     })();
 
+    // [quota1] 06/11/2026: localStorage đầy (QuotaExceededError, vượt dung lượng trình duyệt dành cho dữ liệu giả lập):
+    // lệnh ghi không dừng thao tác đang làm (VD Trình Lãnh đạo, Lưu); dữ liệu mới không lưu được -> hiện dải cảnh báo 01 lần trên trang,
+    // có nút Xóa dữ liệu giả lập (người dùng xác nhận) rồi tải lại trang để hệ thống nạp lại dữ liệu mẫu.
+    (function localStorageDayDuPhong() {
+        const SP = global.Storage && global.Storage.prototype;
+        if (!SP || SP.__btnnQuotaGuard) return;
+        const origSet = SP.setItem;
+        const laDay = e => !!e && (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED' || e.code === 22 || e.code === 1014);
+        let daBao = false;
+        function baoDay(key) {
+            console.warn('[BTNN] localStorage đầy, không lưu được "' + key + '". Thao tác vẫn thực hiện trên trang; tải lại trang sẽ mất dữ liệu mới.');
+            if (daBao) return;
+            daBao = true;
+            const ve = () => {
+                if (!document.body || document.getElementById('btnnQuotaBar')) return;
+                const bar = document.createElement('div');
+                bar.id = 'btnnQuotaBar';
+                bar.style.cssText = 'position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:100000;max-width:760px;width:calc(100% - 32px);background:#fff7ed;border:1px solid #fdba74;border-left:4px solid #ea580c;color:#7c2d12;border-radius:8px;padding:12px 14px;font:13px/1.5 Inter,system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.15);display:flex;gap:12px;align-items:flex-start;';
+                bar.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color:#ea580c;margin-top:3px;"></i>'
+                    + '<div style="flex:1;"><b>Bộ nhớ trình duyệt dành cho dữ liệu giả lập đã đầy.</b><br>Thao tác vẫn thực hiện trên màn hình nhưng dữ liệu mới chưa được lưu (tải lại trang sẽ mất). '
+                    + 'Bấm <b>Xóa dữ liệu giả lập</b> để xóa dữ liệu đã lưu trên trình duyệt và nạp lại dữ liệu mẫu.</div>'
+                    + '<div style="display:flex;gap:8px;flex-shrink:0;"><button type="button" id="btnnQuotaClear" style="background:#ea580c;color:#fff;border:0;border-radius:6px;padding:6px 12px;font-weight:600;cursor:pointer;">Xóa dữ liệu giả lập</button>'
+                    + '<button type="button" id="btnnQuotaClose" style="background:#fff;color:#7c2d12;border:1px solid #fdba74;border-radius:6px;padding:6px 12px;cursor:pointer;">Đóng</button></div>';
+                document.body.appendChild(bar);
+                document.getElementById('btnnQuotaClose').onclick = () => bar.remove();
+                document.getElementById('btnnQuotaClear').onclick = () => {
+                    if (!global.confirm('Xóa toàn bộ dữ liệu giả lập đã lưu trên trình duyệt (localStorage của trang) và tải lại trang?')) return;
+                    try { global.localStorage.clear(); } catch (e) { /* bỏ qua */ }
+                    try { (global.top || global).location.reload(); } catch (e) { global.location.reload(); }
+                };
+            };
+            if (document.body) ve(); else document.addEventListener('DOMContentLoaded', ve);
+        }
+        SP.setItem = function (key, value) {
+            try { return origSet.call(this, key, value); }
+            catch (e) {
+                if (!laDay(e) || this !== global.localStorage) throw e;
+                baoDay(key);
+                return undefined;
+            }
+        };
+        SP.__btnnQuotaGuard = true;
+    })();
+
     const KEY_RECORDS = 'btnn_wf_records_v1';
     const KEY_FLOW = 'btnn_flow_config_v2'; // { [Loại luồng]: { [đơn vị gốc]: { [đơn vị]: nút cấu hình } } }
     const KEY_FLOW_V1 = 'btnn_flow_config_v1';

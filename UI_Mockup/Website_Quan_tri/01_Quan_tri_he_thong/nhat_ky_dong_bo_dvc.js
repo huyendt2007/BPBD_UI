@@ -7,10 +7,11 @@
  * - Thông báo hiển thị trực tiếp đầu danh sách (không dùng toast).
  * - Dữ liệu mẫu gắn với hồ sơ Nguồn hồ sơ = Dịch vụ công của trang Giải quyết yêu cầu bồi thường; lưu localStorage theo phiên bản NKDV_SEED_VER.
  */
-var NKDV_SEED_VER = '20261105dvc10';
+var NKDV_SEED_VER = '20261106dvc11';
 var NKDV_KEY = 'btnn_dvc_sync_log';
 var NKDV_KEY_VER = 'btnn_dvc_sync_log_ver';
-// [dvc10] 19 bước theo Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.1 (thứ tự theo luồng); số 16 (Thông báo chi trả) không sử dụng, giữ số các bước khác
+// [dvc11] 16 bước theo Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.1 (thứ tự theo luồng);
+// số bước cố định; không sử dụng số 8 (Quyết định hủy), 9 (Quyết định sửa chữa, bổ sung), 16 (Thông báo chi trả), 20 (Giải quyết lại)
 var NKDV_STEPS = [
     ['YEU_CAU_BO_SUNG', 'Thông báo về việc yêu cầu bổ sung hồ sơ yêu cầu bồi thường (Mẫu 03/BTNN)', 1],
     ['THONG_BAO_KHONG_THU_LY', 'Thông báo không thụ lý hồ sơ yêu cầu bồi thường (Mẫu 04/BTNN)', 2],
@@ -19,8 +20,6 @@ var NKDV_STEPS = [
     ['BAO_CAO_XAC_MINH', 'Báo cáo xác minh thiệt hại', 5],
     ['BIEN_BAN_THUONG_LUONG', 'Biên bản kết quả thương lượng việc giải quyết bồi thường', 6],
     ['QUYET_DINH_GIAI_QUYET', 'Quyết định giải quyết bồi thường (Mẫu 18/BTNN)', 7],
-    ['QUYET_DINH_HUY', 'Quyết định hủy quyết định giải quyết bồi thường (Mẫu 20/BTNN)', 8],
-    ['QUYET_DINH_SUA_DOI_BO_SUNG', 'Quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường (Mẫu 21/BTNN)', 9],
     ['QUYET_DINH_HOAN', 'Quyết định hoãn giải quyết bồi thường (Mẫu 22/BTNN)', 10],
     ['QUYET_DINH_TIEP_TUC', 'Quyết định tiếp tục giải quyết bồi thường (Mẫu 23/BTNN)', 11],
     ['QUYET_DINH_TAM_DINH_CHI', 'Quyết định tạm đình chỉ giải quyết yêu cầu bồi thường (Mẫu 24/BTNN)', 12],
@@ -29,8 +28,7 @@ var NKDV_STEPS = [
     ['THONG_BAO_PHUC_HOI_DANH_DU', 'Thông báo về việc tổ chức thực hiện phục hồi danh dự (Mẫu 26/BTNN)', 15],
     ['Y_KIEN_TU_CHOI_PHUC_HOI_DANH_DU', 'Ý kiến từ chối phục hồi danh dự (vụ việc chỉ yêu cầu phục hồi danh dự)', 17],
     ['Y_KIEN_DE_NGHI_CHUA_THUC_HIEN_PHDD', 'Ý kiến đề nghị chưa thực hiện phục hồi danh dự (vụ việc chỉ yêu cầu phục hồi danh dự)', 18],
-    ['VU_VIEC_HOAN_THANH', 'Hoàn thành phục hồi danh dự (vụ việc chỉ yêu cầu phục hồi danh dự)', 19],
-    ['GIAI_QUYET_LAI', 'Giải quyết lại (gửi trạng thái vụ việc sau giải quyết lại, không gửi tệp)', 20]
+    ['VU_VIEC_HOAN_THANH', 'Hoàn thành phục hồi danh dự (vụ việc chỉ yêu cầu phục hồi danh dự)', 19]
 ];
 var NKDV_CASE = {
     CU_NGUOI_GIAI_QUYET: 'Cử người giải quyết bồi thường', XAC_MINH_THIET_HAI: 'Xác minh thiệt hại', THUONG_LUONG: 'Thương lượng',
@@ -38,22 +36,29 @@ var NKDV_CASE = {
     HOAN_GIAI_QUYET: 'Hoãn giải quyết', TAM_DINH_CHI: 'Tạm đình chỉ', DINH_CHI_GIAI_QUYET: 'Đình chỉ giải quyết', DUNG_GIAI_QUYET: 'Dừng giải quyết',
     KHONG_THU_LY: 'Không thụ lý', YEU_CAU_BO_SUNG: 'Yêu cầu bổ sung', TU_CHOI_PHUC_HOI_DANH_DU: 'Từ chối phục hồi danh dự', HOAN_PHUC_HOI_DANH_DU: 'Hoãn phục hồi danh dự'
 };
-// [dvc10] Mã trạng thái DVC (Bảng trạng thái liên thông - mục 3.3); bước 8, 9, 15 (vụ việc không chỉ PHDD): mã đã gửi gần nhất của hồ sơ
+// [dvc11] Mã trạng thái DVC theo trạng thái vụ việc sau bước (Bảng trạng thái liên thông - mục 3.3); bỏ cơ chế gửi lại mã gần nhất
 var NKDV_DVC_NAME = { 2: 'Được tiếp nhận', 3: 'Không được tiếp nhận', 4: 'Đang xử lý', 5: 'Yêu cầu bổ sung', 8: 'Dừng xử lý', 9: 'Đã xử lý xong', 10: 'Đã trả kết quả' };
 var NKDV_DVC_OF = { CU_NGUOI_GIAI_QUYET: 2, KHONG_THU_LY: 3, YEU_CAU_BO_SUNG: 5, TU_CHOI_PHUC_HOI_DANH_DU: 8, DINH_CHI_GIAI_QUYET: 8, DUNG_GIAI_QUYET: 8, HOAN_THANH: 9, CHO_CHI_TRA: 10 };
-function nkdvDvcCode(m, list) {
+// [dvc11] Mã kết thúc: sau mã 8, 9, 10 không có bản tin nào khác của hồ sơ; bước 8, 9, 20 không gửi
+var NKDV_END = { 8: 1, 9: 1, 10: 1 };
+var NKDV_NEVER = { QUYET_DINH_HUY: 1, QUYET_DINH_SUA_DOI_BO_SUNG: 1, GIAI_QUYET_LAI: 1 };
+function nkdvDvcCode(m) {
     if (m.dvcStatusCode) return Number(m.dvcStatusCode);
-    if (/^(QUYET_DINH_HUY|QUYET_DINH_SUA_DOI_BO_SUNG|THONG_BAO_PHUC_HOI_DANH_DU)$/.test(m.stepCode)) {
-        var prev = (list || []).filter(function (x) { return x !== m && x.dossierCode === m.dossierCode && x.dvcStatusCode && nkdvKey(x.eventTime) <= nkdvKey(m.eventTime); }).pop();
-        if (prev) return Number(prev.dvcStatusCode);
-        if (m.stepCode !== 'THONG_BAO_PHUC_HOI_DANH_DU' || m.caseStatus === 'HOAN_THANH') return 10;
-    }
     return NKDV_DVC_OF[m.caseStatus] || 4;
 }
 function nkdvFillDvc(list) {
     list.slice().sort(function (a, b) { return nkdvKey(a.eventTime) < nkdvKey(b.eventTime) ? -1 : 1; }).forEach(function (m) {
-        if (!m.dvcStatusCode) m.dvcStatusCode = nkdvDvcCode(m, list);
+        if (!m.dvcStatusCode) m.dvcStatusCode = nkdvDvcCode(m);
         m.dvcStatusName = NKDV_DVC_NAME[m.dvcStatusCode] || '';
+    });
+}
+// Bỏ bản tin không hợp lệ theo quy tắc mã kết thúc (dữ liệu cũ trong localStorage)
+function nkdvDropClosed(list) {
+    var closed = {};
+    return list.slice().sort(function (a, b) { return nkdvKey(a.eventTime) < nkdvKey(b.eventTime) ? -1 : 1; }).filter(function (m) {
+        if (NKDV_NEVER[m.stepCode] || closed[m.dossierCode]) return false;
+        if (NKDV_END[Number(m.dvcStatusCode)]) closed[m.dossierCode] = true;
+        return true;
     });
 }
 var NKDV_RESULT = { SUCCESS: 'Thành công', FAILED: 'Lỗi', RETRYING: 'Đang gửi lại' };
@@ -143,6 +148,7 @@ function nkdvLoad() {
         });
     });
     nkdvFillDvc(nkdvList);
+    nkdvList = nkdvDropClosed(nkdvList);
     nkdvSave();
 }
 function nkdvSave() { try { localStorage.setItem(NKDV_KEY, JSON.stringify(nkdvList)); localStorage.setItem(NKDV_KEY_VER, NKDV_SEED_VER); } catch (e) { /* mockup */ } }

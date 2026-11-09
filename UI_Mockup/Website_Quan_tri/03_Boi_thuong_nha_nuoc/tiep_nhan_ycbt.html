@@ -437,7 +437,7 @@
             <div class="list-card">
                 <!-- Không hiển thị tiêu đề lưới; tổng số bản ghi tại thanh phân trang -->
                 <div class="list-header" data-grid-toolbar style="justify-content:flex-end;">
-                    <button class="btn btn-primary" id="btnNewReception" onclick="openReceptionForm()">
+                    <button class="btn btn-primary" id="btnNewReception" onclick="if (typeof openReceptionForm === 'function') openReceptionForm()">
                         <i class="fa-solid fa-plus"></i> Tiếp nhận mới
                     </button>
                 </div>
@@ -892,7 +892,7 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261105tn1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261106q1"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261104mh1"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script>
