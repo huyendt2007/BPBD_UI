@@ -1252,6 +1252,58 @@
                     { name: "Phạm Quang Huy", username: "gdso_hn", email: "gdso_hn@sotuphap.hanoi.gov.vn", tel: "0912888001", role: "Giám đốc Sở", status: "Đang hoạt động" }
                 ],
                 collapsed: false
+            },
+            // [ct1] Cơ quan dữ liệu mẫu Hoàn trả (Địa phương, cấp xã; đồng bộ cây đơn vị BTNN_WF)
+            {
+                id: "UBND-VH",
+                name: "UBND phường Việt Hưng",
+                stt: "",
+                parentId: null,
+                loai: "Cơ quan ngoài ngành",
+                capDonVi: "Địa phương",
+                tinhThanh: "Thành phố Hà Nội",
+                dienThoai: "02438271101",
+                diaChi: "Phường Việt Hưng, Thành phố Hà Nội",
+                trangThai: "Đang hoạt động",
+                officers: [
+                    { name: "Nguyễn Đình Khải", username: "ct_vh", email: "ct_vh@hanoi.gov.vn", tel: "0912450101", role: "Chủ tịch UBND", status: "Đang hoạt động" },
+                    { name: "Phí Thị Hồng Nhung", username: "cv_vh1", email: "cv_vh1@hanoi.gov.vn", tel: "0912450102", role: "Chuyên viên", status: "Đang hoạt động" }
+                ],
+                collapsed: false
+            },
+            {
+                id: "UBND-BDE",
+                name: "UBND Phường Bồ Đề",
+                stt: "",
+                parentId: null,
+                loai: "Cơ quan ngoài ngành",
+                capDonVi: "Địa phương",
+                tinhThanh: "Thành phố Hà Nội",
+                dienThoai: "02438271102",
+                diaChi: "Phường Bồ Đề, Thành phố Hà Nội",
+                trangThai: "Đang hoạt động",
+                officers: [
+                    { name: "Lê Hữu Nghĩa", username: "ct_bde", email: "ct_bde@hanoi.gov.vn", tel: "0912450103", role: "Chủ tịch UBND", status: "Đang hoạt động" },
+                    { name: "Cù Thị Phương Thảo", username: "cv_bde1", email: "cv_bde1@hanoi.gov.vn", tel: "0912450104", role: "Chuyên viên", status: "Đang hoạt động" }
+                ],
+                collapsed: false
+            },
+            {
+                id: "UBND-HA",
+                name: "UBND phường Hải An",
+                stt: "",
+                parentId: null,
+                loai: "Cơ quan ngoài ngành",
+                capDonVi: "Địa phương",
+                tinhThanh: "Thành phố Hải Phòng",
+                dienThoai: "02253271103",
+                diaChi: "Phường Hải An, Thành phố Hải Phòng",
+                trangThai: "Đang hoạt động",
+                officers: [
+                    { name: "Đoàn Quốc Thịnh", username: "ct_ha", email: "ct_ha@haiphong.gov.vn", tel: "0912450105", role: "Chủ tịch UBND", status: "Đang hoạt động" },
+                    { name: "Tô Minh Nguyệt", username: "cv_ha1", email: "cv_ha1@haiphong.gov.vn", tel: "0912450106", role: "Chuyên viên", status: "Đang hoạt động" }
+                ],
+                collapsed: false
             }
         ];
         // Cấp đơn vị của cơ quan, đơn vị gốc mẫu (Trung ương / Địa phương); đơn vị trực thuộc dùng Cấp đơn vị của đơn vị gốc
@@ -1275,7 +1327,7 @@
         let modalIsRoot = false;
 
         // Loại cơ quan của cơ quan, đơn vị mẫu (Danh mục Loại cơ quan [DM_57])
-        const ORG_LOAI_MAU = { "BTP-01": "Bộ", "CĐK-01": "Cục", "VP-01": "Văn phòng", "PLN-01": "Phòng / Ban", "PLN-02": "Phòng / Ban", "PLN-03": "Phòng / Ban", "TT1-01": "Trung tâm", "TT2-01": "Trung tâm", "TT3-01": "Trung tâm", "BCA-01": "Bộ", "BCT-01": "Bộ", "STP-HN": "Sở" };
+        const ORG_LOAI_MAU = { "BTP-01": "Bộ", "CĐK-01": "Cục", "VP-01": "Văn phòng", "PLN-01": "Phòng / Ban", "PLN-02": "Phòng / Ban", "PLN-03": "Phòng / Ban", "TT1-01": "Trung tâm", "TT2-01": "Trung tâm", "TT3-01": "Trung tâm", "BCA-01": "Bộ", "BCT-01": "Bộ", "STP-HN": "Sở", "UBND-VH": "UBND cấp Phường/Xã", "UBND-BDE": "UBND cấp Phường/Xã", "UBND-HA": "UBND cấp Phường/Xã" };
         function initLoaiCoQuan() {
             orgData.forEach(n => {
                 if (n.loaiCoQuan !== undefined) return;

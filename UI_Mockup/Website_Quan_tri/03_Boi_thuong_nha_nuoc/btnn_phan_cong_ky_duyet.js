@@ -192,7 +192,7 @@
             listEl.innerHTML = list.length ? list.map(o => {
                 const sel = cfg.multi ? val.includes(o.value) : val === o.value;
                 return `<div class="pc-cb-item${sel ? ' sel' : ''}" data-v="${esc(o.value)}">${cfg.multi ? `<i class="fa-${sel ? 'solid fa-square-check' : 'regular fa-square'}"></i>` : ''}<span>${esc(o.label)}</span></div>`;
-            }).join('') : '<div class="pc-cb-empty">Không có dữ liệu phù hợp</div>';
+            }).join('') : `<div class="pc-cb-empty">${esc(cfg.emptyText || 'Không có dữ liệu phù hợp')}</div>`;
         }
         function setVal(v, silent) {
             val = cfg.multi ? (Array.isArray(v) ? v.slice() : []) : (v || '');
@@ -285,8 +285,9 @@
             options: () => { const u = A.unit.get(); return u ? leadersOfUnit(u).map(id => ({ value: id, label: label2(id) })) : []; }
         });
         A.officer = combo(document.getElementById('pcAOfficer'), {
-            placeholder: 'Chọn cán bộ chủ trì...',
-            options: () => { const u = curUnit(); return u ? usersOfUnit(u).map(id => ({ value: id, label: label2(id) })) : []; },
+            placeholder: 'Chọn cán bộ chủ trì...', emptyText: 'Không tìm thấy cán bộ phù hợp',
+            // [ct1] Lãnh đạo không làm cán bộ chủ trì: chỉ tài khoản Đang hoạt động của đơn vị, không thuộc Nhóm Lãnh đạo
+            options: () => { const u = curUnit(); return u ? usersOfUnit(u).filter(id => !isLeaderUser(id)).map(id => ({ value: id, label: label2(id) })) : []; },
             // Đổi chủ trì sang người đang ở phối hợp: tự bỏ người đó khỏi phối hợp
             onChange: v => { document.getElementById('pcAOffErr').style.display = 'none'; A.officer.setInvalid(false); A.phoiHop.set(A.phoiHop.get().filter(x => x !== v), true); A.phoiHop.refresh(); }
         });
@@ -688,14 +689,14 @@
         const getItem = id => { try { return (typeof requestList !== 'undefined' ? requestList : []).find(r => r.id === id) || null; } catch (e) { return null; } };
         const curXs = () => { try { return xsState; } catch (e) { return null; } };
 
-        // Lãnh đạo / Chuyên viên: Lãnh đạo theo Chức vụ; Lãnh đạo được giao chủ trì vẫn thấy hồ sơ của mình
+        // Lãnh đạo / Chuyên viên: Lãnh đạo theo Chức vụ; [ct1] Lãnh đạo không làm cán bộ chủ trì, Lãnh đạo được giao phối hợp vẫn thấy hồ sơ
         if (typeof global.isLeaderMe === 'function') global.isLeaderMe = function () { return isLeaderUser(WF.getCurrentUserId()); };
         if (typeof global.xdInTab === 'function') {
             const origInTab = global.xdInTab;
             global.xdInTab = function (tab, item) {
                 const me = WF.getCurrentUserId();
-                // Lãnh đạo được giao chủ trì / phối hợp: tab theo trạng thái hồ sơ như cán bộ chủ trì
-                if (isLeaderUser(me) && item && (item.chuTri === me || WF.isPhoiHop(item, me)) && !WF.canApprove(item, me)) {
+                // Lãnh đạo được giao phối hợp: tab theo trạng thái hồ sơ như cán bộ chủ trì
+                if (isLeaderUser(me) && item && WF.isPhoiHop(item, me) && !WF.canApprove(item, me)) {
                     try { return tab === 'pending' ? XD_PENDING_STATES.includes(item.status) : XD_DONE_STATES.includes(item.status); } catch (e) { /* bỏ qua */ }
                 }
                 return origInTab(tab, item);

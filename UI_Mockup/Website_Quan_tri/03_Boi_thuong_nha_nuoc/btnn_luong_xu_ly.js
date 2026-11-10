@@ -255,7 +255,12 @@
         { id: 'VPCP', name: 'Văn phòng Chính phủ', parentId: null, loaiCoQuan: 'Cơ quan ngang Bộ' },
         { id: 'TTCP', name: 'Thanh tra Chính phủ', parentId: null, loaiCoQuan: 'Cơ quan ngang Bộ' },
         // Bộ quản lý ngành (dữ liệu mẫu module Theo dõi, đôn đốc công tác BTNN)
-        { id: 'BTC', name: 'Bộ Tài chính', parentId: null, loaiCoQuan: 'Bộ' }
+        { id: 'BTC', name: 'Bộ Tài chính', parentId: null, loaiCoQuan: 'Bộ' },
+        // [ct1] Cơ quan của dữ liệu mẫu Xem xét trách nhiệm hoàn trả (ht_du_lieu_mau.js): Đơn vị tạo Hội đồng, Cơ quan trực tiếp quản lý A, B
+        // (Địa phương, cấp xã; tên khớp đúng tên dùng ở dữ liệu mẫu Hoàn trả)
+        { id: 'UBND-VH', name: 'UBND phường Việt Hưng', parentId: null, loaiCoQuan: 'UBND cấp Phường/Xã' },
+        { id: 'UBND-BDE', name: 'UBND Phường Bồ Đề', parentId: null, loaiCoQuan: 'UBND cấp Phường/Xã' },
+        { id: 'UBND-HA', name: 'UBND phường Hải An', parentId: null, loaiCoQuan: 'UBND cấp Phường/Xã' }
     ];
 
     const USERS = [
@@ -337,7 +342,14 @@
         { id: 'cc_tt', name: 'Từ Văn Hòa', unitId: 'CCTHADS-TT', title: 'Chi cục trưởng', email: 'cc_tt@thads.moj.gov.vn' },
         { id: 'chv_tt1', name: 'Văn Thị Hồng', unitId: 'CCTHADS-TT', title: 'Chấp hành viên', email: 'chv_tt1@thads.moj.gov.vn' },
         { id: 'vt_vkshp', name: 'Thái Văn Minh', unitId: 'VKS-HP', title: 'Viện trưởng', email: 'vt_vkshp@vks.gov.vn' },
-        { id: 'ksv_vkshp1', name: 'Kim Thị Diệp', unitId: 'VKS-HP', title: 'Kiểm sát viên', email: 'ksv_vkshp1@vks.gov.vn' }
+        { id: 'ksv_vkshp1', name: 'Kim Thị Diệp', unitId: 'VKS-HP', title: 'Kiểm sát viên', email: 'ksv_vkshp1@vks.gov.vn' },
+        // [ct1] Tài khoản của cơ quan dữ liệu mẫu Hoàn trả: 01 Chủ tịch UBND (Nhóm Lãnh đạo) + 01 Chuyên viên (trình ký Quyết định hoàn trả)
+        { id: 'ct_vh', name: 'Nguyễn Đình Khải', unitId: 'UBND-VH', title: 'Chủ tịch UBND', email: 'ct_vh@hanoi.gov.vn' },
+        { id: 'cv_vh1', name: 'Phí Thị Hồng Nhung', unitId: 'UBND-VH', title: 'Chuyên viên', email: 'cv_vh1@hanoi.gov.vn' },
+        { id: 'ct_bde', name: 'Lê Hữu Nghĩa', unitId: 'UBND-BDE', title: 'Chủ tịch UBND', email: 'ct_bde@hanoi.gov.vn' },
+        { id: 'cv_bde1', name: 'Cù Thị Phương Thảo', unitId: 'UBND-BDE', title: 'Chuyên viên', email: 'cv_bde1@hanoi.gov.vn' },
+        { id: 'ct_ha', name: 'Đoàn Quốc Thịnh', unitId: 'UBND-HA', title: 'Chủ tịch UBND', email: 'ct_ha@haiphong.gov.vn' },
+        { id: 'cv_ha1', name: 'Tô Minh Nguyệt', unitId: 'UBND-HA', title: 'Chuyên viên', email: 'cv_ha1@haiphong.gov.vn' }
     ];
 
     // Cấu hình luồng mặc định: theo từng đơn vị gốc; mỗi nút là một đơn vị trong cây của đơn vị gốc
@@ -477,7 +489,7 @@
         'Hà Nội': ['00001 - Phường Ba Đình', '00004 - Phường Hoàn Kiếm', '00007 - Phường Cầu Giấy', '00010 - Phường Thanh Xuân',
             // Bổ sung theo Phường/Xã đã có trong dữ liệu mẫu và Danh mục địa bàn (Quản trị hệ thống)
             '00097 - Phường Tây Hồ', '00118 - Phường Giảng Võ', '00166 - Phường Nghĩa Đô', '00260 - Phường Bạch Mai', '00210 - Phường Văn Miếu - Quốc Tử Giám',
-            '00127 - Phường Việt Hưng', '00250 - Phường Đồng Nhân', '00230 - Phường Láng Hạ', '00045 - Phường Ngọc Khánh', '00050 - Phường Liễu Giai', '00030 - Phường Kim Mã'],
+            '00127 - Phường Việt Hưng', '00118 - Phường Bồ Đề', '00250 - Phường Đồng Nhân', '00230 - Phường Láng Hạ', '00045 - Phường Ngọc Khánh', '00050 - Phường Liễu Giai', '00030 - Phường Kim Mã'],
         'TP. Hồ Chí Minh': ['26734 - Phường Bến Thành', '26737 - Phường Sài Gòn', '26740 - Phường Tân Định', '26743 - Phường Chợ Lớn'],
         'Đà Nẵng': ['20194 - Phường Hải Châu', '20197 - Phường Thanh Khê', '20200 - Phường Sơn Trà', '20203 - Phường Ngũ Hành Sơn'],
         'Lâm Đồng': ['24778 - Phường Xuân Hương - Đà Lạt', '24781 - Phường Lâm Viên - Đà Lạt', '24784 - Xã Đức Trọng', '24787 - Xã Di Linh'],
@@ -496,7 +508,8 @@
         'VKS-Q1': ['TP. Hồ Chí Minh', '26734 - Phường Bến Thành'], 'CCTHADS-BT': ['TP. Hồ Chí Minh', ''], 'CCTS-BD': ['Bình Định', ''], 'TAND-LC': ['Đà Nẵng', ''],
         'CCTHADS-CG': ['Hà Nội', '00007 - Phường Cầu Giấy'], 'TAND-NT': ['Khánh Hòa', ''], 'CA-HM': ['Hà Nội', '00260 - Phường Bạch Mai'], 'CCTHADS-TT': ['Hà Nội', ''],
         'VKS-HP': ['Hải Phòng', '11362 - Phường Ngô Quyền'], 'TANDTC': ['Hà Nội', '00004 - Phường Hoàn Kiếm'], 'VPCP': ['Hà Nội', '00001 - Phường Ba Đình'],
-        'TTCP': ['Hà Nội', ''], 'BTC': ['Hà Nội', '00004 - Phường Hoàn Kiếm']
+        'TTCP': ['Hà Nội', ''], 'BTC': ['Hà Nội', '00004 - Phường Hoàn Kiếm'],
+        'UBND-VH': ['Hà Nội', '00127 - Phường Việt Hưng'], 'UBND-BDE': ['Hà Nội', '00118 - Phường Bồ Đề'], 'UBND-HA': ['Hải Phòng', '11368 - Phường Hải An']
     };
     ORG_UNITS.forEach(u => {
         let r = u; while (r && r.parentId) r = ORG_UNITS.find(x => x.id === r.parentId);
@@ -650,6 +663,8 @@
     }
     function isLeaderOf(userId, unitId, ft) { return getLeaders(unitId, ft).includes(userId); }
     function usersOfUnit(unitId) { return USERS.filter(u => u.unitId === unitId && isActiveUser(u)).map(u => u.id); }
+    // [ct1] Cán bộ chủ trì: tài khoản Đang hoạt động thuộc chính đơn vị, không thuộc Nhóm Lãnh đạo (Lãnh đạo không làm cán bộ chủ trì)
+    function chuTriOfUnit(unitId) { return usersOfUnit(unitId).filter(id => !isNhomLanhDaoUser(id)); }
     // Đơn vị cấp trên trên cây đơn vị; Sở Tư pháp trực thuộc UBND cấp tỉnh (mockup khai báo tại UBND_TINH_STP)
     function parentUnitOf(unitId) { const u = getUnit(unitId); return u ? (u.parentId || ubndTinhOfStp(unitId) || '') : ''; }
     function unitChainUp(unitId) {
@@ -1500,7 +1515,7 @@
     }
     // [ro1] Chuyển chuyên viên phụ trách trực tiếp: 01 Cán bộ chủ trì (bắt buộc) + Cán bộ phối hợp (chọn nhiều, không bắt buộc; chỉ xem hồ sơ)
     const MSG_LXL_020 = 'Đơn vị nhận hoặc Lãnh đạo nhận không còn hợp lệ. Vui lòng chọn lại.';
-    const MSG_LXL_021 = 'Cán bộ chủ trì hoặc cán bộ phối hợp không còn thuộc đơn vị đang phân công hoặc đã ngừng hoạt động. Vui lòng chọn lại.';
+    const MSG_LXL_021 = 'Cán bộ chủ trì hoặc cán bộ phối hợp không còn hợp lệ. Vui lòng chọn lại.';
     function officerNote(chuTri, phoiHop, note) {
         return `Chủ trì: ${userName(chuTri)}.${phoiHop && phoiHop.length ? ' Phối hợp: ' + phoiHop.map(userName).join(', ') + '.' : ''}${note ? ' Ý kiến chỉ đạo: ' + note : ''}`;
     }
@@ -1529,7 +1544,7 @@
         if (!chuTri) return { ok: false, message: 'Vui lòng chọn Cán bộ chủ trì.' };
         const ph = (phoiHop || []).filter(id => id && id !== chuTri);
         const okUsers = usersOfUnit(rec.currentUnitId);
-        if (!okUsers.includes(chuTri) || ph.some(id => !okUsers.includes(id))) return { ok: false, message: MSG_LXL_021, code: 'MSG-ERR-BTNN-LXL-021' };
+        if (!chuTriOfUnit(rec.currentUnitId).includes(chuTri) || ph.some(id => !okUsers.includes(id))) return { ok: false, message: MSG_LXL_021, code: 'MSG-ERR-BTNN-LXL-021' };
         const prev = latestRoute(rec);
         if (prev) prev.state = 'Đã xử lý';
         rec.routes = rec.routes || [];
@@ -2370,7 +2385,7 @@
     function phddFlowNode(unitId) {
         if (!unitId) return null;
         const units = childUnitsWithLeaders(unitId);
-        return { leaders: leadersOfUnit(unitId), allowUnit: units.length > 0, units, allowOfficer: true, officers: usersOfUnit(unitId) };
+        return { leaders: leadersOfUnit(unitId), allowUnit: units.length > 0, units, allowOfficer: true, officers: chuTriOfUnit(unitId) };
     }
     function phddLeaders(unitId) { return leadersOfUnit(unitId); }
     function phddLatestRoute(rec) { const l = rec && rec.phddRoutes; return l && l.length ? l[l.length - 1] : null; }
@@ -2451,7 +2466,7 @@
         if (!u) return { ok: false, message: 'Vui lòng chọn Cán bộ chủ trì.' };
         const ph = (phoiHop || []).filter(id => id && id !== chuTri);
         const okUsers = usersOfUnit(rec.phddUnitId);
-        if (!okUsers.includes(chuTri) || ph.some(id => !okUsers.includes(id))) return { ok: false, message: MSG_LXL_021, code: 'MSG-ERR-BTNN-LXL-021' };
+        if (!chuTriOfUnit(rec.phddUnitId).includes(chuTri) || ph.some(id => !okUsers.includes(id))) return { ok: false, message: MSG_LXL_021, code: 'MSG-ERR-BTNN-LXL-021' };
         if (!Array.isArray(rec.phddRoutes)) rec.phddRoutes = [];
         const prev = rec.phddRoutes[rec.phddRoutes.length - 1];
         if (prev) prev.state = 'Đã xử lý';
@@ -3957,7 +3972,7 @@
         getUser, userName, userLabel, usersInUnitTree,
         getCurrentUserId, getCurrentUser, setCurrentUser,
         getFlowConfig, saveFlowConfig, resetFlowConfig, getNodeConfig, getLeaders, isLeaderOf, isKyNhayUnit, kyNhayBadgeHtml, isUnitConfigured, findRootUnitByName,
-        LEADER_BY_FLOW, laNhomLanhDao, nhomLanhDaoTheoQuyTac, isNhomLanhDaoUser, leadersOfUnit, getLeadersByFlow, usersOfUnit, parentUnitOf, unitChainUp, childUnitsWithLeaders, signLeaderCandidates,
+        LEADER_BY_FLOW, laNhomLanhDao, nhomLanhDaoTheoQuyTac, isNhomLanhDaoUser, leadersOfUnit, getLeadersByFlow, usersOfUnit, chuTriOfUnit, parentUnitOf, unitChainUp, childUnitsWithLeaders, signLeaderCandidates,
         assignersOf, pendingUnitRoute, normalizeLevels, validateLevels, phddAssignersOf, phddRecallInfo, isPhoiHop, isPhoiHopOnly, MSG_LXL_020, MSG_LXL_021,
         getRequestTypeCatalog, getRequestTypesForUser, getKtlReasons, xdAuthorityType, ensureClaimRecord,
         NYC_TYPES, DEFAULT_NYC_ROLES, getNycRoles, nycRoleCode, nycRoleName, nycTypeConstraint, nycTypeOf, nycRolesForType, isNbthOrgRole, joinAddress, stripAdminCode, getCountries, isValidEmail,
@@ -3972,7 +3987,7 @@
         statusBadge, routeText, routeStateText, renderRoutesHtml, renderHistoryHtml, renderApprovalHtml,
         docHeaderHtml, docPageHtml, openDocTab, downloadDocWord,
         draftDocName, draftBaseName, submittedDraftName, buildSupplementDraftHtml, previewDraftDoc, downloadDraftDoc, downloadSelectHtml, previewDraftDocByCode, downloadDraftDocByCode, renderDraftDocHtml, previewSubmittedDraft, downloadSubmittedDraft,
-        loaiCoQuanCodeOf, chucVuOfUnit, chucVuOptionsHtml, chucVuValid,
+        loaiCoQuanCodeOf, chucVuOfUnit, chucVuOptionsHtml, chucVuValid, unitOfRef,
         mountUserSwitcher, nowText, dateText, esc, shiftSeedDates
     };
 })(window);

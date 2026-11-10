@@ -29,6 +29,8 @@
  *   + HT-2026-042 (Bước 2): 01 người còn sống không có lỗi + 02 người còn sống có lỗi
  *   + HT-2026-043 (Bước 2): 01 người đã chết có lỗi + 02 người còn sống có lỗi
  *   + HT-2026-044 (Bước 3 - Chờ ban hành QĐ hoàn trả): 03 người còn sống có lỗi, thử đình chỉ cả hồ sơ tại Bước 3
+ * - 10/11/2026 (ct1) - HT-2026-045 (Bước 2 - Họp hội đồng, tố tụng hình sự): cán bộ thuộc UBND Phường Bồ Đề, UBND phường Hải An (đã có tài khoản Chủ tịch UBND + Chuyên viên tại BTNN_WF)
+ *   + 01 cán bộ Không có lỗi; chạy đủ luồng Lưu ý kiến hội đồng -> 02 phần đơn vị -> trình / ký duyệt QĐ hoàn trả -> Thu tiền hoàn trả
  * - 06/11/2026: bỏ đình chỉ một phần cán bộ (chốt với khách hàng); đình chỉ luôn áp dụng cả hồ sơ, tới trước khi có Quyết định hoàn trả được ban hành
  * Nạp sau khối dữ liệu của trang, trước các add-on xem_xet_hoan_tra_pham_vi.js / chi_tiet_ho_so_hoan_tra_ykhd.js / _qd.js.
  */
@@ -43,9 +45,10 @@
     // 05/11 (tc1): tố tụng hình sự phân tách theo Cơ quan trực tiếp quản lý; chấm dứt việc xem xét trách nhiệm hoàn trả, cán bộ Đã chết / Không có lỗi
     // 05/11 (b23): thêm hồ sơ Bước 2 (HT-2026-032 đến 037) và Bước 3 (HT-2026-038, 039)
     // 05/11 (dc1): thêm hồ sơ thử thêm người và đình chỉ (HT-2026-040 đến 044)
-    const SEED_VER = '20261105dc1', SEED_CODES = ['HT-2026-025', 'HT-2026-026', 'HT-2026-027', 'HT-2026-001', 'HT-2026-021', 'HT-2026-028', 'HT-2026-030', 'HT-2026-031', 'HT-2026-038', 'HT-2026-039', 'HT-2026-044'];
+    // 10/11 (ct1): thêm hồ sơ tố tụng hình sự HT-2026-045 (Họp hội đồng)
+    const SEED_VER = '20261110ct1', SEED_CODES = ['HT-2026-025', 'HT-2026-026', 'HT-2026-027', 'HT-2026-001', 'HT-2026-021', 'HT-2026-028', 'HT-2026-030', 'HT-2026-031', 'HT-2026-038', 'HT-2026-039', 'HT-2026-044'];
     // Hồ sơ chưa tách phần đơn vị đổi trạng thái mẫu: xóa trạng thái đã lưu của màn Chi tiết
-    const STATUS_CODES = ['HT-2026-011', 'HT-2026-012', 'HT-2026-020', 'HT-2026-029', 'HT-2026-032', 'HT-2026-033', 'HT-2026-034', 'HT-2026-035', 'HT-2026-036', 'HT-2026-037', 'HT-2026-040', 'HT-2026-041', 'HT-2026-042', 'HT-2026-043'];
+    const STATUS_CODES = ['HT-2026-011', 'HT-2026-012', 'HT-2026-020', 'HT-2026-029', 'HT-2026-032', 'HT-2026-033', 'HT-2026-034', 'HT-2026-035', 'HT-2026-036', 'HT-2026-037', 'HT-2026-040', 'HT-2026-041', 'HT-2026-042', 'HT-2026-043', 'HT-2026-045'];
     try {
         if (localStorage.getItem('btnn_ht_seed_ver') !== SEED_VER) {
             const st = JSON.parse(localStorage.getItem('btnn_ht_units_v1') || '{}') || {};
@@ -194,6 +197,13 @@
             id: 'HT-2026-044', claimCode: 'BT-2026-844', claimSummary: 'Đình chỉ thi công công trình khi chưa có căn cứ vi phạm trật tự xây dựng.', claimAmt: 125000000, status: 'Chờ ban hành QĐ hoàn trả', hdDecision: '71/QĐ-TLHD', hdDate: '07/08/2026',
             officers: [OF('Quang Văn Dừng', U_B, 'Đội trưởng Đội trật tự đô thị', 'Vô ý', 22000000, 'Nhiều lần'), OF('Rơ Thị Thi', U_B, 'Công chức địa chính - xây dựng', 'Vô ý', 16000000, 'Một lần'),
                 OF('Sử Văn Công', U_B, 'Phó Chủ tịch phường', 'Cố ý nhưng không bị truy cứu trách nhiệm hình sự', 30000000, 'Nhiều lần')]
+        },
+        // [ct1] Bước 2 - Họp hội đồng, lĩnh vực tố tụng hình sự: demo chạy đủ luồng Lưu ý kiến hội đồng -> phân tách 02 phần đơn vị (UBND Phường Bồ Đề, UBND phường Hải An)
+        // -> Chuyên viên từng cơ quan trình QĐ hoàn trả -> Chủ tịch UBND ký duyệt -> Thu tiền hoàn trả; 01 cán bộ Không có lỗi (Không xem xét TNHT)
+        {
+            id: 'HT-2026-045', claimCode: 'BT-2026-845', claimSummary: 'Tạm giữ người theo thủ tục hình sự trái pháp luật; người bị tạm giữ được trả tự do do không có hành vi phạm tội.', claimAmt: 120000000, status: 'Họp hội đồng', hdDecision: '72/QĐ-TLHD', hdDate: '30/08/2026', extra: { ht2YKienChung: B2YK },
+            officers: [B2(OF('Hà Văn Kiên', U_A, 'Trưởng Công an phường', 'Vô ý', 30000000, 'Nhiều lần')), B2(OF('Lương Thị Thu Hiền', U_B, 'Cán bộ điều tra', 'Vô ý', 20000000, 'Một lần')),
+                B2(OF('Mai Đức Thuận', U_B, 'Cảnh sát khu vực', 'Không có lỗi', 0, ''))]
         }
     ];
     // Trạng thái mẫu của cán bộ (màn Chi tiết, chi_tiet_ho_so_hoan_tra_qd.js): [ct, xl, giam, extra]
@@ -280,7 +290,7 @@
     // Họ và tên người yêu cầu theo Mã hồ sơ GQBT (định danh vụ việc "Mã vụ việc - Họ và tên" trên Danh sách / Chi tiết)
     try { if (typeof CLAIMANT_BY_CODE !== 'undefined') window.HT_SOURCE_CLAIMS.forEach(s => { if (!CLAIMANT_BY_CODE[s.claimCode]) CLAIMANT_BY_CODE[s.claimCode] = s.claimant; }); } catch (e) { /* bỏ qua */ }
     // Người yêu cầu của vụ việc nguồn (hồ sơ Giải quyết YCBT Hoàn thành - quan_ly_boi_thuong_seedht.js)
-    const HT_CLAIMANTS = { 'BT-2026-801': 'Nguyễn Hữu Lâm', 'BT-2026-802': 'Đặng Thị Hoa', 'BT-2026-803': 'Trịnh Quốc Bảo', 'BT-2026-804': 'Công ty TNHH Xây dựng Phú Thịnh', 'BT-2026-805': 'Lò Văn Tâm', 'BT-2026-806': 'Hà Thị Liên', 'BT-2026-808': 'Vũ Ngọc Ánh', 'BT-2026-809': 'Phí Văn Đức', 'BT-2026-810': 'Tống Thị Hằng', 'BT-2026-811': 'Lưu Đình Nam', 'BT-2026-812': 'Mai Thị Thu', 'BT-2026-813': 'Cù Văn Hải', 'BT-2026-814': 'Đoàn Thị Vân', 'BT-2026-815': 'Lương Đức Mạnh', 'BT-2026-816': 'Nghiêm Thị Hà', 'BT-2026-817': 'Kiều Thị Thơ', 'BT-2026-818': 'Thái Văn Lộc', 'BT-2026-819': 'Ninh Văn Hiển', 'BT-2026-820': 'Âu Thị Phượng', 'BT-2026-821': 'Hứa Văn Kiên', 'BT-2026-822': 'Bế Văn Thuận', 'BT-2026-823': 'La Văn Sinh', 'BT-2026-824': 'Mông Thị Hiền', 'BT-2026-825': 'Quản Văn Tư', 'BT-2026-826': 'Công ty Cổ phần Thương mại An Phú', 'BT-2026-827': 'Viên Văn Trí', 'BT-2026-828': 'Đào Văn Chính', 'BT-2026-832': 'Công ty TNHH Dịch vụ Hưng Phát', 'BT-2026-833': 'Hoàng Văn Thái', 'BT-2026-834': 'Kha Thị Duyên', 'BT-2026-835': 'Lạc Văn Toàn', 'BT-2026-836': 'Mạch Thị Nga', 'BT-2026-837': 'Nguyễn Thị Thoa', 'BT-2026-838': 'Phương Văn Khôi', 'BT-2026-839': 'Hộ kinh doanh Quang Minh', 'BT-2026-840': 'Công ty Cổ phần Kho vận Bắc Hà', 'BT-2026-841': 'Đinh Văn Lực', 'BT-2026-842': 'Trương Thị Mai', 'BT-2026-843': 'Lý Văn Hậu', 'BT-2026-844': 'Công ty TNHH Xây dựng Thành Công' };
+    const HT_CLAIMANTS = { 'BT-2026-801': 'Nguyễn Hữu Lâm', 'BT-2026-802': 'Đặng Thị Hoa', 'BT-2026-803': 'Trịnh Quốc Bảo', 'BT-2026-804': 'Công ty TNHH Xây dựng Phú Thịnh', 'BT-2026-805': 'Lò Văn Tâm', 'BT-2026-806': 'Hà Thị Liên', 'BT-2026-808': 'Vũ Ngọc Ánh', 'BT-2026-809': 'Phí Văn Đức', 'BT-2026-810': 'Tống Thị Hằng', 'BT-2026-811': 'Lưu Đình Nam', 'BT-2026-812': 'Mai Thị Thu', 'BT-2026-813': 'Cù Văn Hải', 'BT-2026-814': 'Đoàn Thị Vân', 'BT-2026-815': 'Lương Đức Mạnh', 'BT-2026-816': 'Nghiêm Thị Hà', 'BT-2026-817': 'Kiều Thị Thơ', 'BT-2026-818': 'Thái Văn Lộc', 'BT-2026-819': 'Ninh Văn Hiển', 'BT-2026-820': 'Âu Thị Phượng', 'BT-2026-821': 'Hứa Văn Kiên', 'BT-2026-822': 'Bế Văn Thuận', 'BT-2026-823': 'La Văn Sinh', 'BT-2026-824': 'Mông Thị Hiền', 'BT-2026-825': 'Quản Văn Tư', 'BT-2026-826': 'Công ty Cổ phần Thương mại An Phú', 'BT-2026-827': 'Viên Văn Trí', 'BT-2026-828': 'Đào Văn Chính', 'BT-2026-832': 'Công ty TNHH Dịch vụ Hưng Phát', 'BT-2026-833': 'Hoàng Văn Thái', 'BT-2026-834': 'Kha Thị Duyên', 'BT-2026-835': 'Lạc Văn Toàn', 'BT-2026-836': 'Mạch Thị Nga', 'BT-2026-837': 'Nguyễn Thị Thoa', 'BT-2026-838': 'Phương Văn Khôi', 'BT-2026-839': 'Hộ kinh doanh Quang Minh', 'BT-2026-840': 'Công ty Cổ phần Kho vận Bắc Hà', 'BT-2026-841': 'Đinh Văn Lực', 'BT-2026-842': 'Trương Thị Mai', 'BT-2026-843': 'Lý Văn Hậu', 'BT-2026-844': 'Công ty TNHH Xây dựng Thành Công', 'BT-2026-845': 'Bùi Thị Ngọc Diệp' };
     try { if (typeof CLAIMANT_BY_CODE !== 'undefined') Object.keys(HT_CLAIMANTS).forEach(k => { CLAIMANT_BY_CODE[k] = HT_CLAIMANTS[k]; }); } catch (e) { /* bỏ qua */ }
     // Đơn vị của người dùng giả lập (thanh giả lập Hoàn trả): xác định phạm vi dữ liệu của nguồn lập hồ sơ
     window.htSourceInScope = function (src) {
@@ -311,7 +321,7 @@
     // Lĩnh vực tố tụng hình sự (SRS 05/11/2026): Đơn vị ban hành QĐ hoàn trả là Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại của từng cán bộ (mỗi đơn vị 01 QĐ)
     // HT-2026-021: 02 cán bộ khác Cơ quan trực tiếp quản lý (UBND Phường Bồ Đề, UBND phường Hải An) -> 02 QĐ hoàn trả;
     // Đặng Thị Lan do UBND Phường Bồ Đề trả lương (chỉ nhận Quyết định hoàn trả và thu tiền)
-    const TTHS_CODES = ['HT-2026-021', 'HT-2026-027', 'HT-2026-028'];
+    const TTHS_CODES = ['HT-2026-021', 'HT-2026-027', 'HT-2026-028', 'HT-2026-045'];
     dossiersList.forEach(d => { if (TTHS_CODES.includes(d.code || d.id)) d.claimField = 'Trong hoạt động tố tụng hình sự'; });
     // HT-2026-008 (Họp hội đồng): thêm 01 cán bộ (trước dùng để demo đình chỉ một phần cán bộ; bỏ từ 06/11/2026)
     const d8 = dossiersList.find(d => d.id === 'HT-2026-008');
@@ -323,7 +333,7 @@
     try {
         let createdCodes = [];
         try { createdCodes = (JSON.parse(localStorage.getItem('btnn_hoantra_created_v1') || '[]') || []).map(d => d && (d.code || d.id)); } catch (e) { createdCodes = []; }
-        const isSeed = d => d && /^HT-2026-0(0[1-9]|[1-3]\d|4[0-4])$/.test(d.code || d.id || '') && !createdCodes.includes(d.code || d.id);
+        const isSeed = d => d && /^HT-2026-0(0[1-9]|[1-3]\d|4[0-5])$/.test(d.code || d.id || '') && !createdCodes.includes(d.code || d.id);
         const walk = (o, key) => {
             if (typeof o === 'string') return window.htShiftDate(o, /deadline|nextDate|^han[A-Z]/i.test(key || ''));
             if (Array.isArray(o)) { o.forEach((v, i) => { o[i] = walk(v, key); }); return o; }

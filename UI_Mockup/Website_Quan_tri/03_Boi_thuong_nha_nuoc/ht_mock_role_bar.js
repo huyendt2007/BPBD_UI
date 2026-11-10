@@ -1,6 +1,8 @@
 /*
  * Xem xét trách nhiệm hoàn trả - Thanh giả lập người dùng dùng chung màn Danh sách và màn Chi tiết (góc phải trên).
  * - 05 vai trò: Đơn vị tạo Hội đồng, Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại A, B, Sở Tư pháp, Lãnh đạo; lưu sessionStorage 'htMockScope', giữ khi chuyển màn.
+ * - [ct1] Mỗi vai trò đơn vị gắn 01 tài khoản Chuyên viên của cơ quan (BTNN_WF); thêm 03 lựa chọn Lãnh đạo là Chủ tịch UBND của 03 cơ quan (vai trò Lãnh đạo).
+ *   Đổi lựa chọn thì đổi cả Người dùng giả lập của BTNN_WF; người trình ký QĐ hoàn trả lấy theo tài khoản Chuyên viên của Đơn vị ban hành (BTNN_PCKD.submitterFor).
  * - Nút Khôi phục dữ liệu mẫu: xóa dữ liệu thao tác đã lưu (localStorage) và tải lại trang.
  * - Màn Danh sách: lưu bộ lọc, tab khi rời trang; khôi phục khi quay lại từ màn Chi tiết (nút Đóng / đường dẫn điều hướng).
  * Nạp cuối trang, sau xem_xet_hoan_tra_pham_vi.js (Danh sách) hoặc chi_tiet_ho_so_hoan_tra_thu.js (Chi tiết).
@@ -13,6 +15,13 @@
         ['stp', 'Sở Tư pháp', 'Sở Tư pháp Hà Nội'],
         ['lanh_dao', 'Lãnh đạo', 'Lãnh đạo phê duyệt']
     ];
+    // [ct1] Tài khoản BTNN_WF gắn với vai trò đơn vị; lựa chọn Lãnh đạo: [giá trị, mã tài khoản]
+    const ROLE_USER = { don_vi_chu: 'cv_vh1', don_vi_a: 'cv_bde1', don_vi_b: 'cv_ha1' };
+    const LEADER_OPTS = [['lanh_dao@ct_vh', 'ct_vh'], ['lanh_dao@ct_bde', 'ct_bde'], ['lanh_dao@ct_ha', 'ct_ha']];
+    const W = () => window.BTNN_WF || null;
+    const userText = id => { const w = W(), u = w && w.getUser ? w.getUser(id) : null; return u ? u.name + ' - ' + u.title + ' - ' + w.unitName(u.unitId) : ''; };
+    const setWfUser = id => { const w = W(); if (id && w && w.getUser && w.getUser(id)) { try { w.setCurrentUser(id); } catch (e) { /* bỏ qua */ } } };
+    const curKey = () => { const w = W(), me = w && w.getCurrentUserId ? w.getCurrentUserId() : ''; const l = LEADER_OPTS.find(x => x[1] === me); return scope === 'lanh_dao' && l ? l[0] : scope; };
     const KEY = 'htMockScope', FKEY = 'htListFilters', RKEY = 'htReturnToList';
     const DATA_KEYS = ['btnn_ht_units_v1', 'btnn_hoantra_created_v1', 'btnn_ht_status_v1'];
     const ssGet = k => { try { return sessionStorage.getItem(k); } catch (e) { return null; } };
@@ -54,7 +63,8 @@
         const bar = document.createElement('div');
         bar.id = 'htRoleBar';
         bar.innerHTML = '<span class="hrb-label"><i class="fa-solid fa-user-gear"></i> Người dùng giả lập:</span>'
-            + '<select id="htRoleBarSelect" onchange="htRoleBarChange(this.value)">' + ROLES.map(r => '<option value="' + r[0] + '"' + (r[0] === scope ? ' selected' : '') + ' title="' + r[2] + '">' + r[1] + '</option>').join('') + '</select>'
+            + '<select id="htRoleBarSelect" onchange="htRoleBarChange(this.value)">' + ROLES.map(r => '<option value="' + r[0] + '"' + (r[0] === curKey() ? ' selected' : '') + ' title="' + r[2] + (ROLE_USER[r[0]] ? ' - ' + userText(ROLE_USER[r[0]]) : '') + '">' + r[1] + '</option>').join('')
+            + (W() ? LEADER_OPTS.map(x => '<option value="' + x[0] + '"' + (x[0] === curKey() ? ' selected' : '') + ' title="' + userText(x[1]) + '">Lãnh đạo - ' + userText(x[1]).split(' - ').filter((p, i) => i !== 1).join(' - ') + '</option>').join('') : '') + '</select>'
             + '<button type="button" class="hrb-reset" onclick="htRoleBarAskReset()"><i class="fa-solid fa-rotate-left"></i> Khôi phục dữ liệu mẫu</button>';
         place(bar);
         const m = document.createElement('div');
@@ -66,8 +76,11 @@
         const old = document.getElementById('mockUserRole');
         if (old && old.parentElement) old.parentElement.style.display = 'none';
     }
-    window.htRoleBarChange = function (v) {
+    window.htRoleBarChange = function (key) {
+        const ld = LEADER_OPTS.find(x => x[0] === key);
+        const v = ld ? 'lanh_dao' : key;
         if (!valid(v)) return;
+        setWfUser(ld ? ld[1] : ROLE_USER[v]);
         scope = v; ssSet(KEY, v);
         if (isList && typeof changeMockRole === 'function') { changeMockRole(v); return; }
         if (isDetail) {

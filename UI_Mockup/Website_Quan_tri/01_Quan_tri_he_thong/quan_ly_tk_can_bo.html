@@ -1192,7 +1192,7 @@
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261109ro1"></script>
+<script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261110ct2"></script>
 <script src="dm_loai_co_quan.js"></script>
 <script>
     // --- Mock Data ---
@@ -1228,7 +1228,9 @@
         'TANDTC': ['TAND Tối cao', 'Tòa án nhân dân tối cao'],
         'TAND-HN': ['TAND cấp tỉnh', 'Tòa án nhân dân cấp tỉnh'], 'TAND-LD': ['TAND cấp tỉnh', 'Tòa án nhân dân cấp tỉnh'],
         'TAND-HK': ['TAND khu vực', 'Tòa án nhân dân khu vực'], 'TAND-LC': ['TAND khu vực', 'Tòa án nhân dân khu vực'], 'TAND-NT': ['TAND khu vực', 'Tòa án nhân dân khu vực'],
-        'VKSNDTC': ['VKSND Tối cao'], 'VKS-HP': ['VKSND cấp tỉnh'], 'VKS-Q1': ['VKSND khu vực']
+        'VKSNDTC': ['VKSND Tối cao'], 'VKS-HP': ['VKSND cấp tỉnh'], 'VKS-Q1': ['VKSND khu vực'],
+        // [ct1] Cơ quan dữ liệu mẫu Hoàn trả
+        'UBND-VH': ['UBND cấp Phường/Xã'], 'UBND-BDE': ['UBND cấp Phường/Xã'], 'UBND-HA': ['UBND cấp Phường/Xã']
     };
     function unitLoai(unitId) { const names = UNIT_LOAI_MAU[unitId] || []; return dmList('DM_57').find(l => names.includes(l.name)) || null; }
     function chucVuOfLoai(loaiCode) { return dmList('DM_58').filter(c => c.parentCode === loaiCode); }
@@ -1249,7 +1251,8 @@
     const MOCK_TITLE_NAMES = {
         "Cục": { "CV01": "Cục trưởng", "CV02": "Phó Cục trưởng", "CV03": "Chuyên viên" },
         "Phòng / Ban": { "CV01": "Trưởng phòng (hoặc Trưởng ban)", "CV02": "Phó Trưởng phòng (hoặc Phó Trưởng ban)", "CV03": "Chuyên viên" },
-        "Sở": { "CV01": "Giám đốc Sở", "CV02": "Phó Giám đốc Sở", "CV03": "Chuyên viên" }
+        "Sở": { "CV01": "Giám đốc Sở", "CV02": "Phó Giám đốc Sở", "CV03": "Chuyên viên" },
+        "UBND cấp Phường/Xã": { "CV01": "Chủ tịch UBND", "CV02": "Phó Chủ tịch UBND", "CV03": "Chuyên viên" }
     };
 
     // Phạm vi đơn vị của người dùng đang đăng nhập (người dùng giả lập): đơn vị của người dùng và các đơn vị trực thuộc
@@ -1361,7 +1364,14 @@
         { id: 8, name: "Bùi Thị H", username: "bth@moj.gov.vn", email: "bth@moj.gov.vn", phone: "0901234568", unitId: "PLN-02", deptId: "PB03", titleId: "CV03", status: 1, groups: ["G2"], roles: ["R2"], hasData: true, createdDate: "12/03/2026" },
         { id: 9, name: "Lý Văn I", username: "lvi@chinhphu.vn", email: "lvi@chinhphu.vn", phone: "0901234569", unitId: "VPCP", deptId: "PB06", titleId: "CV03", status: 0, groups: ["G2"], roles: [], hasData: true, createdDate: "20/03/2026" },
         { id: 10, name: "Trịnh Đức K", username: "tdk@moj.gov.vn", email: "tdk@moj.gov.vn", phone: "0901234570", unitId: "PLN-02", deptId: "PB04", titleId: "CV02", status: 1, groups: ["G4"], roles: ["R1", "R3"], hasData: false, createdDate: "01/04/2026" },
-        { id: 11, name: "Ngô Thị L", username: "ntl@moj.gov.vn", email: "ntl@moj.gov.vn", phone: "0901234571", unitId: "CĐK-01", deptId: "PB02", titleId: "CV03", status: 2, groups: ["G2"], roles: ["R3"], hasData: true, createdDate: "10/04/2026" }
+        { id: 11, name: "Ngô Thị L", username: "ntl@moj.gov.vn", email: "ntl@moj.gov.vn", phone: "0901234571", unitId: "CĐK-01", deptId: "PB02", titleId: "CV03", status: 2, groups: ["G2"], roles: ["R3"], hasData: true, createdDate: "10/04/2026" },
+        // [ct1] Tài khoản của cơ quan dữ liệu mẫu Hoàn trả (đồng bộ BTNN_WF: ct_vh, cv_vh1, ct_bde, cv_bde1, ct_ha, cv_ha1)
+        { id: 12, name: "Nguyễn Đình Khải", username: "ct_vh@hanoi.gov.vn", email: "ct_vh@hanoi.gov.vn", phone: "0912450101", unitId: "UBND-VH", deptId: "", titleId: "CV01", status: 1, groups: [], roles: [], hasData: true, createdDate: "10/11/2026" },
+        { id: 13, name: "Phí Thị Hồng Nhung", username: "cv_vh1@hanoi.gov.vn", email: "cv_vh1@hanoi.gov.vn", phone: "0912450102", unitId: "UBND-VH", deptId: "", titleId: "CV03", status: 1, groups: [], roles: [], hasData: true, createdDate: "10/11/2026" },
+        { id: 14, name: "Lê Hữu Nghĩa", username: "ct_bde@hanoi.gov.vn", email: "ct_bde@hanoi.gov.vn", phone: "0912450103", unitId: "UBND-BDE", deptId: "", titleId: "CV01", status: 1, groups: [], roles: [], hasData: true, createdDate: "10/11/2026" },
+        { id: 15, name: "Cù Thị Phương Thảo", username: "cv_bde1@hanoi.gov.vn", email: "cv_bde1@hanoi.gov.vn", phone: "0912450104", unitId: "UBND-BDE", deptId: "", titleId: "CV03", status: 1, groups: [], roles: [], hasData: true, createdDate: "10/11/2026" },
+        { id: 16, name: "Đoàn Quốc Thịnh", username: "ct_ha@haiphong.gov.vn", email: "ct_ha@haiphong.gov.vn", phone: "0912450105", unitId: "UBND-HA", deptId: "", titleId: "CV01", status: 1, groups: [], roles: [], hasData: true, createdDate: "10/11/2026" },
+        { id: 17, name: "Tô Minh Nguyệt", username: "cv_ha1@haiphong.gov.vn", email: "cv_ha1@haiphong.gov.vn", phone: "0912450106", unitId: "UBND-HA", deptId: "", titleId: "CV03", status: 1, groups: [], roles: [], hasData: true, createdDate: "10/11/2026" }
     ];
 
     let currentFilteredAccounts = [...accounts];

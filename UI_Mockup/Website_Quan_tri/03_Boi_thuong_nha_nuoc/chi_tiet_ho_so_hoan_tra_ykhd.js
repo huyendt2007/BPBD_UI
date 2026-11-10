@@ -159,7 +159,25 @@
     // đình chỉ cả hồ sơ khi chưa có Quyết định hoàn trả nào được ban hành (chi_tiet_ho_so_hoan_tra_qd.js). 06/11/2026: bỏ đình chỉ một phần cán bộ
     // Chấm dứt việc xem xét trách nhiệm hoàn trả (cả hồ sơ): không phân tách phần đơn vị
     const DCHT_PRE = ['Chờ duyệt QĐ đình chỉ', 'Bị trả lại QĐ đình chỉ', 'Đình chỉ xem xét hoàn trả'].concat(CD_STATES);
-    function isSplitDossier() { return !!activeDossier && ((Array.isArray(activeDossier.htUnits) && activeDossier.htUnits.length > 0) || (!PRE_SPLIT.includes(activeDossier.status) && !DCHT_PRE.includes(activeDossier.status))); }
+    // [ct1] Hồ sơ mẫu Họp hội đồng đã Lưu ý kiến hội đồng (đã phân tách phần đơn vị, lưu tại btnn_ht_units_v1): mở lại trang / đổi vai trò giả lập
+    // thì khôi phục phần đơn vị đã lưu và trạng thái hồ sơ theo trạng thái cán bộ (trước đây trang trở về Họp hội đồng)
+    let splitRestored = '';
+    function restoreSplit() {
+        if (!activeDossier || splitRestored === activeDossier.code) return;
+        splitRestored = activeDossier.code;
+        if (activeDossier.status !== 'Họp hội đồng' || (Array.isArray(activeDossier.htUnits) && activeDossier.htUnits.length)) return;
+        try {
+            const v = (JSON.parse(localStorage.getItem('btnn_ht_units_v1') || '{}') || {})[activeDossier.code];
+            const units = v && v.detail && v.detail.units, sts = (v && v.officers || []).map(o => o.st);
+            if (!Array.isArray(units) || !units.length) return;
+            activeDossier.htUnits = units;
+            const ended = s => ['MIEN', 'DONE', 'DC', 'CHAMDUT', 'KXX'].includes(s);
+            activeDossier.status = sts.length && sts.some(s => s === 'DC') && sts.every(s => s === 'DC' || s === 'KXX') ? 'Đình chỉ xem xét hoàn trả'
+                : sts.length && sts.every(ended) ? 'Hoàn thành' : sts.some(s => /^(CBH|CD|BTC)_/.test(s || '')) ? 'Chờ ban hành QĐ hoàn trả' : 'Thu tiền hoàn trả';
+            activeDossier.ketQuaXacDinh = activeDossier.ketQuaXacDinh || KQ_YES;
+        } catch (e) { /* bỏ qua */ }
+    }
+    function isSplitDossier() { restoreSplit(); return !!activeDossier && ((Array.isArray(activeDossier.htUnits) && activeDossier.htUnits.length > 0) || (!PRE_SPLIT.includes(activeDossier.status) && !DCHT_PRE.includes(activeDossier.status))); }
     function officerVisible(o) {
         if (scope === 'lanh_dao' || isOwnerScope()) return true;
         if (scope === 'stp') return STP_UNITS.includes(o.agency);
@@ -784,6 +802,18 @@
         showCustomConfirm(message, onYes);
         if (modal) ob.observe(modal, { attributes: true, attributeFilter: ['class'] });
     }
+    // TH5: Cơ quan trực tiếp quản lý (khác Đơn vị tạo Hội đồng) của cán bộ có lỗi chưa có tài khoản cán bộ Đang hoạt động không thuộc Nhóm Lãnh đạo
+    function noSignerUnits(payers) {
+        const W = window.BTNN_WF;
+        if (!isTthsD() || !W || !W.usersOfUnit) return [];
+        const ref = n => { const u = W.unitOfRef ? W.unitOfRef(n) : null; return u ? u.id : String(n || '').trim().toLowerCase(); };
+        const owner = ref(ownerOf(activeDossier));
+        const names = Array.from(new Set(payers.map(o => o.agency).filter(a => a && ref(a) !== owner)));
+        return names.filter(n => {
+            const u = W.unitOfRef ? W.unitOfRef(n) : null;
+            return !(u ? W.usersOfUnit(u.id) : []).some(id => !W.isNhomLanhDaoUser(id));
+        });
+    }
     window.submitStep2Recommendations = function () {
         if (!canEditStep2()) return;
         ['s2ConclusionDate', 'ht2YKienChung'].forEach(ht2ClearErr);
@@ -834,6 +864,12 @@
         // Tố tụng hình sự: phân tách theo Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại; lĩnh vực khác: 01 khối của Đơn vị tạo Hội đồng
         // Cán bộ có Mức độ lỗi Không có lỗi: Không xem xét TNHT, không đưa vào phần đơn vị
         const payers = officers.filter(o => !isNoFault(o));
+        // TH5 - Cơ quan ban hành Quyết định hoàn trả chưa có người trình ký (chỉ tố tụng hình sự) [MSG-ERR-BTNN-HT-015]: không lưu, giữ nguyên màn hình
+        const noSigner = noSignerUnits(payers);
+        if (noSigner.length) {
+            showToast(noSigner.join(', ') + ' chưa có tài khoản cán bộ để trình ký Quyết định hoàn trả. Đề nghị quản trị hệ thống tạo tài khoản trước khi lưu ý kiến hội đồng.', 'error');
+            return;
+        }
         const units = Array.from(new Set(payers.map(unitKeyOfO)));
         const splitMsg = isTthsD() ? 'phân tách về ' + units.length + ' cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại' : 'chuyển sang ban hành 01 Quyết định hoàn trả cho toàn bộ cán bộ của hồ sơ';
         confirmBox('Xác nhận lưu ý kiến hội đồng',
