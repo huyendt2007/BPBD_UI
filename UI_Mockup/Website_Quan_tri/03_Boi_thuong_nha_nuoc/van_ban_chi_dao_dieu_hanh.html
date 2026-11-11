@@ -919,14 +919,9 @@
 
                             <div class="form-group">
                                 <label class="form-label">Cơ quan ban hành <span style="color: var(--danger-color);">*</span></label>
-                                <select id="docIssuer" class="form-select" onchange="toggleIssuerOther()"></select>
+                                <!-- Nhập tự do, như Văn bản quy phạm pháp luật (người dùng chốt 10/11/2026) -->
+                                <input type="text" id="docIssuer" class="form-control" maxlength="255" placeholder="Nhập cơ quan ban hành">
                                 <span class="field-error-text" id="error_docIssuer">Đây là trường bắt buộc</span>
-                            </div>
-
-                            <div class="form-group" id="issuerOtherGroup" style="display: none;">
-                                <label class="form-label">Cơ quan ban hành khác <span style="color: var(--danger-color);">*</span></label>
-                                <input type="text" id="docIssuerOther" class="form-control" maxlength="255">
-                                <span class="field-error-text" id="error_docIssuerOther">Đây là trường bắt buộc</span>
                             </div>
 
                             <div class="form-group">
@@ -1045,7 +1040,7 @@
 
         // Danh mục Loại văn bản chỉ đạo, điều hành; "Chiến lược, chính sách" là 01 loại văn bản (khách hàng chốt 02/11/2026)
         const LOAI_VAN_BAN = ['Chiến lược, chính sách', 'Kế hoạch', 'Quyết định', 'Chỉ thị', 'Công văn chỉ đạo', 'Thông báo kết luận', 'Khác'];
-        // Cơ quan ban hành khối Trung ương; chọn "Cơ quan khác" thì nhập tên cơ quan
+        // Tên cơ quan ban hành dùng sinh dữ liệu giả lập (form nhập tự do Cơ quan ban hành, người dùng chốt 10/11/2026)
         const CQ_TW = ['Chính phủ', 'Thủ tướng Chính phủ', 'Bộ Tư pháp', 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước'];
         const CQ_KHAC = 'Cơ quan khác';
 
@@ -1089,7 +1084,7 @@
             return ['Ủy ban nhân dân ' + t, 'Sở Tư pháp ' + t, CQ_KHAC];
         }
 
-        // MOCK DATA: ngày tính lùi từ ngày hiện tại để luôn nằm trong khoảng lọc mặc định (02 tháng gần nhất)
+        // MOCK DATA: ngày tính lùi từ ngày hiện tại (dữ liệu giả lập luôn gần với ngày xem mockup)
         const daysAgo = n => { const d = new Date(); d.setDate(d.getDate() - n); return formatDateToString(d); };
         function buildSeed() {
             if (KHOI === 'tw') {
@@ -1174,11 +1169,9 @@
         }
         // Thời điểm hh:mm dd/mm/yyyy
         function nowStamp() { const d = new Date(); return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')} ${formatDateToString(d)}`; }
+        // Bộ lọc Ngày ban hành mặc định để trống (như Văn bản quy phạm pháp luật): hiển thị toàn bộ văn bản, gồm văn bản ban hành đã lâu
         function defaultRange() {
-            const today = new Date();
-            const from = new Date();
-            from.setMonth(today.getMonth() - 2);
-            return [formatDateToString(from), formatDateToString(today)];
+            return ['', ''];
         }
         const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -1193,8 +1186,7 @@
             ADD_OK: 'Thêm mới văn bản thành công.',                                  // [MSG-SUC-BTNN-HTTL-004]
             EDIT_OK: 'Cập nhật văn bản thành công.',                                 // [MSG-SUC-BTNN-HTTL-005]
             DEL_OK: 'Xóa văn bản thành công.',                                       // [MSG-SUC-BTNN-HTTL-008]
-            DEL_CFM: ten => `Bạn có chắc chắn muốn xóa bản ghi ${ten} không?`,       // [MSG-CFM-SYS-001]
-            TLKT_MAX: 'Hệ thống chỉ hỗ trợ tối đa 10 tài liệu đính kèm.'             // [MSG-ERR-BTNN-HTTL-003] Phụ lục
+            DEL_CFM: ten => `Bạn có chắc chắn muốn xóa bản ghi ${ten} không?`        // [MSG-CFM-SYS-001]
         };
 
         // ON LOAD INITIALIZATION
@@ -1398,7 +1390,7 @@
                 const el = document.getElementById(id);
                 el.dataset.raw = '';
                 el.value = v;
-                if (el._flatpickr) el._flatpickr.setDate(v);
+                if (el._flatpickr) { if (v) el._flatpickr.setDate(v); else el._flatpickr.clear(); }
             });
             clearRangeErrors();
             appliedRange = { from: parseDate(f), to: parseDate(t), fromText: f, toText: t };
@@ -1510,19 +1502,10 @@
         }
 
         // TÀI LIỆU ĐÍNH KÈM: bảng chuẩn BTNN (btnn_tai_lieu_kem_theo.js)
-        // STT | Tên tài liệu, văn bản | File đính kèm | Thao tác; bắt buộc tối thiểu 01 dòng đủ Tên + Tệp; [BR-FILE-014] 06 định dạng .pdf, .doc, .docx, .jpg, .jpeg, .png (người dùng chốt 05/11/2026); 50MB/tệp; tối đa 10 tài liệu
+        // STT | Tên tài liệu, văn bản | File đính kèm | Thao tác; bắt buộc tối thiểu 01 dòng đủ Tên + Tệp
+        // 10/11/2026: Văn bản chỉ đạo, điều hành chỉ nhận tệp .pdf; bỏ giới hạn dung lượng và số lượng tệp tối đa
         const TLKT_KEY = 'vbcd';
-        const TLKT_EXTS = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'];
-        const TLKT_MAX = 10;
-        const tlktRowCount = () => document.querySelectorAll('#docTlktHost .tlkt-table tbody tr').length;
-        // Đã đủ 10 dòng: chặn "Thêm tài liệu" (không thêm dòng thứ 11), thông báo MSG.TLKT_MAX
-        if (typeof window.tlktAdd === 'function') {
-            const _tlktAdd = window.tlktAdd;
-            window.tlktAdd = function (key) {
-                if (key === TLKT_KEY && tlktRowCount() >= TLKT_MAX) { showToast(MSG.TLKT_MAX, 'error'); return; }
-                _tlktAdd(key);
-            };
-        }
+        const TLKT_EXTS = ['.pdf'];
         // Quy đổi dữ liệu: bản ghi cũ lưu files dạng mảng tên tệp ['a.pdf'] -> dòng bảng chuẩn [{ name, file: { name, size } }]
         function toTlktRows(files) {
             return (files || []).map(f => typeof f === 'string'
@@ -1538,7 +1521,8 @@
             }
             if (typeof tlktMount === 'function') tlktMount(TLKT_KEY, 'docTlktHost', {
                 split: false, noLeader: true, required: true, rows: tempDocFiles, exts: TLKT_EXTS,
-                title: 'Tài liệu đính kèm', secClass: 'form-section', titleClass: 'form-section-title', noHint: true // 09/11/2026: bỏ dòng ghi chú định dạng/dung lượng; quy tắc kiểm tra tệp, tối đa 10 tài liệu giữ nguyên
+                title: 'Tài liệu đính kèm', secClass: 'form-section', titleClass: 'form-section-title',
+                hintText: 'Chỉ nhận tệp .pdf.', maxBytes: Number.MAX_SAFE_INTEGER // 10/11/2026: chỉ nêu định dạng, không nêu dung lượng, số lượng tối đa
             });
         }
 
@@ -1547,23 +1531,16 @@
             document.querySelectorAll('.field-error-text').forEach(t => { t.style.display = 'none'; });
             document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
         }
-        function fillIssuerSelect(unit, value) {
-            const opts = issuerOptions(unit);
-            const sel = document.getElementById('docIssuer');
-            sel.innerHTML = '<option value="">-- Lựa chọn --</option>' + opts.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join('');
-            // Giá trị không thuộc danh sách: Cơ quan khác + tên cơ quan
-            if (value && !opts.includes(value)) { sel.value = CQ_KHAC; document.getElementById('docIssuerOther').value = value; }
-            else { sel.value = value || ''; document.getElementById('docIssuerOther').value = ''; }
-            toggleIssuerOther();
-        }
-        function toggleIssuerOther() {
-            document.getElementById('issuerOtherGroup').style.display = document.getElementById('docIssuer').value === CQ_KHAC ? '' : 'none';
-        }
-        const FIELDS = ['docNum', 'docType', 'docIssuer', 'docIssuerOther', 'docIssueDate', 'docEffectDate', 'docSigner', 'docStatus', 'docSummary', 'docNote'];
+        const FIELDS = ['docNum', 'docType', 'docIssuer', 'docIssueDate', 'docEffectDate', 'docSigner', 'docStatus', 'docSummary', 'docNote'];
         function showModal(title, viewMode, doc) {
             document.getElementById('modalTitle').innerText = title;
+            // Tiêu đề màn hình (dòng 1) = "Thêm mới/Chi tiết/Sửa Văn bản chỉ đạo, điều hành do ... ban hành"; không hiển thị dòng tiêu đề form (dòng 2)
+            document.getElementById('pageTitle').innerText = title;
+            const mh = document.querySelector('#docModal .modal-header'); if (mh) mh.style.display = 'none';
             clearErrors();
             FIELDS.forEach(id => { document.getElementById(id).disabled = viewMode; });
+            // Chi tiết: ô ngày trống thì để trống (không hiện gợi ý dd/mm/yyyy)
+            ['docIssueDate', 'docEffectDate'].forEach(id => { document.getElementById(id).placeholder = viewMode ? '' : 'dd/mm/yyyy'; });
             document.getElementById('modalTitle').closest('.modal-content').classList.toggle('view-mode', viewMode);
 
             const statusSel = document.getElementById('docStatus');
@@ -1594,12 +1571,15 @@
             const host = document.getElementById('docHistoryHost');
             const list = doc ? [...(doc.history || [])].reverse() : [];
             if (!list.length) { host.innerHTML = ''; return; }
-            const cell = 'padding:8px 10px; border:1px solid var(--border-color); vertical-align:top; text-align:left;';
-            host.innerHTML = `<div class="form-section"><div class="form-section-title"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử cập nhật</div>
-                <table style="width:100%; border-collapse:collapse; font-size:13px;"><thead><tr style="background:var(--table-header-bg);">
-                <th style="${cell} width:150px;">Thời điểm</th><th style="${cell} width:190px;">Người thực hiện</th><th style="${cell}">Nội dung</th></tr></thead><tbody>`
-                + list.map(x => `<tr><td style="${cell}">${esc(x.at)}</td><td style="${cell}">${esc(x.by)}</td><td style="${cell} white-space:pre-line;">${esc(x.text)}</td></tr>`).join('')
-                + '</tbody></table></div>';
+            // Lịch sử chuẩn BTNN: 04 cột Thời gian | Người thực hiện | Thao tác | Nội dung xử lý
+            const th = 'padding:12px 16px; background:#f1f5f9; color:#1e3a8a; font-weight:700; font-size:13px;';
+            const td = 'padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:13px; color:#1e293b; vertical-align:top;';
+            const when = s => String(s == null ? '' : s).replace(/^(\d{2}:\d{2})\s+(\d{2}\/\d{2}\/\d{4})$/, '$2 $1');
+            host.innerHTML = `<div class="form-section"><div style="display:flex; align-items:center; gap:8px; margin:0 0 10px; font-weight:700; color:#1e3a8a; font-size:14px;"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử cập nhật</div>
+                <div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; table-layout:fixed;"><thead><tr>
+                <th style="${th} width:170px; text-align:center;">Thời gian</th><th style="${th} width:220px; text-align:left;">Người thực hiện</th><th style="${th} width:260px; text-align:center;">Thao tác</th><th style="${th} text-align:left;">Nội dung xử lý</th></tr></thead><tbody>`
+                + list.map(x => `<tr><td style="${td} text-align:center;">${esc(when(x.at))}</td><td style="${td}">${esc(x.by)}</td><td style="${td} text-align:center;">${esc(x.action || 'Cập nhật thông tin')}</td><td style="${td} white-space:pre-line;">${esc(x.text || x.note || '--')}</td></tr>`).join('')
+                + '</tbody></table></div></div>';
         }
         // Nội dung thay đổi khi Sửa: trường "Nhãn: cũ → mới"; tài liệu đính kèm thêm/xóa
         const HIST_FIELDS = [['soKyHieu', 'Số, ký hiệu'], ['loaiVanban', 'Loại văn bản'], ['coquanBanhanh', 'Cơ quan ban hành'], ['ngayBanhanh', 'Ngày ban hành'],
@@ -1613,7 +1593,7 @@
             a.filter(x => !b.includes(x)).forEach(x => out.push(`Tài liệu đính kèm: xóa ${x}`));
             return out;
         }
-        function closeModal() { document.getElementById('docModal').classList.remove('active'); }
+        function closeModal() { document.getElementById('docModal').classList.remove('active'); document.getElementById('pageTitle').innerText = document.title; }
         function editDocFromView() { const id = parseInt(document.getElementById('docId').value); if (id) openEditModal(id); }
         function deleteDocFromView() { const id = parseInt(document.getElementById('docId').value); if (id) { closeModal(); deleteDoc(id); } }
 
@@ -1621,7 +1601,7 @@
             document.getElementById('docId').value = doc ? doc.id : '';
             document.getElementById('docNum').value = doc ? doc.soKyHieu : '';
             document.getElementById('docType').value = doc ? doc.loaiVanban : '';
-            fillIssuerSelect(doc ? doc.unit : myRoot(), doc ? doc.coquanBanhanh : '');
+            document.getElementById('docIssuer').value = doc ? (doc.coquanBanhanh || '') : '';
             [['docIssueDate', doc ? doc.ngayBanhanh : ''], ['docEffectDate', doc ? doc.ngayCoHieuLuc : '']].forEach(([fid, val]) => {
                 const el = document.getElementById(fid);
                 if (el._flatpickr) el._flatpickr.setDate(val || null, false, 'd/m/Y');
@@ -1637,19 +1617,19 @@
         function openCreateModal() {
             if (!canCreate()) return;
             fillForm(null);
-            showModal(`Thêm mới văn bản chỉ đạo, điều hành do ${KHOI_TEXT} ban hành`, false, null);
+            showModal(`Thêm mới Văn bản chỉ đạo, điều hành do ${KHOI_TEXT} ban hành`, false, null);
         }
         function openDetailModal(id) {
             const doc = documents.find(d => d.id === id);
             if (!doc) return;
             fillForm(doc);
-            showModal(`Chi tiết văn bản chỉ đạo, điều hành do ${KHOI_TEXT} ban hành`, true, doc);
+            showModal(`Chi tiết Văn bản chỉ đạo, điều hành do ${KHOI_TEXT} ban hành`, true, doc);
         }
         function openEditModal(id) {
             const doc = documents.find(d => d.id === id);
             if (!doc || !canEditRec(doc)) return;
             fillForm(doc);
-            showModal(`Sửa văn bản chỉ đạo, điều hành do ${KHOI_TEXT} ban hành`, false, doc);
+            showModal(`Sửa Văn bản chỉ đạo, điều hành do ${KHOI_TEXT} ban hành`, false, doc);
         }
 
         // VALIDATION & SAVING (lưu trực tiếp, không qua phê duyệt)
@@ -1664,13 +1644,12 @@
                 if (!firstInvalid) firstInvalid = el || er;
             };
             const v = id => document.getElementById(id).value.trim();
-            const num = v('docNum'), type = v('docType'), issuerSel = v('docIssuer'), issuerOther = v('docIssuerOther');
+            const num = v('docNum'), type = v('docType'), issuer = v('docIssuer');
             const issueRaw = v('docIssueDate'), effectRaw = v('docEffectDate'), status = v('docStatus'), summary = v('docSummary');
 
             if (!num) markErr('docNum', 'error_docNum');
             if (!type) markErr('docType', 'error_docType');
-            if (!issuerSel) markErr('docIssuer', 'error_docIssuer');
-            else if (issuerSel === CQ_KHAC && !issuerOther) markErr('docIssuerOther', 'error_docIssuerOther');
+            if (!issuer) markErr('docIssuer', 'error_docIssuer');
             let issueDate = null;
             if (!issueRaw) markErr('docIssueDate', 'error_docIssueDate', 'Đây là trường bắt buộc');
             else {
@@ -1699,11 +1678,10 @@
                 return;
             }
             const docFiles = typeof tlktGet === 'function' ? tlktGet(TLKT_KEY) : [];
-            if (docFiles.length > TLKT_MAX) { showToast(MSG.TLKT_MAX, 'error'); return; }
 
             const id = document.getElementById('docId').value;
             const fields = {
-                soKyHieu: num, loaiVanban: type, coquanBanhanh: issuerSel === CQ_KHAC ? issuerOther : issuerSel,
+                soKyHieu: num, loaiVanban: type, coquanBanhanh: issuer,
                 ngayBanhanh: issueRaw, ngayCoHieuLuc: effectRaw,
                 nguoiKy: v('docSigner'), tinhTrangMa: status, tinhTrang: DM_TTHL.name(status), trichYeu: summary, ghiChu: v('docNote'),
                 files: docFiles

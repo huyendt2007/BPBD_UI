@@ -2018,19 +2018,10 @@ function showProcessScreen(id) {
     toggleDetailProfileSection(false);
 
     document.getElementById('procBasis').value = src.procBasis || "";
-    // Cơ quan giải quyết bồi thường: chọn trên hệ thống (đơn vị gốc đã cấu hình luồng Giải quyết YCBT)
+    // Cơ quan giải quyết bồi thường: chọn trên cây Cơ cấu tổ chức, có tìm kiếm; không lọc theo Nhóm Lãnh đạo
     clearValidation();
-    renderAgencyOptions();
-    const agencyId = BTNN_WF.xdTargetUnitId(src);
-    const agencyOk = Boolean(agencyId) && BTNN_WF.gqConfiguredRoots().includes(agencyId);
-    document.getElementById('procTargetAgency').value = agencyOk ? agencyId : '';
-    document.getElementById('procTargetAgencyInput').value = agencyId ? BTNN_WF.unitName(agencyId) : (src.procTargetAgency || "");
-    // Cơ quan đã chọn trước đây không có trên hệ thống / chưa cấu hình luồng Giải quyết YCBT: yêu cầu chọn lại trong danh sách
-    if (!agencyOk && (agencyId || src.procTargetAgency)) {
-        const err = document.getElementById('procTargetAgencyError');
-        if (err) err.textContent = agencyId ? BTNN_WF.xdTargetNotConfiguredMsg(src) : 'Cơ quan không có trên hệ thống. Vui lòng chọn trong danh sách';
-        markInvalid(document.getElementById('procTargetAgencyInput'), null);
-    }
+    const agencyId = (src.procTargetUnitId && BTNN_WF.getUnit(src.procTargetUnitId)) ? src.procTargetUnitId : BTNN_WF.xdTargetUnitId(src);
+    mountAgencyTree(agencyId);
     document.getElementById('procReason').value = src.procReason || "";
     // Khối LÝ DO BỊ TRẢ LẠI: hồ sơ đang Bị trả lại hoặc trước đó từng bị trả lại
     renderXdHistoryBlock('procReturnedNotice', BTNN_WF.renderXdReturnHistoryHtml(item));
@@ -2810,6 +2801,15 @@ function xdSetErrText(el, txt) {
     const m = g && g.querySelector('.error-message');
     if (m) m.textContent = txt;
 }
+// [ngsinh] MSG-ERR-VAL-008 (BR-VAL-008): Ngày sinh không lớn hơn ngày hiện tại
+const XD_MSG_DATE_NOT_FUTURE = 'Ngày nhập vào không được lớn hơn ngày hiện tại';
+function xdIsFutureDate(value) {
+    const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(value || '').trim());
+    if (!m) return false;
+    const d = new Date(+m[3], +m[2] - 1, +m[1]);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    return d > today;
+}
 
 function markInvalid(el, firstInvalid) {
     el.classList.add('is-invalid');
@@ -2876,7 +2876,15 @@ function saveForm() {
         req.unshift(['formNYCRole', role]);
         req.push(['formNYCPhone', phone], ['formNYCAddressDetail', addressDetail], ['formHanhVi', hanhVi]);
         xdSetErrText(document.getElementById('formNYCPhone'), 'Đây là trường bắt buộc');
+        ['formNYCDob', 'nbthDob'].forEach(fid => xdSetErrText(document.getElementById(fid), 'Đây là trường bắt buộc'));
         req.forEach(([fid, val]) => { if (!val) firstInvalid = markInvalid(document.getElementById(fid), firstInvalid); });
+        // [ngsinh][ttgt] Ngày sinh, Ngày cấp lớn hơn ngày hiện tại: vi phạm BR-VAL-008
+        (isOrg ? [['formNYCOrgDocDate', orgDocDate]] : [['formNYCDob', dob], ['formNYCDocDate', docDate]]).forEach(([fid, val]) => {
+            if (!xdIsFutureDate(val)) return;
+            const dEl = document.getElementById(fid);
+            xdSetErrText(dEl, XD_MSG_DATE_NOT_FUTURE);
+            firstInvalid = markInvalid(dEl, firstInvalid);
+        });
         if (phone && !xdPhoneOk(phone, country)) {
             const phoneEl = document.getElementById('formNYCPhone');
             xdSetErrText(phoneEl, XD_MSG_PHONE);
@@ -2887,6 +2895,12 @@ function saveForm() {
         if (isOrgVictim && !nbthOrgName) firstInvalid = markInvalid(document.getElementById('nbthOrgName'), firstInvalid);
         if (hasNbth) {
             [['nbthName', nbth.name], ['nbthDob', nbth.dob], ['nbthDocType', nbth.docType], ['nbthDocNo', nbth.docNo]].forEach(([fid, val]) => { if (!val) firstInvalid = markInvalid(document.getElementById(fid), firstInvalid); });
+            [['nbthDob', nbth.dob], ['nbthDocDate', nbth.docDate]].forEach(([fid, val]) => {
+                if (!xdIsFutureDate(val)) return;
+                const nbDEl = document.getElementById(fid);
+                xdSetErrText(nbDEl, XD_MSG_DATE_NOT_FUTURE);
+                firstInvalid = markInvalid(nbDEl, firstInvalid);
+            });
             // Số điện thoại người bị thiệt hại: không bắt buộc; có dữ liệu thì kiểm tra định dạng
             if (nbth.phone && !xdPhoneOk(nbth.phone, nbth.country)) firstInvalid = markInvalid(document.getElementById('nbthPhone'), firstInvalid);
         }
@@ -3006,12 +3020,7 @@ function saveProcessResult() {
     clearValidation();
     let firstInvalid = null;
     if (!basis) firstInvalid = markInvalid(document.getElementById('procBasis'), firstInvalid);
-    if (!agencyId) {
-        const inp = document.getElementById('procTargetAgencyInput');
-        const err = document.getElementById('procTargetAgencyError');
-        if (err) err.textContent = inp.value.trim() ? 'Cơ quan không có trên hệ thống. Vui lòng chọn trong danh sách' : 'Đây là trường bắt buộc';
-        firstInvalid = markInvalid(inp, firstInvalid);
-    }
+    if (!agencyId) firstInvalid = markInvalid(document.getElementById('procTargetAgencyTree'), firstInvalid);
     if (!reason) firstInvalid = markInvalid(document.getElementById('procReason'), firstInvalid);
     if (firstInvalid) { showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error"); firstInvalid.focus(); return; }
 
@@ -3031,15 +3040,23 @@ function saveProcessResult() {
     openSignSubmitModal(id, XD_KIND.KQ);
 }
 
-// ---------------- Combobox Cơ quan giải quyết bồi thường (MH03) ----------------
-// Danh sách: đơn vị gốc đã cấu hình luồng Giải quyết YCBT; tìm theo Tên / Mã đơn vị; chỉ chọn trong danh sách
-function renderAgencyOptions() {
-    const dropdown = document.getElementById('procTargetAgencyDropdown');
-    if (!dropdown) return;
-    const ids = BTNN_WF.gqConfiguredRoots().slice().sort((a, b) => BTNN_WF.unitName(a).localeCompare(BTNN_WF.unitName(b), 'vi'));
-    dropdown.innerHTML = ids.length
-        ? ids.map(u => `<div class="searchable-select-option" data-id="${escapeAttr(u)}" onclick="selectAgencyOption('${escapeAttr(u)}')">${escapeHtml(BTNN_WF.unitName(u))}<span style="color:var(--text-muted); font-size:11.5px; margin-left:6px;">${escapeHtml(u)}</span></div>`).join('')
-        : '<div class="searchable-select-option" style="color:var(--text-muted); cursor:default;">Chưa có cơ quan có tài khoản thuộc Nhóm Lãnh đạo</div>';
+// ---------------- Tree-Select Cơ quan giải quyết bồi thường (MH03) ----------------
+// Cây Cơ cấu tổ chức (component dùng chung BTNN_WF.mountUnitTree, như Cơ quan tiếp nhận mới của Popup Chuyển CQGQBT);
+// tìm theo Tên / Mã đơn vị; chọn được mọi cơ quan, đơn vị (kể cả đơn vị gốc của hồ sơ); không kiểm tra Nhóm Lãnh đạo
+function mountAgencyTree(value) {
+    const box = document.getElementById('procTargetAgencyTree');
+    if (!box) return null;
+    return BTNN_WF.mountUnitTree(box, {
+        inputId: 'procTargetAgency',
+        value: value || '',
+        placeholder: '-- Chọn cơ quan giải quyết bồi thường --',
+        onChange: id => {
+            if (!id) return;
+            box.classList.remove('is-invalid');
+            const err = document.getElementById('procTargetAgencyError');
+            if (err) err.style.display = 'none';
+        }
+    });
 }
 
 // Save spawned claim
@@ -3341,47 +3358,6 @@ function closeConfirmModal(result) {
     confirmCallback = null;
 }
 
-// Searchable dropdown logic for procTargetAgency
-function toggleSearchableDropdown() {
-    const dropdown = document.getElementById('procTargetAgencyDropdown');
-    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-}
-
-function filterSearchableOptions() {
-    const input = document.getElementById('procTargetAgencyInput');
-    const filter = input.value.trim().toLowerCase();
-    // Gõ lại: bỏ cơ quan đã chọn cho tới khi chọn lại trong danh sách
-    const hidden = document.getElementById('procTargetAgency');
-    if (hidden && hidden.value && BTNN_WF.unitName(hidden.value).toLowerCase() !== filter) hidden.value = '';
-    const dropdown = document.getElementById('procTargetAgencyDropdown');
-    const options = dropdown.getElementsByClassName('searchable-select-option');
-
-    dropdown.style.display = 'block';
-    for (let i = 0; i < options.length; i++) {
-        const text = options[i].textContent || options[i].innerText;
-        if (text.toLowerCase().indexOf(filter) > -1) {
-            options[i].style.display = "";
-        } else {
-            options[i].style.display = "none";
-        }
-    }
-}
-
-function selectAgencyOption(unitId) {
-    document.getElementById('procTargetAgencyInput').value = BTNN_WF.unitName(unitId);
-    document.getElementById('procTargetAgency').value = unitId;
-    document.getElementById('procTargetAgencyDropdown').style.display = 'none';
-    clearValidation();
-}
-
-// Close the dropdown when clicking outside
-document.addEventListener('click', function (event) {
-    const wrapper = document.querySelector('.searchable-select-wrapper');
-    if (wrapper && !wrapper.contains(event.target)) {
-        const dropdown = document.getElementById('procTargetAgencyDropdown');
-        if (dropdown) dropdown.style.display = 'none';
-    }
-});
 
 // Bỏ đánh dấu lỗi khi người dùng nhập/chọn lại giá trị cho trường bắt buộc
 ['input', 'change'].forEach(evt => document.addEventListener(evt, function (event) {

@@ -302,7 +302,7 @@
         { decId: 'QD-HL4', code: 'KP-2026-194', claimCode: 'BT-2026-194', nycName: 'Phạm Thị Ngọc Ánh', nycAddress: 'Số 40 phố Hàng Bài, Phường Hoàn Kiếm, Thành phố Hà Nội', unitId: 'STP-HN', unitName: 'Sở Tư pháp Thành phố Hà Nội', decNo: '40/QĐ-STP', issueDate: '02/10/2026', total: 95000000, advance: 0, net: 95000000,
             recipient: { name: 'Phạm Thị Ngọc Ánh', idNo: '001192007788', account: '0021009988112', bank: 'BIDV', branch: 'Chi nhánh Hoàn Kiếm' },
             payout: { method: 'Nhận qua chuyển khoản', accHolder: 'Phạm Thị Ngọc Ánh', account: '0021009988112', bank: 'BIDV', branch: 'Chi nhánh Hoàn Kiếm' }, at: '09:00 02/10/2026', hieuLuc: OFF,
-            reason: 'Cơ quan có thẩm quyền yêu cầu tạm dừng thi hành Quyết định để xem xét lại.', hlAt: '14:00 21/10/2026' }
+            reason: 'Người yêu cầu bồi thường có đơn rút toàn bộ yêu cầu bồi thường trước khi Quyết định được thi hành; Quyết định không được thi hành.', hlAt: '14:00 21/10/2026' }
     ];
     var HUY_SEEDS = [
         { decId: 'QD-07', code: 'KP-2026-012', claimCode: 'BT-2026-011', decNo: '26/QĐ-GQBT', cancelNo: '33/QĐ-HGQBT', at: '10:00 25/09/2026', reason: 'Hủy quyết định gốc do nội dung quyết định không còn phù hợp với kết quả xác minh bổ sung.' },

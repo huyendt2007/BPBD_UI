@@ -198,7 +198,7 @@
         return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
     }
 
-    // ---------------- Luồng ký (theo Cấu hình luồng xử lý) ----------------
+    // ---------------- Luồng ký mặc định (chỉ dùng sinh dữ liệu mẫu; từ 10/11/2026 Cán bộ tự thiết lập các cấp khi trình, xem openSubmit) ----------------
     function wf() { return window.BTNN_WF || null; }
     function userName(id) { var u0 = ldUbnd(id); if (u0) return u0.name; var W = wf(); if (W) return W.userName(id); var r = Object.keys(ROLES).map(function (k) { return ROLES[k]; }).find(function (x) { return x.userId === id; }); return r ? r.name : id; }
     function userTitle(id) { var u0 = ldUbnd(id); if (u0) return u0.title; var W = wf(); var u = W && W.getUser(id); return u ? u.title : ''; }
@@ -1240,6 +1240,51 @@
             '.bctt-a4:has(.knwrap){padding-bottom:72px;}', // chừa chỗ cho ô ký nháy, không đè nội dung cuối trang
             '.bctt-a4 .knbox{border:1px dashed #b45309;background:#fffbeb;color:#92400e;font-family:Inter,sans-serif;font-size:10.5px;padding:4px 8px;border-radius:4px;}',
             '.bctt-a4 .knbox.ok{border-style:solid;}',
+            // 09/11/2026 (nhanhl2): ô ký kéo thả trên từng biểu mẫu, theo bước «Kéo ô ký & chọn Lãnh đạo» của Giải quyết yêu cầu bồi thường
+            '.bctt-a4.kt{padding-bottom:124px;}', // chừa chỗ cho ô ký nháy cuối trang
+            '.bctt-oky{position:absolute;border:2px dashed;border-radius:6px;display:flex;flex-direction:column;justify-content:space-between;padding:6px 9px;box-sizing:border-box;font-family:Inter,sans-serif;color:#1e293b;z-index:3;box-shadow:0 4px 12px rgba(15,23,42,.15);line-height:1.3;}',
+            '.bctt-oky.ok{border-style:solid;}',
+            '.bctt-oky.edit{cursor:move;user-select:none;}.bctt-oky.edit:hover{box-shadow:0 8px 20px rgba(0,0,0,.25);}.bctt-oky.keo{opacity:.92;z-index:9;box-shadow:0 12px 28px rgba(0,0,0,.35);}',
+            '.bctt-oky .r1,.bctt-oky .r3{display:flex;justify-content:space-between;align-items:center;gap:6px;}',
+            '.bctt-oky .r1 .nh{font-size:10.5px;font-weight:700;}',
+            '.bctt-oky .cap{color:#fff;font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:9px;white-space:nowrap;}',
+            '.bctt-oky .ten{text-align:center;font-weight:700;font-size:12px;}',
+            '.bctt-oky .r3{font-size:10px;color:#64748b;}',
+            '.bctt-oky .rz{position:absolute;right:0;bottom:0;width:16px;height:16px;cursor:nwse-resize;display:flex;align-items:center;justify-content:center;color:#475569;font-size:9px;border-radius:4px 0 4px 0;}',
+            '.bctt-oky .rz:hover{background:rgba(0,0,0,.15);}.bctt-oky .rz i{transform:rotate(90deg);}',
+            // Ảnh chữ ký của chuyên viên: khi đã trình chỉ còn ảnh và họ tên (không khung), khi đang đặt có khung xanh lá
+            '.bctt-oky.nl{border-color:transparent;background:transparent;box-shadow:none;justify-content:center;align-items:center;font-family:"Times New Roman",serif;}',
+            '.bctt-oky.nl.edit{border-color:#059669;background:rgba(236,253,245,.9);box-shadow:0 4px 12px rgba(5,150,105,.18);justify-content:space-between;align-items:stretch;font-family:Inter,sans-serif;}',
+            '.bctt-oky.nl .im{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;}.bctt-oky.nl .im img{max-height:100%;max-width:100%;}',
+            '.bctt-card.kt-nl{border-color:#a7f3d0;border-left:4px solid #059669;}.bctt-card.kt-nl>.h{color:#047857;}',
+            '.bctt-kt-td{font-size:12.5px;font-weight:700;color:#1e3a8a;display:flex;align-items:center;gap:6px;margin-bottom:4px;}',
+            '.bctt-card.kt-nhay{border-color:#bfdbfe;border-left:4px solid #1d4ed8;}.bctt-card.kt-nhay>.h{color:#1d4ed8;}',
+            '.bctt-card.kt-so{border-color:#fecaca;border-left:4px solid #b91c1c;}.bctt-card.kt-so>.h{color:#b91c1c;}',
+            '.bctt-kt-chk{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12.5px;color:#1e40af;margin:8px 0 0;}',
+            '.bctt-kt-mau{font-size:12.5px;color:#1e3a8a;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:6px 10px;margin-bottom:12px;}',
+            '.bctt-kt-xy{font-size:11px;color:#94a3b8;margin:8px 0 6px;}',
+            // 10/11/2026 (nhanhl2): thẻ cấp trình ký tự thiết lập - công cụ Lên / Xuống / Xóa cấp, nhãn, ô chọn Lãnh đạo có tìm kiếm, Ký nháy, Ký số
+            '.bctt-cap-cu{display:flex;gap:2px;flex-shrink:0;}.bctt-cap-cu button{border:1px solid #cbd5e1;background:#fff;border-radius:4px;width:24px;height:22px;font-size:11px;color:#475569;cursor:pointer;padding:0;}',
+            '.bctt-cap-cu button:disabled{opacity:.35;cursor:default;}.bctt-cap-cu button.del{color:#dc2626;}',
+            '.bctt-cap-dv{font-size:12px;color:#7f1d1d;margin:-4px 0 6px;}',
+            '.bctt-kt-da{font-size:11px;color:#94a3b8;margin:8px 0 6px;}.bctt-kt-bb{font-size:11px;color:#b45309;margin-left:6px;}',
+            // 10/11/2026 (nhanhl2): ô ký gọn khi đang thiết lập - chỉ khung, nhãn Ký nháy / Ký số, chữ «Cấp n» / «Cấp cuối»
+            '.bctt-oky.gon{justify-content:flex-start;padding:4px 6px;}.bctt-oky.gon .tgs{display:flex;justify-content:flex-end;gap:4px;min-height:16px;}',
+            '.bctt-oky.gon .tg{font-size:10px;font-weight:600;padding:1px 7px;border-radius:8px;}.bctt-oky.gon .tg.kn{background:#dbeafe;color:#1e40af;}.bctt-oky.gon .tg.ks{background:#dcfce7;color:#15803d;}',
+            '.bctt-oky.nl .tg.kn{font-size:10px;font-weight:600;padding:1px 7px;border-radius:8px;background:#dbeafe;color:#1e40af;}',
+            '.bctt-oky.gon .nhan{text-align:center;font-weight:700;font-size:12.5px;color:#1e293b;margin-top:2px;}',
+            '.bctt-cap-nhan{display:flex;gap:4px;flex-wrap:wrap;margin:-2px 0 6px;}.bctt-cap-nhan span{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:9px;}',
+            '.bctt-cap-nhan .cc{background:#fee2e2;color:#991b1b;}.bctt-cap-nhan .kn{background:#dbeafe;color:#1e40af;}.bctt-cap-nhan .ks{background:#dcfce7;color:#15803d;}',
+            '.bctt-cap-tc{display:flex;align-items:center;gap:14px;margin:8px 0 0;font-size:12.5px;color:#334155;}.bctt-cap-tc label{display:flex;align-items:center;gap:6px;cursor:pointer;margin:0;}',
+            '.bctt-sw{position:relative;display:inline-block;width:30px;height:16px;}.bctt-sw input{opacity:0;width:0;height:0;}',
+            '.bctt-sw span{position:absolute;inset:0;background:#cbd5e1;border-radius:16px;transition:.15s;}.bctt-sw span:before{content:"";position:absolute;width:12px;height:12px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.15s;}',
+            '.bctt-sw input:checked+span{background:#16a34a;}.bctt-sw input:checked+span:before{transform:translateX(14px);}.bctt-sw input:disabled+span{opacity:.7;}',
+            '.bctt-cb{position:relative;}.bctt-cb-box{display:flex;align-items:center;justify-content:space-between;gap:6px;border:1px solid #cbd5e1;border-radius:6px;padding:6px 10px;background:#fff;cursor:pointer;font-size:13px;min-height:34px;}',
+            '.bctt-cb-box .ph{color:#94a3b8;}.bctt-cb.invalid .bctt-cb-box{border-color:#dc2626;}',
+            '.bctt-cb-pn{display:none;position:absolute;left:0;right:0;top:100%;z-index:30;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:0 8px 20px rgba(15,23,42,.15);margin-top:2px;}',
+            '.bctt-cb.open .bctt-cb-pn{display:block;}.bctt-cb-pn input{width:100%;border:0;border-bottom:1px solid #e2e8f0;padding:7px 10px;font-size:12.5px;outline:none;}',
+            '.bctt-cb-ls{max-height:220px;overflow:auto;}.bctt-cb-it{padding:6px 10px;font-size:12.5px;cursor:pointer;}.bctt-cb-it:hover{background:#eff6ff;}.bctt-cb-it.sel{background:#dbeafe;font-weight:600;}.bctt-cb-ko{padding:8px 10px;font-size:12px;color:#94a3b8;}',
+            '.bctt-kt-nut{display:flex;gap:4px;flex-wrap:wrap;}.bctt-kt-nut .btn{font-size:10.5px;padding:1px 7px;}',
             '.bctt-wm{position:absolute;top:12px;left:16px;font-family:Inter,sans-serif;font-size:11px;font-weight:700;color:#b45309;border:1px solid #f59e0b;border-radius:4px;padding:2px 8px;background:#fffbeb;}',
             '.bctt-tl{list-style:none;margin:0;padding:0;}.bctt-tl li{padding:8px 0;border-bottom:1px dashed #e2e8f0;font-size:12.5px;display:flex;gap:10px;}',
             '.bctt-tl .av{width:30px;height:30px;border-radius:50%;background:#dbeafe;color:#1e3a8a;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}',
@@ -1693,7 +1738,7 @@
             + '<div><label>Thời gian số liệu</label><strong>' + r.fromDate + ' - ' + r.toDate + '</strong></div>'
             + '<div><label>Đơn vị báo cáo</label><strong>' + esc(r.unitName) + '</strong></div>'
             + (isBtpReport(r) ? '' : '<div><label>Trạng thái</label><strong id="bcttDStatus">' + stName(r) + '</strong></div>')
-            + '<div><label>Người lập</label><strong><img class="bctt-sig" alt="Chữ ký" src="' + sigImg(r.preparer.name) + '">' + esc(r.preparer.name) + '</strong></div>'
+            + '<div><label>Người lập</label><strong>' + esc(r.preparer.name) + '</strong></div>'   // 09/11/2026 (nhanhl2): MH03 không hiển thị ảnh chữ ký của người lập
             // 04/11/2026: báo cáo tổng hợp của Bộ không trình ký - không có Trạng thái, Ngày gửi, Ngày ban hành
             + (isBtpReport(r) ? '<div><label>Ngày cập nhật gần nhất</label><strong>' + (r.history.length ? esc(r.history[r.history.length - 1].at) : '--') + '</strong></div>'
                 : '<div><label>Ngày gửi gần nhất</label><strong>' + (r.sentAt || '--') + '</strong></div>'
@@ -2445,12 +2490,14 @@
         if (isBtpReport(r)) return '<div style="height:64px;"></div>';
         if (!sign) return '<div class="sigbox">Ô ký số Lãnh đạo (sau khi trình)</div>';
         var last = sign.levels[sign.levels.length - 1];
+        // 09/11/2026: ô ký đặt bằng kéo thả - chừa chỗ (neo vị trí mặc định của ô ký số), ô ký vẽ đè theo tọa độ đã đặt
+        if (coViTri(sign)) return '<div class="kt-neo" style="height:112px;"></div><div class="b">' + esc(last.leaderName || '') + '</div>';
         var ok = last.result === 'approved';
         return '<div class="sigbox' + (ok ? ' ok' : '') + '">' + (ok ? 'Đã ký số: ' : 'Cấp ' + last.level + ' - ') + esc(last.leaderName) + (ok ? '<br>' + esc(last.at) : '') + '</div><div class="b">' + esc(last.leaderName) + '</div>';
     }
     // 03/11/2026: in đủ ô ký nháy của mọi cấp có ký nháy (trước cấp cuối), xếp chồng góc phải dưới trang
     function knBlock(sign) {
-        if (!sign || sign.levels.length < 2) return '';
+        if (!sign || sign.levels.length < 2 || coViTri(sign)) return '';
         var ds = sign.levels.slice(0, -1).filter(function (l) { return l.kyNhay; });
         if (!ds.length) return '';
         return '<div class="knwrap">' + ds.map(function (l) {
@@ -2458,10 +2505,47 @@
             return '<div class="knbox' + (ok ? ' ok' : '') + '">Ký nháy - Cấp ' + l.level + ' - ' + esc(l.leaderName) + (ok ? ' (' + esc(l.at) + ')' : '') + '</div>';
         }).join('') + '</div>';
     }
+    // 09/11/2026 (nhanhl2): ô ký kéo thả. sign.keoTha = đang đặt ô ký tại màn trình; levels[i].viTri = { m41|m42|m43|m04: {x, y, w, h} } = tọa độ đã đặt (px trên trang A4)
+    function coViTri(sign) { return !!(sign && sign.levels && (sign.keoTha || sign.levels.some(function (l) { return l.viTri; }) || (sign.nguoiLap && sign.nguoiLap.viTri))); }
+    // Ảnh chữ ký của Chuyên viên lập báo cáo tại ô Người lập danh mục, Người lập biểu. sign.nguoiLap: { on, tat: {mẫu: true}, name, viTri: {mẫu: tọa độ} | placed }
+    // 09/11/2026 (nhanhl2): không in sẵn ảnh chữ ký của chuyên viên. Ảnh chỉ có khi Cán bộ Click «Đặt chữ ký» trên biểu mẫu ở màn trình
+    // (để chỗ trống làm neo vị trí mặc định, ảnh vẽ đè theo tọa độ); các trường hợp khác chỉ in họ tên tại ô Người lập
+    function nlBlock(r, d, sign, fid) {
+        if (d.noPreparer) return '';
+        var nl = sign && sign.nguoiLap, ten = (nl && nl.name) || r.preparer.name;
+        if (nl && !(nl.on === false || (nl.tat && nl.tat[fid])) && ((nl.viTri && nl.viTri[fid]) || nl.placed)) return '<div class="kt-neo-nl" style="height:70px;"></div>';
+        return '<div style="height:46px;"></div><div class="b">' + esc(ten) + '</div>';
+    }
+    function oNlHtml(nl, c, edit) {
+        return '<div class="bctt-oky nl' + (edit ? ' edit' : '') + '" data-oky="nl" style="left:' + c.x + 'px;top:' + c.y + 'px;width:' + c.w + 'px;height:' + c.h + 'px;">'
+            + (edit ? '<div class="r1"><span class="nh" style="color:#047857;"><i class="fa-solid fa-signature"></i> CHỮ KÝ</span><span class="cap" style="background:#059669;">Chuyên viên</span></div>' + (nl.kyNhay ? '<div style="display:flex;justify-content:flex-end;margin-top:2px;"><span class="tg kn" style="white-space:nowrap;">Ký nháy</span></div>' : '') : '')
+            + '<div class="im"><img alt="Chữ ký người lập" src="' + sigImg(nl.name) + '"></div>'
+            + '<div class="ten">' + esc(nl.name) + '</div>'
+            + (edit ? '<div class="rz" title="Kéo chuột để co giãn khung chữ ký"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>' : '') + '</div>';
+    }
+    function oKyHtml(l, i, last, c, edit) {
+        var ok = l.result === 'approved', m = last ? ['#dc2626', '#991b1b', 'rgba(254,242,242,.94)'] : ['#2563eb', '#1e40af', 'rgba(239,246,255,.94)'];
+        if (edit) {   // 10/11/2026 (nhanhl2): khi đang thiết lập chỉ đóng khung, nhãn Ký nháy / Ký số theo lựa chọn, chữ «Cấp n» / «Cấp cuối»
+            return '<div class="bctt-oky gon edit" data-oky="' + i + '" style="left:' + c.x + 'px;top:' + c.y + 'px;width:' + c.w + 'px;height:' + c.h + 'px;border-color:' + m[0] + ';background:' + m[2] + ';">'
+                + '<div class="tgs">' + (l.knTick ? '<span class="tg kn">Ký nháy</span>' : '') + (last ? '<span class="tg ks">Ký số</span>' : '') + '</div>'
+                + '<div class="nhan">' + (l.cuoi ? 'Cấp cuối' : 'Cấp ' + l.level) + '</div>'
+                + '<div class="rz" title="Kéo chuột để co giãn khung chữ ký"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div></div>';
+        }
+        return '<div class="bctt-oky' + (edit ? ' edit' : '') + (ok ? ' ok' : '') + '" data-oky="' + i + '" style="left:' + c.x + 'px;top:' + c.y + 'px;width:' + c.w + 'px;height:' + c.h + 'px;border-color:' + m[0] + ';background:' + m[2] + ';">'
+            + '<div class="r1"><span class="nh" style="color:' + m[1] + ';"><i class="fa-solid ' + (last ? 'fa-stamp' : 'fa-pen-nib') + '"></i> ' + (last ? 'KÝ SỐ &amp; CON DẤU' : 'KÝ NHÁY') + '</span><span class="cap" style="background:' + m[0] + ';">Cấp ' + l.level + '</span></div>'
+            + '<div class="ten" data-oky-ten>' + esc(l.leaderName || ('Cấp ' + l.level)) + '</div>'
+            + '<div class="r3"><span>' + (ok ? (last ? 'Đã ký số ' : 'Đã ký nháy ') + esc(l.at || '') : (last ? 'Chữ ký số &amp; Con dấu' : 'Chữ ký nháy')) + '</span>' + (edit ? '<span data-oky-xy>X: ' + c.x + ', Y: ' + c.y + '</span>' : '') + '</div>'
+            + (edit ? '<div class="rz" title="Kéo chuột để co giãn khung chữ ký"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>' : '') + '</div>';
+    }
+    function oKyTinh(sign, fid) {
+        var n = sign.levels.length;
+        var nl = sign.nguoiLap;
+        return (nl && nl.on !== false && !(nl.tat && nl.tat[fid]) && nl.viTri && nl.viTri[fid] ? oNlHtml(nl, nl.viTri[fid], false) : '')
+            + sign.levels.map(function (l, i) { return l.viTri && l.viTri[fid] ? oKyHtml(l, i, !!l.kySo || i === n - 1, l.viTri[fid], false) : ''; }).join('');
+    }
     function ndHeader(code) {
         return '<div style="text-align:right;" class="b">' + code + '</div><div style="text-align:right;" class="i">(Ban hành kèm theo Nghị định số ..../…../NĐ-CP ngày …../…../….. của Chính phủ)</div>';
     }
-    function preparerSig(r) { return '<div><img alt="Chữ ký người lập" src="' + sigImg(r.preparer.name) + '" style="height:46px;"></div><div class="b">' + esc(r.preparer.name) + '</div>'; }
     function docM41(r, d, sign) {
         var m41 = d.m41, total = 0;
         var rows = GROUPS.map(function (g) {
@@ -2472,7 +2556,7 @@
             + '<div class="b" style="margin-bottom:8px;">' + esc((d.unitName || r.unitName).toUpperCase()) + '</div>'
             + '<table class="dt"><thead><tr><th>STT</th>' + M41_COLS.map(function (c) { return '<th>' + c.label + '<br>(' + c.no + ')</th>'; }).join('') + '</tr></thead><tbody>' + rows
             + '<tr><td></td><td class="l b">Tổng cộng</td><td class="l" colspan="5">' + total + ' vụ việc</td></tr></tbody></table>'
-            + '<div style="display:flex;justify-content:space-around;margin-top:22px;" class="c"><div><div class="b">NGƯỜI LẬP DANH MỤC</div><div class="i">(Ký, ghi rõ họ tên)</div>' + (d.noPreparer ? '' : preparerSig(r)) + '</div>'
+            + '<div style="display:flex;justify-content:space-around;margin-top:22px;" class="c"><div><div class="b">NGƯỜI LẬP DANH MỤC</div><div class="i">(Ký, ghi rõ họ tên)</div>' + nlBlock(r, d, sign, 'm41') + '</div>'
             + '<div><div class="b">THỦ TRƯỞNG CƠ QUAN LẬP DANH MỤC</div><div class="i">(Ký, ghi rõ họ tên và đóng dấu)</div>' + signBlock(r, sign) + '</div></div>' + knBlock(sign) + '</div>';
     }
     function docM42(r, d, sign) {
@@ -2505,7 +2589,7 @@
         return '<div class="bctt-a4 l" style="font-size:12px;">' + ndHeader('Mẫu số 43/BTNN') + '<div class="c b" style="font-size:14px;margin-top:10px;">TỔNG HỢP TÌNH HÌNH YÊU CẦU BỒI THƯỜNG, GIẢI QUYẾT BỒI THƯỜNG VÀ CHI TRẢ TIỀN BỒI THƯỜNG</div>'
             + '<div class="c i" style="margin-bottom:8px;">(Số liệu tính từ ' + esc(d.fromDate || r.fromDate) + ' đến ' + esc(d.toDate || r.toDate) + ')</div>'
             + '<table class="dt" style="font-size:8.5px;">' + head + '<tbody>' + rows + '</tbody></table>'
-            + '<div style="display:flex;justify-content:space-around;margin-top:16px;" class="c"><div><div class="b">Người lập biểu</div><div class="i">(ký, ghi rõ họ tên)</div>' + (d.noPreparer ? '' : preparerSig(r)) + '</div>'
+            + '<div style="display:flex;justify-content:space-around;margin-top:16px;" class="c"><div><div class="b">Người lập biểu</div><div class="i">(ký, ghi rõ họ tên)</div>' + nlBlock(r, d, sign, 'm43') + '</div>'
             + '<div><div class="i">' + (p ? 'Ngày ' + p.d + ' tháng ' + p.m + ' năm ' + p.y : 'Ngày........ tháng........ năm.......') + '</div><div class="b">Thủ trưởng đơn vị</div><div class="i">(Ký, đóng dấu, ghi rõ họ, tên)</div>' + signBlock(r, sign) + '</div></div>' + knBlock(sign) + '</div>';
     }
     // Văn bản Mẫu số 04 theo đúng Biểu mẫu số 04 - Thông tư số 08/2019/TT-BTP: dòng tổng (không nhãn) ngay dưới dòng số cột, ký Người lập biểu / Thủ trưởng cơ quan, mục Nguồn lấy số liệu
@@ -2521,7 +2605,7 @@
             + '<div class="c b" style="font-size:14px;margin-top:10px;">TÌNH HÌNH THỰC HIỆN TRÁCH NHIỆM HOÀN TRẢ</div>'
             + '<div class="c i" style="margin-bottom:8px;">(Số liệu tính từ ' + esc(d.fromDate || r.fromDate) + ' đến ' + esc(d.toDate || r.toDate) + ')</div>'
             + '<table class="dt" style="font-size:9.5px;">' + head + '<tbody>' + rows + '</tbody></table>'
-            + '<div style="display:flex;justify-content:space-around;margin-top:16px;" class="c"><div><div class="b">Người lập biểu</div><div class="i">(ký, ghi rõ họ tên)</div>' + (d.noPreparer ? '' : preparerSig(r)) + '</div>'
+            + '<div style="display:flex;justify-content:space-around;margin-top:16px;" class="c"><div><div class="b">Người lập biểu</div><div class="i">(ký, ghi rõ họ tên)</div>' + nlBlock(r, d, sign, 'm04') + '</div>'
             + '<div><div class="i">' + (p ? 'Ngày ' + p.d + ' tháng ' + p.m + ' năm ' + p.y : 'Ngày........ tháng........ năm.......') + '</div><div class="b">Thủ trưởng cơ quan</div><div class="i">(Ký, ghi rõ họ tên và đóng dấu)</div>' + signBlock(r, sign) + '</div></div>'
             + '<div style="margin-top:14px;font-size:11px;"><div class="b i">Nguồn lấy số liệu:</div>'
             + ['Ủy ban nhân dân cấp tỉnh', 'Tòa án nhân dân tối cao', 'Viện kiểm sát nhân dân tối cao', 'các Bộ'].map(function (x, i) { return '<div>- Đối với báo cáo của ' + x + ': số liệu được tổng hợp từ báo cáo của các cơ quan quy định tại điểm a và điểm b khoản ' + (i + 1) + ' Điều 26 ' + tt + '.</div>'; }).join('')
@@ -2533,6 +2617,10 @@
         // 04/11/2026 (nhanhl2): các mẫu báo cáo không còn nhãn «DỰ THẢO» ở góc
         var wm = '';
         var h = fid === 'm41' ? docM41(r, d, sign) : (fid === 'm42' ? docM42(r, d, sign) : (fid === 'm04' ? docM04(r, d, sign) : docM43(r, d, sign)));
+        if (coViTri(sign) && !isBtpReport(r)) {
+            h = h.replace('<div class="bctt-a4', '<div class="bctt-a4 kt');
+            if (!sign.keoTha) h = h.replace(/<\/div>$/, oKyTinh(sign, fid) + '</div>');   // ô kéo thả của màn trình do renderSub2 tự gắn
+        }
         return wm ? h.replace(/^(<div class="bctt-a4[^"]*"[^>]*>)/, '$1' + wm) : h;
     }
     function viewerHtml(r, tab, sign, data, idp) {
@@ -2607,12 +2695,20 @@
         if (view.name !== 'detail' || view.id !== id) { showDetail(id); }
         if (!validate(r)) { toast('Vui lòng nhập đầy đủ thông tin bắt buộc trước khi gửi phê duyệt.', 'error'); return; }
         collect(r);
-        var lv = flowLevels(r);
         var prev = (r.status === ST.TC || r.status === ST.TL) && r.submit ? r.submit : null;
-        sub = { id: id, step: 1, levels: lv.map(function (l, i) { return { level: l.level, unitId: l.unitId, unitName: l.unitName, leaders: l.leaders, kyNhay: l.kyNhay, leaderId: prev && prev.levels[i] ? prev.levels[i].leaderId : l.leaders[0] }; }),
+        // 10/11/2026 (nhanhl2): bỏ Cấu hình luồng xử lý - Cán bộ tự thiết lập các cấp trình ký ở Bước 2 (thêm cấp, chọn Lãnh đạo, Ký nháy, Ký số), như mục chung
+        // «Thiết lập các cấp trình ký» của SRS Xác định cơ quan GQBT.
+        // 10/11/2026 (nhanhl2, sau khi xem UI): không khai báo sẵn các cấp và Lãnh đạo - mọi lần trình, kể cả trình lại báo cáo bị trả lại,
+        // đều bắt đầu với 01 cấp (Cấp 1) và ô Lãnh đạo để trống; Cán bộ tự thêm cấp, tự chọn Lãnh đạo
+        var daDat = function (o) { var k = {}; if (o) Object.keys(o).forEach(function (x) { k[x] = true; }); return k; };
+        var levels = [capMoi()];
+        var pnl = prev && prev.nguoiLap, nlOn = {};
+        if (pnl) FORMS.forEach(function (f) { if (pnl.on === false || (pnl.tat && pnl.tat[f.id])) nlOn[f.id] = false; });
+        sub = { id: id, step: 1, fid: 'm42', nl: { on: nlOn, kyNhay: !!(pnl && pnl.kyNhay), placed: daDat(pnl && pnl.viTri), viTri: pnl && pnl.viTri ? JSON.parse(JSON.stringify(pnl.viTri)) : null },
+            levels: levels,
             noiDung: prev ? prev.noiDung : 'Kính trình Lãnh đạo xem xét, ký duyệt Báo cáo công tác bồi thường nhà nước năm ' + r.year + ' (' + FORM_CODES + ').', tlkt: prev ? prev.tlkt || [] : [] };
         var html = '<div class="bctt-modal" style="width:1520px;" id="bcttSubModal"><div class="bctt-mh"><div><div class="tt">GỬI PHÊ DUYỆT BÁO CÁO CÔNG TÁC BỒI THƯỜNG NHÀ NƯỚC</div><div class="st">Kỳ báo cáo: năm ' + r.year + ' - ' + PERIODS[r.period].label + ' • Đơn vị: ' + esc(r.unitName) + '</div></div><button class="bctt-x" data-close>&times;</button></div>'
-            + '<div class="bctt-step"><div id="bcttS1" class="on"><span class="b">1</span>Kiểm tra bộ báo cáo</div><div id="bcttS2"><span class="b">2</span>Chọn Lãnh đạo &amp; trình ký</div></div>'
+            + '<div class="bctt-step"><div id="bcttS1" class="on"><span class="b">1</span>Kiểm tra bộ báo cáo</div><div id="bcttS2"><span class="b">2</span>Thiết lập các cấp trình ký</div></div>'
             + '<div id="bcttSubBody1" class="bctt-mb"></div><div id="bcttSubBody2" style="display:none;flex:1;min-height:0;"></div>'
             + '<div class="bctt-mf" id="bcttSubFoot"></div></div>';
         openOv('bcttOv1', html); bindClose('bcttOv1');
@@ -2623,11 +2719,11 @@
         $('bcttSubBody1').style.display = ''; $('bcttSubBody2').style.display = 'none';
         var info = { m41: m41Count(r.m41) + ' vụ việc', m42: m42Filled(r.m42) + '/' + M42_ITEMS.length + ' mục đã nhập nội dung', m43: 'Tổng số ' + m43Total(r.m43)[2] + ' vụ việc (Cột 2)', m04: 'Tổng số ' + m04Total(r.m04)[3] + ' vụ việc xem xét trách nhiệm hoàn trả (Cột 3)' };
         var html = (r.status === ST.TC && r.reject ? '<div class="bctt-alert" style="margin:0 0 14px;"><b class="t">LÝ DO BỊ TRẢ LẠI</b>Lý do trả lại: <strong>' + esc(r.reject.reason) + '</strong><br>Lãnh đạo trả lại: ' + esc(r.reject.byName) + ' • Thời điểm trả lại: ' + esc(r.reject.at) + '</div>' : '')
-            + '<div class="bctt-sec"><div class="h">Hình thức ký</div><div><strong>Ký số trên hệ thống</strong> <span class="formula-hint">- Cố định, không chọn; báo cáo không ký duyệt ở ngoài. Trình 01 lần cho cả bộ báo cáo theo luồng đã cấu hình tại Cấu hình luồng xử lý.</span></div></div>'
+            + '<div class="bctt-sec"><div class="h">Hình thức ký</div><div><strong>Ký số trên hệ thống</strong> <span class="formula-hint">- Cố định, không chọn; báo cáo không ký duyệt ở ngoài. Trình 01 lần cho cả bộ báo cáo theo các cấp Cán bộ tự thiết lập ở Bước 2.</span></div></div>'
             + '<div class="bctt-sec"><div class="h">Bộ báo cáo trình ký</div><div class="table-container"><table class="custom-table" id="bcttSubForms"><thead><tr><th>STT</th><th>Biểu mẫu</th><th>Tình trạng dữ liệu</th><th>Thao tác</th></tr></thead><tbody>'
             + FORMS.map(function (f, i) { return '<tr><td>' + (i + 1) + '</td><td class="text-left">' + f.code + ' - ' + f.title + '</td><td class="text-left">' + info[f.id] + '</td><td><button class="bctt-link" data-fview="' + f.id + '">Xem trước PDF</button></td></tr>'; }).join('')
             + '</tbody></table></div></div>'
-            + '<div class="bctt-sec"><div class="h">Người lập biểu</div><div style="display:flex;align-items:center;gap:14px;"><img class="bctt-sig" style="height:56px;" alt="Chữ ký hình ảnh" src="' + sigImg(r.preparer.name) + '"><div><strong>' + esc(r.preparer.name) + '</strong> - ' + esc(r.preparer.title) + '<div class="formula-hint">Chữ ký hình ảnh lấy theo Hồ sơ cá nhân của cán bộ; in tại vị trí Người lập danh mục (Mẫu 41/BTNN), Người lập biểu (Mẫu 43/BTNN, Mẫu số 04).</div></div></div></div>'
+            + '<div class="bctt-sec"><div class="h">Người lập biểu</div><div style="display:flex;align-items:center;gap:14px;"><img class="bctt-sig" style="height:56px;" alt="Chữ ký hình ảnh" src="' + sigImg(r.preparer.name) + '"><div><strong>' + esc(r.preparer.name) + '</strong> - ' + esc(r.preparer.title) + '<div class="formula-hint">Chữ ký hình ảnh lấy theo Hồ sơ cá nhân của cán bộ. Ảnh chỉ in trên biểu mẫu mà Cán bộ đặt chữ ký ở Bước 2.</div></div></div></div>'
             + '<div id="bcttSubTlkt"></div>';
         $('bcttSubBody1').innerHTML = html;
         if (typeof window.tlktMount === 'function') window.tlktMount('bctt', 'bcttSubTlkt', { rows: sub.tlkt.length ? sub.tlkt : [{ name: '', file: null }], secClass: 'bctt-sec', titleClass: 'h' });
@@ -2640,30 +2736,294 @@
             renderSub2(r);
         };
     }
-    function subSign() { return { levels: sub.levels.map(function (l) { return { level: l.level, leaderName: userName(l.leaderId), kyNhay: l.kyNhay && sub.kyNhayOn !== false, result: null }; }) }; }
+    // 09/11/2026 (nhanhl2): Bước 2 thêm khối «Thiết lập vị trí & chữ ký» như bước «Kéo ô ký & chọn Lãnh đạo» của Giải quyết yêu cầu bồi thường.
+    // - Thiết lập chữ ký RIÊNG CHO TỪNG BIỂU MẪU (nhanhl2 09/11/2026: bộ 04 mẫu, mẫu này có chữ ký của người này nhưng mẫu khác thì không):
+    //   ô «Chuyên viên lập báo cáo ký», «Áp dụng ký nháy Lãnh đạo cấp n» và nút «Đặt chữ ký» chỉ tác động lên biểu mẫu đang xem.
+    //   Lãnh đạo được chọn ở mỗi cấp dùng chung cho cả bộ (trình 01 lần).
+    // - Ô kéo thả chỉ sinh khi bấm «Đặt chữ ký». Không bắt buộc bấm: ô ký nháy chưa đặt nằm ở cuối trang bên phải; ảnh chữ ký chuyên viên chưa đặt
+    //   in tại ô Người lập danh mục, Người lập biểu (Mẫu 42/BTNN không có); ô ký số của Lãnh đạo UBND tỉnh không có vị trí mặc định: không đặt thì
+    //   chữ ký số chỉ lưu trong bản ghi dữ liệu của bộ báo cáo, đặt thì ô sinh giữa phần văn bản đang nhìn thấy.
+    // - Thẻ không có dòng ghi chú (nhanhl2 09/11/2026).
+    var KT_CO = { nhay: [[180, 75], [220, 90], [280, 110]], so: [[200, 85], [245, 110], [320, 130]], nl: [[150, 70], [180, 84], [230, 104]] };
+    // 10/11/2026 (nhanhl2): cấp trình ký tự thiết lập. Mỗi cấp: leaderId, kyNhay (tích Ký nháy), kySo (bật Ký số; cấp cuối luôn bật),
+    // bo (biểu mẫu bỏ ký nháy), viTri, placed (ô ký theo từng biểu mẫu)
+    function capMoi() { return { leaderId: '', kyNhay: false, kySo: false, bo: {}, viTri: null, placed: {} }; }
+    // Lãnh đạo được chọn: Nhóm Lãnh đạo (theo Chức vụ) của đơn vị Cán bộ và các đơn vị cấp trên (Phòng, Sở Tư pháp, Ủy ban nhân dân tỉnh);
+    // Lãnh đạo UBND tỉnh giả lập của trang (LD_UBND) đứng trước Lãnh đạo UBND tỉnh trong cây đơn vị
+    function laLdUbnd(id) { if (ldUbnd(id)) return true; var W = wf(), u = W && W.getUser(id); return !!u && /^UBND-/.test(u.unitId || ''); }
+    function ldUngVien() {
+        var W = wf(), ds = W && W.signLeaderCandidates ? W.signLeaderCandidates(me().userId) : [];
+        var out = ds.filter(function (id) { return !laLdUbnd(id); }).concat(isStpRole() ? LD_UBND.map(function (x) { return x.id; }) : [], ds.filter(laLdUbnd));
+        return out.filter(function (id, i) { return id && out.indexOf(id) === i; });
+    }
+    function dvLd(id) {
+        if (!id) return { unitId: '', unitName: '' };
+        if (ldUbnd(id)) return { unitId: UBND_UNIT, unitName: UBND_TEN };
+        var W = wf(), u = W && W.getUser(id);
+        return u ? { unitId: u.unitId, unitName: W.unitName(u.unitId) } : { unitId: '', unitName: '' };
+    }
+    function nhanLd(id) { var dv = dvLd(id).unitName; return userName(id) + (userTitle(id) ? ' - ' + userTitle(id) : '') + (dv ? ' - ' + dv : ''); }
+    function ktF(fid) { return fid || sub.fid; }
+    function ktKySo(i) { return i === sub.levels.length - 1 || !!sub.levels[i].kySo; }
+    function ktKyNhay(i, fid) { var l = sub.levels[i]; return !!l.kyNhay && !ktKySo(i) && !(l.bo && l.bo[ktF(fid)]); }
+    function ktCoO(i, fid) { return ktKySo(i) || ktKyNhay(i, fid); }
+    function ktNlOn(fid) { return sub.nl.on[ktF(fid)] !== false; }
+    function ktO(k) { return k === 'nl' ? sub.nl : sub.levels[k]; }
+    function ktDat(k, fid) { return !!ktO(k).placed[ktF(fid)]; }
+    function subSign(doNeo, fid) {
+        fid = ktF(fid);
+        return { keoTha: true, nguoiLap: { on: ktNlOn(fid), placed: doNeo || ktDat('nl', fid), name: me().name, kyNhay: !!sub.nl.kyNhay },
+            levels: sub.levels.map(function (l, i) { return { level: i + 1, leaderName: l.leaderId ? userName(l.leaderId) : '', kyNhay: ktKyNhay(i, fid), kySo: ktKySo(i), knTick: !!l.kyNhay, cuoi: i === sub.levels.length - 1, result: null }; }) };
+    }
+    function formCode(fid) { var f = FORMS.find(function (x) { return x.id === fid; }); return f ? f.code : fid; }
+    // Vị trí mặc định của ô ký nháy và ảnh chữ ký chuyên viên trên một biểu mẫu: dựng biểu mẫu ngoài màn hình để đo chỗ Người lập biểu và kích thước trang
+    function ktMacDinh(r, fid) {
+        var host = document.createElement('div');
+        host.style.cssText = 'position:fixed;left:-30000px;top:0;width:1300px;visibility:hidden;pointer-events:none;';
+        host.innerHTML = docHtml(r, fid, subSign(true, fid)); document.body.appendChild(host);
+        var a4 = host.querySelector('.bctt-a4'), ra = a4.getBoundingClientRect(), W = a4.offsetWidth, H = a4.offsetHeight;
+        var n = sub.levels.length, kq = {}, nh = KT_CO.nhay[1], nl = KT_CO.nl[1], ds = [];
+        for (var i = 0; i < n; i++) if (ktKyNhay(i, fid)) ds.push(i);
+        ds.forEach(function (i, k) { kq[i] = { x: Math.max(0, W - 24 - nh[0] - (ds.length - 1 - k) * (nh[0] + 10)), y: H - 16 - nh[1], w: nh[0], h: nh[1] }; });
+        var neoNl = a4.querySelector('.kt-neo-nl');
+        if (neoNl) { var rn = neoNl.getBoundingClientRect(); kq.nl = { x: Math.max(0, Math.round(rn.left - ra.left + (rn.width - nl[0]) / 2)), y: Math.round(rn.top - ra.top), w: nl[0], h: nl[1] }; }
+        else kq.nl = { x: 40, y: H - 16 - nl[1], w: nl[0], h: nl[1] };   // Mẫu 42/BTNN không có ô Người lập biểu
+        document.body.removeChild(host);
+        return kq;
+    }
+    // Ô ký số (cấp cuối và cấp bật Ký số): sinh giữa phần văn bản đang nhìn thấy (chỉ tính được với biểu mẫu đang xem)
+    function ktGiuaKhung() {
+        var doc = $('bcttSvDoc'), a4 = doc && doc.querySelector('.bctt-a4'), view = doc && doc.closest('.bctt-view');
+        var w = KT_CO.so[1][0], h = KT_CO.so[1][1];
+        if (!a4 || !view) return { x: 40, y: 40, w: w, h: h };
+        var ra = a4.getBoundingClientRect(), rv = view.getBoundingClientRect();
+        var cx = (Math.max(ra.left, rv.left) + Math.min(ra.right, rv.right)) / 2 - ra.left, cy = (Math.max(ra.top, rv.top) + Math.min(ra.bottom, rv.bottom)) / 2 - ra.top;
+        return { x: Math.max(0, Math.min(Math.round(cx - w / 2), a4.clientWidth - w)), y: Math.max(0, Math.min(Math.round(cy - h / 2), a4.clientHeight - h)), w: w, h: h };
+    }
+    function ktLaCuoi(k) { return k !== 'nl' && ktKySo(k); }
+    function ktMacDinhO(r, k, fid) { return ktLaCuoi(k) ? (fid === sub.fid ? ktGiuaKhung() : null) : ktMacDinh(r, fid)[k]; }
+    function ktViTri(r, k, fid) {
+        var o = ktO(k); o.viTri = o.viTri || {};
+        if (!o.viTri[fid]) { var c = ktMacDinhO(r, k, fid); if (!c) return null; o.viTri[fid] = c; }
+        return o.viTri[fid];
+    }
     function renderSub2(r) {
         sub.step = 2; $('bcttS1').classList.remove('on'); $('bcttS2').classList.add('on');
         $('bcttSubBody1').style.display = 'none'; var b2 = $('bcttSubBody2'); b2.style.display = 'flex';
-        var cards = sub.levels.map(function (l, i) {
-            return '<div class="bctt-card"><div class="h">Cấp ' + l.level + ' - ' + esc(l.unitName) + (l.kyNhay ? ' <span class="bctt-kn">Ký nháy</span>' : '') + '</div>'
-                + '<span class="form-label">Lãnh đạo<span style="color:red;">*</span></span><select class="form-control" data-lv="' + i + '"><option value="">-- Chọn Lãnh đạo --</option>' + l.leaders.map(function (u) { return '<option value="' + u + '"' + (u === l.leaderId ? ' selected' : '') + '>' + esc(userName(u)) + (userTitle(u) ? ' - ' + esc(userTitle(u)) : '') + '</option>'; }).join('') + '</select><div class="bctt-err">Đây là trường bắt buộc</div>'
-                + '<div class="formula-hint" style="margin-top:6px;">' + (i === sub.levels.length - 1 ? 'Ký số tại ô «Thủ trưởng đơn vị» của từng biểu mẫu.' : (l.kyNhay ? 'Ô ký nháy đặt cuối trang của từng biểu mẫu.' : 'Ký duyệt, không đặt ô ký trên văn bản.')) + '</div></div>';
-        }).join('');
-        b2.innerHTML = '<div class="bctt-split" style="flex:1;min-height:60vh;">' + viewerHtml(r, 'm42', subSign(), null, 'bcttSv')
-            + '<div class="bctt-side">' + cards + '<div class="bctt-card"><div class="h">Nội dung trình<span style="color:red;">*</span></div><textarea class="bctt-ta" id="bcttSubND" rows="4" maxlength="2000" placeholder="Nhập nội dung trình Lãnh đạo...">' + esc(sub.noiDung) + '</textarea><div class="bctt-err" id="bcttSubNDErr">Đây là trường bắt buộc</div></div></div></div>';
-        bindViewer(r, subSign(), null, 'bcttSv');
-        b2.querySelectorAll('select[data-lv]').forEach(function (s) { s.onchange = function () { sub.levels[+s.getAttribute('data-lv')].leaderId = s.value; s.classList.remove('bctt-invalid'); s.nextElementSibling.classList.remove('on'); var act = $('bcttSvTabs').querySelector('.active'); $('bcttSvDoc').innerHTML = docHtml(r, act.getAttribute('data-vtab'), subSign()); bindViewer(r, subSign(), null, 'bcttSv'); }; });
+        sub.fid = sub.fid || 'm42';
+        // Phần đặt ô ký trong thẻ (biểu mẫu đang xem): nút «Đặt chữ ký» hoặc dòng tọa độ kèm các nút cỡ, «Đặt lại»
+        function datO(k, sz, batBuoc) {
+            return ktDat(k)
+                ? '<div class="bctt-kt-da">Đã đặt ô ký</div><div class="bctt-kt-nut">'
+                    + ['Nhỏ', 'Vừa', 'Lớn'].map(function (t, j) { return '<button type="button" class="btn btn-secondary btn-sm" data-kt-co="' + k + ':' + sz[j][0] + ':' + sz[j][1] + '">' + t + '</button>'; }).join('')
+                    + '<button type="button" class="btn btn-secondary btn-sm" data-kt-lai="' + k + '" title="Đưa ô ký trên biểu mẫu đang xem về vị trí ban đầu"><i class="fa-solid fa-rotate-left"></i> Đặt lại</button></div>'
+                : '<div style="margin-top:8px;"><button type="button" class="btn btn-secondary btn-sm" data-kt-dat="' + k + '" style="font-size:12px;"><i class="fa-solid fa-signature"></i> Đặt chữ ký</button>'
+                    + (batBuoc ? '<span class="bctt-kt-bb">Bắt buộc</span>' : '') + '</div>'
+                    + (batBuoc ? '<div class="bctt-err" data-kt-err="' + k + '">Chưa đặt chữ ký</div>' : '');
+        }
+        function theNl() {
+            var u = me();
+            return '<div class="bctt-card kt-nl"><div class="h"><span>Chuyên viên lập báo cáo</span></div>'
+                + '<div style="font-size:13px;color:#334155;">' + esc(u.name) + (u.title ? ' - ' + esc(u.title) : '') + '</div>'
+                + '<div class="bctt-cap-tc"><label><input type="checkbox" data-kt-nl-kn' + (sub.nl.kyNhay ? ' checked' : '') + '> Ký nháy</label></div>'
+                + '<label class="bctt-kt-chk"><input type="checkbox" data-kt-nl-on' + (ktNlOn() ? ' checked' : '') + '><span>Chuyên viên lập báo cáo ký</span></label>'
+                + (ktNlOn() ? datO('nl', KT_CO.nl) : '')
+                + '</div>';
+        }
+        function the(l, i) {
+            var n = sub.levels.length, last = i === n - 1, ks = ktKySo(i), kn = !!l.kyNhay && !ks, dv = dvLd(l.leaderId).unitName;
+            return '<div class="bctt-card ' + (last ? 'kt-so' : (kn ? 'kt-nhay' : '')) + '" data-cap="' + i + '"><div class="h" style="justify-content:space-between;align-items:flex-start;gap:6px;"><span>Cấp ' + (i + 1) + (last ? ' - Cấp cuối (ký ban hành)' : (dv ? ' - ' + esc(dv) : '')) + '</span>'
+                + '<span class="bctt-cap-cu"><button type="button" title="Lên" data-cap-act="up"' + (i === 0 ? ' disabled' : '') + '><i class="fa-solid fa-arrow-up"></i></button><button type="button" title="Xuống" data-cap-act="down"' + (last ? ' disabled' : '') + '><i class="fa-solid fa-arrow-down"></i></button>'
+                + (n > 1 ? '<button type="button" class="del" title="Xóa cấp" data-cap-act="del"><i class="fa-solid fa-trash"></i></button>' : '') + '</span></div>'
+                // 10/11/2026 (nhanhl2): thẻ cấp cuối ghi rõ «Cấp n - Cấp cuối (ký ban hành)» như khối thiết lập dùng chung; đơn vị của Lãnh đạo ở dòng dưới
+                + (last && dv ? '<div class="bctt-cap-dv">' + esc(dv) + '</div>' : '')
+                + '<span class="form-label">Lãnh đạo<span style="color:red;">*</span></span><div class="bctt-cb" data-cb="' + i + '"></div><div class="bctt-err" data-cap-err="' + i + '">Đây là trường bắt buộc</div>'
+                + '<div class="bctt-cap-tc"><label><input type="checkbox" data-cap-kn="' + i + '"' + (l.kyNhay ? ' checked' : '') + '> Ký nháy</label>'
+                + '<label title="' + (last ? 'Cấp cuối bắt buộc Ký số' : 'Lãnh đạo cấp này ký số văn bản khi Ký duyệt') + '"><span class="bctt-sw"><input type="checkbox" data-cap-ks="' + i + '"' + (ks ? ' checked' : '') + (last ? ' disabled' : '') + '><span></span></span> Ký số' + (last ? ' <i class="fa-solid fa-lock" style="font-size:10px;color:#94a3b8;"></i>' : '') + '</label></div>'
+                + (kn ? '<label class="bctt-kt-chk"><input type="checkbox" data-kt-nhay="' + i + '"' + (ktKyNhay(i) ? ' checked' : '') + '><span>Áp dụng ký nháy Lãnh đạo cấp ' + (i + 1) + '</span></label>' : '')
+                + (!ktCoO(i) ? '' : datO(i, KT_CO[ks ? 'so' : 'nhay'], last || (!ks && ktKyNhay(i))))
+                + '</div>';
+        }
+        // Ô chọn Lãnh đạo có tìm kiếm (không tìm dấu, không phân biệt hoa thường); không liệt kê Lãnh đạo đã chọn ở cấp khác
+        var boDau = function (s) { return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase(); };
+        function ganChonLd(host, i) {
+            var l = sub.levels[i];
+            host.innerHTML = '<div class="bctt-cb-box" tabindex="0">' + (l.leaderId ? '<span>' + esc(nhanLd(l.leaderId)) + '</span>' : '<span class="ph">-- Chọn Lãnh đạo --</span>') + '<i class="fa-solid fa-chevron-down" style="color:#64748b;font-size:11px;"></i></div>'
+                + '<div class="bctt-cb-pn"><input type="text" placeholder="Tìm theo họ tên, chức vụ, đơn vị..." autocomplete="off"><div class="bctt-cb-ls"></div></div>';
+            var o = host.querySelector('input'), ls = host.querySelector('.bctt-cb-ls');
+            function ve() {
+                var q = boDau(o.value.trim()), dk = ldUngVien().filter(function (id) { return id === l.leaderId || !sub.levels.some(function (x, k) { return k !== i && x.leaderId === id; }); });
+                dk = dk.filter(function (id) { return !q || boDau(nhanLd(id)).indexOf(q) >= 0; });
+                ls.innerHTML = dk.length ? dk.map(function (id) { return '<div class="bctt-cb-it' + (id === l.leaderId ? ' sel' : '') + '" data-ld="' + esc(id) + '">' + esc(nhanLd(id)) + '</div>'; }).join('') : '<div class="bctt-cb-ko">Không có dữ liệu phù hợp</div>';
+            }
+            host.querySelector('.bctt-cb-box').addEventListener('click', function () {
+                var mo = !host.classList.contains('open');
+                theBox.querySelectorAll('.bctt-cb.open').forEach(function (x) { x.classList.remove('open'); });
+                if (mo) { host.classList.add('open'); o.value = ''; ve(); setTimeout(function () { o.focus(); }, 20); }
+            });
+            o.addEventListener('input', ve);
+            ls.addEventListener('mousedown', function (e) {
+                var it = e.target.closest('[data-ld]'); if (!it) return;
+                e.preventDefault(); l.leaderId = it.getAttribute('data-ld'); host.classList.remove('open'); veThe(); veVanBan();
+            });
+        }
+        b2.innerHTML = '<div class="bctt-split" style="flex:1;min-height:60vh;">' + viewerHtml(r, sub.fid, subSign(), null, 'bcttSv')
+            + '<div class="bctt-side"><div class="bctt-kt-td"><i class="fa-solid fa-sliders" style="color:#2563eb;"></i> THIẾT LẬP VỊ TRÍ &amp; CHỮ KÝ</div>'
+            + '<div class="formula-hint" style="margin-bottom:8px;">Mỗi biểu mẫu có thiết lập chữ ký riêng: chọn tab biểu mẫu phía trên văn bản để thiết lập. Kéo ô chữ ký vào vị trí và dùng góc dưới phải để kéo to hoặc nhỏ khung chữ ký.</div>'
+            + '<div class="bctt-kt-mau" id="bcttKtMau"></div>'
+            + '<div id="bcttKtThe"></div>'
+            + '<button type="button" class="btn btn-secondary btn-sm" id="bcttKtThem" style="align-self:flex-start;font-size:12.5px;margin:0 0 10px;"><i class="fa-solid fa-plus"></i> Thêm cấp</button>'
+            + '<div class="formula-hint" style="margin:0 0 12px;">Bấm <strong>Đặt chữ ký</strong> để sinh ô ký trên biểu mẫu đang xem; kéo ô để đặt vị trí, kéo góc dưới phải để đổi kích thước.</div>'
+            + '<div class="bctt-card"><div class="h">Nội dung trình<span style="color:red;">*</span></div><textarea class="bctt-ta" id="bcttSubND" rows="4" maxlength="2000" placeholder="Nhập nội dung trình Lãnh đạo...">' + esc(sub.noiDung) + '</textarea><div class="bctt-err" id="bcttSubNDErr">Đây là trường bắt buộc</div></div></div></div>';
+        var theBox = $('bcttKtThe');
+        function cacO() { var ds = ktNlOn() ? ['nl'] : []; sub.levels.forEach(function (l, i) { if (ktCoO(i)) ds.push(i); }); return ds; }
+        function veThe() {
+            $('bcttKtMau').innerHTML = 'Đang thiết lập cho: <strong>' + esc(formCode(sub.fid)) + '</strong>'; theBox.innerHTML = theNl() + sub.levels.map(the).join('');
+            theBox.querySelectorAll('[data-cb]').forEach(function (h) { ganChonLd(h, +h.getAttribute('data-cb')); });
+            capNhatToaDo();
+        }
+        document.addEventListener('mousedown', function (e) { if (theBox.isConnected && !e.target.closest('.bctt-cb')) theBox.querySelectorAll('.bctt-cb.open').forEach(function (x) { x.classList.remove('open'); }); });
+        function a4() { return $('bcttSvDoc').querySelector('.bctt-a4'); }
+        function capNhatToaDo() {
+            cacO().forEach(function (k) {
+                var o = ktO(k), c = o.viTri && o.viTri[sub.fid], p = theBox.querySelector('[data-kt-xy="' + k + '"]');
+                if (p && c) p.textContent = formCode(sub.fid) + ' • Tọa độ: (' + c.x + ', ' + c.y + ') • Cỡ: ' + c.w + ' × ' + c.h + ' px';
+                var bx = a4() && a4().querySelector('[data-oky="' + k + '"]');
+                if (bx && c) { bx.style.left = c.x + 'px'; bx.style.top = c.y + 'px'; bx.style.width = c.w + 'px'; bx.style.height = c.h + 'px'; var xy = bx.querySelector('[data-oky-xy]'); if (xy) xy.textContent = 'X: ' + c.x + ', Y: ' + c.y; }
+            });
+        }
+        // Vẽ biểu mẫu đang xem kèm các ô ký đã đặt trên biểu mẫu đó (kéo được)
+        function veVanBan() {
+            var sg = subSign(), n = sub.levels.length;
+            $('bcttSvDoc').innerHTML = docHtml(r, sub.fid, sg);
+            var trang = a4();
+            cacO().forEach(function (k) {
+                if (!ktDat(k)) return;
+                var c = ktViTri(r, k, sub.fid);
+                trang.insertAdjacentHTML('beforeend', k === 'nl' ? oNlHtml(sg.nguoiLap, c, true) : oKyHtml(sg.levels[k], k, ktKySo(k), c, true));
+                var bx = trang.querySelector('[data-oky="' + k + '"]');
+                bx.addEventListener('mousedown', function (e) {
+                    if (e.button !== 0) return;
+                    e.preventDefault(); e.stopPropagation();
+                    var co = !!e.target.closest('.rz'), sx = e.clientX, sy = e.clientY, ox = c.x, oy = c.y, ow = c.w, oh = c.h;
+                    bx.classList.add('keo');
+                    var move = function (ev) {
+                        if (co) { c.w = Math.max(120, Math.round(ow + ev.clientX - sx)); c.h = Math.max(55, Math.round(oh + ev.clientY - sy)); }
+                        else { c.x = Math.max(0, Math.min(Math.round(ox + ev.clientX - sx), trang.clientWidth - c.w)); c.y = Math.max(0, Math.min(Math.round(oy + ev.clientY - sy), trang.clientHeight - c.h)); }
+                        capNhatToaDo();
+                    };
+                    var up = function () { bx.classList.remove('keo'); document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); };
+                    document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
+                });
+            });
+            capNhatToaDo();
+        }
+        var khoa = function (v) { return v === 'nl' ? 'nl' : +v; };
+        // Chữ ký đang áp dụng mà chưa đặt trên từng biểu mẫu, kèm cách Hệ thống xử lý khi vẫn trình
+        function ktThieu() {
+            var n = sub.levels.length;
+            return FORMS.map(function (f) {
+                var ds = [];
+                if (ktNlOn(f.id) && !ktDat('nl', f.id)) ds.push({ ten: 'Chuyên viên lập báo cáo', xl: 'Không in ảnh chữ ký.' });
+                sub.levels.forEach(function (l, i) {
+                    var dv = dvLd(l.leaderId).unitName;
+                    if (ktKySo(i) && i !== sub.levels.length - 1 && !ktDat(i, f.id)) ds.push({ ten: 'Ký số Cấp ' + (i + 1) + (dv ? ' - ' + dv : ''), xl: 'Chữ ký số chỉ lưu trong bản ghi dữ liệu của bộ báo cáo, không hiển thị trên văn bản.' });
+                });
+                return { fid: f.id, code: f.code, ds: ds };
+            }).filter(function (x) { return x.ds.length; });
+        }
+        function canhBaoKy(thieu) {
+            var rows = thieu.map(function (x, i) {
+                return '<tr><td>' + (i + 1) + '</td><td class="text-left" style="white-space:nowrap;">' + esc(x.code) + '</td><td class="text-left">' + x.ds.map(function (d) { return '<div style="margin:2px 0;"><strong>' + esc(d.ten) + '</strong>: ' + esc(d.xl) + '</div>'; }).join('') + '</td>'
+                    + '<td><button type="button" class="bctt-link" data-kt-mau="' + x.fid + '">Thiết lập</button></td></tr>';
+            }).join('');
+            openOv('bcttOv2', '<div class="bctt-modal" style="width:860px;"><div class="bctt-mh"><div><div class="tt">Cảnh báo chưa thiết lập chữ ký</div></div><button class="bctt-x" data-close>&times;</button></div>'
+                + '<div class="bctt-mb"><div class="bctt-alert" style="margin:0 0 12px;"><b class="t"><i class="fa-solid fa-triangle-exclamation"></i> Có ' + thieu.length + ' biểu mẫu chưa thiết lập đủ chữ ký</b>Các chữ ký dưới đây chưa được đặt trên văn bản. Nếu vẫn trình, Hệ thống xử lý như ghi ở từng dòng.</div>'
+                + '<div class="table-container" style="max-height:340px;overflow:auto;"><table class="custom-table" id="bcttKtThieu"><thead><tr><th style="width:56px;">STT</th><th>Biểu mẫu</th><th>Chữ ký chưa đặt</th><th style="width:96px;">Thao tác</th></tr></thead><tbody>' + rows + '</tbody></table></div></div>'
+                + '<div class="bctt-mf"><button class="btn btn-secondary" id="bcttKtQuayLai"><i class="fa-solid fa-arrow-left"></i> Quay lại thiết lập</button><button class="btn btn-success" id="bcttKtVanTrinh"><i class="fa-solid fa-paper-plane"></i> Vẫn trình Lãnh đạo</button></div></div>');
+            bindClose('bcttOv2');
+            var moMau = function (fid) { closeOv('bcttOv2'); var tab = $('bcttSvTabs').querySelector('[data-vtab="' + fid + '"]'); if (tab) tab.click(); };
+            onClk($('bcttKtThieu'), function (e) { var b = e.target.closest('[data-kt-mau]'); if (b) moMau(b.getAttribute('data-kt-mau')); });
+            $('bcttKtQuayLai').onclick = function () { moMau(thieu[0].fid); };
+            $('bcttKtVanTrinh').onclick = function () { closeOv('bcttOv2'); sub.boQuaCanhBao = true; $('bcttSubGo').click(); };
+        }
+        bindViewer(r, subSign(), null, 'bcttSv', function (fid) { sub.fid = fid; veThe(); veVanBan(); });
+        function doiCap() { veThe(); veVanBan(); }
+        $('bcttKtThem').onclick = function () { sub.levels.push(capMoi()); doiCap(); };
+        onClk(theBox, function (e) {
+            var cg = e.target.closest('[data-cap-act]');
+            if (cg && !cg.disabled) {
+                var L = sub.levels, i = +cg.closest('[data-cap]').getAttribute('data-cap'), act = cg.getAttribute('data-cap-act');
+                if (act === 'up' && i > 0) { var a = L[i - 1]; L[i - 1] = L[i]; L[i] = a; }
+                else if (act === 'down' && i < L.length - 1) { var b = L[i + 1]; L[i + 1] = L[i]; L[i] = b; }
+                else if (act === 'del' && L.length > 1) L.splice(i, 1);
+                doiCap(); return;
+            }
+            var t = e.target.closest('[data-kt-dat],[data-kt-co],[data-kt-lai]'); if (!t) return;
+            if (t.hasAttribute('data-kt-dat')) {
+                var k = khoa(t.getAttribute('data-kt-dat')); ktO(k).placed[sub.fid] = true; veThe(); veVanBan();
+                var bx = a4().querySelector('[data-oky="' + k + '"]'); if (bx && bx.scrollIntoView) bx.scrollIntoView({ block: 'center' });
+            } else if (t.hasAttribute('data-kt-co')) {
+                var p = t.getAttribute('data-kt-co').split(':'), c = ktViTri(r, khoa(p[0]), sub.fid); c.w = +p[1]; c.h = +p[2]; capNhatToaDo();
+            } else {
+                var j = khoa(t.getAttribute('data-kt-lai')); ktO(j).viTri[sub.fid] = ktMacDinhO(r, j, sub.fid); veVanBan();
+            }
+        });
+        theBox.addEventListener('change', function (e) {
+            var s = e.target;
+            if (s.matches('[data-cap-kn]')) { sub.levels[+s.getAttribute('data-cap-kn')].kyNhay = s.checked; doiCap(); }
+            else if (s.matches('[data-cap-ks]')) { sub.levels[+s.getAttribute('data-cap-ks')].kySo = s.checked; doiCap(); }
+            else if (s.matches('[data-kt-nhay]')) { var lb = sub.levels[+s.getAttribute('data-kt-nhay')]; lb.bo = lb.bo || {}; lb.bo[sub.fid] = !s.checked; veThe(); veVanBan(); }
+            else if (s.matches('[data-kt-nl-on]')) { sub.nl.on[sub.fid] = s.checked; veThe(); veVanBan(); }
+            else if (s.matches('[data-kt-nl-kn]')) { sub.nl.kyNhay = s.checked; veThe(); veVanBan(); }
+        });
+        veThe(); veVanBan();
         $('bcttSubFoot').innerHTML = '<button class="btn btn-secondary" id="bcttSubBack"><i class="fa-solid fa-arrow-left"></i> Quay lại</button><button class="btn btn-secondary" data-close>Hủy bỏ</button><button class="btn btn-success" id="bcttSubGo"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>';
         bindClose('bcttOv1');
         $('bcttSubBack').onclick = function () { sub.noiDung = $('bcttSubND').value; renderSub1(r); };
         $('bcttSubGo').onclick = function () {
             var first = null;
-            b2.querySelectorAll('select[data-lv]').forEach(function (s) { var bad = !s.value; s.classList.toggle('bctt-invalid', bad); s.nextElementSibling.classList.toggle('on', bad); if (bad && !first) first = s; });
+            var nCap = sub.levels.length;
+            sub.levels.forEach(function (l, i) {
+                var cb = theBox.querySelector('[data-cb="' + i + '"]'), er = theBox.querySelector('[data-cap-err="' + i + '"]');
+                var msg = !l.leaderId ? 'Đây là trường bắt buộc' : (i === nCap - 1 && !isBtpReport(r) && !laLdUbnd(l.leaderId) ? 'Lãnh đạo ở cấp cuối phải là Lãnh đạo Ủy ban nhân dân tỉnh.' : '');
+                cb.classList.toggle('invalid', !!msg); er.textContent = msg || 'Đây là trường bắt buộc'; er.classList.toggle('on', !!msg);
+                if (msg && !first) first = cb.querySelector('.bctt-cb-box');
+            });
             var nd = $('bcttSubND'); var badNd = !nd.value.trim(); nd.classList.toggle('bctt-invalid', badNd); $('bcttSubNDErr').classList.toggle('on', badNd); if (badNd && !first) first = nd;
             if (first) { first.focus(); return; }
+            // 10/11/2026 (nhanhl2): cấp tích Ký nháy bắt buộc đặt ô ký nháy trên mọi biểu mẫu đang áp dụng ký nháy; cấp cuối (ký ban hành) bắt buộc
+            // đặt ô ký số trên mọi biểu mẫu. Thiếu thì mở tab biểu mẫu thiếu
+            // (ưu tiên biểu mẫu đang xem), hiện «Chưa đặt chữ ký» dưới nút «Đặt chữ ký» của cấp đó và không trình
+            var thieuNhay = function (fid) { return sub.levels.map(function (l, i) { return i; }).filter(function (i) { return (ktKyNhay(i, fid) || i === sub.levels.length - 1) && !ktDat(i, fid); }); };
+            var mauThieu = [sub.fid].concat(FORMS.map(function (f) { return f.id; }).filter(function (x) { return x !== sub.fid; })).filter(function (fid) { return thieuNhay(fid).length; })[0];
+            if (mauThieu) {
+                if (mauThieu !== sub.fid) { var tb = $('bcttSvTabs').querySelector('[data-vtab="' + mauThieu + '"]'); if (tb) tb.click(); }
+                var dauTien = null;
+                thieuNhay(mauThieu).forEach(function (i) { var er = theBox.querySelector('[data-kt-err="' + i + '"]'); if (er) { er.classList.add('on'); dauTien = dauTien || er; } });
+                if (dauTien && dauTien.scrollIntoView) dauTien.scrollIntoView({ block: 'center' });
+                return;
+            }
+            // 09/11/2026 (nhanhl2): biểu mẫu còn chữ ký đang áp dụng mà chưa Click «Đặt chữ ký» thì cảnh báo; Cán bộ chọn quay lại thiết lập hoặc vẫn trình
+            var thieu = ktThieu();
+            if (thieu.length && !sub.boQuaCanhBao) { canhBaoKy(thieu); return; }
+            sub.boQuaCanhBao = false;
+            // Theo từng biểu mẫu: ô ký nháy đang áp dụng mà chưa đặt thì lấy vị trí mặc định; ảnh chữ ký chuyên viên chỉ lưu tọa độ ở mẫu đã đặt;
+            // ô ký số của Lãnh đạo UBND tỉnh chỉ lưu ở mẫu đã đặt (không đặt thì chữ ký số chỉ lưu trong bản ghi dữ liệu)
+            var chon = function (o, dk) { var kq = null; FORMS.forEach(function (f) { if (dk(f.id) && o.viTri && o.viTri[f.id]) { kq = kq || {}; kq[f.id] = JSON.parse(JSON.stringify(o.viTri[f.id])); } }); return kq; };
+            FORMS.forEach(function (f) { sub.levels.forEach(function (l, i) { if (ktKyNhay(i, f.id)) ktViTri(r, i, f.id); }); });
+            // Ô ký đã đặt nhưng cấp không còn ô ký (bỏ Ký nháy, tắt Ký số) thì không lưu
+            var tatNl = {}; FORMS.forEach(function (f) { if (!ktNlOn(f.id)) tatNl[f.id] = true; });
             if (trinhLaiCho && trinhLaiCho.id === r.id) { trinhLaiCho = null; luuBanKyCu(r); }   // 06/11/2026: trình lại báo cáo đã gửi
             r.submit = { at: nowText(), by: me().name, noiDung: nd.value.trim(), current: 0, tlkt: sub.tlkt,
-                levels: sub.levels.map(function (l) { return { level: l.level, unitId: l.unitId, unitName: l.unitName, leaderId: l.leaderId, leaderName: userName(l.leaderId), kyNhay: l.kyNhay, result: null, at: '', note: '' }; }) };
+                nguoiLap: { on: FORMS.some(function (f) { return ktNlOn(f.id); }), tat: tatNl, name: me().name, kyNhay: !!sub.nl.kyNhay, viTri: chon(sub.nl, function (f) { return ktNlOn(f) && ktDat('nl', f); }) },
+                levels: sub.levels.map(function (l, i) {
+                    var ks = ktKySo(i), tat = {}, dv = dvLd(l.leaderId);
+                    if (l.kyNhay && !ks) FORMS.forEach(function (f) { if (!ktKyNhay(i, f.id)) tat[f.id] = true; });
+                    return { level: i + 1, unitId: dv.unitId, unitName: dv.unitName, leaderId: l.leaderId, leaderName: userName(l.leaderId),
+                        kyNhayCap: !!l.kyNhay, kySo: ks, kyNhay: FORMS.some(function (f) { return ktKyNhay(i, f.id); }), tatNhay: tat,
+                        viTri: chon(l, function (f) { return ks ? ktDat(i, f) : ktKyNhay(i, f); }), result: null, at: '', note: '' };
+                }) };
             r.status = ST.CHO; r.sentAt = r.submit.at; r.reject = null; r.preparer = { userId: me().userId, name: me().name, title: me().title };
             hist(r, me().name, 'Gửi phê duyệt', 'Trình ' + r.submit.levels[0].leaderName + ': ' + r.submit.noiDung);
             save(); closeOv('bcttOv1'); toast('Đã gửi phê duyệt báo cáo đến ' + r.submit.levels[0].leaderName + '.'); showDetail(r.id);

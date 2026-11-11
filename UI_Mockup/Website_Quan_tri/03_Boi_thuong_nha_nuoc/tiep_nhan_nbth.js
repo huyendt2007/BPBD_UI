@@ -19,7 +19,9 @@
     var VN = 'Việt Nam';
     var T_CA_NHAN = 'Cá nhân', T_TO_CHUC = 'Tổ chức';
     var NEW_IDS = ['nbthTypeCaNhan', 'nbthTypeToChuc', 'nbthPOrgCode', 'nbthPhone', 'nbthEmail', 'nbthCountry',
-        'nbthOrgCountry', 'nbthOrgCity', 'nbthOrgWard', 'nbthOrgAddress'];
+        'nbthOrgCountry', 'nbthOrgCity', 'nbthOrgWard', 'nbthOrgAddress',
+        // [ttgt] Ngày cấp, Nơi cấp (Cá nhân); giấy tờ thành lập/đăng ký, người đại diện (Tổ chức)
+        'nbthDocDate', 'nbthDocPlace', 'nbthOrgDocNo', 'nbthOrgDocDate', 'nbthOrgDocPlace', 'nbthRepName', 'nbthRepPosition'];
     var NBTH_SEED_VERSION = '20261109tt1';
 
     function el(id) { return document.getElementById(id); }
@@ -295,7 +297,14 @@
             dob: org ? '' : gv('nbthDob'),
             docType: org ? '' : gv('nbthDocType'),
             docNo: org ? '' : gv('nbthDocNo'),
+            docDate: org ? '' : gv('nbthDocDate'),
+            docPlace: org ? '' : gv('nbthDocPlace'),
             orgCode: org ? gv('nbthPOrgCode') : '',
+            orgDocNo: org ? gv('nbthOrgDocNo') : '',
+            orgDocDate: org ? gv('nbthOrgDocDate') : '',
+            orgDocPlace: org ? gv('nbthOrgDocPlace') : '',
+            repName: org ? gv('nbthRepName') : '',
+            repPosition: org ? gv('nbthRepPosition') : '',
             phone: normalizeVnPhone(gv('nbthPhone')),
             email: gv('nbthEmail'),
             country: a.country, city: a.city, ward: a.ward, address: a.address
@@ -310,6 +319,9 @@
         sv('nbthDocType', nb.docType || '');
         sv('nbthDocNo', nb.docNo || '');
         sv('nbthPOrgCode', nb.orgCode || '');
+        ['docDate', 'docPlace', 'orgDocNo', 'orgDocDate', 'orgDocPlace', 'repName', 'repPosition'].forEach(function (k) {
+            sv('nbth' + k.charAt(0).toUpperCase() + k.slice(1), nb[k] || '');
+        });
         sv('nbthPhone', nb.phone || '');
         sv('nbthEmail', nb.email || '');
         fillAddr('nbth', nb);

@@ -1073,11 +1073,11 @@
     }
     // Danh sách CQGQBT được chọn: đơn vị gốc có ít nhất 01 tài khoản thuộc Nhóm Lãnh đạo
     function gqConfiguredRoots() { return flowRootIds(FLOW_TYPES.GQ).filter(id => isUnitConfigured(id, FLOW_TYPES.GQ)); }
-    function xdTargetConfigured(rec) { const id = xdTargetUnitId(rec); return !!id && isUnitConfigured(id, FLOW_TYPES.GQ); }
+    // Xác định CQGQBT: CQGQBT chọn trên cây Cơ cấu tổ chức, chỉ cần là cơ quan, đơn vị có trên hệ thống; không kiểm tra Nhóm Lãnh đạo
+    // (đơn vị gốc chưa có tài khoản thuộc Nhóm Lãnh đạo: hồ sơ BT- giữ Chờ phân công tại Tiếp nhận hồ sơ)
+    function xdTargetConfigured(rec) { const id = xdTargetUnitId(rec); return !!id && !!getUnit(id); }
     function xdTargetNotConfiguredMsg(rec) {
-        const id = xdTargetUnitId(rec);
-        // [ro1] MSG-ERR-BTNN-LXL-007
-        return `Đơn vị ${id ? unitName(id) : (rec && rec.procTargetAgency) || '--'} chưa có tài khoản thuộc Nhóm Lãnh đạo. Vui lòng liên hệ Quản trị hệ thống.`;
+        return `Cơ quan giải quyết bồi thường ${(rec && rec.procTargetAgency) ? rec.procTargetAgency + ' ' : ''}không có trên hệ thống. Vui lòng chọn lại trên cây cơ cấu tổ chức.`;
     }
     // Tài liệu chuyển kèm: văn bản Kết quả xác định CQGQBT đã ký + toàn bộ tài liệu hồ sơ
     function xdTransferFiles(rec) {
@@ -1156,7 +1156,7 @@
             if (hasClaimCode(r)) { r.status = STATUS.DA_CHUYEN; return ch; }
             const t = xdTargetUnitId(r);
             if (!r.history) r.history = [];
-            if (t && isUnitConfigured(t, FLOW_TYPES.GQ)) {
+            if (t && getUnit(t)) {
                 const code = xdCreateGqRecord(r, t, `Chuyển hồ sơ để ${unitName(t)} giải quyết theo thẩm quyền theo Kết quả xác định CQGQBT đã ký duyệt.`, xdTransferFiles(r), '', list);
                 r.history.push({ at: nowText(), userId: '', userName: 'Hệ thống', action: 'Chuyển CQGQBT', note: `Hệ thống tự động chuyển ${unitName(t)}; tạo hồ sơ GQBT ${code}. Hồ sơ chuyển [${STATUS.DA_CHUYEN}].` });
             } else {
@@ -1749,7 +1749,7 @@
             }
             preset[0] = extra.assignee || '';
         }
-        // Xác định CQGQBT: trình Kết quả xác định CQGQBT khi CQGQBT đã chọn có cấu hình luồng Giải quyết YCBT (ký duyệt xong hệ thống tự động chuyển)
+        // Xác định CQGQBT: trình Kết quả xác định CQGQBT khi CQGQBT đã chọn có trên cây Cơ cấu tổ chức (ký duyệt xong hệ thống tự động chuyển; không kiểm tra Nhóm Lãnh đạo)
         if (isXdRec(rec) && kind === KIND_KQXD && !xdTargetConfigured(rec)) return { ok: false, message: xdTargetNotConfiguredMsg(rec) };
         if (rec.status === STATUS.CHO_TIEP_NHAN) {
             const r = latestRoute(rec);

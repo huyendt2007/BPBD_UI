@@ -643,10 +643,7 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <span class="form-label">Lịch sử xử lý</span>
-                <div id="historyList" class="history-list"></div>
-            </div>
+            <div id="historyList"></div>
         </form>
         <div class="footer-actions" id="formActions"></div>
     </div>
@@ -703,7 +700,18 @@
         const nowText = () => { const d = new Date(); return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')} ${today()}`; };
         const parseDate = s => { const p = String(s || '').split('/'); return p.length === 3 ? new Date(p[2], p[1] - 1, p[0]) : null; };
         const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-        const hist = (at, by, action) => ({ at, by, action });
+        const hist = (at, by, action, note) => ({ at, by, action, note: note || '' });
+        // Lịch sử xử lý chuẩn BTNN: 04 cột Thời gian | Người thực hiện | Thao tác | Nội dung xử lý, mới nhất ở trên
+        function lichSuXuLyHtml(rows, title, emptyText) {
+            const th = 'padding:12px 16px; background:#f1f5f9; color:#1e3a8a; font-weight:700; font-size:13px;';
+            const td = 'padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:13px; color:#1e293b; vertical-align:top;';
+            const when = s => String(s == null ? '' : s).replace(/^(\d{2}:\d{2})\s+(\d{2}\/\d{2}\/\d{4})$/, '$2 $1');
+            const head = `<div style="display:flex; align-items:center; gap:8px; margin:16px 0 10px; font-weight:700; color:#1e3a8a; font-size:14px;"><i class="fa-solid fa-clock-rotate-left"></i> ${esc(title || 'Lịch sử xử lý')}</div>`;
+            const list = (rows || []).slice().reverse();
+            if (!list.length) return head + `<div style="color:#64748b; font-style:italic;">${esc(emptyText || 'Chưa có lịch sử xử lý.')}</div>`;
+            return head + `<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; table-layout:fixed;"><thead><tr><th style="${th} width:170px; text-align:center;">Thời gian</th><th style="${th} width:220px; text-align:left;">Người thực hiện</th><th style="${th} width:260px; text-align:center;">Thao tác</th><th style="${th} text-align:left;">Nội dung xử lý</th></tr></thead><tbody>`
+                + list.map(x => `<tr><td style="${td} text-align:center;">${esc(when(x.at))}</td><td style="${td}">${esc(x.by)}</td><td style="${td} text-align:center;">${esc(x.action)}</td><td style="${td} white-space:pre-line;">${esc(x.note || ({ 'Lập kế hoạch kiểm tra': 'Đã lập kế hoạch kiểm tra.', 'Sửa kế hoạch kiểm tra': 'Đã cập nhật thông tin kế hoạch kiểm tra.', 'Cập nhật kết quả kiểm tra': 'Đã kiểm tra.', 'Sửa kết quả kiểm tra': 'Đã cập nhật kết quả kiểm tra.' }[x.action]) || '--')}</td></tr>`).join('') + '</tbody></table></div>';
+        }
         const mem = (name, position, unitId, role) => ({ name, position, unitId, role });
         function seed() {
             const s = 'Đỗ Văn Chung';
@@ -944,8 +952,7 @@
             ['planBlock', 'resultBlock'].forEach(id => document.getElementById(id).classList.remove('view-mode'));
             renderPlan(formRec);
             renderResult(formRec);
-            const h = formRec.history || [];
-            document.getElementById('historyList').innerHTML = h.length ? h.map(x => `<div class="history-item"><b>${esc(x.at)}</b> - ${esc(x.by)}: ${esc(x.action)}</div>`).join('') : '<div class="muted">Chưa có lịch sử xử lý.</div>';
+            document.getElementById('historyList').innerHTML = lichSuXuLyHtml(formRec.history || [], 'Lịch sử xử lý');
             const a = [`<button type="button" class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> ${mode === 'view' ? 'Đóng' : 'Hủy bỏ'}</button>`];
             if (planEditable()) a.push(`<button type="button" class="btn btn-primary" onclick="savePlan()"><i class="fa-solid fa-floppy-disk"></i> Lưu kế hoạch</button>`);
             if (resultEditable()) a.push(`<button type="button" class="btn btn-primary" onclick="saveResult()"><i class="fa-solid fa-floppy-disk"></i> Lưu kết quả kiểm tra</button>`);
@@ -1004,8 +1011,8 @@
             if (errs.length || msg) { (errs[0] || memErr).scrollIntoView({ block: 'center' }); return; }
             const r = formRec;
             Object.assign(r, { form: v('form'), basis: v('basis'), targetId: targetTree.getValue(), planFrom: v('planFrom'), planTo: v('planTo'), planPlace: v('planPlace'), content: v('content'), periodFrom: v('periodFrom'), periodTo: v('periodTo'), members, planDocs: docs.plan });
-            if (!r.code) { r.code = nextCode(); r.createdAt = today(); r.status = ST.PLANNED; r.resultDocs = []; r.history = [hist(nowText(), myUser().name, 'Lập kế hoạch kiểm tra')]; records.unshift(r); }
-            else { r.history = [...(r.history || []), hist(nowText(), myUser().name, 'Sửa kế hoạch kiểm tra')]; records[records.findIndex(x => x.code === r.code)] = r; }
+            if (!r.code) { r.code = nextCode(); r.createdAt = today(); r.status = ST.PLANNED; r.resultDocs = []; r.history = [hist(nowText(), myUser().name, 'Lập kế hoạch kiểm tra', 'Đã lập kế hoạch kiểm tra.')]; records.unshift(r); }
+            else { r.history = [...(r.history || []), hist(nowText(), myUser().name, 'Sửa kế hoạch kiểm tra', 'Đã cập nhật thông tin kế hoạch kiểm tra.')]; records[records.findIndex(x => x.code === r.code)] = r; }
             save(); closeForm(); renderTable(); showToast('Lưu kế hoạch kiểm tra thành công. [MSG-SUC-SYS-003]');
         }
         function saveResult() {
@@ -1019,7 +1026,7 @@
             r.result = { from: v('resFrom'), to: v('resTo'), place: v('resPlace'), content: v('resContent') };
             r.resultDocs = docs.result;
             r.status = ST.DONE;
-            r.history = [...(r.history || []), hist(nowText(), myUser().name, first ? 'Cập nhật kết quả kiểm tra' : 'Sửa kết quả kiểm tra')];
+            r.history = [...(r.history || []), hist(nowText(), myUser().name, first ? 'Cập nhật kết quả kiểm tra' : 'Sửa kết quả kiểm tra', 'Đã kiểm tra.')];
             save(); closeForm(); renderTable(); showToast('Lưu kết quả kiểm tra thành công. [MSG-SUC-SYS-002]');
         }
 
@@ -1041,7 +1048,7 @@
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
-    <script src="btnn_form_page.js?v=20261026fp"></script>
+    <script src="btnn_form_page.js?v=20261109tt1"></script>
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261109tl1"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>

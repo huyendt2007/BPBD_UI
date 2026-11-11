@@ -1747,12 +1747,14 @@
             const host = document.getElementById('historyHost');
             const list = historyOf(code).slice().reverse();
             if (!list.length) { host.innerHTML = ''; return; }
-            const cell = 'padding:8px 10px; border:1px solid var(--border-color, #E2E8F0); vertical-align:top; text-align:left;';
-            host.innerHTML = `<div class="section-title" style="margin:16px 0 12px 0;"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử xử lý</div>
-                <table style="width:100%; border-collapse:collapse; font-size:13px;"><thead><tr style="background:#F1F5F9;">
-                <th style="${cell} width:150px;">Thời điểm</th><th style="${cell} width:190px;">Người thực hiện</th><th style="${cell}">Nội dung</th></tr></thead><tbody>`
-                + list.map(h => `<tr><td style="${cell} white-space:nowrap;">${escH(h.at)}</td><td style="${cell}">${escH(h.by)}</td><td style="${cell}"><span style="font-weight:600;">${escH(h.action)}</span>${h.note ? `<div style="margin-top:2px;">${escH(h.note)}</div>` : ''}</td></tr>`).join('')
-                + '</tbody></table>';
+            // Lịch sử xử lý chuẩn BTNN: 04 cột Thời gian | Người thực hiện | Thao tác | Nội dung xử lý, mới nhất ở trên
+            const th = 'padding:12px 16px; background:#f1f5f9; color:#1e3a8a; font-weight:700; font-size:13px;';
+            const td = 'padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:13px; color:#1e293b; vertical-align:top;';
+            const when = s => String(s == null ? '' : s).replace(/^(\d{2}:\d{2})\s+(\d{2}\/\d{2}\/\d{4})$/, '$2 $1');
+            host.innerHTML = `<div style="display:flex; align-items:center; gap:8px; margin:16px 0 10px; font-weight:700; color:#1e3a8a; font-size:14px;"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử xử lý</div>
+                <div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; table-layout:fixed;"><thead><tr><th style="${th} width:170px; text-align:center;">Thời gian</th><th style="${th} width:220px; text-align:left;">Người thực hiện</th><th style="${th} width:260px; text-align:center;">Thao tác</th><th style="${th} text-align:left;">Nội dung xử lý</th></tr></thead><tbody>`
+                + list.map(h => `<tr><td style="${td} text-align:center;">${escH(when(h.at))}</td><td style="${td}">${escH(h.by)}</td><td style="${td} text-align:center;">${escH(h.action)}</td><td style="${td} white-space:pre-line;">${escH(h.note || '--')}</td></tr>`).join('')
+                + '</tbody></table></div>';
         }
         const escH = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -1961,7 +1963,7 @@
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
-    <script src="btnn_form_page.js?v=20261026fp"></script>
+    <script src="btnn_form_page.js?v=20261109tt1"></script>
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261109tl1"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>

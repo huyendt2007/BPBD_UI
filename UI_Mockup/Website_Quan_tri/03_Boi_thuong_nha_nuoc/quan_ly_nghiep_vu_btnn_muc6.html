@@ -2210,8 +2210,17 @@
             renderDocuments();
         }
 
-        // Xóa thẳng dòng tài liệu, không hỏi xác nhận (chuẩn bảng tài liệu BTNN)
-        function removeDocumentRow(index) {
+        // Xóa thẳng dòng tài liệu, không hỏi xác nhận (chuẩn bảng tài liệu BTNN);
+        // riêng Hỗ trợ người bị thiệt hại: hỏi xác nhận trước khi xóa (người dùng chốt 10/11/2026)
+        const CONFIRM_DOC_DELETE_MODULES = ['ho_tro_nguoi_bi_thiet_hai'];
+        function removeDocumentRow(index, confirmed) {
+            const doc = documents[index];
+            if (!confirmed && doc && CONFIRM_DOC_DELETE_MODULES.includes(moduleKey)) {
+                const label = (doc.name || '').trim() || doc.file || 'tài liệu này';
+                BTNN_POPUP_XOA.open('', () => removeDocumentRow(index, true));
+                document.getElementById('btnnPopupXoaText').innerText = `Bạn có chắc chắn muốn xóa bản ghi "${label}" không?`;
+                return;
+            }
             if (documents.length === 1) documents = [{ name: '', file: '' }];
             else documents.splice(index, 1);
             renderDocuments();
@@ -2795,13 +2804,16 @@
             if (!box) return;
             if (!row || mode !== 'view' || !HISTORY_MODULES.includes(currentFeature)) { box.innerHTML = ''; return; }
             const list = [...(row.history || [])].reverse();
-            const cell = 'padding:6px 8px; border:1px solid #e2e8f0; vertical-align:top;';
-            box.innerHTML = `<div class="section-title" style="margin:16px 0 10px 0;"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử cập nhật</div>`
-                + (list.length ? `<table style="width:100%; border-collapse:collapse; font-size:13px;"><thead><tr style="background:#f1f5f9;">
-                    <th style="${cell} width:140px;">Thời điểm</th><th style="${cell} width:170px;">Người cập nhật</th><th style="${cell}">Nội dung thay đổi</th></tr></thead><tbody>`
-                    + list.map(x => `<tr><td style="${cell}">${escapeHtml(x.at)}</td><td style="${cell}">${escapeHtml(x.by || '')}</td>
-                        <td style="${cell} white-space:pre-line;">${escapeHtml(x.text)}</td></tr>`).join('')
-                    + '</tbody></table>'
+            // Lịch sử chuẩn BTNN: 04 cột Thời gian | Người thực hiện | Thao tác | Nội dung xử lý
+            const th = 'padding:12px 16px; background:#f1f5f9; color:#1e3a8a; font-weight:700; font-size:13px;';
+            const td = 'padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:13px; color:#1e293b; vertical-align:top;';
+            const when = s => String(s == null ? '' : s).replace(/^(\d{2}:\d{2})\s+(\d{2}\/\d{2}\/\d{4})$/, '$2 $1');
+            box.innerHTML = `<div style="display:flex; align-items:center; gap:8px; margin:16px 0 10px; font-weight:700; color:#1e3a8a; font-size:14px;"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử cập nhật</div>`
+                + (list.length ? `<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; table-layout:fixed;"><thead><tr>
+                    <th style="${th} width:170px; text-align:center;">Thời gian</th><th style="${th} width:220px; text-align:left;">Người thực hiện</th><th style="${th} width:260px; text-align:center;">Thao tác</th><th style="${th} text-align:left;">Nội dung xử lý</th></tr></thead><tbody>`
+                    + list.map(x => `<tr><td style="${td} text-align:center;">${escapeHtml(when(x.at))}</td><td style="${td}">${escapeHtml(x.by || '')}</td>
+                        <td style="${td} text-align:center;">${escapeHtml(x.action || 'Cập nhật thông tin')}</td><td style="${td} white-space:pre-line;">${escapeHtml(x.text || x.note || '--')}</td></tr>`).join('')
+                    + '</tbody></table></div>'
                     : '<div style="color:#64748b; font-size:13px; font-style:italic;">Chưa có lịch sử cập nhật.</div>');
         }
 
@@ -2982,7 +2994,7 @@
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
-    <script src="btnn_form_page.js?v=20261026fp"></script>
+    <script src="btnn_form_page.js?v=20261109tt1"></script>
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261109tl1"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>

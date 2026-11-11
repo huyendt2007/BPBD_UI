@@ -552,14 +552,16 @@
         var c = item || {}, nb = c.nbth || {};
         return {
             isOrg: radioVal('formNycType') === 'Tổ chức', role: tv('formRequesterRole') || c.nycRole || ROLE_NBTH,
-            name: tv('formRequester'), dob: c.nycDob, alive: aliveLabel(c),
-            docType: tv('formNycDocType'), docNo: tv('formNycDocNo'), docDate: c.nycDocDate, docPlace: c.nycDocPlace,
-            orgCode: tv('formNycOrgCode'), orgDocNo: c.nycOrgDocNo, orgDocDate: c.nycOrgDocDate, orgDocPlace: c.nycOrgDocPlace, repName: c.nycRepName, repPosition: c.nycRepPosition,
+            name: tv('formRequester'), dob: tv('formNycDob') || c.nycDob, alive: aliveLabel(c),
+            docType: tv('formNycDocType'), docNo: tv('formNycDocNo'), docDate: tv('formNycDocDate') || c.nycDocDate, docPlace: tv('formNycDocPlace') || c.nycDocPlace,
+            orgCode: tv('formNycOrgCode'), orgDocNo: tv('formNycOrgDocNo') || c.nycOrgDocNo, orgDocDate: tv('formNycOrgDocDate') || c.nycOrgDocDate, orgDocPlace: tv('formNycOrgDocPlace') || c.nycOrgDocPlace,
+            repName: tv('formNycRepName') || c.nycRepName, repPosition: tv('formNycRepPosition') || c.nycRepPosition,
             phone: tv('formPhone'), email: tv('formEmail'), country: tv('formCountry'), city: tv('formCity'), ward: tv('formWard'), address: tv('formAddress'),
             org: { name: tv('nbthOrgName'), code: tv('nbthOrgCode'), country: tv('nbthOrgCountry'), city: tv('nbthOrgCity'), ward: tv('nbthOrgWard'), address: tv('nbthOrgAddress') },
             nb: {
-                isOrg: radioVal('nbthType') === 'Tổ chức', name: tv('nbthName'), dob: tv('nbthDob'), docType: tv('nbthDocType'), docNo: tv('nbthDocNo'), docDate: nb.docDate, docPlace: nb.docPlace,
-                orgCode: tv('nbthPOrgCode'), orgDocNo: nb.orgDocNo, orgDocDate: nb.orgDocDate, orgDocPlace: nb.orgDocPlace, repName: nb.repName, repPosition: nb.repPosition,
+                isOrg: radioVal('nbthType') === 'Tổ chức', name: tv('nbthName'), dob: tv('nbthDob'), docType: tv('nbthDocType'), docNo: tv('nbthDocNo'), docDate: tv('nbthDocDate') || nb.docDate, docPlace: tv('nbthDocPlace') || nb.docPlace,
+                orgCode: tv('nbthPOrgCode'), orgDocNo: tv('nbthOrgDocNo') || nb.orgDocNo, orgDocDate: tv('nbthOrgDocDate') || nb.orgDocDate, orgDocPlace: tv('nbthOrgDocPlace') || nb.orgDocPlace,
+                repName: tv('nbthRepName') || nb.repName, repPosition: tv('nbthRepPosition') || nb.repPosition,
                 phone: tv('nbthPhone'), email: tv('nbthEmail'), country: tv('nbthCountry'), city: tv('nbthCity'), ward: tv('nbthWard'), address: tv('nbthAddress')
             }
         };

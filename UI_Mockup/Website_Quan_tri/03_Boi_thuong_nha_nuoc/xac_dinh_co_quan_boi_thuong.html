@@ -365,6 +365,7 @@
                                 <input type="text" class="form-control" id="formNYCDocDate" placeholder="dd/mm/yyyy">
                                 <i class="fa-regular fa-calendar-days"></i>
                             </div>
+                            <div class="error-message">Ngày nhập vào không được lớn hơn ngày hiện tại</div>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Nơi cấp</span>
@@ -384,6 +385,7 @@
                                 <input type="text" class="form-control" id="formNYCOrgDocDate" placeholder="dd/mm/yyyy">
                                 <i class="fa-regular fa-calendar-days"></i>
                             </div>
+                            <div class="error-message">Ngày nhập vào không được lớn hơn ngày hiện tại</div>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Nơi cấp</span>
@@ -516,6 +518,7 @@
                                     <input type="text" class="form-control" id="nbthDocDate" placeholder="dd/mm/yyyy">
                                     <i class="fa-regular fa-calendar-days"></i>
                                 </div>
+                                <div class="error-message">Ngày nhập vào không được lớn hơn ngày hiện tại</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Nơi cấp</span>
@@ -664,12 +667,8 @@
             </div>
             <div class="form-group">
                 <span class="form-label">Cơ quan giải quyết bồi thường<span class="required">*</span></span>
-                <!-- Combobox có tìm kiếm: đơn vị gốc trên hệ thống đã cấu hình luồng Giải quyết YCBT -->
-                <div class="searchable-select-wrapper">
-                    <input type="text" class="form-control" id="procTargetAgencyInput" placeholder="Tìm và chọn cơ quan giải quyết bồi thường trên hệ thống..." onclick="toggleSearchableDropdown()" oninput="filterSearchableOptions()" autocomplete="off">
-                    <div class="searchable-select-dropdown" id="procTargetAgencyDropdown"></div>
-                    <input type="hidden" id="procTargetAgency" value="">
-                </div>
+                <!-- Tree-Select: chọn cơ quan, đơn vị trên cây Cơ cấu tổ chức, có tìm kiếm (BTNN_WF.mountUnitTree); input ẩn id="procTargetAgency" -->
+                <div id="procTargetAgencyTree"></div>
                 <div class="error-message" id="procTargetAgencyError">Đây là trường bắt buộc</div>
             </div>
             <div class="form-group">

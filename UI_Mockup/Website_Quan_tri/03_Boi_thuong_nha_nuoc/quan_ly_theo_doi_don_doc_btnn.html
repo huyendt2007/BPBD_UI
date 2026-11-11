@@ -625,10 +625,7 @@
             <button type="button" class="tlkt-btn-add" onclick="addDocumentRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
         </div>
         <!-- Lịch sử xử lý: luôn đặt cuối form -->
-        <div class="form-group" id="historyGroup" style="margin-top:16px;">
-            <span class="form-label">Lịch sử xử lý</span>
-            <div id="historyList" class="history-list"></div>
-        </div>
+        <div id="historyGroup"><div id="historyList"></div></div>
         <div class="footer-actions" id="formActions"></div>
     </div>
 
@@ -835,6 +832,17 @@
         const parseDate = s => { const p = String(s || '').split('/'); return p.length === 3 ? new Date(p[2], p[1] - 1, p[0]) : null; };
         const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         const hist = (at, by, action, note) => ({ at, by, action, note: note || '' });
+        // Lịch sử xử lý chuẩn BTNN: 04 cột Thời gian | Người thực hiện | Thao tác | Nội dung xử lý, mới nhất ở trên
+        function lichSuXuLyHtml(rows, title, emptyText) {
+            const th = 'padding:12px 16px; background:#f1f5f9; color:#1e3a8a; font-weight:700; font-size:13px;';
+            const td = 'padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:13px; color:#1e293b; vertical-align:top;';
+            const when = s => String(s == null ? '' : s).replace(/^(\d{2}:\d{2})\s+(\d{2}\/\d{2}\/\d{4})$/, '$2 $1');
+            const head = `<div style="display:flex; align-items:center; gap:8px; margin:16px 0 10px; font-weight:700; color:#1e3a8a; font-size:14px;"><i class="fa-solid fa-clock-rotate-left"></i> ${esc(title || 'Lịch sử xử lý')}</div>`;
+            const list = (rows || []).slice().reverse();
+            if (!list.length) return head + `<div style="color:#64748b; font-style:italic;">${esc(emptyText || 'Chưa có lịch sử xử lý.')}</div>`;
+            return head + `<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; table-layout:fixed;"><thead><tr><th style="${th} width:170px; text-align:center;">Thời gian</th><th style="${th} width:220px; text-align:left;">Người thực hiện</th><th style="${th} width:260px; text-align:center;">Thao tác</th><th style="${th} text-align:left;">Nội dung xử lý</th></tr></thead><tbody>`
+                + list.map(x => `<tr><td style="${td} text-align:center;">${esc(when(x.at))}</td><td style="${td}">${esc(x.by)}</td><td style="${td} text-align:center;">${esc(x.action)}</td><td style="${td} white-space:pre-line;">${esc(x.note || ({ 'Lưu theo dõi': 'Đã lưu thông tin theo dõi.', 'Cập nhật thông tin theo dõi': 'Đã cập nhật thông tin theo dõi.', 'Hoàn thành': 'Đã hoàn thành theo dõi, đôn đốc.' }[x.action]) || '--')}</td></tr>`).join('') + '</tbody></table></div>';
+        }
         function seed() {
             const s = 'Đỗ Văn Chung';
             return [
@@ -1161,8 +1169,7 @@
             return { date: v('respDate'), docNo: v('respDocNo'), result: v('respResult'), issuedDocNo: v('issuedDocNo'), issuedDocDate: v('issuedDocDate'), content: v('respContent') };
         }
         function renderHistory(r) {
-            const h = (r.history || []);
-            document.getElementById('historyList').innerHTML = h.length ? h.map(x => `<div class="history-item"><b>${esc(x.at)}</b> - ${esc(x.by)}: ${esc(x.action)}${x.note ? ` (${esc(x.note)})` : ''}</div>`).join('') : '<div class="muted">Chưa có lịch sử xử lý.</div>';
+            document.getElementById('historyList').innerHTML = lichSuXuLyHtml(r.history || [], 'Lịch sử xử lý');
         }
         function openForm(mode, code) {
             formMode = mode;
@@ -1346,7 +1353,7 @@
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
-    <script src="btnn_form_page.js?v=20261026fp"></script>
+    <script src="btnn_form_page.js?v=20261109tt1"></script>
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261109tl1"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>

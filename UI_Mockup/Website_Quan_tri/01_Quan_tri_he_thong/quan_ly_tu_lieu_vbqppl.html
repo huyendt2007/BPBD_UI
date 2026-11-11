@@ -261,6 +261,24 @@
         .btn-outline-success:hover {
             background-color: rgba(16, 185, 129, 0.05);
         }
+        /* Nút Đồng ý của popup xác nhận xóa (nền đỏ) và nút Xóa ở chân màn Chi tiết (viền đỏ), như Văn bản chỉ đạo, điều hành */
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+        .btn-outline-danger {
+            background-color: white;
+            color: #b91c1c;
+            border-color: #ef4444;
+        }
+        .btn-outline-danger:hover {
+            background-color: #fef2f2;
+            border-color: #dc2626;
+            color: #991b1b;
+        }
         .btn-secondary {
             background-color: #E2E8F0;
             color: var(--text-main);
@@ -1003,6 +1021,7 @@
                     <div id="docCreatorInfo" class="grid-layout" style="display: none; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 12px;">
                         <div class="form-group"><label class="form-label">Cán bộ xử lý</label><input type="text" id="docCreatorName" class="form-control" disabled></div>
                         <div class="form-group"><label class="form-label">Đơn vị thực hiện</label><input type="text" id="docCreatorOrg" class="form-control" disabled></div>
+                        <div class="form-group"><label class="form-label">Người cập nhật, thời điểm cập nhật</label><input type="text" id="docAudit" class="form-control" disabled></div>
                     </div>
 
                 </form>
@@ -1013,7 +1032,7 @@
             <div class="modal-footer">
                 <!-- Close/Cancel -->
                 <button class="btn btn-secondary" onclick="closeModal()" id="btnCancel">Hủy</button>
-                <button class="btn btn-outline-danger" id="btnDeleteInView" style="display: none;" onclick="deleteDocFromView()"><i class="fa-solid fa-trash-can"></i> Xóa</button>
+                <button class="btn btn-outline-danger" id="btnDeleteInView" style="display: none;" onclick="deleteDocFromView()"><i class="fa-solid fa-trash"></i> Xóa</button>
                 <button class="btn btn-primary" id="btnEditInView" style="display: none;" onclick="editDocFromView()"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
                 <button class="btn btn-primary" onclick="saveData()" id="btnSave"><i class="fa-solid fa-floppy-disk"></i> Lưu thông tin</button>
             </div>
@@ -1031,7 +1050,7 @@
                 <p id="confirmMessage" style="margin: 0; font-size: 14px; line-height: 1.6;"></p>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeConfirm()">Hủy</button>
+                <button class="btn btn-secondary" id="confirmCancelBtn" onclick="closeConfirm()">Hủy</button>
                 <button class="btn btn-danger" id="confirmOkBtn"><i class="fa-solid fa-trash-can"></i> Xóa</button>
             </div>
         </div>
@@ -1260,7 +1279,10 @@
         // Menu BTNN: Loại văn bản theo [DM_21], ô ngày dd/mm/yyyy, độ dài tối đa theo SRS, bảng Tài liệu đính kèm chuẩn
         function setupBtnnForm() {
             const typeOpts = LOAI_VB_BTNN.map(t => `<option value="${t}">${t}</option>`).join('');
-            document.getElementById('filterDocType').innerHTML = `<option value="">-- Tất cả --</option>${typeOpts}`;
+            document.getElementById('filterDocType').innerHTML = `<option value="">Tất cả</option>${typeOpts}`;
+            // Nút Xóa bộ lọc có icon như các màn BTNN khác
+            const btnClear = document.querySelector('button[onclick="clearFilters()"]');
+            if (btnClear) btnClear.innerHTML = '<i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc';
             document.getElementById('docType').innerHTML = `<option value="">-- Lựa chọn --</option>${typeOpts}`;
             ['docIssueDate', 'docEffectDate'].forEach(id => {
                 const el = document.getElementById(id);
@@ -1294,6 +1316,12 @@
             thName.parentNode.insertBefore(thNo, thName);
             thName.style.minWidth = '280px'; thNo.style.width = '150px'; // như lưới Văn bản chỉ đạo, điều hành
             document.getElementById('uploadSection').style.display = 'none';
+            // Đồng nhất với Văn bản chỉ đạo, điều hành (10/11/2026): tên khối, nhãn Tình trạng hiệu lực; Cơ quan ban hành nhập tự do (người dùng chốt 10/11/2026)
+            document.querySelector('#docModal .form-section-title').innerHTML = '<i class="fa-solid fa-circle-info"></i> Thông tin văn bản';
+            setLabel('docStatus', 'Tình trạng hiệu lực ');
+            document.getElementById('docIssuer').placeholder = 'Nhập cơ quan ban hành';
+            // Popup xác nhận: nút Hủy bỏ / Đồng ý theo [MSG-CFM-SYS-001] (như Văn bản chỉ đạo, điều hành)
+            document.getElementById('confirmCancelBtn').innerText = 'Hủy bỏ';
             // Lỗi khoảng Ngày ban hành tại Bộ lọc tìm kiếm: hiển thị ngay dưới ô
             ['filterFromDate', 'filterToDate'].forEach(id => {
                 document.getElementById(id).closest('.form-group').insertAdjacentHTML('beforeend', `<span class="field-error-text" id="${id}Err"></span>`);
@@ -1773,7 +1801,9 @@
             document.getElementById('confirmMessage').innerText = message;
             const okBtn = document.getElementById('confirmOkBtn');
             okBtn.className = 'btn ' + (o.okClass || 'btn-danger');
-            okBtn.innerHTML = `<i class="fa-solid ${o.okIcon || 'fa-trash-can'}"></i> ${o.okLabel || 'Xóa'}`;
+            if (IS_BTNN && !o.okLabel) okBtn.innerHTML = 'Đồng ý'; // [MSG-CFM-SYS-001]: Hủy bỏ / Đồng ý, như Văn bản chỉ đạo, điều hành
+            else okBtn.innerHTML = `<i class="fa-solid ${o.okIcon || 'fa-trash-can'}"></i> ${o.okLabel || 'Xóa'}`;
+            if (IS_BTNN) document.getElementById('confirmCancelBtn').innerText = o.okLabel ? 'Hủy' : 'Hủy bỏ';
             confirmCallback = onOk;
             document.getElementById('confirmOkBtn').onclick = () => { const cb = confirmCallback; closeConfirm(); if (cb) cb(); };
             document.getElementById('confirmModal').classList.add('active');
@@ -1788,7 +1818,7 @@
             if (!vbCanEdit()) { vbNoRight(); return; }
             const doc = documents.find(d => d.id === id);
             if (!doc) return;
-            openConfirm(`Bạn có chắc chắn muốn xóa văn bản "${doc.soHieu} - ${doc.tenVanban}" không?`, () => {
+            openConfirm(IS_BTNN ? `Bạn có chắc chắn muốn xóa bản ghi ${doc.soHieu} không?` : `Bạn có chắc chắn muốn xóa văn bản "${doc.soHieu} - ${doc.tenVanban}" không?`, () => {
                 // Xóa mềm [BR-DEL-001]: lưu Người xóa, Thời điểm xóa
                 const p2 = n => String(n).padStart(2, '0'), now = new Date();
                 doc.isDeleted = 1;
@@ -1876,7 +1906,7 @@
             }
             if (typeof tlktMount === 'function') tlktMount(TLKT_KEY, 'docTlktHost', {
                 // 09/11/2026: Văn bản QPPL (menu BTNN) chỉ nhận tệp .pdf; ghi chú chỉ nêu định dạng (không nêu dung lượng, số lượng tối đa); sai định dạng: [MSG-ERR-FILE-007]
-                split: false, noLeader: true, required: true, rows: tlktRows, exts: ['.pdf'], hintText: 'Chỉ nhận tệp .pdf.',
+                split: false, noLeader: true, required: true, rows: tlktRows, exts: ['.pdf'], hintText: 'Chỉ nhận tệp .pdf.', maxBytes: Number.MAX_SAFE_INTEGER,
                 title: 'Tài liệu đính kèm', secClass: 'form-section', titleClass: 'form-section-title'
             });
         }
@@ -1888,18 +1918,21 @@
             const doc = id ? documents.find(d => String(d.id) === String(id)) : null;
             const list = viewMode && doc && Array.isArray(doc.history) ? [...doc.history].reverse() : [];
             if (!list.length) { box.innerHTML = ''; box.style.display = 'none'; return; }
-            const cell = 'padding:6px 8px; border:1px solid #e2e8f0; vertical-align:top; text-align:left;';
-            box.innerHTML = '<div class="form-section"><div class="form-section-title"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử cập nhật</div>'
-                + `<table style="width:100%; border-collapse:collapse; font-size:13px;"><thead><tr style="background:#f1f5f9;">`
-                + `<th style="${cell} width:140px;">Thời điểm</th><th style="${cell} width:200px;">Người thực hiện</th><th style="${cell}">Nội dung</th></tr></thead><tbody>`
-                + list.map(x => `<tr><td style="${cell}">${vbEsc(x.at)}</td><td style="${cell}">${vbEsc(x.by || '')}</td><td style="${cell} white-space:pre-line;">${vbEsc(x.text)}</td></tr>`).join('')
-                + '</tbody></table></div>';
+            // Lịch sử chuẩn BTNN: 04 cột Thời gian | Người thực hiện | Thao tác | Nội dung xử lý
+            const th = 'padding:12px 16px; background:#f1f5f9; color:#1e3a8a; font-weight:700; font-size:13px;';
+            const td = 'padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:13px; color:#1e293b; vertical-align:top;';
+            const when = s => String(s == null ? '' : s).replace(/^(\d{2}:\d{2})\s+(\d{2}\/\d{2}\/\d{4})$/, '$2 $1');
+            box.innerHTML = '<div class="form-section"><div style="display:flex; align-items:center; gap:8px; margin:0 0 10px; font-weight:700; color:#1e3a8a; font-size:14px;"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử cập nhật</div>'
+                + `<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; table-layout:fixed;"><thead><tr>`
+                + `<th style="${th} width:170px; text-align:center;">Thời gian</th><th style="${th} width:220px; text-align:left;">Người thực hiện</th><th style="${th} width:260px; text-align:center;">Thao tác</th><th style="${th} text-align:left;">Nội dung xử lý</th></tr></thead><tbody>`
+                + list.map(x => `<tr><td style="${td} text-align:center;">${vbEsc(when(x.at))}</td><td style="${td}">${vbEsc(x.by || '')}</td><td style="${td} text-align:center;">${vbEsc(x.action || 'Cập nhật thông tin')}</td><td style="${td} white-space:pre-line;">${vbEsc(x.text || x.note || '--')}</td></tr>`).join('')
+                + '</tbody></table></div></div>';
             box.style.display = 'block';
         }
         // Nội dung thay đổi khi Sửa (mỗi thay đổi 01 dòng): "[Tên trường]: [Giá trị cũ] → [Giá trị mới]"; Tóm tắt nội dung: "đã cập nhật";
         // tài liệu đính kèm thêm / xóa. Không có thay đổi -> mảng rỗng (không ghi lịch sử)
         const HIST_FIELDS = [['soHieu', 'Số, ký hiệu'], ['tenVanban', 'Trích yếu'], ['__type', 'Loại văn bản'], ['coquanBanhanh', 'Cơ quan ban hành'],
-            ['ngayBanhanh', 'Ngày ban hành'], ['ngayCoHieuLuc', 'Ngày có hiệu lực'], ['tinhTrang', 'Tình trạng']];
+            ['ngayBanhanh', 'Ngày ban hành'], ['ngayCoHieuLuc', 'Ngày có hiệu lực'], ['tinhTrang', 'Tình trạng hiệu lực']];
         function diffDoc(old, f) {
             const out = [];
             const val = (o, k) => String((k === '__type' ? typeLabel(o) : o[k]) || '').trim();
@@ -1966,6 +1999,11 @@
 
         function showModal(title, viewMode = false, editMode = false) {
             document.getElementById('modalTitle').innerText = title;
+            if (IS_BTNN) {
+                // BTNN: tiêu đề màn hình (dòng 1) = "Thêm mới/Chi tiết/Sửa Văn bản quy phạm pháp luật"; không hiển thị dòng tiêu đề form (dòng 2)
+                const h1 = document.querySelector('.page-header h1'); if (h1) h1.innerText = title;
+                const mh = document.querySelector('#docModal .modal-header'); if (mh) mh.style.display = 'none';
+            }
             clearErrors();
 
             const inputs = [
@@ -1976,6 +2014,8 @@
                 const el = document.getElementById(id);
                 if (el) el.disabled = viewMode;
             });
+            // BTNN - Chi tiết: ô ngày trống thì để trống (không hiện gợi ý dd/mm/yyyy)
+            if (IS_BTNN) ['docIssueDate', 'docEffectDate'].forEach(id => { document.getElementById(id).placeholder = viewMode ? '' : 'dd/mm/yyyy'; });
             document.getElementById('docFileInput').disabled = viewMode;
             document.getElementById('modalTitle').closest('.modal-content').classList.toggle('view-mode', viewMode);
 
@@ -2004,13 +2044,20 @@
                 const info = document.getElementById('docCreatorInfo');
                 const cur = documents.find(d => String(d.id) === String(document.getElementById('docId').value));
                 info.style.display = viewMode && cur ? 'grid' : 'none';
-                if (cur) { document.getElementById('docCreatorName').value = cur.nguoiTao || ''; document.getElementById('docCreatorOrg').value = vbDocOrg(cur); }
+                if (cur) {
+                    document.getElementById('docCreatorName').value = cur.nguoiTao || '';
+                    document.getElementById('docCreatorOrg').value = vbDocOrg(cur);
+                    // {Họ tên} - hh:mm dd/mm/yyyy: lần Thêm mới hoặc lần Sửa có thay đổi gần nhất (như Văn bản chỉ đạo, điều hành); dữ liệu cũ chưa có thời điểm: dùng người tạo, ngày tạo
+                    const by = cur.capNhatLuc ? cur.nguoiCapNhat : cur.nguoiTao, at = cur.capNhatLuc || cur.ngayTao || '';
+                    document.getElementById('docAudit').value = by ? `${by} - ${at}` : '';
+                }
             }
 
             document.getElementById('docModal').classList.add('active');
         }
         function closeModal() {
             document.getElementById('docModal').classList.remove('active');
+            if (IS_BTNN) { const h1 = document.querySelector('.page-header h1'); if (h1) h1.innerText = 'Văn bản quy phạm pháp luật'; }
         }
 
         function editDocFromView() {
@@ -2063,7 +2110,7 @@
         function openCreateModal() {
             if (!vbCanEdit()) { vbNoRight(); return; }
             fillForm(null);
-            showModal("Thêm mới thông tin tư liệu văn bản quy phạm pháp luật", false, false);
+            showModal(IS_BTNN ? "Thêm mới Văn bản quy phạm pháp luật" : "Thêm mới thông tin tư liệu văn bản quy phạm pháp luật", false, false);
         }
 
         // OPEN MODAL FOR VIEW DETAIL
@@ -2071,7 +2118,7 @@
             const doc = documents.find(d => d.id === id);
             if (!doc) return;
             fillForm(doc);
-            showModal("Chi tiết thông tin tư liệu văn bản quy phạm pháp luật", true, false);
+            showModal(IS_BTNN ? "Chi tiết Văn bản quy phạm pháp luật" : "Chi tiết thông tin tư liệu văn bản quy phạm pháp luật", true, false);
         }
 
         // OPEN MODAL FOR EDITING
@@ -2080,7 +2127,7 @@
             const doc = documents.find(d => d.id === id);
             if (!doc) return;
             fillForm(doc);
-            showModal(`${EDIT_LABEL} thông tin tư liệu văn bản quy phạm pháp luật`, false, true);
+            showModal(IS_BTNN ? `${EDIT_LABEL} Văn bản quy phạm pháp luật` : `${EDIT_LABEL} thông tin tư liệu văn bản quy phạm pháp luật`, false, true);
         }
 
         // VALIDATION & SAVING (Lưu thông tin trực tiếp, không qua phê duyệt)
@@ -2144,7 +2191,9 @@
 
             if (firstInvalid) {
                 if (IS_BTNN && typeof tlktValidate === 'function') tlktValidate(TLKT_KEY); // hiển thị lỗi bảng tài liệu cùng lúc
-                const focusEl = firstInvalid.id === 'docFileInput' ? document.getElementById('error_docFiles') : firstInvalid;
+                // Ô lỗi đầu tiên theo thứ tự hiển thị trên form (không theo thứ tự kiểm tra)
+                const domFirst = document.querySelector('#docModal .is-invalid') || firstInvalid;
+                const focusEl = domFirst.id === 'docFileInput' ? document.getElementById('error_docFiles') : domFirst;
                 if (focusEl.scrollIntoView) focusEl.scrollIntoView({ block: 'center' });
                 if (focusEl.focus) focusEl.focus();
                 return;
@@ -2183,7 +2232,11 @@
                         // BTNN - Lịch sử cập nhật: chỉ ghi khi Sửa có thay đổi; Thêm mới không ghi
                         if (IS_BTNN) {
                             const changes = diffDoc(doc, fields);
-                            if (changes.length) doc.history = (doc.history || []).concat([{ at: nowStamp(), by: vbUserName(), text: changes.join('\n') }]);
+                            if (changes.length) {
+                                const at = nowStamp();
+                                doc.history = (doc.history || []).concat([{ at, by: vbUserName(), text: changes.join('\n') }]);
+                                doc.capNhatLuc = at; doc.nguoiCapNhat = vbUserName();
+                            }
                         }
                         Object.assign(doc, fields, { nguoiCapNhat: vbUserName(), ngayCapNhat: formatDateToString(new Date()) });
                         savedId = doc.id;
@@ -2192,6 +2245,8 @@
                     savedId = Date.now();
                     documents.push(Object.assign({ id: savedId }, fields, {
                         nguoiTao: vbUserName(),
+                        nguoiCapNhat: vbUserName(),
+                        capNhatLuc: nowStamp(),
                         donViTaoId: vbUserUnit(),
                         ngayTao: formatDateToString(new Date()),
                         isDeleted: 0

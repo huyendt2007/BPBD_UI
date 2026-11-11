@@ -587,15 +587,30 @@
                         <div id="tnVictimAliveOptions" class="nyc-type-group"></div>
                     </div>
 
-                    <!-- Dòng 2: Họ và tên/Tên tổ chức & Giấy tờ thân nhân/Mã số tổ chức (2 thông tin) -->
+                    <!-- Dòng 2: Họ và tên/Tên tổ chức & Ngày sinh (Cá nhân)/Mã số tổ chức (Tổ chức) (2 thông tin) -->
                     <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label"><span id="formRequesterLabel">Họ và tên</span><span class="required">*</span></span>
                             <input id="formRequester" class="form-control" placeholder="Nhập họ và tên...">
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
-                        <!-- Khi là Cá nhân: Cột 2 gồm Loại & Số giấy tờ kết hợp liền mạch -->
+                        <!-- [ngsinh] Khi là Cá nhân: Cột 2 là Ngày sinh (không bắt buộc tại Tiếp nhận; không lớn hơn ngày hiện tại [BR-VAL-008]) -->
                         <div class="form-group nyc-ca-nhan" style="margin-bottom: 0;">
+                            <span class="form-label">Ngày sinh</span>
+                            <input id="formNycDob" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off">
+                            <div class="error-message" id="formNycDobError">Ngày nhập vào không được lớn hơn ngày hiện tại</div>
+                        </div>
+                        <!-- Khi là Tổ chức: Cột 2 là Mã số tổ chức -->
+                        <div class="form-group nyc-to-chuc" style="display:none; margin-bottom: 0;">
+                            <span class="form-label">Mã số tổ chức<span class="required">*</span></span>
+                            <input id="formNycOrgCode" class="form-control" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
+                    </div>
+
+                    <!-- Dòng 2b (Cá nhân): Giấy tờ thân nhân (Loại & Số kết hợp liền mạch) & Ngày cấp, Nơi cấp [ttgt] -->
+                    <div class="grid-2 nyc-ca-nhan" style="gap: 16px; margin-bottom: 14px;">
+                        <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Giấy tờ thân nhân</span>
                             <div style="display: flex; gap: 8px;">
                                 <select id="formNycDocType" class="form-control" style="width: 40%; min-width: 140px;">
@@ -604,11 +619,45 @@
                                 <input id="formNycDocNo" class="form-control" style="flex: 1;" placeholder="Nhập số giấy tờ thân nhân...">
                             </div>
                         </div>
-                        <!-- Khi là Tổ chức: Cột 2 là Mã số tổ chức -->
-                        <div class="form-group nyc-to-chuc" style="display:none; margin-bottom: 0;">
-                            <span class="form-label">Mã số tổ chức<span class="required">*</span></span>
-                            <input id="formNycOrgCode" class="form-control" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
-                            <div class="error-message">Đây là trường bắt buộc</div>
+                        <div class="grid-2" style="gap: 16px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Ngày cấp</span>
+                                <input id="formNycDocDate" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off">
+                                <div class="error-message">Ngày nhập vào không được lớn hơn ngày hiện tại</div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Nơi cấp</span>
+                                <input id="formNycDocPlace" class="form-control" placeholder="Nhập nơi cấp...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- [ttgt] Tổ chức: Số giấy tờ thành lập/đăng ký & Ngày cấp, Nơi cấp; Người đại diện theo pháp luật & Chức vụ (không bắt buộc tại Tiếp nhận) -->
+                    <div class="grid-2 nyc-to-chuc" style="display:none; gap: 16px; margin-bottom: 14px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Số giấy tờ thành lập/đăng ký</span>
+                            <input id="formNycOrgDocNo" class="form-control" placeholder="Nhập số giấy tờ thành lập/đăng ký...">
+                        </div>
+                        <div class="grid-2" style="gap: 16px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Ngày cấp</span>
+                                <input id="formNycOrgDocDate" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off">
+                                <div class="error-message">Ngày nhập vào không được lớn hơn ngày hiện tại</div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Nơi cấp</span>
+                                <input id="formNycOrgDocPlace" class="form-control" placeholder="Nhập nơi cấp...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid-2 nyc-to-chuc" style="display:none; gap: 16px; margin-bottom: 14px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Họ và tên người đại diện theo pháp luật</span>
+                            <input id="formNycRepName" class="form-control" placeholder="Nhập họ và tên người đại diện...">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Chức vụ người đại diện</span>
+                            <input id="formNycRepPosition" class="form-control" placeholder="Nhập chức vụ...">
                         </div>
                     </div>
 
@@ -758,6 +807,46 @@
                                 <span class="form-label">Mã số tổ chức</span>
                                 <input id="nbthPOrgCode" class="form-control" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
                                 <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+
+                        <!-- [ttgt] Cá nhân: Ngày cấp, Nơi cấp giấy tờ thân nhân; Tổ chức: Số giấy tờ thành lập/đăng ký, Ngày cấp, Nơi cấp, Người đại diện theo pháp luật, Chức vụ (không bắt buộc) -->
+                        <div class="grid-2 nbth-ca-nhan" style="gap: 16px; margin-bottom: 14px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Ngày cấp</span>
+                                <input id="nbthDocDate" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off">
+                                <div class="error-message">Ngày nhập vào không được lớn hơn ngày hiện tại</div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Nơi cấp</span>
+                                <input id="nbthDocPlace" class="form-control" placeholder="Nhập nơi cấp...">
+                            </div>
+                        </div>
+                        <div class="grid-2 nbth-to-chuc" style="display:none; gap: 16px; margin-bottom: 14px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Số giấy tờ thành lập/đăng ký</span>
+                                <input id="nbthOrgDocNo" class="form-control" placeholder="Nhập số giấy tờ thành lập/đăng ký...">
+                            </div>
+                            <div class="grid-2" style="gap: 16px;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <span class="form-label">Ngày cấp</span>
+                                    <input id="nbthOrgDocDate" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off">
+                                    <div class="error-message">Ngày nhập vào không được lớn hơn ngày hiện tại</div>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <span class="form-label">Nơi cấp</span>
+                                    <input id="nbthOrgDocPlace" class="form-control" placeholder="Nhập nơi cấp...">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-2 nbth-to-chuc" style="display:none; gap: 16px; margin-bottom: 14px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Họ và tên người đại diện theo pháp luật</span>
+                                <input id="nbthRepName" class="form-control" placeholder="Nhập họ và tên người đại diện...">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Chức vụ người đại diện</span>
+                                <input id="nbthRepPosition" class="form-control" placeholder="Nhập chức vụ...">
                             </div>
                         </div>
 
@@ -1484,7 +1573,9 @@
                 // Cán bộ tiếp nhận: hồ sơ nguồn khác Tiếp nhận mới lấy người đầu tiên thao tác Phân công; chưa có hiển thị "-"
                 receivedBy: rec.receivedBy || "", rootUnitId: rec.rootUnitId, currentUnitId: rec.currentUnitId, status: rec.status,
                 nycTinhThanh: rec.nycTinhThanh, nycPhuongXa: rec.nycPhuongXa, nycAddressDetail: rec.nycAddressDetail,
-                nycType: BTNN_WF.nycTypeOf(rec), nycDocType: rec.nycDocType || "", nycDocNo: rec.nycDocNo || "", nycOrgCode: rec.nycOrgCode || "",
+                nycType: BTNN_WF.nycTypeOf(rec), nycDob: rec.nycDob || "", nycDocType: rec.nycDocType || "", nycDocNo: rec.nycDocNo || "", nycOrgCode: rec.nycOrgCode || "",
+                nycDocDate: rec.nycDocDate || "", nycDocPlace: rec.nycDocPlace || "", nycOrgDocNo: rec.nycOrgDocNo || "", nycOrgDocDate: rec.nycOrgDocDate || "",
+                nycOrgDocPlace: rec.nycOrgDocPlace || "", nycRepName: rec.nycRepName || "", nycRepPosition: rec.nycRepPosition || "",
                 nycEmail: rec.nycEmail || "", nycCountry: rec.nycCountry || "Việt Nam", nbthOrgName: rec.nbthOrgName || "", nbthOrgCode: rec.nbthOrgCode || "",
                 vanBanCanCu: rec.vanBanCanCu || [], hanhVi: rec.hanhVi || "", agency: BTNN_WF.unitName(rec.rootUnitId), fromWorkflow: true
             };
@@ -1740,9 +1831,17 @@
             return {
                 nycRole: role,
                 nycType: type,
+                nycDob: isOrg ? "" : getValue("formNycDob"),
                 nycDocType: isOrg ? "" : getValue("formNycDocType"),
                 nycDocNo: isOrg ? "" : getValue("formNycDocNo"),
+                nycDocDate: isOrg ? "" : getValue("formNycDocDate"),
+                nycDocPlace: isOrg ? "" : getValue("formNycDocPlace"),
                 nycOrgCode: isOrg ? getValue("formNycOrgCode") : "",
+                nycOrgDocNo: isOrg ? getValue("formNycOrgDocNo") : "",
+                nycOrgDocDate: isOrg ? getValue("formNycOrgDocDate") : "",
+                nycOrgDocPlace: isOrg ? getValue("formNycOrgDocPlace") : "",
+                nycRepName: isOrg ? getValue("formNycRepName") : "",
+                nycRepPosition: isOrg ? getValue("formNycRepPosition") : "",
                 nycEmail: getValue("formEmail"),
                 nycCountry: getValue("formCountry") || COUNTRY_VN,
                 nbth: readNbth(),
@@ -1797,9 +1896,17 @@
                 nycPhone: claim.nycPhone || "",
                 nycRole: claim.nycRole || "Người bị thiệt hại",
                 nycType: BTNN_WF.nycTypeOf(claim),
+                nycDob: claim.nycDob || "",
                 nycDocType: claim.nycDocType || "",
                 nycDocNo: claim.nycDocNo || "",
+                nycDocDate: claim.nycDocDate || "",
+                nycDocPlace: claim.nycDocPlace || "",
                 nycOrgCode: claim.nycOrgCode || "",
+                nycOrgDocNo: claim.nycOrgDocNo || "",
+                nycOrgDocDate: claim.nycOrgDocDate || "",
+                nycOrgDocPlace: claim.nycOrgDocPlace || "",
+                nycRepName: claim.nycRepName || "",
+                nycRepPosition: claim.nycRepPosition || "",
                 nycEmail: claim.nycEmail || "",
                 nbth: claim.nbth || null,
                 nbthOrgName: claim.nbthOrgName || "",
@@ -1859,10 +1966,27 @@
         // Ô Từ ngày, Đến ngày dạng DatePicker
         function initDatePickers() {
             if (typeof flatpickr === "undefined") return;
+            const PERSON_DATE_IDS = getPersonDateIds();
             const vi = { firstDayOfWeek: 1, weekdays: { shorthand: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"], longhand: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"] }, months: { shorthand: ["Th1", "Th2", "Th3", "Th4", "Th5", "Th6", "Th7", "Th8", "Th9", "Th10", "Th11", "Th12"], longhand: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"] } };
             const opts = { dateFormat: "d/m/Y", allowInput: true, locale: vi };
             flatpickr("#filterFromDate", opts);
             flatpickr("#filterToDate", opts);
+            // [ngsinh][ttgt] Ngày sinh, Ngày cấp người yêu cầu / người bị thiệt hại: DatePicker, không chọn ngày sau ngày hiện tại
+            PERSON_DATE_IDS.forEach(id => { if (document.getElementById(id)) flatpickr("#" + id, Object.assign({}, opts, { maxDate: "today" })); });
+        }
+
+        // [ngsinh] MSG-ERR-VAL-008 (BR-VAL-008): ngày liên quan đến cá nhân không lớn hơn ngày hiện tại
+        const MSG_DATE_NOT_FUTURE = "Ngày nhập vào không được lớn hơn ngày hiện tại";
+        // [ttgt] Ô ngày liên quan đến cá nhân/tổ chức áp dụng BR-VAL-008: Ngày sinh, Ngày cấp
+        function getPersonDateIds() {
+            return ["formNycDob", "formNycDocDate", "formNycOrgDocDate", "nbthDob", "nbthDocDate", "nbthOrgDocDate"];
+        }
+        function isFutureDate(value) {
+            const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(value || "").trim());
+            if (!m) return false;
+            const d = new Date(+m[3], +m[2] - 1, +m[1]);
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            return d > today;
         }
 
         function setDateValue(id, date) {
@@ -2380,6 +2504,11 @@
             applyNycTypeConstraint();
             if (isReadOnly && claim && claim.nycDocType) setSelectDisplay("formNycDocType", BTNN_WF.normalizePersonalDocType(claim.nycDocType)); else setValue("formNycDocType", claim ? (claim.nycDocType || "") : "");
             setValue("formNycDocNo", claim ? (claim.nycDocNo || "") : "");
+            setValue("formNycDob", claim ? (claim.nycDob || "") : "");
+            // [ttgt] Ngày cấp, Nơi cấp giấy tờ thân nhân (Cá nhân); giấy tờ thành lập/đăng ký, người đại diện (Tổ chức)
+            [["formNycDocDate", "nycDocDate"], ["formNycDocPlace", "nycDocPlace"], ["formNycOrgDocNo", "nycOrgDocNo"], ["formNycOrgDocDate", "nycOrgDocDate"],
+                ["formNycOrgDocPlace", "nycOrgDocPlace"], ["formNycRepName", "nycRepName"], ["formNycRepPosition", "nycRepPosition"]]
+                .forEach(([id, key]) => setValue(id, claim ? (claim[key] || "") : ""));
             setValue("formNycOrgCode", claim ? (claim.nycOrgCode || "") : "");
             setValue("formEmail", claim ? (claim.nycEmail || "") : "");
             // Hành vi gây thiệt hại của người thi hành công vụ: Xem chi tiết không có dữ liệu hiển thị "-"
@@ -2413,7 +2542,7 @@
             renderBasisRows();
 
             // Toggle input disable state
-            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDocType", "formNycDocNo", "formNycOrgCode", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode", "formHanhVi"];
+            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDob", "formNycDocType", "formNycDocNo", "formNycDocDate", "formNycDocPlace", "formNycOrgCode", "formNycOrgDocNo", "formNycOrgDocDate", "formNycOrgDocPlace", "formNycRepName", "formNycRepPosition", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode", "formHanhVi"];
             controlIds.forEach(ctrlId => {
                 const el = document.getElementById(ctrlId);
                 if (el) el.disabled = isReadOnly;
@@ -2438,7 +2567,7 @@
             basisRows = [];
             const formView = document.getElementById("formView");
             if (formView) formView.classList.remove("readonly-mode");
-            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDocType", "formNycDocNo", "formNycOrgCode", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode", "formHanhVi"];
+            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDob", "formNycDocType", "formNycDocNo", "formNycDocDate", "formNycDocPlace", "formNycOrgCode", "formNycOrgDocNo", "formNycOrgDocDate", "formNycOrgDocPlace", "formNycRepName", "formNycRepPosition", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode", "formHanhVi"];
             controlIds.forEach(ctrlId => {
                 const el = document.getElementById(ctrlId);
                 if (el) el.disabled = false;
@@ -2479,6 +2608,15 @@
                 if (!firstInvalid) firstInvalid = el;
             }
 
+            // [ngsinh][ttgt] Ngày sinh, Ngày cấp (người yêu cầu, người bị thiệt hại): không bắt buộc; có dữ liệu thì không lớn hơn ngày hiện tại [BR-VAL-008] -> MSG-ERR-VAL-008
+            getPersonDateIds().forEach(id => {
+                const el = document.getElementById(id);
+                if (!el || el.offsetParent === null || !isFutureDate(getValue(id))) return;
+                el.classList.add("is-invalid");
+                const error = el.closest(".form-group").querySelector(".error-message");
+                if (error) { error.textContent = MSG_DATE_NOT_FUTURE; error.style.display = "block"; }
+                if (!firstInvalid) firstInvalid = el;
+            });
 
             const hasInvalidDoc = docRows.some((doc, idx) => {
                 const nameEl = document.getElementById(`docName_${idx}`);

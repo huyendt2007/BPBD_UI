@@ -1387,9 +1387,13 @@
                     <div class="hd-answer">${esc(q.answer.content)}</div>
                     ${docsView(q.answer.files, 'Văn bản trả lời đính kèm')}</div>`;
             }
-            html += `<div class="form-section"><div class="form-section-title"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử xử lý</div><ul class="hd-timeline">`
-                + q.history.slice().reverse().map(h => `<li><div><strong>${esc(h.action)}</strong> - ${esc(userName(h.by))}</div>${h.note ? `<div style="white-space: pre-line;">${esc(h.note)}</div>` : ''}<div class="t">${esc(h.at)}</div></li>`).join('')
-                + '</ul></div>';
+            // Lịch sử xử lý chuẩn BTNN: 04 cột Thời gian | Người thực hiện | Thao tác | Nội dung xử lý, mới nhất ở trên
+            const hTh = 'padding:12px 16px; background:#f1f5f9; color:#1e3a8a; font-weight:700; font-size:13px;';
+            const hTd = 'padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:13px; color:#1e293b; vertical-align:top;';
+            const hWhen = s => String(s == null ? '' : s).replace(/^(\d{2}:\d{2})\s+(\d{2}\/\d{2}\/\d{4})$/, '$2 $1');
+            html += `<div class="form-section"><div style="display:flex; align-items:center; gap:8px; margin:0 0 10px; font-weight:700; color:#1e3a8a; font-size:14px;"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử xử lý</div><div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; table-layout:fixed;"><thead><tr><th style="${hTh} width:170px; text-align:center;">Thời gian</th><th style="${hTh} width:220px; text-align:left;">Người thực hiện</th><th style="${hTh} width:260px; text-align:center;">Thao tác</th><th style="${hTh} text-align:left;">Nội dung xử lý</th></tr></thead><tbody>`
+                + q.history.slice().reverse().map(h => `<tr><td style="${hTd} text-align:center;">${esc(hWhen(h.at))}</td><td style="${hTd}">${esc(userName(h.by))}</td><td style="${hTd} text-align:center;">${esc(h.action)}</td><td style="${hTd} white-space:pre-line;">${esc(h.note || '--')}</td></tr>`).join('')
+                + '</tbody></table></div></div>';
             document.getElementById('detailBody').innerHTML = html;
 
             // Nút thao tác theo vai trò và trạng thái (Rule 6: không áp dụng thì ẩn)

@@ -793,10 +793,7 @@
                 </div>
 
                 <!-- Lịch sử xử lý: luôn đặt cuối form -->
-                <div class="form-group" id="th-history-group" style="margin-top: 16px;">
-                    <span class="form-label">Lịch sử xử lý</span>
-                    <div id="th-history-list" class="history-list"></div>
-                </div>
+                <div id="th-history-group"><div id="th-history-list"></div></div>
 
                 <!-- Form actions -->
                 <div class="search-actions" style="margin-top: 20px;">
@@ -1034,17 +1031,8 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Tài liệu đính kèm kế hoạch (Thuyết minh đề tài, quyết định giao đề tài)</label>
-                    <div class="file-upload-container" onclick="triggerFileUpload('kh-upload-kh')">
-                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 24px; color: var(--text-muted); margin-bottom: 5px;"></i>
-                        <p style="font-size: 12px; color: var(--text-muted);">Tải lên thuyết minh đề tài đã ký duyệt, quyết định giao đề tài (.pdf, .docx)</p>
-                        <input type="file" id="kh-upload-kh" style="display: none;" onchange="handleFileSelected(this, 'kh-kh-files-list')" multiple>
-                    </div>
-                    <div class="file-list" id="kh-kh-files-list">
-                        <!-- Loaded dynamically -->
-                    </div>
-                </div>
+                <!-- Tài liệu đính kèm (Thuyết minh đề tài, quyết định giao đề tài): bảng chuẩn btnn_tai_lieu_kem_theo.js, đồng nhất form Thêm mới Phối hợp thực hiện công tác BTNN -->
+                <div class="form-group" id="kh-tlkt"></div>
 
                 <!-- Tiến độ thực hiện thực tế (UC256) -->
                 <div class="form-section-header" id="kh-progress-header" style="display: none;">
@@ -1306,17 +1294,8 @@
                     <textarea id="lk-noidung" class="form-control" placeholder="Nhập mô tả nội dung liên quan chi tiết..." maxlength="4000" style="min-height: 120px;"></textarea>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Tài liệu liên quan đính kèm</label>
-                    <div class="file-upload-container" onclick="triggerFileUpload('lk-upload-files')">
-                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 24px; color: var(--text-muted); margin-bottom: 5px;"></i>
-                        <p style="font-size: 12px; color: var(--text-muted);">Tải lên tài liệu liên quan (.pdf, .docx, .xlsx, .jpg, .png; tối đa 25MB/file)</p>
-                        <input type="file" id="lk-upload-files" style="display: none;" onchange="handleFileSelected(this, 'lk-files-list')" multiple>
-                    </div>
-                    <div class="file-list" id="lk-files-list">
-                        <!-- Loaded dynamically -->
-                    </div>
-                </div>
+                <!-- Tài liệu đính kèm: bảng chuẩn btnn_tai_lieu_kem_theo.js -->
+                <div class="form-group" id="lk-tlkt"></div>
 
                 <!-- Form actions -->
                 <div class="search-actions" style="margin-top: 20px;">
@@ -2729,9 +2708,15 @@
     function thRenderHistory(list) {
         const el = document.getElementById("th-history-list");
         if (!el) return;
-        el.innerHTML = list && list.length
-            ? list.map(x => `<div class="history-item"><b>${thEsc(x.at)}</b> - ${thEsc(x.by)}: ${thEsc(x.action)}</div>`).join("")
-            : '<div class="muted">Chưa có lịch sử xử lý.</div>';
+        // Lịch sử xử lý chuẩn BTNN: 04 cột Thời gian | Người thực hiện | Thao tác | Nội dung xử lý, mới nhất ở trên
+        // Dòng ghi dạng "Thao tác: nội dung" được tách thành 02 cột Thao tác và Nội dung xử lý
+        const th = "padding:12px 16px; background:#f1f5f9; color:#1e3a8a; font-weight:700; font-size:13px;";
+        const td = "padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:13px; color:#1e293b; vertical-align:top;";
+        const head = `<div style="display:flex; align-items:center; gap:8px; margin:16px 0 10px; font-weight:700; color:#1e3a8a; font-size:14px;"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử xử lý</div>`;
+        if (!list || !list.length) { el.innerHTML = head + '<div style="color:#64748b; font-style:italic;">Chưa có lịch sử xử lý.</div>'; return; }
+        const split = a => { const s = String(a || ""), i = s.indexOf(": "); return i > 0 ? [s.slice(0, i), s.slice(i + 2)] : [s, ""]; };
+        el.innerHTML = head + `<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; table-layout:fixed;"><thead><tr><th style="${th} width:170px; text-align:center;">Thời gian</th><th style="${th} width:220px; text-align:left;">Người thực hiện</th><th style="${th} width:260px; text-align:center;">Thao tác</th><th style="${th} text-align:left;">Nội dung xử lý</th></tr></thead><tbody>`
+            + list.slice().reverse().map(x => { const [op, note] = split(x.action); return `<tr><td style="${td} text-align:center;">${thEsc(x.at)}</td><td style="${td}">${thEsc(x.by)}</td><td style="${td} text-align:center;">${thEsc(op)}</td><td style="${td} white-space:pre-line;">${thEsc(x.note || note || "--")}</td></tr>`; }).join("") + "</tbody></table></div>";
     }
 
     function onThTinhTrangChange(val) {
@@ -2767,6 +2752,16 @@
         }).filter(Boolean);
     }
     function thCurrentRows() { return typeof tlktGet === "function" ? tlktGet("thTl").map(r => ({ name: r.name, file: r.file })) : []; }
+    // Tab Nghiên cứu khoa học (tài liệu đính kèm kế hoạch) và tab Nội dung khác liên quan: cùng bảng chuẩn, không có dòng ghi chú định dạng/dung lượng
+    const LK_FILE_EXTS = [".pdf", ".docx", ".xlsx", ".jpg", ".jpeg", ".png"];
+    function khMountFiles(rows) {
+        if (typeof tlktMount !== "function") return;
+        tlktMount("khTl", "kh-tlkt", { split: false, noLeader: true, noHint: true, title: "Tài liệu đính kèm", exts: TH_FILE_EXTS, rows: rows || [] });
+    }
+    function lkMountFiles(rows) {
+        if (typeof tlktMount !== "function") return;
+        tlktMount("lkTl", "lk-tlkt", { split: false, noLeader: true, noHint: true, title: "Tài liệu đính kèm", exts: LK_FILE_EXTS, rows: rows || [] });
+    }
     function thMountFiles(rows) {
         if (typeof tlktMount !== "function") return;
         tlktMount("thTl", "th-tlkt", { split: false, noLeader: true, noHint: true, title: "Tài liệu đính kèm", titleClass: "th-tlkt-notitle", exts: TH_FILE_EXTS, rows: rows || [] });
@@ -3289,7 +3284,7 @@
         document.getElementById("kh-kinhphi-dukien").value = "";
         document.getElementById("kh-nguonvốn").value = "Ngân sách nhà nước";
         document.getElementById("kh-kinhphi-chitiet").value = "";
-        document.getElementById("kh-kh-files-list").innerHTML = "";
+        khMountFiles([]);
 
         // Hide progress section & result section
         document.getElementById("kh-progress-header").style.display = "none";
@@ -3334,22 +3329,7 @@
         document.getElementById("kh-kinhphi-chitiet").value = kh.kinhPhiChitiet;
 
         // Render plan files
-        const listKh = document.getElementById("kh-kh-files-list");
-        listKh.innerHTML = "";
-        kh.filesKh.forEach(f => {
-            listKh.innerHTML += `
-                <div class="file-item">
-                    <div class="file-info">
-                        <i class="fa-solid fa-file-pdf"></i>
-                        <span class="file-name">${f.name}</span>
-                    </div>
-                    <div class="file-actions">
-                        <span class="file-action-link" onclick="previewPdf('${f.name}', 'Thuyết minh đề tài nghiên cứu khoa học.')">Xem file</span>
-                        <span class="file-action-link delete" onclick="deleteFormFile(this, 'kh-upload-kh')">Xóa file</span>
-                    </div>
-                </div>
-            `;
-        });
+        khMountFiles(thToRows(kh.filesKh));
 
         // Load milestones to dynamic plan table
         const milestoneTbody = document.getElementById("kh-milestone-body");
@@ -3554,10 +3534,12 @@
         }
 
         // Collect plan files
-        const filesKh = [];
-        document.querySelectorAll("#kh-kh-files-list .file-name").forEach(span => {
-            filesKh.push({ name: span.innerText });
-        });
+        // Tài liệu đính kèm (bảng chuẩn): dòng có dữ liệu phải đủ Tên tài liệu, văn bản + File đính kèm
+        if (typeof tlktValidate === "function" && !tlktValidate("khTl")) {
+            showToast("Vui lòng nhập đầy đủ Tên tài liệu, văn bản và File đính kèm của Tài liệu đính kèm!", true);
+            return;
+        }
+        const filesKh = typeof tlktGet === "function" ? tlktGet("khTl").map(r => ({ name: r.name, file: r.file })) : [];
 
         const isNew = !id;
 
@@ -4001,7 +3983,7 @@
         document.getElementById("lk-ngay").value = `${dd}/${mm}/${yyyy}`;
         
         document.getElementById("lk-noidung").value = "";
-        document.getElementById("lk-files-list").innerHTML = "";
+        lkMountFiles([]);
 
         document.getElementById("lk-search-card").style.display = "none";
         document.getElementById("lk-list-card").style.display = "none";
@@ -4021,29 +4003,7 @@
         document.getElementById("lk-noidung").value = lk.noidung || "";
 
         // Render file list
-        const fileListContainer = document.getElementById("lk-files-list");
-        fileListContainer.innerHTML = "";
-        if (lk.files && lk.files.length > 0) {
-            lk.files.forEach(f => {
-                let fileIcon = "fa-file-word";
-                if (f.name.toLowerCase().endsWith('.pdf')) fileIcon = "fa-file-pdf";
-                else if (f.name.toLowerCase().endsWith('.xlsx')) fileIcon = "fa-file-excel";
-                else if (f.name.toLowerCase().endsWith('.jpg') || f.name.toLowerCase().endsWith('.png') || f.name.toLowerCase().endsWith('.jpeg')) fileIcon = "fa-file-image";
-
-                fileListContainer.innerHTML += `
-                    <div class="file-item">
-                        <div class="file-info">
-                            <i class="fa-solid ${fileIcon}"></i>
-                            <span class="file-name" style="font-weight: 500;">${f.name}</span>
-                        </div>
-                        <div class="file-actions">
-                            <span class="file-action-link" onclick="previewPdf('${f.name}', 'Tài liệu liên quan.')">Xem file</span>
-                            <span class="file-action-link delete" onclick="deleteFormFile(this, 'lk-upload-files')">Xóa file</span>
-                        </div>
-                    </div>
-                `;
-            });
-        }
+        lkMountFiles(thToRows(lk.files));
 
         document.getElementById("lk-search-card").style.display = "none";
         document.getElementById("lk-list-card").style.display = "none";
@@ -4079,10 +4039,12 @@
         }
 
         // Collect files
-        const files = [];
-        document.querySelectorAll("#lk-files-list .file-name").forEach(span => {
-            files.push({ name: span.innerText });
-        });
+        // Tài liệu đính kèm (bảng chuẩn): dòng có dữ liệu phải đủ Tên tài liệu, văn bản + File đính kèm
+        if (typeof tlktValidate === "function" && !tlktValidate("lkTl")) {
+            showToast("Vui lòng nhập đầy đủ Tên tài liệu, văn bản và File đính kèm của Tài liệu đính kèm!", true);
+            return;
+        }
+        const files = typeof tlktGet === "function" ? tlktGet("lkTl").map(r => ({ name: r.name, file: r.file })) : [];
 
         const isNew = !id;
         
@@ -4128,5 +4090,33 @@
     <script src="admin-ui-standardizer.js"></script>
     <script src="../../Common/grid_align.js?v=20261029ga7"></script>
     <script src="btnn_tieu_de_man.js?v=20261103td2"></script>
+    <script>
+    // Tiêu đề form 01 dòng (đồng nhất VBQPPL, nhóm Nghiệp vụ QLNN về công tác BTNN):
+    // khi mở form, khối tiêu đề trang = "[Thao tác] Tập huấn, bồi dưỡng"; ẩn dòng tiêu đề form #th-form-title; đóng form trở lại tên mục Menu
+    (function () {
+        var card = document.getElementById('th-form-card');
+        var ft = document.getElementById('th-form-title');
+        var h = document.querySelector('.page-header h1');
+        if (!card || !ft || !h) return;
+        var menuTitle = h.textContent.trim();
+        var head = ft.closest('.section-title');
+        if (head) head.style.display = 'none';
+        function act(t) {
+            t = String(t || '').trim();
+            if (t.indexOf('Thêm mới') === 0) return 'Thêm mới';
+            if (t.indexOf('Xem chi tiết') === 0 || t.indexOf('Chi tiết') === 0) return 'Chi tiết';
+            if (t.indexOf('Sửa') === 0) return 'Sửa';
+            return t.split(' ').slice(0, 2).join(' ');
+        }
+        function sync() {
+            var open = card.style.display !== 'none' && getComputedStyle(card).display !== 'none';
+            var text = open ? act(ft.textContent) + ' ' + menuTitle : menuTitle;
+            if (h.textContent.trim() !== text) h.textContent = text;
+        }
+        new MutationObserver(sync).observe(card, { attributes: true, attributeFilter: ['style', 'class'] });
+        new MutationObserver(sync).observe(ft, { childList: true, characterData: true, subtree: true });
+        sync();
+    })();
+    </script>
 </body>
 </html>

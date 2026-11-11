@@ -284,9 +284,9 @@ function qdhlLog(at, uid, from, to, reason, docs) {
 function qdhlSeedDefs() {
     var BH = ST.DA_BH;
     var r1 = 'Người yêu cầu bồi thường đã khởi kiện yêu cầu Tòa án giải quyết yêu cầu bồi thường trong thời hạn; Quyết định chưa phát sinh hiệu lực thi hành.';
-    var r4 = 'Cơ quan có thẩm quyền yêu cầu tạm dừng thi hành Quyết định để xem xét lại.';
+    var r4 = 'Người yêu cầu bồi thường có đơn rút toàn bộ yêu cầu bồi thường trước khi Quyết định được thi hành; Quyết định không được thi hành.';
     var d1 = [qdhlDoc0('Thông báo thụ lý vụ án của Tòa án', 'Thong_bao_thu_ly_vu_an_BT-2026-191.pdf', 245760)];
-    var d4 = [qdhlDoc0('Văn bản yêu cầu tạm dừng thi hành', 'Van_ban_tam_dung_BT-2026-194.pdf', 204800)];
+    var d4 = [qdhlDoc0('Đơn rút yêu cầu bồi thường', 'Don_rut_yeu_cau_BT-2026-194.pdf', 204800)];
     return [
         // Có hiệu lực -> Không có hiệu lực; khoản chi trả Chờ thông báo chi trả (bị chặn)
         seedDec({ id: 'QD-HL1', claimCode: 'BT-2026-191', nycName: 'Trần Thị Thu Hương', nycAddress: 'Số 18 phố Kim Mã, Phường Giảng Võ, Thành phố Hà Nội', unitId: 'STP-HN', leaderId: 'tp_hctp_hn', approvedBy: 'gdso_hn', approvedAt: '10:00 05/10/2026',
@@ -362,6 +362,16 @@ function qdhlEnsureSeeds() {
         });
         qdhlWrite(QDHL_SEED_KEY, '1');
         if (qdhlMigrate()) changed = true;
+        // 09/11/2026: lý do mẫu QD-HL4 "tạm dừng thi hành" mâu thuẫn trạng thái cuối Không có hiệu lực -> đổi lý do, tài liệu (dữ liệu đã lưu)
+        (function () {
+            var OLD4 = 'Cơ quan có thẩm quyền yêu cầu tạm dừng thi hành Quyết định để xem xét lại.', d = (decisions || []).find(function (x) { return x && x.id === 'QD-HL4'; });
+            if (!d) return;
+            var fix = function (s) { return typeof s === 'string' && s.indexOf(OLD4) >= 0 ? s.split(OLD4).join(r4New) : s; };
+            var r4New = 'Người yêu cầu bồi thường có đơn rút toàn bộ yêu cầu bồi thường trước khi Quyết định được thi hành; Quyết định không được thi hành.';
+            var doc = qdhlDoc0('Đơn rút yêu cầu bồi thường', 'Don_rut_yeu_cau_BT-2026-194.pdf', 204800);
+            (d.hieuLucHistory || []).forEach(function (h) { if (h && h.reason === OLD4) { h.reason = r4New; h.docs = [doc]; changed = true; } });
+            (d.history || []).forEach(function (h) { if (h && typeof h.note === 'string' && h.note.indexOf(OLD4) >= 0) { h.note = fix(h.note).split('Van_ban_tam_dung_BT-2026-194.pdf').join('Don_rut_yeu_cau_BT-2026-194.pdf'); if (h.docs) h.docs = [doc]; changed = true; } });
+        })();
         // Dữ liệu cũ: ghi chú lịch sử "Cập nhật hiệu lực QĐ" lưu nhãn cũ "Tài liệu kèm theo:" -> "Tài liệu đính kèm:"
         (decisions || []).forEach(function (d) {
             (d && d.history || []).forEach(function (h) {
