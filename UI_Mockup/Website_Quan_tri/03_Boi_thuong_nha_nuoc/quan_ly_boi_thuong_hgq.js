@@ -74,15 +74,17 @@ function hgqBuildMau22(claim, x) {
         + '<td style="width:50%; vertical-align:top; font-size:12pt;"><b><i>Nơi nhận:</i></b><br>' + nn.map(gqE).join('<br>') + '</td>'
         + '<td style="text-align:center; vertical-align:top;"><b>THỦ TRƯỞNG CƠ QUAN</b><br><i>(Ký, ghi rõ họ tên và đóng dấu)</i></td></tr></table>';
 }
-function hgqFormData(p) {
-    if (p === 'hgqt') return { reason: hgqEl('hgqtReason').value.trim(), date: hgqEl('hgqtDate').value.trim() };
+// [sn1] bh: { soKyHieu, ngay } theo khối Thông tin ban hành văn bản (Bước 2); không truyền: để trống dòng số, ngày của mẫu (Bước 1, Xem trước)
+function hgqFormData(p, bh) {
+    var no = (bh && bh.soKyHieu) || '', dt = (bh && bh.ngay) || '';
+    if (p === 'hgqt') return { reason: hgqEl('hgqtReason').value.trim(), date: hgqEl('hgqtDate').value.trim(), docNumber: no, docDate: dt };
     var from = hgqEl('hgqFromDate').value.trim(), to = hgqEl('hgqToDate').value.trim();
     return {
         reason: hgqEl('hgqReason').value.trim(), fromDate: from, toDate: to, days: hgqDays(from, to),
-        docNumber: hgqEl('hgqDocNumber').value.trim(), docDate: hgqEl('hgqDocDate').value.trim(), noiNhan: hgqEl('hgqNoiNhan').value
+        docNumber: no, docDate: dt, noiNhan: hgqEl('hgqNoiNhan').value
     };
 }
-function hgqBuildDoc() { var c = hgqS.hgq.claim; return c ? { html: hgqBuildMau22(c, hgqFormData('hgq')), base: hgqDocBaseName('hgq', c) } : null; }
+function hgqBuildDoc(bh) { var c = hgqS.hgq.claim; return c ? { html: hgqBuildMau22(c, hgqFormData('hgq', bh)), base: hgqDocBaseName('hgq', c) } : null; }
 
 // ---------- Giao diện ----------
 function hgqField(id, label, req, ctrl) { return '<div class="gqx-field"><label class="form-label" for="' + id + '">' + label + (req ? '<span class="gqx-req">*</span>' : '') + '</label>' + ctrl + '<div id="' + id + 'Err" class="gqx-err">Đây là trường bắt buộc</div></div>'; }
@@ -109,8 +111,7 @@ function hgqEnsureModal(p) {
     var src = cfg.gen
         ? '<div id="' + p + 'DocSrcGroup"><div class="doc-src-segmented"><button type="button" class="doc-src-seg-btn active" id="' + p + 'SegBtnGen" onclick="hgqSetDocSrc(\'' + p + '\', \'gen\')"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Sinh văn bản theo mẫu 22/BTNN</span></button><button type="button" class="doc-src-seg-btn" id="' + p + 'SegBtnUpload" onclick="hgqSetDocSrc(\'' + p + '\', \'upload\')"><i class="fa-solid fa-cloud-arrow-up"></i><span>Tải lên từ máy</span></button></div></div>'
             + '<div id="hgqDocMetaGroup" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px; margin-bottom:12px;"><div style="font-size:12px; font-weight:700; color:#334155; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:10px; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-sliders" style="color:#2563eb;"></i> Thông tin điền vào Mẫu 22/BTNN</div>'
-            + '<div class="gqx-grid2" style="margin-bottom:10px;">' + hgqField('hgqDocNumber', 'Số, ký hiệu văn bản', true, '<input type="text" id="hgqDocNumber" class="form-control" maxlength="50" placeholder="Nhập số, ký hiệu văn bản" oninput="hgqClearErr(\'hgqDocNumber\')">')
-            + hgqField('hgqDocDate', 'Ngày văn bản', true, hgqDateCtrl('hgqDocDate', 'hgqClearErr(\'hgqDocDate\')')) + '</div>'
+            // [sn1] Số, ký hiệu / Ngày văn bản: nhập tại khối Thông tin ban hành văn bản (Bước 2); khối còn Nơi nhận
             + '<div class="gqx-field" style="margin-bottom:0;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;"><label class="form-label" for="hgqNoiNhan" style="margin-bottom:0;">Nơi nhận</label><span style="font-size:11.5px; color:#64748b;"><i class="fa-solid fa-circle-info"></i> Mỗi nơi nhận trên 01 dòng</span></div><textarea id="hgqNoiNhan" class="form-control" rows="3" style="font-size:12.5px; line-height:1.5; resize:none; overflow:hidden;" placeholder="Nhập nơi nhận, mỗi nơi nhận 01 dòng..." oninput="hgqAutoGrow(this)"></textarea></div></div>'
         : '';
     var wrap = document.createElement('div');
@@ -123,7 +124,7 @@ function hgqEnsureModal(p) {
         + '<div id="' + p + 'StepperBar" class="ktl-stepper-fullwidth"><div id="' + p + 'Step1Tab" class="ktl-step-tab active" onclick="hgqGoStep1(\'' + p + '\')"><span class="ktl-step-badge" id="' + p + 'Step1Badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div>'
         + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="' + p + 'Step2Tab" class="ktl-step-tab" onclick="hgqGoStep2(\'' + p + '\')"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Thiết lập các cấp trình ký</span></div></div>'
         + '<div id="' + p + 'Step1Body" class="sticky-modal-body gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
-        + '<div id="' + p + 'ReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="' + p + 'ReturnedReason">--</strong><br>Lãnh đạo trả lại: <span id="' + p + 'ReturnedOfficer">--</span> • Thời điểm trả lại: <span id="' + p + 'ReturnedDate">--</span></div></div>'
+        + '<div id="' + p + 'ReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="' + p + 'ReturnedReason">--</strong><br>Người trả lại: <span id="' + p + 'ReturnedOfficer">--</span> • Thời điểm trả lại: <span id="' + p + 'ReturnedDate">--</span></div></div>'
         + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
         + card('online', 'Ký số trên hệ thống', 'Trình Lãnh đạo ký duyệt trên phần mềm', 'fa-file-signature', false)
         + card('offline', 'Ký ngoài (Ban hành trực tiếp)', 'Tải lên văn bản PDF đã ký và đóng dấu', 'fa-stamp', true)
@@ -204,11 +205,9 @@ function hgqOpen(p, claimId) {
         hgqEl('hgqToDate').value = sd.toDate || '';
         hgqFlat('hgqFromDate', hgqEl('hgqFromDate').value, hgqCalcDays);
         hgqFlat('hgqToDate', hgqEl('hgqToDate').value, hgqCalcDays);
-        hgqEl('hgqDocNumber').value = '     /QĐ-';
-        hgqEl('hgqDocDate').value = today;
-        hgqFlat('hgqDocDate', today, function () { hgqClearErr('hgqDocDate'); });
+        // [sn1] Số, ký hiệu / Ngày văn bản: khối Thông tin ban hành văn bản (Bước 2), trình lại điền theo phiếu trình trước (gqSignInit)
         hgqEl('hgqNoiNhan').value = sd.noiNhan && sd.noiNhan.length ? sd.noiNhan.join('\n') : HGQ_NOI_NHAN_DEFAULT;
-        ['hgqReason', 'hgqFromDate', 'hgqToDate', 'hgqDocNumber', 'hgqDocDate'].forEach(hgqClearErr);
+        ['hgqReason', 'hgqFromDate', 'hgqToDate'].forEach(hgqClearErr);
         hgqCalcDays();
     } else {
         hgqEl('hgqtReason').value = sd.reason || '';
@@ -218,14 +217,13 @@ function hgqOpen(p, claimId) {
         ['hgqtReason', 'hgqtDate'].forEach(hgqClearErr);
     }
     hgqEl(p + 'SignContent').value = cfg.content;
-    gqSignInit(p, claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null);
+    gqSignInit(p, claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null, { kind: cfg.kind });
     hgqOfflineRemove(p);
     hgqSetDocSrc(p, cfg.gen ? 'gen' : 'upload');
     tlktGqRestore(p, prev, {
         required: false,
         setSrc: function (s) { if (cfg.gen) hgqSetDocSrc(p, s); },
-        setFile: function (f) { S.online = f; hgqRenderDocBox(p); },
-        fields: p === 'hgq' ? [['hgqDocNumber', 'docNumber'], ['hgqDocDate', 'docDate']] : []
+        setFile: function (f) { S.online = f; hgqRenderDocBox(p); }
     });
     hgqEl(p + 'SigningMethodOnline').checked = true;
     hgqToggleSigningMethod(p, 'online');
@@ -263,7 +261,6 @@ function hgqToggleSigningMethod(p, method) {
         var ico = c.querySelector('.sign-card-check i'); if (ico) ico.className = x[1] ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle';
     });
     hgqApplyDocMeta(p);
-    if (!isOnline && p === 'hgq') ['hgqDocNumber', 'hgqDocDate'].forEach(hgqClearErr);
     var bar = hgqEl(p + 'StepperBar');
     bar.style.display = 'flex'; bar.classList.toggle('is-collapsed', !isOnline); bar.setAttribute('aria-hidden', isOnline ? 'false' : 'true');
     var show = function (id, on, disp) { var el = hgqEl(id); if (el) el.style.display = on ? (disp || 'block') : 'none'; };
@@ -315,16 +312,9 @@ function hgqValidateInfo(p) {
     else hgqClearErr('hgqToDate');
     return first;
 }
+// [sn1] Số, ký hiệu / Ngày văn bản: nhập tại Bước 2, không bắt buộc - bỏ kiểm tra ở nút Tiếp tục
 function hgqValidateStep1(p) {
-    var first = hgqValidateInfo(p);
-    if (p === 'hgq' && hgqS.hgq.docSrc === 'gen') {
-        var no = hgqEl('hgqDocNumber').value.trim(), dt = hgqEl('hgqDocDate').value.trim();
-        if (!no) first = hgqFirst(first,'hgqDocNumber'); else hgqClearErr('hgqDocNumber');
-        if (!dt) first = hgqFirst(first,'hgqDocDate');
-        else if (!hgqParse(dt)) first = hgqFirst(first,'hgqDocDate', 'Ngày văn bản không hợp lệ (dd/mm/yyyy)');
-        else hgqClearErr('hgqDocDate');
-    }
-    return first;
+    return hgqValidateInfo(p);
 }
 function hgqPreview() {
     var bad = hgqValidateStep1('hgq');
@@ -443,14 +433,17 @@ function hgqSubmitOnline(p) {
     if (!claim || !S.online) return;
     var sign = gqSignCollect(p);
     if (!sign) return;
-    var x = hgqFormData(p);
+    // [sn1] Số, ký hiệu / Ngày văn bản lấy từ khối Thông tin ban hành văn bản (Bước 2), ghi về docNumber / docDate như trước (Tạm đình chỉ: lưu thêm để lịch sử hiển thị)
+    var bh = { soKyHieu: sign.soKyHieu, ngay: sign.ngayVanBan };
+    var x = hgqFormData(p, bh);
     var gen = S.online.source === 'generated';
     var fileName = S.online.name;
     var prevSt = hgqPrevStatus(claim);
-    var draftDoc = { source: gen ? 'generated' : 'uploaded', formNo: cfg.form, docTitle: cfg.docTitle, generatedName: gen ? fileName : '', uploadedName: gen ? '' : fileName, bodyHtml: gen ? S.online.bodyHtml : '' };
+    var genDoc = gen ? hgqBuildDoc(bh) : null;
+    var draftDoc = { source: gen ? 'generated' : 'uploaded', formNo: cfg.form, docTitle: cfg.docTitle, generatedName: gen ? fileName : '', uploadedName: gen ? '' : fileName, bodyHtml: genDoc ? genDoc.html : '' };
     var data = p === 'hgq'
-        ? { reason: x.reason, fromDate: x.fromDate, toDate: x.toDate, days: x.days, docNumber: gen ? x.docNumber : '', docDate: gen ? x.docDate : '', noiNhan: gen ? String(x.noiNhan || '').split(/\n/).map(function (s) { return s.trim(); }).filter(Boolean) : [] }
-        : { reason: x.reason, date: x.date };
+        ? { reason: x.reason, fromDate: x.fromDate, toDate: x.toDate, days: x.days, docNumber: x.docNumber, docDate: x.docDate, noiNhan: gen ? String(x.noiNhan || '').split(/\n/).map(function (s) { return s.trim(); }).filter(Boolean) : [] }
+        : { reason: x.reason, date: x.date, docNumber: x.docNumber, docDate: x.docDate };
     var signDoc = Object.assign({ method: 'Ký số', file: gen ? hgqDocBaseName(p, claim) + '.pdf' : fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords }, data, tlktGqExtra(p, S.online, S.docSrc, sign.content));
     var res = gqSubmit(claim, cfg.kind, sign.content, [], { assignee: sign.assignees[0] || '', assignees: sign.assignees, reason: hgqReasonText(p, x), resultStatus: cfg.result, draftDoc: draftDoc, signDoc: signDoc });
     if (!res || res.ok === false) { showToast(res ? res.message : 'Không trình được hồ sơ.', 'error'); return; }

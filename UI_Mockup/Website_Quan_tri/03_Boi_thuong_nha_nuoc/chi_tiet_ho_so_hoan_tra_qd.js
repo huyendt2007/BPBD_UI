@@ -8,6 +8,9 @@
  * - Ký duyệt / Từ chối: dùng màn Ký duyệt / Từ chối chung của trang (leaderSignApprovalModal / rejectReasonModal).
  * - Lưu trạng thái cán bộ theo đơn vị vào localStorage 'btnn_ht_units_v1' để màn danh sách tổng hợp trạng thái chung.
  * Nạp sau chi_tiet_ho_so_hoan_tra_ykhd.js.
+ * [tnht] 12/11/2026 - Ký số trên hệ thống (Mẫu 34-38, QĐ đình chỉ Mẫu 39 tại Bước 3): bỏ "Số, ký hiệu văn bản", "Ngày văn bản" ở Bước 1; nhập tại khối
+ *   "Thông tin ban hành văn bản" của Bước 2 (soNgay: true), không bắt buộc; ghi về r.soKh / r.ngay; lưu r.dongDau, r.banHanh; trình lại điền lại đủ khối.
+ *   Ký duyệt cấp cuối không tự cấp số (số trống: "Chờ cấp số"); ngày ban hành theo Ngày văn bản đã nhập, trống thì ngày ký duyệt.
  */
 (function () {
     const STORE_KEY = 'btnn_ht_units_v1';
@@ -365,7 +368,7 @@
         let h = '<div style="margin-bottom:16px;">';
         if (u.st === 'BTC' && r && r.reject) {
             h += '<div class="alert-box danger" style="border-left:4px solid #f59e0b; padding:12px 16px; background:#fffbeb; border-radius:8px; margin-bottom:12px;"><div style="font-weight:800; color:#b45309;">Lý do bị trả lại</div>'
-                + '<div style="font-size:13px;"><strong>Lý do trả lại:</strong> ' + esc(r.reject.reason) + '</div><div style="font-size:13px;"><strong>Lãnh đạo trả lại:</strong> ' + esc(r.reject.by) + '</div><div style="font-size:13px;"><strong>Thời điểm trả lại:</strong> ' + esc(r.reject.at) + '</div></div>';
+                + '<div style="font-size:13px;"><strong>Lý do trả lại:</strong> ' + esc(r.reject.reason) + '</div><div style="font-size:13px;"><strong>Người trả lại:</strong> ' + esc(r.reject.by) + '</div><div style="font-size:13px;"><strong>Thời điểm trả lại:</strong> ' + esc(r.reject.at) + '</div></div>';
         }
         // Dải ngang 01 hàng: Hình thức ký | Số, ký hiệu văn bản | Ngày văn bản | Tệp văn bản Quyết định
         const cell = (k, v) => '<div style="flex:1 1 0; min-width:160px;"><div style="font-size:12px; color:#64748b; margin-bottom:2px;">' + k + '</div><div style="font-weight:600; font-size:13px; overflow-wrap:anywhere;">' + v + '</div></div>';
@@ -455,7 +458,7 @@
             const sub = (r.hist || []).find(h => h.type === 'submit');
             st = r.reject ? 'Bị trả lại' : 'Chờ duyệt';
             body = tien + lyDo + item('Lãnh đạo được trình', esc(leaderLabel(r, r.level || 0))) + item('Thời điểm trình', esc(sub ? sub.at : (r.ngay || '-'))) + item('Tệp văn bản', file('Bản dự thảo'))
-                + (r.reject ? item('Lý do trả lại', '<span style="color:#b45309;">' + esc(r.reject.reason) + '</span>') + item('Lãnh đạo trả lại', esc(r.reject.by)) + item('Thời điểm trả lại', esc(r.reject.at)) : '');
+                + (r.reject ? item('Lý do trả lại', '<span style="color:#b45309;">' + esc(r.reject.reason) + '</span>') + item('Người trả lại', esc(r.reject.by)) + item('Thời điểm trả lại', esc(r.reject.at)) : '');
         }
         const old = (r.hist || []).slice(1);
         return '<div class="ht-qd-block" style="margin-top:16px; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px;"><div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;"><strong style="color:var(--primary-color);"><i class="fa-solid fa-file-contract"></i> ' + esc(k.doc) + (k.base ? ' (bổ sung)' : '') + '</strong>' + (window.htPill ? window.htPill(st) : esc(st)) + '</div>'
@@ -752,10 +755,8 @@
             + '<div class="gqx-sec" id="ht3Dc" style="display:none;"><div class="gqx-sec-title"><i class="fa-solid fa-users"></i> Cán bộ được đình chỉ</div><div id="ht3DcList"></div></div>'
             + '<div class="gqx-sec" id="ht3DocSec"><div class="gqx-sec-title" id="ht3DocTitle"></div>'
             + '<div id="ht3SrcGroup" class="doc-src-segmented"><button type="button" class="doc-src-seg-btn active" id="ht3SegGen" onclick="ht3SetSrc(\'gen\')"><i class="fa-solid fa-wand-magic-sparkles"></i><span id="ht3SegGenText"></span></button><button type="button" class="doc-src-seg-btn" id="ht3SegUp" onclick="ht3SetSrc(\'upload\')"><i class="fa-solid fa-cloud-arrow-up"></i><span>Tải lên từ máy</span></button></div>'
-            + '<div id="ht3Meta" class="tlhd-meta"><div class="tlhd-meta-title" id="ht3MetaTitle"></div><div class="gqx-grid2">'
-            + '<div class="gqx-field"><label class="form-label">Số, ký hiệu văn bản<span class="gqx-req">*</span></label><input type="text" id="ht3So" class="form-control" maxlength="50" placeholder="Nhập số, ký hiệu văn bản" oninput="ht3Clr(\'ht3So\')"><div id="ht3SoErr" class="gqx-err">' + REQ + '</div></div>'
-            + '<div class="gqx-field"><label class="form-label">Ngày văn bản<span class="gqx-req">*</span></label><input type="text" id="ht3Ngay" class="form-control" placeholder="dd/mm/yyyy" oninput="ht3Clr(\'ht3Ngay\')"><div id="ht3NgayErr" class="gqx-err">' + REQ + '</div></div>'
-            + '</div>'
+            // [tnht] Số, ký hiệu văn bản / Ngày văn bản (Ký số) nhập tại khối Thông tin ban hành văn bản (Bước 2); tiêu đề "Thông tin điền vào Mẫu" chỉ còn ở QĐ đình chỉ (Mẫu 39)
+            + '<div id="ht3Meta" class="tlhd-meta"><div class="tlhd-meta-title" id="ht3MetaTitle"></div>'
             // QĐ đình chỉ (Mẫu 39/BTNN): Căn cứ, Văn bản làm căn cứ yêu cầu bồi thường, Nơi nhận thuộc Thông tin điền vào Mẫu (như popup Đình chỉ cả hồ sơ)
             + '<div id="ht3DcInfo" style="display:none;">'
             + '<div class="gqx-field"><label class="form-label">Căn cứ<span class="gqx-req">*</span></label><textarea id="ht3DcCanCu" class="form-control" rows="4" maxlength="4000" placeholder="Nhập căn cứ, mỗi căn cứ 01 dòng" oninput="ht3Clr(\'ht3DcCanCu\')"></textarea><div id="ht3DcCanCuErr" class="gqx-err">' + REQ + '</div></div>'
@@ -808,20 +809,23 @@
         const levels = levelsOf(ctx.issuer || ctx.unit);
         S = { kind, key, ctx, method: rejected ? prev.method : 'online', src: rejected ? prev.docSrc : 'gen', file: null, step: 1, levels, assignees: rejected ? prev.assignees.slice() : levels.map(l => l.leaders[0].id), placed: {},
             // [ro1] Thiết lập các cấp trình ký: trình lại điền sẵn thiết lập lần trước
-            ui: null, prevLv: rejected && window.BTNN_PCKD ? BTNN_PCKD.prevFromLegacy(prev) : null };
+            ui: null, prevLv: rejected && window.BTNN_PCKD ? BTNN_PCKD.prevFromLegacy(prev) : null,
+            // [tnht] Trình lại: khối Thông tin ban hành văn bản (Bước 2) của lần trình trước
+            prevBh: rejected && typeof htPrevBanHanh === 'function' ? htPrevBanHanh(prev, prev.soKh, prev.ngay) : null, bh: null };
         el('ht3Title').innerText = 'TRÌNH KÝ ' + k.doc.toUpperCase();
         el('ht3Sub').innerHTML = 'Hồ sơ: <strong>' + esc(activeDossier.code) + '</strong> • Đơn vị ban hành: ' + esc(ctx.issuer || ctx.unit) + (ctx.officer ? ' • Cán bộ: ' + esc(ctx.officer.name) : '');
         const rb = el('ht3Returned');
         rb.style.display = rejected ? 'block' : 'none';
-        if (rejected) rb.innerHTML = '<div style="font-weight:700; color:#b45309;">Lý do bị trả lại</div><div style="font-size:12.5px; color:#92400e;">Lý do trả lại: <strong>' + esc(prev.reject.reason) + '</strong><br>Lãnh đạo trả lại: ' + esc(prev.reject.by) + ' • Thời điểm trả lại: ' + esc(prev.reject.at) + '</div>';
+        if (rejected) rb.innerHTML = '<div style="font-weight:700; color:#b45309;">Lý do bị trả lại</div><div style="font-size:12.5px; color:#92400e;">Lý do trả lại: <strong>' + esc(prev.reject.reason) + '</strong><br>Người trả lại: ' + esc(prev.reject.by) + ' • Thời điểm trả lại: ' + esc(prev.reject.at) + '</div>';
         el('ht3SegGenText').innerText = 'Sinh văn bản theo mẫu ' + k.mau + '/BTNN';
         el('ht3MetaTitle').innerHTML = '<i class="fa-solid fa-sliders" style="color:#2563eb;"></i> Thông tin điền vào Mẫu ' + k.mau + '/BTNN';
         el('ht3GenHint').innerText = 'Hệ thống tự động sinh ' + k.doc + ' theo Mẫu ' + k.mau + '/BTNN từ thông tin đang nhập.';
         el('ht3OffNote').innerHTML = '<i class="fa-solid fa-circle-info"></i> Khi bấm <strong>Ban hành văn bản</strong>, văn bản được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống).';
-        el('ht3So').value = rejected ? prev.soKh : '';
+        // [tnht] Mẫu 34-38: không có khối "Thông tin điền vào Mẫu" (chỉ dòng ghi chú và nút Xem trước văn bản); QĐ đình chỉ (Mẫu 39): giữ khối
+        el('ht3Meta').classList.toggle('tlhd-meta', kind === 'DC');
+        el('ht3MetaTitle').style.display = kind === 'DC' ? '' : 'none';
         el('ht3OffSo').value = rejected && prev.method === 'offline' ? (prev.soKh || '') : '';
         el('ht3OffNgay').value = rejected && prev.method === 'offline' ? (prev.ngay || today()) : today();
-        el('ht3Ngay').value = rejected ? prev.ngay : today();
         el('ht3Content').value = rejected ? prev.content : k.content;
         // Miễn / Giảm bổ sung: số tiền hiện tại, số tiền sau giảm mới, lý do
         // QĐ giảm mức hoàn trả tại Bước 3: cũng nhập 03 số tiền (mặc định theo ý kiến của Hội đồng)
@@ -997,7 +1001,8 @@
         if (!supp || supp.phaiHT == null || !ctx.officer) return supp ? Object.assign({}, ctx, { supp }) : ctx;
         return Object.assign({}, ctx, { supp, officer: Object.assign({}, ctx.officer, { total: supp.phaiHT }) });
     }
-    function curDocHtml() { return docHtml(S.kind, Object.assign(docCtx(S.ctx, readSupp()), { dc: readDc() }), el('ht3So').value.trim(), el('ht3Ngay').value.trim()); }
+    // [tnht] Văn bản sinh ở Bước 1 / Xem trước: dòng số, ký hiệu và dòng ngày để trống (nhập tại Bước 2)
+    function curDocHtml() { return docHtml(S.kind, Object.assign(docCtx(S.ctx, readSupp()), { dc: readDc() }), '', ''); }
     window.ht3Preview = function () {
         const page = '<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><title>Xem trước văn bản<\/title><style>body{background:#e2e8f0;margin:0;padding:24px;}.page{width:794px;min-height:1123px;margin:0 auto;background:#fff;padding:50px 65px;box-sizing:border-box;font-family:"Times New Roman",serif;font-size:14px;line-height:1.6;}<\/style><\/head><body><div class="page">' + curDocHtml() + '<\/div><\/bo' + 'dy><\/ht' + 'ml>';
         try { window.open(URL.createObjectURL(new Blob([page], { type: 'text/html;charset=utf-8' })), '_blank'); } catch (e) { /* bỏ qua */ }
@@ -1049,8 +1054,8 @@
             else if (!/^\d{2}\/\d{2}\/\d{4}$/.test(nd)) { el('ht3OffNgayErr').innerText = 'Ngày không đúng định dạng dd/mm/yyyy.'; mark('ht3OffNgay'); }
             if (!S.file) mark('ht3OffBox', 'ht3OffErr');
         }
-        else if (S.src === 'gen') { if (!el('ht3So').value.trim()) mark('ht3So'); if (!el('ht3Ngay').value.trim()) mark('ht3Ngay'); }
-        else if (!S.file) mark('ht3FileBox', 'ht3FileErr');
+        // [tnht] Ký số: Số, ký hiệu / Ngày văn bản nhập tại Bước 2, không bắt buộc
+        else if (S.src !== 'gen' && !S.file) mark('ht3FileBox', 'ht3FileErr');
         if (!first && typeof tlktValidate === 'function' && !tlktValidate('ht3')) return false;
         // Focus ô lỗi đầu tiên theo thứ tự hiển thị trên popup
         if (first) { const f = document.querySelector('#ht3Body1 input.is-invalid, #ht3Body1 textarea.is-invalid, #ht3Body1 select.is-invalid') || first; if (f.focus) f.focus(); return false; }
@@ -1114,8 +1119,10 @@
         const P = window.BTNN_PCKD, W = window.BTNN_WF;
         if (P && W) {
             const first = !S.ui;
-            S.ui = P.legacyUi('ht3', { host: () => el('ht3Levels'), page: () => el('ht3A4'), method: () => 'Ký số', userId: () => P.submitterFor(W.resolveAgencyUnit(S.ctx.issuer || S.ctx.unit)) });
-            if (first) S.ui.reset(S.prevLv);
+            // [tnht] Khối Thông tin ban hành văn bản có Số, ký hiệu, Địa danh, Ngày văn bản; ô Số, ô Ngày theo dòng số, ngày của văn bản
+            S.ui = P.legacyUi('ht3', { host: () => el('ht3Levels'), page: () => el('ht3A4'), method: () => 'Ký số', userId: () => P.submitterFor(W.resolveAgencyUnit(S.ctx.issuer || S.ctx.unit)),
+                soNgay: true, docPos: () => (typeof tlhdDocPos === 'function' ? tlhdDocPos(el('ht3A4')) : null) });
+            if (first) S.ui.reset(S.prevLv, S.prevBh && typeof S.prevBh.dongDau === 'boolean' ? S.prevBh.dongDau : undefined, S.prevBh || null);
             S.ui.render(); S.ui.renderSigs();
             return;
         }
@@ -1123,9 +1130,11 @@
     };
     function newRec(method) {
         const k = KIND[S.kind];
+        // [tnht] Ký số: Số, ký hiệu văn bản / Ngày văn bản theo khối Thông tin ban hành văn bản (Bước 2, S.bh), mọi nguồn tệp; Ký ngoài: theo Bước 1
+        const bh = method === 'offline' ? null : S.bh;
         return {
-            kind: S.kind, method, docSrc: method === 'offline' ? '' : S.src, soKh: method === 'offline' ? el('ht3OffSo').value.trim() : (S.src === 'gen' ? el('ht3So').value.trim() : ''),
-            ngay: method === 'offline' ? el('ht3OffNgay').value.trim() : (S.src === 'gen' ? el('ht3Ngay').value.trim() : today()),
+            kind: S.kind, method, docSrc: method === 'offline' ? '' : S.src, soKh: method === 'offline' ? el('ht3OffSo').value.trim() : (bh ? String(bh.soKyHieu || '').trim() : ''),
+            ngay: method === 'offline' ? el('ht3OffNgay').value.trim() : (bh ? bh.ngayVanBan || '' : ''),
             fileName: S.file ? S.file.name : k.file + '_' + (activeDossier.maVuViec || activeDossier.code) + '.docx',
             upFile: S.file ? { name: S.file.name, size: S.file.size } : null,
             tlkt: typeof tlktGet === 'function' ? tlktGet('ht3') : [], // Ký ngoài: chỉ Tài liệu ban hành kèm theo
@@ -1143,8 +1152,10 @@
         if (bad) return;
         const lg = S.ui ? BTNN_PCKD.toLegacy(S.ui.collect()) : null;
         if (lg) { S.levels = lg.levels; S.assignees = lg.assignees; }
+        S.bh = lg ? lg.banHanh || null : null;
         const r = newRec('online');
-        if (lg) Object.assign(r, { tuThietLap: true, pcLevels: lg.pcLevels, pcSig: lg.pcSig });
+        // [tnht] Lưu Đóng dấu cơ quan, khối Thông tin ban hành văn bản cùng phiếu trình
+        if (lg) Object.assign(r, { tuThietLap: true, pcLevels: lg.pcLevels, pcSig: lg.pcSig, dongDau: !!lg.dongDau, banHanh: lg.banHanh || null });
         r.hist.unshift({ type: 'submit', name: 'Cán bộ ' + (S.ctx.issuer || S.ctx.unit), at: nowShort(), to: String(leaderLabel(r, 0)).split(/ - | [(]/)[0].trim(), msg: 'Trình ký đến ' + String(leaderLabel(r, 0)).split(/ - | [(]/)[0].trim() + '. Nội dung trình: ' + r.content });
         const kind = S.kind, key = S.key;
         setRec(kind, key, r);
@@ -1173,8 +1184,8 @@
     // Ban hành: Tầng 1 (QĐ hoàn trả) định tuyến từng cán bộ; Tầng 2 (QĐ miễn / giảm) chuyển trạng thái cán bộ
     function issue(kind, key, msg) {
         const r = recOf(kind, key);
-        // Ký ngoài: ngày Quyết định theo `Ngày văn bản` đã nhập; Ký số: ngày ký duyệt ban hành
-        r.issuedAt = r.method === 'offline' && r.ngay ? r.ngay : today();
+        // Ký ngoài: ngày Quyết định theo `Ngày văn bản` đã nhập; [tnht] Ký số: theo `Ngày văn bản` nhập tại Bước 2, còn trống thì ngày ký duyệt ban hành
+        r.issuedAt = r.ngay || today();
         r.level = r.levels.length;
         if (kind === 'DC') {
             // Ban hành QĐ đình chỉ (trước khi ban hành QĐ hoàn trả): cán bộ chuyển Đình chỉ hoàn trả
@@ -1264,7 +1275,9 @@
     window.htkdDocInfo = function (target) {
         const p = parse(target); if (!p) return baseDocInfo(target);
         const r = recOf(p.kind, p.key);
-        const html = r.docSrc === 'gen' ? docHtml(p.kind, docCtx(ctxOf(p.kind, p.key), r.supp), r.soKh, r.ngay) : '';
+        // [tnht] Lượt trình có khối Thông tin ban hành văn bản: văn bản trình ký để trống dòng số, ngày; ô Số, ô Ngày vẽ theo vị trí đã đặt
+        const bhOn = !!(r.banHanh && !r.issuedAt);
+        const html = r.docSrc === 'gen' ? docHtml(p.kind, docCtx(ctxOf(p.kind, p.key), r.supp), bhOn ? '' : r.soKh, bhOn ? '' : r.ngay) : '';
         return { name: r.fileName, html, open: () => ht3OpenDoc(p.kind, p.key) };
     };
     const baseConfirm = window.confirmLeaderDigitalSign;
@@ -1280,7 +1293,7 @@
             commit('Ký duyệt thành công. Hồ sơ chuyển Lãnh đạo cấp ' + (r.level + 1) + ' - ' + r.levels[r.level].unit + '.');
             return;
         }
-        if (!r.soKh) r.soKh = (Math.floor(Math.random() * 90) + 10) + '/QĐ-UBND';
+        // [tnht] Không tự cấp số: Số, ký hiệu theo giá trị cán bộ nhập tại Bước 2; còn trống thì Văn thư nhập khi ban hành (hiển thị "Chờ cấp số")
         issue(p.kind, p.key, 'Ký duyệt và ban hành ' + KIND[p.kind].doc + ' thành công.');
     };
     const baseReject = window.submitRejectReason;

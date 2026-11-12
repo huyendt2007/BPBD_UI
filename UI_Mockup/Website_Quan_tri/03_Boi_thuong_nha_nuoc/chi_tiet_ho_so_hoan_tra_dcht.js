@@ -13,6 +13,9 @@
  *   Ký ngoài: Ban hành văn bản -> Đình chỉ xem xét hoàn trả.
  * Phụ thuộc: chi_tiet_ho_so_hoan_tra_tlhd.js (CSS, tiện ích cơ quan / luồng ký / xác nhận), btnn_tai_lieu_kem_theo.js (tlkt),
  * các hàm sẵn có của trang (activeDossier, currentPerspective, renderStateLayout, renderPageHeaderActions, getDossierStatusBadge...).
+ * [tnht] 12/11/2026 - Ký số trên hệ thống: bỏ "Số, ký hiệu văn bản", "Ngày văn bản" ở Bước 1 (Mẫu 39/BTNN, cả chế độ chấm dứt); nhập tại khối
+ *   "Thông tin ban hành văn bản" của Bước 2 (soNgay: true), không bắt buộc; ghi về dcht.so / dcht.ngay; lưu dcht.dongDau, dcht.banHanh;
+ *   trình lại điền lại đủ khối Bước 2. Ký ngoài giữ "Số, ký hiệu văn bản (Ký ngoài)", "Ngày văn bản (Ký ngoài)" ở Bước 1.
  */
 
 const DCHT_ST_PENDING = 'Chờ duyệt QĐ đình chỉ';
@@ -87,7 +90,6 @@ function htStBadgeHtml(code) {
 }
 const DCHT_REQ_MSG = 'Đây là trường bắt buộc';
 const DCHT_OFF_FILE_MSG = 'Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.';
-const DCHT_SO_DEFAULT = '     /QĐ-';
 const DCHT_SIGN_CONTENT_DEFAULT = 'Kính trình Lãnh đạo xem xét, ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả.';
 const DCHT_CAN_CU_DEFAULT = [
     'Căn cứ khoản 2 Điều 69 của Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14 (đã được sửa đổi, bổ sung bởi Luật số 15/2026/QH16);',
@@ -179,7 +181,7 @@ function dchtModalHtml() {
         <div id="dchtStep1Body" class="gqx-body" style="overflow-y:auto; flex:1; padding:24px;">
             <div id="dchtReturnedBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
                 <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> <span id="dchtReturnedTitle">Lý do bị trả lại</span></div>
-                <div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="dchtReturnedReason">--</strong><br>Lãnh đạo trả lại: <span id="dchtReturnedBy">--</span> • Thời điểm trả lại: <span id="dchtReturnedAt">--</span></div>
+                <div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="dchtReturnedReason">--</strong><br>Người trả lại: <span id="dchtReturnedBy">--</span> • Thời điểm trả lại: <span id="dchtReturnedAt">--</span></div>
             </div>
 
             <div class="gqx-sec">
@@ -210,25 +212,11 @@ function dchtModalHtml() {
 
                 <div id="dchtDocMetaGroup" class="dcht-meta">
                     <div class="dcht-meta-title"><i class="fa-solid fa-sliders" style="color:#2563eb;"></i> Thông tin điền vào Mẫu 39/BTNN</div>
-                    <div class="gqx-grid2" style="margin-bottom:14px;">
-                        <div class="gqx-field">
-                            <label class="form-label" for="dchtSo">Số, ký hiệu văn bản<span class="gqx-req">*</span></label>
-                            <input type="text" id="dchtSo" class="form-control" maxlength="50" placeholder="Nhập số, ký hiệu văn bản" oninput="dchtClearErr('dchtSo')">
-                            <div id="dchtSoErr" class="gqx-err">${DCHT_REQ_MSG}</div>
-                        </div>
-                        <div class="gqx-field">
-                            <label class="form-label" for="dchtNgay">Ngày văn bản<span class="gqx-req">*</span></label>
-                            <div class="gqx-date">
-                                <input type="text" id="dchtNgay" class="form-control" placeholder="dd/mm/yyyy" readonly onclick="dchtOpenDatePicker()">
-                                <i class="fa-regular fa-calendar-days" onclick="dchtOpenDatePicker()" title="Chọn ngày"></i>
-                                <input type="date" id="dchtNgayPicker" tabindex="-1" onchange="dchtOnDatePicked(this.value)">
-                            </div>
-                            <div id="dchtNgayErr" class="gqx-err">${DCHT_REQ_MSG}</div>
-                        </div>
-                    </div>
+                    <!-- [tnht] Số, ký hiệu văn bản / Ngày văn bản của Quyết định nhập tại khối Thông tin ban hành văn bản (Bước 2) -->
                     <div class="gqx-field">
-                        <div class="dcht-label-row"><label class="form-label" for="dchtCanCu">Căn cứ</label><span class="dcht-hint"><i class="fa-solid fa-circle-info"></i> Mỗi căn cứ trên 01 dòng</span></div>
-                        <textarea id="dchtCanCu" class="form-control" rows="4" maxlength="4000" style="font-size:12.5px;" placeholder="Nhập căn cứ, mỗi căn cứ 01 dòng"></textarea>
+                        <div class="dcht-label-row"><label class="form-label" for="dchtCanCu">Căn cứ<span class="gqx-req" id="dchtCanCuReq" style="display:none;">*</span></label><span class="dcht-hint"><i class="fa-solid fa-circle-info"></i> Mỗi căn cứ trên 01 dòng</span></div>
+                        <textarea id="dchtCanCu" class="form-control" rows="4" maxlength="4000" style="font-size:12.5px;" placeholder="Nhập căn cứ, mỗi căn cứ 01 dòng" oninput="dchtClearErr('dchtCanCu')"></textarea>
+                        <div id="dchtCanCuErr" class="gqx-err">${DCHT_REQ_MSG}</div>
                         <div class="dcht-hint" id="dchtCanCuHint" style="margin-top:4px;">Ghi rõ tên, số, ngày ban hành văn bản thu hồi, thay thế, hủy bỏ văn bản làm căn cứ yêu cầu bồi thường.</div>
                     </div>
                     <div class="gqx-field" id="dchtLyDoGroup" style="display:none;">
@@ -368,6 +356,9 @@ function dchtApplyMode() {
     set('dchtOffNote', '<i class="fa-solid fa-circle-info"></i> Khi bấm <strong>Ban hành văn bản</strong>, văn bản được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống) và hồ sơ chuyển sang trạng thái <strong>' + (cd ? CDHT_ST_DONE : DCHT_ST_DONE) + '</strong>.');
     const show = (id, on) => { const e = dchtEl(id); if (e) e.style.display = on ? '' : 'none'; };
     show('dchtCanCuHint', !cd);
+    // Chế độ chấm dứt: Căn cứ bắt buộc (SRS, popup Trình ký Quyết định chấm dứt)
+    show('dchtCanCuReq', cd);
+    dchtClearErr('dchtCanCu');
     show('dchtLyDoGroup', cd);
     show('dchtVbCanCuGroup', !cd);
 }
@@ -394,8 +385,6 @@ function dchtOpenModal() {
         dchtEl('dchtReturnedBy').innerText = prev.returned.by || '--';
         dchtEl('dchtReturnedAt').innerText = prev.returned.at || '--';
     }
-    dchtEl('dchtSo').value = prev && prev.so ? prev.so : DCHT_SO_DEFAULT;
-    dchtEl('dchtNgay').value = prev && prev.ngay ? prev.ngay : dchtToday();
     dchtEl('dchtCanCu').value = prev && prev.canCu != null ? prev.canCu : (cd ? cdhtCanCuDefault() : DCHT_CAN_CU_DEFAULT);
     dchtEl('dchtVbCanCu').value = prev && prev.vbCanCu != null ? prev.vbCanCu : (cd ? '' : dchtVbCanCuDefault());
     if (dchtEl('dchtLyDo')) dchtEl('dchtLyDo').value = prev && prev.lyDo != null ? prev.lyDo : (cd ? cdhtLyDoDefault() : '');
@@ -408,7 +397,8 @@ function dchtOpenModal() {
     ['dchtOffSo', 'dchtOffNgay'].forEach(id => { const i = dchtEl(id); if (i) { i.classList.remove('is-invalid'); dchtEl(id + 'Err').style.display = 'none'; } });
     if (dchtEl('dchtOffSo')) dchtEl('dchtOffSo').value = '';
     if (dchtEl('dchtOffNgay')) dchtEl('dchtOffNgay').value = dchtToday();
-    dchtSignInit(prev ? prev.assignees : null);
+    // [tnht] Trình lại: khối Thông tin ban hành văn bản (Bước 2) theo lần trình trước
+    dchtSignInit(prev ? prev.assignees : null, prev && typeof htPrevBanHanh === 'function' ? htPrevBanHanh(prev, prev.so, prev.ngay) : null);
     dchtRenderOff();
     dchtEl(dchtState.method === 'offline' ? 'dchtMethodOffline' : 'dchtMethodOnline').checked = true;
     dchtSetDocSrc(dchtState.docSrc, true);
@@ -546,28 +536,16 @@ function dchtClearErr(id) {
     const el = dchtEl(id); if (el) el.classList.remove('is-invalid');
     const e = dchtEl(id + 'Err'); if (e) e.style.display = 'none';
 }
-function dchtOpenDatePicker() {
-    const p = dchtEl('dchtNgayPicker'); if (!p) return;
-    const v = dchtEl('dchtNgay').value.split('/');
-    if (v.length === 3) p.value = `${v[2]}-${v[1]}-${v[0]}`;
-    try { if (p.showPicker) p.showPicker(); else p.click(); } catch (e) { p.click(); }
-}
-function dchtOnDatePicked(val) {
-    if (!val) return;
-    const p = val.split('-');
-    dchtEl('dchtNgay').value = `${p[2]}/${p[1]}/${p[0]}`;
-    dchtClearErr('dchtNgay');
-}
-
 // ---------------- Kiểm tra Bước 1 / Văn bản Mẫu 39/BTNN ----------------
 function dchtValidateStep1() {
     let first = null;
     const mark = id => { const el = dchtEl(id); if (el) el.classList.add('is-invalid'); const e = dchtEl(id + 'Err'); if (e) e.style.display = 'block'; if (!first) first = el; };
     if (dchtState.docSrc === 'gen') {
-        if (!dchtEl('dchtSo').value.trim()) mark('dchtSo');
-        if (!dchtEl('dchtNgay').value.trim()) mark('dchtNgay');
+        // [tnht] Số, ký hiệu / Ngày văn bản nhập tại Bước 2, không bắt buộc: không kiểm tra khi Tiếp tục
         // Chế độ chấm dứt: Lý do chấm dứt bắt buộc (khi hiển thị)
         if (dchtIsCd() && dchtEl('dchtLyDo') && !dchtEl('dchtLyDo').value.trim()) mark('dchtLyDo');
+        // Chế độ chấm dứt: Căn cứ bắt buộc
+        if (dchtIsCd() && !dchtEl('dchtCanCu').value.trim()) mark('dchtCanCu');
     } else if (!dchtState.onlineFile) {
         const e = dchtEl('dchtDocFileErr'); if (e) { e.textContent = DCHT_REQ_MSG; e.style.display = 'block'; }
         const d = dchtEl('dchtOnlineDrop'); if (d) d.classList.add('is-error');
@@ -578,9 +556,10 @@ function dchtValidateStep1() {
     return tlktOk;
 }
 function dchtLines(id) { return dchtEl(id).value.split('\n').map(s => s.trim()).filter(Boolean); }
-function dchtCollectDoc() {
+// [tnht] bh: khối Thông tin ban hành văn bản (Bước 2). Văn bản sinh ở Bước 1 (bh = null) để trống dòng số, ký hiệu và dòng ngày
+function dchtCollectDoc(bh) {
     const cd = dchtIsCd();
-    return { so: dchtEl('dchtSo').value.trim(), ngay: dchtEl('dchtNgay').value.trim(), canCu: dchtEl('dchtCanCu').value, vbCanCu: cd ? '' : dchtEl('dchtVbCanCu').value.trim(), noiNhan: dchtEl('dchtNoiNhan').value, mode: cd ? 'cd' : 'dc', lyDo: cd && dchtEl('dchtLyDo') ? dchtEl('dchtLyDo').value.trim() : '' };
+    return { so: bh ? String(bh.soKyHieu || '').trim() : '', ngay: bh ? bh.ngayVanBan || '' : '', canCu: dchtEl('dchtCanCu').value, vbCanCu: cd ? '' : dchtEl('dchtVbCanCu').value.trim(), noiNhan: dchtEl('dchtNoiNhan').value, mode: cd ? 'cd' : 'dc', lyDo: cd && dchtEl('dchtLyDo') ? dchtEl('dchtLyDo').value.trim() : '' };
 }
 function dchtDocHtml(d) {
     const so = d.so && !/^\s*\/QĐ-\s*$/.test(d.so) ? d.so : '……/QĐ-……';
@@ -719,18 +698,20 @@ function dchtSignCardHtml(lv, i, n, prevId) {
     </div>`;
 }
 // [ro1] Bước 2: khối "Thiết lập các cấp trình ký" dùng chung (BTNN_PCKD.levelSetup)
-function dchtSignInit(prevAssignees) {
+function dchtSignInit(prevAssignees, prevBh) {
     const P = window.BTNN_PCKD;
     const page = dchtEl('dchtA4Page');
-    if (page) page.querySelectorAll('.gq-sign-box, .pc-sig').forEach(b => b.remove());
+    if (page) page.querySelectorAll('.gq-sign-box, .pc-sig, .pc-bhbox').forEach(b => b.remove());
     if (!P) return;
     dchtSign.ui = P.legacyUi('dcht', {
         host: () => dchtEl('dchtSignLevels'), page: () => dchtEl('dchtA4Page'), method: () => 'Ký số',
         userId: () => P.submitterFor(typeof tlhdRootUnitId === 'function' ? tlhdRootUnitId() : ''),
+        // [tnht] Khối Thông tin ban hành văn bản có Số, ký hiệu, Địa danh, Ngày văn bản; ô Số, ô Ngày theo dòng số, ngày của văn bản
+        soNgay: true, docPos: () => (typeof tlhdDocPos === 'function' ? tlhdDocPos(dchtEl('dchtA4Page')) : null),
         onChange: levels => { const l = levels[levels.length - 1]; const W = window.BTNN_WF; const nm = dchtEl('dchtA4SignerName'); if (nm) nm.textContent = l && l.leader && W ? W.userName(l.leader).toUpperCase() : ''; }
     });
     const prev = prevAssignees && activeDossier && activeDossier.dcht ? P.prevFromLegacy(activeDossier.dcht) : null;
-    dchtSign.ui.reset(prev);
+    dchtSign.ui.reset(prev, prevBh && typeof prevBh.dongDau === 'boolean' ? prevBh.dongDau : undefined, prevBh || null);
     dchtSign.levels = [];
 }
 function dchtSignEnsureBox(i) {
@@ -809,7 +790,8 @@ function dchtAfter() {
 function dchtSubmitOnline() {
     const sign = dchtSignCollect(); if (!sign) return;
     const gen = dchtState.docSrc === 'gen';
-    const d = dchtCollectDoc();
+    // [tnht] Số, ký hiệu văn bản / Ngày văn bản theo khối Thông tin ban hành văn bản (Bước 2), mọi nguồn tệp
+    const d = dchtCollectDoc(sign.banHanh || null);
     const f = dchtState.onlineFile;
     const S = dchtSt(), cd = dchtIsCd();
     const prevStatus = activeDossier.status === S.R && activeDossier.dcht ? activeDossier.dcht.prevStatus : activeDossier.status;
@@ -819,7 +801,7 @@ function dchtSubmitOnline() {
         uploadMeta: gen ? null : { name: f.name, size: f.size, note: f.note || '', keepId },
         attachments: typeof tlktGet === 'function' ? tlktGet('dcht') : [],
         levels: dchtSign.levels, assignees: sign.assignees, coords: sign.coords, enableNhay: sign.enableNhay, content: sign.content, level: 0,
-        tuThietLap: !!sign.tuThietLap, pcLevels: sign.pcLevels || null, pcSig: sign.pcSig || null,
+        tuThietLap: !!sign.tuThietLap, pcLevels: sign.pcLevels || null, pcSig: sign.pcSig || null, dongDau: !!sign.dongDau, banHanh: sign.banHanh || null,
         submittedAt: dchtNow(), returned: null
     });
     activeDossier.status = S.P;

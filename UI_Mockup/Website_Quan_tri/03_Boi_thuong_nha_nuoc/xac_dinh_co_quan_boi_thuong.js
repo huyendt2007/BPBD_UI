@@ -2264,7 +2264,7 @@ function xdActionBlockHtml(item, kind) {
         const ret = (item.returned && item.returned.reason) ? item.returned : (BTNN_WF.returnHistoryOf(item)[0] || {});
         rows.push(xdDetailRowHtml('Lý do trả lại', `<span class="xd-return-reason" style="color:#b45309; font-weight:600;">${escapeHtml(ret.reason || '--')}</span>`));
         const who = [ret.by ? BTNN_WF.userName(ret.by) : '', ret.unitId ? BTNN_WF.unitName(ret.unitId) : ''].filter(Boolean).join(' - ');
-        rows.push(xdDetailRowHtml('Lãnh đạo trả lại', escapeHtml(who || '--')));
+        rows.push(xdDetailRowHtml('Người trả lại', escapeHtml(who || '--')));
         rows.push(xdDetailRowHtml('Thời điểm trả lại', escapeHtml(ret.at || '--')));
     }
 

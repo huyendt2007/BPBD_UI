@@ -448,6 +448,10 @@ function qdtuLeaderHandled(item) {
     const me = qdtuMe();
     return (item.qdtuHistory || []).some(h => h.userId === me && /^(Ký duyệt|Từ chối)/.test(h.action || ''));
 }
+// [vt1] Văn bản trình ký (chưa ban hành) có khối Thông tin ban hành văn bản: dòng số, ký hiệu và dòng địa danh, ngày để trống (chèn khi ban hành)
+function qdtuDocS(item, s) {
+    return s && s.banHanh && item && [QDTU_ST.REVIEW, QDTU_ST.REJECT].includes(item.status) ? Object.assign({}, s, { docNo: '', docDate: '' }) : s;
+}
 
 // CSS riêng của màn hình Tạo Quyết định tạm ứng (thẻ thông tin như màn hình Tạo Quyết định GQBT)
 const QDTU_PAGE_CSS = [
@@ -952,10 +956,7 @@ function qdtuEnsureSignModal() {
                 </div>
                 <div class="qdtu-qs-meta" id="qdtuSgMeta">
                     <div class="qdtu-qs-meta-title"><i class="fa-solid fa-sliders"></i> Thông tin điền vào Mẫu 07/BTNN</div>
-                    <div class="qdtu-gqx-grid2">
-                        ${fld('qdtuSgDocNo', 'Số, ký hiệu văn bản', true, `<input type="text" class="form-control" id="qdtuSgDocNo" maxlength="100" placeholder="Nhập số, ký hiệu văn bản" oninput="qdtuMark('qdtuSgDocNo', false)">`)}
-                        ${fld('qdtuSgDocDate', 'Ngày văn bản', true, date('qdtuSgDocDate'))}
-                    </div>
+                    <!-- [vt1] 12/11/2026: Số, ký hiệu và Ngày văn bản của Quyết định tạm ứng nhập ở Bước 2 (khối Thông tin ban hành văn bản) -->
                     <div class="qdtu-gqx-field"><div class="qdtu-qs-label-row"><label class="form-label" for="qdtuSgCanCu">Căn cứ</label><span><i class="fa-solid fa-circle-info"></i> Mỗi căn cứ trên 01 dòng</span></div>
                         <textarea class="form-control" id="qdtuSgCanCu" rows="4" maxlength="4000" style="font-size:12.5px;" placeholder="Nhập căn cứ, mỗi căn cứ 01 dòng"></textarea></div>
                     <div class="qdtu-gqx-field" style="margin-bottom:0;"><div class="qdtu-qs-label-row"><label class="form-label" for="qdtuSgNoiNhan">Nơi nhận</label><span><i class="fa-solid fa-circle-info"></i> Mỗi nơi nhận trên 01 dòng</span></div>
@@ -1019,15 +1020,16 @@ function qdtuOpenSign(form) {
     const item = qdtuState.id ? qdtuFind(qdtuState.id) : null;
     const prev = (item && item.qdtu && item.qdtu.sign) || {};
     const claim = qdtuClaimByCode(form.claimCode);
+    const rej = !!item && item.status === QDTU_ST.REJECT;
+    // [vt1] Trình lại: điền lại khối Thông tin ban hành văn bản (Bước 2) của lần trình trước (Ký số)
+    const bhPrev = rej && prev.method === 'Ký số' && typeof kpBhPrev === 'function' ? kpBhPrev(prev) : { dongDau: undefined, banHanh: null };
     qdtuSg = { form, method: 'Ký số', docSrc: 'gen', step: 1, levels, assignees: levels.map((lv, i) => (prev.assignees && prev.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null,
         // [ro1] Thiết lập các cấp trình ký: trình lại điền sẵn thiết lập lần trước
-        ui: null, prevLv: item && item.status === QDTU_ST.REJECT && window.BTNN_PCKD ? BTNN_PCKD.prevFromSign(prev) : null };
+        ui: null, prevLv: rej && window.BTNN_PCKD ? BTNN_PCKD.prevFromSign(prev) : null, prevDongDau: bhPrev.dongDau, prevBanHanh: bhPrev.banHanh };
     qdtuEl('qdtuSgSubCode').innerText = qdtuVv(form.claimCode) || form.claimCode || '--';
     qdtuEl('qdtuSgSubNyc').innerText = form.nycName || '--';
     qdtuEl('qdtuSgSubUnit').innerText = form.unitName || '--';
     qdtuEl('qdtuSgMethodOn').checked = true;
-    qdtuEl('qdtuSgDocNo').value = prev.docNo || '     /QĐ-';
-    qdtuEl('qdtuSgDocDate').value = prev.docDate || qdtuToday();
     qdtuEl('qdtuSgCanCu').value = prev.canCu || QDTU_CAN_CU_DEFAULT.join('\n');
     qdtuEl('qdtuSgNoiNhan').value = prev.noiNhan || qdtuNoiNhanDefault(form);
     qdtuEl('qdtuSgDieu2Hint').innerText = qdtuDiffRecipient(form)
@@ -1038,11 +1040,10 @@ function qdtuOpenSign(form) {
     levels.forEach(lv => lv.leaders.forEach(u => { if (!leaders.includes(u)) leaders.push(u); }));
     qdtuEl('qdtuSgOffSigner').innerHTML = '<option value="">-- Chọn Người ký --</option>' + leaders.map(u => `<option value="${qdtuEsc(u)}">${qdtuEsc(qdtuUserLabel(u))}</option>`).join('');
     qdtuEl('qdtuSgContent').value = '';
-    ['qdtuSgDocNo', 'qdtuSgDocDate', 'qdtuSgOffNo', 'qdtuSgOffDate', 'qdtuSgOffSigner'].forEach(x => qdtuMark(x, false));
+    ['qdtuSgOffNo', 'qdtuSgOffDate', 'qdtuSgOffSigner'].forEach(x => qdtuMark(x, false));
     document.querySelectorAll('#qdtuSignModal .qdtu-qs-err, #qdtuSignModal .qdtu-gqx-err').forEach(e => { e.style.display = 'none'; });
     if (window.flatpickr) {
-        ['qdtuSgDocDate', 'qdtuSgOffDate'].forEach(x => { if (!qdtuEl(x)._flatpickr) flatpickr('#' + x, { dateFormat: 'd/m/Y', allowInput: true }); });
-        const fp = qdtuEl('qdtuSgDocDate')._flatpickr; if (fp) fp.setDate(qdtuEl('qdtuSgDocDate').value, false, 'd/m/Y');
+        ['qdtuSgOffDate'].forEach(x => { if (!qdtuEl(x)._flatpickr) flatpickr('#' + x, { dateFormat: 'd/m/Y', allowInput: true }); });
         const fo = qdtuEl('qdtuSgOffDate')._flatpickr; if (fo) fo.clear();
     }
     qdtuSgRenderOff();
@@ -1112,9 +1113,10 @@ function qdtuSgGoStep(n) {
     qdtuEl('qdtuSgBtnSubmit').style.display = n === 2 ? '' : 'none';
     qdtuEl('qdtuSgBtnIssue').style.display = n === 1 && qdtuSg.method === 'Ký ngoài' ? '' : 'none';
 }
+// [vt1] Văn bản sinh theo mẫu: dòng số, ký hiệu và dòng địa danh, ngày để trống (Số, ký hiệu và Ngày văn bản nhập ở Bước 2)
 function qdtuSgData() {
     return {
-        docNo: qdtuEl('qdtuSgDocNo').value.trim(), docDate: qdtuEl('qdtuSgDocDate').value.trim(),
+        docNo: '', docDate: '',
         canCu: qdtuEl('qdtuSgCanCu').value, noiNhan: qdtuEl('qdtuSgNoiNhan').value
     };
 }
@@ -1165,12 +1167,8 @@ function qdtuConfirmIssue(message, onOk) {
     const noBtn = ov ? ov.querySelector('.confirm-modal-footer .btn-secondary') : null;
     if (noBtn) noBtn.addEventListener('click', restore, { once: true });
 }
-// Sinh văn bản Mẫu 07/BTNN; chỉ kiểm tra trống Số, ký hiệu văn bản và Ngày văn bản
+// Sinh văn bản Mẫu 07/BTNN ([vt1] Bước 1 không kiểm tra số, ký hiệu và ngày - nhập ở Bước 2, không bắt buộc)
 function qdtuSgGenerate() {
-    const ids = ['qdtuSgDocNo', 'qdtuSgDocDate'];
-    const bad = ids.filter(id => !qdtuEl(id).value.trim());
-    ids.forEach(id => qdtuMark(id, bad.includes(id)));
-    if (bad.length) { qdtuEl(bad[0]).focus(); return false; }
     qdtuSg.docFile = { name: qdtuDocBaseName(qdtuSg.form.claimCode) + '.doc', generated: true, html: qdtuBuildDocHtml(qdtuSg.form, qdtuSgData(), { signerId: qdtuSg.assignees[qdtuSg.levels.length - 1] || '' }) };
     qdtuEl('qdtuSgDocErr').style.display = 'none';
     return true;
@@ -1229,6 +1227,8 @@ function qdtuSgNext() {
     const f = qdtuSg.docFile;
     qdtuEl('qdtuSgA4').innerHTML = f.generated ? f.html : `<div style="text-align:center; color:#64748b; padding-top:300px; font:14px Inter, sans-serif;"><i class="fa-solid fa-file-lines" style="font-size:48px;"></i><br><br>${qdtuEsc(f.name)}<br>(Văn bản tải lên)</div>`;
     qdtuSgGoStep(2);
+    // [vt1] Thiết lập các cấp trình ký + khối Thông tin ban hành văn bản (Số, ký hiệu; Địa danh; Ngày văn bản; Đóng dấu cơ quan; Đơn vị ban hành)
+    if (typeof kpLvMount === 'function' && kpLvMount(qdtuSg, 'qdtuSg', 'qdtuSgLevels', 'qdtuSgA4')) return;
     if (window.BTNN_PCKD && BTNN_PCKD.simpleMount(qdtuSg, 'qdtuSg', 'qdtuSgLevels', 'qdtuSgA4')) return;
     qdtuSgRenderLevels();
     qdtuSg.levels.forEach((lv, i) => { if (qdtuSg.placed[i]) qdtuSgDrawBox(i); });
@@ -1313,7 +1313,9 @@ function qdtuSgSubmit() {
     const path = qdtuSg.levels.map(l => l.unitId);
     const keepId = f.generated ? '' : (f.tlktId || (typeof tlktKeep === 'function' ? tlktKeep(f.raw) : ''));
     const attachments = typeof tlktGet === 'function' ? tlktGet('qdtuSg') : [];
-    const sign = Object.assign({ method: 'Ký số' }, f.generated ? data : {}, { docSrc: qdtuSg.docSrc, docFile: { name: f.name, generated: !!f.generated, size: f.size || '', note: f.note || '', keepId }, assignees: qdtuSg.assignees.slice(), sigCoords: JSON.parse(JSON.stringify(qdtuSg.coords)), content, attachments },
+    // [vt1] Số, ký hiệu và Ngày văn bản (Số, Ngày Quyết định - Bước 2, không bắt buộc), Đóng dấu cơ quan, Đơn vị ban hành, vị trí ô Số/Ngày/Dấu
+    const bhs = typeof kpBhSign === 'function' ? kpBhSign(lv) : { docNo: '', docDate: '', dongDau: false, banHanh: null };
+    const sign = Object.assign({ method: 'Ký số' }, f.generated ? data : {}, { docNo: bhs.docNo, docDate: bhs.docDate, dongDau: bhs.dongDau, banHanh: bhs.banHanh, docSrc: qdtuSg.docSrc, docFile: { name: f.name, generated: !!f.generated, size: f.size || '', note: f.note || '', keepId }, assignees: qdtuSg.assignees.slice(), sigCoords: JSON.parse(JSON.stringify(qdtuSg.coords)), content, attachments },
         lv ? { tuThietLap: true, pcLevels: lv.levels, pcSig: lv.pcSig } : {});
     const item = qdtuUpsertRecord(qdtuSg.form, sign);
     item.qdtuApproval = { kind: QDTU_KIND, path, assignees: qdtuSg.assignees.slice(), level: 0, steps: [], content, submittedBy: me, submittedAt: qdtuNow(), pending: true };
@@ -1384,12 +1386,15 @@ function qdtuLdHistoryHtml(item) {
     (item.qdtuHistory || []).filter(h => /^(Trình ký|Ký duyệt|Từ chối)/.test(h.action || '')).forEach(h => {
         if (/^Trình ký/.test(h.action)) items.push(row('done', h.userId, h.userName, h.at, '', 'fa-solid fa-circle-arrow-right', (t => t ? `Trình ký đến <strong>${qdtuEsc(t)}</strong>` : 'Trình ký')((/^Trình ký đến (.+)$/.exec(h.action || '') || [])[1] || pick(/Trình ([^.]+?) - /, h.note)), pick(/Nội dung: (.*)$/, h.note), h.attachments));
         else if (/^Từ chối/.test(h.action)) items.push(row('no', h.userId, h.userName, h.at, 'no', 'fa-solid fa-ban', 'Từ chối - trả lại cán bộ trình', pick(/Lý do: (.*)$/, h.note)));
+        else if (/Văn thư ban hành/.test(h.action)) items.push(row('done', h.userId, h.userName, h.at, 'ok', 'fa-regular fa-circle-check', 'Ký duyệt và chuyển Văn thư ban hành', pick(/Ý kiến: (.*)$/, h.note)));   // [vt1]
         else {
             const to = pick(/; chuyển ([^.]+)\./, h.note);
             items.push(to ? row('done', h.userId, h.userName, h.at, '', 'fa-solid fa-circle-arrow-right', `Ký duyệt và chuyển xử lý đến <strong>${qdtuEsc(to)}</strong>`, pick(/Ý kiến: (.*)$/, h.note))
                 : row('done', h.userId, h.userName, h.at, 'ok', 'fa-regular fa-circle-check', 'Ký duyệt', pick(/Ý kiến: (.*)$/, h.note)));
         }
     });
+    // [vt1] Sự kiện đang chờ ở trên cùng: "Chờ Văn thư ban hành - [Tên Đơn vị văn thư hoặc Họ tên các tài khoản văn thư]"
+    if (a.choVanThu && item.status === QDTU_ST.REVIEW) items.push(row('wait', '', 'Văn thư', '', 'wait', 'fa-solid fa-hourglass-half', 'Chờ Văn thư ban hành - ' + qdtuEsc(a.choVanThu.vanThu || '--'), ''));
     if (a.pending) {
         for (let lv = a.level; lv < (a.path || []).length; lv++) {
             const uid = (a.assignees || [])[lv] || '';
@@ -1416,7 +1421,9 @@ function qdtuLdOpen(id, mode) {
     const generated = !s.docFile || s.docFile.generated;
     const docName = (s.docFile && s.docFile.name) || (qdtuDocBaseName(item.ycbtCode) + '.doc');
     qdtuLd = { id, approve };
-    const hint = approve ? (last ? `Cấp phê duyệt cuối cùng. Sau khi ký duyệt, hệ thống ký số Quyết định tạm ứng và đề nghị tạm ứng chuyển [${QDTU_ST.PAY}].` : `Sau khi ký duyệt, hồ sơ tự động chuyển ${preset ? qdtuUserName(preset) + ' - ' : ''}${qdtuUnitName(nextUnitId)} (Lãnh đạo cấp tiếp theo đã chọn khi trình) ký duyệt.`) : `Sau khi từ chối, đề nghị tạm ứng chuyển [${QDTU_ST.REJECT}] cho cán bộ trình.`;
+    // [vt1] Phiếu trình tích Đóng dấu cơ quan: cấp cuối Ký duyệt thì văn bản chuyển Văn thư đóng dấu, ban hành; đề nghị tạm ứng giữ Chờ duyệt
+    const vtDd = !!(s.tuThietLap && s.dongDau);
+    const hint = approve ? (last ? (vtDd ? `Cấp phê duyệt cuối cùng. Sau khi ký duyệt, hệ thống ký số Quyết định tạm ứng (chưa có số, ngày, dấu) và chuyển Văn thư đóng dấu, ban hành; đề nghị tạm ứng giữ [${QDTU_ST.REVIEW}].` : `Cấp phê duyệt cuối cùng. Sau khi ký duyệt, hệ thống ký số Quyết định tạm ứng và đề nghị tạm ứng chuyển [${QDTU_ST.PAY}].`) : `Sau khi ký duyệt, hồ sơ tự động chuyển ${preset ? qdtuUserName(preset) + ' - ' : ''}${qdtuUnitName(nextUnitId)} (Lãnh đạo cấp tiếp theo đã chọn khi trình) ký duyệt.`) : `Sau khi từ chối, đề nghị tạm ứng chuyển [${QDTU_ST.REJECT}] cho cán bộ trình.`;
     const row = (k, v) => `<div class="qdtuld-row"><span>${k}</span><span>${v}</span></div>`;
     const summary = `<div class="qdtuld-box"><div class="qdtuld-box-title"><i class="fa-solid fa-circle-info"></i> Thông tin tổng quan</div>`
         + row('Mã đề nghị', `<strong>${qdtuEsc(item.code)}</strong>`)
@@ -1453,7 +1460,7 @@ function qdtuLdOpen(id, mode) {
     document.body.appendChild(ov);
     qdtuFrameFull(true);
     const fr = qdtuEl('qdtuLdFrame');
-    if (fr && W) fr.srcdoc = W.docPageHtml(qdtuBuildDocHtml(item.qdtu, s, { signerId: qdtuSignerOf(item) }), docName.replace(/\.[a-z]+$/i, ''), false);
+    if (fr && W) fr.srcdoc = W.docPageHtml(qdtuBuildDocHtml(item.qdtu, qdtuDocS(item, s), { signerId: qdtuSignerOf(item) }), docName.replace(/\.[a-z]+$/i, ''), false);
     // [ro1] Cấp bật Ký số -> khối Ký số; không bật -> gán chữ ký / chữ ký nháy (thay khối Hình thức ký cố định)
     if (s.tuThietLap && window.BTNN_PCKD) { const sb = ov.querySelector('.qdtuld-sign'); if (sb) sb.remove(); BTNN_PCKD.decorateSimple(a, s, approve ? 'approve' : 'reject', { page: null, right: ov.querySelector('.qdtuld-right'), before: ov.querySelector('.qdtuld-right .qdtuld-group'), title: ov.querySelector('#qdtuLdTitle') }); }
 }
@@ -1485,6 +1492,12 @@ function qdtuLdSubmit() {
             const how = window.BTNN_PCKD ? BTNN_PCKD.howOf(item.qdtu.sign, a.level - 1) : '';
             qdtuHist(item, 'Ký duyệt', `${QDTU_KIND}: ký duyệt cấp ${qdtuUnitName(unitId)}${how ? ' (' + how + ')' : ''}; chuyển ${next ? qdtuUserLabel(next) : qdtuUnitName(a.path[a.level])}.${fullNote ? ' Ý kiến: ' + fullNote : ''}`);
             msg = `Đã ký duyệt ${QDTU_KIND}, chuyển ${next ? qdtuUserLabel(next) : 'cấp tiếp theo'} ký duyệt.`;
+        } else if (item.qdtu.sign && item.qdtu.sign.tuThietLap && item.qdtu.sign.dongDau && typeof kpVanThuApprove === 'function') {
+            // [vt1] TH3a - phiếu trình tích Đóng dấu cơ quan: ký số văn bản chưa có số, ngày, dấu; đề nghị tạm ứng giữ Chờ duyệt, dòng phụ
+            // "QĐ tạm ứng kinh phí - Chờ Văn thư ban hành"; chưa chuyển Chờ chi trả (Văn thư đóng dấu, ban hành tại Ban hành văn bản)
+            const vt = kpVanThuApprove(a, item.qdtu.sign, me, at);
+            qdtuHist(item, 'Ký duyệt và chuyển Văn thư ban hành', `${QDTU_KIND}: ký duyệt cấp ${qdtuUnitName(unitId)} - đã ký số văn bản chưa có số, ngày, dấu. Chờ Văn thư ban hành - ${vt || '--'}.${fullNote ? ' Ý kiến: ' + fullNote : ''}`);
+            msg = `Đã ký số ${QDTU_KIND} và chuyển Văn thư đóng dấu, ban hành. Đề nghị tạm ứng giữ [${QDTU_ST.REVIEW}] - ${QDTU_KIND} - Chờ Văn thư ban hành.`;
         } else {
             a.pending = false;
             item.status = QDTU_ST.PAY;
@@ -1527,9 +1540,9 @@ function qdtuView(id) {
     const sec = (icon, title, body) => `<div class="qdtu-dtl-sec"><div class="qdtu-dtl-title"><i class="fa-solid ${icon}"></i> ${title}</div>${body}</div>`;
     const grid = x => `<div class="qdtu-dtl-grid">${x}</div>`;
     const cash = f.payMethod === QDTU_CASH;
-    const general = grid(it('Mã đề nghị', qdtuEsc(item.code)) + it('Loại đề nghị', 'Đề nghị tạm ứng') + it('Trạng thái', `<span class="badge badge-info">${qdtuEsc(item.status)}</span>${item.status === QDTU_ST.REVIEW ? `<span class="qdtu-sub">${qdtuEsc(QDTU_KIND)}</span>` : ''}`)
+    const general = grid(it('Mã đề nghị', qdtuEsc(item.code)) + it('Loại đề nghị', 'Đề nghị tạm ứng') + it('Trạng thái', `<span class="badge badge-info">${qdtuEsc(item.status)}</span>${item.status === QDTU_ST.REVIEW ? `<span class="qdtu-sub">${qdtuEsc(QDTU_KIND + (typeof kpVtSub === 'function' ? kpVtSub(item) : ''))}</span>` : ''}`)
         + it('Mã hồ sơ', qdtuEsc(item.ycbtCode)) + it('Mã vụ việc', qdtuEsc(qdtuVv(item.ycbtCode))) + it('Cơ quan giải quyết', qdtuEsc(f.unitName)) + it('Ngày đề nghị', qdtuEsc(item.date)) + it('Cán bộ xử lý', qdtuEsc(item.user)));
-    const rej = item.status === QDTU_ST.REJECT && item.qdtuReturned ? grid(it('Lãnh đạo trả lại', qdtuEsc(qdtuUserName(item.qdtuReturned.by))) + it('Thời điểm trả lại', qdtuEsc(item.qdtuReturned.at)) + it('Lý do bị trả lại', qdtuEsc(item.qdtuReturned.reason))) : '';
+    const rej = item.status === QDTU_ST.REJECT && item.qdtuReturned ? grid(it('Người trả lại', qdtuEsc(qdtuUserName(item.qdtuReturned.by))) + it('Thời điểm trả lại', qdtuEsc(item.qdtuReturned.at)) + it('Lý do bị trả lại', qdtuEsc(item.qdtuReturned.reason))) : '';
     const nyc = grid(it('Họ và tên/Tên tổ chức', qdtuEsc(f.nycName)) + it('Số định danh cá nhân/hộ chiếu/giấy tờ đi lại có giá trị quốc tế/Mã số của tổ chức', qdtuEsc(f.nycIdNo)) + it('Địa chỉ', qdtuEsc(f.nycAddress)));
     const money = grid(it('Thiệt hại về tinh thần', qdtuFmt(f.tinhThan) + ' đồng') + it('Thiệt hại khác có thể tính được ngay mà không cần xác minh', qdtuFmt(f.khac) + ' đồng') + it('Tỷ lệ tạm ứng', qdtuRateText(f.rate) + '%')
         + it('Số tiền tạm ứng kinh phí', qdtuFmt(f.amount) + ' đồng') + it('Viết bằng chữ', qdtuEsc(qdtuBangChu(Number(f.amount) || 0))));
@@ -1697,7 +1710,7 @@ function qdtuDecorateTable() {
         const item = proposalsList.find(p => p.code === code && qdtuIs(p));
         if (!item) return;
         // Dòng phụ Loại trình dưới badge (Chờ duyệt / Bị trả lại), đồng bộ màn Quyết định GQBT
-        if (item.status === QDTU_ST.REVIEW || item.status === QDTU_ST.REJECT) stCell.insertAdjacentHTML('beforeend', `<div class="wf-sub${item.status === QDTU_ST.REJECT ? ' returned' : ''}">${qdtuEsc(QDTU_KIND)}</div>`);
+        if (item.status === QDTU_ST.REVIEW || item.status === QDTU_ST.REJECT) stCell.insertAdjacentHTML('beforeend', `<div class="wf-sub${item.status === QDTU_ST.REJECT ? ' returned' : ''}">${qdtuEsc(QDTU_KIND + (typeof kpVtSub === 'function' ? kpVtSub(item) : ''))}</div>`);
         if (isLeader) { const box = actCell.querySelector('.action-flex'); if (box) box.innerHTML = qdtuLeaderActionsHtml(item); }
     });
 }

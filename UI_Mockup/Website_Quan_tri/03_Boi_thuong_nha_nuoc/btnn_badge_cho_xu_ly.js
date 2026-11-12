@@ -13,6 +13,8 @@
     const GQ_SIM_KEY = 'bdg_gq_sim';
     // Thứ tự = thứ tự mục menu
     const MODULES = {
+        // 12/11/2026: Ban hành văn bản (Văn thư đóng dấu, ban hành): số văn bản tab Chờ xử lý của Văn thư đang giả lập (bhvb_role_v1)
+        banHanh: { title: 'Ban hành văn bản', page: 'ban_hanh_van_ban.html', url: 'ban_hanh_van_ban.html?v=20261112dd4' },
         tiepNhan: { title: 'Tiếp nhận hồ sơ', page: 'tiep_nhan_ycbt.html', url: 'tiep_nhan_ycbt.html?v=4' },
         xdcq: { title: 'Xác định cơ quan giải quyết bồi thường', page: 'xac_dinh_co_quan_boi_thuong.html', url: 'xac_dinh_co_quan_boi_thuong.html?v=20261008' },
         gqYcbt: { title: 'Giải quyết yêu cầu bồi thường', page: 'quan_ly_boi_thuong.html', url: 'quan_ly_boi_thuong.html?v=1' },
@@ -48,6 +50,7 @@
         if (module === 'bctt') return u + '|' + (lsGet('bctt_role_v1') || 'cb_stp');
         if (module === 'bctt_bo') return u + '|' + (lsGet('bctt_role_v1_bo') || 'ld_cuc');
         if (module === 'kpTamUng' || module === 'kpChiTra') return u + '|' + (lsGet('kp_role_v1') || 'chuyen-vien');
+        if (module === 'banHanh') return u + '|' + (lsGet('bhvb_role_v1') || 'STP-HN');
         // 09/11/2026: Khiếu nại, tố cáo chỉ Sở Tư pháp thao tác - đổi ngữ cảnh để tính lại số đã lưu theo quy tắc cũ
         if (module === 'kntc') return u + '|stp';
         return u;
@@ -221,9 +224,9 @@
         // Đổi người dùng giả lập / dữ liệu ở cửa sổ khác: hiển thị lại theo ngữ cảnh mới và tính lại khi cần
         global.addEventListener('storage', event => {
             if (!event.key || event.key === CACHE_KEY) { render(); return; }
-            if (/^(btnn_demo_user_v1|btnn_wf_records_v1|btnn_flow_config_v2|receptionClaimsList_v2026|bctt_role_v1|kp_role_v1)$/.test(event.key)) {
+            if (/^(btnn_demo_user_v1|btnn_wf_records_v1|btnn_flow_config_v2|receptionClaimsList_v2026|bctt_role_v1|kp_role_v1|bhvb_role_v1|btnn_ban_hanh_van_ban_v\d+)$/.test(event.key)) {
                 render();
-                if (event.key === 'btnn_demo_user_v1' || event.key === 'bctt_role_v1' || event.key === 'kp_role_v1') schedule();
+                if (event.key === 'btnn_demo_user_v1' || event.key === 'bctt_role_v1' || event.key === 'kp_role_v1' || event.key === 'bhvb_role_v1') schedule();
             }
         });
         render();

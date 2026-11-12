@@ -700,6 +700,32 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
         .modal-content.rong { width: min(1500px, 96vw); max-height: calc(100vh - 32px); }
         .modal-content.vua { width: min(820px, 96vw); }
         .mau-cron { font-family: Consolas, monospace; background: #F1F5F9; padding: 1px 6px; border-radius: 4px; }
+        /* MH18 - Khối Hình ảnh con dấu: dòng hướng dẫn, ảnh xem trước nền ca-rô (vùng trong suốt), nút Tải ảnh lên / Thay ảnh / Xóa ảnh */
+        .modal-content.vua.con-dau { max-width: 820px; }
+        .anh-dau .huong-dan { margin-top: 0; }
+        .anh-dau-trong { color: var(--text-muted); font-size: 13px; margin-top: 8px; }
+        .anh-dau-xem { height: 120px; margin-top: 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; overflow: hidden;
+            background-color: #fff; background-image: linear-gradient(45deg, #E2E8F0 25%, transparent 25%), linear-gradient(-45deg, #E2E8F0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #E2E8F0 75%), linear-gradient(-45deg, transparent 75%, #E2E8F0 75%);
+            background-size: 16px 16px; background-position: 0 0, 0 8px, 8px -8px, -8px 0; }
+        .anh-dau-xem img { max-width: 100%; max-height: 108px; object-fit: contain; }
+        .anh-dau-ten { color: var(--text-muted); font-size: 12px; margin-top: 6px; word-break: break-all; }
+        .anh-dau-nut { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .btn-vien-do { background: #fff; color: var(--danger-color); border-color: #FCA5A5; }
+        .btn-vien-do:hover { background: #FEF2F2; }
+        .anh-dau-loi { display: none; color: var(--danger-color); font-size: 12px; margin-top: 6px; }
+        .anh-dau-loi.show { display: block; }
+        /* MH18 - Combobox chọn nhiều có tìm kiếm (Tài khoản văn thư): mỗi tài khoản đã chọn là một thẻ có nút × */
+        .combo-nhieu { position: relative; }
+        .combo-nhieu .cn-o { height: auto; min-height: var(--control-height); display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 4px 34px 4px 8px; cursor: text; }
+        .combo-nhieu .cn-the { display: inline-flex; align-items: center; gap: 4px; padding: 1px 4px 1px 8px; border: 1px solid #BFDBFE; border-radius: 4px; background: var(--primary-light); color: var(--primary-color); font-size: 12.5px; }
+        .combo-nhieu .cn-the button { border: 0; background: none; color: inherit; cursor: pointer; padding: 0 3px; font-size: 14px; line-height: 1; }
+        .combo-nhieu .cn-tim { flex: 1; min-width: 140px; height: 26px; border: 0; outline: none; background: transparent; font-family: var(--font-family); font-size: var(--control-size); color: var(--text-strong); padding: 0 4px; }
+        .combo-nhieu .cn-tim::placeholder { color: var(--text-disabled); }
+        .combo-nhieu > i { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 13px; pointer-events: none; }
+        .combo-nhieu.open .combo-list { display: block; }
+        .combo-nhieu .combo-list div i { width: 18px; color: var(--primary-color); }
+        .combo-nhieu.tat .cn-o { background-color: var(--bg-subtle); cursor: not-allowed; }
+        .combo-nhieu.tat .cn-tim { cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -1433,6 +1459,52 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
         can_bo: { ten: 'Cán bộ Sở Tư pháp tỉnh Thái Nguyên (được cấp quyền) - Hoàng Thu Hà', tatCa: false, donVi: DON_VI[5] }
     };
     let vaiTro = 'qtht';
+    // Cây cơ cấu tổ chức dùng cho con dấu (trích, dữ liệu mẫu): [tên đơn vị, tên đơn vị cha]. Nguồn ô Đơn vị sở hữu và bộ lọc Đơn vị áp dụng (SRS MH17, MH18)
+    const CAY_DV = [
+        ['Bộ Tư pháp', ''], ['Văn phòng Bộ', 'Bộ Tư pháp'], [DON_VI[0], 'Bộ Tư pháp'],
+        ['Văn phòng Cục', DON_VI[0]], ['Phòng Quản lý nghiệp vụ về bồi thường nhà nước', DON_VI[0]],
+        [DON_VI[1], DON_VI[0]], [DON_VI[2], DON_VI[0]], [DON_VI[3], DON_VI[0]],
+        [DON_VI[4], ''], ['Văn phòng Sở Tư pháp', DON_VI[4]],
+        [DON_VI[5], ''], ['Văn phòng Sở Tư pháp tỉnh Thái Nguyên', DON_VI[5]]
+    ].map(([ten, cha]) => ({ ten, cha }));
+    const DV_CON_DAU = CAY_DV.map(d => d.ten);
+    // Nguồn ô Đơn vị văn thư: chính Đơn vị sở hữu và các đơn vị trực thuộc (cấp dưới trực tiếp) của nó
+    const dvVanThu = sh => DV_CON_DAU.includes(sh) ? [sh].concat(CAY_DV.filter(d => d.cha === sh).map(d => d.ten)) : [];
+    // Tài khoản cán bộ thuộc các đơn vị trên (dữ liệu mẫu); hd: false = tài khoản đã khóa
+    const TK_CAN_BO = [
+        { ma: 'CB0201', ten: 'Lê Thị Thanh', dn: 'lethithanh', dv: 'Văn phòng Bộ' },
+        { ma: 'CB0202', ten: 'Lê Văn Tùng', dn: 'levantung', dv: 'Văn phòng Cục' },
+        { ma: 'CB0203', ten: 'Trịnh Thu Trang', dn: 'trinhthutrang', dv: 'Văn phòng Cục' },
+        { ma: 'CB0214', ten: 'Nguyễn Thu Hằng', dn: 'nguyenthuhang', dv: 'Văn phòng Cục' },
+        { ma: 'CB0204', ten: 'Phan Văn Lực', dn: 'phanvanluc', dv: 'Văn phòng Cục', hd: false },
+        { ma: 'CB0212', ten: 'Trần Minh Đức', dn: 'tranminhduc', dv: DON_VI[0] },
+        { ma: 'CB0205', ten: 'Đào Thị Yến', dn: 'daothiyen', dv: 'Phòng Quản lý nghiệp vụ về bồi thường nhà nước' },
+        { ma: 'CB0206', ten: 'Ngô Minh Khang', dn: 'ngominhkhang', dv: 'Phòng Quản lý nghiệp vụ về bồi thường nhà nước' },
+        { ma: 'CB0210', ten: 'Hoàng Minh Tuấn', dn: 'hoangminhtuan', dv: 'Phòng Quản lý nghiệp vụ về bồi thường nhà nước' },
+        { ma: 'CB0211', ten: 'Vũ Thị Mai', dn: 'vuthimai', dv: 'Phòng Quản lý nghiệp vụ về bồi thường nhà nước' },
+        { ma: 'CB0207', ten: 'Nguyễn Thị Hương', dn: 'nguyenthihuong', dv: 'Văn phòng Sở Tư pháp' },
+        { ma: 'CB0213', ten: 'Đỗ Văn Chung', dn: 'dovanchung', dv: DON_VI[4] },
+        { ma: 'CB0208', ten: 'Bùi Văn Nam', dn: 'buivannam', dv: 'Văn phòng Sở Tư pháp tỉnh Thái Nguyên' },
+        { ma: 'CB0209', ten: 'Mai Anh Thư', dn: 'maianhthu', dv: DON_VI[1] }
+    ];
+    // Nguồn ô Tài khoản văn thư (SRS MH18): tài khoản đang hoạt động
+    // có Đơn vị là Đơn vị văn thư khi đã chọn; Đơn vị văn thư để trống thì có Đơn vị là Đơn vị sở hữu hoặc đơn vị trực thuộc
+    const tkVanThu = (sh, vt) => { const ds = vt ? [vt] : dvVanThu(sh); return TK_CAN_BO.filter(t => t.hd !== false && ds.includes(t.dv)); };
+    // Cột "Văn thư xử lý" của lưới MH17: [Tên Đơn vị văn thư] | [Họ tên], [Họ tên] | [Họ tên], [Họ tên] ([Tên Đơn vị văn thư])
+    const hienVanThu = p => {
+        const ten = (p.taiKhoanVT || []).map(m => (TK_CAN_BO.find(t => t.ma === m) || { ten: m }).ten).join(', ');
+        return ten && p.donViVT ? `${ten} (${p.donViVT})` : ten || p.donViVT || '';
+    };
+    // Ảnh con dấu mẫu (SVG dựng sẵn, chỉ để minh họa): vòng chữ tên cơ quan, ngôi sao giữa, dòng chữ dưới sao
+    function anhDauMau(vong, giua) {
+        const co = Math.min(22, Math.round(640 / (vong.length * 0.62)));
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><defs><path id="v" d="M150,150 m-112,0 a112,112 0 1,1 224,0 a112,112 0 1,1 -224,0"/></defs>`
+            + `<g fill="none" stroke="#D7262E"><circle cx="150" cy="150" r="142" stroke-width="7"/><circle cx="150" cy="150" r="88" stroke-width="3"/></g>`
+            + `<text font-family="Arial" font-weight="700" font-size="${co}" fill="#D7262E"><textPath href="#v">${vong}</textPath></text>`
+            + `<polygon fill="#D7262E" points="150,101 158.2,123.7 182.3,124.5 163.3,139.3 170,162.5 150,149 130,162.5 136.7,139.3 117.7,124.5 141.8,123.7"/>`
+            + `<text x="150" y="196" text-anchor="middle" font-family="Arial" font-weight="700" font-size="16" fill="#D7262E">${giua}</text></svg>`;
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    }
     const homNay = () => { const d = new Date(); return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; };
     const dauThang = () => { const d = new Date(); return `01/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; };
     const soNgay = s => { const [d, m, y] = s.split('/').map(Number); return y * 10000 + m * 100 + d; };
@@ -1488,11 +1560,15 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
               { k: 'serial', nhan: 'Serial Chứng thư số', loai: 'text', bb: true, max: 100, cot: true },
               { k: 'hlTu', nhan: 'Hiệu lực từ', loai: 'date' },
               { k: 'hlDen', nhan: 'Hiệu lực đến', loai: 'date' }] },
-        { ma: 'UC557', loai: 'Tổ chức', ten: 'Cấu hình thông tin về con dấu', moTa: 'Mẫu dấu đóng lên văn bản kết quả', maNhan: 'Mã con dấu', tenNhan: 'Tên con dấu', tuKhoaNhan: 'Tên con dấu tìm kiếm', tt: HD_TAT, loc2: 'donViSH', loc2Nhan: 'Đơn vị áp dụng', conDau: true,
+        { ma: 'UC557', loai: 'Tổ chức', ten: 'Cấu hình thông tin về con dấu', moTa: 'Mẫu dấu đóng lên văn bản kết quả', maNhan: 'Mã con dấu', tenNhan: 'Tên con dấu', tuKhoaNhan: 'Tên con dấu tìm kiếm', tt: HD_TAT, loc2: 'donViSH', loc2Nhan: 'Đơn vị áp dụng', conDau: true, maTuSinh: true,
           luu: 'Cập nhật con dấu thành công', khoaXoa: 'Tham số cốt lõi của hệ thống, không xóa được',
+          // Thứ tự trong lưới hai cột: Đơn vị sở hữu | Đơn vị văn thư; Tài khoản văn thư | Hình ảnh con dấu; Kích thước (px) | Trạng thái (SRS MH18).
+          // Đơn vị văn thư và Tài khoản văn thư luôn hiển thị, phải có ít nhất 1 ô có giá trị
           truong: [
               { k: 'donViSH', nhan: 'Đơn vị sở hữu', loai: 'donvi', bb: true, cot: true },
-              { k: 'anh', nhan: 'Hình ảnh con dấu', loai: 'text', max: 500, goiY: 'Đường dẫn tệp ảnh đã tải lên' },
+              { k: 'donViVT', nhan: 'Đơn vị văn thư', cotNhan: 'Văn thư xử lý', loai: 'donvivt', cot: true, goiY: 'Chọn Đơn vị văn thư, Tài khoản văn thư hoặc cả hai.' },
+              { k: 'taiKhoanVT', nhan: 'Tài khoản văn thư', loai: 'taikhoanvt' },
+              { k: 'anh', nhan: 'Hình ảnh con dấu', loai: 'anhdau' },
               { k: 'kichThuoc', nhan: 'Kích thước (px)', loai: 'text', bb: true, max: 50, cot: true, md: '150' }] },
         { ma: 'UC558', loai: 'Tài chính', ten: 'Cấu hình thông tin về tài khoản thanh toán', moTa: 'Tài khoản nhận phí và lệ phí đăng ký', maNhan: 'Số tài khoản', tenNhan: 'Tên chủ tài khoản', tt: HD_TAT, loc2: 'nganHang', loc2Nguon: 'giaTri',
           luu: 'Cập nhật tài khoản thanh toán thành công', khoaXoa: 'Tham số cốt lõi của hệ thống, không xóa được',
@@ -1575,9 +1651,21 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
     DL.push(ban('UC555', 'WEBSITE', 'Trang web chính thức', { loaiTT: 'Website', giaTri: 'https://example.gov.vn' }));
     DL.push(ban('UC555', 'DIA_CHI', 'Địa chỉ cơ quan', { loaiTT: 'Địa chỉ', giaTri: 'Số 1 Đường mẫu, Quận mẫu, Hà Nội' }));
     [TAI_KHOAN[4], TAI_KHOAN[1], TAI_KHOAN[0]].forEach((t, i) => DL.push(ban('UC556', t.ma, t.ten, { chucVu: t.cv, donVi: t.dv, nhaCC: '', serial: 'CA-BPBD-' + t.ma + '-2026', hlTu: '', hlDen: '' })));
-    DL.push(ban('UC557', 'DAU_TT_HN', 'Con dấu Trung tâm Đăng ký tại Hà Nội', { donViSH: DON_VI[1], anh: '/files/con-dau/tt-hn.png', kichThuoc: '150' }));
-    DL.push(ban('UC557', 'DAU_TT_HCM', 'Con dấu Trung tâm Đăng ký tại Thành phố Hồ Chí Minh', { donViSH: DON_VI[2], anh: '', kichThuoc: '150' }));
-    DL.push(ban('UC557', 'DAU_STP_TN', 'Con dấu Sở Tư pháp tỉnh Thái Nguyên', { donViSH: DON_VI[5], anh: '', kichThuoc: '140' }));
+    // Con dấu (UC557): 5 bản ghi đầu thống nhất với mockup Ban hành văn bản (12/11/2026); mã theo quy tắc SEL_ + số thứ tự 3 chữ số (SRS quy tắc 11)
+    // [mã, tên, đơn vị sở hữu, đơn vị văn thư, tài khoản văn thư (mã tài khoản), [vòng chữ, chữ giữa] hoặc null, tên tệp ảnh, kích thước]
+    [['SEL_000', 'Con dấu tròn Bộ Tư pháp', 'Bộ Tư pháp', 'Văn phòng Bộ', [], ['BỘ TƯ PHÁP • NƯỚC CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM •', 'HÀ NỘI'], 'dau-tron-bo-tu-phap.png', '150'],
+     ['SEL_001', 'Con dấu tròn chính Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', DON_VI[0], 'Văn phòng Cục', [], ['BỘ TƯ PHÁP • CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM VÀ BỒI THƯỜNG NHÀ NƯỚC •', 'HÀ NỘI'], 'dau-tron-cuc-dkgdbd-btnn.png', '150'],
+     ['SEL_011', 'Con dấu tròn Văn phòng Cục', 'Văn phòng Cục', 'Văn phòng Cục', [], ['CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM VÀ BỒI THƯỜNG NHÀ NƯỚC •', 'VĂN PHÒNG'], 'dau-tron-van-phong-cuc.png', '150'],
+     ['SEL_021', 'Con dấu Phòng Quản lý nghiệp vụ về bồi thường nhà nước', 'Phòng Quản lý nghiệp vụ về bồi thường nhà nước', '', ['CB0205'], ['CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM VÀ BỒI THƯỜNG NHÀ NƯỚC •', 'PHÒNG QLNV BTNN'], 'dau-phong-qlnv-btnn.png', '150'],
+     ['SEL_101', 'Dấu tròn Sở Tư pháp Thành phố Hà Nội', DON_VI[4], 'Văn phòng Sở Tư pháp', [], ['UBND THÀNH PHỐ HÀ NỘI • SỞ TƯ PHÁP •', 'HÀ NỘI'], 'dau-tron-stp-ha-noi.png', '150'],
+     ['SEL_102', 'Con dấu Trung tâm Đăng ký tại Hà Nội', DON_VI[1], DON_VI[1], [], ['CỤC ĐĂNG KÝ GDBĐ VÀ BTNN • TRUNG TÂM ĐĂNG KÝ GIAO DỊCH, TÀI SẢN •', 'HÀ NỘI'], 'dau-tt-dk-ha-noi.png', '150'],
+     ['SEL_103', 'Con dấu Trung tâm Đăng ký tại Thành phố Hồ Chí Minh', DON_VI[2], DON_VI[2], [], null, '', '150'],
+     ['SEL_104', 'Con dấu Sở Tư pháp tỉnh Thái Nguyên', DON_VI[5], 'Văn phòng Sở Tư pháp tỉnh Thái Nguyên', ['CB0208'], null, '', '140']
+    ].forEach(([m, t, sh, vt, tk, a, tep, kt]) => DL.push(ban('UC557', m, t, { donViSH: sh, donViVT: vt, taiKhoanVT: tk,
+        anh: a ? { ten: tep, url: anhDauMau(a[0], a[1]) } : null, kichThuoc: kt })));
+    // Số thứ tự lớn nhất đã cấp cho Mã con dấu; không giảm khi xóa bản ghi (SRS quy tắc 11: tính cả con dấu đã xóa)
+    let soConDauMax = Math.max(0, ...DL.filter(d => d.uc === 'UC557').map(d => +(/^SEL_(\d+)$/.exec(d.ma) || [0, 0])[1]));
+    const sinhMaConDau = () => 'SEL_' + String(++soConDauMax).padStart(3, '0');
     DL.push(ban('UC558', '71110001054837', 'CUC DANG KY GIAO DICH BAO DAM', { nganHang: 'Kho bạc Nhà nước', chiNhanh: 'Hà Nội' }));
     DL.push(ban('UC558', '102010000123456', 'CUC DANG KY GIAO DICH BAO DAM', { nganHang: 'VietinBank', chiNhanh: 'Hà Nội' }));
     DL.push(ban('UC560', 'SO_KHUNG_XE', 'Kiểm tra số khung xe', { loaiKT: 'Regex - Định dạng', bieuThuc: '^[A-Z0-9]{9,17}$', cauLoi: 'Số khung không đúng định dạng.' }));
@@ -1643,6 +1731,9 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
         ['MSG-ERR-APP-3711', 'Nội dung phải giữ đúng các tham số của bản gốc: {0}.', '', 'INLINE'],
         ['MSG-ERR-APP-451', 'Thời điểm áp dụng không được nhỏ hơn ngày hiện tại.', '', 'INLINE'],
         ['MSG-ERR-APP-770', 'Nhóm đối tượng này đã được cấu hình MFA. Vui lòng cập nhật cấu hình cũ', 'This group already has an MFA configuration. Please update the existing one', 'INLINE'],
+        ['MSG-ERR-FILE-007', 'Tệp không đúng định dạng. Chỉ chấp nhận [Danh sách định dạng].', '', 'INLINE'],
+        ['MSG-ERR-FILE-008', 'Dung lượng tệp tin [Tên tệp] vượt quá 1MB. Vui lòng kiểm tra lại.', '', 'INLINE'],
+        ['MSG-ERR-FILE-009', 'Kích thước ảnh [Tên tệp] không hợp lệ. Mỗi cạnh của ảnh phải từ 40 đến 2000 điểm ảnh.', '', 'INLINE'],
         ['MSG-ERR-UC001-008', '{0} không hợp lệ hoặc vượt quá độ dài cho phép.', '', 'INLINE'],
         ['MSG-ERR-VAL-001', 'Đây là trường bắt buộc', '', 'INLINE'],
         ['MSG-ERR-VAL-007', 'Từ ngày không được lớn hơn Đến ngày', '', 'INLINE'],
@@ -1717,7 +1808,7 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
         if (x.loc2) {
             const f = x.truong.find(t => t.k === x.loc2) || {};
             let ds = f.ds || [];
-            if (f.loai === 'donvi' || x.loc2 === 'donVi') ds = x.conDau && phamViConDau() ? [phamViConDau()] : DON_VI;
+            if (f.loai === 'donvi' || x.loc2 === 'donVi') ds = x.conDau ? (phamViConDau() ? [phamViConDau()] : DV_CON_DAU) : DON_VI;
             if (x.loc2Nguon === 'giaTri') ds = [...new Set(DL.filter(d => d.uc === x.ma).map(d => d.p[x.loc2]).filter(Boolean))].sort();
             h += oNhom(x.loc2Nhan || f.nhan, `<input id="bgLoc2" class="form-control" placeholder="-- Tất cả --" data-kieu="Enum(String(100))">`);
             setTimeout(() => UI.combo('#bgLoc2', ds), 0);
@@ -1728,7 +1819,7 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
         const cot = ['<th>STT</th>'];
         if (!x.khongMa) cot.push(`<th>${esc(x.maNhan)}</th>`);
         if (!x.khongTen) cot.push(`<th>${esc(x.tenNhan)}</th>`);
-        x.truong.filter(t => t.cot).forEach(t => cot.push(`<th${t.loai === 'number' ? ' class="canh-phai"' : ''}>${esc(t.nhan)}</th>`));
+        x.truong.filter(t => t.cot).forEach(t => cot.push(`<th${t.loai === 'number' ? ' class="canh-phai"' : ''}>${esc(t.cotNhan || t.nhan)}</th>`));
         cot.push(`<th>${esc(x.ttNhan || 'Trạng thái')}</th>`);
         if (x.chay) cot.push('<th>Kết quả chạy gần nhất</th>');
         cot.push('<th>Thao tác</th>');
@@ -1753,6 +1844,7 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
         UI.trang('mhBanGhi');
     }
     function oGiaTri(t, d) {
+        if (t.k === 'donViVT') return esc(hienVanThu(d.p) || '—');   // cột Văn thư xử lý (SRS MH17)
         const v = d.p[t.k];
         if (t.loai === 'cron') { const c = docCron(v); return c ? `${esc(c)}<span class="dong-phu">${esc(v)}</span>` : esc(v || '—'); }
         if (v === undefined || v === null || v === '') return '—';
@@ -1817,6 +1909,7 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
         const x = hmDang; bgSua = d;
         const ht = !!(d && d.ht), kt = !!(d && d.kyThuat);
         $('#ppBanGhiTieuDe').textContent = (d ? 'Sửa: ' : 'Thêm mới: ') + x.ten;
+        $('#ppBanGhi .modal-content').classList.toggle('con-dau', !!x.conDau);   // popup con dấu rộng như form Dev (hai cột, có khối ảnh)
         let h = '';
         if (x.nguoiKy) {
             h += oNhom('Tài khoản cán bộ ký', `<input id="fTK" class="form-control" required data-kieu="Enum(String(50))" placeholder="Gõ họ tên để tìm tài khoản cán bộ"${d ? ' disabled' : ''} value="${d ? esc(d.ten + ' - ' + d.ma) : ''}">`, true, true);
@@ -1824,8 +1917,9 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
         if (x.mfa) {
             h += oNhom(x.tenNhan, `<select id="fNhom" class="form-select" required data-kieu="Enum(String(50))"${d ? ' disabled' : ''}><option value=""></option>${NHOM_ND.map(n => `<option value="${n.ma}"${d && d.ma === n.ma ? ' selected' : ''}>${esc(n.ten)}</option>`).join('')}</select>`, true);
         } else {
-            h += oNhom(x.maNhan, `<input id="fMa" class="form-control" required maxlength="50" data-kieu="String(50)" value="${d ? esc(d.ma) : ''}"${d || x.nguoiKy ? ' disabled' : ''}>`, true);
-            if (!x.khongTen) h += oNhom(x.tenNhan, `<input id="fTen" class="form-control" required maxlength="255" data-kieu="String(255)" value="${d ? esc(d.ten) : ''}"${x.nguoiKy ? ' disabled' : ''}>`, true);
+            // Con dấu (maTuSinh): mã do Hệ thống sinh khi lưu, không có ô mã khi Thêm mới, Sửa thì hiển thị chỉ đọc; Tên con dấu chiếm cả hai cột khi Thêm mới (SRS MH18, quy tắc 11)
+            if (!(x.maTuSinh && !d)) h += oNhom(x.maNhan, `<input id="fMa" class="form-control"${x.maTuSinh ? '' : ' required'} maxlength="50" data-kieu="String(50)" value="${d ? esc(d.ma) : ''}"${d || x.nguoiKy ? ' disabled' : ''}>`, !x.maTuSinh);
+            if (!x.khongTen) h += oNhom(x.tenNhan, `<input id="fTen" class="form-control" required maxlength="255" data-kieu="String(255)" value="${d ? esc(d.ten) : ''}"${x.nguoiKy ? ' disabled' : ''}>`, true, !!(x.maTuSinh && !d));
         }
         if (d && d.ma === 'SIGN_USB_ACCOUNTS') {
             h += `<div style="grid-column:1/-1" class="huong-dan">Giá trị là tên đăng nhập của cán bộ ký bằng USB Token thật, cách nhau bởi dấu phẩy (ví dụ: nguyenvana, tranthib). Mọi tài khoản ngoài danh sách ký giả lập: văn bản đóng khung MÔ PHỎNG, chữ ký không có giá trị pháp lý. Để trống thì mọi tài khoản ký giả lập.</div>`;
@@ -1842,6 +1936,10 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
             else if (t.loai === 'password') o = `<div class="input-icon"><input type="password" class="form-control" maxlength="${t.max}" ${attr} data-kieu="String(1000)" autocomplete="new-password"><i class="fa-solid fa-key"></i></div>`;
             else if (t.loai === 'date') o = `<div class="input-icon"><input class="form-control" data-ngay ${attr} data-kieu="Date" value="${esc(v)}"><i class="fa-regular fa-calendar-days"></i></div>`;
             else if (t.loai === 'donvi') o = `<input class="form-control" ${attr} data-kieu="Enum(String(100))" value="${esc(v || (phamViConDau() || ''))}">`;
+            else if (t.loai === 'donvivt') o = `<input class="form-control" ${attr} data-kieu="Enum(String(100))" placeholder="-- Chọn đơn vị văn thư --" value="${esc(v)}">`;
+            else if (t.loai === 'taikhoanvt') o = `<div class="combo-nhieu" id="f_${t.k}"><div class="form-control cn-o"><input class="cn-tim" id="f_${t.k}Tim" placeholder="-- Chọn tài khoản văn thư --" aria-label="Tìm tài khoản văn thư" autocomplete="off"></div><i class="fa-solid fa-chevron-down"></i><div class="combo-list" role="listbox"></div></div>`;
+            else if (t.loai === 'anhdau') o = `<div class="anh-dau" id="f_${t.k}"><div class="huong-dan">Ảnh PNG hoặc JPG nền trong suốt, tối đa 1 MB, mỗi cạnh từ 40 đến 2000 điểm ảnh. Ảnh được đóng lên văn bản ở bước Đóng dấu và Ban hành, theo kích thước (px) khai bên dưới.</div>`
+                + `<div data-anh-than></div><div class="anh-dau-loi" role="alert"></div><input type="file" hidden accept=".png,.jpg,.jpeg,image/png,image/jpeg"></div>`;
             else o = `<input class="form-control" maxlength="${t.max || 255}" ${attr} data-kieu="String(${t.max || 255})" value="${esc(v)}"${t.loai === 'cron' ? ' placeholder="0 0 8 * * *"' : ''}>`;
             let goiY = t.goiY ? esc(t.goiY) : '';
             if (t.loai === 'cron') goiY = 'Biểu thức Spring cron 6 trường, ví dụ 0 0/30 * * * *<div class="alert alert-info hidden" id="cronDoc" style="margin:8px 0 0"><i class="fa-solid fa-circle-info"></i><div></div></div>';
@@ -1857,30 +1955,52 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
             const tk = TAI_KHOAN.find(a => a.ma === t.ma);
             $('#fMa').value = tk.ma; $('#fTen').value = tk.ten; $('#f_chucVu').value = tk.cv; $('#f_donVi').value = tk.dv;
         });
-        if (x.conDau) UI.combo('#f_donViSH', phamViConDau() ? [phamViConDau()] : DON_VI);
+        if (x.conDau) ganConDau(d);
         const cron = $('#f_cron');
         if (cron) { const doc = () => { const c = docCron(cron.value), k = $('#cronDoc'); k.classList.toggle('hidden', !c); $('div', k).textContent = c ? 'Lịch chạy: ' + c : ''; }; cron.addEventListener('input', doc); doc(); }
         UI.mo('ppBanGhi');
     }
     $('#ppBanGhiLuu').onclick = () => {
         const x = hmDang, d = bgSua, vung = $('#ppBanGhi');
-        if (!UI.kiemTra(vung)) return;
+        const hopLeNhap = UI.kiemTra(vung);
+        // Con dấu: phải có ít nhất 1 trong 2 ô Đơn vị văn thư, Tài khoản văn thư; trống cả hai thì báo MSG-ERR-APP-1253 dưới cả 2 ô (SRS MH18 chức năng Lưu TH1)
+        if (x.conDau) {
+            const vtO = $('#f_donViVT'), tkO = $('#f_taiKhoanVT .cn-o'); UI.xoaLoi(tkO);
+            if (!vtO.value.trim() && !tkChon.length) {
+                const cau = 'Vui lòng chọn Đơn vị văn thư hoặc Tài khoản văn thư.'; UI.baoLoi(vtO, cau); UI.baoLoi(tkO, cau);
+                if (hopLeNhap && !vtO.disabled) vtO.focus();
+                return;
+            }
+        }
+        if (!hopLeNhap) return;
         let loi = null;
-        const ma = x.mfa ? $('#fNhom').value : $('#fMa').value.trim();
+        const ma = x.mfa ? $('#fNhom').value : $('#fMa') ? $('#fMa').value.trim() : '';
         const url = $('#f_url');
         if (url && url.value.trim() && !/^https?:\/\/[^\s/]+[^\s]*$/i.test(url.value.trim())) { UI.baoLoi(url, 'Endpoint URL phải là địa chỉ web http/https hợp lệ'); loi = url; }
         const phut = $('#f_phut');
         if (phut && phut.value !== '' && +phut.value < 1) { UI.baoLoi(phut, 'Thời gian chờ (phút) không hợp lệ hoặc vượt quá độ dài cho phép.'); loi = loi || phut; }
-        if (!d && DL.some(r => r.uc === x.ma && r.ma === ma)) {
+        if (!d && !x.maTuSinh && DL.some(r => r.uc === x.ma && r.ma === ma)) {
             const o = x.mfa ? $('#fNhom') : $('#fMa');
             UI.baoLoi(o, x.mfa ? 'Nhóm đối tượng này đã được cấu hình MFA. Vui lòng cập nhật cấu hình cũ' : x.ma === 'UC551' ? 'Mã kết nối API đã tồn tại' : `Mã ${ma} đã tồn tại.`);
             loi = loi || o;
         }
         const dv = $('#f_donViSH');
         if (dv && phamViConDau() && dv.value !== phamViConDau()) { UI.baoLoi(dv, 'Bạn chỉ được cấu hình con dấu cho đơn vị của mình'); loi = loi || dv; }
+        if (x.conDau) {
+            // Máy chủ kiểm tra lại khi lưu (SRS MH18 chức năng Lưu TH3 - MSG-ERR-APP-1251, TH4 - MSG-ERR-APP-1252)
+            const vt = $('#f_donViVT'), giaTriVT = vt.value.trim(), dsVT = dvVanThu(dv.value.trim());
+            if (giaTriVT && !dsVT.includes(giaTriVT)) { UI.baoLoi(vt, 'Đơn vị văn thư phải là Đơn vị sở hữu hoặc đơn vị trực thuộc của Đơn vị sở hữu. Vui lòng chọn lại.'); loi = loi || vt; }
+            // Tài khoản không còn hoạt động, hoặc không còn thuộc Đơn vị văn thư (khi có) hay Đơn vị sở hữu và đơn vị trực thuộc (khi trống)
+            const hopLe = tkVanThu(dv.value.trim(), giaTriVT).map(t => t.ma), sai = tkChon.filter(m => !hopLe.includes(m));
+            if (sai.length) {
+                UI.baoLoi($('#f_taiKhoanVT .cn-o'), `Tài khoản văn thư ${sai.map(m => (TK_CAN_BO.find(t => t.ma === m) || { ten: m }).ten).join(', ')} không còn hợp lệ. Vui lòng chọn lại.`);
+                loi = loi || $('#f_taiKhoanVTTim');
+            }
+        }
         if (loi) { loi.focus(); return; }
         const p = d ? Object.assign({}, d.p) : {};
-        x.truong.forEach(t => { const el = $('#f_' + t.k); if (el && !(t.loai === 'password')) p[t.k] = el.value.trim(); });
+        x.truong.forEach(t => { const el = $('#f_' + t.k); if (el && !['password', 'taikhoanvt', 'anhdau'].includes(t.loai)) p[t.k] = el.value.trim(); });
+        if (x.conDau) Object.assign(p, { taiKhoanVT: tkChon.slice(), anh: anhTam });
         const khoa = $('#f_khoa');
         if (khoa) {
             if ($('#f_xacThuc').value === 'None') delete p.goiYKhoa;
@@ -1888,11 +2008,126 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
         }
         const ten = x.mfa ? NHOM_ND.find(n => n.ma === ma).ten : x.khongTen ? ma : $('#fTen').value.trim();
         if (d) Object.assign(d, { ten, p, hd: $('#fHD').checked, moTa: $('#fMoTa').value.trim() });
-        else DL.push(ban(x.ma, ma, ten, p, { hd: $('#fHD').checked, moTa: $('#fMoTa').value.trim() }));
+        else DL.push(ban(x.ma, x.maTuSinh ? sinhMaConDau() : ma, ten, p, { hd: $('#fHD').checked, moTa: $('#fMoTa').value.trim() }));
         UI.dong('ppBanGhi');
         UI.toast(x.luu);
         timBanGhi();
     };
+
+    /* ------------------------------------------------------------ MH18 - Con dấu: Đơn vị văn thư, Tài khoản văn thư, Hình ảnh con dấu */
+    const boDau = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
+    let tkChon = [], anhTam = null;   // tài khoản đã chọn ở Tài khoản văn thư; ảnh đang hiển thị ở khối Hình ảnh con dấu (chỉ lưu khi click Lưu)
+    // Combobox có tìm kiếm với danh sách lấy lại mỗi lần mở (danh sách Đơn vị văn thư phụ thuộc Đơn vị sở hữu)
+    function comboDong(el, layDs, khiChon) {
+        const hop = document.createElement('div'); hop.className = 'combo input-icon';
+        el.parentNode.insertBefore(hop, el); hop.appendChild(el);
+        hop.insertAdjacentHTML('beforeend', '<i class="fa-solid fa-chevron-down"></i><div class="combo-list" role="listbox"></div>');
+        const list = $('.combo-list', hop); el.setAttribute('autocomplete', 'off');
+        const ve = () => {
+            const ds = layDs(), q = ds.includes(el.value) ? '' : boDau(el.value), kq = ds.filter(x => boDau(x).includes(q));
+            list.innerHTML = kq.length ? kq.map(x => `<div data-ma="${esc(x)}">${esc(x)}</div>`).join('') : '<div class="combo-empty">Không tìm thấy kết quả</div>';
+        };
+        el.addEventListener('focus', () => { ve(); hop.classList.add('open'); });
+        el.addEventListener('input', () => { ve(); hop.classList.add('open'); });
+        el.addEventListener('blur', () => setTimeout(() => hop.classList.remove('open'), 150));
+        list.addEventListener('mousedown', e => { const x = e.target.closest('[data-ma]'); if (!x) return; el.value = x.dataset.ma; hop.classList.remove('open'); UI.xoaLoi(el); khiChon && khiChon(); });
+    }
+    // Đơn vị văn thư đang chọn hợp lệ (đang gõ dở hoặc ngoài danh sách thì coi như trống)
+    const vtHopLe = () => { const sh = ($('#f_donViSH') || {}).value, vt = ($('#f_donViVT') || {}).value; return dvVanThu(sh).includes(vt) ? vt : ''; };
+    function veTK() {
+        const hop = $('#f_taiKhoanVT'); if (!hop) return;
+        const o = $('.cn-o', hop), tim = $('.cn-tim', hop);
+        $$('.cn-the', o).forEach(x => x.remove());
+        tkChon.forEach(ma => {
+            const t = TK_CAN_BO.find(a => a.ma === ma) || { ten: ma }, s = document.createElement('span');
+            s.className = 'cn-the'; s.innerHTML = `${esc(t.ten)}<button type="button" title="Bỏ chọn" aria-label="Bỏ chọn ${esc(t.ten)}" data-bo="${esc(ma)}">×</button>`;
+            o.insertBefore(s, tim);
+        });
+        tim.placeholder = tkChon.length ? '' : '-- Chọn tài khoản văn thư --';
+        $$('[data-bo]', o).forEach(b => b.onclick = e => { e.stopPropagation(); if (!hop.classList.contains('tat')) datTK(tkChon.filter(m => m !== b.dataset.bo)); });
+    }
+    // Danh sách Tài khoản văn thư: theo Đơn vị văn thư khi đã chọn, không thì theo Đơn vị sở hữu và đơn vị trực thuộc (SRS MH18)
+    function veDsTK() {
+        const hop = $('#f_taiKhoanVT'); if (!hop) return;
+        const q = boDau($('.cn-tim', hop).value.trim()), ds = tkVanThu(($('#f_donViSH') || {}).value, vtHopLe()).filter(t => boDau(t.ten + ' ' + t.dn).includes(q));
+        $('.combo-list', hop).innerHTML = ds.length ? ds.map(t => { const co = tkChon.includes(t.ma);
+            return `<div data-ma="${t.ma}" role="option" aria-selected="${co}"><i class="fa-${co ? 'solid fa-square-check' : 'regular fa-square'}"></i> ${esc(t.ten)} (${esc(t.dn)}) - ${esc(t.dv)}</div>`; }).join('')
+            : '<div class="combo-empty">Không tìm thấy kết quả</div>';
+    }
+    function datTK(ds) {
+        tkChon = ds; veTK(); veDsTK();
+        const o = $('#f_taiKhoanVT .cn-o'); if (o) UI.xoaLoi(o);
+        const vt = $('#f_donViVT'); if (vt && tkChon.length) UI.xoaLoi(vt);   // đã có tài khoản thì bỏ lỗi "chọn 1 trong 2 ô" ở Đơn vị văn thư
+    }
+    function loiAnh(s) { const e = $('#f_anh .anh-dau-loi'); if (e) { e.textContent = s; e.classList.toggle('show', !!s); } }
+    function veAnh() {
+        const hop = $('#f_anh'); if (!hop) return;
+        $('[data-anh-than]', hop).innerHTML = anhTam
+            ? `<div class="anh-dau-xem"><img src="${anhTam.url}" alt="Hình ảnh con dấu"></div><div class="anh-dau-ten">${esc(anhTam.ten)}</div>
+               <div class="anh-dau-nut"><button type="button" class="btn btn-secondary btn-sm" data-anh="tai"><i class="fa-solid fa-upload"></i> Thay ảnh</button><button type="button" class="btn btn-vien-do btn-sm" data-anh="xoa"><i class="fa-solid fa-trash-can"></i> Xóa ảnh</button></div>`
+            : `<div class="anh-dau-trong">Chưa có hình ảnh con dấu.</div><div class="anh-dau-nut"><button type="button" class="btn btn-secondary btn-sm" data-anh="tai"><i class="fa-solid fa-upload"></i> Tải ảnh lên</button></div>`;
+        // Xóa ảnh: bỏ ảnh khỏi khối, không hỏi xác nhận; con dấu chỉ mất ảnh khi click Lưu (SRS MH18 chức năng 3)
+        $$('[data-anh]', hop).forEach(b => b.onclick = () => {
+            if (b.dataset.anh === 'tai') { const f = $('input[type=file]', hop); f.value = ''; f.click(); } else { anhTam = null; loiAnh(''); veAnh(); }
+        });
+    }
+    // Kiểm tra tệp ảnh theo thứ tự định dạng, dung lượng, kích thước (SRS MH18 chức năng 2: MSG-ERR-FILE-007, 008, 009)
+    function nhanTepAnh(f) {
+        loiAnh('');
+        const duoi = (f.name.split('.').pop() || '').toLowerCase(), sai = () => loiAnh('Tệp không đúng định dạng. Chỉ chấp nhận .png, .jpg, .jpeg.');
+        if (f.name.indexOf('.') < 0 || !['png', 'jpg', 'jpeg'].includes(duoi) || (f.type && !['image/png', 'image/jpeg'].includes(f.type))) return sai();
+        if (f.size > 1048576) return loiAnh(`Dung lượng tệp tin ${f.name} vượt quá 1MB. Vui lòng kiểm tra lại.`);
+        const doc = new FileReader();
+        doc.onerror = sai;
+        doc.onload = () => {
+            const img = new Image();
+            img.onerror = sai;
+            img.onload = () => {
+                const w = img.naturalWidth, h = img.naturalHeight;
+                if (w < 40 || h < 40 || w > 2000 || h > 2000) return loiAnh(`Kích thước ảnh ${f.name} không hợp lệ. Mỗi cạnh của ảnh phải từ 40 đến 2000 điểm ảnh.`);
+                anhTam = { ten: f.name, url: doc.result }; veAnh();
+            };
+            img.src = doc.result;
+        };
+        doc.readAsDataURL(f);
+    }
+    function ganConDau(d) {
+        const sh = $('#f_donViSH'), vt = $('#f_donViVT'), tkHop = $('#f_taiKhoanVT'), tkTim = $('#f_taiKhoanVTTim');
+        tkChon = d ? (d.p.taiKhoanVT || []).slice() : [];
+        anhTam = d ? d.p.anh || null : null;
+        let shCu = sh.value;
+        // Hai ô luôn hiển thị; chưa chọn Đơn vị sở hữu thì khóa cả hai ô
+        const khoa = () => {
+            const coSH = DV_CON_DAU.includes(sh.value);
+            vt.disabled = !coSH; if (!coSH) UI.xoaLoi(vt);
+            tkHop.classList.toggle('tat', !coSH); tkTim.disabled = !coSH;
+        };
+        // Đổi Đơn vị sở hữu thì xóa giá trị của cả hai ô Đơn vị văn thư và Tài khoản văn thư
+        const doiSH = () => { if (sh.value === shCu) return; shCu = sh.value; vt.value = ''; datTK([]); khoa(); };
+        UI.combo(sh, phamViConDau() ? [phamViConDau()] : DV_CON_DAU, doiSH);
+        sh.addEventListener('input', doiSH);
+        sh.addEventListener('blur', () => setTimeout(() => { if (sh.value && !DV_CON_DAU.includes(sh.value)) { sh.value = ''; doiSH(); } }, 200));
+        // Đổi Đơn vị văn thư thì bỏ các tài khoản đã chọn không thuộc đơn vị mới; xóa trắng ô thì giữ nguyên (mọi tài khoản đều thuộc Đơn vị sở hữu và đơn vị trực thuộc)
+        const doiVT = () => { const hopLe = tkVanThu(sh.value, vtHopLe()).map(t => t.ma); datTK(tkChon.filter(m => hopLe.includes(m))); };
+        comboDong(vt, () => dvVanThu(sh.value), doiVT);
+        vt.addEventListener('input', () => { if (!vt.value) doiVT(); });
+        vt.addEventListener('blur', () => setTimeout(() => { if (vt.value && !dvVanThu(sh.value).includes(vt.value)) { vt.value = ''; doiVT(); } }, 200));
+        // Tài khoản văn thư: combobox chọn nhiều có tìm kiếm
+        $('.cn-o', tkHop).addEventListener('click', () => { if (!tkTim.disabled) tkTim.focus(); });
+        tkTim.addEventListener('focus', () => { veDsTK(); tkHop.classList.add('open'); });
+        tkTim.addEventListener('input', () => { veDsTK(); tkHop.classList.add('open'); });
+        tkTim.addEventListener('blur', () => setTimeout(() => tkHop.classList.remove('open'), 150));
+        tkTim.addEventListener('keydown', e => { if (e.key === 'Backspace' && !tkTim.value && tkChon.length) datTK(tkChon.slice(0, -1)); });
+        $('.combo-list', tkHop).addEventListener('mousedown', e => {
+            const x = e.target.closest('[data-ma]'); if (!x) return;
+            e.preventDefault();
+            datTK(tkChon.includes(x.dataset.ma) ? tkChon.filter(m => m !== x.dataset.ma) : tkChon.concat(x.dataset.ma));
+        });
+        veTK(); khoa();
+        // Hình ảnh con dấu
+        $('#f_anh input[type=file]').onchange = e => { const f = e.target.files && e.target.files[0]; if (f) nhanTepAnh(f); };
+        loiAnh(''); veAnh();
+    }
 
     /* ------------------------------------------------------------ MH07 - Popup Lịch sử chạy tiến trình */
     let luoiLS = null;

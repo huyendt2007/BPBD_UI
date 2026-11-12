@@ -7,13 +7,16 @@
  *   -> Lãnh đạo các cấp ký duyệt (cấp cuối ký số) -> Họp hội đồng; Từ chối -> Bị trả lại thành lập HĐ; Ký ngoài -> Họp hội đồng.
  * Phụ thuộc: btnn_luong_xu_ly.js (BTNN_WF: cây đơn vị, cấu hình luồng), ../01_Quan_tri_he_thong/dm_loai_co_quan.js (DM_LCQ: DM_57/DM_58)
  * và các hàm sẵn có của chi_tiet_ho_so_hoan_tra.html (activeDossier, showToast, showCustomConfirm, switchSimulatorState...).
+ * [tnht] 12/11/2026 - Ký số trên hệ thống: bỏ "Số quyết định", "Ngày quyết định" ở Bước 1 (Mẫu 33/BTNN); nhập "Số, ký hiệu văn bản", "Ngày văn bản"
+ *   tại khối "Thông tin ban hành văn bản" của Bước 2 (BTNN_PCKD.levelSetup soNgay: true), không bắt buộc; ghi về tlhd.soQD / tlhd.ngayQD.
+ *   Lưu tlhd.dongDau, tlhd.banHanh (toLegacy); trình lại điền lại đủ khối Bước 2. Không tự cấp số khi Ký duyệt cấp cuối (còn trống: "Chờ cấp số").
+ *   Hàm dùng chung cho popup trình của phân hệ Hoàn trả: tlhdDocPos (vị trí dòng số, ngày của văn bản), htPrevBanHanh (khối Bước 2 lần trình trước).
  */
 
 const TLHD_MAX_FILE = 50 * 1024 * 1024;
 const TLHD_SIGN_SIZES = { nhay: [[180, 75], [220, 90], [280, 110]], so: [[200, 85], [245, 110], [320, 130]] };
 const TLHD_REQ_MSG = 'Đây là trường bắt buộc';
 const TLHD_OFF_FILE_MSG = 'Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.';
-const TLHD_SO_QD_DEFAULT = '     /QĐ-';
 const TLHD_OFF_TARGET = 'Họp hội đồng'; // Trạng thái hồ sơ sau khi Ban hành văn bản (Ký ngoài)
 const TLHD_SIGN_CONTENT_DEFAULT ='Kính trình Lãnh đạo xem xét, ký duyệt Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả.';
 
@@ -30,6 +33,38 @@ function tlhdToday() { const d = new Date(); return `${tlhdPad(d.getDate())}/${t
 function tlhdNow() { return typeof nowViShort === 'function' ? nowViShort() : new Date().toLocaleString('vi-VN'); }
 function tlhdFold(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase(); }
 function tlhdFileSize(b) { return b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; }
+// [tnht] Vị trí dòng "Số: ..." và dòng "[Địa danh], ngày ... tháng ... năm ..." của văn bản trình ký (tọa độ px trong trang A4 pg):
+// vị trí mặc định của ô Số, ô Ngày tại khối "Thông tin ban hành văn bản" (Bước 2). Dùng chung cho popup Thành lập HĐ, QĐ đình chỉ / chấm dứt, QĐ hoàn trả / miễn / giảm
+function tlhdDocPos(pg) {
+    if (!pg || !pg.offsetWidth) return null;
+    const pr = pg.getBoundingClientRect();
+    const k = pr.width / pg.offsetWidth || 1;
+    const skip = n => !!(n.parentElement && n.parentElement.closest('.pc-bhbox, .pc-sig, .sig-drag-box, .gq-sign-box'));
+    const find = re => {
+        const w = document.createTreeWalker(pg, NodeFilter.SHOW_TEXT);
+        let n;
+        while ((n = w.nextNode())) { if (!skip(n) && re.test(n.nodeValue || '')) return n; }
+        return null;
+    };
+    const at = n => {
+        if (!n) return null;
+        const r = document.createRange(); r.selectNodeContents(n);
+        const rs = r.getClientRects(); const b = rs.length ? rs[0] : r.getBoundingClientRect();
+        return b && b.width ? { x: Math.round((b.left - pr.left) / k) - 9, y: Math.round((b.top - pr.top) / k) - 4, w: Math.round(b.width / k) + 18 } : null;
+    };
+    return { so: at(find(/^\s*Số:/)), ngay: at(find(/ngày\s.*tháng\s.*năm/)) };
+}
+// [tnht] Khối "Thông tin ban hành văn bản" của lần trình trước (trình lại sau Bị trả lại): phiếu trình lưu banHanh;
+// lượt trình cũ / dữ liệu mẫu chỉ có số, ngày: điền vào Số, ký hiệu văn bản / Ngày văn bản (vị trí ô mặc định)
+function htPrevBanHanh(x, so, ngay) {
+    if (!x) return null;
+    const P = window.BTNN_PCKD;
+    const b = P && P.prevBanHanhOf ? P.prevBanHanhOf(x) : (x.banHanh || null);
+    if (b) return b;
+    const s = String(so || '').trim();
+    const sk = /^\/QĐ-$/.test(s) ? '' : s;
+    return sk || ngay ? { soKyHieu: sk, ngayVanBan: /^\d{2}\/\d{2}\/\d{4}$/.test(ngay || '') ? ngay : '' } : null;
+}
 
 // ---------------- CSS (sao chép từ Popup Không thụ lý hồ sơ, giới hạn trong #tlhdModal) ----------------
 const TLHD_CSS = [
@@ -198,7 +233,7 @@ function tlhdModalHtml() {
         <div id="tlhdStep1Body" class="gqx-body" style="overflow-y:auto; flex:1; padding:24px;">
             <div id="tlhdReturnedBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
                 <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div>
-                <div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="tlhdReturnedReason">--</strong><br>Lãnh đạo trả lại: <span id="tlhdReturnedBy">--</span> • Thời điểm trả lại: <span id="tlhdReturnedAt">--</span></div>
+                <div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="tlhdReturnedReason">--</strong><br>Người trả lại: <span id="tlhdReturnedBy">--</span> • Thời điểm trả lại: <span id="tlhdReturnedAt">--</span></div>
             </div>
 
             <div class="gqx-sec">
@@ -229,22 +264,7 @@ function tlhdModalHtml() {
 
                 <div id="tlhdDocMetaGroup" class="tlhd-meta">
                     <div class="tlhd-meta-title"><i class="fa-solid fa-sliders" style="color:#2563eb;"></i> Thông tin điền vào Mẫu 33/BTNN</div>
-                    <div class="gqx-grid2">
-                        <div class="gqx-field">
-                            <label class="form-label" for="tlhdSoQD">Số quyết định<span class="gqx-req">*</span></label>
-                            <input type="text" id="tlhdSoQD" class="form-control" maxlength="50" placeholder="Nhập số quyết định..." oninput="tlhdClearErr('tlhdSoQD')">
-                            <div id="tlhdSoQDErr" class="gqx-err">${TLHD_REQ_MSG}</div>
-                        </div>
-                        <div class="gqx-field">
-                            <label class="form-label" for="tlhdNgayQD">Ngày quyết định<span class="gqx-req">*</span></label>
-                            <div class="gqx-date">
-                                <input type="text" id="tlhdNgayQD" class="form-control" placeholder="dd/mm/yyyy" readonly onclick="tlhdOpenDatePicker()">
-                                <i class="fa-regular fa-calendar-days" onclick="tlhdOpenDatePicker()" title="Chọn ngày"></i>
-                                <input type="date" id="tlhdNgayQDPicker" tabindex="-1" onchange="tlhdOnDatePicked(this.value)">
-                            </div>
-                            <div id="tlhdNgayQDErr" class="gqx-err">${TLHD_REQ_MSG}</div>
-                        </div>
-                    </div>
+                    <!-- [tnht] Số, ký hiệu văn bản / Ngày văn bản của Quyết định nhập tại khối Thông tin ban hành văn bản (Bước 2) -->
                     <div class="tlhd-mem-head">
                         <label class="form-label" style="margin:0;">Bảng danh sách thành viên trong hội đồng<span class="gqx-req">*</span></label>
                         <button type="button" class="btn btn-secondary btn-sm" onclick="tlhdAddMember()"><i class="fa-solid fa-plus"></i> Thêm thành viên</button>
@@ -452,13 +472,12 @@ function tlhdOpenModal() {
         tlhdEl('tlhdReturnedAt').innerText = activeDossier.councilRejectTime || '--';
     } else rb.style.display = 'none';
 
-    tlhdEl('tlhdSoQD').value = prev && rejected && prev.soQD ? prev.soQD : TLHD_SO_QD_DEFAULT;
-    tlhdEl('tlhdNgayQD').value = prev && rejected && prev.ngayQD ? prev.ngayQD : tlhdToday();
     tlhdEl('tlhdSignContent').value = prev && rejected && prev.content ? prev.content : TLHD_SIGN_CONTENT_DEFAULT;
     tlhdEl('tlhdModal').querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
     tlhdEl('tlhdModal').querySelectorAll('.gqx-err').forEach(el => { el.style.display = 'none'; });
 
-    tlhdSignInit(prev && rejected ? prev.assignees : null);
+    // [tnht] Trình lại: khối Thông tin ban hành văn bản (Bước 2) theo lần trình trước (Số, ký hiệu, Ngày văn bản, Đóng dấu cơ quan, Đơn vị ban hành, vị trí ô)
+    tlhdSignInit(prev && rejected ? prev.assignees : null, prev && rejected ? htPrevBanHanh(prev, prev.soQD, prev.ngayQD) : null);
     tlhdRemoveFile('offline', true);
     tlhdRenderMembers();
     tlhdEl(tlhdState.method === 'offline' ? 'tlhdMethodOffline' : 'tlhdMethodOnline').checked = true;
@@ -534,7 +553,7 @@ function tlhdSetDocSrc(src) {
     tlhdApplyDocMeta();
     tlhdRenderDocBox();
 }
-// Số quyết định / Ngày quyết định / Bảng danh sách thành viên: chỉ khi Ký số và Sinh văn bản theo mẫu 33/BTNN
+// Khối Thông tin điền vào Mẫu 33/BTNN (Bảng danh sách thành viên trong hội đồng): chỉ khi Ký số và Sinh văn bản theo mẫu 33/BTNN
 function tlhdApplyDocMeta() {
     const show = tlhdState.method === 'online' && tlhdState.docSrc === 'gen';
     tlhdEl('tlhdDocMetaGroup').style.display = show ? '' : 'none';
@@ -681,18 +700,6 @@ function tlhdViewFile(kind) {
 }
 
 // ---------------- Ngày quyết định (DatePicker) ----------------
-function tlhdOpenDatePicker() {
-    const p = tlhdEl('tlhdNgayQDPicker'); if (!p) return;
-    const v = tlhdEl('tlhdNgayQD').value.split('/');
-    if (v.length === 3) p.value = `${v[2]}-${v[1]}-${v[0]}`;
-    try { if (p.showPicker) p.showPicker(); else p.click(); } catch (e) { p.click(); }
-}
-function tlhdOnDatePicked(val) {
-    if (!val) return;
-    const p = val.split('-');
-    tlhdEl('tlhdNgayQD').value = `${p[2]}/${p[1]}/${p[0]}`;
-    tlhdClearErr('tlhdNgayQD');
-}
 function tlhdClearErr(id) {
     const el = tlhdEl(id); if (el) el.classList.remove('is-invalid');
     const e = tlhdEl(id + 'Err'); if (e) e.style.display = 'none';
@@ -759,8 +766,7 @@ function tlhdValidateStep1() {
         if (!first) first = focusEl || el;
     };
     if (tlhdState.docSrc === 'gen') {
-        if (!tlhdEl('tlhdSoQD').value.trim()) mark('tlhdSoQD');
-        if (!tlhdEl('tlhdNgayQD').value.trim()) mark('tlhdNgayQD');
+        // [tnht] Số, ký hiệu / Ngày văn bản nhập tại Bước 2, không bắt buộc: không kiểm tra khi Tiếp tục
         tlhdState.members.forEach((m, i) => {
             if (!String(m.name || '').trim()) mark('tlhdMemName' + i);
             if (!m.unitId) {
@@ -783,10 +789,11 @@ function tlhdValidateStep1() {
 }
 
 // ---------------- Văn bản Mẫu 33/BTNN ----------------
-function tlhdCollectDoc() {
+// [tnht] bh: khối Thông tin ban hành văn bản (Bước 2). Văn bản sinh ở Bước 1 (bh = null) để trống dòng số, ký hiệu và dòng ngày
+function tlhdCollectDoc(bh) {
     return {
-        soQD: tlhdEl('tlhdSoQD').value.trim(),
-        ngayQD: tlhdEl('tlhdNgayQD').value.trim(),
+        soQD: bh ? String(bh.soKyHieu || '').trim() : '',
+        ngayQD: bh ? bh.ngayVanBan || '' : '',
         members: tlhdState.members.map(m => ({ name: String(m.name || '').trim(), unitId: m.unitId, unitName: tlhdUnitName(m.unitId), chucVu: m.chucVu, chucVuName: tlhdCvName(m.chucVu), chucDanh: String(m.chucDanh || '').trim() }))
     };
 }
@@ -938,19 +945,21 @@ function tlhdSignCardHtml(lv, i, n, prevId) {
     </div>`;
 }
 // [ro1] Bước 2: khối "Thiết lập các cấp trình ký" dùng chung (BTNN_PCKD.levelSetup) - cán bộ tự thêm cấp, chọn Lãnh đạo (đơn vị mình và cấp trên), Ký nháy, Ký số, Đặt chữ ký
-function tlhdSignInit(prevAssignees) {
+function tlhdSignInit(prevAssignees, prevBh) {
     const P = window.BTNN_PCKD;
     const page = tlhdEl('tlhdA4Page');
-    if (page) page.querySelectorAll('.gq-sign-box, .pc-sig').forEach(b => b.remove());
+    if (page) page.querySelectorAll('.gq-sign-box, .pc-sig, .pc-bhbox').forEach(b => b.remove());
     if (!P) return;
     tlhdSignState.ui = P.legacyUi('tlhd', {
         host: () => tlhdEl('tlhdSignLevels'), page: () => tlhdEl('tlhdA4Page'), method: () => 'Ký số',
         userId: () => P.submitterFor(tlhdRootUnitId()),
+        // [tnht] Khối Thông tin ban hành văn bản có Số, ký hiệu, Địa danh, Ngày văn bản; ô Số, ô Ngày theo dòng số, ngày của văn bản
+        soNgay: true, docPos: () => tlhdDocPos(tlhdEl('tlhdA4Page')),
         onChange: levels => { const l = levels[levels.length - 1]; const W = tlhdW(); const nm = tlhdEl('tlhdA4SignerName'); if (nm) nm.textContent = l && l.leader && W ? W.userName(l.leader).toUpperCase() : ''; }
     });
-    // Trình lại sau Bị trả lại: điền sẵn thiết lập lần trước
+    // Trình lại sau Bị trả lại: điền sẵn thiết lập lần trước (các cấp, Đóng dấu cơ quan, khối Thông tin ban hành văn bản)
     const prev = prevAssignees && activeDossier && activeDossier.tlhd ? P.prevFromLegacy(activeDossier.tlhd) : null;
-    tlhdSignState.ui.reset(prev);
+    tlhdSignState.ui.reset(prev, prevBh && typeof prevBh.dongDau === 'boolean' ? prevBh.dongDau : undefined, prevBh || null);
     tlhdSignState.levels = [];
 }
 function tlhdSignEnsureBox(i) {
@@ -1053,14 +1062,16 @@ function tlhdLeaderLabelOf(levels, assignees, i) {
 function tlhdSubmitOnline() {
     const sign = tlhdSignCollect();
     if (!sign) return;
-    const d = tlhdState.docSrc === 'gen' ? tlhdCollectDoc() : { soQD: '', ngayQD: '', members: [] };
+    // [tnht] Số quyết định, Ngày quyết định lấy từ Số, ký hiệu văn bản / Ngày văn bản của khối Thông tin ban hành văn bản (Bước 2), mọi nguồn tệp
+    const bh = sign.banHanh || null;
+    const d = tlhdState.docSrc === 'gen' ? tlhdCollectDoc(bh) : Object.assign(tlhdCollectDoc(bh), { members: [] });
     const levels = tlhdSignState.levels;
     const fileName = tlhdState.docSrc === 'gen' ? tlhdFileBase() + '.docx' : tlhdState.onlineFile.name;
     activeDossier.tlhd = {
         method: 'online', docSrc: tlhdState.docSrc, soQD: d.soQD, ngayQD: d.ngayQD, members: tlhdState.docSrc === 'gen' ? d.members : [],
         fileName, onlineFile: tlhdState.docSrc === 'upload' ? tlhdState.onlineFile : null,
         levels, assignees: sign.assignees, coords: sign.coords, enableNhay: sign.enableNhay, content: sign.content, level: 0,
-        tuThietLap: !!sign.tuThietLap, pcLevels: sign.pcLevels || null, pcSig: sign.pcSig || null,
+        tuThietLap: !!sign.tuThietLap, pcLevels: sign.pcLevels || null, pcSig: sign.pcSig || null, dongDau: !!sign.dongDau, banHanh: bh,
         attachments: typeof tlktGet === 'function' ? tlktGet('tlhd') : []
     };
     activeDossier.hdPublishType = 'digital';
@@ -1159,7 +1170,8 @@ function tlhdEnsureApproval() {
     if (activeDossier.tlhd && activeDossier.tlhd.method === 'online' && activeDossier.tlhd.levels && activeDossier.tlhd.levels.length) return activeDossier.tlhd;
     const levels = tlhdLevels();
     const members = (activeDossier.council || []).map(c => ({ name: c.name, unitId: '', unitName: c.agency, chucVu: '', chucVuName: '', chucDanh: c.role }));
-    activeDossier.tlhd = { method: 'online', docSrc: 'gen', soQD: activeDossier.hdDecision || TLHD_SO_QD_DEFAULT, ngayQD: '', members, fileName: tlhdFileBase() + '.docx', levels, assignees: levels.map(l => (l.leaders[0] || {}).id || ''), content: TLHD_SIGN_CONTENT_DEFAULT, level: 0 };
+    // [tnht] Chưa có số (Chờ cấp số): để trống, không tự cấp số
+    activeDossier.tlhd = { method: 'online', docSrc: 'gen', soQD: /^\d/.test(activeDossier.hdDecision || '') ? activeDossier.hdDecision : '', ngayQD: '', members, fileName: tlhdFileBase() + '.docx', levels, assignees: levels.map(l => (l.leaders[0] || {}).id || ''), content: TLHD_SIGN_CONTENT_DEFAULT, level: 0 };
     return activeDossier.tlhd;
 }
 // Tài khoản Lãnh đạo đang đăng nhập: tham số ?ld= hoặc Người dùng giả lập (BTNN_WF) thuộc nhóm lãnh đạo của luồng;

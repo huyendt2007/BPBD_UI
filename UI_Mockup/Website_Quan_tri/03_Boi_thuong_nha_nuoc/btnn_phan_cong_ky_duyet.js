@@ -11,6 +11,35 @@
  *
  * Nạp SAU btnn_luong_xu_ly.js (và btnn_lanh_dao_actions.js nếu trang có); trang Xác định CQGQBT nạp SAU xac_dinh_co_quan_boi_thuong.js.
  * API: window.BTNN_PCKD.
+ *
+ * [dd4] 12/11/2026 - Đơn vị ban hành, Văn thư và khối "Thông tin ban hành văn bản" ở Bước 2 (người dùng duyệt đặc tả 12/11/2026).
+ * ===== API công bố cho popup trình của các phân hệ (Tiếp nhận, Giải quyết YCBT, QĐ GQBT, Kinh phí, Hoàn trả, Báo cáo công tác...) =====
+ * 1. levelSetup(cfg) -> ui. Ngoài cfg cũ (host, page, method, userId, prev, onChange, addId, header):
+ *    - cfg.soNgay: true | false | () => boolean (mặc định false). true: hiện "Số, ký hiệu văn bản", "Địa danh", "Ngày văn bản", dòng xem trước
+ *      "[Địa danh], ngày dd tháng mm năm yyyy" và ô Số, ô Ngày kéo thả trên văn bản. Trang còn trường số, ngày ở Bước 1 để false (không trùng trường).
+ *      "Đóng dấu cơ quan", "Đơn vị ban hành", "Văn thư xử lý", nút "Đặt lại vị trí" và ô Dấu hiện ở mọi trang (chỉ Ký số trên hệ thống).
+ *    - cfg.docPos: () => ({ so: { x, y, w? } | null, ngay: { x, y, w? } | null }) (tùy chọn): vị trí dòng "Số:" và dòng "[Địa danh], ngày ..."
+ *      của văn bản sinh theo mẫu, tọa độ px trong trang cfg.page (w: độ rộng tối thiểu của ô để che dòng chấm). Không có: ô Số { x: 70, y: 112 },
+ *      ô Ngày { x: 420, y: 112 }. Ô Dấu mặc định trùm khoảng 1/3 bên trái ô ký cấp cuối (cấp cuối chưa đặt ô ký: theo vị trí mặc định của ô ký cấp cuối).
+ *    - cfg.banHanhPrev (tùy chọn): giá trị điền sẵn lúc khởi tạo, cùng dạng tham số thứ 3 của ui.reset.
+ * 2. ui.reset(prevLevels, dongDau, banHanhPrev): trình lại sau Bị trả lại - điền sẵn các cấp, ô tích "Đóng dấu cơ quan" và khối Thông tin ban hành
+ *    (banHanhPrev = collect().banHanh của lần trình trước; Đơn vị ban hành lần trước không còn hợp lệ thì để trống). Gọi reset(prev) như cũ vẫn chạy.
+ *    ui.setBanHanh({ soKyHieu, diaDanh, ngayVanBan, donViBanHanh, viTri }): đặt giá trị khởi tạo từ dữ liệu cũ mà không đổi các cấp, rồi vẽ lại.
+ * 3. ui.validate(): thêm kiểm tra "Ngày văn bản" sai định dạng ("Ngày không hợp lệ (dd/mm/yyyy)") và "Đơn vị ban hành" bắt buộc khi tích "Đóng dấu cơ quan".
+ *    Số, ký hiệu và Ngày văn bản KHÔNG bắt buộc với cán bộ trình.
+ * 4. ui.collect() trả thêm:
+ *    - dongDau: giá trị hiệu lực (Ký ngoài hoặc ô tích bị khóa thì false);
+ *    - banHanh: { soKyHieu, diaDanh, ngayVanBan ('dd/mm/yyyy' | ''), ngayChu, dongDau, donViBanHanh (mã đơn vị cây WF | ''), donViBanHanhTen,
+ *      vanThu (chuỗi "Văn thư xử lý"), viTri: { so: { x, y, w? } | null, ngay: { x, y, w? } | null, dau: { x, y, d } | null } } | null (Ký ngoài).
+ *      (x, y: góc trên trái của ô, px trong trang cfg.page; w: độ rộng tối thiểu của ô; d: đường kính ô Dấu theo kích thước con dấu)
+ * 5. Lưu cùng phiếu trình: signDoc.dongDau = col.dongDau, signDoc.banHanh = col.banHanh. decorateDecision(rec) đọc rec.approval.signDoc.dongDau /
+ *    .banHanh để vẽ ô Số, ô Ngày, ô Dấu và các dòng Đơn vị ban hành, Văn thư xử lý ở cấp cuối. Phân hệ lưu phiếu trình riêng: toLegacy(col) trả thêm
+ *    dongDau, banHanh; decorateLegacy(st) đọc st.dongDau / st.banHanh; decorateSimple(a, s) đọc s.dongDau / s.banHanh (s = st.lvCol hoặc phiếu đã lưu);
+ *    simpleMount(st) gọi reset(st.prevLv, st.prevDongDau, st.prevBanHanh); prevBanHanhOf(x) lấy banHanh từ phiếu trình đã lưu.
+ * 6. Hàm hỗ trợ: SEALS (con dấu giả lập: { ma, ten, donViSoHuu, donViVanThu, taiKhoanVanThu: [], trangThai, kichThuoc } - nhập 1 trong 2 hoặc cả 2 trường văn thư),
+ *    sealsOf(unitId) (con dấu Hoạt động), vanThuOfSeal(seal) -> { cachVanThu, donViVanThu, donViVanThuTen, taiKhoan, text }, vanThuText(unitId)
+ *    (chuỗi sau "Văn thư xử lý: ", nhiều con dấu nối bằng "; "), isVanThuOfSeal(seal, { id?, hoTen, donVi }),
+ *    donViBanHanhList(leaderId), diaDanhOf(unitId), ngayHopLe('dd/mm/yyyy'), ngayChu(diaDanh, 'dd/mm/yyyy').
  */
 (function (global) {
     'use strict';
@@ -164,7 +193,36 @@
     .pc-kyblock-title { font-weight: 700; color: #0f172a; margin-bottom: 6px; display: flex; gap: 6px; align-items: center; }
     .pc-kyrow { display: grid; grid-template-columns: 120px 1fr; gap: 6px; padding: 2px 0; }
     .pc-kyrow > span:first-child { color: #64748b; }
-    .ld-sigbox.pc-cur { border-color: #f59e0b !important; box-shadow: 0 0 0 3px rgba(245,158,11,.25); }`;
+    .ld-sigbox.pc-cur { border-color: #f59e0b !important; box-shadow: 0 0 0 3px rgba(245,158,11,.25); }
+    .pc-dongdau { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border: 1px solid #fecaca; border-radius: 10px; background: #fff7f7; cursor: pointer; font-size: 13px; color: #0f172a; }
+    .pc-dongdau input { margin-top: 3px; width: 16px; height: 16px; accent-color: #1d4ed8; flex-shrink: 0; }
+    .pc-dongdau .pc-dongdau-sub { display: block; margin-top: 2px; font-size: 12px; color: #64748b; font-weight: 400; }
+    .pc-dongdau.locked { cursor: not-allowed; background: #f8fafc; border-color: #e2e8f0; }
+    .pc-dongdau.locked b, .pc-dongdau.locked .pc-dongdau-sub { color: #94a3b8; }
+    .pc-dongdau .pc-dongdau-lock { display: block; margin-top: 6px; font-size: 12px; color: #b45309; font-weight: 500; }
+    .pc-bh { border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; background: #f8fafc; display: flex; flex-direction: column; gap: 10px; }
+    .pc-bh-title { font-weight: 700; font-size: 13px; color: #0f172a; display: flex; gap: 6px; align-items: center; text-transform: uppercase; }
+    .pc-bh-title i { color: #b91c1c; }
+    .pc-bh-f .pc-lbl { font-size: 12px; margin-bottom: 4px; }
+    .pc-bh .pc-input { padding: 7px 10px; font-size: 13px; background: #fff; }
+    .pc-bh .pc-input.pc-invalid { border-color: #dc2626; background: #fef2f2; }
+    .pc-date { position: relative; }
+    .pc-date .pc-input { padding-right: 32px; }
+    .pc-date i { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #64748b; pointer-events: none; }
+    .pc-bh-prev { margin-top: 6px; font: italic 13.5px 'Times New Roman', serif; color: #1e293b; background: #fff; border: 1px dashed #cbd5e1; border-radius: 6px; padding: 5px 8px; }
+    .pc-bh-vt { margin-top: 6px; font-size: 11.5px; color: #475569; }
+    .pc-bh-acts { display: flex; justify-content: flex-start; }
+    .pc-bhbox { position: absolute; z-index: 12; background: #fff; border: 1.5px dashed #0f766e; border-radius: 4px; padding: 2px 8px; font: 14px 'Times New Roman', Times, serif; color: #111; cursor: move; white-space: nowrap; box-sizing: border-box; box-shadow: 0 2px 8px rgba(15,118,110,.18); user-select: none; line-height: 1.5; text-align: center; }
+    .pc-bhbox.ngay { font-style: italic; }
+    .pc-bhbox.cho { color: #64748b; border-color: #94a3b8; background: rgba(255,255,255,.96); }
+    .pc-bhbox.xem { cursor: default; box-shadow: none; }
+    .pc-bhbox.xem.mo { border-color: #94a3b8; color: #64748b; }
+    .pc-bhbox.xem.mo:not(.dau) { background: #f8fafc; }
+    .pc-bhbox.dau.xem.mo { background: rgba(248,250,252,.45); }
+    .pc-bhbox .pc-bh-tag { position: absolute; left: -1px; bottom: -18px; font: 600 9.5px Inter, system-ui, sans-serif; font-style: normal; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; border-radius: 4px; padding: 0 6px; white-space: nowrap; line-height: 15px; }
+    .pc-bhbox.dau { border-radius: 50%; border: 2px dashed #dc2626; background: rgba(254,242,242,.55); color: #b91c1c; display: flex; flex-direction: column; align-items: center; justify-content: center; font: 700 12px Inter, system-ui, sans-serif; white-space: normal; padding: 8px; box-shadow: none; }
+    .pc-bhbox.dau small { display: block; font-weight: 500; font-size: 9.5px; color: #92400e; margin-top: 2px; }
+    .pc-bh-sum { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #bbf7d0; }`;
     function ensureCss() {
         if (document.getElementById('pcCss')) return;
         const st = document.createElement('style'); st.id = 'pcCss'; st.textContent = CSS;
@@ -355,36 +413,188 @@
 
     // ---------------- Khối "Thiết lập các cấp trình ký" dùng chung (Bước 2 popup trình ký) ----------------
     // cfg: { host: phần tử chứa thẻ cấp, page: trang A4 (đặt ô ký), method(): 'Ký số' | 'Ký ngoài', userId: cán bộ trình (mặc định tài khoản đang đăng nhập),
-    //        prev: [{ leader, kyNhay, kySo, sig }] (trình lại: điền sẵn), onChange(levels): cập nhật dòng ký của văn bản theo Lãnh đạo cấp cuối }
+    //        prev: [{ leader, kyNhay, kySo, sig }] (trình lại: điền sẵn), onChange(levels): cập nhật dòng ký của văn bản theo Lãnh đạo cấp cuối,
+    //        [dd4] soNgay, docPos, banHanhPrev: xem mục API đầu tệp }
     // levels[i]: { leader, kyNhay, kySo, kySoChon (lựa chọn của cán bộ khi chưa là cấp cuối), sig: { x, y, w, h } | null }
     const LV_HEAD_HTML = '<div style="font-weight:700; color:#0f172a; font-size:14.5px; margin-bottom:4px;"><i class="fa-solid fa-layer-group" style="color:#2563eb;"></i> THIẾT LẬP CÁC CẤP TRÌNH KÝ</div>'
-        + '<div style="font-size:12px; color:#64748b;">Cấp 1 là cấp sát cán bộ trình; cấp cuối là cấp ký ban hành (bắt buộc Ký số). Ô ký bắt buộc ở cấp cuối và cấp có Ký nháy.</div>';
+        + '<div style="font-size:12px; color:#64748b;">Cấp 1 là cấp sát cán bộ trình; cấp cuối là cấp ký văn bản (bắt buộc Ký số). Ô ký bắt buộc ở cấp cuối và cấp có Ký nháy.</div>';
+    // [dd1] 12/11/2026: ô tích "Đóng dấu cơ quan" (mặc định tích), chỉ khi Ký số trên hệ thống;
+    //       tích: Lãnh đạo cấp cuối Ký duyệt xong, văn bản chuyển Văn thư đóng dấu, ban hành (menu Ban hành văn bản); hồ sơ giữ Chờ duyệt
+    // [dd4] 12/11/2026: ô tích nằm trong khối "Thông tin ban hành văn bản" dưới nút Thêm cấp, cùng Số, ký hiệu; Địa danh; Ngày văn bản;
+    //       Đơn vị ban hành; Văn thư xử lý; nút Đặt lại vị trí. Ô Số, ô Ngày, ô Dấu kéo thả trên văn bản (cùng cơ chế ô ký .pc-sig).
+
+    // ---------------- Con dấu, Đơn vị ban hành, Văn thư (giả lập theo Cấu hình thông tin về con dấu - Quản trị hệ thống) ----------------
+    // { ma, ten, donViSoHuu, donViVanThu, taiKhoanVanThu: [Họ tên], trangThai, kichThuoc (px) }.
+    // donViSoHuu, donViVanThu: mã đơn vị trên cây WF; đơn vị chưa có trên cây giả lập (Văn phòng Bộ, Văn phòng Sở Tư pháp) giữ dạng tên.
+    // Chốt 12/11/2026 (thay Radio "Văn thư xử lý theo"): Đơn vị văn thư và Tài khoản văn thư luôn hiện, nhập 1 trong 2 hoặc cả 2.
+    // Văn thư của con dấu: có Tài khoản văn thư -> chính các tài khoản đó (nếu có cả Đơn vị văn thư thì tài khoản thuộc đơn vị đó);
+    //   chỉ có Đơn vị văn thư -> các tài khoản cán bộ thuộc Đơn vị văn thư. Không xét quyền "Ban hành văn bản" (quyền mở menu do Phân quyền quy định).
+    // Trường cachVanThu cũ không còn dùng (giữ đọc được dữ liệu cũ).
+    const SEALS = [
+        { ma: 'SEL_000', ten: 'Con dấu tròn Bộ Tư pháp', donViSoHuu: 'BTP-01', donViVanThu: 'Văn phòng Bộ', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 150 },
+        { ma: 'SEL_001', ten: 'Con dấu tròn chính Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', donViSoHuu: 'CĐK-01', donViVanThu: 'CĐK-01-VP', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 150 },
+        { ma: 'SEL_011', ten: 'Con dấu tròn Văn phòng Cục', donViSoHuu: 'CĐK-01-VP', donViVanThu: 'CĐK-01-VP', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 130 },
+        { ma: 'SEL_021', ten: 'Con dấu Phòng Quản lý nghiệp vụ về bồi thường nhà nước', donViSoHuu: 'PLN-02', donViVanThu: '', taiKhoanVanThu: ['Đào Thị Yến'], trangThai: 'Hoạt động', kichThuoc: 120 },
+        { ma: 'SEL_101', ten: 'Dấu tròn Sở Tư pháp Thành phố Hà Nội', donViSoHuu: 'STP-HN', donViVanThu: 'Văn phòng Sở Tư pháp', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 150 },
+        // 12/11/2026: con dấu UBND thành phố Hà Nội (Báo cáo công tác BTNN do Lãnh đạo UBND tỉnh ký cấp cuối) - khớp bctt_bao_cao.js, ban_hanh_van_ban.html
+        { ma: 'SEL_201', ten: 'Con dấu Ủy ban nhân dân thành phố Hà Nội', donViSoHuu: 'UBND-HN', donViVanThu: 'Văn phòng UBND thành phố Hà Nội', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 150 }
+    ];
+    const unitLabel = id => (WF.getUnit && WF.getUnit(id) ? WF.unitName(id) : String(id || ''));
+    // Con dấu của đơn vị (mặc định chỉ con dấu Hoạt động)
+    function sealsOf(unitId, all) { return unitId ? SEALS.filter(s => s.donViSoHuu === unitId && (all || s.trangThai === 'Hoạt động')) : []; }
+    // text: chuỗi sau "Văn thư xử lý: " - [Tên Đơn vị văn thư] | [Họ tên], [Họ tên] | [Họ tên], [Họ tên] ([Tên Đơn vị văn thư])
+    function vanThuOfSeal(s) {
+        const tk = ((s && s.taiKhoanVanThu) || []).filter(Boolean);
+        const dvId = (s && s.donViVanThu) || '';
+        const dv = dvId ? unitLabel(dvId) : '';
+        const text = tk.length ? tk.join(', ') + (dv ? ` (${dv})` : '') : dv;
+        return { cachVanThu: tk.length ? 'taiKhoan' : 'donVi', donViVanThu: dvId, donViVanThuTen: dv, taiKhoan: tk.slice(), text };
+    }
+    // "Văn thư xử lý" của Đơn vị ban hành: Văn thư của mọi con dấu Hoạt động thuộc đơn vị (không giao đích danh)
+    function vanThuText(unitId) { const out = []; sealsOf(unitId).forEach(s => { const t = vanThuOfSeal(s).text; if (!out.includes(t)) out.push(t); }); return out.join('; '); }
+    // user: { id?, hoTen, donVi } - tài khoản đang xem menu Ban hành văn bản (mockup so khớp tài khoản văn thư theo họ tên hoặc mã)
+    function isVanThuOfSeal(s, user) {
+        if (!s || !user) return false;
+        const tk = (s.taiKhoanVanThu || []).filter(Boolean);
+        if (tk.length) return tk.includes(user.hoTen) || (!!user.id && tk.includes(user.id));   // có Tài khoản văn thư: chỉ các tài khoản này
+        return !!s.donViVanThu && user.donVi === s.donViVanThu;                                // chỉ có Đơn vị văn thư
+    }
+    // Danh sách Đơn vị ban hành: đơn vị của Lãnh đạo cấp cuối và các đơn vị cấp trên có ít nhất 01 con dấu Hoạt động (gần nhất trước)
+    function donViBanHanhList(leaderId) { const u = WF.getUser(leaderId); return u ? unitChainUp(u.unitId).filter(id => sealsOf(id).length > 0) : []; }
+    // Địa danh: Tỉnh/Thành phố của đơn vị (cây WF), bỏ tiền tố "Thành phố ", "Tỉnh ", "TP. "
+    function diaDanhOf(unitId) {
+        if (!unitId) return '';
+        const u = WF.getUnit ? WF.getUnit(unitId) : null;
+        let t = (u && u.tinhThanh) || '';
+        if (!t && WF.agencyAddress) { try { t = WF.agencyAddress(unitId).tinh || ''; } catch (e) { t = ''; } }
+        return String(t).replace(/^\s*(Thành phố|Tỉnh|TP\.)\s*/i, '').trim();
+    }
+    function ngayHopLe(s) {
+        const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(s || '').trim());
+        if (!m) return false;
+        const d = new Date(+m[3], +m[2] - 1, +m[1]);
+        return d.getFullYear() === +m[3] && d.getMonth() === +m[2] - 1 && d.getDate() === +m[1];
+    }
+    // "[Địa danh], ngày dd tháng mm năm yyyy": ngày dưới 10 và tháng 1, 2 thêm số 0; Địa danh trống thì bắt đầu "ngày"; ngày không hợp lệ: ''
+    function ngayChu(diaDanh, s) {
+        if (!ngayHopLe(s)) return '';
+        const m = String(s).trim().split('/');
+        const t = `ngày ${m[0]} tháng ${+m[1] <= 2 ? m[1] : String(+m[1])} năm ${m[2]}`;
+        const dd = String(diaDanh || '').trim();
+        return dd ? `${dd}, ${t}` : t;
+    }
+    const NGAY_CHO = diaDanh => (String(diaDanh || '').trim() ? `${String(diaDanh).trim()}, ` : '') + 'ngày … tháng … năm …';
+    // Kích thước ô Dấu: Kích thước (px) của con dấu Hoạt động đầu tiên của Đơn vị ban hành; chưa có Đơn vị ban hành: mặc định 150 của cấu hình con dấu
+    const D_DAU = 150;
+    function dauSizeOf(unitId) { const s = sealsOf(unitId)[0]; return (s && s.kichThuoc) || D_DAU; }
+    // Vẽ ô Số, ô Ngày, ô Dấu chỉ đọc theo vị trí đã lưu (màn Ký duyệt); tích Đóng dấu cơ quan: khung mờ có nhãn "Văn thư điền khi ban hành"
+    function drawBhView(pg, bh, dongDau) {
+        if (!pg || !bh) return;
+        const vt = bh.viTri || {};
+        const add = (p, cls, html, d) => {
+            if (!p) return;
+            const box = document.createElement('div');
+            box.className = 'pc-bhbox xem ' + cls + (dongDau ? ' mo' : '');
+            Object.assign(box.style, { left: p.x + 'px', top: p.y + 'px' });
+            if (d) Object.assign(box.style, { width: d + 'px', height: d + 'px' });
+            else if (p.w) box.style.minWidth = p.w + 'px';
+            box.innerHTML = html;
+            pg.appendChild(box);
+        };
+        // Tích: Lãnh đạo ký số văn bản chưa có số, ngày, dấu - các ô là khung mờ, nội dung "Văn thư điền khi ban hành"
+        if (dongDau) {
+            if (vt.so) add(vt.so, 'so cho', 'Văn thư điền khi ban hành');
+            if (vt.ngay) add(vt.ngay, 'ngay cho', 'Văn thư điền khi ban hành');
+            if (vt.dau) add(vt.dau, 'dau', 'Dấu cơ quan<small>Văn thư điền khi ban hành</small>', vt.dau.d || D_DAU);
+            return;
+        }
+        // Không tích: ô Số, ô Ngày có giá trị hiển thị dạng xem trước nội dung sẽ chèn khi Lãnh đạo cấp cuối Ký duyệt
+        const so = String(bh.soKyHieu || '').trim();
+        const nc = bh.ngayChu || ngayChu(bh.diaDanh, bh.ngayVanBan);
+        if (vt.so && so) add(vt.so, 'so', esc('Số: ' + so));
+        if (vt.ngay && nc) add(vt.ngay, 'ngay', esc(nc));
+    }
+
     function levelSetup(cfg) {
         ensureCss();
-        const S = { levels: [], combos: [], drag: null };
+        const newBh = () => ({ so: '', diaDanh: '', diaDanhSua: false, ngay: '', donVi: '', viTri: { so: null, ngay: null, dau: null } });
+        const S = { levels: [], combos: [], drag: null, dongDau: true, bh: newBh(), lastKey: null, wasLocked: false, dv: null, dvCfg: null, fp: null };
         const newLevel = () => ({ leader: '', kyNhay: false, kySo: false, kySoChon: false, sig: null });
         const defSig = (i, last) => (last ? { x: 480, y: 860, w: 245, h: 110 } : { x: 60 + (i % 2) * 210, y: 860 + Math.floor(i / 2) * 100, w: 200, h: 90 });
         const sigRequired = (l, i) => i === S.levels.length - 1 || l.kyNhay;
         const online = () => (typeof cfg.method === 'function' ? cfg.method() : 'Ký số') !== 'Ký ngoài';
         const host = () => (typeof cfg.host === 'function' ? cfg.host() : cfg.host);
         const page = () => (typeof cfg.page === 'function' ? cfg.page() : cfg.page);
+        // cfg.soNgay: true - trường nhập + ô trên văn bản; 'o' - chỉ ô trên văn bản (giá trị đặt qua setBanHanh); false - không có
+        const soNgayMode = () => { const v = typeof cfg.soNgay === 'function' ? cfg.soNgay() : cfg.soNgay; return v === 'o' ? 'o' : (v ? 'on' : ''); };
+        const soNgayOn = () => !!soNgayMode();
+        const soNgayFields = () => soNgayMode() === 'on';
+        const submitterId = () => (typeof cfg.userId === 'function' ? cfg.userId() : cfg.userId) || WF.getCurrentUserId();
+        const lastLeader = () => { const l = S.levels[S.levels.length - 1]; return (l && l.leader) || ''; };
+        const dvList = () => donViBanHanhList(lastLeader());
+        // Đơn vị của Lãnh đạo cấp cuối và mọi cấp trên không có con dấu Hoạt động: khóa ô tích, bỏ tích (không chặn trình)
+        const locked = () => !!lastLeader() && dvList().length === 0;
+        const ddOn = () => online() && !locked() && !!S.dongDau;
         function normalizeLast() { const n = S.levels.length; S.levels.forEach((l, i) => { l.kySo = i === n - 1 ? true : !!l.kySoChon; }); }
-        function reset(prev) {
+        // Địa danh mặc định: Tỉnh/Thành phố của Đơn vị ban hành; không tích: đơn vị Lãnh đạo cấp cuối; chưa chọn: đơn vị cán bộ trình
+        function diaDanhDefault() {
+            const lu = WF.getUser(lastLeader()), su = WF.getUser(submitterId());
+            return diaDanhOf(ddOn() && S.bh.donVi ? S.bh.donVi : (lu ? lu.unitId : (su ? su.unitId : '')));
+        }
+        // Lãnh đạo cấp cuối đổi (chọn, thêm, xóa, đổi thứ tự cấp): tính lại Đơn vị ban hành về đơn vị gần nhất; Địa danh theo mặc định khi chưa sửa tay
+        function syncBh() {
+            const key = lastLeader(), list = dvList();
+            // Ô tích bị khóa thì bỏ tích; đổi Lãnh đạo cấp cuối làm ô tích được mở khóa lại thì trở về mặc định Tích
+            const lk = !!key && list.length === 0;
+            if (lk) S.dongDau = false; else if (S.wasLocked) S.dongDau = true;
+            S.wasLocked = lk;
+            if (key !== S.lastKey) { S.lastKey = key; S.bh.donVi = list[0] || ''; }
+            else if (S.bh.donVi && !list.includes(S.bh.donVi)) S.bh.donVi = '';
+            if (!S.bh.diaDanhSua) S.bh.diaDanh = diaDanhDefault();
+        }
+        // Giá trị điền sẵn (trình lại / dữ liệu cũ): Đơn vị ban hành lần trước không còn hợp lệ thì để trống; lần trước không tích thì theo mặc định
+        function applyBanHanh(b) {
+            if (!b) return;
+            if (typeof b.soKyHieu === 'string') S.bh.so = b.soKyHieu;
+            if (typeof b.ngayVanBan === 'string') S.bh.ngay = b.ngayVanBan;
+            const vt = b.viTri || {};
+            ['so', 'ngay', 'dau'].forEach(k => { if (vt[k] && typeof vt[k].x === 'number') S.bh.viTri[k] = { x: vt[k].x, y: vt[k].y }; });
+            if (b.donViBanHanh !== undefined) { S.lastKey = lastLeader(); const list = dvList(); S.bh.donVi = b.donViBanHanh ? (list.includes(b.donViBanHanh) ? b.donViBanHanh : '') : (list[0] || ''); }
+            if (typeof b.diaDanh === 'string') { S.bh.diaDanh = b.diaDanh; S.bh.diaDanhSua = b.diaDanh.trim() !== diaDanhDefault(); }
+        }
+        // dongDau: trình lại điền theo lần trình trước; trình lần đầu mặc định tích. banHanhPrev: collect().banHanh lần trước
+        function reset(prev, dongDau, banHanhPrev) {
             const p = Array.isArray(prev) ? prev : [];
             S.levels = p.length ? p.map((l, i) => ({ leader: l.leader || '', kyNhay: !!l.kyNhay, kySo: !!l.kySo, kySoChon: i < p.length - 1 && !!l.kySo, sig: l.sig ? Object.assign({}, l.sig) : null })) : [newLevel()];
+            const b = banHanhPrev || null;
+            S.dongDau = typeof dongDau === 'boolean' ? dongDau : (b && typeof b.dongDau === 'boolean' ? b.dongDau : true);
             normalizeLast();
+            S.bh = newBh(); S.lastKey = null; S.wasLocked = false;
+            if (b) applyBanHanh(b);
+        }
+        function bhHtml() {
+            const f = soNgayFields();
+            return `<div class="pc-bh" data-bh="blk">
+                <div class="pc-bh-title"><i class="fa-solid fa-stamp"></i> Thông tin ban hành văn bản</div>
+                ${f ? `<div class="pc-bh-f"><span class="pc-lbl">Số, ký hiệu văn bản</span><input type="text" class="pc-input" data-bh="so" maxlength="50" placeholder="Nhập số, ký hiệu văn bản" autocomplete="off"></div>
+                <div class="pc-bh-f"><span class="pc-lbl">Địa danh</span><input type="text" class="pc-input" data-bh="dia" maxlength="100" placeholder="Nhập địa danh" autocomplete="off"></div>
+                <div class="pc-bh-f"><span class="pc-lbl">Ngày văn bản</span><div class="pc-date"><input type="text" class="pc-input" data-bh="ngay" maxlength="10" placeholder="dd/mm/yyyy" autocomplete="off"><i class="fa-regular fa-calendar-days"></i></div><div class="pc-err" data-err="ngay">Ngày không hợp lệ (dd/mm/yyyy)</div><div class="pc-bh-prev" data-bh="prev" style="display:none;"></div></div>` : ''}
+                <label class="pc-dongdau" data-bh="ddl"><input type="checkbox" data-act="dd"><span><b>Đóng dấu cơ quan</b><span class="pc-dongdau-sub">Sau khi Lãnh đạo cấp cuối Ký duyệt, văn bản chuyển Văn thư đóng dấu và ban hành.</span><span class="pc-dongdau-lock" data-bh="lock" style="display:none;">Đơn vị của Lãnh đạo cấp cuối và các đơn vị cấp trên chưa có con dấu Hoạt động.</span><span class="pc-dongdau-lock" data-bh="nodau" style="display:none;">Đơn vị của Lãnh đạo cấp cuối không có con dấu. Văn bản do đơn vị này ban hành thì bỏ tích Đóng dấu cơ quan.</span></span></label>
+                <div class="pc-bh-f" data-bh="dvg"><span class="pc-lbl">Đơn vị ban hành<span class="pc-req">*</span></span><div data-bh="dv"></div><div class="pc-err" data-err="dv">Đây là trường bắt buộc</div><div class="pc-bh-vt" data-bh="vt"></div></div>
+                <div class="pc-bh-acts"><button type="button" class="pc-btn sm" data-bh="reset" title="Đưa ô Số, ô Ngày và ô Dấu về vị trí mặc định"><i class="fa-solid fa-rotate-left"></i> Đặt lại vị trí</button></div>
+            </div>`;
         }
         function render() {
             const w = host(); if (!w) return;
             const n = S.levels.length;
             const on = online();
-            const cand = signLeaderCandidates((typeof cfg.userId === 'function' ? cfg.userId() : cfg.userId) || WF.getCurrentUserId());
+            const cand = signLeaderCandidates(submitterId());
             S.combos.length = 0;
             w.innerHTML = S.levels.map((l, i) => {
                 const last = i === n - 1;
                 const req = sigRequired(l, i);
                 return `<div class="pc-lv${last ? ' last' : ''}" data-i="${i}">
-                    <div class="pc-lv-head"><span class="pc-lv-title">Cấp ${i + 1}${last ? ' - Cấp cuối (ký ban hành)' : ''}</span>
+                    <div class="pc-lv-head"><span class="pc-lv-title">Cấp ${i + 1}${last ? ' - Cấp cuối' : ''}</span>
                         <span class="pc-lv-tools"><button type="button" title="Lên" data-act="up" ${i === 0 ? 'disabled' : ''}><i class="fa-solid fa-arrow-up"></i></button><button type="button" title="Xuống" data-act="down" ${last ? 'disabled' : ''}><i class="fa-solid fa-arrow-down"></i></button>${n > 1 ? '<button type="button" class="del" title="Xóa cấp" data-act="del"><i class="fa-solid fa-trash"></i></button>' : ''}</span></div>
                     <span class="pc-lbl" style="font-size:12px;">Lãnh đạo<span class="pc-req">*</span></span>
                     <div class="pc-lv-leader"></div><div class="pc-err" data-err="leader">Đây là trường bắt buộc</div>
@@ -397,7 +607,8 @@
                         : `<button type="button" class="btn btn-secondary btn-sm" data-act="place" style="font-size:12px;"><i class="fa-solid fa-signature"></i> Đặt chữ ký</button>${req ? '<span style="font-size:11px; color:#b45309; margin-left:6px;">Bắt buộc</span>' : ''}`}</div>
                     <div class="pc-err" data-err="sig">Chưa đặt chữ ký</div>
                 </div>`;
-            }).join('') + '<button type="button"' + (cfg.addId ? ' id="' + cfg.addId + '"' : '') + ' class="btn btn-secondary btn-sm pc-add-level" style="align-self:flex-start; font-size:12.5px;"><i class="fa-solid fa-plus"></i> Thêm cấp</button>';
+            }).join('') + '<button type="button"' + (cfg.addId ? ' id="' + cfg.addId + '"' : '') + ' class="btn btn-secondary btn-sm pc-add-level" style="align-self:flex-start; font-size:12.5px;"><i class="fa-solid fa-plus"></i> Thêm cấp</button>'
+                + (on ? bhHtml() : '');
             w.style.display = 'flex'; w.style.flexDirection = 'column'; w.style.gap = '10px';
             // Tiêu đề vùng bên phải của Bước 2: "Thiết lập các cấp trình ký"
             const side = w.parentElement;
@@ -437,6 +648,141 @@
             });
             const add = w.querySelector('.pc-add-level');
             if (add) add.addEventListener('click', () => { S.levels.push(newLevel()); normalizeLast(); render(); renderSigs(); });
+            if (on) bindBh(w); else { S.dv = null; if (S.fp) { try { S.fp.destroy(); } catch (e) { /* bỏ qua */ } S.fp = null; } }
+            syncBh(); updateBhUi();
+        }
+        // ---- Khối "Thông tin ban hành văn bản" ----
+        function bindBh(w) {
+            const q = s => w.querySelector(`[data-bh="${s}"]`);
+            const so = q('so'), dia = q('dia'), ngay = q('ngay');
+            if (so) { so.value = S.bh.so; so.addEventListener('input', () => { S.bh.so = so.value; renderBhBoxes(); }); }
+            if (dia) { dia.value = S.bh.diaDanh; dia.addEventListener('input', () => { S.bh.diaDanh = dia.value; S.bh.diaDanhSua = true; paintPrev(); renderBhBoxes(); }); }
+            if (ngay) bindNgay(ngay, w.querySelector('[data-err="ngay"]'));
+            else if (S.fp) { try { S.fp.destroy(); } catch (e) { /* bỏ qua */ } S.fp = null; }
+            const dd = w.querySelector('[data-act="dd"]');
+            if (dd) dd.addEventListener('change', () => { S.dongDau = dd.checked; refreshBh(); });
+            const dvHost = q('dv');
+            S.dvCfg = {
+                placeholder: 'Chọn đơn vị ban hành...', emptyText: 'Không có đơn vị có con dấu Hoạt động',
+                options: () => dvList().map(id => ({ value: id, label: WF.unitName(id) })), labelOf: id => WF.unitName(id),
+                onChange: v => { S.bh.donVi = v; if (S.dv) S.dv.setInvalid(false); const e = w.querySelector('[data-err="dv"]'); if (e) e.style.display = 'none'; refreshBh(); }
+            };
+            S.dv = dvHost ? combo(dvHost, S.dvCfg) : null;
+            const rs = q('reset');
+            if (rs) rs.addEventListener('click', () => { S.bh.viTri = { so: null, ngay: null, dau: null }; renderBhBoxes(); });
+        }
+        // Ô ngày: flatpickr (d/m/Y) nếu trang có; giữ chữ cán bộ gõ để báo "Ngày không hợp lệ (dd/mm/yyyy)" (flatpickr tự đổi ngày sai)
+        function bindNgay(inp, err) {
+            if (S.fp) { try { S.fp.destroy(); } catch (e) { /* bỏ qua */ } S.fp = null; }
+            const apply = () => {
+                S.bh.ngay = inp.value.trim();
+                const bad = !!S.bh.ngay && !ngayHopLe(S.bh.ngay);
+                if (err) err.style.display = bad ? 'block' : 'none';
+                inp.classList.toggle('pc-invalid', bad);
+                paintPrev(); renderBhBoxes();
+            };
+            inp.addEventListener('input', e => { if (e.isTrusted) inp._tho = inp.value; const v = inp.value.trim(); S.bh.ngay = v; if (!v || ngayHopLe(v)) apply(); });
+            inp.addEventListener('blur', () => setTimeout(() => { const tho = inp._tho; inp._tho = null; if (tho != null && tho.trim() && !ngayHopLe(tho.trim())) inp.value = tho; apply(); }, 0));
+            if (typeof global.flatpickr === 'function') {
+                try {
+                    const fl = global.flatpickr, vn = fl.l10ns && fl.l10ns.vn;
+                    S.fp = fl(inp, Object.assign({ dateFormat: 'd/m/Y', allowInput: true, disableMobile: true, onChange: () => { if (inp._tho == null) apply(); } }, vn ? { locale: vn } : {}));
+                    if (S.fp && S.fp.calendarContainer) S.fp.calendarContainer.addEventListener('mousedown', () => { inp._tho = null; });
+                } catch (e) { S.fp = null; }
+            }
+            if (S.fp && ngayHopLe(S.bh.ngay)) S.fp.setDate(S.bh.ngay, false, 'd/m/Y');
+            inp.value = S.bh.ngay;
+            const bad = !!S.bh.ngay && !ngayHopLe(S.bh.ngay);
+            if (err) err.style.display = bad ? 'block' : 'none';
+            inp.classList.toggle('pc-invalid', bad);
+        }
+        function paintPrev() {
+            const w = host(); const el = w && w.querySelector('[data-bh="prev"]'); if (!el) return;
+            const t = ngayChu(S.bh.diaDanh, S.bh.ngay);
+            el.textContent = t; el.style.display = t ? '' : 'none';
+        }
+        function updateBhUi() {
+            const w = host(); const blk = w && w.querySelector('[data-bh="blk"]'); if (!blk) return;
+            const lk = locked(), on = ddOn(), lead = lastLeader();
+            const dd = blk.querySelector('[data-act="dd"]');
+            if (dd) { dd.checked = !lk && !!S.dongDau; dd.disabled = lk; }
+            const ddl = blk.querySelector('[data-bh="ddl"]'); if (ddl) ddl.classList.toggle('locked', lk);
+            const lock = blk.querySelector('[data-bh="lock"]'); if (lock) lock.style.display = lk ? '' : 'none';
+            // 12/11/2026: đơn vị của Lãnh đạo cấp cuối không có con dấu (ví dụ Phòng) nhưng cấp trên có: nhắc bỏ tích nếu văn bản do đơn vị này ban hành
+            const nodau = blk.querySelector('[data-bh="nodau"]');
+            if (nodau) { const lu = lead ? WF.getUser(lead) : null; nodau.style.display = (!lk && online() && lu && lu.unitId && !sealsOf(lu.unitId).length) ? '' : 'none'; }
+            const dvg = blk.querySelector('[data-bh="dvg"]'); if (dvg) dvg.style.display = on ? '' : 'none';
+            if (S.dv) {
+                S.dvCfg.placeholder = lead ? 'Chọn đơn vị ban hành...' : 'Chọn Lãnh đạo cấp cuối trước';
+                S.dv.setDisabled(!lead);
+                S.dv.set(S.bh.donVi, true);
+                S.dv.refresh();
+            }
+            const vt = blk.querySelector('[data-bh="vt"]');
+            if (vt) { const t = on && S.bh.donVi ? vanThuText(S.bh.donVi) : ''; vt.textContent = t ? 'Văn thư xử lý: ' + t : ''; vt.style.display = t ? '' : 'none'; }
+            const dia = blk.querySelector('[data-bh="dia"]');
+            if (dia && document.activeElement !== dia && dia.value !== S.bh.diaDanh) dia.value = S.bh.diaDanh;
+            const rs = blk.querySelector('[data-bh="reset"]'); if (rs) rs.parentElement.style.display = (soNgayOn() || on) ? '' : 'none';
+            paintPrev();
+        }
+        // ---- Ô Số, ô Ngày, ô Dấu trên văn bản: chỉ di chuyển, không đổi kích thước; không bắt buộc kéo ----
+        function lastSig() { const n = S.levels.length; const l = S.levels[n - 1]; return (l && l.sig) || defSig(Math.max(0, n - 1), true); }
+        function docDefaults() {
+            let d = null;
+            if (typeof cfg.docPos === 'function') { try { d = cfg.docPos(); } catch (e) { d = null; } }
+            d = d || {};
+            return { so: d.so || { x: 70, y: 112 }, ngay: d.ngay || { x: 420, y: 112 } };
+        }
+        // Ô Dấu mặc định trùm khoảng 1/3 bên trái ô ký cấp cuối
+        const dauD = () => dauSizeOf(ddOn() ? S.bh.donVi : '');
+        function dauDefault() { const s = lastSig(), d = dauD(); return { x: Math.max(10, Math.round(s.x + s.w / 3 - d)), y: Math.max(10, Math.round(s.y + s.h / 2 - d / 2)) }; }
+        function posOf(k, defs) { const p = S.bh.viTri[k]; if (p) return p; return k === 'dau' ? dauDefault() : (defs || docDefaults())[k]; }
+        // Tích Đóng dấu cơ quan: ô Số, ô Ngày, ô Dấu luôn hiển thị (chưa nhập: khung chờ mờ, nhãn "Văn thư điền khi ban hành");
+        // không tích: ô Số, ô Ngày chỉ hiển thị khi đã nhập giá trị
+        function renderBhBoxes() {
+            const pg = page(); if (!pg) return;
+            pg.querySelectorAll('.pc-bhbox').forEach(b => b.remove());
+            if (!online()) return;
+            if (getComputedStyle(pg).position === 'static') pg.style.position = 'relative';
+            const on = ddOn(), sn = soNgayOn();
+            const defs = docDefaults();
+            const tag = on ? '<span class="pc-bh-tag">Văn thư điền khi ban hành</span>' : '';
+            const add = (k, cls, html, minW) => {
+                const p = posOf(k, defs);
+                const box = document.createElement('div');
+                box.className = 'pc-bhbox ' + cls;
+                box.setAttribute('data-bh', k);
+                box.title = 'Kéo để đặt vị trí';
+                Object.assign(box.style, { left: p.x + 'px', top: p.y + 'px' });
+                if (k === 'dau') Object.assign(box.style, { width: dauD() + 'px', height: dauD() + 'px' });
+                else if (minW) box.style.minWidth = minW + 'px';
+                box.innerHTML = html;
+                box.addEventListener('mousedown', e => {
+                    if (e.button !== 0) return;
+                    e.preventDefault(); e.stopPropagation();
+                    const r = box.getBoundingClientRect();
+                    S.drag = { bh: k, box, ox: e.clientX - r.left, oy: e.clientY - r.top };
+                });
+                pg.appendChild(box);
+            };
+            if (sn) {
+                const so = String(S.bh.so || '').trim();
+                if (so || on) add('so', 'so' + (so ? '' : ' cho'), tag + esc('Số: ' + (so || '……')), defs.so.w || 0);
+                const nc = ngayChu(S.bh.diaDanh, S.bh.ngay);
+                if (nc || on) add('ngay', 'ngay' + (nc ? '' : ' cho'), tag + esc(nc || NGAY_CHO(S.bh.diaDanh)), defs.ngay.w || 0);
+            }
+            if (on) add('dau', 'dau', 'Dấu cơ quan');
+        }
+        function refreshBh() { syncBh(); updateBhUi(); renderBhBoxes(); }
+        function setBanHanh(b) {
+            applyBanHanh(b || {});
+            const w = host(), blk = w && w.querySelector('[data-bh="blk"]');
+            if (blk) {
+                const so = blk.querySelector('[data-bh="so"]'); if (so) so.value = S.bh.so;
+                const ng = blk.querySelector('[data-bh="ngay"]'); if (ng) { if (S.fp && ngayHopLe(S.bh.ngay)) S.fp.setDate(S.bh.ngay, false, 'd/m/Y'); ng.value = S.bh.ngay; }
+                const dia = blk.querySelector('[data-bh="dia"]'); if (dia) dia.value = S.bh.diaDanh;
+            }
+            refreshBh();
         }
         function renderSigs() {
             const pg = page(); if (!pg) return;
@@ -458,24 +804,36 @@
                 });
                 pg.appendChild(box);
             });
+            refreshBh();
             if (typeof cfg.onChange === 'function') { try { cfg.onChange(S.levels); } catch (e) { /* bỏ qua */ } }
         }
         document.addEventListener('mousemove', e => {
             const d = S.drag; if (!d) return;
             const pg = page(); if (!pg) return;
+            const pr = pg.getBoundingClientRect();
+            // Ô Số, ô Ngày, ô Dấu: chỉ di chuyển, giữ trong phạm vi trang
+            if (d.bh) {
+                const x = Math.round(Math.max(4, Math.min(e.clientX - pr.left - d.ox, pg.clientWidth - d.box.offsetWidth - 4)));
+                const y = Math.round(Math.max(4, Math.min(e.clientY - pr.top - d.oy, pg.clientHeight - d.box.offsetHeight - 4)));
+                S.bh.viTri[d.bh] = { x, y };
+                Object.assign(d.box.style, { left: x + 'px', top: y + 'px' });
+                return;
+            }
             const sig = S.levels[d.i] && S.levels[d.i].sig; if (!sig) return;
             if (d.mode === 'r') {
                 sig.w = Math.max(140, Math.min(380, Math.round(d.w + e.clientX - d.sx)));
                 sig.h = Math.max(50, Math.min(180, Math.round(d.h + e.clientY - d.sy)));
             } else {
-                const pr = pg.getBoundingClientRect();
                 sig.x = Math.round(Math.max(10, Math.min(e.clientX - pr.left - d.ox, pg.clientWidth - d.box.offsetWidth - 10)));
                 sig.y = Math.round(Math.max(10, Math.min(e.clientY - pr.top - d.oy, pg.clientHeight - d.box.offsetHeight - 10)));
             }
             Object.assign(d.box.style, { left: sig.x + 'px', top: sig.y + 'px', width: sig.w + 'px', height: sig.h + 'px' });
+            // Ô Dấu đang ở vị trí mặc định: đi theo ô ký cấp cuối
+            if (d.i === S.levels.length - 1 && !S.bh.viTri.dau) { const db = pg.querySelector('.pc-bhbox.dau'); if (db) { const p = dauDefault(); db.style.left = p.x + 'px'; db.style.top = p.y + 'px'; } }
         });
         document.addEventListener('mouseup', () => { S.drag = null; });
-        // Kiểm tra lần lượt: cấp chưa chọn Lãnh đạo, ô ký bắt buộc chưa đặt (cấp cuối, cấp Ký nháy; Ký ngoài không cần ô ký); báo lỗi tại chỗ
+        // Kiểm tra lần lượt: cấp chưa chọn Lãnh đạo, ô ký bắt buộc chưa đặt (cấp cuối, cấp Ký nháy; Ký ngoài không cần ô ký),
+        // Ngày văn bản sai định dạng, Đơn vị ban hành bắt buộc khi tích Đóng dấu cơ quan; báo lỗi tại chỗ
         function validate(opt) {
             const o = opt || {};
             const w = host(); if (!w) return false;
@@ -495,24 +853,48 @@
                 card.querySelector('[data-err="sig"]').style.display = bad ? 'block' : 'none';
                 if (bad && !first) first = card;
             });
+            const blk = online() ? w.querySelector('[data-bh="blk"]') : null;
+            if (blk) {
+                const ng = blk.querySelector('[data-bh="ngay"]'), ne = blk.querySelector('[data-err="ngay"]');
+                if (ng) { const bad = !!S.bh.ngay && !ngayHopLe(S.bh.ngay); if (ne) ne.style.display = bad ? 'block' : 'none'; ng.classList.toggle('pc-invalid', bad); if (bad && !first) first = ng; }
+                const badDv = ddOn() && !S.bh.donVi;
+                const de = blk.querySelector('[data-err="dv"]'); if (de) de.style.display = badDv ? 'block' : 'none';
+                if (S.dv) S.dv.setInvalid(badDv);
+                if (badDv && !first) first = blk.querySelector('[data-bh="dvg"]');
+            }
             if (first && first.scrollIntoView) first.scrollIntoView({ block: 'center' });
             return !first;
         }
         function collect() {
             const levels = S.levels.map((l, i, arr) => ({ leader: l.leader, kyNhay: !!l.kyNhay, kySo: i === arr.length - 1 ? true : !!l.kySo }));
             const pcSig = S.levels.map(l => (l.sig ? Object.assign({}, l.sig) : null));
-            return { levels, pcSig, assignees: levels.map(l => l.leader), path: levels.map(l => { const u = WF.getUser(l.leader); return u ? u.unitId : ''; }) };
+            const dd = ddOn(), sn = soNgayOn();
+            let banHanh = null;
+            if (online()) {
+                const defs = docDefaults();
+                const cp = (p, w) => (p ? Object.assign({ x: p.x, y: p.y }, w ? { w } : {}) : null);
+                const ngay = ngayHopLe(S.bh.ngay) ? String(S.bh.ngay).trim() : '';
+                const dia = String(S.bh.diaDanh || '').trim();
+                banHanh = {
+                    soKyHieu: sn ? String(S.bh.so || '').trim() : '', diaDanh: dia, ngayVanBan: sn ? ngay : '', ngayChu: sn ? ngayChu(dia, ngay) : '',
+                    dongDau: dd, donViBanHanh: dd ? S.bh.donVi : '', donViBanHanhTen: dd && S.bh.donVi ? WF.unitName(S.bh.donVi) : '', vanThu: dd && S.bh.donVi ? vanThuText(S.bh.donVi) : '',
+                    viTri: { so: sn ? cp(posOf('so', defs), defs.so.w) : null, ngay: sn ? cp(posOf('ngay', defs), defs.ngay.w) : null, dau: dd ? Object.assign(cp(posOf('dau')), { d: dauD() }) : null }
+                };
+            }
+            return { levels, pcSig, dongDau: dd, banHanh, assignees: levels.map(l => l.leader), path: levels.map(l => { const u = WF.getUser(l.leader); return u ? u.unitId : ''; }) };
         }
-        reset(cfg.prev);
-        return { reset, render, renderSigs, validate, collect, state: S, get levels() { return S.levels; } };
+        reset(cfg.prev, undefined, cfg.banHanhPrev);
+        return { reset, render, renderSigs, validate, collect, setBanHanh, refreshBanHanh: refreshBh, state: S, get levels() { return S.levels; } };
     }
     // ---- Bộ chuyển đổi cho phân hệ lưu phiếu trình riêng (Xem xét hoàn trả, Quyết định GQBT, Kinh phí):
     // levels cũ dạng [{ unitId, unit, kyNhay, kySo, leaders: [{ id, label }] }] + assignees + coords; bổ sung pcLevels / pcSig / tuThietLap
     function toLegacy(col) {
         const levels = col.levels.map((l, i) => ({ unitId: col.path[i], unit: WF.unitName(col.path[i]), kyNhay: !!l.kyNhay, kySo: !!l.kySo, leaders: [{ id: l.leader, label: WF.userLabel(l.leader) }] }));
         const coords = col.levels.map((l, i) => Object.assign({ level: i + 1, unitId: col.path[i], placed: !!col.pcSig[i] }, col.pcSig[i] || {}));
-        return { levels, assignees: col.assignees.slice(), coords, enableNhay: !!col.levels[0].kyNhay, pcLevels: col.levels, pcSig: col.pcSig, tuThietLap: true };
+        return { levels, assignees: col.assignees.slice(), coords, enableNhay: !!col.levels[0].kyNhay, pcLevels: col.levels, pcSig: col.pcSig, tuThietLap: true, dongDau: !!col.dongDau, banHanh: col.banHanh || null };
     }
+    // [dd4] Thông tin ban hành văn bản đã lưu của phiếu trình (trình lại): x = phiếu trình riêng / signDoc / rec.approval
+    function prevBanHanhOf(x) { return x ? (x.banHanh || (x.signDoc && x.signDoc.banHanh) || (x.approval && x.approval.signDoc && x.approval.signDoc.banHanh) || null) : null; }
     function prevFromLegacy(st) {
         if (!st || !st.tuThietLap || !Array.isArray(st.pcLevels)) return null;
         return st.pcLevels.map((l, i) => Object.assign({}, l, { sig: (st.pcSig || [])[i] || null }));
@@ -522,7 +904,7 @@
     function decorateLegacy(st, mode, ctx) {
         if (!st || !st.tuThietLap || !Array.isArray(st.pcLevels)) return;
         const lv = Math.min(st.level || 0, st.pcLevels.length - 1);
-        const approval = { levels: st.pcLevels, level: lv, steps: st.pcLevels.slice(0, lv).map(() => ({ action: 'Ký duyệt' })), path: (st.levels || []).map(l => l.unitId), signDoc: { pcSig: st.pcSig || [] } };
+        const approval = { levels: st.pcLevels, level: lv, steps: st.pcLevels.slice(0, lv).map(() => ({ action: 'Ký duyệt' })), path: (st.levels || []).map(l => l.unitId), signDoc: { pcSig: st.pcSig || [], dongDau: !!st.dongDau, banHanh: st.banHanh || null } };
         decorateDecision({ approval }, mode, ctx);
     }
     // Cán bộ trình của cơ quan rootId: tài khoản đang đăng nhập nếu thuộc cây đơn vị; ngược lại tài khoản không thuộc Nhóm Lãnh đạo đầu tiên của cơ quan (giả lập)
@@ -543,7 +925,7 @@
     function simpleMount(st, prefix, hostId, pageId, userId) {
         const first = !st.ui;
         st.ui = legacyUi(prefix, { host: () => document.getElementById(hostId), page: () => document.getElementById(pageId), method: () => 'Ký số', userId });
-        if (first) st.ui.reset(st.prevLv || null);
+        if (first) st.ui.reset(st.prevLv || null, st.prevDongDau, st.prevBanHanh || null);
         st.ui.render(); st.ui.renderSigs();
         return true;
     }
@@ -563,7 +945,7 @@
     function prevFromSign(s) { return s && s.tuThietLap && Array.isArray(s.pcLevels) ? s.pcLevels.map((l, i) => Object.assign({}, l, { sig: (s.pcSig || [])[i] || null })) : null; }
     function decorateSimple(a, s, mode, ctx) {
         if (!a || !s || !s.tuThietLap || !Array.isArray(s.pcLevels)) return;
-        decorateDecision({ approval: { levels: s.pcLevels, level: a.level || 0, steps: (a.steps || []).slice(0, a.level || 0).map(() => ({ action: 'Ký duyệt' })), path: a.path || [], signDoc: { pcSig: s.pcSig || [] } } }, mode, ctx);
+        decorateDecision({ approval: { levels: s.pcLevels, level: a.level || 0, steps: (a.steps || []).slice(0, a.level || 0).map(() => ({ action: 'Ký duyệt' })), path: a.path || [], signDoc: { pcSig: s.pcSig || [], dongDau: !!s.dongDau, banHanh: s.banHanh || null } } }, mode, ctx);
     }
     function howOf(s, level) { const l = s && s.tuThietLap ? (s.pcLevels || [])[level] : null; return l ? (l.kySo ? 'ký số' : (l.kyNhay ? 'gán chữ ký nháy' : 'gán chữ ký')) : ''; }
     // Thiết lập đã lưu của phiếu trình (trình lại sau Bị trả lại): levels + vị trí ô ký
@@ -576,6 +958,26 @@
 
     // ---------------- Ký duyệt: ô ký theo các cấp tự thiết lập + khối Ký số / Gán chữ ký ----------------
     function sigTitle(levels, i) { const l = levels[i] || {}; return (i === levels.length - 1 ? 'Cấp cuối' : 'Cấp ' + (i + 1)) + (l.leader ? ' - ' + WF.userName(l.leader) : ''); }
+    // [dd4] Thêm dòng vào khối "Thông tin tổng quan" của vùng phải (dòng mẫu: phần tử có 02 phần tử con nhãn - giá trị); không có khối: false
+    function addSummaryRows(hostEl, rows) {
+        if (!hostEl) return false;
+        hostEl.querySelectorAll('.pc-bh-row').forEach(r => r.remove());
+        const t = Array.from(hostEl.querySelectorAll('*')).find(e => e.children.length <= 1 && /^Thông tin tổng quan$/i.test((e.textContent || '').trim()));
+        const box = t && t.parentElement;
+        const tpl = box && Array.from(box.children).filter(c => c !== t && c.children.length === 2).pop();
+        if (!tpl) return false;
+        let after = tpl;
+        rows.forEach(([k, v]) => {
+            const r = tpl.cloneNode(false); r.classList.add('pc-bh-row');
+            const c1 = tpl.children[0].cloneNode(false), c2 = tpl.children[1].cloneNode(false);
+            c1.textContent = k;
+            if (v === 'Chưa có') c2.innerHTML = '<i>Chưa có</i>'; else c2.textContent = v;
+            r.appendChild(c1); r.appendChild(c2);
+            after.parentNode.insertBefore(r, after.nextSibling);
+            after = r;
+        });
+        return true;
+    }
     // ctx (không bắt buộc): { page: trang A4 xem văn bản, scroller, right: vùng phải, before: phần tử chèn khối Ký số phía trước, title: tiêu đề popup }
     // Mặc định: popup Ký duyệt dùng chung (btnn_lanh_dao_actions.js)
     function decorateDecision(rec, mode, ctx) {
@@ -584,10 +986,15 @@
         const a = rec.approval;
         const levels = a.levels || [];
         const pcSig = (a.signDoc && a.signDoc.pcSig) || [];
+        // [dd4] Thông tin ban hành văn bản lưu cùng phiếu trình (signDoc.banHanh) và lựa chọn Đóng dấu cơ quan (signDoc.dongDau)
+        const bh = (a.signDoc && a.signDoc.banHanh) || null;
+        const dongDau = !!(a.signDoc && a.signDoc.dongDau);
         const page = c0.page !== undefined ? c0.page : document.querySelector('#ldDPreview .ld-a4');
         if (page) {
             if (getComputedStyle(page).position === 'static') page.style.position = 'relative';
-            page.querySelectorAll('.ld-sigbox').forEach(b => b.remove());
+            page.querySelectorAll('.ld-sigbox, .pc-bhbox').forEach(b => b.remove());
+            // Ô Số, ô Ngày, ô Dấu theo vị trí cán bộ đặt khi trình
+            drawBhView(page, bh, dongDau);
             levels.forEach((l, i) => {
                 const c = pcSig[i];
                 if (!c) return;
@@ -609,22 +1016,38 @@
         const blockHost = c0.right || document.getElementById('ldDRight');
         const old = blockHost && blockHost.querySelector('#pcKyBlock'); if (old) old.remove();
         const old2 = document.getElementById('pcKyBlock'); if (old2) old2.remove();
+        if (blockHost) blockHost.querySelectorAll('.pc-bh-row').forEach(r => r.remove());
         if (mode === 'reject') return;
         const lv = a.level;
         const l = levels[lv] || {};
         const last = lv === levels.length - 1;
         const hasBox = !!pcSig[lv];
         const meU = WF.getUser(l.leader) || {};
-        const nextTxt = last ? 'ban hành văn bản theo Loại trình' : `chuyển ${WF.userName(levels[lv + 1].leader)} - ${WF.unitName(a.path[lv + 1])} (Cấp ${lv + 2 === levels.length ? 'cuối' : lv + 2})`;
+        // [dd1] Phiếu trình tích "Đóng dấu cơ quan": cấp cuối Ký duyệt xong thì văn bản chuyển Văn thư đóng dấu, ban hành
+        // [dd4] Không tích, có Số / Ngày: Ký duyệt thì hệ thống chèn số, ngày vào văn bản rồi ký số
+        const coSoNgay = !!(bh && (String(bh.soKyHieu || '').trim() || bh.ngayVanBan));
+        const nextTxt = last ? (dongDau ? 'chuyển Văn thư đóng dấu, ban hành văn bản' : 'ban hành văn bản theo Loại trình') : `chuyển ${WF.userName(levels[lv + 1].leader)} - ${WF.unitName(a.path[lv + 1])} (Cấp ${lv + 2 === levels.length ? 'cuối' : lv + 2})`;
         const block = document.createElement('div');
         block.id = 'pcKyBlock';
         const row = (k, v) => `<div class="pc-kyrow"><span>${k}</span><span>${v}</span></div>`;
+        // Cấp cuối: dòng "Đóng dấu cơ quan"; phiếu trình tích thêm Đơn vị ban hành, Văn thư xử lý, Số / Ngày dự kiến - đặt ở khối Thông tin tổng quan
+        // vùng phải; màn Ký duyệt của phân hệ không có khối Thông tin tổng quan thì đặt trong khối Ký số
+        const sumRows = !last ? [] : [['Đóng dấu cơ quan', dongDau ? 'Có - sau khi Ký duyệt, văn bản chuyển Văn thư ban hành' : 'Không']].concat(dongDau && bh ? [
+            ['Đơn vị ban hành', bh.donViBanHanhTen || (bh.donViBanHanh ? unitLabel(bh.donViBanHanh) : '--')],
+            ['Văn thư xử lý', bh.vanThu || vanThuText(bh.donViBanHanh) || '--'],
+            ['Số, ký hiệu dự kiến', String(bh.soKyHieu || '').trim() || 'Chưa có'],
+            ['Ngày văn bản dự kiến', bh.ngayVanBan || 'Chưa có']] : []);
+        const inSum = sumRows.length > 0 && addSummaryRows(blockHost, sumRows);
+        const sumHtml = inSum || !sumRows.length ? '' : sumRows.map(r => row(esc(r[0]), r[1] === 'Chưa có' ? '<i>Chưa có</i>' : esc(r[1]))).join('');
         if (l.kySo) {
             block.className = 'pc-kyblock';
             block.innerHTML = `<div class="pc-kyblock-title"><i class="fa-solid fa-file-signature" style="color:#15803d;"></i> Ký số - ${esc(sigTitle(levels, lv))}</div>`
                 + row('Chứng thư số', esc(`${meU.name || ''} - ${meU.title || ''} (chứng thư số của tài khoản)`))
                 + row('Vị trí ký', hasBox ? `Ô ký ${esc(sigTitle(levels, lv))}${l.kyNhay ? ' (Ký nháy)' : ''} - Trang 1` : 'Không đặt ô ký trên văn bản')
-                + `<div class="pc-hint" style="margin-top:6px;">Bấm <b>Ký duyệt</b>: hệ thống ký số văn bản bằng chứng thư số của Lãnh đạo${hasBox ? ' tại ô ký đã đặt' : ''}, sau đó ${esc(nextTxt)}.</div>`;
+                + sumHtml
+                + (last && !dongDau && coSoNgay
+                    ? `<div class="pc-hint" style="margin-top:6px;">Bấm <b>Ký duyệt</b>: hệ thống chèn số, ký hiệu và ngày văn bản vào văn bản, sau đó ký số văn bản bằng chứng thư số của Lãnh đạo${hasBox ? ' tại ô ký đã đặt' : ''} và ban hành văn bản theo Loại trình.</div>`
+                    : `<div class="pc-hint" style="margin-top:6px;">Bấm <b>Ký duyệt</b>: hệ thống ký số văn bản bằng chứng thư số của Lãnh đạo${hasBox ? ' tại ô ký đã đặt' : ''}, sau đó ${esc(nextTxt)}.</div>`);
         } else {
             block.className = 'pc-kyblock nosign';
             block.innerHTML = `<div class="pc-kyblock-title"><i class="fa-solid fa-pen-nib" style="color:#1d4ed8;"></i> ${l.kyNhay ? 'Gán chữ ký nháy' : 'Gán chữ ký'} - ${esc(sigTitle(levels, lv))}</div>`
@@ -722,8 +1145,25 @@
             }
             return w;
         }
+        // [dd4] Vị trí dòng "Số: ......" và dòng "......, ngày ... tháng ... năm ..." của văn bản trình ký (tọa độ trong trang A4 xsA4Page)
+        function xdDocPos() {
+            const pg = document.getElementById('xsA4Page');
+            if (!pg || !pg.offsetWidth) return null;
+            const pr = pg.getBoundingClientRect();
+            const k = pr.width / pg.offsetWidth || 1;
+            const leaf = re => Array.from(pg.querySelectorAll('div')).find(d => !d.closest('.pc-bhbox, .pc-sig, .sig-drag-box') && d.children.length === 0 && re.test((d.textContent || '').trim()));
+            const at = el => {
+                if (!el) return null;
+                const r = document.createRange(); r.selectNodeContents(el);
+                const b = r.getBoundingClientRect();
+                return b.width ? { x: Math.round((b.left - pr.left) / k) - 9, y: Math.round((b.top - pr.top) / k) - 4, w: Math.round(b.width / k) + 18 } : null;
+            };
+            return { so: at(leaf(/^Số:/)), ngay: at(leaf(/ngày .+ tháng .+ năm/)) };
+        }
         X.ui = levelSetup({
             host: wrapEl, page: () => document.getElementById('xsA4Page'), addId: 'pcAddLevel',
+            // Popup trình Xác định CQGQBT không có trường số, ngày ở Bước 1: nhập Số, ký hiệu, Địa danh, Ngày văn bản ở Bước 2
+            soNgay: true, docPos: xdDocPos,
             method: () => (curXs() || {}).method,
             onChange: levels => {
                 // Dòng ký của văn bản theo Lãnh đạo cấp cuối; dòng đơn vị dưới tên cơ quan khi cấp cuối thuộc đơn vị trực thuộc của đơn vị tiếp nhận
@@ -747,7 +1187,7 @@
             const a = item && item.approval;
             // Trình lại sau Bị trả lại: điền sẵn thiết lập lần trước, cho sửa
             const prev = item && item.status === ST.BI_TRA_LAI && a && a.kind === kind ? prevLevelsOf(a) : null;
-            X.ui.reset(prev);
+            X.ui.reset(prev, prev && a.signDoc ? a.signDoc.dongDau : undefined, prev && a.signDoc ? a.signDoc.banHanh || null : null);
             const tab = document.querySelector('#xsStep2Tab span:last-child');
             if (tab) tab.textContent = 'Thiết lập các cấp trình ký';
             const old = document.getElementById('pcLvWrap'); if (old) old.innerHTML = '';
@@ -760,7 +1200,7 @@
             if (head && !head.getAttribute('data-pc')) {
                 head.setAttribute('data-pc', '1');
                 head.innerHTML = '<div style="font-weight:700; color:#0f172a; font-size:14.5px; margin-bottom:4px;"><i class="fa-solid fa-layer-group" style="color:#2563eb;"></i> THIẾT LẬP CÁC CẤP TRÌNH KÝ</div>'
-                    + '<div style="font-size:12px; color:#64748b;">Cấp 1 là cấp sát cán bộ trình; cấp cuối là cấp ký ban hành (bắt buộc Ký số). Ô ký bắt buộc ở cấp cuối và cấp có Ký nháy.</div>';
+                    + '<div style="font-size:12px; color:#64748b;">Cấp 1 là cấp sát cán bộ trình; cấp cuối là cấp ký văn bản (bắt buộc Ký số). Ô ký bắt buộc ở cấp cuối và cấp có Ký nháy.</div>';
             }
         }
         const origStep2 = global.xsGoStep2;
@@ -791,7 +1231,7 @@
             // Tọa độ ô ký theo khóa cũ (room / l[i] / agency) để màn xem văn bản cũ vẫn đọc được
             const legacy = { room: { x: 60, y: 860, w: 220, h: 90 }, agency: { x: 480, y: 860, w: 245, h: 110 } };
             col.pcSig.forEach((s, i) => { if (!s) return; legacy[i === n - 1 ? 'agency' : (i === 0 ? 'room' : 'l' + i)] = Object.assign({}, s); });
-            const signDoc = { method: 'Ký số', file: xs.file, enableRoomSig: !!col.pcSig[0] && n > 1, sigCoords: legacy, pcSig: col.pcSig };
+            const signDoc = { method: 'Ký số', file: xs.file, enableRoomSig: !!col.pcSig[0] && n > 1, sigCoords: legacy, pcSig: col.pcSig, dongDau: col.dongDau, banHanh: col.banHanh };
             const keepId = xs.fileObj ? (xs.fileKeepId || (typeof tlktKeep === 'function' ? tlktKeep(xs.fileObj) : '')) : (xs.fileKeepId || '');
             Object.assign(signDoc, { fileKeepId: keepId, fileSize: xs.fileSize || '', fileNote: xs.fileNote || '' });
             if (typeof tlktGet === 'function') signDoc.attachments = tlktGet('xs');
@@ -818,6 +1258,8 @@
         canAssign: WF.canAssign, assignersOf: WF.assignersOf, assignToUnit, assignToOfficer, getRecallInfo: WF.getRecallInfo, recall: WF.recall, markViewed: WF.markViewed,
         receptionPendingItems: WF.receptionPendingItems, submitLevels, approve: WF.approve, isPilotApproval, openAssign, combo, label2, label3,
         levelSetup, prevLevelsOf, decorateDecision, sigTitle, ensureCss, toast,
-        toLegacy, prevFromLegacy, howText, decorateLegacy, submitterFor, legacyUi, simpleMount, simpleCollect, prevFromSign, decorateSimple, howOf
+        toLegacy, prevFromLegacy, howText, decorateLegacy, submitterFor, legacyUi, simpleMount, simpleCollect, prevFromSign, decorateSimple, howOf,
+        // [dd4] Đơn vị ban hành, con dấu, Văn thư, ngày văn bản
+        SEALS, sealsOf, vanThuOfSeal, vanThuText, isVanThuOfSeal, donViBanHanhList, diaDanhOf, ngayHopLe, ngayChu, prevBanHanhOf, drawBhView
     };
 })(window);

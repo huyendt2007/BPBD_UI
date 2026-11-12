@@ -3107,14 +3107,7 @@
                                                 <option value="Cục Thi hành án dân sự Hà Nội">Cục Thi hành án dân sự Hà Nội</option>
                                             </select>
                                         </div>
-                                        <div class="form-group">
-                                            <span class="form-label">Sổ văn bản áp dụng *</span>
-                                            <select class="form-control" id="decDocumentBookInput">
-                                                <option value="Sổ QĐ GQBT - Sở Tư pháp Hà Nội - 2026">Sổ QĐ GQBT - Sở Tư pháp Hà Nội - 2026</option>
-                                                <option value="Sổ QĐ BTNN - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước - 2026">Sổ QĐ BTNN - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước - 2026</option>
-                                                <option value="Sổ QĐ GQBT - UBND phường Cầu Giấy - 2026">Sổ QĐ GQBT - UBND phường Cầu Giấy - 2026</option>
-                                            </select>
-                                        </div>
+                                        <!-- [sn1] Bỏ "Sổ văn bản áp dụng": không tự động cấp số; Số do cán bộ / Văn thư nhập -->
                                     </div>
                                     <div class="grid-3-cols" style="margin-bottom: 12px;">
                                         <div class="form-group">
@@ -3265,14 +3258,7 @@
                                             <option>Cục Thi hành án dân sự Hà Nội</option>
                                         </select>
                                     </div>
-                                    <div class="form-group">
-                                        <span class="form-label">Sổ văn bản áp dụng *</span>
-                                        <select class="form-control" id="specialStatusDocumentBook">
-                                            <option>Sổ QĐ GQBT - Sở Tư pháp Hà Nội - 2026</option>
-                                            <option>Sổ QĐ BTNN - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước - 2026</option>
-                                            <option>Sổ QĐ GQBT - UBND phường Cầu Giấy - 2026</option>
-                                        </select>
-                                    </div>
+                                    <!-- [sn1] Bỏ "Sổ văn bản áp dụng": không tự động cấp số; Số do cán bộ / Văn thư nhập -->
                                 </div>
                                 <div class="grid-3-cols" style="margin-bottom: 12px;">
                                     <div class="form-group">
@@ -4162,7 +4148,7 @@
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
-    <script src="quan_ly_boi_thuong_dcgq.js?v=20261109ro1"></script>
+    <script src="quan_ly_boi_thuong_dcgq.js?v=20261112sn1"></script>
     <script src="quan_ly_kinh_phi_kpdc.js?v=20261109ro1"></script>
     <!-- [th2c] Danh mục Loại thiệt hại 2 cấp (DM_27) + bảng 2 cấp dùng chung -->
     <script src="btnn_thiet_hai.js?v=20261030dm28"></script>
@@ -4170,7 +4156,7 @@
     <!-- [hlqd] Hồ sơ mẫu BT-2026-191..194 cho Quyết định GQBT mẫu thử Hiệu lực -->
     <script src="quan_ly_boi_thuong_hlqd.js?v=20261029sn1"></script>
     <script src="quan_ly_boi_thuong_seedht.js?v=20261104dc1"></script>
-    <script src="quan_ly_boi_thuong_hgq.js?v=20261109ro1"></script>
+    <script src="quan_ly_boi_thuong_hgq.js?v=20261112sn1"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <!-- Cử người giải quyết (nhiều cán bộ theo Cơ cấu tổ chức), Xác minh thiệt hại nhiều lần, Văn bản làm căn cứ yêu cầu bồi thường -->
     <script>
@@ -17230,7 +17216,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 claim.decContent = content;
                 claim.decDataEntryUnit = document.getElementById('decDataEntryUnitInput')?.value || 'Sở Tư pháp Hà Nội';
                 claim.decIssuingUnit = document.getElementById('decIssuingUnitInput')?.value || claim.agency || '';
-                claim.decDocumentBook = document.getElementById('decDocumentBookInput')?.value || '';
                 claim.decSignMode = signMode;
                 claim.decStatus = finalDecStatus;
 
@@ -17239,7 +17224,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     claim.timeline.push({
                         title: "Xác nhận quyết định ký bên ngoài",
                         date: new Date().toLocaleDateString('vi-VN'),
-                        desc: `Ghi nhận Quyết định giải quyết bồi thường số ${no} đã ký bên ngoài theo ${claim.decDocumentBook}. Hồ sơ chuyển sang [Chờ chi trả]`,
+                        desc: `Ghi nhận Quyết định giải quyết bồi thường số ${no} đã ký bên ngoài. Hồ sơ chuyển sang [Chờ chi trả]`,
                         status: "completed"
                     });
                     showToast("Đã xác nhận quyết định ký bên ngoài. Hồ sơ chuyển sang Chờ chi trả!", "success");
@@ -17247,7 +17232,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     claim.timeline.push({
                         title: "Trình ký quyết định bồi thường",
                         date: new Date().toLocaleDateString('vi-VN'),
-                        desc: `Trình ký quyết định giải quyết bồi thường số ${no}. Số tiền: ${amount.toLocaleString('vi-VN')}đ. Số/ngày ban hành sẽ được cấp theo ${claim.decDocumentBook} sau khi Lãnh đạo phê duyệt.`,
+                        desc: `Trình ký quyết định giải quyết bồi thường số ${no}. Số tiền: ${amount.toLocaleString('vi-VN')}đ.`,
                         status: "completed"
                     });
                     showToast("Quyết định đã được trình ký thành công. Đang chờ Lãnh đạo phê duyệt!", "success");
@@ -17436,7 +17421,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 return;
             }
 
-            const requiredIds = ['specialStatusIssuingUnit', 'specialStatusDocumentBook', 'specialStatusSignMode', 'specialStatusDocNo', 'specialStatusDate', 'specialStatusStartDate', 'specialStatusReason'];
+            const requiredIds = ['specialStatusIssuingUnit', 'specialStatusSignMode', 'specialStatusDocNo', 'specialStatusDate', 'specialStatusStartDate', 'specialStatusReason'];
             const validationResults = requiredIds.map(validateSpecialStatusField);
             const isValid = validationResults.every(Boolean);
             if (!isValid) {
@@ -17457,7 +17442,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 docDate: document.getElementById('specialStatusDate').value.trim(),
                 dataEntryUnit: document.getElementById('specialStatusDataEntryUnit')?.value || 'Sở Tư pháp Hà Nội',
                 issuingUnit: document.getElementById('specialStatusIssuingUnit')?.value || '',
-                documentBook: document.getElementById('specialStatusDocumentBook')?.value || '',
                 signMode: document.getElementById('specialStatusSignMode')?.value || 'Ký duyệt trên hệ thống',
                 signer: (document.getElementById('specialStatusSignMode')?.value || '') === 'Ký bên ngoài'
                     ? ''
@@ -18803,7 +18787,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     </div>
                     <div style="font-size:12.5px; color:#92400e; line-height:1.5;">
                         Lý do trả lại: <strong id="mraReturnedReason">--</strong><br>
-                        Lãnh đạo trả lại: <span id="mraReturnedOfficer">--</span> • Thời điểm trả lại: <span id="mraReturnedDate">--</span>
+                        Người trả lại: <span id="mraReturnedOfficer">--</span> • Thời điểm trả lại: <span id="mraReturnedDate">--</span>
                     </div>
                 </div>
 
@@ -18873,27 +18857,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         </div>
                     </div>
 
-                    <!-- Ký số + Sinh Mẫu 03: Thông tin điền vào Mẫu 03 (Số, Ngày); Nơi nhận cố định theo mẫu -->
-                    <div id="mraDocMetaGroup" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px; margin-bottom:12px;">
-                        <div style="font-size:12px; font-weight:700; color:#334155; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
-                            <i class="fa-solid fa-sliders" style="color:#2563eb;"></i> Thông tin điền vào Mẫu 03/BTNN
-                        </div>
-                        <div class="gqx-grid2" style="margin-bottom:0;">
-                            <div class="gqx-field" style="margin-bottom:0;">
-                                <label class="form-label" for="mraDocNumber">Số, ký hiệu văn bản<span class="gqx-req">*</span></label>
-                                <input type="text" id="mraDocNumber" class="form-control" placeholder="VD: 28/TB-CBTNN" value="     /TB-" oninput="this.classList.remove('is-invalid'); document.getElementById('mraDocNumberError').style.display='none';">
-                                <div id="mraDocNumberError" class="gqx-err">Đây là trường bắt buộc</div>
-                            </div>
-                            <div class="gqx-field" style="margin-bottom:0;">
-                                <label class="form-label" for="mraDocDate">Ngày văn bản<span class="gqx-req">*</span></label>
-                                <div class="gqx-date">
-                                    <input type="text" id="mraDocDate" class="form-control" placeholder="dd/mm/yyyy" readonly>
-                                    <i class="fa-regular fa-calendar-days" id="mraDocDateIcon" onclick="var i=document.getElementById('mraDocDate'); if(i._flatpickr) i._flatpickr.open();" title="Chọn ngày"></i>
-                                </div>
-                                <div id="mraDocDateError" class="gqx-err">Đây là trường bắt buộc</div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- [sn1] Bỏ khối Thông tin điền vào Mẫu 03 (Số, Ngày): Số, ký hiệu / Ngày văn bản nhập tại khối Thông tin ban hành văn bản (Bước 2); Nơi nhận cố định theo mẫu -->
 
                     <!-- Ký số: Tệp văn bản trình ký (khối hiển thị tệp / upload) -->
                     <div id="mraOnlineSection">
@@ -19081,7 +19045,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     </div>
                     <div style="font-size:12.5px; color:#92400e; line-height:1.5;">
                         Lý do trả lại: <strong id="ktlReturnedReason">--</strong><br>
-                        Lãnh đạo trả lại: <span id="ktlReturnedOfficer">--</span> • Thời điểm trả lại: <span id="ktlReturnedDate">--</span>
+                        Người trả lại: <span id="ktlReturnedOfficer">--</span> • Thời điểm trả lại: <span id="ktlReturnedDate">--</span>
                     </div>
                 </div>
 
@@ -19176,25 +19140,10 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         </div>
                     </div>
 
-                    <!-- Ký số + Sinh Mẫu 04: Thông tin điền vào Mẫu 04 (Số, Ngày, Nơi nhận) -->
+                    <!-- Ký số + Sinh Mẫu 04: Thông tin điền vào Mẫu 04 (Nơi nhận); [sn1] Số, ký hiệu / Ngày văn bản nhập tại khối Thông tin ban hành văn bản (Bước 2) -->
                     <div id="ktlDocMetaGroup" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px; margin-bottom:12px;">
                         <div style="font-size:12px; font-weight:700; color:#334155; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
                             <i class="fa-solid fa-sliders" style="color:#2563eb;"></i> Thông tin điền vào Mẫu 04/BTNN
-                        </div>
-                        <div class="gqx-grid2" style="margin-bottom:10px;">
-                            <div class="gqx-field">
-                                <label class="form-label" for="ktlDocNumber">Số, ký hiệu văn bản<span class="gqx-req">*</span></label>
-                                <input type="text" id="ktlDocNumber" class="form-control" placeholder="VD: 28/TB-CBTNN" value="     /TB-" oninput="this.classList.remove('is-invalid'); document.getElementById('ktlDocNumberErr').style.display='none';">
-                                <div id="ktlDocNumberErr" class="gqx-err">Đây là trường bắt buộc</div>
-                            </div>
-                            <div class="gqx-field">
-                                <label class="form-label" for="ktlDocDate">Ngày văn bản<span class="gqx-req">*</span></label>
-                                <div class="gqx-date">
-                                    <input type="text" id="ktlDocDate" class="form-control" placeholder="dd/mm/yyyy" readonly>
-                                    <i class="fa-regular fa-calendar-days" onclick="var i=document.getElementById('ktlDocDate'); if(i._flatpickr) i._flatpickr.open();" title="Chọn ngày"></i>
-                                </div>
-                                <div id="ktlDocDateErr" class="gqx-err">Đây là trường bắt buộc</div>
-                            </div>
                         </div>
 
                         <div class="gqx-field" id="ktlNoiNhanGroup" style="margin-bottom:0;">
@@ -19433,7 +19382,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     </div>
                     <div style="font-size:12.5px; color:#92400e; line-height:1.5;">
                         Lý do trả lại: <strong id="tndReturnedReason">--</strong><br>
-                        Lãnh đạo trả lại: <span id="tndReturnedOfficer">--</span> • Thời điểm trả lại: <span id="tndReturnedDate">--</span>
+                        Người trả lại: <span id="tndReturnedOfficer">--</span> • Thời điểm trả lại: <span id="tndReturnedDate">--</span>
                     </div>
                 </div>
 
@@ -19477,25 +19426,10 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         </div>
                     </div>
 
-                    <!-- Ký số + Sinh Mẫu 04 (trường hợp Thụ lý): Số, ký hiệu / Ngày văn bản / Nơi nhận -->
+                    <!-- Ký số + Sinh Mẫu 04 (trường hợp Thụ lý): Nơi nhận; [sn1] Số, ký hiệu / Ngày văn bản nhập tại khối Thông tin ban hành văn bản (Bước 2) -->
                     <div id="tndDocMetaGroup" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px; margin-bottom:12px;">
                         <div style="font-size:12px; font-weight:700; color:#334155; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
                             <i class="fa-solid fa-sliders" style="color:#2563eb;"></i> Thông tin điền vào Mẫu 04/BTNN
-                        </div>
-                        <div class="gqx-grid2" style="margin-bottom:10px;">
-                            <div class="gqx-field">
-                                <label class="form-label" for="tndDocNumber">Số, ký hiệu văn bản<span class="gqx-req">*</span></label>
-                                <input type="text" id="tndDocNumber" class="form-control" maxlength="50" placeholder="VD: 24/TB-STP" value="     /TB-" oninput="tndClearErr('tndDocNumber')">
-                                <div id="tndDocNumberErr" class="gqx-err">Đây là trường bắt buộc</div>
-                            </div>
-                            <div class="gqx-field">
-                                <label class="form-label" for="tndDocDate">Ngày văn bản<span class="gqx-req">*</span></label>
-                                <div class="gqx-date">
-                                    <input type="text" id="tndDocDate" class="form-control" placeholder="dd/mm/yyyy" readonly onchange="tndClearErr('tndDocDate')">
-                                    <i class="fa-regular fa-calendar-days" onclick="var i=document.getElementById('tndDocDate'); if(i._flatpickr) i._flatpickr.open();" title="Chọn ngày"></i>
-                                </div>
-                                <div id="tndDocDateErr" class="gqx-err">Đây là trường bắt buộc</div>
-                            </div>
                         </div>
                         <div class="gqx-field" style="margin-bottom:0;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
@@ -19637,7 +19571,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     </div>
                     <div style="font-size:12.5px; color:#92400e; line-height:1.5;">
                         Lý do trả lại: <strong id="cngReturnedReason">--</strong><br>
-                        Lãnh đạo trả lại: <span id="cngReturnedOfficer">--</span> • Thời điểm trả lại: <span id="cngReturnedDate">--</span>
+                        Người trả lại: <span id="cngReturnedOfficer">--</span> • Thời điểm trả lại: <span id="cngReturnedDate">--</span>
                     </div>
                 </div>
 
@@ -19699,25 +19633,10 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         </div>
                     </div>
 
-                    <!-- Ký số + Sinh Mẫu 06: Số, ký hiệu / Ngày văn bản / Nơi nhận -->
+                    <!-- Ký số + Sinh Mẫu 06: Nơi nhận; [sn1] Số, ký hiệu / Ngày văn bản nhập tại khối Thông tin ban hành văn bản (Bước 2) -->
                     <div id="cngDocMetaGroup" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px; margin-bottom:12px;">
                         <div style="font-size:12px; font-weight:700; color:#334155; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
                             <i class="fa-solid fa-sliders" style="color:#2563eb;"></i> Thông tin điền vào Mẫu 06/BTNN
-                        </div>
-                        <div class="gqx-grid2" style="margin-bottom:10px;">
-                            <div class="gqx-field">
-                                <label class="form-label" for="cngDocNumber">Số, ký hiệu văn bản<span class="gqx-req">*</span></label>
-                                <input type="text" id="cngDocNumber" class="form-control" maxlength="50" placeholder="VD: 16/QĐ-STP" value="     /QĐ-" oninput="cngClearErr('cngDocNumber')">
-                                <div id="cngDocNumberErr" class="gqx-err">Đây là trường bắt buộc</div>
-                            </div>
-                            <div class="gqx-field">
-                                <label class="form-label" for="cngDocDate">Ngày văn bản<span class="gqx-req">*</span></label>
-                                <div class="gqx-date">
-                                    <input type="text" id="cngDocDate" class="form-control" placeholder="dd/mm/yyyy" readonly onchange="cngClearErr('cngDocDate')">
-                                    <i class="fa-regular fa-calendar-days" onclick="var i=document.getElementById('cngDocDate'); if(i._flatpickr) i._flatpickr.open();" title="Chọn ngày"></i>
-                                </div>
-                                <div id="cngDocDateErr" class="gqx-err">Đây là trường bắt buộc</div>
-                            </div>
                         </div>
                         <div class="gqx-field" style="margin-bottom:0;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
@@ -20612,7 +20531,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (!extra.levels && gqSignLast && Array.isArray(extra.assignees) && extra.assignees.join('|') === gqSignLast.assignees.join('|')) {
                 extra.levels = gqSignLast.levels;
                 extra.pcSig = gqSignLast.pcSig;
-                if (extra.signDoc) extra.signDoc = Object.assign({}, extra.signDoc, { pcSig: gqSignLast.pcSig });
+                // [sn1] Lưu cùng phiếu trình: Đóng dấu cơ quan và Thông tin ban hành văn bản (Số, Địa danh, Ngày, Đơn vị ban hành, vị trí ô Số / Ngày / Dấu)
+                extra.signDoc = Object.assign({ method: 'Ký số' }, extra.signDoc || {}, { pcSig: gqSignLast.pcSig, dongDau: !!gqSignLast.dongDau, banHanh: gqSignLast.banHanh || null });
             }
             gqSignLast = null;
             const res = W.submitForApproval(claim.code, kind, content, files, extra);
@@ -20682,7 +20602,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const r = gqRecord(claim);
             if (!r || r.status !== 'Bị trả lại' || !r.returned) return '';
             const x = r.returned;
-            return `<div class="gq-returned"><b><i class="fa-solid fa-rotate-left"></i> Lý do bị trả lại</b><br>Lý do trả lại: <strong>${gqE(x.reason)}</strong><br>Lãnh đạo trả lại: ${gqE(W.userName(x.by))} - ${gqE(W.unitName(x.unitId))} • Thời điểm trả lại: ${gqE(x.at)}</div>`;
+            return `<div class="gq-returned"><b><i class="fa-solid fa-rotate-left"></i> Lý do bị trả lại</b><br>Lý do trả lại: <strong>${gqE(x.reason)}</strong><br>Người trả lại: ${gqE(W.userName(x.by))} - ${gqE(W.unitName(x.unitId))} • Thời điểm trả lại: ${gqE(x.at)}</div>`;
         }
         function gqLeaderFieldHtml(claim, selected) {
             const W = gqW();
@@ -21033,21 +20953,15 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             tndEl('tndClaimNYC').innerText = getClaimRequesterName(claim) || '--';
             tndEl('tndClaimAgency').innerText = claim.agency || '--';
 
-            // Trình lại sau khi Bị trả lại: lấy Số, ký hiệu / Ngày văn bản / Nơi nhận của Thông báo thụ lý đã trình
+            // Trình lại sau khi Bị trả lại: lấy Nơi nhận của Thông báo thụ lý đã trình
+            // [sn1] Số, ký hiệu / Ngày văn bản nhập tại khối Thông tin ban hành văn bản (Bước 2), trình lại điền theo phiếu trình trước (gqSignInit)
             const tb = claim.thongBaoThuLy || null;
-            const d = new Date();
-            const p2 = n => String(n).padStart(2, '0');
-            const todayStr = `${p2(d.getDate())}/${p2(d.getMonth() + 1)}/${d.getFullYear()}`;
-            tndEl('tndDocNumber').value = tb && tb.soKyHieu ? tb.soKyHieu : '     /TB-';
-            tndEl('tndDocDate').value = tb && tb.ngay ? tb.ngay : todayStr;
             tndEl('tndNoiNhan').value = tb && tb.noiNhan && tb.noiNhan.length ? (Array.isArray(tb.noiNhan) ? tb.noiNhan.join('\n') : tb.noiNhan) : TND_NOI_NHAN_DEFAULT;
-            ['tndDocNumber', 'tndDocDate', 'tndNoiNhan'].forEach(tndClearErr);
-            const dErr = tndEl('tndDocDateErr'); if (dErr) dErr.textContent = 'Đây là trường bắt buộc';
-            if (typeof flatpickr !== 'undefined') flatpickr(tndEl('tndDocDate'), { dateFormat: 'd/m/Y', allowInput: true, defaultDate: tndEl('tndDocDate').value, onChange: () => tndClearErr('tndDocDate') });
+            tndClearErr('tndNoiNhan');
 
             // Bước 2: các cấp ký theo luồng đã cấu hình; ô ký chỉ sinh khi bấm Đặt chữ ký
             tndEl('tndSignContent').value = back && back.content ? back.content : 'Kính trình Lãnh đạo xem xét, phê duyệt tiếp nhận hồ sơ và văn bản Thông báo thụ lý hồ sơ yêu cầu bồi thường.';
-            gqSignInit('tnd', claim, back && Array.isArray(back.assignees) ? back.assignees : null);
+            gqSignInit('tnd', claim, back && Array.isArray(back.assignees) ? back.assignees : null, { kind: 'Tiếp nhận hồ sơ' });
             // Tài liệu ban hành kèm theo / không ban hành kèm theo; Trình lại: nạp đúng 02 khối của lần trình trước
             if (typeof tlktMount === 'function') tlktMount('tnd', 'tndTlkt', { required: false, rows: (back && back.signDoc && back.signDoc.attachments) || [] });
 
@@ -21093,7 +21007,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 const ico = card.querySelector('.sign-card-check i'); if (ico) ico.className = on ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle';
             });
             tndApplyDocMeta();
-            if (!isOnline) ['tndDocNumber', 'tndDocDate', 'tndNoiNhan'].forEach(tndClearErr);
+            if (!isOnline) tndClearErr('tndNoiNhan');
             const show = (id, on, disp) => { const el = tndEl(id); if (el) el.style.display = on ? (disp || 'block') : 'none'; };
             // Stepper 2 bước chỉ hiển thị khi Ký số; Ký ngoài thu gọn (ẩn hẳn)
             show('tndStepperBar', true, 'flex');
@@ -21109,20 +21023,15 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         }
         // Văn bản Mẫu 04/BTNN - trường hợp Thông báo thụ lý hồ sơ yêu cầu bồi thường từ thông tin đang nhập
         function tndNoiNhanLines() { return (tndEl('tndNoiNhan').value || '').split(/\n/).map(s => s.trim()).filter(Boolean); }
-        function tndBuildDoc() {
+        // [sn1] soKyHieu, ngay: Số, ký hiệu / Ngày văn bản tại khối Thông tin ban hành văn bản (Bước 2); Bước 1 để trống dòng số, ngày của mẫu
+        function tndBuildDoc(soKyHieu, ngay) {
             if (!tndClaim) return null;
             const nn = tndNoiNhanLines();
-            return { html: gqBuildMau04ThuLy(tndClaim, tndEl('tndDocNumber').value.trim(), tndEl('tndDocDate').value.trim(), nn.length ? nn : null), base: gqThuLyDocBaseName(tndClaim) };
+            return { html: gqBuildMau04ThuLy(tndClaim, soKyHieu || '', ngay || '', nn.length ? nn : null), base: gqThuLyDocBaseName(tndClaim) };
         }
-        // Kiểm tra trường bắt buộc của khối Thông tin điền vào Mẫu 04/BTNN; trả về ô lỗi đầu tiên
+        // Kiểm tra trường bắt buộc của khối Thông tin điền vào Mẫu 04/BTNN (Nơi nhận); trả về ô lỗi đầu tiên
         function tndValidateMeta() {
             let first = null;
-            const no = tndEl('tndDocNumber').value.trim();
-            const dt = tndEl('tndDocDate').value.trim();
-            if (!no) first = first || tndSetErr('tndDocNumber'); else tndClearErr('tndDocNumber');
-            if (!dt) first = first || tndSetErr('tndDocDate', 'Đây là trường bắt buộc');
-            else if (!gqValidDateText(dt)) first = first || tndSetErr('tndDocDate', 'Ngày văn bản không hợp lệ (dd/mm/yyyy)');
-            else tndClearErr('tndDocDate');
             if (!tndNoiNhanLines().length) first = first || tndSetErr('tndNoiNhan'); else tndClearErr('tndNoiNhan');
             return first;
         }
@@ -21294,11 +21203,13 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const sign = gqSignCollect('tnd');
             if (!sign) return;
             const gen = tndOnlineFile.source === 'generated';
-            const soKyHieu = gen ? tndEl('tndDocNumber').value.trim() : '';
-            const ngay = gen ? tndEl('tndDocDate').value.trim() : '';
+            // [sn1] Số, ký hiệu / Ngày văn bản lấy từ khối Thông tin ban hành văn bản (Bước 2), ghi về thongBaoThuLy.soKyHieu / ngay như trước
+            const soKyHieu = sign.soKyHieu;
+            const ngay = sign.ngayVanBan;
             const noiNhan = gen ? tndNoiNhanLines() : [];
             const fileName = tndOnlineFile.name;
-            const draftDoc = { source: gen ? 'generated' : 'uploaded', formNo: GQ_FORM_04, docTitle: 'Thông báo thụ lý hồ sơ yêu cầu bồi thường', generatedName: gen ? fileName : '', uploadedName: gen ? '' : fileName, soKyHieu, ngay, noiNhan, bodyHtml: gen ? tndOnlineFile.bodyHtml : '' };
+            const genDoc = gen ? tndBuildDoc(soKyHieu, ngay) : null;
+            const draftDoc = { source: gen ? 'generated' : 'uploaded', formNo: GQ_FORM_04, docTitle: 'Thông báo thụ lý hồ sơ yêu cầu bồi thường', generatedName: gen ? fileName : '', uploadedName: gen ? '' : fileName, soKyHieu, ngay, noiNhan, bodyHtml: genDoc ? genDoc.html : '' };
             const res = gqSubmit(claim, 'Tiếp nhận hồ sơ', sign.content, [], {
                 assignee: sign.assignees[0] || '',
                 assignees: sign.assignees,
@@ -21458,11 +21369,12 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const first = list[0];
             return Object.assign(patch, { appointedOfficers: list, assignedOfficer: first.name, assignedOfficerPosition: first.position, assignedOfficerUnit: first.unit, assignedOfficerEmail: first.email, officer: first.name });
         }
-        function cngFormData() {
+        // [sn1] bh: { soKyHieu, ngay } theo khối Thông tin ban hành văn bản (Bước 2); không truyền: để trống dòng số, ngày của mẫu (Bước 1, Xem trước)
+        function cngFormData(bh) {
             return {
                 officers: cngOfficersData(),
-                soKyHieu: cngEl('cngDocNumber').value.trim(),
-                ngay: cngEl('cngDocDate').value.trim(),
+                soKyHieu: (bh && bh.soKyHieu) || '',
+                ngay: (bh && bh.ngay) || '',
                 noiNhan: cngNoiNhanLines()
             };
         }
@@ -21659,20 +21571,13 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             });
             cngRenderOfficers();
 
-            // Thông tin điền vào Mẫu 06/BTNN
-            const d = new Date();
-            const p2 = n => String(n).padStart(2, '0');
-            const todayStr = `${p2(d.getDate())}/${p2(d.getMonth() + 1)}/${d.getFullYear()}`;
-            cngEl('cngDocNumber').value = prev.soKyHieu || '     /QĐ-';
-            cngEl('cngDocDate').value = prev.ngay || todayStr;
+            // Thông tin điền vào Mẫu 06/BTNN: Nơi nhận; [sn1] Số, ký hiệu / Ngày văn bản nhập tại khối Thông tin ban hành văn bản (Bước 2), trình lại điền theo phiếu trình trước
             cngEl('cngNoiNhan').value = Array.isArray(prev.noiNhan) && prev.noiNhan.length ? prev.noiNhan.join('\n') : CNG_NOI_NHAN_DEFAULT;
-            ['cngDocNumber', 'cngDocDate', 'cngNoiNhan'].forEach(cngClearErr);
-            const dErr = cngEl('cngDocDateErr'); if (dErr) dErr.textContent = 'Đây là trường bắt buộc';
-            if (typeof flatpickr !== 'undefined') flatpickr(cngEl('cngDocDate'), { dateFormat: 'd/m/Y', allowInput: true, defaultDate: cngEl('cngDocDate').value, onChange: () => cngClearErr('cngDocDate') });
+            cngClearErr('cngNoiNhan');
 
             // Bước 2: các cấp ký theo luồng đã cấu hình; ô ký chỉ sinh khi bấm Đặt chữ ký
             cngEl('cngSignContent').value = back && back.content ? back.content : CNG_SIGN_CONTENT_DEFAULT;
-            gqSignInit('cng', claim, back && Array.isArray(back.assignees) ? back.assignees : null);
+            gqSignInit('cng', claim, back && Array.isArray(back.assignees) ? back.assignees : null, { kind: CNG_KIND });
             // Tài liệu ban hành kèm theo / không ban hành kèm theo; Trình lại: nạp đúng 02 khối của lần trình trước
             if (typeof tlktMount === 'function') tlktMount('cng', 'cngTlkt', { required: false, rows: (back && back.signDoc && back.signDoc.attachments) || [] });
 
@@ -21728,7 +21633,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 const ico = card.querySelector('.sign-card-check i'); if (ico) ico.className = on ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle';
             });
             cngApplyDocMeta();
-            if (!isOnline) ['cngDocNumber', 'cngDocDate', 'cngNoiNhan'].forEach(cngClearErr);
+            if (!isOnline) cngClearErr('cngNoiNhan');
             const show = (id, on, disp) => { const el = cngEl(id); if (el) el.style.display = on ? (disp || 'block') : 'none'; };
             // Stepper 2 bước chỉ hiển thị khi Ký số; Ký ngoài thu gọn (ẩn hẳn)
             const bar = cngEl('cngStepperBar');
@@ -21752,15 +21657,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             });
             return first;
         }
-        // Kiểm tra trống: Số, ký hiệu văn bản, Ngày văn bản, Nơi nhận (khi Sinh văn bản theo mẫu 06/BTNN)
+        // Kiểm tra trống: Nơi nhận (khi Sinh văn bản theo mẫu 06/BTNN); [sn1] Số, ký hiệu / Ngày văn bản không bắt buộc, nhập tại Bước 2
         function cngValidateMeta() {
             let first = null;
-            const no = cngEl('cngDocNumber').value.trim();
-            const dt = cngEl('cngDocDate').value.trim();
-            if (!no) first = first || cngSetErr('cngDocNumber'); else cngClearErr('cngDocNumber');
-            if (!dt) first = first || cngSetErr('cngDocDate', 'Đây là trường bắt buộc');
-            else if (!gqValidDateText(dt)) first = first || cngSetErr('cngDocDate', 'Ngày văn bản không hợp lệ (dd/mm/yyyy)');
-            else cngClearErr('cngDocDate');
             if (!cngNoiNhanLines().length) first = first || cngSetErr('cngNoiNhan'); else cngClearErr('cngNoiNhan');
             return first;
         }
@@ -21972,12 +21871,13 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const rec = gqRecord(claim);
             if (!W || !rec || !cngActor(claim)) { showToast('Hồ sơ đã được xử lý hoặc bạn không có quyền xử lý.', 'error'); return; }
             cngAsActor(claim);
-            const f = cngFormData();
+            // [sn1] Số, ký hiệu / Ngày văn bản lấy từ khối Thông tin ban hành văn bản (Bước 2), ghi về action / qdCuNguoi.soKyHieu / ngay như trước
+            const f = cngFormData({ soKyHieu: sign.soKyHieu, ngay: sign.ngayVanBan });
             const gen = cngOnlineFile.source === 'generated';
             const last = sign.assignees[sign.assignees.length - 1] || cngDefaultSignerId(claim);
             const bodyHtml = gen ? cngBuildMau06(claim, f, cngUserSigner(last), false) : '';
             const fileName = cngOnlineFile.name;
-            const action = { type: 'cuNguoi', officers: gqnlWfOfficers(f.officers), officersText: f.officers, soKyHieu: gen ? f.soKyHieu : '', ngay: gen ? f.ngay : '', noiNhan: gen ? f.noiNhan : [] };
+            const action = { type: 'cuNguoi', officers: gqnlWfOfficers(f.officers), officersText: f.officers, soKyHieu: f.soKyHieu, ngay: f.ngay, noiNhan: gen ? f.noiNhan : [] };
             const now = W.nowText();
             // Tài liệu ban hành kèm theo / không ban hành kèm theo của lần trình
             const cngDocs = typeof tlktGet === 'function' ? tlktGet('cng') : [];
@@ -21985,7 +21885,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const res = W.submitForApproval(claim.code, CNG_KIND, sign.content, [], {
                 assignee: sign.assignees[0] || '', assignees: sign.assignees, levels: sign.levels, pcSig: sign.pcSig, // [ro1] các cấp trình ký tự thiết lập
                 draftDoc: { source: gen ? 'generated' : 'uploaded', formNo: GQ_FORM_06, docTitle: 'Quyết định cử người giải quyết bồi thường', generatedName: gen ? fileName : '', uploadedName: gen ? '' : fileName, soKyHieu: action.soKyHieu, ngay: action.ngay, noiNhan: action.noiNhan, bodyHtml },
-                signDoc: { method: 'Ký số', file: gen ? cngDocBaseName(claim) + '.pdf' : fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords, attachments: cngDocs },
+                signDoc: { method: 'Ký số', file: gen ? cngDocBaseName(claim) + '.pdf' : fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords, attachments: cngDocs, dongDau: sign.dongDau, banHanh: sign.banHanh },
                 resultStatus: claimRequestKind(claim) === 'honor' ? 'Đang phục hồi danh dự' : 'Xác minh thiệt hại', action
             });
             if (!res || !res.ok) { showToast(res ? res.message : 'Không trình được hồ sơ.', 'error'); return; }
@@ -22136,10 +22036,54 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         // Mở popup: dựng các thẻ cấp ký, xóa ô ký cũ trên văn bản (chưa có ô ký nào cho tới khi bấm Đặt chữ ký)
         // [ro1] Bước 2 = khối "Thiết lập các cấp trình ký" dùng chung (BTNN_PCKD.levelSetup): cán bộ tự thêm cấp, chọn Lãnh đạo (Nhóm Lãnh đạo của đơn vị mình
         // và đơn vị cấp trên), Ký nháy, Ký số (cấp cuối bắt buộc Ký số), Đặt chữ ký. Trình lại sau Bị trả lại: điền sẵn thiết lập lần trước.
-        function gqSignInit(prefix, claim, prevAssignees) {
+        // [sn1] 12/11/2026 - Số, ký hiệu và Ngày của chính văn bản trình ký (Ký số trên hệ thống) nhập tại khối "Thông tin ban hành văn bản" ở Bước 2
+        // (Số, ký hiệu văn bản, Địa danh, Ngày văn bản, dòng xem trước, Đóng dấu cơ quan, Đơn vị ban hành, Văn thư xử lý, Đặt lại vị trí; ô Số / Ngày / Dấu kéo được).
+        // Bước 1 không còn Số, Ngày của văn bản này; Ký ngoài giữ nguyên Bước 1. Vị trí mặc định ô Số / ô Ngày: dòng "Số:" và dòng "[Địa danh], ngày ... tháng ... năm ..."
+        // của văn bản trên trang A4 Bước 2 (px trong trang; w: độ rộng che kín dòng chấm của mẫu); không tìm thấy (tệp tải lên): theo mặc định của khối dùng chung.
+        function gqDocPos(prefix) {
+            const pg = document.getElementById(prefix + 'A4Page');
+            if (!pg || !pg.offsetWidth) return null;
+            const pr = pg.getBoundingClientRect();
+            const k = pr.width / pg.offsetWidth || 1;
+            const skip = el => !el || !!el.closest('.pc-bhbox, .pc-sig, .gq-sign-box, .sig-drag-box');
+            const at = r => {
+                const b = r.getBoundingClientRect();
+                const y = (b.top - pr.top) / k;
+                return b.width && y < 420 ? { x: Math.max(4, Math.round((b.left - pr.left) / k) - 9), y: Math.max(4, Math.round(y) - 4), w: Math.round(b.width / k) + 18 } : null;
+            };
+            let so = null;
+            const tw = document.createTreeWalker(pg, NodeFilter.SHOW_TEXT);
+            for (let n = tw.nextNode(); n && !so; n = tw.nextNode()) {
+                const el = n.parentElement, i = n.nodeValue.search(/Số\s*:/);
+                if (i < 0 || skip(el)) continue;
+                const r = document.createRange();
+                const et = (el.textContent || '').replace(/\s+/g, ' ').trim();
+                if (/^Số\s*:/.test(et) && et.length <= 60) r.selectNodeContents(el); else { r.setStart(n, i); r.setEnd(n, n.nodeValue.length); }
+                so = at(r);
+            }
+            const ngEl = Array.from(pg.querySelectorAll('*')).find(el => {
+                if (skip(el)) return false;
+                const t = (el.textContent || '').replace(/\s+/g, ' ').trim();
+                return t.length <= 70 && /^[^.;:]{0,40}ngày\s.*tháng\s.*năm/.test(t);
+            });
+            let ngay = null;
+            if (ngEl) { const r = document.createRange(); r.selectNodeContents(ngEl); ngay = at(r); }
+            return { so, ngay };
+        }
+        // Hồ sơ trình trước khi có khối Thông tin ban hành văn bản: lấy Số / Ngày đã lưu ở phiếu trình (bỏ giá trị mẫu chưa nhập như "     /QĐ-")
+        function gqSignLegacyBh(sd, dd) {
+            const P = window.BTNN_PCKD;
+            const so = String((sd && sd.docNumber) || (dd && dd.soKyHieu) || '').trim();
+            const ng = String((sd && sd.docDate) || (dd && dd.ngay) || '').trim();
+            const out = { soKyHieu: /\d/.test(so) ? so : '', ngayVanBan: P && P.ngayHopLe(ng) ? ng : '' };
+            return out.soKyHieu || out.ngayVanBan ? out : null;
+        }
+        // opts: { kind: Loại trình của popup (trình lại chỉ điền khối Thông tin ban hành văn bản khi trùng Loại trình bị trả lại), soNgay: false (không có trường Số, Ngày) }
+        function gqSignInit(prefix, claim, prevAssignees, opts) {
+            const o = opts || {};
             const P = window.BTNN_PCKD;
             const page = document.getElementById(prefix + 'A4Page');
-            if (page) page.querySelectorAll('.gq-sign-box, .pc-sig').forEach(b => b.remove());
+            if (page) page.querySelectorAll('.gq-sign-box, .pc-sig, .pc-bhbox').forEach(b => b.remove());
             const rec = gqRecord(claim);
             const a = rec && rec.approval;
             const prev = P && rec && a && rec.status === 'Bị trả lại' ? P.prevLevelsOf(a) : null;
@@ -22151,12 +22095,20 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         page: () => document.getElementById(prefix + 'A4Page'),
                         method: () => 'Ký số',
                         userId: () => gqActingUserId(),
-                        onChange: () => gqSignSyncNames(prefix)
+                        onChange: () => gqSignSyncNames(prefix),
+                        // [sn1] Khối Thông tin ban hành văn bản có trường Số, ký hiệu văn bản, Địa danh, Ngày văn bản và ô Số, ô Ngày trên văn bản
+                        soNgay: () => !gqSignState[prefix] || gqSignState[prefix].soNgay !== false,
+                        docPos: () => gqDocPos(prefix)
                     }) : null
                 };
             }
             st.claimId = claim ? claim.id : '';
-            if (st.ui) { st.ui.reset(prev); st.ui.render(); st.ui.renderSigs(); }
+            st.soNgay = o.soNgay !== false;
+            // [sn1] Trình lại (Bị trả lại cùng Loại trình): điền lại khối Thông tin ban hành văn bản (kể cả vị trí ô Số / Ngày / Dấu) và ô Đóng dấu cơ quan
+            const same = !!(prev && a && (!o.kind || a.kind === o.kind));
+            const sd = same ? (a.signDoc || {}) : {};
+            const bhPrev = same ? (P.prevBanHanhOf(a) || gqSignLegacyBh(sd, a.draftDoc)) : null;
+            if (st.ui) { st.ui.reset(prev, same && typeof sd.dongDau === 'boolean' ? sd.dongDau : undefined, bhPrev); st.ui.render(); st.ui.renderSigs(); }
             const ct = document.getElementById(prefix + 'SignContent');
             if (ct) ct.classList.remove('is-invalid');
             const ce = document.getElementById(prefix + 'SignContentErr');
@@ -22216,7 +22168,13 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const st = gqSignState[prefix];
             if (!st) return;
             // [ro1] Khối Thiết lập các cấp trình ký: vẽ lại thẻ cấp và ô ký (khi chuyển sang Bước 2)
-            if (st.ui) { st.ui.render(); st.ui.renderSigs(); return; }
+            if (st.ui) {
+                st.ui.render(); st.ui.renderSigs();
+                // [sn1] Popup vừa mở rộng sang Bước 2: đo lại dòng số, dòng ngày của văn bản sau khi bố cục ổn định để đặt ô Số / ô Ngày đúng vị trí mặc định
+                clearTimeout(st.bhTimer);
+                st.bhTimer = setTimeout(() => { if (st.ui && st.ui.refreshBanHanh) st.ui.refreshBanHanh(); }, 450);
+                return;
+            }
         }
         function gqSignPlace(prefix, i) {
             const st = gqSignState[prefix];
@@ -22283,8 +22241,10 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const col = st.ui.collect();
             // Tọa độ ô ký theo cấp (giữ cấu trúc cũ để màn xem văn bản đã trình đọc được)
             const coords = col.levels.map((l, i) => Object.assign({ level: i + 1, unitId: col.path[i], placed: !!col.pcSig[i], kyNhay: l.kyNhay, kySo: l.kySo }, col.pcSig[i] || {}));
-            const out = { assignees: col.assignees, content, enableNhay: !!col.levels[0].kyNhay, coords, levels: col.levels, pcSig: col.pcSig };
-            gqSignLast = { assignees: col.assignees.slice(), levels: col.levels, pcSig: col.pcSig };
+            // [sn1] Thông tin ban hành văn bản (Bước 2): soKyHieu / ngayVanBan = Số, ký hiệu và Ngày của văn bản trình ký (không bắt buộc), popup ghi về trường dữ liệu cũ
+            const bh = col.banHanh || null;
+            const out = { assignees: col.assignees, content, enableNhay: !!col.levels[0].kyNhay, coords, levels: col.levels, pcSig: col.pcSig, dongDau: !!col.dongDau, banHanh: bh, soKyHieu: bh ? bh.soKyHieu || '' : '', ngayVanBan: bh ? bh.ngayVanBan || '' : '' };
+            gqSignLast = { assignees: col.assignees.slice(), levels: col.levels, pcSig: col.pcSig, dongDau: !!col.dongDau, banHanh: bh };
             return out;
         }
         window.gqSignPlace = gqSignPlace;
@@ -22335,7 +22295,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const mraAgencyEl = document.getElementById('mraClaimAgency');
             if (mraAgencyEl) mraAgencyEl.innerText = claim.agency || 'Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước';
 
-            // Báo động nếu hồ sơ bị Lãnh đạo trả lại
+            // Báo động nếu hồ sơ bị Người trả lại
             const mraRecRet = typeof gqRecord === 'function' ? gqRecord(claim) : null;
             const mraRet = mraRecRet && mraRecRet.status === 'Bị trả lại' && mraRecRet.approval && mraRecRet.approval.kind === 'Yêu cầu bổ sung' ? mraRecRet.approval : null;
             const mraAlert = document.getElementById('mraReturnedAlertBlock');
@@ -22349,14 +22309,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 }
             }
 
-            // Dates & Docs
-            const d = new Date();
-            const p = n => String(n).padStart(2, '0');
-            const todayStr = `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
-            const docDateEl = document.getElementById('mraDocDate');
-            const docNoEl = document.getElementById('mraDocNumber');
-            if (docDateEl) docDateEl.value = todayStr;
-            if (docNoEl) docNoEl.value = `     /TB-`;
+            // [sn1] Số, ký hiệu / Ngày văn bản: nhập tại khối Thông tin ban hành văn bản (Bước 2), không còn ở Bước 1
 
             // Reason default
             const defaultReason = claim.rejectReason || "1. Bổ sung Giấy tờ chứng minh tư cách đại diện hợp pháp của người yêu cầu bồi thường (Bản sao chứng thực Giấy ủy quyền).\n2. Bổ sung các tài liệu, hóa đơn, chứng từ gốc chứng minh các khoản chi phí thực tế đã phát sinh để khắc phục thiệt hại.";
@@ -22364,7 +22317,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (reasonEl) reasonEl.value = defaultReason;
 
             // Clear errors
-            ['mraDocNumber', 'mraDocDate', 'mraContentReason', 'mraOfficerRoom', 'mraOfficerAgency'].forEach(fieldId => {
+            ['mraContentReason', 'mraOfficerRoom', 'mraOfficerAgency'].forEach(fieldId => {
                 const el = document.getElementById(fieldId);
                 if (el) el.classList.remove('is-invalid');
                 const err = document.getElementById(fieldId + 'Error');
@@ -22377,7 +22330,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
 
             // Khối Tệp văn bản trình ký: mặc định Sinh văn bản theo mẫu 03/BTNN
             mraSetDocSrc('gen');
-            if (typeof flatpickr !== 'undefined' && docDateEl) flatpickr(docDateEl, { dateFormat: 'd/m/Y', allowInput: true, defaultDate: docDateEl.value || new Date() });
 
             // Ký ngoài: về vùng kéo thả (chưa có tệp)
             removeMraOfflineFile();
@@ -22393,7 +22345,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const mraPrev = mraRec && mraRec.status === 'Bị trả lại' && mraRec.approval && mraRec.approval.kind === 'Yêu cầu bổ sung' ? mraRec.approval.assignees : null;
             const mraContentEl = document.getElementById('mraSignContent');
             if (mraContentEl) mraContentEl.value = 'Kính trình Lãnh đạo xem xét, phê duyệt văn bản Thông báo yêu cầu bổ sung hồ sơ yêu cầu bồi thường.';
-            gqSignInit('mra', claim, mraPrev);
+            gqSignInit('mra', claim, mraPrev, { kind: 'Yêu cầu bổ sung' });
             // Tài liệu ban hành kèm theo / không ban hành kèm theo (Ký số mặc định); Trình lại: nạp đúng 02 khối của lần trình trước
             const mraPrevSd = mraPrev && mraRec.approval.signDoc;
             if (typeof tlktMount === 'function') tlktMount('mra', 'mraTlkt', { required: false, rows: (mraPrevSd && mraPrevSd.attachments) || [] });
@@ -22436,13 +22388,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             mraCurrentFile = null;
             ktlxCancelConvert('mra');
             const mraFileErr = document.getElementById('mraDocFileError'); if (mraFileErr) { mraFileErr.textContent = 'Đây là trường bắt buộc'; mraFileErr.style.display = 'none'; }
-            mraApplyDocMeta();
+            // [sn1] Bỏ khối Số, ký hiệu văn bản / Ngày văn bản ở Bước 1 (nhập tại khối Thông tin ban hành văn bản - Bước 2): đổi nguồn tệp / hình thức ký không còn ẩn hiện Số, Ngày
             gqxRenderDocFile('mra');
-        }
-        // Số, ký hiệu văn bản / Ngày văn bản: chỉ hiển thị khi Ký số và Sinh văn bản theo mẫu 03/BTNN
-        function mraApplyDocMeta() {
-            const off = (document.querySelector('input[name="mraSigningMethod"]:checked') || {}).value === 'offline';
-            const g = document.getElementById('mraDocMetaGroup'); if (g) g.style.display = (!off && mraDocSrc === 'gen') ? '' : 'none';
         }
         function toggleSigningMethod(method) {
             const isOnline = (method === 'online');
@@ -22452,12 +22399,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 const ico = card.querySelector('.sign-card-check i'); if (ico) ico.className = on ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle';
             });
             // Ký ngoài: chỉ tải lên tệp PDF đã ký, không nhập Số, ký hiệu văn bản và Ngày văn bản
-            mraApplyDocMeta();
             const srcGroup = document.getElementById('mraDocSrcGroup'); if (srcGroup) srcGroup.style.display = isOnline ? 'block' : 'none';
             const docTitle = document.getElementById('mraDocSectionTitle');
             if (docTitle) docTitle.innerHTML = isOnline ? '<i class="fa-solid fa-file-signature"></i> Tệp văn bản trình ký<span class="gqx-req">*</span>' : '<i class="fa-solid fa-file-pdf"></i> Tệp văn bản đã ký &amp; đóng dấu<span class="gqx-req">*</span>';
-            ['mraDocNumber', 'mraDocDate'].forEach(id => { const el = document.getElementById(id); if (el && !isOnline) el.classList.remove('is-invalid'); });
-            if (!isOnline) ['mraDocNumberError', 'mraDocDateError'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
             const stepperBar = document.getElementById('mraStepperBar');
             const onlineSection = document.getElementById('mraOnlineSection');
             const offlineSection = document.getElementById('mraOfflineSection');
@@ -22655,10 +22599,11 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (err) err.style.display = 'block';
         }
         // Sinh thân văn bản theo dữ liệu đang nhập (tái sử dụng gqBuildMau03 / gqBuildMau04)
-        function gqxBuildDoc(p) {
+        // [sn1] bh: { soKyHieu, ngay } theo khối Thông tin ban hành văn bản (Bước 2); không truyền: để trống dòng số, ngày của mẫu (Bước 1)
+        function gqxBuildDoc(p, bh) {
             const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
-            const so = val(p + 'DocNumber');
-            const hdr = { soKyHieu: so && !/^\.{3}/.test(so) ? so : '', ngay: val(p + 'DocDate') };
+            const so = String((bh && bh.soKyHieu) || '').trim();
+            const hdr = { soKyHieu: so && !/^\.{3}/.test(so) ? so : '', ngay: (bh && bh.ngay) || '' };
             if (p === 'ktl') hdr.noiNhan = val('ktlNoiNhan').split(/\n/).map(s => s.trim()).filter(Boolean);
             if (p === 'mra') {
                 const claim = selectedMraClaim;
@@ -22853,28 +22798,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             // Validation
             let isValid = true;
             let firstErrEl = null;
-
-            const docNumber = document.getElementById('mraDocNumber');
-            if (mraDocSrc === 'gen' && !docNumber.value.trim()) {
-                docNumber.classList.add('is-invalid');
-                document.getElementById('mraDocNumberError').style.display = 'block';
-                isValid = false;
-                if (!firstErrEl) firstErrEl = docNumber;
-            } else {
-                docNumber.classList.remove('is-invalid');
-                document.getElementById('mraDocNumberError').style.display = 'none';
-            }
-
-            const docDate = document.getElementById('mraDocDate');
-            if (mraDocSrc === 'gen' && !docDate.value.trim()) {
-                docDate.classList.add('is-invalid');
-                document.getElementById('mraDocDateError').style.display = 'block';
-                isValid = false;
-                if (!firstErrEl) firstErrEl = docDate;
-            } else {
-                docDate.classList.remove('is-invalid');
-                document.getElementById('mraDocDateError').style.display = 'none';
-            }
+            // [sn1] Bỏ kiểm tra Số, ký hiệu / Ngày văn bản: nhập tại khối Thông tin ban hành văn bản (Bước 2), không bắt buộc
 
             const reason = document.getElementById('mraContentReason');
             if (!reason.value.trim()) {
@@ -22907,8 +22831,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             }
 
             // Populate Step 2 A4 Document
-            document.getElementById('mraA4DocNumber').innerText = docNumber.value.trim();
-            document.getElementById('mraA4DocDate').innerText = `Hà Nội, ngày ${docDate.value.trim()}`;
+            // [sn1] Dòng số, ký hiệu và dòng địa danh, ngày để trống; ô Số, ô Ngày của khối Thông tin ban hành văn bản đặt đè lên
+            document.getElementById('mraA4DocNumber').innerText = '.../TB-CBTNN';
+            document.getElementById('mraA4DocDate').innerText = 'Hà Nội, ngày ... tháng ... năm ...';
             document.getElementById('mraA4NYC').innerText = selectedMraClaim.nyc || '--';
             document.getElementById('mraA4Address').innerText = selectedMraClaim.address || 'Hà Nội';
             document.getElementById('mraA4ClaimCode').innerText = selectedMraClaim.code || '--';
@@ -23046,10 +22971,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
 
             let isValid = true;
             let firstErr = null;
-            const docNo = document.getElementById('mraDocNumber');
-            const docDate = document.getElementById('mraDocDate');
             const reason = document.getElementById('mraContentReason');
-            // Ký ngoài: Số, ký hiệu văn bản và Ngày tháng văn bản không bắt buộc
+            // Ký ngoài: không nhập Số, ký hiệu văn bản và Ngày tháng văn bản
             if (!reason.value.trim()) {
                 reason.classList.add('is-invalid');
                 document.getElementById('mraContentReasonError').style.display = 'block';
@@ -23090,8 +23013,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         // Thực thi ban hành văn bản Ký ngoài (sau khi xác nhận)
         function mraxIssueOffline() {
             if (!selectedMraClaim || !mraOfflineFile) return;
-            const docNo = document.getElementById('mraDocNumber');
-            const docDate = document.getElementById('mraDocDate');
+            // [sn1] Ký ngoài: Bước 1 không có trường Số, ký hiệu / Ngày văn bản (trước đây là ô ẩn giữ giá trị mẫu) -> lưu trống
+            const docNo = { value: '' };
+            const docDate = { value: '' };
             const reason = document.getElementById('mraContentReason');
 
             const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : "Nguyễn Văn Cán Bộ";
@@ -23145,11 +23069,13 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : "Nguyễn Văn Cán Bộ";
             const todayStr = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
 
-            const docNo = document.getElementById('mraDocNumber').value.trim();
-            const docDate = document.getElementById('mraDocDate').value.trim();
             const reason = document.getElementById('mraContentReason').value.trim();
             const sign = gqSignCollect('mra');
             if (!sign) return;
+            // [sn1] Số, ký hiệu / Ngày văn bản lấy từ khối Thông tin ban hành văn bản (Bước 2), ghi về trinhDuyet.docNumber / docDate như trước
+            const docNo = sign.soKyHieu;
+            const docDate = sign.ngayVanBan;
+            if (mraCurrentFile && mraCurrentFile.source === 'generated') { const d = gqxBuildDoc('mra', { soKyHieu: docNo, ngay: docDate }); if (d) mraCurrentFile = Object.assign({}, mraCurrentFile, { bodyHtml: d.html }); }
             const officerRoom = sign.assignees[0] || '';
             const officerAgency = sign.assignees[sign.assignees.length - 1] || '';
 
@@ -23176,7 +23102,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     assignee: officerRoom,
                     assignees: sign.assignees,
                     reason: reason,
-                    signDoc: { method: 'Ký số', file: mraCurrentFile ? mraCurrentFile.name : '', enableRoomSig: sign.enableNhay, sigCoords: sign.coords, attachments: typeof tlktGet === 'function' ? tlktGet('mra') : [] },
+                    signDoc: { method: 'Ký số', file: mraCurrentFile ? mraCurrentFile.name : '', enableRoomSig: sign.enableNhay, sigCoords: sign.coords, docNumber: docNo, docDate: docDate, attachments: typeof tlktGet === 'function' ? tlktGet('mra') : [] },
                     draftDoc: { source: 'generated', generatedName: mraCurrentFile ? mraCurrentFile.name : 'Mau_03_BTNN.pdf' },
                     resultStatus: 'Yêu cầu bổ sung'
                 });
@@ -23393,42 +23319,25 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             // Khối chuyển cơ quan KTL_01
             handleKtlReasonChange();
 
-            // Số văn bản & Ngày ban hành
-            const d = new Date();
-            const p = n => String(n).padStart(2, '0');
-            const todayStr = `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
-            const docDateEl = document.getElementById('ktlDocDate');
-            const docNoEl = document.getElementById('ktlDocNumber');
-            if (docDateEl) docDateEl.value = todayStr;
-            if (docNoEl) {
-                docNoEl.value = `     /TB-`;
-                docNoEl.classList.remove('is-invalid');
-            }
-            const errDocNo = document.getElementById('ktlDocNumberErr');
-            if (errDocNo) errDocNo.style.display = 'none';
-
-            if (typeof flatpickr !== 'undefined' && docDateEl) {
-                flatpickr(docDateEl, { dateFormat: 'd/m/Y', allowInput: true, defaultDate: new Date() });
-            }
+            // [sn1] Số văn bản & Ngày ban hành: nhập tại khối Thông tin ban hành văn bản (Bước 2), trình lại điền theo phiếu trình trước (gqSignInit)
 
             // Bước 2: các cấp ký theo luồng đã cấu hình; ô ký chỉ sinh khi bấm Đặt chữ ký
             const ktlContentEl = document.getElementById('ktlSignContent');
             if (ktlContentEl) ktlContentEl.value = 'Kính trình Lãnh đạo xem xét, phê duyệt văn bản Thông báo không thụ lý hồ sơ yêu cầu bồi thường.';
-            gqSignInit('ktl', claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null);
+            gqSignInit('ktl', claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null, { kind: 'Không thụ lý' });
 
             // Reset File Offline
             removeKtlOfflineFile();
 
             // Khối Tệp văn bản trình ký: mặc định Sinh văn bản theo mẫu 04/BTNN
             ktlSetDocSrc('gen');
-            ['ktlDocDateErr', 'ktlDocFileError'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
-            if (docDateEl) docDateEl.classList.remove('is-invalid');
-            // Trình lại (Bị trả lại): nguồn tệp, tệp văn bản trình ký, Số/Ngày văn bản, Nơi nhận, ô ký, Nội dung trình, Tài liệu đính kèm của lần trình trước
+            ['ktlDocFileError'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
+            // Trình lại (Bị trả lại): nguồn tệp, tệp văn bản trình ký, Nơi nhận, ô ký, Nội dung trình, Tài liệu đính kèm của lần trình trước
             tlktGqRestore('ktl', prev, {
                 required: false,
                 setSrc: src => { document.querySelectorAll('input[name="ktlDocSrc"]').forEach(r => { r.checked = r.value === src; }); ktlSetDocSrc(src); },
                 setFile: f => { ktlOnlineFile = f; gqxRenderDocFile('ktl'); },
-                fields: [['ktlDocNumber', 'docNumber'], ['ktlDocDate', 'docDate'], ['ktlNoiNhan', 'noiNhan']]
+                fields: [['ktlNoiNhan', 'noiNhan']]
             });
             tlktKtlTransferRestore(prev);
 
@@ -23480,7 +23389,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             ktlApplyDocMeta();
             gqxRenderDocFile('ktl');
         }
-        // Số, ký hiệu văn bản / Ngày văn bản: chỉ hiển thị khi Ký số và Sinh văn bản theo mẫu 04/BTNN; ẩn khi Tải file (Ký số) hoặc Ký ngoài
+        // Thông tin điền vào Mẫu 04/BTNN (Nơi nhận): chỉ hiển thị khi Ký số và Sinh văn bản theo mẫu 04/BTNN; ẩn khi Tải file (Ký số) hoặc Ký ngoài
         function ktlApplyDocMeta() {
             const off = (document.querySelector('input[name="ktlSigningMethod"]:checked') || {}).value === 'offline';
             const show = !off && ktlDocSrc === 'gen';
@@ -23506,8 +23415,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             }
 
             ktlApplyDocMeta();
-            ['ktlDocNumber', 'ktlDocDate'].forEach(id => { const el = document.getElementById(id); if (el && !isOnline) el.classList.remove('is-invalid'); });
-            if (!isOnline) ['ktlDocNumberErr', 'ktlDocDateErr'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
             const stepperBar = document.getElementById('ktlStepperBar');
             const docSrcGroup = document.getElementById('ktlDocSrcGroup');
             const onlineSection = document.getElementById('ktlOnlineSection');
@@ -23910,26 +23817,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 document.getElementById('ktlReasonErr').style.display = 'none';
             }
 
-            const docNo = document.getElementById('ktlDocNumber');
-            if (ktlDocSrc === 'gen' && !docNo.value.trim()) {
-                docNo.classList.add('is-invalid');
-                document.getElementById('ktlDocNumberErr').style.display = 'block';
-                isValid = false;
-                if (!firstErr) firstErr = docNo;
-            } else {
-                docNo.classList.remove('is-invalid');
-                document.getElementById('ktlDocNumberErr').style.display = 'none';
-            }
-            const docDateK = document.getElementById('ktlDocDate');
-            if (ktlDocSrc === 'gen' && !docDateK.value.trim()) {
-                docDateK.classList.add('is-invalid');
-                document.getElementById('ktlDocDateErr').style.display = 'block';
-                isValid = false;
-                if (!firstErr) firstErr = docDateK;
-            } else {
-                docDateK.classList.remove('is-invalid');
-                document.getElementById('ktlDocDateErr').style.display = 'none';
-            }
+            // [sn1] Bỏ kiểm tra Số, ký hiệu / Ngày văn bản: nhập tại khối Thông tin ban hành văn bản (Bước 2), không bắt buộc
             if (!ktlOnlineFile) {
                 document.getElementById('ktlDocFileError').textContent = 'Đây là trường bắt buộc';
                 document.getElementById('ktlDocFileError').style.display = 'block';
@@ -23950,10 +23838,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             // Populate Step 2 A4 Document
             const claim = selectedKtlClaim || {};
             const W = typeof gqW === 'function' ? gqW() : null;
-            const docDateVal = document.getElementById('ktlDocDate').value || todayVi();
-            
-            document.getElementById('ktlA4DocNumber').innerText = docNo.value.trim();
-            document.getElementById('ktlA4DocDate').innerText = `Hà Nội, ngày ${docDateVal}`;
+            // [sn1] Dòng số, ký hiệu và dòng địa danh, ngày để trống; ô Số, ô Ngày của khối Thông tin ban hành văn bản đặt đè lên
+            document.getElementById('ktlA4DocNumber').innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/TB-';
+            document.getElementById('ktlA4DocDate').innerText = 'ngày ... tháng ... năm ...';
             document.getElementById('ktlA4NYC').innerText = (typeof getClaimRequesterName === 'function' ? getClaimRequesterName(claim) : claim.nyc) || 'Ông/Bà';
             document.getElementById('ktlA4Address').innerText = claim.address || claim.nycAddressDetail || 'Số 123 Phố Huế, P. Hàng Bài, Q. Hoàn Kiếm, TP. Hà Nội';
             document.getElementById('ktlA4ClaimCode').innerText = (typeof claimVvCode === 'function' ? claimVvCode(claim) : claim.code) || '--';
@@ -24140,8 +24027,10 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const sign = gqSignCollect('ktl');
             if (!sign) return;
 
-            const docNo = document.getElementById('ktlDocNumber').value.trim();
-            const docDate = document.getElementById('ktlDocDate').value.trim();
+            // [sn1] Số, ký hiệu / Ngày văn bản lấy từ khối Thông tin ban hành văn bản (Bước 2), ghi về trinhDuyet / signDoc.docNumber / docDate như trước
+            const docNo = sign.soKyHieu;
+            const docDate = sign.ngayVanBan;
+            if (ktlOnlineFile && ktlOnlineFile.source === 'generated') { const d = gqxBuildDoc('ktl', { soKyHieu: docNo, ngay: docDate }); if (d) ktlOnlineFile = Object.assign({}, ktlOnlineFile, { bodyHtml: d.html }); }
             const reasonEl = document.getElementById('ktlReason');
             const reasonCode = reasonEl.value;
             const reasonText = reasonEl.options[reasonEl.selectedIndex].text;
@@ -24394,7 +24283,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             return `<div class="gq-returned-block" id="gqReturnedBlock" style="background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px; font-size:13px;">
                 <div style="font-weight:700; color:#b45309; margin-bottom:8px;"><i class="fa-solid fa-rotate-left"></i> Lý do bị trả lại</div>
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:8px 16px;">
-                    ${cell('Lý do trả lại', r.reason, true)}${cell('Lãnh đạo trả lại', leader)}${cell('Thời điểm trả lại', r.at)}
+                    ${cell('Lý do trả lại', r.reason, true)}${cell('Người trả lại', leader)}${cell('Thời điểm trả lại', r.at)}
                 </div></div>`;
         }
         function gqWfInfoHtml(claim) {
@@ -24458,7 +24347,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 parts.push(`<h4 style="margin-top:10px;"><i class="fa-solid fa-stamp"></i> Văn bản yêu cầu bổ sung đã phát hành</h4>
                     <div><b>Số văn bản:</b> ${gqE(p.docNo)} - <b>Ngày văn bản:</b> ${gqE(p.docDate)} - <b>Văn bản đã đóng dấu:</b> ${gqE((p.files || []).join(', '))}</div>`);
             }
-            // [gqtl] Khối "Lý do bị trả lại" (đồng bộ kiểu khối trả lại các phân hệ BTNN): Lý do trả lại, Lãnh đạo trả lại, Thời điểm trả lại, Cấp ký duyệt
+            // [gqtl] Khối "Lý do bị trả lại" (đồng bộ kiểu khối trả lại các phân hệ BTNN): Lý do trả lại, Người trả lại, Thời điểm trả lại, Cấp ký duyệt
             if (rec && rec.status === 'Bị trả lại' && rec.returned) pre.unshift(gqReturnedBlockHtml(W, rec));
             if (rec && rec.approval) {
                 parts.push(`<h4 style="margin-top:10px;"><i class="fa-solid fa-sitemap"></i> Thông tin trình phê duyệt${W.approvalLabel(rec) ? ' - ' + gqE(W.approvalLabel(rec)) : ''}</h4>${gqApprovalTableHtml(rec)}`);
@@ -24992,9 +24881,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
     <script src="filter_toggle_auto.js?v=20261012"></script>
     <!-- [ctvv] Chi tiết vụ việc: khối các bước đã qua, tên 03 tab, Trình ký Mẫu 26/BTNN, bảng Tài liệu đính kèm đồng nhất (đặt sau các script chính để bọc hàm) -->
-    <script src="quan_ly_boi_thuong_ctvv.js?v=20261109ro1"></script>
+    <script src="quan_ly_boi_thuong_ctvv.js?v=20261112sn1"></script>
     <!-- [ttgq] Popup Trình ký Quyết định tiếp tục giải quyết bồi thường (Mẫu số 23/BTNN) -->
-    <script src="quan_ly_boi_thuong_ttgq.js?v=20261109ro1"></script>
+    <script src="quan_ly_boi_thuong_ttgq.js?v=20261112sn1"></script>
     <!-- [ycbs] Tiếp nhận hồ sơ bổ sung: nhãn Hồ sơ gốc / Bổ sung, Đã cập nhật bổ sung (bọc hàm màn Nhập liệu hồ sơ vụ việc) -->
     <script src="quan_ly_boi_thuong_ycbs.js?v=20261030s2"></script>
     <!-- [phdx] Tab Phục hồi danh dự: bấm Step -> khối tương ứng; thu gọn / mở rộng khối; khối Hoãn phục hồi danh dự + Tiếp tục thực hiện -->
@@ -25022,12 +24911,12 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="btnn_noi_thu_ly.js?v=20261104ntl1"></script>
     <script src="quan_ly_boi_thuong_kttr.js?v=20261102kt1"></script>
     <!-- [cdpd] Tạo yêu cầu - Cán bộ chủ động phục hồi danh dự khi có đủ thông tin: form tối thiểu, trình Thông báo tổ chức thực hiện phục hồi danh dự (chỉ Tải lên từ máy / Ký ngoài) -->
-    <script src="btnn_lanh_dao_actions.js?v=20261109ro1"></script>
-    <script src="btnn_phan_cong_ky_duyet.js?v=20261110ct1"></script>
-    <script src="quan_ly_boi_thuong_ccq.js?v=20261109ro1"></script>
-    <script src="quan_ly_boi_thuong_cdpd.js?v=20261109ro1"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261112sn1"></script>
+    <script src="btnn_phan_cong_ky_duyet.js?v=20261112dd7"></script>
+    <script src="quan_ly_boi_thuong_ccq.js?v=20261112sn1"></script>
+    <script src="quan_ly_boi_thuong_cdpd.js?v=20261112sn1"></script>
     <!-- [dgq] Dừng giải quyết (Mẫu 05/BTNN): popup trình ký Thông báo dừng giải quyết, khối Thông tin dừng giải quyết, dữ liệu mẫu BT-2026-541..544 (đặt sau dcgq, hdcv) -->
-    <script src="quan_ly_boi_thuong_dgq.js?v=20261109ro1"></script>
+    <script src="quan_ly_boi_thuong_dgq.js?v=20261112sn1"></script>
     <!-- [mh05] Xem chi tiết hồ sơ: khối Lý do bị trả lại / Không thụ lý / Chuyển CQGQBT / Thông tin xử lý và trình duyệt tại Tab 2; hồ sơ Bị trả lại mở Tab 2 + cuộn tới khối; dải thông báo không được xem (đặt sau mọi script bọc showCaseDetail) -->
     <script src="quan_ly_boi_thuong_mh05.js?v=20261030m3"></script>
     <!-- [gql] Hủy QĐ -> Đình chỉ hoặc Giải quyết lại: thao tác Giải quyết lại (Thao tác khác MH01 / thanh thao tác MH04), dòng phụ "QĐ đã bị hủy", lần thương lượng, khối Quyết định đã bị hủy; dữ liệu mẫu BT-2026-561, BT-2026-562 -->

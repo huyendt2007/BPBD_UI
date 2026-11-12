@@ -702,12 +702,13 @@ function ctvvmC7Lines(x) {
     }
     return L;
 }
-function ctvvmFormData() {
+// [sn1] bh: { soKyHieu, ngay } theo khối Thông tin ban hành văn bản (Bước 2); không truyền: để trống dòng số, ngày của mẫu (Bước 1, Xem trước)
+function ctvvmFormData(bh) {
     var claim = ctvvmClaim;
     var v = function (id) { var el = ctvvEl(id); return el ? String(el.value || '').trim() : ''; };
     return {
         forms: ctvvmForms(claim),
-        docNumber: v('ctvvmDocNumber'), docDate: v('ctvvmDocDate'), agency6: v('ctvvmAgency6'),
+        docNumber: (bh && bh.soKyHieu) || '', docDate: (bh && bh.ngay) || '', agency6: v('ctvvmAgency6'),
         time: v('ctvvmTime'), place: v('ctvvmPlace'), paper: v('ctvvmPaper'),
         portal: !!(ctvvEl('ctvvmPortal') && ctvvEl('ctvvmPortal').checked), portalAgency: v('ctvvmPortalAgency'),
         noiNhan: v('ctvvmNoiNhan').split(/\n/).map(function (s) { return s.trim(); }).filter(Boolean)
@@ -734,7 +735,7 @@ function ctvvmBuildMau26(claim, x) {
         + '<td style="width:50%; vertical-align:top; font-size:12pt;"><b><i>Nơi nhận:</i></b><br>' + nn + '</td>'
         + '<td style="text-align:center; vertical-align:top;"><b>Thủ trưởng cơ quan</b><br><i>(Ký, ghi rõ họ tên và đóng dấu)</i></td></tr></table>';
 }
-function ctvvmBuildDoc() { return ctvvmClaim ? { html: ctvvmBuildMau26(ctvvmClaim, ctvvmFormData()), base: ctvvmDocBase(ctvvmClaim) } : null; }
+function ctvvmBuildDoc(bh) { return ctvvmClaim ? { html: ctvvmBuildMau26(ctvvmClaim, ctvvmFormData(bh)), base: ctvvmDocBase(ctvvmClaim) } : null; }
 
 function ctvvmEnsureModal() {
     if (ctvvEl('modalCtvvm')) return;
@@ -760,7 +761,7 @@ function ctvvmEnsureModal() {
         + '<div id="ctvvmStepperBar" class="ktl-stepper-fullwidth"><div id="ctvvmStep1Tab" class="ktl-step-tab active" onclick="ctvvmGoStep1()"><span class="ktl-step-badge" id="ctvvmStep1Badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div>'
         + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="ctvvmStep2Tab" class="ktl-step-tab" onclick="ctvvmGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Thiết lập các cấp trình ký</span></div></div>'
         + '<div id="ctvvmStep1Body" class="sticky-modal-body gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
-        + '<div id="ctvvmReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="ctvvmReturnedReason">--</strong><br>Lãnh đạo trả lại: <span id="ctvvmReturnedOfficer">--</span> • Thời điểm trả lại: <span id="ctvvmReturnedDate">--</span></div></div>'
+        + '<div id="ctvvmReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="ctvvmReturnedReason">--</strong><br>Người trả lại: <span id="ctvvmReturnedOfficer">--</span> • Thời điểm trả lại: <span id="ctvvmReturnedDate">--</span></div></div>'
         + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
         + card('ctvvmCardSignOnline', 'online', 'Ký số trên hệ thống', 'Trình Lãnh đạo ký duyệt trên phần mềm', 'fa-file-signature', false, true)
         + card('ctvvmCardSignOffline', 'offline', 'Ký ngoài (Ban hành trực tiếp)', 'Tải lên văn bản PDF đã ký và đóng dấu', 'fa-stamp', true, false)
@@ -769,10 +770,7 @@ function ctvvmEnsureModal() {
         + '<div class="gqx-sec" id="ctvvmDocSection"><div class="gqx-sec-title" id="ctvvmDocSectionTitle"><i class="fa-solid fa-file-signature"></i> Tệp văn bản trình ký<span class="gqx-req">*</span></div>'
         + '<div id="ctvvmDocSrcGroup"><div class="doc-src-segmented"><button type="button" class="doc-src-seg-btn active" id="ctvvmSegBtnGen" onclick="ctvvmSetDocSrc(\'gen\')"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Sinh văn bản theo mẫu 26/BTNN</span></button><button type="button" class="doc-src-seg-btn" id="ctvvmSegBtnUpload" onclick="ctvvmSetDocSrc(\'upload\')"><i class="fa-solid fa-cloud-arrow-up"></i><span>Tải lên từ máy</span></button></div></div>'
         + '<div id="ctvvmDocMetaGroup" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px; margin-bottom:12px;"><div style="font-size:12px; font-weight:700; color:#334155; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:10px; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-sliders" style="color:#2563eb;"></i> Thông tin điền vào Mẫu 26/BTNN</div>'
-        + '<div class="gqx-grid2" style="margin-bottom:10px;">'
-        + fld('ctvvmDocNumber', 'Số, ký hiệu văn bản', true, '<input type="text" id="ctvvmDocNumber" class="form-control" maxlength="50" placeholder="Nhập số, ký hiệu văn bản" oninput="ctvvmClearErr(\'ctvvmDocNumber\')">')
-        + fld('ctvvmDocDate', 'Ngày văn bản', true, dateCtrl('ctvvmDocDate', 'dd/mm/yyyy'))
-        + '</div>'
+        // [sn1] Số, ký hiệu / Ngày văn bản: nhập tại khối Thông tin ban hành văn bản (Bước 2)
         + fld('ctvvmAgency6', 'Cơ quan thực hiện việc phục hồi danh dự', true, '<input type="text" id="ctvvmAgency6" class="form-control" maxlength="255" placeholder="Nhập tên cơ quan thực hiện việc phục hồi danh dự" oninput="ctvvmClearErr(\'ctvvmAgency6\')">')
         + '<div id="ctvvmC7Apology" class="ctvv-m26-c7" style="margin-top:10px;"><div class="ctvv-sub">Về việc tổ chức trực tiếp xin lỗi và cải chính công khai</div><div class="gqx-grid2">'
         + fld('ctvvmTime', 'Dự kiến thời gian', true, dateCtrl('ctvvmTime', 'dd/mm/yyyy HH:mm', true))
@@ -848,10 +846,8 @@ function openCtvvmModal(claimId) {
     var forms = ctvvmForms(claim);
     ctvvEl('ctvvmC7Apology').style.display = forms.apology ? '' : 'none';
     ctvvEl('ctvvmC7News').style.display = forms.news ? '' : 'none';
-    var d = new Date(); var p2 = function (n) { return String(n).padStart(2, '0'); };
     var set = function (id, v) { var el = ctvvEl(id); if (el) el.value = v == null ? '' : v; };
-    set('ctvvmDocNumber', sd.docNumber || '     /TB-');
-    set('ctvvmDocDate', sd.docDate || (p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + '/' + d.getFullYear()));
+    // [sn1] Số, ký hiệu / Ngày văn bản: khối Thông tin ban hành văn bản (Bước 2), trình lại điền theo phiếu trình trước (gqSignInit)
     set('ctvvmAgency6', sd.agency6 || ctvvmUnitName(claim));
     set('ctvvmTime', sd.time || '');
     set('ctvvmPlace', sd.place || '');
@@ -860,13 +856,12 @@ function openCtvvmModal(claimId) {
     set('ctvvmPortalAgency', sd.portalAgency || claim.officerAgency || '');
     ctvvmTogglePortal();
     set('ctvvmNoiNhan', (Array.isArray(sd.noiNhan) && sd.noiNhan.length ? sd.noiNhan : CTVV_NOI_NHAN_DEFAULT).join('\n'));
-    ['ctvvmDocNumber', 'ctvvmDocDate', 'ctvvmAgency6', 'ctvvmTime', 'ctvvmPlace', 'ctvvmPaper', 'ctvvmPortalAgency'].forEach(ctvvmClearErr);
+    ['ctvvmAgency6', 'ctvvmTime', 'ctvvmPlace', 'ctvvmPaper', 'ctvvmPortalAgency'].forEach(ctvvmClearErr);
     if (typeof flatpickr !== 'undefined') {
-        flatpickr(ctvvEl('ctvvmDocDate'), { dateFormat: 'd/m/Y', allowInput: true, defaultDate: ctvvEl('ctvvmDocDate').value, onChange: function () { ctvvmClearErr('ctvvmDocDate'); } });
         flatpickr(ctvvEl('ctvvmTime'), { enableTime: true, time_24hr: true, dateFormat: 'd/m/Y H:i', allowInput: true, defaultDate: ctvvEl('ctvvmTime').value || null, onChange: function () { ctvvmClearErr('ctvvmTime'); } });
     }
     ctvvEl('ctvvmSignContent').value = CTVV_CONTENT_DEFAULT;
-    gqSignInit('ctvvm', claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null);
+    gqSignInit('ctvvm', claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null, { kind: CTVV_KIND });
     ctvvmOfflineRemove();
     ctvvmSetDocSrc('gen');
     tlktGqRestore('ctvvm', prev, {
@@ -936,8 +931,7 @@ function ctvvmValidateStep1() {
     if (ctvvmDocSrc !== 'gen' || ctvvmIsOffline()) return null;
     var forms = ctvvmForms(ctvvmClaim);
     var req = function (id) { var el = ctvvEl(id); var v = el ? String(el.value || '').trim() : ''; if (!v) { first = first || ctvvmSetErr(id); return false; } ctvvmClearErr(id); return true; };
-    req('ctvvmDocNumber');
-    if (req('ctvvmDocDate') && typeof gqValidDateText === 'function' && !gqValidDateText(ctvvEl('ctvvmDocDate').value.trim())) first = first || ctvvmSetErr('ctvvmDocDate', 'Ngày văn bản không hợp lệ (dd/mm/yyyy)');
+    // [sn1] Số, ký hiệu / Ngày văn bản: nhập tại Bước 2, không bắt buộc - bỏ kiểm tra ở nút Tiếp tục
     req('ctvvmAgency6');
     if (forms.apology) { req('ctvvmTime'); req('ctvvmPlace'); }
     if (forms.news) { req('ctvvmPaper'); if (ctvvEl('ctvvmPortal').checked) req('ctvvmPortalAgency'); }
@@ -1007,7 +1001,7 @@ function ctvvmGoStep1() {
     ctvvEl('ctvvmBtnBackStep1').style.display = 'none';
     ctvvEl('ctvvmBtnSubmitOnline').style.display = 'none';
 }
-// Tiếp tục: kiểm tra Bước 1 (Thông tin điền vào Mẫu 26/BTNN hoặc tệp tải lên, dòng Tài liệu đính kèm) -> Bước 2
+// Tiếp tục: kiểm tra Bước 1 (Thông tin điền vào Mẫu 26/BTNN trừ Số, Ngày, hoặc tệp tải lên, dòng Tài liệu đính kèm) -> Bước 2
 function ctvvmGoStep2() {
     if (!ctvvmClaim || ctvvmIsOffline()) return;
     if (ktlxConverting.ctvvm) { showToast('Đang chuyển đổi tệp sang PDF, vui lòng chờ hoàn tất.', 'warning'); return; }
@@ -1053,17 +1047,21 @@ function ctvvmSubmitOnline() {
     if (!claim || !ctvvmOnlineFile) return;
     var sign = gqSignCollect('ctvvm');
     if (!sign) return;
-    var x = ctvvmFormData();
+    // [sn1] Số, ký hiệu / Ngày văn bản lấy từ khối Thông tin ban hành văn bản (Bước 2), ghi về docNumber / docDate như trước
+    var bh = { soKyHieu: sign.soKyHieu, ngay: sign.ngayVanBan };
+    var x = ctvvmFormData(bh);
     var gen = ctvvmOnlineFile.source === 'generated';
     var fileName = ctvvmOnlineFile.name;
     var resultStatus = ctvvmResultStatus(claim);
     // Nhánh Giải quyết YCBT đã Hoàn thành: hồ sơ luồng tạm chuyển "Đang phục hồi danh dự" để trình; ký duyệt xong trả về Hoàn thành
     var rec0 = gqRecord(claim); var W = gqW();
     if (rec0 && W && rec0.status === 'Hoàn thành') { rec0.status = CASE_PHDD_PENDING_STATUS; W.upsertRecord(rec0); }
+    var genDoc = gen ? ctvvmBuildDoc(bh) : null;
+    if (genDoc) ctvvmOnlineFile = Object.assign({}, ctvvmOnlineFile, { bodyHtml: genDoc.html });
     var draftDoc = { source: gen ? 'generated' : 'uploaded', formNo: CTVV_FORM, docTitle: 'Thông báo về việc tổ chức thực hiện phục hồi danh dự', generatedName: gen ? fileName : '', uploadedName: gen ? '' : fileName, bodyHtml: gen ? ctvvmOnlineFile.bodyHtml : '' };
     var signDoc = Object.assign({
         method: 'Ký số', file: gen ? ctvvmDocBase(claim) + '.pdf' : fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords,
-        docNumber: gen ? x.docNumber : '', docDate: gen ? x.docDate : '', agency6: x.agency6, time: x.time, place: x.place, paper: x.paper,
+        docNumber: x.docNumber, docDate: x.docDate, agency6: x.agency6, time: x.time, place: x.place, paper: x.paper,
         portal: x.portal, portalAgency: x.portalAgency, noiNhan: gen ? x.noiNhan : []
     }, tlktGqExtra('ctvvm', ctvvmOnlineFile, ctvvmDocSrc, sign.content));
     var res = gqSubmit(claim, CTVV_KIND, sign.content, [], { assignee: sign.assignees[0] || '', assignees: sign.assignees, reason: CTVV_KIND, resultStatus: resultStatus, draftDoc: draftDoc, signDoc: signDoc });

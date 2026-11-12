@@ -508,10 +508,16 @@
             return `<div class="ld-sigbox ${cls}${done ? ' done' : ''}" style="left:${c.x}px; top:${c.y}px; width:${c.w}px; height:${c.h}px;">${kn ? '<span class="badge" style="float:right; font-size:9.5px; background:#dbeafe; color:#1e40af;">Ký nháy</span>' : ''}<strong>Cấp ${idx + 1} - ${esc(uid ? WF.userName(uid) : '')}</strong>${done ? `<br><span style="color:#16a34a;">✔ Đã ký duyệt ${esc(done.at || '')}</span>` : ''}</div>`;
         };
         const last = Math.max(path.length - 1, 0);
+        // [dd4] Phần đầu văn bản cùng bố cục trang văn bản Bước 2 popup trình (xsA4Page): ô Số, ô Ngày, ô Dấu cán bộ đặt khi trình hiển thị đúng dòng
+        const lastUnit = path[last] || '';
+        const subUnit = lastUnit && lastUnit !== root && WF.getRootId(lastUnit) === root ? WF.unitName(lastUnit).toUpperCase() : '';
         document.getElementById('ldDPreview').innerHTML = `<div style="color:#e2e8f0; font-size:12px; margin-bottom:8px;"><i class="fa-solid fa-file-pdf"></i> ${esc(sd.file || 'Van_ban_trinh_ky.pdf')} · Trang 1/1</div>
             <div class="ld-a4">
-                <div style="display:flex; justify-content:space-between; text-align:center; font-size:13px;"><div><strong>${esc(WF.unitName(root).toUpperCase())}</strong><br>Số: ......</div><div><strong>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</strong><br><u>Độc lập - Tự do - Hạnh phúc</u></div></div>
-                <div style="text-align:center; font-weight:bold; margin:28px 0 18px;">${esc(title)}</div>
+                <div style="display:flex; justify-content:space-between; margin:-6px 0 20px; line-height:1.6;">
+                    <div style="text-align:center; width:45%;"><div style="font-weight:bold; font-size:13px;">${esc(WF.unitName(root).toUpperCase())}</div>${subUnit ? `<div style="font-weight:bold; font-size:12.5px;">${esc(subUnit)}</div>` : ''}<div style="font-size:13px; margin-top:4px;">Số: ......</div><div style="border-bottom:1px solid #000; width:120px; margin:4px auto;"></div></div>
+                    <div style="text-align:center; width:50%;"><div style="font-weight:bold; font-size:13.5px;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div><div style="font-weight:bold; font-size:13px;">Độc lập - Tự do - Hạnh phúc</div><div style="border-bottom:1px solid #000; width:150px; margin:4px auto;"></div><div style="font-style:italic; font-size:13.5px; margin-top:5px;">......, ngày ... tháng ... năm 2026</div></div>
+                </div>
+                <div style="text-align:center; font-weight:bold; margin:26px 0 18px;">${esc(title)}</div>
                 <p><strong>Kính gửi:</strong> ${esc(rec.nycName || '--')}</p>
                 <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước năm 2017; xét yêu cầu (Mã hồ sơ: <strong>${esc(rec.code)}</strong>),</p>
                 ${body}

@@ -234,15 +234,16 @@ function dcgqBuildMau25(claim, x) {
         + '<td style="width:50%; vertical-align:top; font-size:12pt;"><b><i>Nơi nhận:</i></b><br>' + nn + '</td>'
         + '<td style="text-align:center; vertical-align:top;"><b>THỦ TRƯỞNG CƠ QUAN</b><br><i>(Ký, ghi rõ họ tên và đóng dấu)</i></td></tr></table>';
 }
-function dcgqFormData() {
+// [sn1] bh: { soKyHieu, ngay } theo khối Thông tin ban hành văn bản (Bước 2); không truyền: để trống dòng số, ngày của mẫu (Bước 1, Xem trước)
+function dcgqFormData(bh) {
     var code = dcgqEl('dcgqReason').value;
     var detail = dcgqEl('dcgqDetail').value.trim();
     return {
         reasonCode: code, reasonText: dcgqReasonText(code), detail: detail, reasonDoc: dcgqReasonForDoc(code, detail),
-        docNumber: dcgqEl('dcgqDocNumber').value.trim(), docDate: dcgqEl('dcgqDocDate').value.trim(), noiNhan: dcgqNoiNhanLines(), advance: dcgqAdvance
+        docNumber: (bh && bh.soKyHieu) || '', docDate: (bh && bh.ngay) || '', noiNhan: dcgqNoiNhanLines(), advance: dcgqAdvance
     };
 }
-function dcgqBuildDoc() { return dcgqClaim ? { html: dcgqBuildMau25(dcgqClaim, dcgqFormData()), base: dcgqDocBaseName(dcgqClaim) } : null; }
+function dcgqBuildDoc(bh) { return dcgqClaim ? { html: dcgqBuildMau25(dcgqClaim, dcgqFormData(bh)), base: dcgqDocBaseName(dcgqClaim) } : null; }
 
 // ---------- Giao diện ----------
 function dcgqEnsureModal() {
@@ -267,7 +268,7 @@ function dcgqEnsureModal() {
         + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="dcgqStep2Tab" class="ktl-step-tab" onclick="dcgqGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Thiết lập các cấp trình ký</span></div></div>'
         // Bước 1
         + '<div id="dcgqStep1Body" class="sticky-modal-body gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
-        + '<div id="dcgqReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="dcgqReturnedReason">--</strong><br>Lãnh đạo trả lại: <span id="dcgqReturnedOfficer">--</span> • Thời điểm trả lại: <span id="dcgqReturnedDate">--</span></div></div>'
+        + '<div id="dcgqReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="dcgqReturnedReason">--</strong><br>Người trả lại: <span id="dcgqReturnedOfficer">--</span> • Thời điểm trả lại: <span id="dcgqReturnedDate">--</span></div></div>'
         + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
         + card('dcgqCardSignOnline', 'online', 'Ký số trên hệ thống', 'Trình Lãnh đạo ký duyệt trên phần mềm', 'fa-file-signature', false, true)
         + card('dcgqCardSignOffline', 'offline', 'Ký ngoài (Ban hành trực tiếp)', 'Tải lên văn bản PDF đã ký và đóng dấu', 'fa-stamp', true, false)
@@ -282,8 +283,7 @@ function dcgqEnsureModal() {
         + '<div class="gqx-sec" id="dcgqDocSection"><div class="gqx-sec-title" id="dcgqDocSectionTitle"><i class="fa-solid fa-file-signature"></i> Tệp văn bản trình ký<span class="gqx-req">*</span></div>'
         + '<div id="dcgqDocSrcGroup"><div class="doc-src-segmented"><button type="button" class="doc-src-seg-btn active" id="dcgqSegBtnGen" onclick="dcgqSetDocSrc(\'gen\')"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Sinh văn bản theo mẫu 25/BTNN</span></button><button type="button" class="doc-src-seg-btn" id="dcgqSegBtnUpload" onclick="dcgqSetDocSrc(\'upload\')"><i class="fa-solid fa-cloud-arrow-up"></i><span>Tải lên từ máy</span></button></div></div>'
         + '<div id="dcgqDocMetaGroup" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px; margin-bottom:12px;"><div style="font-size:12px; font-weight:700; color:#334155; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:10px; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-sliders" style="color:#2563eb;"></i> Thông tin điền vào Mẫu 25/BTNN</div>'
-        + '<div class="gqx-grid2" style="margin-bottom:10px;"><div class="gqx-field"><label class="form-label" for="dcgqDocNumber">Số, ký hiệu văn bản<span class="gqx-req">*</span></label><input type="text" id="dcgqDocNumber" class="form-control" maxlength="50" placeholder="Nhập số, ký hiệu văn bản" oninput="dcgqClearErr(\'dcgqDocNumber\')"><div id="dcgqDocNumberErr" class="gqx-err">Đây là trường bắt buộc</div></div>'
-        + '<div class="gqx-field"><label class="form-label" for="dcgqDocDate">Ngày văn bản<span class="gqx-req">*</span></label><div class="gqx-date"><input type="text" id="dcgqDocDate" class="form-control" placeholder="dd/mm/yyyy" readonly onchange="dcgqClearErr(\'dcgqDocDate\')"><i class="fa-regular fa-calendar-days" onclick="var i=document.getElementById(\'dcgqDocDate\'); if(i._flatpickr) i._flatpickr.open();" title="Chọn ngày"></i></div><div id="dcgqDocDateErr" class="gqx-err">Đây là trường bắt buộc</div></div></div>'
+        // [sn1] Số, ký hiệu / Ngày văn bản: nhập tại khối Thông tin ban hành văn bản (Bước 2); khối còn Nơi nhận
         + '<div class="gqx-field" style="margin-bottom:0;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;"><label class="form-label" for="dcgqNoiNhan" style="margin-bottom:0;">Nơi nhận</label><span style="font-size:11.5px; color:#64748b;"><i class="fa-solid fa-circle-info"></i> Mỗi nơi nhận trên 01 dòng</span></div><textarea id="dcgqNoiNhan" class="form-control" rows="5" style="font-size:12.5px; line-height:1.5; resize:vertical;" placeholder="Nhập nơi nhận, mỗi nơi nhận 01 dòng..."></textarea></div></div>'
         + '<div id="dcgqOnlineSection"><input type="file" id="dcgqOnlineFileInput" accept=".pdf,.doc,.docx" style="display:none;" onchange="dcgqOnlineUpload(this)"><div id="dcgqDocFileBox"></div><div id="dcgqDocFileError" class="gqx-err">Đây là trường bắt buộc</div></div>'
         + '<div id="dcgqOfflineSection" style="display:none;"><input type="file" id="dcgqOfflineFileInput" accept=".pdf" style="display:none;" onchange="dcgqOfflineUpload(this)">'
@@ -358,23 +358,19 @@ function openDcgqModal(claimId) {
     dcgqAdvance = dcgqFindAdvance(claim);
     dcgqRenderAdvance();
     dcgqRenderThuHoi(claim, prev ? sd : null);
-    // Thông tin điền vào Mẫu 25/BTNN (mặc định), Nội dung trình, các cấp ký
-    var d = new Date(); var p2 = function (n) { return String(n).padStart(2, '0'); };
-    dcgqEl('dcgqDocNumber').value = '     /QĐ-';
-    dcgqEl('dcgqDocDate').value = p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + '/' + d.getFullYear();
+    // Thông tin điền vào Mẫu 25/BTNN (Nơi nhận mặc định), Nội dung trình, các cấp ký
+    // [sn1] Số, ký hiệu / Ngày văn bản: khối Thông tin ban hành văn bản (Bước 2), trình lại điền theo phiếu trình trước (gqSignInit)
     dcgqEl('dcgqNoiNhan').value = dcgqNoiNhanDefault(claim);
-    ['dcgqReason', 'dcgqDocNumber', 'dcgqDocDate'].forEach(dcgqClearErr);
-    if (typeof flatpickr !== 'undefined') flatpickr(dcgqEl('dcgqDocDate'), { dateFormat: 'd/m/Y', allowInput: true, defaultDate: dcgqEl('dcgqDocDate').value, onChange: function () { dcgqClearErr('dcgqDocDate'); } });
+    dcgqClearErr('dcgqReason');
     dcgqEl('dcgqSignContent').value = DCGQ_CONTENT_DEFAULT;
-    gqSignInit('dcgq', claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null);
+    gqSignInit('dcgq', claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null, { kind: DCGQ_KIND });
     dcgqOfflineRemove();
     dcgqSetDocSrc('gen');
-    // Trình lại: nguồn tệp, tệp tải lên, Số/Ngày văn bản, Nơi nhận, ô ký, Nội dung trình, Tài liệu đính kèm của lần trình trước
+    // Trình lại: nguồn tệp, tệp tải lên, Nơi nhận, ô ký, Nội dung trình, Tài liệu đính kèm của lần trình trước
     tlktGqRestore('dcgq', prev, {
         required: false,
         setSrc: function (src) { dcgqSetDocSrc(src); },
-        setFile: function (f) { dcgqOnlineFile = f; dcgqRenderDocBox(); },
-        fields: [['dcgqDocNumber', 'docNumber'], ['dcgqDocDate', 'docDate']]
+        setFile: function (f) { dcgqOnlineFile = f; dcgqRenderDocBox(); }
     });
     if (prev && Array.isArray(sd.noiNhan) && sd.noiNhan.length) dcgqEl('dcgqNoiNhan').value = sd.noiNhan.join('\n');
     dcgqEl('dcgqSigningMethodOnline').checked = true;
@@ -409,7 +405,6 @@ function dcgqToggleSigningMethod(method) {
         var ico = c.querySelector('.sign-card-check i'); if (ico) ico.className = x[1] ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle';
     });
     dcgqApplyDocMeta();
-    if (!isOnline) ['dcgqDocNumber', 'dcgqDocDate'].forEach(dcgqClearErr);
     var bar = dcgqEl('dcgqStepperBar');
     bar.style.display = 'flex'; bar.classList.toggle('is-collapsed', !isOnline); bar.setAttribute('aria-hidden', isOnline ? 'false' : 'true');
     var show = function (id, on, disp) { var el = dcgqEl(id); if (el) el.style.display = on ? (disp || 'block') : 'none'; };
@@ -440,13 +435,7 @@ function dcgqValidateStep1() {
     var first = null;
     if (!dcgqEl('dcgqReason').value) first = dcgqSetErr('dcgqReason'); else dcgqClearErr('dcgqReason');
     var thErr = dcgqValidateThuHoi(); first = first || thErr;
-    if (dcgqDocSrc === 'gen') {
-        var no = dcgqEl('dcgqDocNumber').value.trim(), dt = dcgqEl('dcgqDocDate').value.trim();
-        if (!no) first = first || dcgqSetErr('dcgqDocNumber'); else dcgqClearErr('dcgqDocNumber');
-        if (!dt) first = first || dcgqSetErr('dcgqDocDate', 'Đây là trường bắt buộc');
-        else if (typeof gqValidDateText === 'function' && !gqValidDateText(dt)) first = first || dcgqSetErr('dcgqDocDate', 'Ngày văn bản không hợp lệ (dd/mm/yyyy)');
-        else dcgqClearErr('dcgqDocDate');
-    }
+    // [sn1] Số, ký hiệu / Ngày văn bản: nhập tại Bước 2, không bắt buộc - bỏ kiểm tra ở nút Tiếp tục
     return first;
 }
 function dcgqPreview() {
@@ -515,7 +504,7 @@ function dcgqGoStep1() {
     dcgqEl('dcgqBtnBackStep1').style.display = 'none';
     dcgqEl('dcgqBtnSubmitOnline').style.display = 'none';
 }
-// Tiếp tục: kiểm tra Bước 1 (Căn cứ đình chỉ, Số/Ngày văn bản hoặc tệp tải lên, dòng Tài liệu đính kèm) -> Bước 2
+// Tiếp tục: kiểm tra Bước 1 (Căn cứ đình chỉ, tệp tải lên, dòng Tài liệu đính kèm) -> Bước 2
 function dcgqGoStep2() {
     if (!dcgqClaim || dcgqIsOffline()) return;
     if (ktlxConverting.dcgq) { showToast('Đang chuyển đổi tệp sang PDF, vui lòng chờ hoàn tất.', 'warning'); return; }
@@ -569,17 +558,20 @@ function dcgqSubmitOnline() {
     if (!claim || !dcgqOnlineFile) return;
     var sign = gqSignCollect('dcgq');
     if (!sign) return;
-    var x = dcgqFormData();
+    // [sn1] Số, ký hiệu / Ngày văn bản lấy từ khối Thông tin ban hành văn bản (Bước 2), ghi về docNumber / docDate như trước
+    var bh = { soKyHieu: sign.soKyHieu, ngay: sign.ngayVanBan };
+    var x = dcgqFormData(bh);
     var prevSt = dcgqPrevStatus(claim);
     var gen = dcgqOnlineFile.source === 'generated';
     var fileName = dcgqOnlineFile.name;
     var reasonFull = x.reasonText + (x.detail ? ': ' + x.detail : '');
     var th = dcgqThuHoiData();
-    var draftDoc = { source: gen ? 'generated' : 'uploaded', formNo: DCGQ_FORM, docTitle: 'Quyết định đình chỉ giải quyết yêu cầu bồi thường', generatedName: gen ? fileName : '', uploadedName: gen ? '' : fileName, bodyHtml: gen ? dcgqOnlineFile.bodyHtml : '' };
+    var genDoc = gen ? dcgqBuildDoc(bh) : null;
+    var draftDoc = { source: gen ? 'generated' : 'uploaded', formNo: DCGQ_FORM, docTitle: 'Quyết định đình chỉ giải quyết yêu cầu bồi thường', generatedName: gen ? fileName : '', uploadedName: gen ? '' : fileName, bodyHtml: genDoc ? genDoc.html : '' };
     var signDoc = Object.assign({
         method: 'Ký số', file: gen ? dcgqDocBaseName(claim) + '.pdf' : fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords,
         reasonCode: x.reasonCode, reasonText: x.reasonText, detail: x.detail,
-        docNumber: gen ? x.docNumber : '', docDate: gen ? x.docDate : '', noiNhan: gen ? x.noiNhan : [], advance: x.advance,
+        docNumber: x.docNumber, docDate: x.docDate, noiNhan: gen ? x.noiNhan : [], advance: x.advance,
         thuHoi: th.thuHoi, thuHoiReason: th.thuHoiReason
     }, tlktGqExtra('dcgq', dcgqOnlineFile, dcgqDocSrc, sign.content));
     var res = gqSubmit(claim, DCGQ_KIND, sign.content, [], { assignee: sign.assignees[0] || '', assignees: sign.assignees, reason: reasonFull, resultStatus: DCGQ_RESULT, draftDoc: draftDoc, signDoc: signDoc });

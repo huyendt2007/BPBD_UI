@@ -41,7 +41,7 @@ function ccqEnsureModal() {
         + '<div id="ccqStepperBar" class="ktl-stepper-fullwidth"><div id="ccqStep1Tab" class="ktl-step-tab active" onclick="ccqGoStep1()"><span class="ktl-step-badge" id="ccqStep1Badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div>'
         + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="ccqStep2Tab" class="ktl-step-tab" onclick="ccqGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Thiết lập các cấp trình ký</span></div></div>'
         + '<div id="ccqStep1Body" class="sticky-modal-body gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
-        + '<div id="ccqReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="ccqReturnedReason">--</strong><br>Lãnh đạo trả lại: <span id="ccqReturnedOfficer">--</span> • Thời điểm trả lại: <span id="ccqReturnedDate">--</span></div></div>'
+        + '<div id="ccqReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả lại: <strong id="ccqReturnedReason">--</strong><br>Người trả lại: <span id="ccqReturnedOfficer">--</span> • Thời điểm trả lại: <span id="ccqReturnedDate">--</span></div></div>'
         + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
         + card('online', 'Ký số trên hệ thống', 'Trình Lãnh đạo ký duyệt trên phần mềm', 'fa-file-signature', false)
         + card('offline', 'Ký ngoài (Ban hành trực tiếp)', 'Tải lên văn bản PDF đã ký và đóng dấu', 'fa-stamp', true)
@@ -106,7 +106,8 @@ function ccqOpen(claimId) {
     ccqEl('ccqFooterMsg').innerText = '';
     if (typeof gqMountTargetUnitTree === 'function') gqMountTargetUnitTree(claim, act ? act.targetUnitId : '');
     ccqEl('ccqSignContent').value = CCQ_CONTENT;
-    gqSignInit('ccq', claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null);
+    // [sn1] Bước 2 có khối Thông tin ban hành văn bản (Số, ký hiệu, Địa danh, Ngày văn bản; trình lại điền theo phiếu trình trước)
+    gqSignInit('ccq', claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null, { kind: CCQ_KIND });
     ccqOfflineRemove();
     ccqRenderDocBox();
     tlktGqRestore('ccq', prev, { required: false, setFile: function (f) { ccqS.online = f; ccqRenderDocBox(); } });
@@ -270,7 +271,8 @@ function ccqSubmitOnline() {
     var fileName = ccqS.online.name;
     var files = ccqTransferFiles(fileName);
     var draftDoc = { source: 'uploaded', formNo: '', docTitle: 'Văn bản chuyển cơ quan giải quyết bồi thường', generatedName: '', uploadedName: fileName, bodyHtml: '' };
-    var signDoc = Object.assign({ method: 'Ký số', file: fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords }, tlktGqExtra('ccq', ccqS.online, 'upload', sign.content));
+    // [sn1] Số, ký hiệu / Ngày văn bản theo khối Thông tin ban hành văn bản (Bước 2)
+    var signDoc = Object.assign({ method: 'Ký số', file: fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords, docNumber: sign.soKyHieu, docDate: sign.ngayVanBan }, tlktGqExtra('ccq', ccqS.online, 'upload', sign.content));
     var res = gqSubmit(claim, CCQ_KIND, sign.content, files, { assignee: sign.assignees[0] || '', assignees: sign.assignees, draftDoc: draftDoc, signDoc: signDoc, action: { type: 'transfer', targetUnitId: unitId, content: tc, files: files } });
     if (!res || res.ok === false) { ccqEl('ccqFooterMsg').innerText = res ? res.message : 'Không trình được hồ sơ.'; return; }
     gqSaveData(claim, { transferRequest: { via: CCQ_KIND, targetUnitId: unitId, targetName: W.unitName(unitId), content: tc, files: files, fileName: fileName, signingMethod: 'Ký số' } });

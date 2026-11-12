@@ -802,7 +802,7 @@
 
     <!-- Luồng xử lý BTNN dùng chung: đếm hồ sơ tab Chờ xử lý cho badge menu Tiếp nhận hồ sơ -->
     <script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261110ct2"></script>
-    <script src="../03_Boi_thuong_nha_nuoc/btnn_badge_cho_xu_ly.js?v=20261109stp1"></script>
+    <script src="../03_Boi_thuong_nha_nuoc/btnn_badge_cho_xu_ly.js?v=20261112dd4"></script>
     <script>
         // Menu Data Model without numerical headers in titles
         const menuData = [
@@ -899,6 +899,7 @@
                     // 06/11/2026: đồng bộ theo HomePageBTNN.html (sắp xếp menu theo góp ý khách hàng ngày 02/11/2026); sửa menu BTNN thì sửa cả 2 trang
                     // Badge số lượng (badgeKey bdg_*) = badge tab Chờ xử lý của phân hệ, tính qua tiện ích dùng chung BDG (btnn_badge_cho_xu_ly.js)
                     { title: "Bàn làm việc Lãnh đạo", url: "../03_Boi_thuong_nha_nuoc/dashboard_lanh_dao_btnn.html?v=20261106vt1" },
+                    { title: "Ban hành văn bản", url: "../03_Boi_thuong_nha_nuoc/ban_hanh_van_ban.html?v=20261112dd4", badgeKey: "bdg_banHanh", badgeType: "danger" },
                     { title: "Tiếp nhận hồ sơ", url: "../03_Boi_thuong_nha_nuoc/tiep_nhan_ycbt.html?v=20261109tt1", badgeKey: "bdg_tiepNhan", badgeType: "danger" },
                     { title: "Xác định cơ quan giải quyết bồi thường", badgeKey: "bdg_xdcq", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/xac_dinh_co_quan_boi_thuong.html?v=20261109tt2" },
                     {

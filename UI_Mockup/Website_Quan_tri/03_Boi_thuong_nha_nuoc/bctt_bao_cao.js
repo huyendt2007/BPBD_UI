@@ -580,8 +580,11 @@
     // và bước Lãnh đạo Sở, Lãnh đạo Phòng phân công xử lý báo cáo bị trả lại (thay một phần QDDA_014, QDDA_015). Hai hàm giữ lại, luôn trả về false
     function coPhanCongSo(r) { return false; }
     function traBo(r) { return false; }
+    // [vt1] 12/11/2026 (SRS quy tắc 4, neo bctt-dong-dau): Lãnh đạo UBND tỉnh đã Ký duyệt ở cấp cuối phiếu trình tích Đóng dấu cơ quan -
+    // báo cáo giữ `Chờ duyệt`, bộ 04 biểu mẫu chờ Văn thư của Đơn vị ban hành đóng dấu, ban hành (menu Ban hành văn bản)
+    function vtCho(r) { return !!r && r.status === ST.CHO && !!r.submit && !!r.submit.choVanThu; }
     function canApprove(r) {
-        if (!r || !choKy(r) || r.unitId !== myUnit() || isBtpReport(r)) return false;
+        if (!r || !choKy(r) || r.unitId !== myUnit() || isBtpReport(r) || vtCho(r)) return false;
         var lv = r.submit.levels[r.submit.current];
         return !!lv && lv.leaderId === me().userId;
     }
@@ -1294,6 +1297,17 @@
             '.bctt-invalid{border-color:#dc2626 !important;box-shadow:0 0 0 2px rgba(220,38,38,.12) !important;}',
             '.bctt-full{position:fixed;inset:0;z-index:2400;background:#fff;display:none;flex-direction:column;}.bctt-full.on{display:flex;}',
             '.bctt-full .bctt-split{flex:1;min-height:0;}',
+            // [vt1] 12/11/2026: khối Thông tin ban hành văn bản (Đóng dấu cơ quan, Đơn vị ban hành, Văn thư xử lý) và ô Dấu trên từng biểu mẫu - như khối dùng chung btnn_phan_cong_ky_duyet.js
+            '.bctt-bh{border:1px solid #e2e8f0;border-radius:10px;padding:12px;background:#f8fafc;display:flex;flex-direction:column;gap:10px;margin:0 0 12px;}',
+            '.bctt-bh-td{font-weight:700;font-size:13px;color:#0f172a;display:flex;gap:6px;align-items:center;}.bctt-bh-td i{color:#b91c1c;}',
+            '.bctt-dd{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;border:1px solid #fecaca;border-radius:10px;background:#fff7f7;cursor:pointer;font-size:13px;color:#0f172a;margin:0;}',
+            '.bctt-dd input{margin-top:3px;width:16px;height:16px;accent-color:#1d4ed8;flex-shrink:0;}.bctt-dd .s{display:block;margin-top:2px;font-size:12px;color:#64748b;font-weight:400;}',
+            '.bctt-dd.locked{cursor:not-allowed;background:#f8fafc;border-color:#e2e8f0;}.bctt-dd.locked b,.bctt-dd.locked .s{color:#94a3b8;}.bctt-dd .lk{display:block;margin-top:6px;font-size:12px;color:#b45309;}',
+            '.bctt-bh-f .form-label{font-size:12px;margin-bottom:4px;display:block;font-weight:600;color:#334155;}.bctt-bh-f select{font-size:13px;background:#fff;}',
+            '.bctt-bh-vt{margin-top:6px;font-size:11.5px;color:#475569;}',
+            '.bctt-dau{position:absolute;z-index:5;border-radius:50%;border:2px dashed #dc2626;background:rgba(254,242,242,.55);color:#b91c1c;display:flex;flex-direction:column;align-items:center;justify-content:center;font:700 12px Inter,sans-serif;text-align:center;box-sizing:border-box;padding:8px;}',
+            '.bctt-dau.edit{cursor:move;user-select:none;}.bctt-dau.keo{opacity:.9;}.bctt-dau small{display:block;font-weight:500;font-size:9.5px;color:#92400e;margin-top:2px;}',
+            '.bctt-dau.xem{border-color:#94a3b8;color:#64748b;background:rgba(248,250,252,.45);}',
             '@media (max-width:1100px){.bctt-meta{grid-template-columns:repeat(2,minmax(0,1fr));}}'
         ].join('\n');
         var st = document.createElement('style'); st.id = 'bcttCss'; st.textContent = css; document.head.appendChild(st);
@@ -1365,6 +1379,7 @@
     function statusCell(r, dayDu) {
         var sub = '', nx = dayDu ? nguoiXuLySo(r) : '', nd = dayDu ? nguoiDuyetCot(r) : (choKy(r) ? nguoiDuyet(r.submit.levels[r.submit.current]) : '--');
         if (nx) sub = '<span class="bctt-sub uxu-sub">Người xử lý: ' + nx + '</span>';
+        else if (vtCho(r)) sub = '<span class="bctt-sub uxu-sub">' + KIND + ' - Chờ Văn thư ban hành</span>';   // [vt1]
         else if (nd !== '--') sub = '<span class="bctt-sub uxu-sub">Người duyệt: ' + nd + '</span>';
         // 04/11/2026 (nhanhl2): bỏ dòng phụ «Bộ Tư pháp trả lại» dưới trạng thái `Bị trả lại`
         // 03/11/2026: bỏ dòng phụ `Đã ban hành` / `Đã gửi Bộ Tư pháp` vì tên trạng thái mới đã nói rõ (stName)
@@ -1754,7 +1769,7 @@
             + (r.status === ST.TC && r.reject ? (function () {
                 var k = 'tra-lai|' + r.id + '|' + r.reject.at;
                 return '<div class="bctt-alert' + tgLop(k) + '" id="bcttRejectBox" data-tg="' + esc(k) + '"><div class="tg-dau"><b class="t">' + (traVe(r) ? 'LÝ DO BỊ TRẢ LẠI, ĐANG CHỜ LÃNH ĐẠO XEM XÉT LẠI' : 'LÝ DO BỊ TRẢ LẠI') + '</b>' + tgNut(k) + '</div>'
-                    + '<div class="tg-than">Lý do trả lại: <strong>' + esc(r.reject.reason) + '</strong><br>Lãnh đạo trả lại: ' + esc(r.reject.byName) + ' (Cấp ' + r.reject.level + ') • Thời điểm trả lại: ' + esc(r.reject.at) + '</div></div>';
+                    + '<div class="tg-than">Lý do trả lại: <strong>' + esc(r.reject.reason) + '</strong><br>Người trả lại: ' + esc(r.reject.byName) + (r.reject.level ? ' (Cấp ' + r.reject.level + ')' : '') + ' • Thời điểm trả lại: ' + esc(r.reject.at) + '</div></div>';
             })() : '')
             // Văn bản yêu cầu điều chỉnh của Bộ Tư pháp đặt trên khối Tệp báo cáo; tiêu đề khối tệp chỉ ghi «Tệp báo cáo» (04/11/2026, nhanhl2)
             + (!isBtpReport(r) && dsYC(r).length ? '<div class="bctt-files">' + ycBangHtml(r) + '</div>' : '')
@@ -2707,6 +2722,10 @@
         sub = { id: id, step: 1, fid: 'm42', nl: { on: nlOn, kyNhay: !!(pnl && pnl.kyNhay), placed: daDat(pnl && pnl.viTri), viTri: pnl && pnl.viTri ? JSON.parse(JSON.stringify(pnl.viTri)) : null },
             levels: levels,
             noiDung: prev ? prev.noiDung : 'Kính trình Lãnh đạo xem xét, ký duyệt Báo cáo công tác bồi thường nhà nước năm ' + r.year + ' (' + FORM_CODES + ').', tlkt: prev ? prev.tlkt || [] : [] };
+        // [vt1] 12/11/2026: khối Thông tin ban hành văn bản - Đóng dấu cơ quan (mặc định tích), Đơn vị ban hành; báo cáo Bị trả lại: theo lần trình trước
+        // (Đơn vị ban hành lần trước không còn hợp lệ thì để trống); ô Dấu không điền sẵn - đặt lại trên từng biểu mẫu
+        var pbh = prev && prev.banHanh ? prev.banHanh : null;
+        sub.bh = { dongDau: prev && typeof prev.dongDau === 'boolean' ? prev.dongDau : true, donVi: '', prevDv: pbh && pbh.donViBanHanh ? pbh.donViBanHanh : undefined, lastKey: null, wasLocked: false, dau: {} };
         var html = '<div class="bctt-modal" style="width:1520px;" id="bcttSubModal"><div class="bctt-mh"><div><div class="tt">GỬI PHÊ DUYỆT BÁO CÁO CÔNG TÁC BỒI THƯỜNG NHÀ NƯỚC</div><div class="st">Kỳ báo cáo: năm ' + r.year + ' - ' + PERIODS[r.period].label + ' • Đơn vị: ' + esc(r.unitName) + '</div></div><button class="bctt-x" data-close>&times;</button></div>'
             + '<div class="bctt-step"><div id="bcttS1" class="on"><span class="b">1</span>Kiểm tra bộ báo cáo</div><div id="bcttS2"><span class="b">2</span>Thiết lập các cấp trình ký</div></div>'
             + '<div id="bcttSubBody1" class="bctt-mb"></div><div id="bcttSubBody2" style="display:none;flex:1;min-height:0;"></div>'
@@ -2718,7 +2737,7 @@
         sub.step = 1; $('bcttS1').classList.add('on'); $('bcttS2').classList.remove('on');
         $('bcttSubBody1').style.display = ''; $('bcttSubBody2').style.display = 'none';
         var info = { m41: m41Count(r.m41) + ' vụ việc', m42: m42Filled(r.m42) + '/' + M42_ITEMS.length + ' mục đã nhập nội dung', m43: 'Tổng số ' + m43Total(r.m43)[2] + ' vụ việc (Cột 2)', m04: 'Tổng số ' + m04Total(r.m04)[3] + ' vụ việc xem xét trách nhiệm hoàn trả (Cột 3)' };
-        var html = (r.status === ST.TC && r.reject ? '<div class="bctt-alert" style="margin:0 0 14px;"><b class="t">LÝ DO BỊ TRẢ LẠI</b>Lý do trả lại: <strong>' + esc(r.reject.reason) + '</strong><br>Lãnh đạo trả lại: ' + esc(r.reject.byName) + ' • Thời điểm trả lại: ' + esc(r.reject.at) + '</div>' : '')
+        var html = (r.status === ST.TC && r.reject ? '<div class="bctt-alert" style="margin:0 0 14px;"><b class="t">LÝ DO BỊ TRẢ LẠI</b>Lý do trả lại: <strong>' + esc(r.reject.reason) + '</strong><br>Người trả lại: ' + esc(r.reject.byName) + ' • Thời điểm trả lại: ' + esc(r.reject.at) + '</div>' : '')
             + '<div class="bctt-sec"><div class="h">Hình thức ký</div><div><strong>Ký số trên hệ thống</strong> <span class="formula-hint">- Cố định, không chọn; báo cáo không ký duyệt ở ngoài. Trình 01 lần cho cả bộ báo cáo theo các cấp Cán bộ tự thiết lập ở Bước 2.</span></div></div>'
             + '<div class="bctt-sec"><div class="h">Bộ báo cáo trình ký</div><div class="table-container"><table class="custom-table" id="bcttSubForms"><thead><tr><th>STT</th><th>Biểu mẫu</th><th>Tình trạng dữ liệu</th><th>Thao tác</th></tr></thead><tbody>'
             + FORMS.map(function (f, i) { return '<tr><td>' + (i + 1) + '</td><td class="text-left">' + f.code + ' - ' + f.title + '</td><td class="text-left">' + info[f.id] + '</td><td><button class="bctt-link" data-fview="' + f.id + '">Xem trước PDF</button></td></tr>'; }).join('')
@@ -2748,6 +2767,49 @@
     // 10/11/2026 (nhanhl2): cấp trình ký tự thiết lập. Mỗi cấp: leaderId, kyNhay (tích Ký nháy), kySo (bật Ký số; cấp cuối luôn bật),
     // bo (biểu mẫu bỏ ký nháy), viTri, placed (ô ký theo từng biểu mẫu)
     function capMoi() { return { leaderId: '', kyNhay: false, kySo: false, bo: {}, viTri: null, placed: {} }; }
+    // ---------------- [vt1] 12/11/2026: Đóng dấu cơ quan và bước Văn thư ban hành (SRS quy tắc 4, neo bctt-dong-dau) ----------------
+    // Dữ liệu con dấu: cùng dữ liệu BTNN_PCKD.SEALS (Cấu hình thông tin về con dấu - Quản trị hệ thống, btnn_phan_cong_ky_duyet.js) khi trang có nạp tệp đó;
+    // trang Báo cáo không nạp thì dùng bản sao dưới đây. SEL_201 (con dấu Ủy ban nhân dân thành phố Hà Nội) là dữ liệu giả lập riêng của trang:
+    // báo cáo do Lãnh đạo UBND tỉnh ký ở cấp cuối nên Đơn vị ban hành là Ủy ban nhân dân tỉnh (cùng dữ liệu trang ban_hanh_van_ban.html).
+    // Văn thư của con dấu: tài khoản văn thư đã chọn (nếu có), không thì tài khoản thuộc Đơn vị văn thư.
+    var VT_SEALS = [
+        { ma: 'SEL_000', ten: 'Con dấu tròn Bộ Tư pháp', donViSoHuu: 'BTP-01', donViVanThu: 'Văn phòng Bộ', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 150 },
+        { ma: 'SEL_001', ten: 'Con dấu tròn chính Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', donViSoHuu: 'CĐK-01', donViVanThu: 'CĐK-01-VP', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 150 },
+        { ma: 'SEL_011', ten: 'Con dấu tròn Văn phòng Cục', donViSoHuu: 'CĐK-01-VP', donViVanThu: 'CĐK-01-VP', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 130 },
+        { ma: 'SEL_021', ten: 'Con dấu Phòng Quản lý nghiệp vụ về bồi thường nhà nước', donViSoHuu: 'PLN-02', donViVanThu: '', taiKhoanVanThu: ['Đào Thị Yến'], trangThai: 'Hoạt động', kichThuoc: 120 },
+        { ma: 'SEL_101', ten: 'Dấu tròn Sở Tư pháp Thành phố Hà Nội', donViSoHuu: 'STP-HN', donViVanThu: 'Văn phòng Sở Tư pháp', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 150 },
+        { ma: 'SEL_201', ten: 'Con dấu Ủy ban nhân dân thành phố Hà Nội', donViSoHuu: 'UBND-HN', donViVanThu: 'Văn phòng UBND thành phố Hà Nội', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 150 }
+    ];
+    function vtSeals() {
+        var P = window.BTNN_PCKD, ds = P && P.SEALS ? P.SEALS.slice() : VT_SEALS.slice(0, 5);
+        VT_SEALS.slice(5).forEach(function (s) { if (!ds.some(function (x) { return x.ma === s.ma; })) ds.push(s); });
+        return ds;
+    }
+    function vtSealsOf(u) { return u ? vtSeals().filter(function (s) { return s.donViSoHuu === u && s.trangThai === 'Hoạt động'; }) : []; }
+    function vtTenDv(id) { if (!id) return ''; if (id === UBND_UNIT) return UBND_TEN; var W = wf(); return W && W.getUnit && W.getUnit(id) ? W.unitName(id) : String(id); }
+    // "Văn thư xử lý": [Tên Đơn vị văn thư] | [Họ tên], [Họ tên] | [Họ tên], [Họ tên] ([Tên Đơn vị văn thư]); nhiều con dấu nối bằng "; "
+    function vtText(u) {
+        var out = [];
+        vtSealsOf(u).forEach(function (s) {
+            var tk = (s.taiKhoanVanThu || []).filter(Boolean), dv = s.donViVanThu ? vtTenDv(s.donViVanThu) : '';
+            var t = tk.length ? tk.join(', ') + (dv ? ' (' + dv + ')' : '') : dv;
+            if (t && out.indexOf(t) < 0) out.push(t);
+        });
+        return out.join('; ');
+    }
+    function vtDauD(u) { var s = vtSealsOf(u)[0]; return (s && s.kichThuoc) || 150; }
+    function vtChain(u) { var W = wf(); if (!u) return []; try { if (W && W.unitChainUp) { var c = W.unitChainUp(u); if (c && c.length) return c; } } catch (e) { /* bỏ qua */ } return [u]; }
+    // Đơn vị ban hành: đơn vị của Lãnh đạo cấp cuối và các đơn vị cấp trên có ít nhất 01 con dấu Hoạt động (gần nhất trước)
+    function vtDvList(leaderId) { return leaderId ? vtChain(dvLd(leaderId).unitId).filter(function (u) { return vtSealsOf(u).length > 0; }) : []; }
+    // Ô Dấu trên biểu mẫu tại màn Ký duyệt: khung mờ "Dấu cơ quan - Văn thư điền khi ban hành" theo vị trí cán bộ đặt khi trình (riêng từng biểu mẫu)
+    function veDauXem(idp, s, fid) {
+        var doc = $(idp + 'Doc'), trang = doc && doc.querySelector('.bctt-a4'); if (!trang) return;
+        trang.querySelectorAll('.bctt-dau').forEach(function (x) { x.remove(); });
+        var bh = s && s.dongDau ? s.banHanh : null, p = bh && bh.viTri && bh.viTri.dau ? bh.viTri.dau[fid] : null;
+        if (!p) return;
+        var d = p.d || 150;
+        trang.insertAdjacentHTML('beforeend', '<div class="bctt-dau xem" style="left:' + p.x + 'px;top:' + p.y + 'px;width:' + d + 'px;height:' + d + 'px;">Dấu cơ quan<small>Văn thư điền khi ban hành</small></div>');
+    }
     // Lãnh đạo được chọn: Nhóm Lãnh đạo (theo Chức vụ) của đơn vị Cán bộ và các đơn vị cấp trên (Phòng, Sở Tư pháp, Ủy ban nhân dân tỉnh);
     // Lãnh đạo UBND tỉnh giả lập của trang (LD_UBND) đứng trước Lãnh đạo UBND tỉnh trong cây đơn vị
     function laLdUbnd(id) { if (ldUbnd(id)) return true; var W = wf(), u = W && W.getUser(id); return !!u && /^UBND-/.test(u.unitId || ''); }
@@ -2874,13 +2936,93 @@
             + '<div id="bcttKtThe"></div>'
             + '<button type="button" class="btn btn-secondary btn-sm" id="bcttKtThem" style="align-self:flex-start;font-size:12.5px;margin:0 0 10px;"><i class="fa-solid fa-plus"></i> Thêm cấp</button>'
             + '<div class="formula-hint" style="margin:0 0 12px;">Bấm <strong>Đặt chữ ký</strong> để sinh ô ký trên biểu mẫu đang xem; kéo ô để đặt vị trí, kéo góc dưới phải để đổi kích thước.</div>'
+            + (isBtpReport(r) ? '' : '<div id="bcttBhHost"></div>')   // [vt1] khối Thông tin ban hành văn bản (sau nút Thêm cấp, trước Nội dung trình)
             + '<div class="bctt-card"><div class="h">Nội dung trình<span style="color:red;">*</span></div><textarea class="bctt-ta" id="bcttSubND" rows="4" maxlength="2000" placeholder="Nhập nội dung trình Lãnh đạo...">' + esc(sub.noiDung) + '</textarea><div class="bctt-err" id="bcttSubNDErr">Đây là trường bắt buộc</div></div></div></div>';
         var theBox = $('bcttKtThe');
+        // ---- [vt1] Khối Thông tin ban hành văn bản của Báo cáo: chỉ gồm Đóng dấu cơ quan, Đơn vị ban hành, dòng Văn thư xử lý, ô Dấu riêng từng biểu mẫu
+        // (không có Số, ký hiệu; Địa danh; Ngày văn bản). Báo cáo tổng hợp của Bộ không trình ký nên không có khối
+        var coBh = !isBtpReport(r) && !!sub.bh;
+        function bhLast() { var l = sub.levels[sub.levels.length - 1]; return (l && l.leaderId) || ''; }
+        function bhLocked() { return !!bhLast() && vtDvList(bhLast()).length === 0; }
+        function bhOn() { return coBh && !bhLocked() && !!sub.bh.dongDau; }
+        // Lãnh đạo cấp cuối đổi: Đơn vị ban hành về đơn vị gần nhất có con dấu (trình lại: giữ đơn vị lần trước nếu còn hợp lệ, không thì để trống)
+        function bhSync() {
+            if (!coBh) return;
+            var key = bhLast(), list = vtDvList(key), lk = !!key && !list.length, b = sub.bh;
+            if (lk) b.dongDau = false; else if (b.wasLocked) b.dongDau = true;
+            b.wasLocked = lk;
+            if (key !== b.lastKey) {
+                b.lastKey = key;
+                if (!key) b.donVi = '';
+                else if (b.prevDv !== undefined) { b.donVi = list.indexOf(b.prevDv) >= 0 ? b.prevDv : ''; b.prevDv = undefined; }
+                else b.donVi = list[0] || '';
+            } else if (b.donVi && list.indexOf(b.donVi) < 0) b.donVi = '';
+        }
+        function veBh() {
+            var host = $('bcttBhHost'); if (!host || !coBh) return;
+            bhSync();
+            var lk = bhLocked(), on = bhOn(), key = bhLast(), list = vtDvList(key), b = sub.bh;
+            host.innerHTML = '<div class="bctt-bh" id="bcttBh"><div class="bctt-bh-td"><i class="fa-solid fa-stamp"></i> THÔNG TIN BAN HÀNH VĂN BẢN</div>'
+                + '<label class="bctt-dd' + (lk ? ' locked' : '') + '"><input type="checkbox" id="bcttBhDd"' + (on ? ' checked' : '') + (lk ? ' disabled' : '') + '><span><b>Đóng dấu cơ quan</b><span class="s">Sau khi Lãnh đạo cấp cuối Ký duyệt, bộ 04 biểu mẫu chuyển Văn thư đóng dấu và ban hành.</span>'
+                + (lk ? '<span class="lk">Đơn vị của Lãnh đạo cấp cuối và các đơn vị cấp trên chưa có con dấu Hoạt động.</span>' : '') + '</span></label>'
+                + (on ? '<div class="bctt-bh-f"><span class="form-label">Đơn vị ban hành<span style="color:red;">*</span></span><select class="form-control" id="bcttBhDv"' + (key ? '' : ' disabled') + '><option value="">' + (key ? '-- Chọn đơn vị ban hành --' : '-- Chọn Lãnh đạo cấp cuối trước --') + '</option>'
+                    + list.map(function (u) { return '<option value="' + esc(u) + '"' + (u === b.donVi ? ' selected' : '') + '>' + esc(vtTenDv(u)) + '</option>'; }).join('') + '</select>'
+                    + '<div class="bctt-err" id="bcttBhDvErr">Đây là trường bắt buộc</div>' + (b.donVi ? '<div class="bctt-bh-vt">Văn thư xử lý: ' + esc(vtText(b.donVi)) + '</div>' : '') + '</div>'
+                    + '<div><button type="button" class="btn btn-secondary btn-sm" id="bcttBhLai" title="Đưa ô Dấu trên biểu mẫu đang xem về vị trí mặc định" style="font-size:12px;"><i class="fa-solid fa-rotate-left"></i> Đặt lại vị trí</button></div>' : '')
+                + '</div>';
+            var dd = $('bcttBhDd');
+            if (dd) dd.onchange = function () { b.dongDau = dd.checked; if (!dd.checked) b.dau = {}; veBh(); veDau(); };   // bỏ tích: bỏ ô Dấu trên cả 04 biểu mẫu
+            var dv = $('bcttBhDv');
+            if (dv) dv.onchange = function () { b.donVi = dv.value; veBh(); veDau(); };
+            var lai = $('bcttBhLai');
+            if (lai) lai.onclick = function () { delete b.dau[sub.fid]; veDau(); };   // chỉ ô Dấu của biểu mẫu đang xem
+        }
+        function dauD() { return vtDauD(sub.bh.donVi); }
+        // Ô ký số cấp cuối của biểu mẫu (đã đặt) hoặc chỗ ký Thủ trưởng (kt-neo) với cỡ ô ký số mặc định; biểu mẫu không đang xem: dựng ngoài màn hình để đo
+        function neoKy(fid) {
+            var n = sub.levels.length - 1, l = sub.levels[n];
+            if (l && l.placed[fid] && l.viTri && l.viTri[fid]) return l.viTri[fid];
+            var w = KT_CO.so[1][0], h = KT_CO.so[1][1], host = null, trang = fid === sub.fid ? a4() : null;
+            if (!trang) {
+                host = document.createElement('div');
+                host.style.cssText = 'position:fixed;left:-30000px;top:0;width:1300px;visibility:hidden;pointer-events:none;';
+                host.innerHTML = docHtml(r, fid, subSign(true, fid)); document.body.appendChild(host);
+                trang = host.querySelector('.bctt-a4');
+            }
+            var neo = trang.querySelector('.kt-neo'), ra = trang.getBoundingClientRect(), kq;
+            if (neo) { var rn = neo.getBoundingClientRect(); kq = { x: Math.round(rn.left - ra.left + (rn.width - w) / 2), y: Math.round(rn.top - ra.top), w: w, h: h }; }
+            else kq = { x: Math.max(0, trang.offsetWidth - w - 60), y: Math.max(0, trang.offsetHeight - h - 140), w: w, h: h };
+            if (host) document.body.removeChild(host);
+            return kq;
+        }
+        // Ô Dấu mặc định trùm khoảng 1/3 bên trái ô ký số cấp cuối
+        function dauMacDinh(fid) { var c = neoKy(fid), d = dauD(); return { x: Math.max(10, Math.round(c.x + c.w / 3 - d)), y: Math.max(10, Math.round(c.y + c.h / 2 - d / 2)) }; }
+        function veDau() {
+            var trang = a4(); if (!trang) return;
+            trang.querySelectorAll('.bctt-dau').forEach(function (x) { x.remove(); });
+            if (!bhOn()) return;
+            var d = dauD(), p = sub.bh.dau[sub.fid] || dauMacDinh(sub.fid);
+            trang.insertAdjacentHTML('beforeend', '<div class="bctt-dau edit" title="Kéo để đặt vị trí ô Dấu trên biểu mẫu đang xem" style="left:' + p.x + 'px;top:' + p.y + 'px;width:' + d + 'px;height:' + d + 'px;">Dấu cơ quan</div>');
+            var bx = trang.querySelector('.bctt-dau');
+            bx.addEventListener('mousedown', function (e) {
+                if (e.button !== 0) return;
+                e.preventDefault(); e.stopPropagation();
+                var o = sub.bh.dau[sub.fid] || dauMacDinh(sub.fid), sx = e.clientX, sy = e.clientY, ox = o.x, oy = o.y;
+                bx.classList.add('keo');
+                var move = function (ev) {
+                    var x = Math.max(4, Math.min(Math.round(ox + ev.clientX - sx), trang.clientWidth - d - 4)), y = Math.max(4, Math.min(Math.round(oy + ev.clientY - sy), trang.clientHeight - d - 4));
+                    sub.bh.dau[sub.fid] = { x: x, y: y }; bx.style.left = x + 'px'; bx.style.top = y + 'px';
+                };
+                var up = function () { bx.classList.remove('keo'); document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); };
+                document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
+            });
+        }
         function cacO() { var ds = ktNlOn() ? ['nl'] : []; sub.levels.forEach(function (l, i) { if (ktCoO(i)) ds.push(i); }); return ds; }
         function veThe() {
             $('bcttKtMau').innerHTML = 'Đang thiết lập cho: <strong>' + esc(formCode(sub.fid)) + '</strong>'; theBox.innerHTML = theNl() + sub.levels.map(the).join('');
             theBox.querySelectorAll('[data-cb]').forEach(function (h) { ganChonLd(h, +h.getAttribute('data-cb')); });
             capNhatToaDo();
+            veBh();   // [vt1]
         }
         document.addEventListener('mousedown', function (e) { if (theBox.isConnected && !e.target.closest('.bctt-cb')) theBox.querySelectorAll('.bctt-cb.open').forEach(function (x) { x.classList.remove('open'); }); });
         function a4() { return $('bcttSvDoc').querySelector('.bctt-a4'); }
@@ -2891,6 +3033,9 @@
                 var bx = a4() && a4().querySelector('[data-oky="' + k + '"]');
                 if (bx && c) { bx.style.left = c.x + 'px'; bx.style.top = c.y + 'px'; bx.style.width = c.w + 'px'; bx.style.height = c.h + 'px'; var xy = bx.querySelector('[data-oky-xy]'); if (xy) xy.textContent = 'X: ' + c.x + ', Y: ' + c.y; }
             });
+            // [vt1] Ô Dấu đang ở vị trí mặc định: đi theo ô ký số cấp cuối
+            var db = coBh && bhOn() && !sub.bh.dau[sub.fid] && a4() ? a4().querySelector('.bctt-dau') : null;
+            if (db) { var pd = dauMacDinh(sub.fid); db.style.left = pd.x + 'px'; db.style.top = pd.y + 'px'; }
         }
         // Vẽ biểu mẫu đang xem kèm các ô ký đã đặt trên biểu mẫu đó (kéo được)
         function veVanBan() {
@@ -2916,6 +3061,7 @@
                     document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
                 });
             });
+            veDau();   // [vt1] ô Dấu của biểu mẫu đang xem
             capNhatToaDo();
         }
         var khoa = function (v) { return v === 'nl' ? 'nl' : +v; };
@@ -2990,6 +3136,9 @@
                 cb.classList.toggle('invalid', !!msg); er.textContent = msg || 'Đây là trường bắt buộc'; er.classList.toggle('on', !!msg);
                 if (msg && !first) first = cb.querySelector('.bctt-cb-box');
             });
+            // [vt1] TH1a - tích Đóng dấu cơ quan mà chưa chọn Đơn vị ban hành (hoặc Đơn vị ban hành không còn con dấu Hoạt động)
+            var dvBh = $('bcttBhDv');
+            if (dvBh) { var badDv = bhOn() && (!sub.bh.donVi || !vtSealsOf(sub.bh.donVi).length); dvBh.classList.toggle('bctt-invalid', badDv); $('bcttBhDvErr').classList.toggle('on', badDv); if (badDv && !first) first = dvBh; }
             var nd = $('bcttSubND'); var badNd = !nd.value.trim(); nd.classList.toggle('bctt-invalid', badNd); $('bcttSubNDErr').classList.toggle('on', badNd); if (badNd && !first) first = nd;
             if (first) { first.focus(); return; }
             // 10/11/2026 (nhanhl2): cấp tích Ký nháy bắt buộc đặt ô ký nháy trên mọi biểu mẫu đang áp dụng ký nháy; cấp cuối (ký ban hành) bắt buộc
@@ -3024,6 +3173,14 @@
                         kyNhayCap: !!l.kyNhay, kySo: ks, kyNhay: FORMS.some(function (f) { return ktKyNhay(i, f.id); }), tatNhay: tat,
                         viTri: chon(l, function (f) { return ks ? ktDat(i, f) : ktKyNhay(i, f); }), result: null, at: '', note: '' };
                 }) };
+            // [vt1] Thông tin ban hành văn bản lưu cùng phiếu trình: Đóng dấu cơ quan, Đơn vị ban hành, Văn thư xử lý, vị trí ô Dấu trên từng biểu mẫu
+            // (biểu mẫu chưa kéo ô Dấu: vị trí mặc định trùm 1/3 bên trái ô ký số cấp cuối)
+            if (coBh) {
+                var bhOk = bhOn(), dauVt = null;
+                if (bhOk) { dauVt = {}; FORMS.forEach(function (f) { var p = sub.bh.dau[f.id] || dauMacDinh(f.id); dauVt[f.id] = { x: p.x, y: p.y, d: dauD() }; }); }
+                r.submit.dongDau = bhOk;
+                r.submit.banHanh = { dongDau: bhOk, donViBanHanh: bhOk ? sub.bh.donVi : '', donViBanHanhTen: bhOk ? vtTenDv(sub.bh.donVi) : '', vanThu: bhOk ? vtText(sub.bh.donVi) : '', viTri: { dau: dauVt } };
+            }
             r.status = ST.CHO; r.sentAt = r.submit.at; r.reject = null; r.preparer = { userId: me().userId, name: me().name, title: me().title };
             hist(r, me().name, 'Gửi phê duyệt', 'Trình ' + r.submit.levels[0].leaderName + ': ' + r.submit.noiDung);
             save(); closeOv('bcttOv1'); toast('Đã gửi phê duyệt báo cáo đến ' + r.submit.levels[0].leaderName + '.'); showDetail(r.id);
@@ -3034,7 +3191,10 @@
     function signHistHtml(r) {
         var items = [];
         r.history.forEach(function (h) { if (/Gửi phê duyệt|Ký duyệt|Từ chối|Ban hành/.test(h.action)) items.push(h); });
-        var s = r.submit, waiting = choKy(r) ? s.levels.slice(s.current).map(function (l, k) { return '<li><span class="av">' + esc(initials(l.leaderName)) + '</span><div><strong>' + esc(l.leaderName) + '</strong><br><span class="wt">' + (k === 0 ? 'Đang chờ ký duyệt' : 'Chưa tới') + ' - Cấp ' + l.level + ' - ' + esc(l.unitName) + '</span></div></li>'; }).join('') : '';
+        var s = r.submit, waiting = vtCho(r)
+            // [vt1] Sự kiện đang chờ ở trên cùng: "Chờ Văn thư ban hành - [Tên Đơn vị văn thư hoặc Họ tên các tài khoản văn thư]"
+            ? '<li><span class="av">VT</span><div><strong>Văn thư</strong><br><span class="wt">Chờ Văn thư ban hành - ' + esc(s.choVanThu.vanThu || '--') + '</span></div></li>'
+            : choKy(r) ? s.levels.slice(s.current).map(function (l, k) { return '<li><span class="av">' + esc(initials(l.leaderName)) + '</span><div><strong>' + esc(l.leaderName) + '</strong><br><span class="wt">' + (k === 0 ? 'Đang chờ ký duyệt' : 'Chưa tới') + ' - Cấp ' + l.level + ' - ' + esc(l.unitName) + '</span></div></li>'; }).join('') : '';
         return '<ul class="bctt-tl">' + waiting + items.slice().reverse().map(function (h) { return '<li><span class="av">' + esc(initials(h.actor)) + '</span><div><strong>' + esc(h.actor) + '</strong> <span style="color:#64748b;">' + esc(h.at) + '</span><br><span class="' + (/^Từ chối/.test(h.action || '') ? 'rj' : '') + '">' + esc(h.action) + '</span>' + (h.note ? '<br><i>' + esc(h.note) + '</i>' : '') + '</div></li>'; }).join('') + '</ul>';
     }
     function openSign(id, mode) {
@@ -3045,14 +3205,20 @@
             + '<div class="bctt-side" style="width:480px;"><div class="bctt-card"><div class="h">Thông tin tổng quan</div>'
             + '<div class="bctt-meta" style="grid-template-columns:1fr;gap:8px;"><div><label>Kỳ báo cáo</label><strong>Năm ' + r.year + ' - ' + PERIODS[r.period].label + '</strong></div><div><label>Đơn vị báo cáo</label><strong>' + esc(r.unitName) + '</strong></div>'
             + '<div><label>Loại trình</label><strong>' + KIND + '</strong></div><div><label>Cán bộ trình</label><strong>' + esc(s.by) + ' - ' + esc(s.at) + '</strong></div>'
-            + '<div><label>Cấp phê duyệt</label><strong>' + lv.level + '/' + s.levels.length + ' - ' + esc(lv.unitName) + '</strong>' + (lv.kyNhay ? ' <span class="bctt-kn">Ký nháy</span>' : '') + '</div><div><label>Nội dung trình</label><strong style="font-weight:500;">' + esc(s.noiDung) + '</strong></div></div></div>'
+            + '<div><label>Cấp phê duyệt</label><strong>' + lv.level + '/' + s.levels.length + ' - ' + esc(lv.unitName) + '</strong>' + (lv.kyNhay ? ' <span class="bctt-kn">Ký nháy</span>' : '') + '</div><div><label>Nội dung trình</label><strong style="font-weight:500;">' + esc(s.noiDung) + '</strong></div>'
+            // [vt1] Cấp cuối: Đóng dấu cơ quan (tích: thêm Đơn vị ban hành, Văn thư xử lý) - giống màn Ký duyệt dùng chung
+            + (!isBtpReport(r) && s.current === s.levels.length - 1 ? '<div><label>Đóng dấu cơ quan</label><strong style="font-weight:500;">' + (s.dongDau ? 'Có - sau khi Ký duyệt, văn bản chuyển Văn thư ban hành' : 'Không') + '</strong></div>'
+                + (s.dongDau && s.banHanh ? '<div><label>Đơn vị ban hành</label><strong style="font-weight:500;">' + esc(s.banHanh.donViBanHanhTen || vtTenDv(s.banHanh.donViBanHanh) || '--') + '</strong></div><div><label>Văn thư xử lý</label><strong style="font-weight:500;">' + esc(s.banHanh.vanThu || vtText(s.banHanh.donViBanHanh) || '--') + '</strong></div>' : '') : '')
+            + '</div></div>'
             + tl + '<div class="bctt-card"><div class="h">Lịch sử trình ký</div>' + signHistHtml(r) + '</div>'
             + '<div class="bctt-card">' + (mode === 'approve' ? '<div class="h">Ý kiến</div><textarea class="bctt-ta" id="bcttKNote" maxlength="2000" placeholder="Nhập ý kiến (không bắt buộc)..."></textarea>'
                 : '<div class="h">Lý do từ chối<span style="color:red;">*</span></div><textarea class="bctt-ta" id="bcttKNote" maxlength="2000" placeholder="Nhập lý do từ chối..."></textarea><div class="bctt-err" id="bcttKNoteErr">Đây là trường bắt buộc</div>') + '</div></div></div>'
             + '<div class="bctt-mf"><button class="btn btn-secondary" data-close>Hủy bỏ</button>' + (mode === 'approve' ? '<button class="btn btn-primary" id="bcttKOk"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button>' : '<button class="btn btn-danger" id="bcttKOk"><i class="fa-solid fa-ban"></i> Từ chối</button>') + '</div>';
         var full = $('bcttFull'); full.innerHTML = html; full.classList.add('on');
         full.querySelectorAll('[data-close]').forEach(function (b) { b.onclick = function () { full.classList.remove('on'); full.innerHTML = ''; }; });
-        bindViewer(r, s, null, 'bcttKv');
+        // [vt1] Ô Dấu (khung mờ, Văn thư điền khi ban hành) theo vị trí cán bộ đặt trên từng biểu mẫu
+        bindViewer(r, s, null, 'bcttKv', function (fid) { veDauXem('bcttKv', s, fid); });
+        veDauXem('bcttKv', s, 'm42');
         $('bcttKOk').onclick = function () {
             var note = $('bcttKNote').value.trim();
             if (!canApprove(r)) { toast('Báo cáo không còn hợp lệ để xử lý.', 'error'); full.classList.remove('on'); showList(); return; }
@@ -3081,6 +3247,13 @@
                 s.current++;
                 hist(r, lv.leaderName, 'Ký duyệt và chuyển xử lý đến ' + s.levels[s.current].leaderName, note);
                 toast('Đã ký duyệt cả 04 biểu mẫu và chuyển ' + s.levels[s.current].leaderName + ' ký duyệt.');
+            } else if (!isBtpReport(r) && s.dongDau && s.banHanh) {
+                // [vt1] TH Hợp lệ - cấp cuối, Cán bộ tích Đóng dấu cơ quan: ký số cả 04 biểu mẫu chưa có dấu; báo cáo giữ `Chờ duyệt`, dòng phụ
+                // "Báo cáo công tác BTNN - Chờ Văn thư ban hành"; chưa gửi Bộ Tư pháp, chưa lưu bản đã ký (Văn thư đóng dấu, ban hành tại Ban hành văn bản)
+                r.status = ST.CHO; r.reject = null;
+                s.choVanThu = { at: lv.at, by: lv.leaderName, donViBanHanh: s.banHanh.donViBanHanh || '', donViBanHanhTen: s.banHanh.donViBanHanhTen || '', vanThu: s.banHanh.vanThu || vtText(s.banHanh.donViBanHanh) };
+                hist(r, lv.leaderName, 'Ký duyệt và chuyển Văn thư ban hành', note);
+                toast('Đã ký số cả 04 biểu mẫu và chuyển Văn thư đóng dấu, ban hành.');
             } else {
                 r.status = ST.BH; r.issued = { at: lv.at, signer: lv.leaderName }; r.reject = null;
                 if (!isBtpReport(r)) { r.kySo = chupKySo(r); r.capNhatSauGui = null; }   // 06/11/2026: bản đã ký của lần ban hành này

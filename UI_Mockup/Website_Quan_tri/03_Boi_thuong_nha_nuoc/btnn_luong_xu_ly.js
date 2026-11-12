@@ -2270,7 +2270,7 @@
             const docsHtml = opts && opts.withDocs && typeof window.tlktViewHtml === 'function' ? window.tlktViewHtml(trinhDocs(e), { boxClass: 'tlkt-view', titleClass: 'tlkt-sec-title' }) : '';
             return `<div style="background:#fff; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:6px; padding:12px 14px; margin-top:8px; font-size:13px; line-height:1.55;">
                 ${histRow('Lý do trả lại', `<span style="color:#b45309; font-weight:500;">${esc(e.reason || '--')}</span>`)}
-                ${histRow('Lãnh đạo trả lại', `<b>${esc(userName(e.by))}</b>${e.unitId ? ' - ' + esc(unitName(e.unitId)) : ''}`)}
+                ${histRow('Người trả lại', `<b>${esc(userName(e.by))}</b>${e.unitId ? ' - ' + esc(unitName(e.unitId)) : ''}`)}
                 ${histRow('Thời điểm trả lại', esc(e.at || '--'))}
                 ${docsHtml ? `<div style="margin-top:8px;">${docsHtml}</div>` : ''}
             </div>`;

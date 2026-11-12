@@ -25,6 +25,10 @@
  * [ptnmh02] Chốt 29/10 - Bỏ khối "Thông tin Phiếu tiếp nhận (Mẫu 02/BTNN)" tại form MH02; bỏ tự trình khi Lưu. Hồ sơ thuộc diện Phiếu tiếp nhận
  *   (cả hai Loại hồ sơ): nút "Lưu và trình ký" mở Popup Trình ký (Giải quyết YCBT: popup Mẫu 02/BTNN; Xác định CQGQBT: popup như Không thụ lý);
  *   hồ sơ chỉ lưu khi Trình Lãnh đạo (Chờ duyệt tiếp nhận) / Ban hành văn bản (Chờ phân công) thành công; Hủy bỏ không lưu, giữ dữ liệu form.
+ * [tnht] 12/11/2026 - Ký số trên hệ thống: bỏ "Số, ký hiệu văn bản", "Ngày văn bản" ở Bước 1 (Mẫu 02/BTNN); nhập tại khối "Thông tin ban hành văn bản"
+ *   của Bước 2 (BTNN_PCKD.levelSetup soNgay: true, ô Số / ô Ngày theo dòng số, ngày của văn bản), không bắt buộc. Cả 02 Loại hồ sơ.
+ *   Lưu: phiếu.banHanh, phiếu.dongDau, approval.signDoc.{dongDau, banHanh}; Mẫu 02 vẫn ghi meta.docNo / meta.docDate (màn chi tiết, lịch sử như cũ).
+ *   Trình lại điền lại đủ khối Bước 2 (kể cả vị trí ô). Màn chi tiết: Số, ký hiệu / Ngày văn bản hiển thị khi Ký số với mọi Loại hồ sơ, trống "---".
  */
 (function (global) {
 'use strict';
@@ -370,16 +374,48 @@ function lvPrev(re) {
     if (!a || !a.tuThietLap || !Array.isArray(a.levels)) return null;
     return a.levels.map((l, i) => Object.assign({}, l, { sig: (re.pcSig || [])[i] || null }));
 }
+// [tnht] Thông tin ban hành văn bản của lần trình trước (trình lại): phiếu lưu banHanh; phiếu cũ chỉ có Số, ký hiệu / Ngày văn bản của Mẫu 02 (meta)
+function lvPrevBh(re) {
+    if (!re) return null;
+    const b = (re.approval && re.approval.signDoc && re.approval.signDoc.banHanh) || re.banHanh || null;
+    if (b) return b;
+    const m = re.meta || {};
+    const so = String(m.docNo || '').trim();
+    return so || m.docDate ? { soKyHieu: /^\/TB-$/.test(so) ? '' : so, ngayVanBan: m.docDate || '' } : null;
+}
+// [tnht] Vị trí dòng "Số: ..." và dòng "[Địa danh], ngày ... tháng ... năm ..." của văn bản trình ký (tọa độ px trong trang A4), cho ô Số, ô Ngày ở Bước 2
+function docPosOf(pg) {
+    if (!pg || !pg.offsetWidth) return null;
+    const pr = pg.getBoundingClientRect();
+    const k = pr.width / pg.offsetWidth || 1;
+    const skip = n => !!(n.parentElement && n.parentElement.closest('.pc-bhbox, .pc-sig, .sig-drag-box, .ptn-qs-sig'));
+    const find = re => {
+        const w = document.createTreeWalker(pg, NodeFilter.SHOW_TEXT);
+        let n;
+        while ((n = w.nextNode())) { if (!skip(n) && re.test(n.nodeValue || '')) return n; }
+        return null;
+    };
+    const at = n => {
+        if (!n) return null;
+        const r = document.createRange(); r.selectNodeContents(n);
+        const rs = r.getClientRects(); const b = rs.length ? rs[0] : r.getBoundingClientRect();
+        return b && b.width ? { x: Math.round((b.left - pr.left) / k) - 9, y: Math.round((b.top - pr.top) / k) - 4, w: Math.round(b.width / k) + 18 } : null;
+    };
+    return { so: at(find(/^\s*Số:/)), ngay: at(find(/ngày\s.*tháng\s.*năm/)) };
+}
 function lvMount(st, hostId, pageId, onChange) {
     const P = global.BTNN_PCKD;
     if (!P) return false;
-    if (!st.ui) { st.ui = P.levelSetup({ host: () => el(hostId), page: () => el(pageId), method: () => 'Ký số', onChange }); st.ui.reset(st.prevLv || null); }
+    // [tnht] soNgay: Số, ký hiệu, Địa danh, Ngày văn bản của Phiếu tiếp nhận nhập tại Bước 2; trình lại điền lại đủ khối (kể cả vị trí ô)
+    if (!st.ui) { st.ui = P.levelSetup({ host: () => el(hostId), page: () => el(pageId), method: () => 'Ký số', onChange, soNgay: true, docPos: () => docPosOf(el(pageId)) }); st.ui.reset(st.prevLv || null, undefined, st.prevBh || null); }
     st.ui.render(); st.ui.renderSigs();
     return true;
 }
 function lvApply(p, col) {
     p.assignees = col.assignees.slice(); p.pcSig = col.pcSig; p.levels = col.levels; p.enableRoomSig = !!col.pcSig[0];
-    Object.assign(p.approval, { path: col.path.slice(), assignees: col.assignees.slice(), leaders: col.levels.map(l => [l.leader]), levels: col.levels, tuThietLap: true, signDoc: { pcSig: col.pcSig } });
+    // [tnht] Thông tin ban hành văn bản (Bước 2) lưu cùng phiếu trình
+    p.dongDau = !!col.dongDau; p.banHanh = col.banHanh || null;
+    Object.assign(p.approval, { path: col.path.slice(), assignees: col.assignees.slice(), leaders: col.levels.map(l => [l.leader]), levels: col.levels, tuThietLap: true, signDoc: { pcSig: col.pcSig, dongDau: !!col.dongDau, banHanh: col.banHanh || null } });
 }
 function lvHow(a) { const l = a && a.tuThietLap ? (a.levels || [])[a.level] : null; return l ? (l.kySo ? ' - đã ký số' : (l.kyNhay ? ' - đã gán chữ ký nháy' : ' - đã gán chữ ký')) : ''; }
 // MSG-ERR-BTNN-LXL-007: đơn vị cán bộ trình và đơn vị cấp trên chưa có tài khoản thuộc Nhóm Lãnh đạo
@@ -433,8 +469,9 @@ function noiNhanDefault(c) {
     const root = (c && c.rootUnitId) || '';
     return ['- Như trên;', `- ${W.unitName(root)} (để biết);`, '- Lưu: VT, HSVV.'].join('\n');
 }
-function metaData() {
-    return { docNo: el('ptnSgDocNo').value.trim(), docDate: el('ptnSgDocDate').value.trim(), noiNhan: el('ptnSgNoiNhan').value, signerId: S.assignees[S.levels.length - 1] || '' };
+// [tnht] bh: Thông tin ban hành văn bản (Bước 2). Văn bản sinh ở Bước 1 (bh = null) để trống dòng số, ký hiệu và dòng ngày (ô Số, ô Ngày ở Bước 2 che dòng chấm)
+function metaData(bh) {
+    return { docNo: bh ? String(bh.soKyHieu || '').trim() : '', docDate: bh ? bh.ngayVanBan || '' : '', noiNhan: el('ptnSgNoiNhan').value, signerId: S.assignees[S.levels.length - 1] || '' };
 }
 function docBaseName(code) { return `Mau_02_BTNN_Giay_tiep_nhan_${code}`; }
 function openDoc(p) {
@@ -495,11 +532,8 @@ function ensureModal() {
                 </div>
                 <div class="ptn-qs-meta" id="ptnSgMeta">
                     <div class="ptn-qs-meta-title"><i class="fa-solid fa-sliders"></i> Thông tin điền vào Mẫu 02/BTNN</div>
-                    <div class="ptn-gqx-grid2">
-                        ${fld('ptnSgDocNo', 'Số, ký hiệu văn bản', true, `<input type="text" class="form-control" id="ptnSgDocNo" maxlength="100" placeholder="Nhập số, ký hiệu văn bản" oninput="PTN._mark('ptnSgDocNo', false)">`)}
-                        ${fld('ptnSgDocDate', 'Ngày văn bản', true, date('ptnSgDocDate'))}
-                    </div>
-                    <div class="ptn-gqx-field" style="margin-top:14px;"><div class="ptn-qs-label-row"><label class="form-label" for="ptnSgNoiNhan">Nơi nhận</label><span><i class="fa-solid fa-circle-info"></i> Mỗi nơi nhận trên 01 dòng</span></div>
+                    <!-- [tnht] Số, ký hiệu văn bản / Ngày văn bản của Phiếu tiếp nhận nhập tại khối Thông tin ban hành văn bản (Bước 2) -->
+                    <div class="ptn-gqx-field" style="margin-bottom:0;"><div class="ptn-qs-label-row"><label class="form-label" for="ptnSgNoiNhan">Nơi nhận</label><span><i class="fa-solid fa-circle-info"></i> Mỗi nơi nhận trên 01 dòng</span></div>
                         <textarea class="form-control" id="ptnSgNoiNhan" rows="4" maxlength="2000" style="font-size:12.5px;" placeholder="Nhập nơi nhận, mỗi nơi nhận 01 dòng"></textarea></div>
                 </div>
                 <div id="ptnSgOnline">
@@ -572,6 +606,7 @@ function openFor(id, c, nw) {
     const re = prev && prev.status === ST.REJECT ? prev : null;
     const levels = levelsOf(c);
     S = { id, claim: c, code: c.code, method: 'Ký số', docSrc: 'gen', step: 1, levels, assignees: levels.map((lv, i) => (re && re.assignees && re.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null, ui: null, prevLv: lvPrev(re),
+        prevBh: lvPrevBh(re), // [tnht] trình lại: khối Thông tin ban hành văn bản (Bước 2) của lần trình trước
         enableNhay: re && re.enableRoomSig !== undefined ? re.enableRoomSig !== false : true,
         noTpl: noTpl(c), isNew, wfData: isNew ? nw.wfData : null, onSaved: nw ? nw.onSaved : null };
     el('ptnSgSubCode').innerText = c.maVuViec || c.code || '--';
@@ -579,15 +614,10 @@ function openFor(id, c, nw) {
     el('ptnSgSubMethod').innerText = c.nopKenh || RM.TRUC_TIEP;
     el('ptnSgMethodOn').checked = true;
     el('ptnSgContent').value = '';
-    // Thông tin điền vào Mẫu 02/BTNN: mặc định / trình lại theo lần trình trước
+    // Thông tin điền vào Mẫu 02/BTNN (Nơi nhận): mặc định / trình lại theo lần trình trước; Số, ký hiệu, Ngày văn bản nhập tại Bước 2 [tnht]
     const pm = (re && re.meta) || {};
-    el('ptnSgDocNo').value = pm.docNo || '     /TB-';
-    el('ptnSgDocDate').value = pm.docDate || (W.dateText ? W.dateText() : '');
     el('ptnSgNoiNhan').value = pm.noiNhan != null ? pm.noiNhan : noiNhanDefault(c);
-    ['ptnSgDocNo', 'ptnSgDocDate'].forEach(x => mark(x, false));
     document.querySelectorAll('#ptnSignModal .ptn-qs-err, #ptnSignModal .ptn-gqx-err').forEach(e => { e.style.display = 'none'; });
-    if (global.flatpickr) ['ptnSgDocDate'].forEach(x => { if (!el(x)._flatpickr) global.flatpickr('#' + x, { dateFormat: 'd/m/Y', allowInput: true }); });
-    if (el('ptnSgDocDate')._flatpickr) el('ptnSgDocDate')._flatpickr.setDate(el('ptnSgDocDate').value, false, 'd/m/Y');
     renderOff();
     // [ptnxd] Loại hồ sơ Xác định CQGQBT: chỉ đính tệp (không sinh văn bản theo mẫu); Ký ngoài chỉ tải lên tệp PDF đã ký & đóng dấu
     setDocSrc(S.noTpl ? 'upload' : 'gen');
@@ -606,7 +636,7 @@ function openFor(id, c, nw) {
     const rb = el('ptnSgReturn');
     if (rb) {
         rb.style.display = re ? '' : 'none';
-        rb.innerHTML = re ? `<div class="ptn-gqx-sec-title" style="color:#b45309;"><i class="fa-solid fa-rotate-left" style="color:#b45309;"></i> Lý do bị trả lại</div><div class="ptn-ro-grid"><div><div class="k">Lý do trả lại</div><div class="v">${esc(re.reason || '-')}</div></div><div><div class="k">Lãnh đạo trả lại</div><div class="v">${esc(W.userLabel(re.rejectedBy))}</div></div><div><div class="k">Thời điểm trả lại</div><div class="v">${esc(re.rejectedAt || '-')}</div></div></div>` : '';
+        rb.innerHTML = re ? `<div class="ptn-gqx-sec-title" style="color:#b45309;"><i class="fa-solid fa-rotate-left" style="color:#b45309;"></i> Lý do bị trả lại</div><div class="ptn-ro-grid"><div><div class="k">Lý do trả lại</div><div class="v">${esc(re.reason || '-')}</div></div><div><div class="k">Người trả lại</div><div class="v">${esc(W.userLabel(re.rejectedBy))}</div></div><div><div class="k">Thời điểm trả lại</div><div class="v">${esc(re.rejectedAt || '-')}</div></div></div>` : '';
     }
     // [ptnr2] Hình thức ký mặc định Ký số trên hệ thống (thêm mới và trình lại)
     setMethod('Ký số');
@@ -683,13 +713,9 @@ function setBusy(busy) {
     btn.disabled = !!busy; btn.style.opacity = busy ? '0.55' : ''; btn.style.cursor = busy ? 'not-allowed' : '';
     btn.title = busy ? 'Đang chuyển đổi tệp sang PDF, vui lòng chờ' : '';
 }
-// Sinh văn bản Mẫu 02/BTNN; kiểm tra trống Số, ký hiệu văn bản và Ngày văn bản
+// Sinh văn bản Mẫu 02/BTNN; [tnht] dòng số, ký hiệu và dòng ngày để trống (Số, ký hiệu, Ngày văn bản nhập tại Bước 2, không bắt buộc)
 function generate() {
-    const ids = ['ptnSgDocNo', 'ptnSgDocDate'];
-    const bad = ids.filter(id => !el(id).value.trim());
-    ids.forEach(id => mark(id, bad.indexOf(id) >= 0));
-    if (bad.length) { el(bad[0]).focus(); return false; }
-    S.docFile = { name: docBaseName(S.claim.maVuViec || S.code) + '.pdf', generated: true, html: buildDocHtml(S.claim, metaData()) };
+    S.docFile = { name: docBaseName(S.claim.maVuViec || S.code) + '.pdf', generated: true, html: buildDocHtml(S.claim, metaData(null)) };
     el('ptnSgDocErr').style.display = 'none';
     return true;
 }
@@ -848,10 +874,14 @@ function submit() {
     const path = S.levels.map(l => l.unitId);
     const keepId = f.generated ? '' : (f.keepId || (typeof global.tlktKeep === 'function' && f.raw ? global.tlktKeep(f.raw) : ''));
     const attachments = typeof global.tlktGet === 'function' ? global.tlktGet('ptnSg') : [];
+    // [tnht] Số, ký hiệu và Ngày văn bản theo khối Thông tin ban hành văn bản (Bước 2), ghi về meta.docNo / meta.docDate của Mẫu 02/BTNN.
+    // Tích Đóng dấu cơ quan: văn bản Lãnh đạo ký chưa có số, ngày (Văn thư điền khi ban hành)
+    const bh = S.lvCol ? S.lvCol.banHanh : null;
+    const md = metaData(bh);
     const p = Object.assign(baseRecord(c, prev), {
         status: ST.REVIEW, method: 'Ký số', docSrc: S.docSrc,
         docFile: { name: f.name, generated: !!f.generated, size: f.size || '', note: f.note || '', keepId },
-        docHtml: f.generated ? buildDocHtml(c, metaData()) : '', meta: S.docSrc === 'gen' ? (({ signerId, ...m }) => m)(metaData()) : null, assignees: S.assignees.slice(), enableRoomSig: !nhayOff(0), sigCoords: JSON.parse(JSON.stringify(Object.fromEntries(Object.entries(S.coords).filter(([k]) => S.placed[k] && !nhayOff(Number(k)))))),
+        docHtml: f.generated ? buildDocHtml(c, bh && bh.dongDau ? Object.assign({}, md, { docNo: '', docDate: '' }) : md) : '', meta: S.docSrc === 'gen' ? (({ signerId, ...m }) => m)(md) : null, banHanh: bh, dongDau: !!(bh && bh.dongDau), assignees: S.assignees.slice(), enableRoomSig: !nhayOff(0), sigCoords: JSON.parse(JSON.stringify(Object.fromEntries(Object.entries(S.coords).filter(([k]) => S.placed[k] && !nhayOff(Number(k)))))),
         content, attachments, submittedBy: me(), submittedAt: W.nowText(), reason: '',
         approval: { kind: KIND, path, assignees: S.assignees.slice(), level: 0, steps: [] }
     });
@@ -1019,10 +1049,15 @@ function detailBlockHtml(c) {
     const ky = p.method === 'Ký ngoài';
     const draft = p.status !== ST.DONE;
     const meta = p.meta || {};
-    // [ptnxd] Phiếu tiếp nhận hồ sơ Xác định CQGQBT (tệp đính kèm, không sinh theo mẫu): không hiển thị Số, ký hiệu văn bản / Ngày văn bản
+    // [tnht] Số, ký hiệu văn bản / Ngày văn bản: hiển thị khi Phiếu tiếp nhận trình Ký số trên hệ thống, với mọi Loại hồ sơ và mọi nguồn văn bản
+    // (sinh theo mẫu hoặc tải tệp lên); giá trị nhập tại Bước 2 (meta của Mẫu 02 hoặc banHanh của phiếu trình); chưa có giá trị: "---"
+    const bh = p.banHanh || (p.approval && p.approval.signDoc && p.approval.signDoc.banHanh) || {};
+    const soKh = String(meta.docNo || '').trim();
+    const so = (/^\/TB-$/.test(soKh) ? '' : soKh) || String(bh.soKyHieu || '').trim();
+    const ngay = meta.docDate || bh.ngayVanBan || '';
     const row1 = roItm('Trạng thái', `<span class="ptn-badge ${draft ? 'review' : 'done'}">${draft ? 'Dự thảo' : 'Đã ký duyệt, ban hành'}</span>`)
-        + (p.noTpl || ky || !p.meta ? '' : roItm('Số, ký hiệu văn bản', roDash(meta.docNo))
-        + roItm('Ngày văn bản', roDash(meta.docDate)));
+        + (ky ? '' : roItm('Số, ký hiệu văn bản', roDash(so))
+        + roItm('Ngày văn bản', roDash(ngay)));
     const row2 = fileRowHtml(p, draft ? 'Dự thảo Phiếu tiếp nhận' : 'Phiếu tiếp nhận đã ký duyệt');
     // Bảng tài liệu: bỏ qua căn lề tự động (grid_align) để cột File đính kèm căn trái
     const tl = typeof global.tlktViewHtml === 'function' ? global.tlktViewHtml(p.attachments || []).replace(/tlkt-view-box"/g, 'tlkt-view-box ga-skip"') : '';
@@ -1031,7 +1066,7 @@ function detailBlockHtml(c) {
 // Khối "Lý do bị trả lại": hồ sơ Bị trả lại
 function rejectBlockHtml(p) {
     const a = p.approval || {};
-    return `<div class="ro-grid ro-g4">${roItm('Lý do trả lại', roDash(p.reason), 'ro-full ro-area')}</div><div class="ro-grid ro-g4">${roItm('Lãnh đạo trả lại', roDash(W.userLabel(p.rejectedBy)))}${roItm('Thời điểm trả lại', roDash(p.rejectedAt))}${roItm('Cấp ký duyệt', a.path ? `Cấp ${(a.level || 0) + 1}/${a.path.length} - ${esc(W.unitName(a.path[a.level || 0]))}` : roDash(''), 'ro-span-2')}</div>`;
+    return `<div class="ro-grid ro-g4">${roItm('Lý do trả lại', roDash(p.reason), 'ro-full ro-area')}</div><div class="ro-grid ro-g4">${roItm('Người trả lại', roDash(W.userLabel(p.rejectedBy)))}${roItm('Thời điểm trả lại', roDash(p.rejectedAt))}${roItm('Cấp ký duyệt', a.path ? `Cấp ${(a.level || 0) + 1}/${a.path.length} - ${esc(W.unitName(a.path[a.level || 0]))}` : roDash(''), 'ro-span-2')}</div>`;
 }
 // Tài liệu ban hành / không ban hành kèm theo (tlktViewHtml): tên tệp click mở xem như nút Xem file của dòng
 function linkTlktNames(root) {
@@ -1659,7 +1694,7 @@ function ptxReturnedHtml(p) {
     const list = ptxReturnList(p);
     if (!list.length) return '';
     const e = list[list.length - 1];
-    return `<div style="font-weight:700; color:#b45309; font-size:14px; margin-bottom:8px;"><i class="fa-solid fa-rotate-left"></i> Lý do bị trả lại</div><div class="ptn-ro-grid"><div><div class="k">Lý do trả lại</div><div class="v">${esc(e.reason || '-')}</div></div><div><div class="k">Lãnh đạo trả lại</div><div class="v">${esc(W.userLabel(e.by))}</div></div><div><div class="k">Thời điểm trả lại</div><div class="v">${esc(e.at || '-')}</div></div></div>`;
+    return `<div style="font-weight:700; color:#b45309; font-size:14px; margin-bottom:8px;"><i class="fa-solid fa-rotate-left"></i> Lý do bị trả lại</div><div class="ptn-ro-grid"><div><div class="k">Lý do trả lại</div><div class="v">${esc(e.reason || '-')}</div></div><div><div class="k">Người trả lại</div><div class="v">${esc(W.userLabel(e.by))}</div></div><div><div class="k">Thời điểm trả lại</div><div class="v">${esc(e.at || '-')}</div></div></div>`;
 }
 function ptxFt() { return W.flowTypeOf ? W.flowTypeOf(X.claim.requestType || XD_TYPE, X.claim.rootUnitId) : undefined; }
 // Lãnh đạo các cấp: cấp 1 = Lãnh đạo Phòng duyệt; cấp trung gian, cấp cuối: -- Chọn Lãnh đạo -- (ký số theo luồng đã cấu hình)
@@ -1733,7 +1768,7 @@ function ptxOpen(id, c, nw) {
     const re = prev && prev.status === ST.REJECT ? prev : null;
     const levels = levelsOf(c);
     const hasSig = !!(re && re.sigCoords && re.sigCoords.room);
-    X = { id, claim: c, code: c.code, isNew, wfData: isNew ? nw.wfData : null, onSaved: nw ? nw.onSaved : null, prev, levels, path: levels.map(l => l.unitId), ui: null, prevLv: lvPrev(re),
+    X = { id, claim: c, code: c.code, isNew, wfData: isNew ? nw.wfData : null, onSaved: nw ? nw.onSaved : null, prev, levels, path: levels.map(l => l.unitId), ui: null, prevLv: lvPrev(re), prevBh: lvPrevBh(re),
         method: 'Ký số', file: '', fileObj: null, fileSize: '', fileNote: '', fileKeepId: '', step: 1, converting: false, convToken: 0,
         enableRoomSig: re && re.enableRoomSig !== undefined ? re.enableRoomSig : true,
         sigCoords: hasSig ? JSON.parse(JSON.stringify(re.sigCoords)) : PTX_SIG(), placed: hasSig ? Object.fromEntries(Object.keys(re.sigCoords).map(k => [k, true])) : {} };
@@ -2150,7 +2185,9 @@ function ptxLdOpen(code, mode, cb) {
     el('ptxLdOverlay').classList.add('open');
     // [ro1] Phiếu trình tự thiết lập các cấp: ô ký theo cấp; cấp bật Ký số -> khối Ký số, không bật -> gán chữ ký / chữ ký nháy
     const pkb = document.getElementById('pcKyBlock'); if (pkb) pkb.remove();
-    if (p && p.approval && p.approval.tuThietLap && global.BTNN_PCKD) global.BTNN_PCKD.decorateDecision({ approval: Object.assign({}, p.approval, { signDoc: { pcSig: p.pcSig || [] } }) }, approve && can ? 'approve' : 'reject', { page: el('ptxLdPreview').querySelector('.ld-a4'), scroller: el('ptxLdPreview'), right: el('ptxLdRight'), before: el('ptxLdNoteGroup'), title: el('ptxLdTitle') });
+    // [tnht] Ô Số, ô Ngày, ô Dấu theo khối Thông tin ban hành văn bản đã lưu (signDoc.dongDau / banHanh)
+    const sd = (p && p.approval && p.approval.signDoc) || {};
+    if (p && p.approval && p.approval.tuThietLap && global.BTNN_PCKD) global.BTNN_PCKD.decorateDecision({ approval: Object.assign({}, p.approval, { signDoc: { pcSig: p.pcSig || sd.pcSig || [], dongDau: !!(sd.dongDau || p.dongDau), banHanh: sd.banHanh || p.banHanh || null } }) }, approve && can ? 'approve' : 'reject', { page: el('ptxLdPreview').querySelector('.ld-a4'), scroller: el('ptxLdPreview'), right: el('ptxLdRight'), before: el('ptxLdNoteGroup'), title: el('ptxLdTitle') });
 }
 function ptxLdClose() { const o = el('ptxLdOverlay'); if (o) o.classList.remove('open'); }
 // Ký duyệt / Từ chối (như WF.approve / WF.rejectApproval - Xác định CQGQBT); kết quả theo Tiếp nhận hồ sơ

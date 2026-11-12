@@ -580,12 +580,16 @@ function kptbNoticeData(item) {
     n.signerId = (n.assignees || a.assignees || [])[((a.path || n.assignees || []).length || 1) - 1] || '';
     return n;
 }
+// [vt1] Văn bản trình ký (chưa ban hành) có khối Thông tin ban hành văn bản: dòng số, ký hiệu và dòng địa danh, ngày để trống (chèn khi ban hành)
+function kptbDocN(item, n) {
+    return n && n.banHanh && [KPTB_ST.REVIEW, KPTB_ST.REJECT].includes(item.status) ? Object.assign({}, n, { docNo: '', docDate: '' }) : n;
+}
 function kptbViewNotice(id) {
     const item = kptbFind(id); if (!item) return;
     const n = kptbNoticeData(item);
     if (n.signMethod === 'Ký ngoài' || (n.docFile && !n.docFile.generated)) { showToast('Giả lập mở tệp: ' + (n.signedFile || (n.docFile || {}).name || ''), 'info'); return; }
     const W = kptbW();
-    const html = kptbBuildDocHtml(item, n);
+    const html = kptbBuildDocHtml(item, kptbDocN(item, n));
     const name = n.digitalSign ? kptbDocBaseName(item) + '_ky_so' : kptbDocBaseName(item);
     if (W && W.openDocTab) W.openDocTab(html, name); else kpOpenDocViewer(html, name);
 }
@@ -640,21 +644,7 @@ function kptbEnsureSignModal() {
                 </div>
                 <div class="kptb-qs-meta" id="kptbSgMeta">
                     <div class="kptb-qs-meta-title"><i class="fa-solid fa-sliders"></i> Thông tin điền vào Mẫu 32/BTNN</div>
-                    <div class="kptb-gqx-grid2">
-                        <div class="kptb-gqx-field">
-                            <label class="form-label" for="kptbSgDocNo">Số, ký hiệu văn bản<span class="kptb-gqx-req">*</span></label>
-                            <input type="text" class="form-control" id="kptbSgDocNo" maxlength="100" placeholder="Nhập số, ký hiệu văn bản" oninput="kptbMark('kptbSgDocNo', false)">
-                            <div class="kptb-gqx-err" id="kptbSgDocNoErr">Đây là trường bắt buộc</div>
-                        </div>
-                        <div class="kptb-gqx-field">
-                            <label class="form-label" for="kptbSgDocDate">Ngày văn bản<span class="kptb-gqx-req">*</span></label>
-                            <div class="kptb-gqx-date">
-                                <input type="text" class="form-control" id="kptbSgDocDate" placeholder="dd/mm/yyyy" readonly onchange="kptbMark('kptbSgDocDate', false)">
-                                <i class="fa-regular fa-calendar-days" onclick="var i=document.getElementById('kptbSgDocDate'); if(i._flatpickr) i._flatpickr.open();" title="Chọn ngày"></i>
-                            </div>
-                            <div class="kptb-gqx-err" id="kptbSgDocDateErr">Đây là trường bắt buộc</div>
-                        </div>
-                    </div>
+                    <!-- [vt1] 12/11/2026: Số, ký hiệu và Ngày văn bản của Thông báo chi trả nhập ở Bước 2 (khối Thông tin ban hành văn bản) -->
                     <div id="kptbSgCashGroup" style="display:none;">
                         <div class="kptb-qs-meta-title" style="margin-top:4px;"><i class="fa-solid fa-money-bill-wave"></i> Nội dung thông báo</div>
                         <div class="kptb-gqx-grid2">
@@ -724,26 +714,24 @@ function kptbOpenSign(id, draft) {
     kptbEnsureSignModal();
     const levels = kptbLevels(item.ycbtCode);
     const prev = item.kptbNotice || {};
+    const rej = item.status === KPTB_ST.REJECT;
+    // [vt1] Trình lại: điền lại khối Thông tin ban hành văn bản (Bước 2) của lần trình trước
+    const bhPrev = rej && typeof kpBhPrev === 'function' ? kpBhPrev(prev) : { dongDau: undefined, banHanh: null };
     kptbSg = { id: item.id, draft: draft || null, method: 'Ký số', docSrc: 'gen', step: 1, levels, assignees: levels.map((lv, i) => (prev.assignees && prev.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null,
         // [ro1] Thiết lập các cấp trình ký: trình lại điền sẵn thiết lập lần trước
-        ui: null, prevLv: item.status === KPTB_ST.REJECT && window.BTNN_PCKD ? BTNN_PCKD.prevFromSign(prev) : null };
+        ui: null, prevLv: rej && window.BTNN_PCKD ? BTNN_PCKD.prevFromSign(prev) : null, prevDongDau: bhPrev.dongDau, prevBanHanh: bhPrev.banHanh };
     kptbEl('kptbSgNoiNhan').value = prev.noiNhan || KPTB_NOI_NHAN_DEFAULT;
     kptbEl('kptbSgSubCode').innerText = kptbVv(item.ycbtCode) || item.ycbtCode || '--';
     kptbEl('kptbSgSubNyc').innerText = item.nycName || '--';
     kptbEl('kptbSgSubUnit').innerText = (item.kptbDec || {}).unitName || item.agency || '--';
     kptbEl('kptbSgMethodOn').checked = true;
-    kptbEl('kptbSgDocNo').value = prev.docNo || '     /TB-';
-    kptbEl('kptbSgDocDate').value = prev.docDate || kptbToday();
     kptbEl('kptbSgTime').value = prev.time || '';
     kptbEl('kptbSgPlace').value = prev.place || '';
     kptbEl('kptbSgCashGroup').style.display = kptbIsCash(item) && !draft ? '' : 'none';
     kptbEl('kptbSgContent').value = '';
-    ['kptbSgDocNo', 'kptbSgDocDate'].forEach(x => kptbMark(x, false));
     document.querySelectorAll('#kptbSignModal .kptb-qs-err, #kptbSignModal .kptb-gqx-err').forEach(e => { e.style.display = 'none'; });
     if (window.flatpickr) {
-        if (!kptbEl('kptbSgDocDate')._flatpickr) flatpickr('#kptbSgDocDate', { dateFormat: 'd/m/Y', allowInput: true });
         if (!kptbEl('kptbSgTime')._flatpickr) flatpickr('#kptbSgTime', { enableTime: true, time_24hr: true, dateFormat: 'H:i d/m/Y', allowInput: true });
-        const fp = kptbEl('kptbSgDocDate')._flatpickr; if (fp) fp.setDate(kptbEl('kptbSgDocDate').value, false, 'd/m/Y');
     }
     kptbSgRenderOff();
     kptbSgSetDocSrc('gen');
@@ -809,8 +797,9 @@ function kptbSgData() {
     const item = kptbSgItem();
     const cash = kptbIsCash(item);
     const fm = (kptbSg.draft && kptbSg.draft.kpcdForm) || null;
+    // [vt1] Văn bản sinh theo mẫu: dòng số, ký hiệu và dòng địa danh, ngày để trống (Số, ký hiệu và Ngày văn bản nhập ở Bước 2)
     return {
-        docNo: kptbEl('kptbSgDocNo').value.trim(), docDate: kptbEl('kptbSgDocDate').value.trim(),
+        docNo: '', docDate: '',
         time: cash ? (fm ? fm.time : kptbEl('kptbSgTime').value.trim()) : '', place: cash ? (fm ? fm.place : kptbEl('kptbSgPlace').value.trim()) : '',
         payAgency: fm ? fm.payAgency : '',
         noiNhan: kptbEl('kptbSgNoiNhan').value.trim(),
@@ -864,11 +853,8 @@ function kptbConfirmIssue(message, onOk) {
     const noBtn = ov ? ov.querySelector('.confirm-modal-footer .btn-secondary') : null;
     if (noBtn) noBtn.addEventListener('click', restore, { once: true });
 }
-// Sinh văn bản Mẫu 32/BTNN; chỉ kiểm tra trống Số, ký hiệu văn bản và Ngày văn bản
+// Sinh văn bản Mẫu 32/BTNN ([vt1] Bước 1 không kiểm tra số, ký hiệu và ngày - nhập ở Bước 2, không bắt buộc)
 function kptbSgGenerate() {
-    const bad = ['kptbSgDocNo', 'kptbSgDocDate'].filter(id => !kptbEl(id).value.trim());
-    ['kptbSgDocNo', 'kptbSgDocDate'].forEach(id => kptbMark(id, bad.includes(id)));
-    if (bad.length) { kptbEl(bad[0]).focus(); return false; }
     const item = kptbSgItem();
     kptbSg.docFile = { name: kptbDocBaseName(item) + '.doc', generated: true, html: kptbBuildDocHtml(item, kptbSgData()) };
     kptbEl('kptbSgDocErr').style.display = 'none';
@@ -928,6 +914,8 @@ function kptbSgNext() {
     const f = kptbSg.docFile;
     kptbEl('kptbSgA4').innerHTML = f.generated ? f.html : `<div style="text-align:center; color:#64748b; padding-top:300px; font:14px Inter, sans-serif;"><i class="fa-solid fa-file-lines" style="font-size:48px;"></i><br><br>${kpEsc(f.name)}<br>(Văn bản tải lên)</div>`;
     kptbSgGoStep(2);
+    // [vt1] Thiết lập các cấp trình ký + khối Thông tin ban hành văn bản (Số, ký hiệu; Địa danh; Ngày văn bản; Đóng dấu cơ quan; Đơn vị ban hành)
+    if (typeof kpLvMount === 'function' && kpLvMount(kptbSg, 'kptbSg', 'kptbSgLevels', 'kptbSgA4')) return;
     if (window.BTNN_PCKD && BTNN_PCKD.simpleMount(kptbSg, 'kptbSg', 'kptbSgLevels', 'kptbSgA4')) return;
     kptbSgRenderLevels();
     kptbSg.levels.forEach((lv, i) => { if (kptbSg.placed[i]) kptbSgDrawBox(i); });
@@ -990,9 +978,10 @@ function kptbSgSubmit() {
     const f = kptbSg.docFile;
     const content = kptbEl('kptbSgContent').value.trim();
     const path = kptbSg.levels.map(l => l.unitId);
-    item.kptbNotice = Object.assign({ signMethod: 'Ký số' }, data, { docFile: { name: f.name, generated: !!f.generated }, assignees: kptbSg.assignees.slice(), sigCoords: JSON.parse(JSON.stringify(kptbSg.coords)), attachments },
+    // [vt1] Số, ký hiệu và Ngày văn bản (Bước 2, không bắt buộc), Đóng dấu cơ quan, Đơn vị ban hành, vị trí ô Số/Ngày/Dấu lưu cùng phiếu trình (docNo, docDate: trường cũ)
+    const bhs = typeof kpBhSign === 'function' ? kpBhSign(lv) : { docNo: '', docDate: '', dongDau: false, banHanh: null };
+    item.kptbNotice = Object.assign({ signMethod: 'Ký số' }, data, { docNo: bhs.docNo, docDate: bhs.docDate, dongDau: bhs.dongDau, banHanh: bhs.banHanh, docFile: { name: f.name, generated: !!f.generated }, assignees: kptbSg.assignees.slice(), sigCoords: JSON.parse(JSON.stringify(kptbSg.coords)), attachments },
         lv ? { tuThietLap: true, pcLevels: lv.levels, pcSig: lv.pcSig } : {});
-    if (!f.generated) { item.kptbNotice.docNo = ''; item.kptbNotice.docDate = ''; }
     item.kptbApproval = { kind: KPTB_KIND, path, assignees: kptbSg.assignees.slice(), level: 0, steps: [], content, submittedBy: me, submittedAt: kptbNow(), pending: true, prevStatus: item.status, attachments };
     item.kptbReturned = null;
     item.status = KPTB_ST.REVIEW;
@@ -1062,12 +1051,15 @@ function kptbLdHistoryHtml(item) {
     (item.kptbHistory || []).filter(h => /^(Trình ký|Ký duyệt|Từ chối)/.test(h.action || '')).forEach(h => {
         if (/^Trình ký/.test(h.action)) items.push(row('done', h.userId, h.userName, h.at, '', 'fa-solid fa-circle-arrow-right', (t => t ? `Trình ký đến <strong>${kpEsc(t)}</strong>` : 'Trình ký')((/^Trình ký đến (.+)$/.exec(h.action || '') || [])[1] || pick(/Trình ([^.]+?) - /, h.note)), pick(/Nội dung: (.*)$/, h.note), h.attachments));
         else if (/^Từ chối/.test(h.action)) items.push(row('no', h.userId, h.userName, h.at, 'no', 'fa-solid fa-ban', 'Từ chối - trả lại cán bộ trình', pick(/Lý do: (.*)$/, h.note)));
+        else if (/Văn thư ban hành/.test(h.action)) items.push(row('done', h.userId, h.userName, h.at, 'ok', 'fa-regular fa-circle-check', 'Ký duyệt và chuyển Văn thư ban hành', pick(/Ý kiến: (.*)$/, h.note)));   // [vt1]
         else {
             const to = pick(/; chuyển ([^.]+)\./, h.note);
             items.push(to ? row('done', h.userId, h.userName, h.at, '', 'fa-solid fa-circle-arrow-right', `Ký duyệt và chuyển xử lý đến <strong>${kpEsc(to)}</strong>`, pick(/Ý kiến: (.*)$/, h.note))
                 : row('done', h.userId, h.userName, h.at, 'ok', 'fa-regular fa-circle-check', 'Ký duyệt', pick(/Ý kiến: (.*)$/, h.note)));
         }
     });
+    // [vt1] Sự kiện đang chờ ở trên cùng: "Chờ Văn thư ban hành - [Tên Đơn vị văn thư hoặc Họ tên các tài khoản văn thư]"
+    if (a.choVanThu && item.status === KPTB_ST.REVIEW) items.push(row('wait', '', 'Văn thư', '', 'wait', 'fa-solid fa-hourglass-half', 'Chờ Văn thư ban hành - ' + kpEsc(a.choVanThu.vanThu || '--'), ''));
     if (a.pending) {
         for (let lv = a.level; lv < (a.path || []).length; lv++) {
             const uid = (a.assignees || [])[lv] || '';
@@ -1092,7 +1084,9 @@ function kptbLdOpen(id, mode) {
     const generated = !n.docFile || n.docFile.generated;
     const docName = (n.docFile && n.docFile.name) || (kptbDocBaseName(item) + '.doc');
     kptbLd = { id, approve };
-    const hint = approve ? (last ? `Cấp phê duyệt cuối cùng. Sau khi ký duyệt, hệ thống ký số Thông báo chi trả và bản ghi chuyển [${KPTB_ST.PAY}].` : `Sau khi ký duyệt, hồ sơ tự động chuyển ${preset ? kptbUserName(preset) + ' - ' : ''}${kptbUnitName(nextUnitId)} (Lãnh đạo cấp tiếp theo đã chọn khi trình) ký duyệt.`) : `Sau khi từ chối, bản ghi chuyển [${KPTB_ST.REJECT}] cho cán bộ trình.`;
+    // [vt1] Phiếu trình tích Đóng dấu cơ quan: cấp cuối Ký duyệt thì văn bản chuyển Văn thư đóng dấu, ban hành; bản ghi giữ Chờ duyệt
+    const vtDd = !!(n.tuThietLap && n.dongDau);
+    const hint = approve ? (last ? (vtDd ? `Cấp phê duyệt cuối cùng. Sau khi ký duyệt, hệ thống ký số Thông báo chi trả (chưa có số, ngày, dấu) và chuyển Văn thư đóng dấu, ban hành; bản ghi giữ [${KPTB_ST.REVIEW}].` : `Cấp phê duyệt cuối cùng. Sau khi ký duyệt, hệ thống ký số Thông báo chi trả và bản ghi chuyển [${KPTB_ST.PAY}].`) : `Sau khi ký duyệt, hồ sơ tự động chuyển ${preset ? kptbUserName(preset) + ' - ' : ''}${kptbUnitName(nextUnitId)} (Lãnh đạo cấp tiếp theo đã chọn khi trình) ký duyệt.`) : `Sau khi từ chối, bản ghi chuyển [${KPTB_ST.REJECT}] cho cán bộ trình.`;
     const row = (k, v) => `<div class="kptbld-row"><span>${k}</span><span>${v}</span></div>`;
     const summary = `<div class="kptbld-box"><div class="kptbld-box-title"><i class="fa-solid fa-circle-info"></i> Thông tin tổng quan</div>`
         + row('Mã đề nghị', `<strong>${kpEsc(item.code)}</strong>`)
@@ -1129,7 +1123,7 @@ function kptbLdOpen(id, mode) {
     document.body.appendChild(ov);
     kptbFrameFull(true);
     const fr = kptbEl('kptbLdFrame');
-    if (fr && W) fr.srcdoc = W.docPageHtml(kptbBuildDocHtml(item, n), docName.replace(/\.[a-z]+$/i, ''), false);
+    if (fr && W) fr.srcdoc = W.docPageHtml(kptbBuildDocHtml(item, kptbDocN(item, n)), docName.replace(/\.[a-z]+$/i, ''), false);
     // [ro1] Cấp bật Ký số -> khối Ký số; không bật -> gán chữ ký / chữ ký nháy
     if (item.kptbNotice && item.kptbNotice.tuThietLap && window.BTNN_PCKD) { const sb = ov.querySelector('.kptbld-sign'); if (sb) sb.remove(); BTNN_PCKD.decorateSimple(a, item.kptbNotice, approve ? 'approve' : 'reject', { page: null, right: ov.querySelector('.kptbld-right'), before: ov.querySelector('.kptbld-right .kptbld-group'), title: ov.querySelector('#kptbLdTitle') }); }
 }
@@ -1162,6 +1156,12 @@ function kptbLdSubmit() {
             const how = window.BTNN_PCKD ? BTNN_PCKD.howOf(item.kptbNotice, a.level - 1) : '';
             kptbHist(item, 'Ký duyệt', `${KPTB_KIND}: ký duyệt cấp ${kptbUnitName(unitId)}${how ? ' (' + how + ')' : ''}; chuyển ${next ? kptbUserLabel(next) : kptbUnitName(a.path[a.level])}.${fullNote ? ' Ý kiến: ' + fullNote : ''}`);
             msg = `Đã ký duyệt ${KPTB_KIND}, chuyển ${next ? kptbUserLabel(next) : 'cấp tiếp theo'} ký duyệt.`;
+        } else if (item.kptbNotice && item.kptbNotice.tuThietLap && item.kptbNotice.dongDau && typeof kpVanThuApprove === 'function') {
+            // [vt1] TH3a - phiếu trình tích Đóng dấu cơ quan: ký số văn bản chưa có số, ngày, dấu; bản ghi giữ Chờ duyệt, dòng phụ
+            // "Thông báo chi trả - Chờ Văn thư ban hành"; chưa chuyển Chờ chi trả (Văn thư đóng dấu, ban hành tại Ban hành văn bản)
+            const vt = kpVanThuApprove(a, item.kptbNotice, me, at);
+            kptbHist(item, 'Ký duyệt và chuyển Văn thư ban hành', `${KPTB_KIND}: ký duyệt cấp ${kptbUnitName(unitId)} - đã ký số văn bản chưa có số, ngày, dấu. Chờ Văn thư ban hành - ${vt || '--'}.${fullNote ? ' Ý kiến: ' + fullNote : ''}`);
+            msg = `Đã ký số ${KPTB_KIND} và chuyển Văn thư đóng dấu, ban hành. Bản ghi giữ [${KPTB_ST.REVIEW}] - ${KPTB_KIND} - Chờ Văn thư ban hành.`;
         } else {
             a.pending = false;
             item.status = KPTB_ST.PAY;
@@ -1351,7 +1351,7 @@ function kptbView(id) {
     const sec = (icon, title, body) => `<div class="kptb-dtl-sec"><div class="kptb-dtl-title"><i class="fa-solid ${icon}"></i> ${title}</div>${body}</div>`;
     const a = item.kptbApproval || null;
     const n = item.kptbNotice || null;
-    const general = `<div class="kptb-dtl-grid">${it('Mã đề nghị', kpEsc(item.code))}${it('Loại đề nghị', kpEsc(KPTB_TYPE))}${it('Trạng thái', `<span class="badge badge-info">${kpEsc(item.status)}</span>${item.status === KPTB_ST.REVIEW ? `<span class="kptb-sub">${kpEsc(KPTB_KIND)}</span>` : ''}`)}${it('Mã hồ sơ', kpEsc(item.ycbtCode))}${it('Mã vụ việc', kpEsc(kptbVv(item.ycbtCode)))}${it('Người yêu cầu', kpEsc(item.nycName))}${it('Số tiền chi trả', kptbFmt(item.amount) + ' đồng')}${it('Ngày tạo bản ghi', kpEsc(item.date))}${it('Cán bộ xử lý', kpEsc(item.user))}</div>`;
+    const general = `<div class="kptb-dtl-grid">${it('Mã đề nghị', kpEsc(item.code))}${it('Loại đề nghị', kpEsc(KPTB_TYPE))}${it('Trạng thái', `<span class="badge badge-info">${kpEsc(item.status)}</span>${item.status === KPTB_ST.REVIEW ? `<span class="kptb-sub">${kpEsc(KPTB_KIND + (typeof kpVtSub === 'function' ? kpVtSub(item) : ''))}</span>` : ''}`)}${it('Mã hồ sơ', kpEsc(item.ycbtCode))}${it('Mã vụ việc', kpEsc(kptbVv(item.ycbtCode)))}${it('Người yêu cầu', kpEsc(item.nycName))}${it('Số tiền chi trả', kptbFmt(item.amount) + ' đồng')}${it('Ngày tạo bản ghi', kpEsc(item.date))}${it('Cán bộ xử lý', kpEsc(item.user))}</div>`;
     const decBody = `<div class="kptb-dtl-grid">${it('Số Quyết định', kpEsc(dec.decNo))}${it('Ngày ban hành', kpEsc(dec.issueDate))}${it('Cơ quan ban hành', kpEsc(dec.unitName))}${it('Tổng số tiền bồi thường', kptbFmt(dec.total) + ' đồng')}${it('Số tiền đã tạm ứng', kptbFmt(dec.advance) + ' đồng')}${it('Phương thức chi trả', kpEsc(kptbMethod(item)))}`
         + (cash ? `${it('Người nhận tiền', kpEsc(r.name || item.nycName))}${it('Số định danh cá nhân/CCCD', kpEsc(r.idNo))}${it('Địa điểm chi trả', kpEsc(po.cashPlace))}`
             : `${it('Chủ tài khoản', kpEsc(po.accHolder || r.name))}${it('Số tài khoản', kpEsc(po.account || r.account))}${it('Ngân hàng', kpEsc([po.bank || r.bank, po.branch || r.branch].filter(Boolean).join(' - ')))}`) + '</div>';
@@ -1363,7 +1363,7 @@ function kptbView(id) {
         if (typeof tlktViewHtml === 'function') noticeBody += tlktViewHtml(n.attachments || [], { boxClass: 'tlkt-view', titleClass: 'tlkt-sec-title' });
     }
     const supBody = item.kptbSupp ? `<div class="kptb-dtl-grid">${it('Ngày đề nghị', kpEsc(item.kptbSupp.at))}${it('Cán bộ đề nghị', kpEsc(kptbUserName(item.kptbSupp.by)))}${it('Văn bản đề nghị', kpEsc(item.kptbSupp.file))}</div><div class="kptb-dtl-item" style="margin-top:8px;"><div class="k">Nội dung đề nghị</div><div class="v" style="font-weight:500;">${kpEsc(item.kptbSupp.content || '-')}</div></div>` : '';
-    const rejBody = item.status === KPTB_ST.REJECT && item.kptbReturned ? `<div class="kptb-dtl-grid">${it('Lãnh đạo trả lại', kpEsc(kptbUserName(item.kptbReturned.by)))}${it('Thời điểm trả lại', kpEsc(item.kptbReturned.at))}</div><div class="kptb-dtl-item" style="margin-top:8px;"><div class="k">Lý do bị trả lại</div><div class="v" style="font-weight:500;">${kpEsc(item.kptbReturned.reason)}</div></div>` : '';
+    const rejBody = item.status === KPTB_ST.REJECT && item.kptbReturned ? `<div class="kptb-dtl-grid">${it('Người trả lại', kpEsc(kptbUserName(item.kptbReturned.by)))}${it('Thời điểm trả lại', kpEsc(item.kptbReturned.at))}</div><div class="kptb-dtl-item" style="margin-top:8px;"><div class="k">Lý do bị trả lại</div><div class="v" style="font-weight:500;">${kpEsc(item.kptbReturned.reason)}</div></div>` : '';
     const p = item.kptbPayment;
     const payBody = p ? `<div class="kptb-dtl-grid">${it('Phương thức chi trả', kpEsc(p.method))}${p.method === KPTB_CASH ? it('Người nhận tiền', kpEsc(p.recName)) + it('Số định danh cá nhân/CCCD', kpEsc(p.recIdNo)) : it('Chủ tài khoản', kpEsc(p.accHolder)) + it('Số tài khoản', kpEsc(p.account)) + it('Ngân hàng', kpEsc([p.bank, p.branch].filter(Boolean).join(' - ')))}${it('Ngày chi trả', kpEsc(p.payDate))}${it('Số tiền chi trả', kptbFmt(p.amount) + ' đồng')}${it('Tệp đính kèm', kpEsc((p.files || []).join(', ')))}</div>` : '';
     const hist = (item.kptbHistory || []).slice().reverse().map(h => `<div class="kptb-hist-row"><span style="color:#64748b;">${kpEsc(h.at)}</span><span style="font-weight:600;">${kpEsc(h.userName)}</span><span><b>${kpEsc(h.action)}</b>${h.note ? ': ' + kpEsc(h.note) : ''}</span></div>`).join('');
@@ -1515,7 +1515,7 @@ function kptbDecorateTable() {
         if (!item) return;
         // Loại kinh phí, Cán bộ xử lý ("-" khi trống): hiển thị tại lưới MH01 (renderProposalsTable)
         // Dòng phụ Loại trình dưới badge (Chờ duyệt / Bị trả lại), đồng bộ màn Quyết định GQBT
-        if (item.status === KPTB_ST.REVIEW || item.status === KPTB_ST.REJECT) stCell.insertAdjacentHTML('beforeend', `<div class="wf-sub${item.status === KPTB_ST.REJECT ? ' returned' : ''}">${kpEsc(KPTB_KIND)}</div>`);
+        if (item.status === KPTB_ST.REVIEW || item.status === KPTB_ST.REJECT) stCell.insertAdjacentHTML('beforeend', `<div class="wf-sub${item.status === KPTB_ST.REJECT ? ' returned' : ''}">${kpEsc(KPTB_KIND + (typeof kpVtSub === 'function' ? kpVtSub(item) : ''))}</div>`);
         if (isLeader) { const box = actCell.querySelector('.action-flex'); if (box) box.innerHTML = kptbLeaderActionsHtml(item); }
     });
 }

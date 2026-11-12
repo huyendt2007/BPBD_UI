@@ -201,7 +201,9 @@
             it('Mức độ lỗi', a.esc(o.loi === 'Khác' ? (o.ykhdLoiKhac || 'Khác') : (o.loi || '-'))), it('Giảm/Miễn hoàn trả', a.esc(xl || '-')), it('Phương thức hoàn trả', a.esc(isMien ? '-' : ((window.htMethod ? window.htMethod(o.refundMethod) : o.refundMethod) || '-'))),
             it('Số tiền phải hoàn trả theo QĐ hoàn trả', m(hd))];
         if (giamIssued.length && !isMien) info.push(it('Số tiền hoàn trả được giảm', m(Math.max(0, hd - (o.total || 0)))), it('Số tiền còn phải hoàn trả', m(o.total)));
-        if (isMien) info.push(it('Số tiền được miễn', m(Math.max(0, hd - (o.paid || 0)))));
+        // Số tiền được miễn = Còn phải thu tại thời điểm ban hành Quyết định miễn (SRS sửa 12/11/2026): tính theo số phải hoàn trả hiện hành (sau các lần giảm), không theo số trên QĐ hoàn trả
+        const mienDuoc = Math.max(0, (o.total != null ? o.total : hd) - (o.paid || 0));
+        if (isMien) info.push(it('Số tiền được miễn', m(mienDuoc)));
         info.push(it('Số tiền đã nộp (lũy kế)', m(o.paid)), it('Số tiền còn phải thu', m(o.ct === 'THU' ? conLai(o) : 0)));
         if ((o.refund || 0) > 0) info.push(it('Số tiền cần trả lại', '<span style="color:#b91c1c;">' + m(o.refund) + '</span>'));
         info.push(it('Trạng thái', (window.htPill ? window.htPill(a.ctText(o.ct)) : a.esc(a.ctText(o.ct))) + (o.trinh && !/_DC$/.test(o.trinh) ? '<div style="font-size:12px; color:#6d28d9; font-weight:500;">' + a.esc(a.ctText(o.trinh)) + '</div>' : '')));
@@ -215,7 +217,7 @@
         if (o.refundDone) rows.push({ t: o.refundDone.at || o.refundDone.ngay, k: pd(o.refundDone.at || o.refundDone.ngay), nd: 'Trả lại tiền cho cán bộ (ngày ' + a.esc(o.refundDone.ngay) + ')', tien: m(o.refundDone.amt), by: a.esc(o.refundDone.by || ''), f: (o.refundDone.tlkt || []).filter(t => t.file && t.file.name).map(t => fileLinks(t.file.name)).join('<br>') });
         recs.filter(x => x.r.issuedAt).forEach(x => {
             const r = x.r, sp = r.supp || {}, ap = (r.hist || []).find(hh => hh.type === 'issue' || hh.type === 'approve');
-            const tien = x.base === 'GIAM' ? 'Được giảm ' + m(sp.duocGiam != null ? sp.duocGiam : Math.max(0, (sp.phaiHT != null ? sp.phaiHT : hd) - (sp.giam || o.giam || 0))) : 'Được miễn ' + m(sp.mien != null ? sp.mien : Math.max(0, hd - (o.paid || 0)));
+            const tien = x.base === 'GIAM' ? 'Được giảm ' + m(sp.duocGiam != null ? sp.duocGiam : Math.max(0, (sp.phaiHT != null ? sp.phaiHT : hd) - (sp.giam || o.giam || 0))) : 'Được miễn ' + m(sp.mien != null ? sp.mien : mienDuoc);
             rows.push({ t: r.issuedAt, k: pd(r.issuedAt), nd: 'Ban hành ' + a.esc(x.doc) + (r.kind && /^S/.test(r.kind) ? ' (bổ sung)' : '') + (r.soKh ? ' số ' + a.esc(r.soKh) : '') + ' - ' + (r.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống'), tien, by: a.esc(r.method === 'offline' ? 'Cán bộ ' + (r.unit || o.agency || '') : (ap ? ap.name : '')), f: fileLinks(r.fileName || '') });
         });
         rows.sort((x, y) => y.k - x.k);

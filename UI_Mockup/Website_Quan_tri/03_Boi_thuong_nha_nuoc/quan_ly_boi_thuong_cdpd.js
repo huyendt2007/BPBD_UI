@@ -282,7 +282,7 @@ function cdpdAfterOpenForm(id) {
             var W = gqW();
             ret.innerHTML = '<div style="display:flex; align-items:center; gap:8px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div>'
                 + '<div><b>Lý do trả lại:</b> ' + cdpdE(rec.returned.reason || '--') + '</div>'
-                + '<div style="font-size:12px; margin-top:2px;">Lãnh đạo trả lại: ' + cdpdE((rec.returned.by && W ? W.userName(rec.returned.by) : '') || '--') + ' • Thời điểm trả lại: ' + cdpdE(rec.returned.at || '--') + '</div>';
+                + '<div style="font-size:12px; margin-top:2px;">Người trả lại: ' + cdpdE((rec.returned.by && W ? W.userName(rec.returned.by) : '') || '--') + ' • Thời điểm trả lại: ' + cdpdE(rec.returned.at || '--') + '</div>';
             ret.style.display = 'block';
         }
     } else {
@@ -374,7 +374,7 @@ function cdpdEnsureModal() {
         + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="cdpdStep2Tab" class="ktl-step-tab" onclick="cdpdGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Thiết lập các cấp trình ký</span></div></div>'
         + '<div id="cdpdStep1Body" class="sticky-modal-body gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
         + '<div id="cdpdReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> Lý do bị trả lại</div>'
-        + '<div style="font-size:13px; color:#92400e;"><b>Lý do trả lại:</b> <span id="cdpdReturnedReason">--</span></div><div style="font-size:12px; color:#b45309; margin-top:2px;">Lãnh đạo trả lại: <span id="cdpdReturnedOfficer">--</span> • Thời điểm trả lại: <span id="cdpdReturnedDate">--</span></div></div>'
+        + '<div style="font-size:13px; color:#92400e;"><b>Lý do trả lại:</b> <span id="cdpdReturnedReason">--</span></div><div style="font-size:12px; color:#b45309; margin-top:2px;">Người trả lại: <span id="cdpdReturnedOfficer">--</span> • Thời điểm trả lại: <span id="cdpdReturnedDate">--</span></div></div>'
         + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
         + card('cdpdCardSignOnline', 'online', 'Ký số trên hệ thống', 'Trình Lãnh đạo ký duyệt trên phần mềm', 'fa-file-signature', false, true)
         + card('cdpdCardSignOffline', 'offline', 'Ký ngoài (Ban hành trực tiếp)', 'Tải lên văn bản PDF đã ký và đóng dấu', 'fa-stamp', true, false)
@@ -428,7 +428,8 @@ function openCdpdModal(claimId) {
     cdpdEl('cdpdClaimAgency').innerText = claim.agency || '--';
     cdpdPopMsg('');
     cdpdEl('cdpdSignContent').value = (prev && prev.content) || CDPD_CONTENT_DEFAULT;
-    gqSignInit('cdpd', claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null);
+    // [sn1] Bước 2 có khối Thông tin ban hành văn bản (Số, ký hiệu, Địa danh, Ngày văn bản; trình lại điền theo phiếu trình trước)
+    gqSignInit('cdpd', claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null, { kind: CDPD_KIND });
     cdpdOfflineRemove();
     var fe = cdpdEl('cdpdDocFileError'); fe.textContent = CDPD_REQ; fe.style.display = 'none';
     if (typeof ktlxCancelConvert === 'function') ktlxCancelConvert('cdpd');
@@ -594,11 +595,12 @@ function cdpdSubmitOnline() {
     if (miss) { if (miss.scrollIntoView) miss.scrollIntoView({ block: 'center' }); return; }
     var fileName = cdpdOnlineFile.name;
     var draftDoc = { source: 'uploaded', formNo: '', docTitle: CDPD_DOC_TITLE, generatedName: '', uploadedName: fileName, bodyHtml: '' };
-    var signDoc = Object.assign({ method: 'Ký số', file: fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords }, tlktGqExtra('cdpd', cdpdOnlineFile, 'upload', sign.content));
+    // [sn1] Số, ký hiệu / Ngày văn bản theo khối Thông tin ban hành văn bản (Bước 2)
+    var signDoc = Object.assign({ method: 'Ký số', file: fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords, docNumber: sign.soKyHieu, docDate: sign.ngayVanBan }, tlktGqExtra('cdpd', cdpdOnlineFile, 'upload', sign.content));
     var res = gqSubmit(claim, CDPD_KIND, sign.content, [], { assignee: sign.assignees[0] || '', assignees: sign.assignees, reason: CDPD_KIND, resultStatus: CDPD_CU_NGUOI, draftDoc: draftDoc, signDoc: signDoc });
     if (!res || res.ok === false) { cdpdPopMsg(res ? res.message : 'Không trình được hồ sơ.'); return; }
     claim.cdpdDoc = {
-        state: 'Chờ duyệt', method: 'Ký số', docSrc: 'upload', draftFile: fileName, draftFileId: signDoc.docFileMeta ? signDoc.docFileMeta.keepId : '',
+        state: 'Chờ duyệt', method: 'Ký số', docSrc: 'upload', docNumber: signDoc.docNumber, docDate: signDoc.docDate, draftFile: fileName, draftFileId: signDoc.docFileMeta ? signDoc.docFileMeta.keepId : '',
         signFile: fileName, attachments: signDoc.attachments || [], submittedAt: gqNow()
     };
     delete claim.cdpdDraft;

@@ -144,7 +144,8 @@ function kpdtKind(item) {
 }
 function kpdtStatusHtml(item) {
     const st = kpNormStatus(item.status);
-    const sub = (st === 'Chờ duyệt' || st === 'Bị trả lại') ? `<div class="wf-sub">${kpdtEsc(kpdtKind(item))}</div>` : '';
+    // [vt1] Lãnh đạo cấp cuối đã Ký duyệt phiếu trình tích Đóng dấu cơ quan: dòng phụ "[Loại trình] - Chờ Văn thư ban hành"
+    const sub = (st === 'Chờ duyệt' || st === 'Bị trả lại') ? `<div class="wf-sub">${kpdtEsc(kpdtKind(item) + (typeof kpVtSub === 'function' ? kpVtSub(item) : ''))}</div>` : '';
     return `<span class="kpdt-st"><span class="badge ${kpdtStatusClass(st)}">${kpdtEsc(st)}</span>${sub}</span>`;
 }
 // courtCaseId: bản ghi từ Theo dõi vụ việc tại Tòa án -> mở đúng vụ việc tại Tòa án
@@ -264,7 +265,7 @@ function kpdtAdvFile(item, f) {
     if (st === 'Chờ duyệt' || st === 'Bị trả lại') {
         const df = s.docFile;
         if (df && !df.generated) return { name: df.name, note: 'Dự thảo đã trình', keepId: df.keepId };
-        const html = isQd ? qdtuBuildDocHtml(item.qdtu, s, { signerId: qdtuSignerOf(item) }) : kpBuildAdvanceDecisionHtml(Object.assign(kpItemDocData(item), { digitalSign: null, signedFile: null }));
+        const html = isQd ? qdtuBuildDocHtml(item.qdtu, typeof qdtuDocS === 'function' ? qdtuDocS(item, s) : s, { signerId: qdtuSignerOf(item) }) : kpBuildAdvanceDecisionHtml(Object.assign(kpItemDocData(item), { digitalSign: null, signedFile: null }));
         return { name: base + '.pdf', note: 'Dự thảo đã trình', html };
     }
     if (KPDT_SIGNED_STATES.includes(st)) {
@@ -333,7 +334,7 @@ function kpdtPayFile(item) {
     if (st === 'Chờ duyệt' || st === 'Bị trả lại') {
         const df = n.docFile;
         if (df && !df.generated) return { name: df.name, note: 'Dự thảo đã trình' };
-        return { name: base + '.pdf', note: 'Dự thảo đã trình', html: isTb ? kptbBuildDocHtml(item, kptbNoticeData(item)) : '' };
+        return { name: base + '.pdf', note: 'Dự thảo đã trình', html: isTb ? kptbBuildDocHtml(item, typeof kptbDocN === 'function' ? kptbDocN(item, kptbNoticeData(item)) : kptbNoticeData(item)) : '' };
     }
     if (KPDT_SIGNED_STATES.includes(st)) {
         if (n.signMethod === 'Ký ngoài') return n.signedFile ? { name: n.signedFile, note: 'Bản ký ngoài' } : null;

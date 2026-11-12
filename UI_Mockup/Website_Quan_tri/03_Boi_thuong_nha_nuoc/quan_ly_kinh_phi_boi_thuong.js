@@ -6108,3 +6108,72 @@ function kpSpecialistActions(item, b) {
         }
     };
 })();
+
+// =====================================================================================
+// [vt1] 12/11/2026 - Khối "Thông tin ban hành văn bản" ở Bước 2 popup trình (Thông báo chi trả Mẫu 32, Quyết định tạm ứng Mẫu 07)
+// - Số, ký hiệu văn bản; Địa danh; Ngày văn bản; Đóng dấu cơ quan; Đơn vị ban hành; Văn thư xử lý; ô Số, ô Ngày, ô Dấu kéo thả (BTNN_PCKD.levelSetup, soNgay: true).
+// - Bước 1 không còn Số, ký hiệu và Ngày văn bản của chính văn bản trình ký (Ký ngoài giữ nguyên Bước 1).
+// - Giá trị ghi về trường cũ (docNo, docDate) để danh sách, chi tiết hiển thị như trước.
+// =====================================================================================
+// Vị trí dòng "Số:" và dòng "[Địa danh], ngày ... tháng ... năm ..." của văn bản sinh theo mẫu trong trang A4 Bước 2 (px trong trang)
+function kpDocPos(pg) {
+    if (!pg || !pg.offsetWidth) return null;
+    const pr = pg.getBoundingClientRect(), k = pr.width / pg.offsetWidth || 1;
+    const tw = document.createTreeWalker(pg, NodeFilter.SHOW_TEXT);
+    let so = null, ngay = null, n;
+    while ((n = tw.nextNode())) {
+        const el = n.parentElement;
+        if (!el || el.closest('.pc-bhbox, .pc-sig')) continue;
+        const t = n.nodeValue;
+        if (!so) { const i = t.indexOf('Số:'); if (i >= 0 && !t.slice(0, i).trim()) { so = [n, i, t.replace(/\s+$/, '').length]; continue; } }
+        if (!ngay && /ngày\s.+\stháng\s.+\snăm/.test(t)) ngay = [n, t.search(/\S/), t.replace(/\s+$/, '').length];
+        if (so && ngay) break;
+    }
+    const at = x => {
+        if (!x) return null;
+        const r = document.createRange(); r.setStart(x[0], x[1]); r.setEnd(x[0], x[2]);
+        const b = r.getBoundingClientRect();
+        return b.width ? { x: Math.round((b.left - pr.left) / k) - 9, y: Math.round((b.top - pr.top) / k) - 4, w: Math.round(b.width / k) + 18 } : null;
+    };
+    return { so: at(so), ngay: at(ngay) };
+}
+// Gắn khối Thiết lập các cấp trình ký + Thông tin ban hành văn bản vào Bước 2 (thay BTNN_PCKD.simpleMount: thêm soNgay, docPos, điền lại khối khi trình lại)
+function kpLvMount(st, prefix, hostId, pageId) {
+    const P = window.BTNN_PCKD;
+    if (!P) return false;
+    const first = !st.ui;
+    st.ui = P.legacyUi(prefix, { host: () => document.getElementById(hostId), page: () => document.getElementById(pageId), method: () => 'Ký số', soNgay: true, docPos: () => kpDocPos(document.getElementById(pageId)) });
+    if (first) st.ui.reset(st.prevLv || null, st.prevDongDau, st.prevBanHanh || null);
+    st.ui.render(); st.ui.renderSigs();
+    return true;
+}
+// Thông tin ban hành văn bản của lần trình bị trả lại (phiếu trình đã lưu s); dữ liệu cũ chưa có khối Bước 2: Số, ký hiệu và Ngày văn bản đã nhập ở Bước 1
+function kpBhPrev(s) {
+    s = s || {};
+    // Số mặc định cũ dạng "     /TB-…", "     /QĐ-…" (chưa có số) coi như chưa nhập
+    const no = String(s.docNo || '').trim(), okNo = !!no.replace(/\s+/g, '') && !/^\//.test(no.replace(/\s+/g, ''));
+    const bh = (window.BTNN_PCKD && BTNN_PCKD.prevBanHanhOf(s)) || (s.docNo || s.docDate ? { soKyHieu: okNo ? no : '', ngayVanBan: s.docDate || '' } : null);
+    return { dongDau: typeof s.dongDau === 'boolean' ? s.dongDau : undefined, banHanh: bh };
+}
+// Số, ký hiệu, Ngày văn bản, Đóng dấu cơ quan, Thông tin ban hành văn bản theo các cấp đã thiết lập (col = BTNN_PCKD.simpleCollect)
+function kpBhSign(col) {
+    const bh = (col && col.banHanh) || null;
+    return { docNo: bh ? bh.soKyHieu || '' : '', docDate: bh ? bh.ngayVanBan || '' : '', dongDau: !!(col && col.dongDau), banHanh: bh };
+}
+// Phiếu trình tích Đóng dấu cơ quan, Lãnh đạo cấp cuối đã Ký duyệt: bản ghi giữ Chờ duyệt, văn bản chờ Văn thư đóng dấu, ban hành
+function kpChoVanThu(item) {
+    if (!item || item.status !== 'Chờ duyệt') return false;
+    const a = item.kptbApproval || item.qdtuApproval;
+    return !!(a && a.choVanThu);
+}
+// Dòng phụ dưới badge Chờ duyệt: "[Loại trình] - Chờ Văn thư ban hành"
+function kpVtSub(item) { return kpChoVanThu(item) ? ' - Chờ Văn thư ban hành' : ''; }
+// TH3a - cấp cuối Ký duyệt phiếu trình tích Đóng dấu cơ quan (a: phiếu trình kptbApproval / qdtuApproval; s: thông tin văn bản đã lưu kptbNotice / qdtu.sign)
+// Ký số văn bản chưa có số, ngày, dấu; bản ghi giữ Chờ duyệt; chưa ban hành (chưa chuyển Chờ chi trả) - giả lập tại trang
+function kpVanThuApprove(a, s, me, at) {
+    const bh = (s && s.banHanh) || {};
+    const vt = bh.vanThu || (window.BTNN_PCKD ? BTNN_PCKD.vanThuText(bh.donViBanHanh) : '');
+    a.pending = false;
+    a.choVanThu = { at, by: me, donViBanHanh: bh.donViBanHanh || '', donViBanHanhTen: bh.donViBanHanhTen || '', vanThu: vt };
+    return vt;
+}
