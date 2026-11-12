@@ -701,7 +701,7 @@
     <div class="container">
         <div class="page-header">
             <div>
-                <h1>Hỏi đáp nghiệp vụ</h1>
+                <h1 id="pageTitle">Hỏi đáp nghiệp vụ</h1>
                 <p>Sở Tư pháp gửi câu hỏi nghiệp vụ về công tác bồi thường nhà nước; Bộ Tư pháp tiếp nhận, phân công và trả lời</p>
             </div>
         </div>
@@ -886,7 +886,7 @@
         <span id="toastMessage"></span>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261110ct2"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261112vt2"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261106kn1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261109tl1"></script>
@@ -1294,6 +1294,7 @@
             showReturnBox(null);
             mountDocs('hdq', 'qTlkt', [], { secClass: 'form-section', titleClass: 'form-section-title' });
             document.getElementById('formTitle').innerText = 'Thêm mới câu hỏi nghiệp vụ';
+            setPageTitle('Thêm mới Hỏi đáp nghiệp vụ');
             document.getElementById('formModal').classList.add('active');
         }
         // Câu hỏi Bị trả lại: "Bị trả lại bởi [Họ tên] ([Thời điểm]): [Lý do]" theo dòng Lịch sử xử lý Trả lại gần nhất
@@ -1319,6 +1320,7 @@
             document.getElementById('formTitle').innerText = `Sửa câu hỏi nghiệp vụ ${q.code}`;
             showReturnBox(q);
             closeModal('detailModal');
+            setPageTitle('Sửa Hỏi đáp nghiệp vụ');
             document.getElementById('formModal').classList.add('active');
         }
         function saveQuestion(submit) {
@@ -1417,6 +1419,7 @@
             if (mine && r === 'BTP_CV') foot += `<button class="btn btn-primary" onclick="openAnswer(${q.id})"><i class="fa-solid fa-reply"></i> Trả lời</button>`;
             if (canUpdateAnswer(q)) foot += `<button class="btn btn-primary" onclick="openAnswer(${q.id}, true)"><i class="fa-solid fa-pen-to-square"></i> Cập nhật trả lời</button>`;
             document.getElementById('detailFooter').innerHTML = foot;
+            setPageTitle('Chi tiết Hỏi đáp nghiệp vụ');
             document.getElementById('detailModal').classList.add('active');
         }
 
@@ -1536,7 +1539,14 @@
         }
 
         // ===== Modal helpers =====
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        // Tiêu đề màn hình (dòng 1) = "[Thao tác] Hỏi đáp nghiệp vụ" khi mở trang Thêm mới/Sửa/Chi tiết; không hiển thị dòng tiêu đề form (dòng 2); đóng trang thì trở lại tên mục Menu
+        const PAGE_TITLE = 'Hỏi đáp nghiệp vụ';
+        function setPageTitle(t) { const el = document.getElementById('pageTitle'); if (el) el.innerText = t || PAGE_TITLE; }
+        document.addEventListener('DOMContentLoaded', () => { document.querySelectorAll('#formModal .modal-header, #detailModal .modal-header').forEach(h => { h.style.display = 'none'; }); });
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            if (!document.querySelector('#formModal.active, #detailModal.active')) setPageTitle();
+        }
         function openAct(title, body, okHtml, onOk) {
             document.getElementById('actTitle').innerText = title;
             document.getElementById('actBody').innerHTML = body;

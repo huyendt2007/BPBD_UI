@@ -244,7 +244,7 @@
         if (bc) {
             const st = activeDossier.status;
             const big = 'font-size:14px; padding:8px 16px; font-weight:800; border-radius:8px; display:inline-flex; align-items:center; gap:8px;';
-            if (st === 'Chờ duyệt QĐ thành lập' || st === 'Chờ duyệt thành lập hội đồng') bc.innerHTML = '<span class="badge" style="' + big + ' background:#ede9fe; color:#6d28d9; border:1px solid #ddd6fe;"><i class="fa-solid fa-hourglass-half"></i> Chờ duyệt - QĐ thành lập hội đồng</span>';
+            if (st === 'Chờ duyệt QĐ thành lập' || st === 'Chờ duyệt thành lập hội đồng') bc.innerHTML = '<span class="badge" style="' + big + ' background:#ede9fe; color:#6d28d9; border:1px solid #ddd6fe;"><i class="fa-solid fa-hourglass-half"></i> Chờ duyệt - QĐ thành lập hội đồng' + (typeof htVtCho === 'function' && htVtCho() ? ' - Chờ Văn thư ban hành' : '') + '</span>'; // [vt2] bước Văn thư ban hành
             else if (st === 'Bị trả lại thành lập HĐ' || st === 'Từ chối duyệt QĐ thành lập') bc.innerHTML = '<span class="badge" style="' + big + ' background:#fef3c7; color:#b45309; border:1px solid #fde68a;"><i class="fa-solid fa-circle-xmark"></i> Bị trả lại - QĐ thành lập hội đồng</span>';
             else if (st !== 'Chờ thành lập hội đồng') bc.innerHTML = '<span class="badge" style="font-size:13px; padding:5px 12px; font-weight:700; border-radius:999px; display:inline-flex; align-items:center; gap:6px; background:#dcfce7; color:#15803d; border:1px solid #bbf7d0;"><i class="fa-solid fa-circle-check"></i> Đã ban hành</span>';
         }

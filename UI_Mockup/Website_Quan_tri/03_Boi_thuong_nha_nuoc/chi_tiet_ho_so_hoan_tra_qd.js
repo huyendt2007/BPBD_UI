@@ -10,7 +10,9 @@
  * Nạp sau chi_tiet_ho_so_hoan_tra_ykhd.js.
  * [tnht] 12/11/2026 - Ký số trên hệ thống (Mẫu 34-38, QĐ đình chỉ Mẫu 39 tại Bước 3): bỏ "Số, ký hiệu văn bản", "Ngày văn bản" ở Bước 1; nhập tại khối
  *   "Thông tin ban hành văn bản" của Bước 2 (soNgay: true), không bắt buộc; ghi về r.soKh / r.ngay; lưu r.dongDau, r.banHanh; trình lại điền lại đủ khối.
- *   Ký duyệt cấp cuối không tự cấp số (số trống: "Chờ cấp số"); ngày ban hành theo Ngày văn bản đã nhập, trống thì ngày ký duyệt.
+ *   Ký duyệt cấp cuối không tự cấp số (số trống: hiển thị "Chưa có" in nghiêng); ngày ban hành theo Ngày văn bản đã nhập, trống thì ngày ký duyệt.
+ * [vt2] 12/11/2026 - Phiếu trình tích "Đóng dấu cơ quan": cấp cuối Ký duyệt -> r.choVanThu (htVtMark - chi_tiet_ho_so_hoan_tra_tlhd.js), phiếu giữ
+ *   Chờ duyệt (r.st 'CD'), dòng phụ "[Loại trình] - Chờ Văn thư ban hành", Lãnh đạo không còn Ký duyệt / Từ chối; chưa chạy issue() (ban hành).
  */
 (function () {
     const STORE_KEY = 'btnn_ht_units_v1';
@@ -190,7 +192,8 @@
     }
     function syncUnitStatusText() {
         (activeDossier.htUnits || []).forEach(u => {
-            u.status = { CBH: 'Chờ ban hành QĐ hoàn trả', CD: 'Chờ duyệt (QĐ hoàn trả)', BTC: 'Bị trả lại (QĐ hoàn trả)', DONE: 'Đã ban hành QĐ hoàn trả' }[u.st];
+            // [vt2] Phiếu trình QĐ hoàn trả đã chuyển Văn thư ban hành: "Chờ duyệt (QĐ hoàn trả - Chờ Văn thư ban hành)"
+            u.status = { CBH: 'Chờ ban hành QĐ hoàn trả', CD: u.qd && u.qd.choVanThu ? 'Chờ duyệt (QĐ hoàn trả - Chờ Văn thư ban hành)' : 'Chờ duyệt (QĐ hoàn trả)', BTC: 'Bị trả lại (QĐ hoàn trả)', DONE: 'Đã ban hành QĐ hoàn trả' }[u.st];
             // Toàn bộ cán bộ của đơn vị bị đình chỉ trước khi ban hành QĐ hoàn trả: đơn vị không ban hành QĐ hoàn trả
             if (u.st !== 'DONE' && allDc(u.unit)) u.status = 'Đình chỉ hoàn trả';
         });
@@ -375,14 +378,16 @@
         const off = r.method === 'offline';
         h += '<div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap; background:#eff6ff; border:1px solid #dbeafe; border-radius:8px; padding:10px 14px;">'
             + cell('Hình thức ký', off ? 'Ký ngoài' : 'Ký số trên hệ thống')
-            + cell('Số, ký hiệu văn bản', off ? '-' : esc(r.soKh || 'Chờ cấp số'))
+            + cell('Số, ký hiệu văn bản', off ? '-' : (r.soKh ? esc(r.soKh) : '<i>Chưa có</i>'))
             + cell('Ngày văn bản', off ? '-' : esc(u.st === 'DONE' ? (r.issuedAt || r.ngay) : r.ngay || '-'))
             + cell('Tệp văn bản Quyết định', qdFileCell(r, 'HT', i))
             + '</div>'
-            + (u.st === 'CD' ? '<div style="font-size:13px; margin-top:8px;"><span style="color:#64748b;">Lãnh đạo được giao ký duyệt:</span> <strong>Cấp ' + (r.level + 1) + '/' + r.levels.length + ' - ' + esc(r.levels[r.level].unit) + ': ' + esc(leaderLabel(r, r.level)) + '</strong></div>' : '');
+            // [vt2] Đã chuyển Văn thư ban hành: hiển thị Văn thư đang chờ thay cho Lãnh đạo được giao
+            + (u.st === 'CD' && r.choVanThu ? '<div style="font-size:13px; margin-top:8px;"><span style="color:#64748b;">Văn thư ban hành:</span> <strong>Chờ Văn thư ban hành - ' + esc(r.choVanThu.vanThu || '--') + '</strong></div>' : '')
+            + (u.st === 'CD' && !r.choVanThu ? '<div style="font-size:13px; margin-top:8px;"><span style="color:#64748b;">Lãnh đạo được giao ký duyệt:</span> <strong>Cấp ' + (r.level + 1) + '/' + r.levels.length + ' - ' + esc(r.levels[r.level].unit) + ': ' + esc(leaderLabel(r, r.level)) + '</strong></div>' : '');
         if (r.tlkt && r.tlkt.length && typeof tlktViewHtml === 'function') h += tlktViewHtml(r.tlkt, { ownerUnit: r.unit || '' });
         const btns = [];
-        if (u.st === 'CD' && isLeader()) btns.push(htkdBarButtons('ht3Reject(\'HT\',' + i + ')', 'ht3Approve(\'HT\',' + i + ')'));
+        if (u.st === 'CD' && !r.choVanThu && isLeader()) btns.push(htkdBarButtons('ht3Reject(\'HT\',' + i + ')', 'ht3Approve(\'HT\',' + i + ')'));
         if (u.st === 'BTC' && act && !dcBusy) btns.push('<button type="button" class="btn btn-primary" onclick="ht3OpenSign(\'HT\',' + i + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>');
         if (btns.length) h += '<div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid var(--border-color); padding-top:12px; margin-top:8px;">' + btns.join('') + '</div>';
         return h + '</div>';
@@ -457,7 +462,8 @@
         } else {
             const sub = (r.hist || []).find(h => h.type === 'submit');
             st = r.reject ? 'Bị trả lại' : 'Chờ duyệt';
-            body = tien + lyDo + item('Lãnh đạo được trình', esc(leaderLabel(r, r.level || 0))) + item('Thời điểm trình', esc(sub ? sub.at : (r.ngay || '-'))) + item('Tệp văn bản', file('Bản dự thảo'))
+            // [vt2] Đã chuyển Văn thư ban hành: hiển thị Văn thư đang chờ thay cho Lãnh đạo được trình
+            body = tien + lyDo + (r.choVanThu ? item('Văn thư ban hành', 'Chờ Văn thư ban hành - ' + esc(r.choVanThu.vanThu || '--')) : item('Lãnh đạo được trình', esc(leaderLabel(r, r.level || 0)))) + item('Thời điểm trình', esc(sub ? sub.at : (r.ngay || '-'))) + item('Tệp văn bản', file('Bản dự thảo'))
                 + (r.reject ? item('Lý do trả lại', '<span style="color:#b45309;">' + esc(r.reject.reason) + '</span>') + item('Người trả lại', esc(r.reject.by)) + item('Thời điểm trả lại', esc(r.reject.at)) : '');
         }
         const old = (r.hist || []).slice(1);
@@ -554,9 +560,10 @@
             + '<table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th>Cán bộ</th><th style="width:150px;">Hình thức ký</th><th style="width:220px;">Trạng thái</th><th style="width:150px;">Tệp văn bản</th><th style="width:150px; text-align:center;">Thao tác</th></tr></thead><tbody>';
         recs.forEach((x, n) => {
             const d = x.d;
-            const st = { CD: 'Chờ duyệt (QĐ đình chỉ) - Cấp ' + (d.level + 1) + '/' + d.levels.length + ': ' + leaderLabel(d, Math.min(d.level, d.levels.length - 1)), BTC: 'Bị trả lại (QĐ đình chỉ)', DONE: 'Đã ban hành' + (d.soKh ? ' số ' + d.soKh : '') + ' ngày ' + (d.issuedAt || '') }[d.st] || '';
+            // [vt2] Đã chuyển Văn thư ban hành: "Chờ duyệt (QĐ đình chỉ - Chờ Văn thư ban hành)", Lãnh đạo không còn Ký duyệt / Từ chối
+            const st = { CD: d.choVanThu ? 'Chờ duyệt (QĐ đình chỉ - Chờ Văn thư ban hành): ' + (d.choVanThu.vanThu || '--') : 'Chờ duyệt (QĐ đình chỉ) - Cấp ' + (d.level + 1) + '/' + d.levels.length + ': ' + leaderLabel(d, Math.min(d.level, d.levels.length - 1)), BTC: 'Bị trả lại (QĐ đình chỉ)', DONE: 'Đã ban hành' + (d.soKh ? ' số ' + d.soKh : '') + ' ngày ' + (d.issuedAt || '') }[d.st] || '';
             let a = '-';
-            if (d.st === 'CD' && isLeader()) a = '<button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-primary" title="Ký duyệt" onclick="ht3Approve(\'DC\',' + x.k + ')"><i class="fa-solid fa-file-signature"></i></button> <button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-danger" title="Từ chối" onclick="ht3Reject(\'DC\',' + x.k + ')"><i class="fa-solid fa-ban"></i></button>';
+            if (d.st === 'CD' && !d.choVanThu && isLeader()) a = '<button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-primary" title="Ký duyệt" onclick="ht3Approve(\'DC\',' + x.k + ')"><i class="fa-solid fa-file-signature"></i></button> <button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-danger" title="Từ chối" onclick="ht3Reject(\'DC\',' + x.k + ')"><i class="fa-solid fa-ban"></i></button>';
             if (d.st === 'BTC' && act) a = '<button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-pri" onclick="ht3OpenSign(\'DC\',' + x.k + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>';
             h += '<tr><td style="text-align:center;">' + (n + 1) + '</td><td>' + d.names.map(esc).join('<br>') + '</td><td>' + (d.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống') + '</td><td>' + esc(st)
                 + (d.st === 'BTC' && d.reject ? '<div style="font-size:12px; color:#b45309;">Lý do bị trả lại: ' + esc(d.reject.reason) + '</div>' : '') + '</td><td><a class="action-link" href="javascript:void(0)" onclick="ht3OpenDoc(\'DC\',' + x.k + ')">Xem file</a></td><td style="text-align:center;">' + a + '</td></tr>';
@@ -659,9 +666,10 @@
             + '<table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th style="width:210px;">Quyết định</th><th>Cán bộ</th><th style="width:150px;">Hình thức ký</th><th style="width:220px;">Trạng thái</th><th style="width:110px;">Tệp văn bản</th><th style="width:150px; text-align:center;">Thao tác</th></tr></thead><tbody>';
         recs.forEach((x, n) => {
             const d = x.d, kind = d.kind;
-            const st = { CD: 'Chờ duyệt - Cấp ' + (d.level + 1) + '/' + d.levels.length + ': ' + leaderLabel(d, Math.min(d.level, d.levels.length - 1)), BTC: 'Bị trả lại', DONE: 'Đã ban hành' + (d.soKh ? ' số ' + d.soKh : '') + ' ngày ' + (d.issuedAt || '') }[d.st] || '';
+            // [vt2] Đã chuyển Văn thư ban hành: Lãnh đạo không còn Ký duyệt / Từ chối
+            const st = { CD: d.choVanThu ? 'Chờ duyệt (' + KIND[kind].label + ' - Chờ Văn thư ban hành): ' + (d.choVanThu.vanThu || '--') : 'Chờ duyệt - Cấp ' + (d.level + 1) + '/' + d.levels.length + ': ' + leaderLabel(d, Math.min(d.level, d.levels.length - 1)), BTC: 'Bị trả lại', DONE: 'Đã ban hành' + (d.soKh ? ' số ' + d.soKh : '') + ' ngày ' + (d.issuedAt || '') }[d.st] || '';
             let a = '-';
-            if (d.st === 'CD' && isLeader()) a = '<button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-primary" title="Ký duyệt" onclick="ht3Approve(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-file-signature"></i></button> <button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-danger" title="Từ chối" onclick="ht3Reject(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-ban"></i></button>';
+            if (d.st === 'CD' && !d.choVanThu && isLeader()) a = '<button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-primary" title="Ký duyệt" onclick="ht3Approve(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-file-signature"></i></button> <button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-danger" title="Từ chối" onclick="ht3Reject(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-ban"></i></button>';
             if (d.st === 'BTC' && act) a = '<button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-pri" onclick="ht3OpenSign(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>';
             h += '<tr><td style="text-align:center;">' + (n + 1) + '</td><td>' + esc(KIND[kind].doc) + ' (Mẫu ' + KIND[kind].mau + '/BTNN)</td><td>' + d.names.map(esc).join('<br>') + '</td><td>' + (d.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống') + '</td><td>' + esc(st)
                 + (d.st === 'BTC' && d.reject ? '<div style="font-size:12px; color:#b45309;">Lý do bị trả lại: ' + esc(d.reject.reason) + '</div>' : '') + '</td><td><a class="action-link" href="javascript:void(0)" onclick="ht3OpenDoc(\'' + kind + '\',' + x.k + ')">Xem file</a></td><td style="text-align:center;">' + a + '</td></tr>';
@@ -1293,7 +1301,16 @@
             commit('Ký duyệt thành công. Hồ sơ chuyển Lãnh đạo cấp ' + (r.level + 1) + ' - ' + r.levels[r.level].unit + '.');
             return;
         }
-        // [tnht] Không tự cấp số: Số, ký hiệu theo giá trị cán bộ nhập tại Bước 2; còn trống thì Văn thư nhập khi ban hành (hiển thị "Chờ cấp số")
+        // [vt2] Cấp cuối, phiếu trình tích Đóng dấu cơ quan: ký số văn bản chưa có số, ngày, dấu; chuyển Văn thư ban hành; phiếu giữ Chờ duyệt
+        // (r.st = 'CD', trạng thái cán bộ giữ nguyên), chưa ban hành nên chưa chuyển Thu tiền hoàn trả / Miễn / Đình chỉ
+        if (typeof htVtApplies === 'function' && htVtApplies(r)) {
+            if (r.choVanThu) return;
+            const vt = htVtMark(r, leaderLabel(r, r.level));
+            r.hist[0].msg = 'Ký duyệt và chuyển Văn thư ban hành (đã ký số văn bản chưa có số, ngày, dấu). Chờ Văn thư ban hành - ' + (vt || '--') + '.' + (note ? ' Ý kiến: ' + note : '');
+            commit('Ký duyệt thành công. ' + KIND[p.kind].doc + ' chuyển Văn thư ban hành (' + (vt || '--') + '); hồ sơ giữ trạng thái Chờ duyệt.');
+            return;
+        }
+        // [tnht] Không tự cấp số: Số, ký hiệu theo giá trị cán bộ nhập tại Bước 2; còn trống thì hiển thị "Chưa có" in nghiêng
         issue(p.kind, p.key, 'Ký duyệt và ban hành ' + KIND[p.kind].doc + ' thành công.');
     };
     const baseReject = window.submitRejectReason;
@@ -1322,7 +1339,8 @@
     function chungDetail() {
         if (!ensureModel()) {
             const s = activeDossier.status;
-            if (HS_TRINH[s]) return { g: HS_TRINH[s][0], loai: HS_TRINH[s][1], lines: [] };
+            // [vt2] Phiếu trình đang ở bước Văn thư ban hành: dòng phụ "[Loại trình] - Chờ Văn thư ban hành"
+            if (HS_TRINH[s]) return { g: HS_TRINH[s][0], loai: HS_TRINH[s][1] + (HS_TRINH[s][0] === 'Chờ duyệt' && typeof htVtCho === 'function' && htVtCho() ? ' - Chờ Văn thư ban hành' : ''), lines: [] };
             return { g: HS_GROUP[s] || (CHUNG_TONE[s] ? s : 'Chờ xử lý'), lines: [] };
         }
         const inView = unitsInView().map(u => u.unit);

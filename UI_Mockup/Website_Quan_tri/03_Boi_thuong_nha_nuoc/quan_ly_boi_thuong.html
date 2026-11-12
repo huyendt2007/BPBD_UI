@@ -4142,7 +4142,7 @@
     </div>
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
-    <script src="btnn_luong_xu_ly.js?v=20261110ct2"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261112vt2"></script>
     <script src="btnn_dvc_sync.js?v=20261106dvc11"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
@@ -24761,11 +24761,15 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 items.push(item('done', g.root.userId, g.root.userName, g.root.at, '', 'fa-solid fa-circle-arrow-right', `Trình ký${firstTo ? ` đến <strong>${gqldEsc(shortName(firstTo))}</strong>` : ''}`, pick(/Nội dung: (.*)$/, g.root.note) || (current ? a.content : ''), g.root.attachments));
                 g.children.forEach(h => {
                     if (/Từ chối/.test(h.action)) { items.push(item('no', h.userId, h.userName, h.at, 'no', 'fa-solid fa-ban', 'Từ chối - trả lại cán bộ trình', pick(/Lý do: (.*)$/, h.note))); return; }
+                    // [vt2] Cấp cuối Ký duyệt phiếu trình tích Đóng dấu cơ quan
+                    if (/Văn thư ban hành/.test(h.action)) { items.push(item('done', h.userId, h.userName, h.at, 'ok', 'fa-regular fa-circle-check', 'Ký duyệt và chuyển Văn thư ban hành', pick(/Ý kiến: (.*)$/, h.note))); return; }
                     const to = pick(/; chuyển ([^.]+)\./, h.note);
                     items.push(to
                         ? item('done', h.userId, h.userName, h.at, '', 'fa-solid fa-circle-arrow-right', `Ký duyệt và chuyển xử lý đến <strong>${gqldEsc(shortName(to))}</strong>`, pick(/Ý kiến: (.*)$/, h.note))
                         : item('done', h.userId, h.userName, h.at, 'ok', 'fa-regular fa-circle-check', 'Ký duyệt', pick(/Ý kiến: (.*)$/, h.note)));
                 });
+                // [vt2] Sự kiện đang chờ ở trên cùng: "Chờ Văn thư ban hành - [Văn thư]"
+                if (current && a.choVanThu) items.push(item('wait', '', 'Văn thư', '', 'wait', 'fa-solid fa-hourglass-half', 'Chờ Văn thư ban hành - ' + gqldEsc(a.choVanThu.vanThu || '--'), ''));
                 if (current) {
                     for (let lv = g.children.filter(h => !/Từ chối/.test(h.action)).length; lv < path.length; lv++) {
                         const uid = (a.assignees || [])[lv] || (W.getLeaders(path[lv]) || [])[0] || '';
@@ -24845,7 +24849,11 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             renderClaimsTable();
             const claim = gqClaim(d.id);
             const stillPending = res.record.status === 'Chờ duyệt';
-            const msg = d.approve
+            // [vt2] Cấp cuối Ký duyệt phiếu trình tích Đóng dấu cơ quan: vụ việc giữ Chờ duyệt, văn bản chuyển Văn thư đóng dấu, ban hành
+            const vtCho = d.approve && res.choVanThu && res.record.approval ? res.record.approval.choVanThu : null;
+            const msg = vtCho
+                ? `Đã ký duyệt hồ sơ ${d.code} và chuyển Văn thư ban hành (${vtCho.vanThu || '--'}). Vụ việc giữ [Chờ duyệt] - ${W.approvalLabel(res.record)}.`
+                : d.approve
                 ? (stillPending ? `Đã ký duyệt hồ sơ ${d.code}, chuyển ${W.unitName(res.record.approval.path[res.record.approval.level])} ký duyệt.` : `Đã ký duyệt hồ sơ ${d.code}. Vụ việc chuyển [${claim ? gqldCaseStatus(claim) : gqldStatusName(res.record.status)}].`)
                 : `Đã từ chối phê duyệt hồ sơ ${d.code}. Vụ việc chuyển [Bị trả lại].`;
             showToast(msg, 'success');
@@ -24911,7 +24919,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="btnn_noi_thu_ly.js?v=20261104ntl1"></script>
     <script src="quan_ly_boi_thuong_kttr.js?v=20261102kt1"></script>
     <!-- [cdpd] Tạo yêu cầu - Cán bộ chủ động phục hồi danh dự khi có đủ thông tin: form tối thiểu, trình Thông báo tổ chức thực hiện phục hồi danh dự (chỉ Tải lên từ máy / Ký ngoài) -->
-    <script src="btnn_lanh_dao_actions.js?v=20261112sn1"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261112vt2"></script>
     <script src="btnn_phan_cong_ky_duyet.js?v=20261112dd7"></script>
     <script src="quan_ly_boi_thuong_ccq.js?v=20261112sn1"></script>
     <script src="quan_ly_boi_thuong_cdpd.js?v=20261112sn1"></script>

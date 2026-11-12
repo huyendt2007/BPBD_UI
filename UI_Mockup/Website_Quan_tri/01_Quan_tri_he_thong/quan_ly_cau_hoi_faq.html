@@ -2102,6 +2102,12 @@
 
         function showModal(title, viewMode = false, editMode = false) {
             document.getElementById('modalTitle').innerText = title;
+            // BTNN: tiêu đề màn hình (dòng 1) = "[Thao tác] Câu hỏi và trả lời thường gặp"; không hiển thị dòng tiêu đề form (dòng 2)
+            if (currentSystem === 'btnn') {
+                const act = viewMode ? 'Chi tiết' : (editMode ? 'Sửa' : 'Thêm mới');
+                const pt = document.getElementById('pageMainTitle'); if (pt) pt.innerText = `${act} Câu hỏi và trả lời thường gặp`;
+                const mh = document.querySelector('#faqModal .modal-header'); if (mh) mh.style.display = 'none';
+            }
             clearErrors();
             
             // Set enabled states
@@ -2211,6 +2217,7 @@
         // CLOSE MODAL
         function closeModal() {
             document.getElementById('faqModal').classList.remove('active');
+            if (currentSystem === 'btnn') { const pt = document.getElementById('pageMainTitle'); if (pt) pt.innerText = 'Câu hỏi và trả lời thường gặp'; }
         }
 
         function editFaqFromView() {

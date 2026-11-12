@@ -84,6 +84,8 @@ const HT_ST_STYLE = {
 function htStBadgeHtml(code) {
     if (!code || code === HT_ST_DRAFT) return '<span style="color:#94a3b8;">—</span>';
     const v = htStView(code);
+    // [vt2] Phiếu trình đang ở bước Văn thư ban hành: dòng phụ "[Loại trình] - Chờ Văn thư ban hành"
+    if (v.loai && typeof htVtCho === 'function' && typeof activeDossier !== 'undefined' && activeDossier && code === activeDossier.status && htVtCho()) v.loai += ' - Chờ Văn thư ban hành';
     const s = HT_ST_STYLE[v.name] || ['#f1f5f9', '#475569', '#cbd5e1'];
     const subColor = '#64748b'; // Dòng phụ Loại trình: chữ xám trung tính (đồng bộ mọi phân hệ BTNN)
     return `<span style="display:inline-flex; flex-direction:column; align-items:flex-start;"><span class="badge" style="display:inline-block; background:${s[0]}; color:${s[1]}; border:1px solid ${s[2]}; font-size:11px; font-weight:600; padding:3px 8px; border-radius:12px; text-align:center;">${v.name}</span>${v.loai ? `<span style="font-size:11.5px; color:${subColor}; font-weight:500; margin-top:4px;">${v.loai}</span>` : ''}</span>`;
@@ -848,6 +850,7 @@ function dchtCanAct() {
     if (typeof currentPerspective === 'undefined' || currentPerspective !== 'leader') return false;
     const a = activeDossier && activeDossier.dcht;
     if (!a || activeDossier.status !== dchtSt().P || !a.levels || !a.levels.length) return false;
+    if (a.choVanThu) return false; // [vt2] Đã chuyển Văn thư ban hành: Lãnh đạo không còn Ký duyệt / Từ chối
     const me = typeof tlhdMe === 'function' ? tlhdMe(a) : a.assignees[a.level];
     const assignee = a.assignees[a.level];
     return !assignee || assignee === me;
@@ -875,6 +878,16 @@ function dchtApproveLevel() {
 function dchtFinalSign() {
     const a = activeDossier.dcht; if (!a) return;
     const who = dchtLeaderLabel(a, a.level) || ('Lãnh đạo cấp ' + (a.level + 1));
+    // [vt2] Phiếu trình tích Đóng dấu cơ quan: ký số văn bản chưa có số, ngày, dấu; chuyển Văn thư ban hành; hồ sơ giữ Chờ duyệt (QĐ đình chỉ / QĐ chấm dứt)
+    if (typeof htVtApplies === 'function' && htVtApplies(a)) {
+        if (a.choVanThu) return;
+        const vt = htVtMark(a, who);
+        const S0 = dchtSt();
+        dchtLog(`Lãnh đạo ${who} ký duyệt và chuyển Văn thư ban hành ${S0.qd} (đã ký số văn bản chưa có số, ngày, dấu). Chờ Văn thư ban hành - ${vt || '--'}. Hồ sơ giữ trạng thái [Chờ duyệt] - ${S0.loai} - Chờ Văn thư ban hành.`);
+        dchtToast(`Ký duyệt thành công. ${S0.ngan} chuyển Văn thư ban hành (${vt || '--'}); hồ sơ giữ trạng thái [Chờ duyệt].`, 'success');
+        dchtAfter();
+        return;
+    }
     a.signedAt = dchtNow();
     a.level = a.levels.length;
     const S = dchtSt(), cd = dchtIsCd();
@@ -939,7 +952,8 @@ function dchtRenderInfoCard() {
         return;
     }
     const pending = activeDossier.status === dchtSt().P;
-    const lead = pending && a.levels && a.levels.length ? `Cấp ${a.level + 1}/${a.levels.length} - ${dchtE(a.levels[a.level].unit)}: ${dchtE(dchtLeaderLabel(a, a.level) || '---')}` : '';
+    // [vt2] Đã chuyển Văn thư ban hành: hiển thị Văn thư đang chờ thay cho Lãnh đạo được giao
+    const lead = pending && a.choVanThu ? '' : pending && a.levels && a.levels.length ? `Cấp ${a.level + 1}/${a.levels.length} - ${dchtE(a.levels[a.level].unit)}: ${dchtE(dchtLeaderLabel(a, a.level) || '---')}` : '';
     let html = cd ? `<div class="card-header"><div class="card-title" style="margin-bottom:0; color:#334155;"><i class="fa-solid fa-flag-checkered"></i> Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả</div></div><div class="card-body">`
         : `<div class="card-header"><div class="card-title" style="margin-bottom:0; color:#b91c1c;"><i class="fa-solid fa-circle-stop"></i> Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả</div></div><div class="card-body">`;
     // Lý do bị trả lại: khối cảnh báo ngay dưới tiêu đề (Lý do; Lãnh đạo/cấp trả lại • thời điểm)
@@ -955,6 +969,7 @@ function dchtRenderInfoCard() {
         + it('Ngày văn bản', a.ngay ? dchtE(a.ngay) : emp)
         + it(activeDossier.status === dchtSt().D ? 'Văn bản' : 'Văn bản dự thảo', a.fileName ? `<a href="javascript:void(0)" class="dcht-file" onclick="dchtViewDoc()" title="${dchtE(a.fileName)}"><i class="fa-solid ${fileIco}"></i><span>${dchtE(a.fileName)}</span></a>` : emp)
         + (lead ? it('Lãnh đạo được giao ký duyệt', lead) : '')
+        + (pending && a.choVanThu ? it('Văn thư ban hành', 'Chờ Văn thư ban hành - ' + dchtE(a.choVanThu.vanThu || '--')) : '')
         + `</div>`;
     // Bảng tài liệu: độ rộng cột cân đối, Tên tài liệu / File đính kèm căn trái (ga-skip: không để grid_align.js căn giữa cột tệp)
     if (a.attachments && a.attachments.length && typeof tlktViewHtml === 'function') html += `<div class="dcht-tlkt ga-skip" style="margin-top:16px;">${tlktViewHtml(a.attachments)}</div>`;

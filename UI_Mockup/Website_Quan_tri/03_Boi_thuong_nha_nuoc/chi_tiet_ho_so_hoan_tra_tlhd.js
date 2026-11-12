@@ -9,8 +9,12 @@
  * và các hàm sẵn có của chi_tiet_ho_so_hoan_tra.html (activeDossier, showToast, showCustomConfirm, switchSimulatorState...).
  * [tnht] 12/11/2026 - Ký số trên hệ thống: bỏ "Số quyết định", "Ngày quyết định" ở Bước 1 (Mẫu 33/BTNN); nhập "Số, ký hiệu văn bản", "Ngày văn bản"
  *   tại khối "Thông tin ban hành văn bản" của Bước 2 (BTNN_PCKD.levelSetup soNgay: true), không bắt buộc; ghi về tlhd.soQD / tlhd.ngayQD.
- *   Lưu tlhd.dongDau, tlhd.banHanh (toLegacy); trình lại điền lại đủ khối Bước 2. Không tự cấp số khi Ký duyệt cấp cuối (còn trống: "Chờ cấp số").
+ *   Lưu tlhd.dongDau, tlhd.banHanh (toLegacy); trình lại điền lại đủ khối Bước 2. Không tự cấp số khi Ký duyệt cấp cuối (còn trống: hiển thị "Chưa có" in nghiêng).
  *   Hàm dùng chung cho popup trình của phân hệ Hoàn trả: tlhdDocPos (vị trí dòng số, ngày của văn bản), htPrevBanHanh (khối Bước 2 lần trình trước).
+ * [vt2] 12/11/2026 - Phiếu trình tích "Đóng dấu cơ quan" (Ký số trên hệ thống, tự thiết lập cấp): Lãnh đạo cấp cuối Ký duyệt -> ký số văn bản chưa có số,
+ *   ngày, dấu; hồ sơ giữ Chờ duyệt, dòng phụ "[Loại trình] - Chờ Văn thư ban hành" (tlhd.choVanThu / dcht.choVanThu / phiếu QĐ r.choVanThu);
+ *   chưa chuyển trạng thái tiếp theo. Văn thư đóng dấu, ban hành tại Ban hành văn bản (dữ liệu mẫu riêng, không nối luồng tại trang này).
+ *   Hàm dùng chung: htVtText(banHanh), htVtCho() (thông tin chờ Văn thư của Thành lập HĐ / QĐ đình chỉ, chấm dứt đang chờ duyệt).
  */
 
 const TLHD_MAX_FILE = 50 * 1024 * 1024;
@@ -33,6 +37,26 @@ function tlhdToday() { const d = new Date(); return `${tlhdPad(d.getDate())}/${t
 function tlhdNow() { return typeof nowViShort === 'function' ? nowViShort() : new Date().toLocaleString('vi-VN'); }
 function tlhdFold(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase(); }
 function tlhdFileSize(b) { return b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; }
+// [vt2] Phiếu trình áp dụng bước Văn thư ban hành: Ký số trên hệ thống, tự thiết lập các cấp, tích "Đóng dấu cơ quan"
+function htVtApplies(a) { return !!(a && a.method !== 'offline' && a.tuThietLap && a.dongDau); }
+// [vt2] Văn thư xử lý của Đơn vị ban hành: Tên Đơn vị văn thư hoặc Họ tên các tài khoản văn thư (theo cấu hình con dấu)
+function htVtText(bh) { const b = bh || {}; return b.vanThu || (window.BTNN_PCKD && BTNN_PCKD.vanThuText ? BTNN_PCKD.vanThuText(b.donViBanHanh) : '') || ''; }
+// [vt2] Cấp cuối Ký duyệt: ghi phiếu trình chờ Văn thư ban hành (a: tlhd / dcht / phiếu QĐ hoàn trả, miễn, giảm, đình chỉ); trả về chuỗi Văn thư
+function htVtMark(a, who) {
+    const bh = a.banHanh || {};
+    const vt = htVtText(bh);
+    a.choVanThu = { at: tlhdNow(), by: who || '', donViBanHanh: bh.donViBanHanh || '', donViBanHanhTen: bh.donViBanHanhTen || '', vanThu: vt };
+    a.signedAt = a.choVanThu.at;
+    return vt;
+}
+// [vt2] Thông tin chờ Văn thư của phiếu trình đang chờ duyệt (QĐ thành lập Hội đồng / QĐ đình chỉ / QĐ chấm dứt); không ở bước Văn thư: null
+function htVtCho() {
+    if (typeof activeDossier === 'undefined' || !activeDossier) return null;
+    const s = activeDossier.status;
+    if ((s === 'Chờ duyệt QĐ thành lập' || s === 'Chờ duyệt thành lập hội đồng') && activeDossier.tlhd) return activeDossier.tlhd.choVanThu || null;
+    if ((s === 'Chờ duyệt QĐ đình chỉ' || s === 'Chờ duyệt QĐ chấm dứt') && activeDossier.dcht) return activeDossier.dcht.choVanThu || null;
+    return null;
+}
 // [tnht] Vị trí dòng "Số: ..." và dòng "[Địa danh], ngày ... tháng ... năm ..." của văn bản trình ký (tọa độ px trong trang A4 pg):
 // vị trí mặc định của ô Số, ô Ngày tại khối "Thông tin ban hành văn bản" (Bước 2). Dùng chung cho popup Thành lập HĐ, QĐ đình chỉ / chấm dứt, QĐ hoàn trả / miễn / giảm
 function tlhdDocPos(pg) {
@@ -1075,7 +1099,7 @@ function tlhdSubmitOnline() {
         attachments: typeof tlktGet === 'function' ? tlktGet('tlhd') : []
     };
     activeDossier.hdPublishType = 'digital';
-    activeDossier.hdDecision = d.soQD || 'Chờ cấp số';
+    activeDossier.hdDecision = d.soQD || ''; // Chưa có số: để trống (hiển thị "Chưa có" in nghiêng)
     activeDossier.hdDate = 'Chờ ký';
     activeDossier.hdSignDate = 'Chờ ký';
     activeDossier.hdFileName = fileName;
@@ -1170,7 +1194,7 @@ function tlhdEnsureApproval() {
     if (activeDossier.tlhd && activeDossier.tlhd.method === 'online' && activeDossier.tlhd.levels && activeDossier.tlhd.levels.length) return activeDossier.tlhd;
     const levels = tlhdLevels();
     const members = (activeDossier.council || []).map(c => ({ name: c.name, unitId: '', unitName: c.agency, chucVu: '', chucVuName: '', chucDanh: c.role }));
-    // [tnht] Chưa có số (Chờ cấp số): để trống, không tự cấp số
+    // [tnht] Chưa có số: để trống, không tự cấp số
     activeDossier.tlhd = { method: 'online', docSrc: 'gen', soQD: /^\d/.test(activeDossier.hdDecision || '') ? activeDossier.hdDecision : '', ngayQD: '', members, fileName: tlhdFileBase() + '.docx', levels, assignees: levels.map(l => (l.leaders[0] || {}).id || ''), content: TLHD_SIGN_CONTENT_DEFAULT, level: 0 };
     return activeDossier.tlhd;
 }
@@ -1190,6 +1214,7 @@ function tlhdCanAct() {
     if (!activeDossier || activeDossier.status !== 'Chờ duyệt QĐ thành lập') return false;
     const a = tlhdEnsureApproval();
     if (!a) return false;
+    if (a.choVanThu) return false; // [vt2] Đã chuyển Văn thư ban hành: Lãnh đạo không còn Ký duyệt / Từ chối
     const assignee = a.assignees[a.level];
     return !assignee || assignee === tlhdMe(a);
 }
@@ -1200,10 +1225,12 @@ function tlhdLeaderApprove() {
     if (typeof openLeaderSignModal === 'function') { openLeaderSignModal('council'); return; }
     tlhdApproveLevel();
 }
-// Lãnh đạo cấp trước ký duyệt (ký nháy): chuyển Lãnh đạo cấp tiếp theo. Trả về false khi đang ở cấp cuối.
+// Lãnh đạo cấp trước ký duyệt (ký nháy): chuyển Lãnh đạo cấp tiếp theo. Trả về false khi đang ở cấp cuối (ban hành ngay khi Ký duyệt).
+// [vt2] Cấp cuối, phiếu trình tích Đóng dấu cơ quan: chuyển Văn thư ban hành, hồ sơ giữ Chờ duyệt (trả về true - trang không ban hành)
 function tlhdApproveLevel(note) {
     const a = tlhdEnsureApproval();
-    if (!a || a.level >= a.levels.length - 1) return false;
+    if (!a) return false;
+    if (a.level >= a.levels.length - 1) return htVtApplies(a) && !a.choVanThu ? tlhdToVanThu(a, note) : false;
     const who = tlhdLeaderLabelOf(a.levels, a.assignees, a.level) || ('Lãnh đạo cấp ' + (a.level + 1));
     // [ro1] Cách ký của cấp theo thiết lập khi trình (Ký số / gán chữ ký nháy / gán chữ ký)
     const how = (window.BTNN_PCKD && BTNN_PCKD.howText(a)) || 'ký nháy';
@@ -1216,6 +1243,21 @@ function tlhdApproveLevel(note) {
     activeDossier.timeline.unshift({ time: now, text: `Lãnh đạo ${who} ký duyệt Quyết định thành lập Hội đồng, chuyển Lãnh đạo cấp tiếp theo.` });
     tlhdToast('Ký duyệt thành công. Quyết định thành lập Hội đồng được chuyển Lãnh đạo cấp tiếp theo.', 'success');
     if (typeof renderStateLayout === 'function') renderStateLayout();
+    return true;
+}
+// [vt2] Lãnh đạo cấp cuối Ký duyệt phiếu tích Đóng dấu cơ quan: ký số văn bản chưa có số, ngày, dấu; văn bản chuyển Văn thư của Đơn vị ban hành;
+// hồ sơ giữ Chờ duyệt (Thành lập hội đồng - Chờ Văn thư ban hành), chưa chuyển Họp hội đồng
+function tlhdToVanThu(a, note) {
+    const who = tlhdLeaderLabelOf(a.levels, a.assignees, a.level) || ('Lãnh đạo cấp ' + (a.level + 1));
+    const vt = htVtMark(a, who);
+    const now = a.choVanThu.at;
+    const y = String(note || '').trim();
+    if (typeof councilSignHistory !== 'undefined') councilSignHistory.unshift({ type: 'approve', label: 'Ký duyệt và chuyển Văn thư ban hành', actor: who, time: now, detail: `Quyết định thành lập Hội đồng: ký duyệt cấp cuối - đã ký số văn bản chưa có số, ngày, dấu. Chờ Văn thư ban hành - ${tlhdE(vt || '--')}.` + (y ? ` Ý kiến: ${tlhdE(y)}` : '') });
+    if (!activeDossier.timeline) activeDossier.timeline = [];
+    activeDossier.timeline.unshift({ time: now, text: `Lãnh đạo ${who} ký duyệt và chuyển Văn thư ban hành Quyết định thành lập Hội đồng. Hồ sơ giữ trạng thái [Chờ duyệt] - Thành lập hội đồng - Chờ Văn thư ban hành.` });
+    tlhdToast(`Ký duyệt thành công. Quyết định thành lập Hội đồng chuyển Văn thư ban hành (${vt || '--'}); hồ sơ giữ trạng thái [Chờ duyệt].`, 'success');
+    if (typeof renderStateLayout === 'function') renderStateLayout();
+    tlhdPersistCreated();
     return true;
 }
 function tlhdLeaderReject() {
@@ -1249,7 +1291,9 @@ function tlhdRenderOfficialExtras() {
     const pending = activeDossier.status === 'Chờ duyệt QĐ thành lập';
     const members = a && a.members && a.members.length ? a.members : (activeDossier.council || []).map(c => ({ name: c.name, unitName: c.agency, chucVuName: '', chucDanh: c.role }));
     let html = '';
-    if (pending && a && a.levels && a.levels.length) html += `<span class="form-label">Lãnh đạo được giao ký duyệt</span><div class="info-value" style="font-weight:600; margin-bottom:12px;">${tlhdE(tlhdAssigneeText())}</div>`;
+    // [vt2] Đã chuyển Văn thư ban hành: hiển thị Văn thư đang chờ thay cho Lãnh đạo được giao
+    if (pending && a && a.choVanThu) html += `<span class="form-label">Văn thư ban hành</span><div class="info-value" style="font-weight:600; margin-bottom:12px;">Chờ Văn thư ban hành - ${tlhdE(a.choVanThu.vanThu || '--')}</div>`;
+    else if (pending && a && a.levels && a.levels.length) html += `<span class="form-label">Lãnh đạo được giao ký duyệt</span><div class="info-value" style="font-weight:600; margin-bottom:12px;">${tlhdE(tlhdAssigneeText())}</div>`;
     if (members.length) html += `<span class="form-label">Danh sách thành viên trong hội đồng</span>${tlhdMembersTableHtml(members, '<span class="ht-empty">---</span>')}`;
     view.innerHTML = html;
     view.style.display = html ? '' : 'none';

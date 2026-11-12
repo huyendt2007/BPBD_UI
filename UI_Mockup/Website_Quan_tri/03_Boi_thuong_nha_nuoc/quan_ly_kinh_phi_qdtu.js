@@ -277,6 +277,10 @@ function qdtuBangChu(n) {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }
 function qdtuRateText(r) { return (Number(r) || 0).toLocaleString('vi-VN', { maximumFractionDigits: 2 }); }
+// Tỷ lệ tạm ứng từng khoản; bản ghi cũ chỉ có 01 tỷ lệ chung (rate) thì dùng cho cả 02 khoản
+function qdtuRates(f) { f = f || {}; const d = f.rate === '' || f.rate == null ? '' : f.rate; return { tt: f.rateTT != null ? f.rateTT : d, kh: f.rateKhac != null ? f.rateKhac : d }; }
+// Số tiền tạm ứng từng khoản = Thiệt hại x Tỷ lệ / 100, làm tròn đến đồng
+function qdtuPart(amt, rate) { const r = parseFloat(rate); return isNaN(r) ? 0 : Math.round((Number(amt) || 0) * r / 100); }
 function qdtuMe() { const W = qdtuW(); return W ? W.getCurrentUserId() : ''; }
 function qdtuUserName(id) { const W = qdtuW(); return id ? (W ? W.userName(id) : id) : ''; }
 function qdtuUserLabel(id) { const W = qdtuW(); return id ? (W ? W.userLabel(id) : id) : ''; }
@@ -505,7 +509,10 @@ function qdtuEnsurePage() {
     const p = document.createElement('div');
     p.id = 'qdtuPanel';
     p.className = 'inline-form-panel';
-    const money = (id, label, req) => qdtuFld(id, label, req, `<input type="text" class="form-control" id="${id}" maxlength="20" style="text-align:right;" placeholder="0" oninput="formatNumberInput(this); qdtuMark('${id}', false); qdtuRecalc('${id}')">`);
+    // 02 khoản thiệt hại lấy theo hồ sơ vụ việc (Giải quyết YCBT), không cho sửa
+    const money = (id, label) => qdtuFld(id, label, false, `<input type="text" class="form-control" id="${id}" style="text-align:right;" placeholder="0" disabled>`);
+    // Tỷ lệ tạm ứng riêng cho từng khoản thiệt hại, mặc định 75%, từ 75% đến 100%
+    const rate = (id, label) => qdtuFld(id, label, true, `<input type="number" class="form-control" id="${id}" min="75" max="100" step="0.01" style="text-align:right;" oninput="qdtuMark('${id}', false); qdtuRecalc('${id}')" onchange="if (this.value !== '') { this.value = Math.round(parseFloat(this.value) * 100) / 100; qdtuRecalc('${id}'); }">`);
     p.innerHTML = `<div class="inline-form-header"><span class="inline-form-title" id="qdtuPageTitle"><i class="fa-solid fa-file-invoice"></i> TẠO QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ</span></div>
     <div class="inline-form-body" style="background:#F8FAFC; max-height:none;">
         <div id="qdtuReturnedBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:14px 16px; margin-bottom:16px;"></div>
@@ -538,12 +545,12 @@ function qdtuEnsurePage() {
                 <div class="qdtu-card-head"><i class="fa-solid fa-coins"></i> Số tiền tạm ứng kinh phí</div>
                 <div class="qdtu-card-body">
                     <div class="qdtu-grid">
-                        ${money('qdtuAmtTinhThan', 'Thiệt hại về tinh thần (đồng)', false)}
-                        ${money('qdtuAmtKhac', 'Thiệt hại khác có thể tính được ngay mà không cần xác minh (đồng)', false)}
-                        ${qdtuFld('qdtuRate', 'Tỷ lệ tạm ứng trên tổng số tiền thiệt hại (%)', true, `<input type="number" class="form-control" id="qdtuRate" min="75" max="100" step="0.01" style="text-align:right;" oninput="qdtuMark('qdtuRate', false); qdtuRecalc('qdtuRate')" onchange="if (this.value !== '') { this.value = Math.round(parseFloat(this.value) * 100) / 100; qdtuRecalc('qdtuRate'); }">`)}
-                        <div class="form-group"><span class="form-label">Số tiền tạm ứng kinh phí (đồng)<span class="required">*</span></span>
-                            <input type="text" class="form-control" id="qdtuAmount" maxlength="20" style="text-align:right; font-weight:700;" placeholder="0" oninput="formatNumberInput(this); qdtuMark('qdtuAmount', false); qdtuRecalc('qdtuAmount')">
-                            ${qdtuErrDiv('qdtuAmount')}
+                        ${money('qdtuAmtTinhThan', 'Thiệt hại về tinh thần (đồng)')}
+                        ${money('qdtuAmtKhac', 'Thiệt hại khác có thể tính được ngay mà không cần xác minh (đồng)')}
+                        ${rate('qdtuRateTT', 'Tỷ lệ tạm ứng thiệt hại về tinh thần (%)')}
+                        ${rate('qdtuRateKhac', 'Tỷ lệ tạm ứng thiệt hại khác có thể tính được ngay (%)')}
+                        <div class="form-group"><span class="form-label">Số tiền tạm ứng kinh phí (đồng)</span>
+                            <input type="text" class="form-control" id="qdtuAmount" style="text-align:right; font-weight:700;" placeholder="0" disabled>
                             <div class="qdtu-words" id="qdtuAmountWords"></div>
                         </div>
                     </div>
@@ -584,7 +591,7 @@ function qdtuEnsurePage() {
     const list = qdtuEl('contentListProposals');
     list.parentNode.insertBefore(p, list.nextSibling);
 }
-const QDTU_FIELD_IDS = ['qdtuNycName', 'qdtuNycIdNo', 'qdtuNycAddress', 'qdtuAmtTinhThan', 'qdtuAmtKhac', 'qdtuRate', 'qdtuAmount', 'qdtuRecName', 'qdtuRecIdNo', 'qdtuRecAddress', 'qdtuAccHolder', 'qdtuAccount', 'qdtuBank', 'qdtuBranch', 'qdtuCashPlace'];
+const QDTU_FIELD_IDS = ['qdtuNycName', 'qdtuNycIdNo', 'qdtuNycAddress', 'qdtuAmtTinhThan', 'qdtuAmtKhac', 'qdtuRateTT', 'qdtuRateKhac', 'qdtuAmount', 'qdtuRecName', 'qdtuRecIdNo', 'qdtuRecAddress', 'qdtuAccHolder', 'qdtuAccount', 'qdtuBank', 'qdtuBranch', 'qdtuCashPlace'];
 function qdtuSetVal(id, v) { const el = qdtuEl(id); if (el) { el.value = v == null ? '' : v; if (el._flatpickr && v) el._flatpickr.setDate(v, false, 'd/m/Y'); } }
 function qdtuFillClaimDatalist() {
     const dl = qdtuEl('qdtuClaimDatalist'); if (!dl) return;
@@ -661,8 +668,8 @@ function qdtuSelectClaim(code) {
     qdtuSetVal('qdtuNycName', name); qdtuSetVal('qdtuNycIdNo', idNo); qdtuSetVal('qdtuNycAddress', addr);
     let tt = qdtuNum(c.advanceTinhThan), kh = qdtuNum(c.advanceKhac);
     if (!tt && !kh) kh = qdtuNum(c.advanceNum);
-    qdtuSetVal('qdtuAmtTinhThan', qdtuFmt(tt)); qdtuSetVal('qdtuAmtKhac', qdtuFmt(kh)); qdtuSetVal('qdtuRate', QDTU_DEFAULT_RATE);
-    qdtuRecalc('qdtuRate');
+    qdtuSetVal('qdtuAmtTinhThan', qdtuFmt(tt)); qdtuSetVal('qdtuAmtKhac', qdtuFmt(kh)); qdtuSetVal('qdtuRateTT', QDTU_DEFAULT_RATE); qdtuSetVal('qdtuRateKhac', QDTU_DEFAULT_RATE);
+    qdtuRecalc();
     const recName = c.advanceRecName || name;
     qdtuSetVal('qdtuRecName', recName);
     qdtuSetVal('qdtuRecIdNo', c.advanceRecCard || idNo);
@@ -686,31 +693,23 @@ function qdtuLoadForm(f) {
     qdtuState.claimCode = f.claimCode; qdtuState.unitId = f.unitId; qdtuState.isOrg = !!f.isOrg; qdtuState.nycRole = f.nycRole || '';
     qdtuShowClaim(c, f.unitId);
     qdtuSetVal('qdtuNycName', f.nycName); qdtuSetVal('qdtuNycIdNo', f.nycIdNo); qdtuSetVal('qdtuNycAddress', f.nycAddress);
-    qdtuSetVal('qdtuAmtTinhThan', qdtuFmt(f.tinhThan)); qdtuSetVal('qdtuAmtKhac', qdtuFmt(f.khac)); qdtuSetVal('qdtuRate', f.rate); qdtuSetVal('qdtuAmount', qdtuFmt(f.amount));
-    qdtuRecalc('none');
+    const fr = qdtuRates(f);
+    qdtuSetVal('qdtuAmtTinhThan', qdtuFmt(f.tinhThan)); qdtuSetVal('qdtuAmtKhac', qdtuFmt(f.khac)); qdtuSetVal('qdtuRateTT', fr.tt); qdtuSetVal('qdtuRateKhac', fr.kh);
+    qdtuRecalc();
     qdtuSetVal('qdtuRecName', f.recName); qdtuSetVal('qdtuRecIdNo', f.recIdNo); qdtuSetVal('qdtuRecAddress', f.recAddress);
     qdtuEl('qdtuPayMethod').value = f.payMethod === QDTU_CASH ? QDTU_CASH : QDTU_TRANSFER;
     qdtuOnPayMethod(qdtuEl('qdtuPayMethod').value);
     qdtuSetVal('qdtuAccHolder', f.accHolder); qdtuSetVal('qdtuAccount', f.account); qdtuSetVal('qdtuBank', f.bank); qdtuSetVal('qdtuBranch', f.branch); qdtuSetVal('qdtuCashPlace', f.cashPlace);
     qdtuSyncRecNote();
 }
-// Số tiền tạm ứng = (Thiệt hại về tinh thần + Thiệt hại khác) x Tỷ lệ % / 100, làm tròn đến đồng.
-// Sửa Số tiền tạm ứng: Tỷ lệ % = Số tiền tạm ứng / (Thiệt hại về tinh thần + Thiệt hại khác) x 100, làm tròn 02 chữ số thập phân (bỏ số 0 thừa);
-// tổng 02 khoản = 0 thì giữ nguyên Tỷ lệ %. Tỷ lệ phải từ 75% đến 100%, kiểm tra khi bấm Tiếp tục (qdtuContinue).
-function qdtuRecalc(src) {
+// Số tiền tạm ứng = Thiệt hại về tinh thần x Tỷ lệ tinh thần / 100 + Thiệt hại khác x Tỷ lệ khác / 100 (mỗi khoản làm tròn đến đồng).
+// 02 khoản thiệt hại và Số tiền tạm ứng không cho sửa; chỉ sửa 02 Tỷ lệ (từ 75% đến 100%, kiểm tra khi bấm Tiếp tục).
+function qdtuRecalc() {
     const tt = qdtuNum(qdtuEl('qdtuAmtTinhThan').value), kh = qdtuNum(qdtuEl('qdtuAmtKhac').value);
-    const total = tt + kh;
-    const rateEl = qdtuEl('qdtuRate'), amtEl = qdtuEl('qdtuAmount');
-    if (src === 'qdtuAmount') {
-        const amt = qdtuNum(amtEl.value);
-        if (total > 0) rateEl.value = Math.round(amt / total * 10000) / 100;
-    } else if (src !== 'none') {
-        const rate = parseFloat(rateEl.value);
-        amtEl.value = isNaN(rate) ? '' : qdtuFmt(Math.round(total * rate / 100));
-    }
-    const amount = qdtuNum(amtEl.value);
-    qdtuEl('qdtuAmountWords').innerText = amtEl.value.trim() ? 'Viết bằng chữ: ' + qdtuBangChu(amount) : '';
-    qdtuEl('qdtuTotalHint').innerText = `Tổng số tiền tạm ứng được tính theo các thiệt hại: ${qdtuFmt(total)} đồng.`;
+    const amount = qdtuPart(tt, qdtuEl('qdtuRateTT').value) + qdtuPart(kh, qdtuEl('qdtuRateKhac').value);
+    qdtuEl('qdtuAmount').value = qdtuFmt(amount);
+    qdtuEl('qdtuAmountWords').innerText = 'Viết bằng chữ: ' + qdtuBangChu(amount);
+    qdtuEl('qdtuTotalHint').innerText = `Tổng số tiền thiệt hại làm căn cứ tạm ứng: ${qdtuFmt(tt + kh)} đồng. Số tiền tạm ứng = Thiệt hại về tinh thần x Tỷ lệ tinh thần + Thiệt hại khác x Tỷ lệ khác.`;
 }
 function qdtuOnPayMethod(v) {
     const cash = v === QDTU_CASH;
@@ -737,7 +736,7 @@ function qdtuFormData() {
     return {
         claimCode: qdtuState.claimCode, unitId: root, unitName: qdtuUnitName(root), isOrg: qdtuState.isOrg, nycRole: qdtuState.nycRole,
         nycName: v('qdtuNycName'), nycIdNo: v('qdtuNycIdNo'), nycAddress: v('qdtuNycAddress'),
-        tinhThan: qdtuNum(v('qdtuAmtTinhThan')), khac: qdtuNum(v('qdtuAmtKhac')), rate: v('qdtuRate') === '' ? '' : parseFloat(v('qdtuRate')), amount: qdtuNum(v('qdtuAmount')),
+        tinhThan: qdtuNum(v('qdtuAmtTinhThan')), khac: qdtuNum(v('qdtuAmtKhac')), rateTT: v('qdtuRateTT') === '' ? '' : parseFloat(v('qdtuRateTT')), rateKhac: v('qdtuRateKhac') === '' ? '' : parseFloat(v('qdtuRateKhac')), amount: qdtuNum(v('qdtuAmount')),
         recName: v('qdtuRecName'), recIdNo: v('qdtuRecIdNo'), recAddress: v('qdtuRecAddress'),
         officer: qdtuClaimOfficer(qdtuClaimByCode(qdtuState.claimCode)),
         payMethod: v('qdtuPayMethod'), accHolder: v('qdtuAccHolder'), account: v('qdtuAccount'), bank: v('qdtuBank'), branch: v('qdtuBranch'), cashPlace: v('qdtuCashPlace')
@@ -747,17 +746,16 @@ function qdtuFormData() {
 function qdtuContinue() {
     if (!qdtuState.claimCode) { qdtuEl('qdtuClaimInputErr').innerText = 'Đây là trường bắt buộc'; qdtuMark('qdtuClaimInput', true); qdtuEl('qdtuClaimInput').focus(); return; }
     const cash = qdtuEl('qdtuPayMethod').value === QDTU_CASH;
-    const req = ['qdtuNycName', 'qdtuNycIdNo', 'qdtuNycAddress', 'qdtuRate', 'qdtuAmount', 'qdtuRecName', 'qdtuRecIdNo', 'qdtuRecAddress'].concat(cash ? ['qdtuCashPlace'] : ['qdtuAccHolder', 'qdtuAccount', 'qdtuBank']);
-    const rateErr = qdtuEl('qdtuRateErr');
-    if (rateErr) rateErr.innerText = 'Đây là trường bắt buộc';
+    const req = ['qdtuNycName', 'qdtuNycIdNo', 'qdtuNycAddress', 'qdtuRateTT', 'qdtuRateKhac', 'qdtuRecName', 'qdtuRecIdNo', 'qdtuRecAddress'].concat(cash ? ['qdtuCashPlace'] : ['qdtuAccHolder', 'qdtuAccount', 'qdtuBank']);
+    ['qdtuRateTT', 'qdtuRateKhac'].forEach(id => { const e = qdtuEl(id + 'Err'); if (e) e.innerText = 'Đây là trường bắt buộc'; });
     const bad = req.filter(id => !String(qdtuEl(id).value || '').trim());
     req.forEach(id => qdtuMark(id, bad.includes(id)));
     if (bad.length) { qdtuEl(bad[0]).focus(); qdtuEl(bad[0]).scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
-    // Mức tạm ứng: Tỷ lệ từ 75% đến 100% (MSG-ERR-BTNN-KP-014)
-    const rate = parseFloat(qdtuEl('qdtuRate').value);
-    if (isNaN(rate) || rate < QDTU_MIN_RATE || rate > QDTU_MAX_RATE) {
-        if (rateErr) rateErr.innerText = QDTU_MSG_RATE;
-        qdtuMark('qdtuRate', true); qdtuEl('qdtuRate').focus(); qdtuEl('qdtuRate').scrollIntoView({ block: 'center', behavior: 'smooth' }); return;
+    // Mức tạm ứng: từng Tỷ lệ từ 75% đến 100% (MSG-ERR-BTNN-KP-014)
+    const badRate = ['qdtuRateTT', 'qdtuRateKhac'].filter(id => { const r = parseFloat(qdtuEl(id).value); return isNaN(r) || r < QDTU_MIN_RATE || r > QDTU_MAX_RATE; });
+    if (badRate.length) {
+        badRate.forEach(id => { qdtuEl(id + 'Err').innerText = QDTU_MSG_RATE; qdtuMark(id, true); });
+        qdtuEl(badRate[0]).focus(); qdtuEl(badRate[0]).scrollIntoView({ block: 'center', behavior: 'smooth' }); return;
     }
     // Cập nhật QĐ tạm ứng Bị trả lại: chặn khi vụ việc đã chuyển khỏi trạng thái QDTU_ELIGIBLE
     if (qdtuState.id && !qdtuClaimStillEligible(qdtuState.claimCode)) { showToast(QDTU_MSG_NOT_ELIGIBLE, 'error'); return; }
@@ -874,9 +872,9 @@ function qdtuBuildDocHtml(f, s, opt) {
         ${sub(`Địa chỉ: ${qdtuEsc(f.nycAddress || '……')}`)}
         ${sub(`Số tiền tạm ứng kinh phí bồi thường: ${qdtuFmt(f.amount)} đồng.`)}
         ${sub(`(Viết bằng chữ: ${qdtuEsc(qdtuBangChu(Number(f.amount) || 0))})`)}
-        ${sub(`Tương ứng ${qdtuRateText(f.rate)}% trên tổng số tiền tạm ứng được tính theo các thiệt hại dưới đây:`)}
-        ${sub(`- Thiệt hại về tinh thần: ${qdtuFmt(f.tinhThan)} đồng;`)}
-        ${sub(`- Thiệt hại khác có thể tính được ngay mà không cần xác minh: ${qdtuFmt(f.khac)} đồng.`)}
+        ${sub('Được tính theo các thiệt hại dưới đây:')}
+        ${sub(`- Thiệt hại về tinh thần: ${qdtuFmt(f.tinhThan)} đồng, tạm ứng ${qdtuRateText(qdtuRates(f).tt)}% là ${qdtuFmt(qdtuPart(f.tinhThan, qdtuRates(f).tt))} đồng;`)}
+        ${sub(`- Thiệt hại khác có thể tính được ngay mà không cần xác minh: ${qdtuFmt(f.khac)} đồng, tạm ứng ${qdtuRateText(qdtuRates(f).kh)}% là ${qdtuFmt(qdtuPart(f.khac, qdtuRates(f).kh))} đồng.`)}
         ${diff ? p('<b>Điều 2.</b>') + sub(`- Họ và tên người nhận tạm ứng kinh phí bồi thường: ${qdtuEsc(f.recName || '……')}`) + sub(`- Số định danh cá nhân/hộ chiếu/giấy tờ đi lại có giá trị quốc tế: ${qdtuEsc(idText)}`) + sub(`- Địa chỉ: ${qdtuEsc(f.recAddress || '……')}`) : ''}
         ${p(`<b>Điều ${no.pay}.</b> Số tiền tạm ứng kinh phí bồi thường được chi theo phương thức ${qdtuPayText(f)}.`)}
         ${p(`<b>Điều ${no.eff}.</b> Quyết định này có hiệu lực kể từ ngày ký.`)}
@@ -1544,7 +1542,7 @@ function qdtuView(id) {
         + it('Mã hồ sơ', qdtuEsc(item.ycbtCode)) + it('Mã vụ việc', qdtuEsc(qdtuVv(item.ycbtCode))) + it('Cơ quan giải quyết', qdtuEsc(f.unitName)) + it('Ngày đề nghị', qdtuEsc(item.date)) + it('Cán bộ xử lý', qdtuEsc(item.user)));
     const rej = item.status === QDTU_ST.REJECT && item.qdtuReturned ? grid(it('Người trả lại', qdtuEsc(qdtuUserName(item.qdtuReturned.by))) + it('Thời điểm trả lại', qdtuEsc(item.qdtuReturned.at)) + it('Lý do bị trả lại', qdtuEsc(item.qdtuReturned.reason))) : '';
     const nyc = grid(it('Họ và tên/Tên tổ chức', qdtuEsc(f.nycName)) + it('Số định danh cá nhân/hộ chiếu/giấy tờ đi lại có giá trị quốc tế/Mã số của tổ chức', qdtuEsc(f.nycIdNo)) + it('Địa chỉ', qdtuEsc(f.nycAddress)));
-    const money = grid(it('Thiệt hại về tinh thần', qdtuFmt(f.tinhThan) + ' đồng') + it('Thiệt hại khác có thể tính được ngay mà không cần xác minh', qdtuFmt(f.khac) + ' đồng') + it('Tỷ lệ tạm ứng', qdtuRateText(f.rate) + '%')
+    const money = grid(it('Thiệt hại về tinh thần', qdtuFmt(f.tinhThan) + ' đồng') + it('Thiệt hại khác có thể tính được ngay mà không cần xác minh', qdtuFmt(f.khac) + ' đồng') + it('Tỷ lệ tạm ứng thiệt hại về tinh thần', qdtuRateText(qdtuRates(f).tt) + '%') + it('Tỷ lệ tạm ứng thiệt hại khác có thể tính được ngay', qdtuRateText(qdtuRates(f).kh) + '%')
         + it('Số tiền tạm ứng kinh phí', qdtuFmt(f.amount) + ' đồng') + it('Viết bằng chữ', qdtuEsc(qdtuBangChu(Number(f.amount) || 0))));
     const rec = grid(it('Họ và tên người nhận tạm ứng kinh phí', qdtuEsc(f.recName)) + it('Số định danh cá nhân/hộ chiếu/giấy tờ đi lại có giá trị quốc tế', qdtuEsc(f.recIdNo)) + it('Địa chỉ', qdtuEsc(f.recAddress)));
     const pay = grid(it('Phương thức nhận tiền', qdtuEsc(f.payMethod)) + (cash ? it('Cơ quan chi trả tiền mặt', qdtuEsc(f.cashPlace)) : it('Chủ tài khoản', qdtuEsc(f.accHolder)) + it('Số tài khoản ngân hàng', qdtuEsc(f.account)) + it('Ngân hàng', qdtuEsc([f.bank, f.branch].filter(Boolean).join(' - ')))));

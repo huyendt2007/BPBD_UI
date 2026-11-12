@@ -577,12 +577,16 @@
             // Kết quả xử lý của từng cấp
             g.children.forEach(h => {
                 if (/Từ chối/.test(h.action)) { items.push(item('no', h.userId, h.userName, h.at, 'no', 'fa-solid fa-ban', 'Từ chối - trả lại cán bộ trình', pick(/Lý do: (.*)$/, h.note))); return; }
+                // [vt2] Cấp cuối Ký duyệt phiếu trình tích Đóng dấu cơ quan
+                if (/Văn thư ban hành/.test(h.action)) { items.push(item('done', h.userId, h.userName, h.at, 'ok', 'fa-regular fa-circle-check', 'Ký duyệt và chuyển Văn thư ban hành', pick(/Ý kiến: (.*)$/, h.note))); return; }
                 const to = pick(/chuyển ([^.]+)\./, h.note);
                 const signed = /ký số/.test(h.note || '');
                 items.push(to
                     ? item('done', h.userId, h.userName, h.at, '', 'fa-solid fa-circle-arrow-right', `Ký duyệt và chuyển xử lý đến <strong>${esc(shortName(to))}</strong>`, pick(/Ý kiến: (.*)$/, h.note))
                     : item('done', h.userId, h.userName, h.at, 'ok', 'fa-regular fa-circle-check', `Ký duyệt${signed ? ' - đã ký số' : ''}`, pick(/Ý kiến: (.*)$/, h.note)));
             });
+            // [vt2] Sự kiện đang chờ ở trên cùng: "Chờ Văn thư ban hành - [Văn thư]"
+            if (current && a.choVanThu) items.push(item('wait', '', 'Văn thư', '', 'wait', 'fa-solid fa-hourglass-half', 'Chờ Văn thư ban hành - ' + esc(a.choVanThu.vanThu || '--'), ''));
             // Cấp chưa xử lý của lượt trình hiện hành: cấp đang chờ (cam), cấp chưa tới (xám, không ghi chữ)
             if (current) {
                 for (let lv = g.children.length; lv < path.length; lv++) {
@@ -628,7 +632,9 @@
         if (decisionMode === 'approve' && document.getElementById('ldDNextGroup').style.display !== 'none' && !next) { document.getElementById('ldDNextErr').style.display = 'block'; return; }
         const res = decisionMode === 'approve' ? WF.approve(acting, note, next) : WF.rejectApproval(acting, note);
         close('ldDecideOverlay');
-        const nextText = res.ok && res.record.status === WF.STATUS.CHO_PHE_DUYET ? ' - chuyển ' + ((next || (res.record.approval.assignees || [])[res.record.approval.level]) ? WF.userName(next || res.record.approval.assignees[res.record.approval.level]) + ' - ' : '') + WF.unitName(res.record.approval.path[res.record.approval.level]) : '';
+        // [vt2] Cấp cuối Ký duyệt phiếu trình tích Đóng dấu cơ quan: hồ sơ giữ Chờ duyệt, văn bản chuyển Văn thư ban hành
+        const vtCho = res.ok && res.choVanThu && res.record.approval ? res.record.approval.choVanThu : null;
+        const nextText = vtCho ? ` - ${WF.approvalLabel(res.record)} (${vtCho.vanThu || '--'})` : res.ok && res.record.status === WF.STATUS.CHO_PHE_DUYET ? ' - chuyển ' + ((next || (res.record.approval.assignees || [])[res.record.approval.level]) ? WF.userName(next || res.record.approval.assignees[res.record.approval.level]) + ' - ' : '') + WF.unitName(res.record.approval.path[res.record.approval.level]) : '';
         notify(res.ok ? `Hồ sơ ${acting}: [${res.record.status}]${nextText}.` : res.message, res.ok);
         finish();
     }

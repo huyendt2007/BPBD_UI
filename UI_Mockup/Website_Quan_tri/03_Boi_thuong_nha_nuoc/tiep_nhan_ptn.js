@@ -423,12 +423,37 @@ function noLeaderMsg() { const u = W.getCurrentUser(); const root = u ? (W.getRo
 function canAct(p, uid) {
     if (!p || p.status !== ST.REVIEW || !p.approval) return false;
     const a = p.approval;
+    // [vt2] Cấp cuối đã Ký duyệt Phiếu tiếp nhận tích Đóng dấu cơ quan: chờ Văn thư ban hành, Lãnh đạo không còn Ký duyệt / Từ chối
+    if (a.choVanThu) return false;
     const who = (a.assignees || [])[a.level];
     if (who) return who === uid;
     // [R3] Chỉ Lãnh đạo được giao đích danh; phiếu cũ chưa có Lãnh đạo được giao: Lãnh đạo đầu tiên của Nhóm lãnh đạo cấp đó
     const grp = (a.leaders || [])[a.level];
     const list = Array.isArray(grp) && grp.length ? grp : (W.getLeaders(a.path[a.level]) || []);
     return !!list.length && list[0] === uid;
+}
+// [vt2] Phiếu trình áp dụng bước Văn thư ban hành: tự thiết lập các cấp, Ký số trên hệ thống, tích "Đóng dấu cơ quan"
+function vtDongDau(p) {
+    const a = p && p.approval;
+    return !!(a && a.tuThietLap && p.method !== 'Ký ngoài' && ((a.signDoc && a.signDoc.dongDau) || p.dongDau));
+}
+// [vt2] Phiếu đang ở bước Văn thư ban hành (hồ sơ giữ Chờ duyệt tiếp nhận): { at, by, donViBanHanh, donViBanHanhTen, vanThu }; không ở bước này: null
+function choVanThuOf(code) {
+    const p = typeof code === 'string' ? get(code) : code;
+    return p && p.status === ST.REVIEW && p.approval && p.approval.choVanThu ? p.approval.choVanThu : null;
+}
+// [vt2] Cấp cuối Ký duyệt Phiếu tiếp nhận tích "Đóng dấu cơ quan": ký số văn bản chưa có số, ngày, dấu; phiếu giữ Chờ duyệt (hồ sơ giữ Chờ duyệt tiếp nhận),
+// chưa ban hành nên chưa tạo hồ sơ luồng Chờ phân công. Văn thư của Đơn vị ban hành đóng dấu, ban hành tại chức năng Ban hành văn bản.
+function toVanThu(p, uid, note) {
+    const a = p.approval, unitId = a.path[a.level], at = W.nowText();
+    const sd = a.signDoc || {}, bh = sd.banHanh || p.banHanh || {};
+    const vt = bh.vanThu || (global.BTNN_PCKD && global.BTNN_PCKD.vanThuText ? global.BTNN_PCKD.vanThuText(bh.donViBanHanh) : '');
+    const lv = (a.levels || [])[a.level] || {};
+    a.steps.push({ level: a.level, unitId, userId: uid, at, result: 'Ký duyệt', note, kySo: true, kyNhay: !!lv.kyNhay });
+    a.choVanThu = { at, by: uid, donViBanHanh: bh.donViBanHanh || '', donViBanHanhTen: bh.donViBanHanhTen || '', vanThu: vt };
+    hist(p, 'Ký duyệt và chuyển Văn thư ban hành', `${KIND}: ký duyệt cấp cuối (${W.unitName(unitId)}) - đã ký số văn bản chưa có số, ngày, dấu. Chờ Văn thư ban hành - ${vt || '--'}.${note ? ' Ý kiến: ' + note : ''}`, uid);
+    put(p);
+    return `Đã ký duyệt Phiếu tiếp nhận hồ sơ ${p.maVuViec || p.code} và chuyển Văn thư ban hành (${vt || '--'}). ${isFlow(p) ? 'Hồ sơ giữ [' + REC_ST.REVIEW + ']' : 'Phiếu tiếp nhận giữ [' + ST.REVIEW + ']'} - ${KIND} - Chờ Văn thư ban hành.`;
 }
 
 // ======================= Văn bản Mẫu 02/BTNN =======================
@@ -1254,7 +1279,10 @@ function levelText(a, i) {
     return `${grp.map(W.userName).join(', ')} - ${W.unitName(a.path[i])}`;
 }
 function nextLevelText(a) { return levelText(a, a.level + 1); }
-function workStatusHtml(t) { return t && isFlow(t.ptn) ? W.statusBadge(recStatusOf(t.code)) : statusBadge(t && t.ptn ? t.ptn.status : ''); }
+function workStatusHtml(t) {
+    const sub = t && choVanThuOf(t.code) ? `<div class="muted" style="margin-top:4px;">${esc(KIND)} - Chờ Văn thư ban hành</div>` : ''; // [vt2]
+    return (t && isFlow(t.ptn) ? W.statusBadge(recStatusOf(t.code)) : statusBadge(t && t.ptn ? t.ptn.status : '')) + sub;
+}
 function ldClose() { const o = el('ptnLdOverlay'); if (o) o.remove(); ptxLdClose(); }
 function ldSubmit() {
     const p = get(LD.code);
@@ -1272,6 +1300,11 @@ function ldSubmit() {
         if (isFlow(p)) updateClaim(p.code, x => { x.status = REC_ST.REJECT; });
         toast(`Đã từ chối Phiếu tiếp nhận hồ sơ ${p.maVuViec}. ${isFlow(p) ? 'Hồ sơ chuyển [' + REC_ST.REJECT + '].' : 'Phiếu tiếp nhận chuyển [' + ST.REJECT + '].'}`, 'success');
         ldDone(); return;
+    }
+    // [vt2] Cấp cuối, phiếu tích Đóng dấu cơ quan: chuyển Văn thư ban hành, hồ sơ giữ Chờ duyệt tiếp nhận (chưa release)
+    if (a.level >= a.path.length - 1 && vtDongDau(p)) {
+        const msg = toVanThu(p, uid, note);
+        ldClose(); toast(msg, 'success'); ldDone(); return;
     }
     const at = W.nowText();
     a.steps.push({ level: a.level, unitId: a.path[a.level], userId: uid, at, result: 'Ký duyệt', note });
@@ -2149,10 +2182,14 @@ function ptxLdHistory(p) {
         items.push(item('done', g.root.userId, g.root.userName, g.root.at, '', 'fa-solid fa-circle-arrow-right', `Trình ký${to ? ` đến <strong>${esc(shortName(to))}</strong>` : ''}`, pick(/Nội dung: (.*)$/, g.root.note), g.root.attachments));
         g.children.forEach(h => {
             if (/^Từ chối/.test(h.action)) { items.push(item('no', h.userId, h.userName, h.at, 'no', 'fa-solid fa-ban', 'Từ chối - trả lại cán bộ trình', pick(/Lý do: (.*)$/, h.note))); return; }
+            // [vt2] Cấp cuối Ký duyệt phiếu tích Đóng dấu cơ quan
+            if (/Văn thư ban hành/.test(h.action)) { items.push(item('done', h.userId, h.userName, h.at, 'ok', 'fa-regular fa-circle-check', 'Ký duyệt và chuyển Văn thư ban hành', pick(/Ý kiến: (.*)$/, h.note))); return; }
             const nx = pick(/chuyển ([^.]+)\./, h.note);
             items.push(nx ? item('done', h.userId, h.userName, h.at, '', 'fa-solid fa-circle-arrow-right', `Ký duyệt và chuyển xử lý đến <strong>${esc(shortName(nx))}</strong>`, pick(/Ý kiến: (.*)$/, h.note))
                 : item('done', h.userId, h.userName, h.at, 'ok', 'fa-regular fa-circle-check', `Ký duyệt${/ký số/.test(h.note || '') ? ' - đã ký số' : ''}`, pick(/Ý kiến: (.*)$/, h.note)));
         });
+        // [vt2] Sự kiện đang chờ ở trên cùng: "Chờ Văn thư ban hành - [Văn thư]"
+        if (current && a.choVanThu) items.push(item('wait', '', 'Văn thư', '', 'wait', 'fa-solid fa-hourglass-half', 'Chờ Văn thư ban hành - ' + esc(a.choVanThu.vanThu || '--'), ''));
         if (current) for (let lv = g.children.length; lv < path.length; lv++) {
             const uid = (a.assignees || [])[lv] || ((a.leaders || [])[lv] || [])[0] || '';
             const nm = uid ? W.userName(uid) : W.unitName(path[lv]);
@@ -2208,6 +2245,11 @@ function ptxLdSubmit() {
         toast(`Hồ sơ ${p.maVuViec}: [${REC_ST.REJECT}].`, 'success');
         ldDone(); return;
     }
+    // [vt2] Cấp cuối, phiếu tích Đóng dấu cơ quan: chuyển Văn thư ban hành, hồ sơ giữ Chờ duyệt tiếp nhận (chưa release)
+    if (a.level >= a.path.length - 1 && vtDongDau(p)) {
+        const msg = toVanThu(p, uid, note);
+        ptxLdClose(); toast(msg, 'success'); ldDone(); return;
+    }
     a.steps.push({ level: a.level, unitId, userId: uid, at, result: 'Ký duyệt', note });
     if (a.level < a.path.length - 1) {
         const nextLeaders = (a.leaders || [])[a.level + 1] || W.getLeaders(a.path[a.level + 1]) || [];
@@ -2252,6 +2294,7 @@ global.PTN = {
     generate, viewDoc, uploadDoc, uploadOff, viewIssued, renderDetail,
     ldActionsHtml, ldOpen, ldClose, ldSubmit, ldOpenWork,
     REC_ST, isFlow, recStatusOf, holds, reconcile, release, leaderActed, canActCode, gridLeaderButtonsHtml, workStatusHtml,
+    choVanThuOf, // [vt2] bước Văn thư ban hành
     canResubmit, downloadIssued, _after: () => afterPageAction(),
     _s: () => S, _mark: mark, _renderDoc: () => renderDoc(), _renderOff: () => renderOff(), _openOff: () => openRaw(S.offFile),
     _place: place, _resize: (i, w, h) => { Object.assign(S.coords[i], { w, h }); drawBox(i); }, _resetBox: i => { S.coords[i] = defaultCoord(i); drawBox(i); }, _syncBox: i => { if (S.placed[i]) drawBox(i); }, _nhay: toggleNhay,

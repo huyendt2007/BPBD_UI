@@ -2235,7 +2235,7 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261110ct2"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261112vt2"></script>
     <script src="btnn_phan_cong_ky_duyet.js?v=20261112dd7"></script>
     <script src="btnn_dvc_sync.js?v=20261106dvc11"></script>
     <!-- [th2c] Danh mục Loại thiệt hại 2 cấp (DM_27) + bảng 2 cấp dùng chung -->
@@ -2732,7 +2732,8 @@
         function subLabel(d) {
             const rec = wfRecFor(d);
             // [vt1] Lãnh đạo cấp cuối đã Ký duyệt phiếu trình tích Đóng dấu cơ quan: dòng phụ "[Loại trình] - Chờ Văn thư ban hành"
-            if (rec) return W.approvalLabel(rec) + (rec.approval && rec.approval.choVanThu ? ' - Chờ Văn thư ban hành' : '');
+            // [vt2] Lõi BTNN_WF.approvalLabel đã gắn hậu tố khi hồ sơ ở bước Văn thư: không gắn lặp
+            if (rec) { const lb = W.approvalLabel(rec); return lb + (rec.approval && rec.approval.choVanThu && !/ - Chờ Văn thư ban hành$/.test(lb) ? ' - Chờ Văn thư ban hành' : ''); }
             return [ST.CHO_DUYET, ST.TRA_LAI].includes(d.status) ? (d.wfKind || '') : '';
         }
         // Đồng bộ trạng thái Quyết định từ kho hồ sơ luồng (phê duyệt có thể thực hiện (vai trò Lãnh đạo))
@@ -2958,7 +2959,7 @@
             } else {
                 tbody.innerHTML = page.map((d, i) => `<tr data-id="${esc(d.id)}" style="cursor:pointer;" onclick="if(!event.target.closest('button,a')) openDetail('${d.id}')">
                     <td style="text-align:center;">${start + i + 1}</td>
-                    <td style="text-align:center;">${d.decNo ? `<strong>${esc(d.decNo)}</strong>` : '<span style="color:#94a3b8; font-style:italic;">Chưa cấp số</span>'}</td>
+                    <td style="text-align:center;">${d.decNo ? `<strong>${esc(d.decNo)}</strong>` : '<span style="color:#94a3b8; font-style:italic;">Chưa có</span>'}</td>
                     <td style="text-align:center;">${(d.issueDate || d.decDate) ? esc(d.issueDate || d.decDate) : '<span style="color:#94a3b8; font-style:italic;">-</span>'}</td>
                     <td style="text-align:right; font-weight:600;">${fmt(d.total)}</td>
                     <td>${(d.approvedBy || d.leaderId) ? esc(W.userName(d.approvedBy || d.leaderId)) : '-'}</td>
@@ -5153,7 +5154,7 @@
             const me = W.getCurrentUserId();
             let res;
             // [vt1] TH3a - cấp cuối, phiếu trình tích Đóng dấu cơ quan: ký số văn bản chưa có số, ngày, dấu; Quyết định giữ Chờ duyệt, dòng phụ
-            // "[Loại trình] - Chờ Văn thư ban hành"; chưa ban hành (hồ sơ luồng, vụ việc, kinh phí giữ nguyên) - giả lập tại trang (lõi BTNN_WF chưa có bước Văn thư)
+            // "[Loại trình] - Chờ Văn thư ban hành"; chưa ban hành (hồ sơ luồng, vụ việc, kinh phí giữ nguyên) - xử lý tại trang (lõi BTNN_WF.approve có nhánh tương tự [vt2] cho phân hệ khác)
             if (c.approve && last && a.tuThietLap && a.signDoc && a.signDoc.dongDau) {
                 if (!W.canApprove(rec, me) || a.choVanThu) { qdldClose(); showToast('Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phê duyệt. Vui lòng tải lại danh sách.', 'error'); renderDecTable(); return; }
                 const at = W.nowText(), sd = a.signDoc, bh = sd.banHanh || {};

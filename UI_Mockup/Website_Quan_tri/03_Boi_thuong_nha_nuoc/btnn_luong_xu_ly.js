@@ -1813,6 +1813,8 @@
     function canApprove(rec, userId) {
         if (!rec || rec.status !== STATUS.CHO_PHE_DUYET || !rec.approval) return false;
         const a = rec.approval;
+        // [vt2] Cấp cuối đã Ký duyệt phiếu trình tích Đóng dấu cơ quan: văn bản chờ Văn thư ban hành, Lãnh đạo không còn thao tác Ký duyệt / Từ chối
+        if (a.choVanThu) return false;
         const assignee = (a.assignees || [])[a.level];
         if (assignee) return assignee === userId;
         return isLeaderOf(userId, a.path[a.level], recFt(rec));
@@ -1852,9 +1854,20 @@
         if (ctx && (isYcbtRec(ctx) || ctx.loaiYeuCau === REQUEST_TYPE_YCBT)) return KIND_DISPLAY_YCBT[kind];
         return kind === 'Tiếp nhận hồ sơ' ? KIND_DISPLAY_YCBT[kind] : kind;
     }
-    // Nhãn phụ hiển thị dưới trạng thái: chỉ tên Nội dung trình (không hiển thị cấp duyệt)
+    // [vt2] Phiếu trình áp dụng bước Văn thư ban hành: tự thiết lập các cấp, Ký số trên hệ thống, tích "Đóng dấu cơ quan"
+    function isDongDauVanThu(a) {
+        return !!(a && a.tuThietLap && a.signDoc && a.signDoc.dongDau && a.signDoc.method !== 'Ký ngoài');
+    }
+    // [vt2] Hồ sơ Chờ duyệt đang ở bước Văn thư ban hành: { at, by, donViBanHanh, donViBanHanhTen, vanThu }; không ở bước này: null
+    function choVanThuOf(rec) {
+        const a = rec && rec.status === STATUS.CHO_PHE_DUYET ? rec.approval : null;
+        return a && a.choVanThu ? a.choVanThu : null;
+    }
+    // Nhãn phụ hiển thị dưới trạng thái: chỉ tên Nội dung trình (không hiển thị cấp duyệt);
+    // [vt2] hồ sơ ở bước Văn thư ban hành: "[Loại trình] - Chờ Văn thư ban hành"
     function approvalLabel(rec) {
-        return kindDisplay(approvalKindOf(rec), rec);
+        const k = kindDisplay(approvalKindOf(rec), rec);
+        return k && choVanThuOf(rec) ? k + ' - Chờ Văn thư ban hành' : k;
     }
     // Luồng phê duyệt động theo cấu hình luồng xử lý / cây đơn vị của cán bộ: "Cấp 1 - [Đơn vị] → Cấp 2 - [Đơn vị] ..."
     function approvalPathText(recLike) {
@@ -1885,6 +1898,22 @@
             addHistory(rec, 'Ký duyệt', `${a.kind}: ký duyệt Cấp ${lv + 1}${how}; chuyển ${userName(next)} - ${unitName(a.path[lv + 1])}.${note ? ' Ý kiến: ' + note : ''}`, null, { kind: a.kind });
             upsertRecord(rec);
             return { ok: true, record: rec };
+        }
+        // [vt2] Cấp cuối, phiếu trình tích "Đóng dấu cơ quan" (Ký số trên hệ thống): ký số văn bản chưa có số, ngày, dấu; văn bản chuyển Văn thư
+        // của Đơn vị ban hành. Hồ sơ giữ Chờ duyệt (dòng phụ "[Loại trình] - Chờ Văn thư ban hành"), chưa ban hành nên chưa chuyển trạng thái
+        // theo Loại trình, chưa thực hiện xử lý khi ban hành (chuyển CQGQBT, tạo hồ sơ, cử người...). Văn thư đóng dấu, ban hành tại Ban hành văn bản.
+        if (lvCfg && isDongDauVanThu(a)) {
+            const at = nowText();
+            const sd = a.signDoc, bh = sd.banHanh || {};
+            const vt = bh.vanThu || (global.BTNN_PCKD && global.BTNN_PCKD.vanThuText ? global.BTNN_PCKD.vanThuText(bh.donViBanHanh) : '');
+            a.steps.push({ unitId, userId: me, action: 'Ký duyệt', note: note || '', at, kySo: true, kyNhay: !!lvCfg.kyNhay });
+            sd.signedFile = String(sd.file || `Van_ban_${rec.code}.pdf`).replace(/\.[^.]+$/, '') + '_da_ky.pdf';
+            sd.signedBy = me;
+            sd.signedAt = at;
+            a.choVanThu = { at, by: me, donViBanHanh: bh.donViBanHanh || '', donViBanHanhTen: bh.donViBanHanhTen || '', vanThu: vt };
+            addHistory(rec, 'Ký duyệt và chuyển Văn thư ban hành', `${a.kind}: ký duyệt cấp cuối (${unitName(unitId)}) - đã ký số văn bản chưa có số, ngày, dấu. Chờ Văn thư ban hành - ${vt || '--'}.${note ? ' Ý kiến: ' + note : ''}`, null, { kind: a.kind });
+            upsertRecord(rec);
+            return { ok: true, record: rec, choVanThu: true };
         }
         if (a.level < a.path.length - 1) {
             const nextLeaders = getLeaders(a.path[a.level + 1], recFt(rec));
@@ -2697,7 +2726,7 @@
                 if (h.userId !== me) return;
                 let type = '';
                 if (['Chuyển đơn vị', 'Phân công cán bộ', 'Phân công', 'Chuyển chuyên viên phụ trách trực tiếp', 'Thu hồi', 'Chuyển đơn vị phục hồi danh dự', 'Phân công phục hồi danh dự'].includes(h.action)) type = WORK_TYPES.PHAN_CONG;
-                else if (['Phê duyệt', 'Ký duyệt', 'Từ chối phê duyệt'].includes(h.action)) type = workTypeOfKind(historyKind(rec, h));
+                else if (['Phê duyệt', 'Ký duyệt', 'Từ chối phê duyệt', 'Ký duyệt và chuyển Văn thư ban hành'].includes(h.action)) type = workTypeOfKind(historyKind(rec, h));
                 else if (['Thụ lý', 'Không thụ lý', KIND_CU_NGUOI].includes(h.action)) type = WORK_TYPES.THU_LY;
                 if (!type) return;
                 const kind = type === WORK_TYPES.PHAN_CONG || type === WORK_TYPES.THU_LY ? '' : historyKind(rec, h);
@@ -3197,7 +3226,9 @@
             if (step) state = `${step.action} - ${step.at}${step.note ? ' (' + step.note + ')' : ''}`;
             else if (i === a.level && rec.status === STATUS.CHO_PHE_DUYET) state = a.pending && a.pending.viewedAt ? `Đang chờ phê duyệt - Đã xem lúc ${a.pending.viewedAt}` : 'Đang chờ phê duyệt';
             return `<tr><td style="${td} text-align:center;">${i + 1}</td><td style="${td}">${esc(uid ? userName(uid) : '--')}</td><td style="${td}">${esc(unit || '--')}</td><td style="${td}">${esc(state)}</td></tr>`;
-        }).join('');
+        }).join('')
+            // [vt2] Bước Văn thư ban hành (sau Lãnh đạo cấp cuối): dòng chờ Văn thư của Đơn vị ban hành
+            + (choVanThuOf(rec) ? `<tr><td style="${td} text-align:center;">--</td><td style="${td}">Văn thư</td><td style="${td}">${esc(a.choVanThu.donViBanHanhTen || unitName(a.choVanThu.donViBanHanh) || '--')}</td><td style="${td}">${esc('Chờ Văn thư ban hành - ' + (a.choVanThu.vanThu || '--'))}</td></tr>` : '');
         return `<div style="margin-bottom:8px; font-size:13px;"><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(userName(a.submittedBy))} - ${esc(a.submittedAt)}${a.content ? `<div style="color:#334155; margin-top:2px;">${esc(a.content)}</div>` : ''}</div>
             <table style="width:100%; border-collapse:collapse; font-size:13px;"><thead><tr style="background:#f8fafc;"><th style="${td} width:44px;">Cấp</th><th style="${td} text-align:left;">Lãnh đạo</th><th style="${td} text-align:left;">Đơn vị</th><th style="${td} text-align:left;">Kết quả</th></tr></thead><tbody>${rows}</tbody></table>`;
     }
@@ -3979,7 +4010,7 @@
         DEFAULT_PERSONAL_DOC_TYPES, getPersonalDocTypes, normalizePersonalDocType, fillPersonalDocTypeSelect,
         loadRecords, saveRecords, getRecord, upsertRecord, removeRecord, addHistory, nextCode, createPendingRecord,
         latestRoute, canEditAtReception, canAssign, markViewed, assignToUnit, assignToOfficers, assignHoSoCode, isLeaderUser,
-        getRecallInfo, recall, computeApprovalPath, submitForApproval, canApprove, isLastApprovalLevel, nextLevelLeaders, xdPresetNextAssignee, firstLevelLeaders, approvalKindOf, approvalLabel, kindDisplay, approvalPathText, approvalPathLineHtml, KIND_KQXD, approve, approveVerb, isXdRec, gqConfiguredRoots, xdTargetUnitId, xdTargetConfigured, xdTargetNotConfiguredMsg, renderSignDocHtml, rejectApproval, performTransfer,
+        getRecallInfo, recall, computeApprovalPath, submitForApproval, canApprove, isLastApprovalLevel, nextLevelLeaders, xdPresetNextAssignee, firstLevelLeaders, approvalKindOf, approvalLabel, choVanThuOf, isDongDauVanThu, kindDisplay, approvalPathText, approvalPathLineHtml, KIND_KQXD, approve, approveVerb, isXdRec, gqConfiguredRoots, xdTargetUnitId, xdTargetConfigured, xdTargetNotConfiguredMsg, renderSignDocHtml, rejectApproval, performTransfer,
         transferToAgency, issueXdOffline, returnHistoryOf, supplementHistoryOf, renderXdReturnHistoryHtml, renderXdSupplementHistoryHtml, getLeaderTasks, thuLyUnitOf, thuLyLeaders, canThuLy, canCuNguoi, applyCuNguoi, KIND_CU_NGUOI, thuLyOfficerOptions, acceptCase, rejectCase,
         KIND_CDPD, STATUS_CU_NGUOI_PHDD, phddFlowNode, phddLeaders, canAssignPhdd, startPhddAssign, assignPhddToUnit, assignPhddToOfficer, PHDD_ASSIGN,
         KTL_TRANSFER_MODES, KTL_TRANSFER_LABELS, stpOfUnit, ktlTransferTarget, mountKtlTransfer, ktlTransferSentence,

@@ -431,7 +431,7 @@
     //   chỉ có Đơn vị văn thư -> các tài khoản cán bộ thuộc Đơn vị văn thư. Không xét quyền "Ban hành văn bản" (quyền mở menu do Phân quyền quy định).
     // Trường cachVanThu cũ không còn dùng (giữ đọc được dữ liệu cũ).
     const SEALS = [
-        { ma: 'SEL_000', ten: 'Con dấu tròn Bộ Tư pháp', donViSoHuu: 'BTP-01', donViVanThu: 'Văn phòng Bộ', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 150 },
+        { ma: 'SEL_002', ten: 'Con dấu tròn Bộ Tư pháp', donViSoHuu: 'BTP-01', donViVanThu: 'Văn phòng Bộ', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 150 },
         { ma: 'SEL_001', ten: 'Con dấu tròn chính Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', donViSoHuu: 'CĐK-01', donViVanThu: 'CĐK-01-VP', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 150 },
         { ma: 'SEL_011', ten: 'Con dấu tròn Văn phòng Cục', donViSoHuu: 'CĐK-01-VP', donViVanThu: 'CĐK-01-VP', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 130 },
         { ma: 'SEL_021', ten: 'Con dấu Phòng Quản lý nghiệp vụ về bồi thường nhà nước', donViSoHuu: 'PLN-02', donViVanThu: '', taiKhoanVanThu: ['Đào Thị Yến'], trangThai: 'Hoạt động', kichThuoc: 120 },

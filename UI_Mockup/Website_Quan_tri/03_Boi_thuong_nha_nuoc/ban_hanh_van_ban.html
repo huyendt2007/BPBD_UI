@@ -1429,7 +1429,7 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
     const tenDonVi = ma => (DON_VI[ma] ? DON_VI[ma].ten : String(ma || ''));
     // Cấu hình thông tin về con dấu (Quản trị hệ thống) - cùng dữ liệu BTNN_PCKD.SEALS (btnn_phan_cong_ky_duyet.js)
     const SEALS = [
-        { ma: 'SEL_000', ten: 'Con dấu tròn Bộ Tư pháp', donViSoHuu: 'BTP-01', donViVanThu: 'Văn phòng Bộ', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 150 },
+        { ma: 'SEL_002', ten: 'Con dấu tròn Bộ Tư pháp', donViSoHuu: 'BTP-01', donViVanThu: 'Văn phòng Bộ', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 150 },
         { ma: 'SEL_001', ten: 'Con dấu tròn chính Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước', donViSoHuu: 'CĐK-01', donViVanThu: 'CĐK-01-VP', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 150 },
         { ma: 'SEL_011', ten: 'Con dấu tròn Văn phòng Cục', donViSoHuu: 'CĐK-01-VP', donViVanThu: 'CĐK-01-VP', taiKhoanVanThu: [], trangThai: 'Hoạt động', kichThuoc: 130 },
         { ma: 'SEL_021', ten: 'Con dấu Phòng Quản lý nghiệp vụ về bồi thường nhà nước', donViSoHuu: 'PLN-02', donViVanThu: '', taiKhoanVanThu: ['Đào Thị Yến'], trangThai: 'Hoạt động', kichThuoc: 120 },
@@ -1591,7 +1591,8 @@ textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; resiz
     // r.trangThai chỉ là kết quả xử lý nội bộ của Văn thư: cho (chưa xử lý) / ban_hanh / tra_lai
     const MAU_TT = { 'Đã ban hành': 'badge-success', 'Đã chuyển CQGQBT': 'badge-success', 'Không thụ lý': 'badge-secondary', 'Dừng giải quyết': 'badge-secondary', 'Hủy quyết định': 'badge-secondary', 'Yêu cầu bổ sung': 'badge-purple' };
     function trangThaiHs(r) {
-        if (r.trangThai === 'cho') return { ten: 'Chờ duyệt', lop: 'badge-warning', phu: `${r.loaiTrinh} - Chờ Văn thư ban hành` };
+        // Phiếu tiếp nhận: hồ sơ Tiếp nhận chờ ở trạng thái `Chờ duyệt tiếp nhận` (SRS Ban hành văn bản c.4)
+        if (r.trangThai === 'cho') return { ten: r.loaiTrinh === 'Phiếu tiếp nhận' ? 'Chờ duyệt tiếp nhận' : 'Chờ duyệt', lop: 'badge-warning', phu: `${r.loaiTrinh} - Chờ Văn thư ban hành` };
         if (r.trangThai === 'tra_lai') return { ten: 'Bị trả lại', lop: 'badge-danger', phu: r.loaiTrinh };
         return { ten: r.trangThaiSau, lop: MAU_TT[r.trangThaiSau] || 'badge-info', phu: '' };
     }
