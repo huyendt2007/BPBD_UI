@@ -2076,11 +2076,6 @@
             <div class="modal-body" style="padding: 24px; background-color: #f1f5f9;">
                 <div style="background-color: #ffffff; padding: 40px 50px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: 'Times New Roman', Times, serif; color: #000; line-height: 1.5; font-size: 14px; position: relative; min-height: 800px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); box-sizing: border-box;">
                     
-                    <!-- Watermark "DỰ THẢO" in background -->
-                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center; pointer-events: none; z-index: 5; overflow: hidden; user-select: none;">
-                        <div style="font-size: 90px; font-weight: 900; color: rgba(148, 163, 184, 0.08); transform: rotate(-45deg); letter-spacing: 16px; text-transform: uppercase; white-space: nowrap;">DỰ THẢO</div>
-                    </div>
-
                     <div style="position: relative; z-index: 10;">
                         <!-- Header: Left (Agency), Right (National Title) -->
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
@@ -3578,6 +3573,9 @@
                     }
                 }
 
+                // [vt6] Hồ sơ chưa tách phần đơn vị: Lãnh đạo Ký duyệt / Từ chối tại màn Danh sách (ban hành ngay) -> nạp trạng thái mới trước khi tính bước hiển thị
+                try { if (typeof htStRestore === 'function') htStRestore(); } catch (e) { /* bỏ qua */ }
+
                 // Đối với hồ sơ ở trạng thái "Chờ ban hành QĐ hoàn trả" mà chưa lập quyết định:
                 // Theo SRS Mục 4.3.3.5.7.2/4.3.3.5.7.3, luôn mở ở chế độ Xem chi tiết (view mode), không hiển thị nút Cập nhật
                 if (activeDossier && activeDossier.status === 'Chờ ban hành QĐ hoàn trả' && !activeDossier.qdCreated) {
@@ -4543,8 +4541,11 @@
                 renderStateLayout();
             }
 
+            // [vt4] Thời điểm theo định dạng dd/mm/yyyy HH:mm của SRS Xem xét trách nhiệm hoàn trả
+            // (trước đây cắt 16 ký tự của toLocaleString('vi-VN') dạng "HH:mm:ss dd/mm/yyyy" nên mất phần năm, VD "20:35:52 12/11/2")
             function nowViShort() {
-                return new Date().toLocaleString('vi-VN').substring(0, 16);
+                const d = new Date(), p = n => String(n).padStart(2, '0');
+                return `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
             }
 
             function openRejectReasonModal(target) {
@@ -4577,9 +4578,10 @@
                 const staff = 'Chuyên viên Nguyễn Văn Chuyên Viên';
                 if (target === 'council') {
                     const t = d.tlhd || {};
-                    const hist = (typeof councilSignHistory !== 'undefined' ? councilSignHistory : []).map(h => ({ type: h.type, name: h.actor, at: h.time, msg: kdtcHtText(h.detail) }));
+                    const hist = (typeof councilSignHistory !== 'undefined' ? councilSignHistory : []).map(h => ({ type: h.type, label: h.label || '', name: h.actor, at: h.time, msg: kdtcHtText(h.detail) }));
                     const label = i => (typeof tlhdLeaderLabelOf === 'function' && t.levels) ? tlhdLeaderLabelOf(t.levels, t.assignees || [], i) : '';
-                    return { kind: 'Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả', title: 'QUYẾT ĐỊNH VỀ VIỆC THÀNH LẬP HỘI ĐỒNG XEM XÉT TRÁCH NHIỆM HOÀN TRẢ', content: t.content || d.councilDraftSummary || '', hist, levels: t.levels || [], level: t.level || 0, label, staff, okStatus: 'Họp hội đồng', noStatus: 'Bị trả lại thành lập HĐ' };
+                    // [vt3] choVanThu: phiếu trình đang ở bước Văn thư ban hành (Lịch sử trình ký có sự kiện chờ Văn thư ở trên cùng)
+                    return { kind: 'Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả', title: 'QUYẾT ĐỊNH VỀ VIỆC THÀNH LẬP HỘI ĐỒNG XEM XÉT TRÁCH NHIỆM HOÀN TRẢ', content: t.content || d.councilDraftSummary || '', hist, levels: t.levels || [], level: t.level || 0, label, staff, okStatus: 'Họp hội đồng', noStatus: 'Bị trả lại thành lập HĐ', choVanThu: t.choVanThu || null };
                 }
                 if (target === 'dcht') {
                     const a = d.dcht || {};
@@ -4588,7 +4590,7 @@
                         return { type: sub ? 'submit' : (rj ? 'reject' : 'approve'), name: sub ? staff : ((/^Lãnh đạo (.+?) (ký duyệt|từ chối)/.exec(x.text) || [])[1] || 'Lãnh đạo'), at: x.time, msg: x.text };
                     });
                     const label = i => (typeof dchtLeaderLabel === 'function' && a.levels) ? dchtLeaderLabel(a, i) : '';
-                    return { kind: 'Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả (Mẫu số 39/BTNN)', title: 'QUYẾT ĐỊNH VỀ VIỆC ĐÌNH CHỈ VIỆC XEM XÉT TRÁCH NHIỆM HOÀN TRẢ', content: a.content || '', hist, levels: a.levels || [], level: a.level || 0, label, staff, okStatus: typeof DCHT_ST_DONE !== 'undefined' ? DCHT_ST_DONE : '', noStatus: typeof DCHT_ST_REJECTED !== 'undefined' ? DCHT_ST_REJECTED : '' };
+                    return { kind: 'Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả (Mẫu số 39/BTNN)', title: 'QUYẾT ĐỊNH VỀ VIỆC ĐÌNH CHỈ VIỆC XEM XÉT TRÁCH NHIỆM HOÀN TRẢ', content: a.content || '', hist, levels: a.levels || [], level: a.level || 0, label, staff, okStatus: typeof DCHT_ST_DONE !== 'undefined' ? DCHT_ST_DONE : '', noStatus: typeof DCHT_ST_REJECTED !== 'undefined' ? DCHT_ST_REJECTED : '', choVanThu: a.choVanThu || null };
                 }
                 const hist = (d.qdAudit || []).filter(h => /^(submit|approve|reject)$/.test(h.type)).map(h => ({ type: h.type, name: h.actor, at: h.time, msg: kdtcHtText(h.detail) }));
                 return { kind: 'Quyết định hoàn trả', title: 'QUYẾT ĐỊNH VỀ VIỆC HOÀN TRẢ', content: d.qdSummary || '', hist, levels: [], level: 0, label: () => '', staff, okStatus: 'Thu tiền hoàn trả', noStatus: 'Bị trả lại QĐ hoàn trả' };
@@ -4602,13 +4604,15 @@
                 const icon = { done: 'fa-solid fa-circle-check', no: 'fa-solid fa-circle-xmark', wait: 'fa-regular fa-clock', todo: 'fa-regular fa-circle' };
                 const item = (st, name, at, cls, act, msg) => `<div class="kdtc-ht-hv ${st}"><div class="kdtc-ht-hv-step"><i class="${icon[st]}"></i></div><div class="kdtc-ht-hv-main"><div class="kdtc-ht-hv-head"><span class="kdtc-ht-hv-name">${kdtcHtE(name || '--')}</span>${at ? `<span class="kdtc-ht-hv-time"><i class="fa-regular fa-clock"></i> ${kdtcHtE(at)}</span>` : ''}</div>${act ? `<div class="kdtc-ht-hv-act ${cls}">${act}</div>` : ''}${msg ? `<div class="kdtc-ht-hv-msg">${kdtcHtE(msg)}</div>` : ''}</div></div>`;
                 const pend = [];
-                if (c.levels.length) {
+                // [vt3] Phiếu trình đang ở bước Văn thư ban hành: sự kiện đang chờ ở trên cùng "Chờ Văn thư ban hành - [Văn thư]" (không còn cấp chờ ký duyệt)
+                if (c.choVanThu) pend.push(item('wait', 'Văn thư', '', 'wait', '<i class="fa-solid fa-hourglass-half"></i> Chờ Văn thư ban hành - ' + kdtcHtE(c.choVanThu.vanThu || '--'), ''));
+                else if (c.levels.length) {
                     for (let lv = c.level; lv < c.levels.length; lv++) pend.push(lv === c.level ? item('wait', c.label(lv) || ('Lãnh đạo cấp ' + (lv + 1)), '', 'wait', '<i class="fa-solid fa-hourglass-half"></i> Chờ ký duyệt', '') : item('todo', c.label(lv) || ('Lãnh đạo cấp ' + (lv + 1)), '', '', '', ''));
                 } else pend.push(item('wait', 'Lãnh đạo ký duyệt', '', 'wait', '<i class="fa-solid fa-hourglass-half"></i> Chờ ký duyệt', ''));
                 const past = c.hist.map(h => h.type === 'reject'
                     ? item('no', h.name, h.at, 'no', '<i class="fa-solid fa-ban"></i> Từ chối - trả lại cán bộ trình', h.msg)
                     : h.type === 'submit' ? item('done', h.name, h.at, '', '<i class="fa-solid fa-circle-arrow-right"></i> ' + kdtcHtE(htTrinhLabel(h, c.label(0))), h.msg)
-                        : item('done', h.name, h.at, 'ok', '<i class="fa-regular fa-circle-check"></i> Ký duyệt', h.msg));
+                        : item('done', h.name, h.at, 'ok', '<i class="fa-regular fa-circle-check"></i> ' + kdtcHtE(h.label || (/ký duyệt và chuyển Văn thư ban hành/i.test(h.msg || '') ? 'Ký duyệt và chuyển Văn thư ban hành' : 'Ký duyệt')), h.msg));
                 return `<div class="kdtc-ht-box hist"><div class="kdtc-ht-box-title"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử trình ký</div>${pend.reverse().join('') + past.join('') || '<div style="color:#64748b;">Chưa có lịch sử.</div>'}</div>`;
             }
             // Khung Xem trước văn bản: thanh tên tệp + Mở xem văn bản (tab mới); nội dung văn bản trình ký của lần trình (file sinh theo mẫu) hoặc thẻ file tải lên
@@ -5010,16 +5014,19 @@
                 if (!tbody) return;
                 tbody.innerHTML = '';
 
-                councilSignHistory.forEach(item => {
+                // [vt5] Phiếu trình đang ở bước Văn thư ban hành: dòng đầu bảng "Chờ Văn thư ban hành - [Văn thư]"
+                const vtRow = typeof htVtLsRow === 'function' ? htVtLsRow() : null;
+                (vtRow ? [vtRow] : []).concat(councilSignHistory).forEach(item => {
                     const tr = document.createElement('tr');
                     let actionBadge = '';
+                    if (item.type === 'wait') actionBadge = '<span class="badge" style="background:#fef3c7; color:#b45309; font-weight:700;">' + item.label + '</span>';
                     // [vt2] item.label: nhãn riêng của sự kiện (VD "Ký duyệt và chuyển Văn thư ban hành")
-                    if (item.type === 'approve') actionBadge = '<span class="badge badge-success" style="font-weight:700;">' + (item.label || 'Ký duyệt') + '</span>';
+                    else if (item.type === 'approve') actionBadge = '<span class="badge badge-success" style="font-weight:700;">' + (item.label || 'Ký duyệt') + '</span>';
                     else if (item.type === 'submit') actionBadge = '<span class="badge badge-info" style="font-weight:700;">' + htTrinhLabel(item, activeDossier && activeDossier.tlhd && typeof tlhdLeaderLabelOf === 'function' && activeDossier.tlhd.levels ? tlhdLeaderLabelOf(activeDossier.tlhd.levels, activeDossier.tlhd.assignees || [], 0) : '') + '</span>';
                     else if (item.type === 'reject') actionBadge = '<span class="badge" style="background:#fee2e2; color:#b91c1c; font-weight:700;">Từ chối</span>';
 
                     tr.innerHTML = `
-                        <td style="text-align:center; font-weight:600; color:#334155;">${item.time}</td>
+                        <td style="text-align:center; font-weight:600; color:#334155;">${item.time || ''}</td>
                         <td><strong>${item.actor}</strong></td>
                         <td>
                             <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
@@ -8049,16 +8056,16 @@
         </script>
     <!-- Popup Thành lập Hội đồng xem xét trách nhiệm hoàn trả (Mẫu 33/BTNN) - bố cục như Popup Không thụ lý hồ sơ -->
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
-    <script src="chi_tiet_ho_so_hoan_tra_tlhd.js?v=20261112vt2"></script>
-    <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261112vt2"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_tlhd.js?v=20261112vt6"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261112vt6"></script>
     <!-- Dữ liệu mẫu bổ sung phủ các trạng thái của Ma trận chuyển trạng thái (dùng chung màn Danh sách) -->
     <script src="ht_du_lieu_mau.js?v=20261110ct2"></script>
     <!-- Bước 1 / Bước 2 Ý kiến của Hội đồng, Stepper 04 bước, phạm vi người xem theo đơn vị -->
-    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261112vt2"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261112vt6"></script>
     <!-- Bước 3: trình ký 02 tầng tại đơn vị (QĐ hoàn trả Mẫu 36; QĐ miễn Mẫu 38 / QĐ giảm Mẫu 37; QĐ đình chỉ Mẫu 39 cấp cán bộ) -->
-    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261112vt2"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261112vt5"></script>
     <!-- Bước 4: thu tiền hoàn trả theo phần đơn vị (nộp tiền nhiều đợt, miễn / giảm bổ sung, trả lại tiền) -->
-    <script src="chi_tiet_ho_so_hoan_tra_thu.js?v=20261112mien"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_thu.js?v=20261112vt3"></script>
     <!-- Thanh giả lập người dùng dùng chung màn Danh sách / Chi tiết, Khôi phục dữ liệu mẫu -->
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="ht_mock_role_bar.js?v=20261110ct2"></script>

@@ -112,13 +112,14 @@
         Object.keys(st).forEach(code => {
             const v = st[code]; if (!v || !Array.isArray(v.officers) || !v.officers.length) return;
             const old = HT_SPLIT[code] || {};
-            HT_SPLIT[code] = { owner: v.owner || old.owner || U_CHU, officers: v.officers.map(o => C(o.name, o.unit, o.st, { xl: o.xl, hd: o.hd, giam: o.giam, paid: o.paid, hoan: o.hoan, pt: o.pt, trinh: o.trinh || '', refund: o.refund || 0, stp: !!o.stp, pay: o.pay || '', chet: !!o.chet })) };
+            HT_SPLIT[code] = { owner: v.owner || old.owner || U_CHU, officers: v.officers.map(o => C(o.name, o.unit, o.st, { xl: o.xl, hd: o.hd, giam: o.giam, paid: o.paid, hoan: o.hoan, pt: o.pt, trinh: o.trinh || '', refund: o.refund || 0, stp: !!o.stp, pay: o.pay || '', chet: !!o.chet, vt: !!o.vt })) }; // [vt3] vt: Quyết định đang ở bước Văn thư ban hành
         });
     } catch (e) { /* bỏ qua */ }
     // Hồ sơ chưa tách phần đơn vị: trạng thái hồ sơ do màn chi tiết lưu (thành lập Hội đồng, đình chỉ cả hồ sơ...)
     try {
         const hs = JSON.parse(localStorage.getItem('btnn_ht_status_v1') || '{}') || {};
-        if (typeof dossiersList !== 'undefined') dossiersList.forEach(d => { const v = hs[d.code]; if (v && v.status && !HT_SPLIT[d.code]) d.status = v.status; });
+        // [vt3] vanThu: phiếu trình đang ở bước Văn thư ban hành (trạng thái hồ sơ không đổi) -> d.choVanThu
+        if (typeof dossiersList !== 'undefined') dossiersList.forEach(d => { const v = hs[d.code]; if (v && v.status && !HT_SPLIT[d.code]) { d.status = v.status; d.choVanThu = v.vanThu && v.vanThu.status === v.status ? v.vanThu.info || null : null; } });
     } catch (e) { /* bỏ qua */ }
     // Hồ sơ chưa chốt ý kiến Hội đồng: cán bộ (dự thảo ý kiến tại Bước 2) theo đơn vị
     const HT_DRAFT_UNIT = { 'HT-2026-005': U_A, 'HT-2026-007': U_B, 'HT-2026-008': U_A, 'HT-2026-011': U_B, 'HT-2026-013': U_B, 'HT-2026-016': U_A, 'HT-2026-023': U_A, 'HT-2026-024': U_B };
@@ -180,19 +181,22 @@
         if (l.some(o => !['CBH_HT', 'BTC_HT', 'DC', 'KXX'].includes(o.st) || /^CD_/.test(o.trinh || ''))) return 'Đang xử lý';
         return 'Chờ xử lý';
     }
-    function trinhLabel(d) { return !isSplit(d) && HS_TRINH[d.status] ? HS_TRINH[d.status][1] : ''; }
+    // [vt3] Phiếu trình đang ở bước Văn thư ban hành: dòng Loại trình "[Loại trình] - Chờ Văn thư ban hành"
+    const VT_SUF = ' - Chờ Văn thư ban hành';
+    const vtHs = d => !!(d && d.choVanThu && HS_TRINH[d.status] && HS_TRINH[d.status][0] === 'Chờ duyệt');
+    function trinhLabel(d) { return !isSplit(d) && HS_TRINH[d.status] ? HS_TRINH[d.status][1] + (vtHs(d) ? VT_SUF : '') : ''; }
     // Dòng phụ: trạng thái chi tiết (kèm Loại trình); sau khi chốt ý kiến HĐ kèm số cán bộ
     function chiTietLines(d, sc) {
         if (!isSplit(d)) {
             if (d.status === 'Chờ thành lập hội đồng') return ['Chưa thành lập Hội đồng'];
             const v = htStView(d.status);
-            return [v.loai ? v.name + ' (' + v.loai + ')' : v.name];
+            return [v.loai ? v.name + ' (' + v.loai + (vtHs(d) ? VT_SUF : '') + ')' : v.name];
         }
         const m = new Map();
         sc.officers.forEach(o => {
             const v = cbStatus(o);
             const b = CB_ST[o.st] || CB_ST.THU;
-            const k = (o.trinh ? (b[1] ? b[0] + ' (' + b[1] + ')' : b[0]) + ' - ' : '') + (v[1] ? v[0] + ' (' + v[1] + ')' : v[0]);
+            const k = (o.trinh ? (b[1] ? b[0] + ' (' + b[1] + ')' : b[0]) + ' - ' : '') + (v[1] ? v[0] + ' (' + v[1] + (o.vt ? VT_SUF : '') + ')' : v[0]);
             m.set(k, (m.get(k) || 0) + 1);
         });
         return Array.from(m.entries()).map(([k, n]) => k + ': ' + n + ' cán bộ');
@@ -217,8 +221,9 @@
     // ===== Phần việc chờ người dùng thao tác / đã xử lý =====
     function pendingOf(d, sc) {
         if (htScope === 'lanh_dao') {
-            if (!isSplit(d)) return HT_APPROVAL_STATES.includes(d.status);
-            return sc.officers.some(o => cbStatus(o)[0] === 'Chờ duyệt');
+            // [vt3] Phiếu trình đang ở bước Văn thư ban hành: không còn chờ Lãnh đạo (tab Đã xử lý)
+            if (!isSplit(d)) return HT_APPROVAL_STATES.includes(d.status) && !vtHs(d);
+            return sc.officers.some(o => cbStatus(o)[0] === 'Chờ duyệt' && !o.vt);
         }
         if (!isSplit(d)) return sc.full && ['Chờ thành lập hội đồng', 'Bị trả lại thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Bị trả lại QĐ đình chỉ', 'Họp hội đồng', 'Chờ chấm dứt', 'Bị trả lại QĐ chấm dứt'].includes(d.status);
         if (htScope === 'stp') return sc.officers.some(o => o.st === 'THU');
@@ -231,6 +236,10 @@
         const list = [];
         if (htScope === 'lanh_dao') {
             htGates(d, 'lanh_dao').forEach(g => list.push(g));
+            // [vt3] Lãnh đạo cấp cuối đã Ký duyệt phiếu trình tích Đóng dấu cơ quan (chờ Văn thư ban hành)
+            if (vtHs(d)) list.push({ gate: 'Ký duyệt ' + HS_TRINH[d.status][1], result: 'Ký duyệt và chuyển Văn thư ban hành' });
+            const vo = isSplit(d) ? sc.officers.find(o => o.vt) : null;
+            if (vo) list.push({ gate: 'Ký duyệt ' + ((CB_ST[/^CD_/.test(vo.trinh || '') ? vo.trinh : vo.st] || [])[1] || 'Quyết định'), result: 'Ký duyệt và chuyển Văn thư ban hành' });
             if (isSplit(d)) {
                 if (sc.officers.some(issued)) list.push({ gate: 'Ký duyệt QĐ hoàn trả', result: 'Phê duyệt' });
                 if (sc.officers.some(o => o.st === 'BTC_HT')) list.push({ gate: 'Ký duyệt QĐ hoàn trả', result: 'Từ chối' });
@@ -353,8 +362,9 @@
         const off = 'opacity: 0.35; pointer-events: none; cursor: not-allowed;';
         const wrap = h => '<div style="display:inline-flex; align-items:center; gap:6px; justify-content:center;">' + h + '</div>';
         if (htScope === 'lanh_dao') {
-            const base = !isSplit(d) && HT_APPROVAL_STATES.includes(d.status);
-            const cbCho = isSplit(d) && sc.officers.some(o => cbStatus(o)[0] === 'Chờ duyệt');
+            // [vt3] Phiếu trình đang ở bước Văn thư ban hành: Ký duyệt / Từ chối khóa mờ
+            const base = !isSplit(d) && HT_APPROVAL_STATES.includes(d.status) && !vtHs(d);
+            const cbCho = isSplit(d) && sc.officers.some(o => cbStatus(o)[0] === 'Chờ duyệt' && !o.vt);
             const baseHt = isSplit(d) && HT_APPROVAL_STATES.includes(d.status) && sc.officers.some(o => o.st === 'CD_HT');
             const on = base || cbCho;
             const click = (base || baseHt) ? m => 'htkdOpen(event, \'' + d.id + '\', \'' + m + '\')' : () => 'htOpenDetail(event, \'' + d.id + '\', \'view\')';
@@ -503,6 +513,82 @@
         renderRefundTable();
     };
 
+    // ===== [vt4] Popup Ký duyệt tại màn Danh sách: phiếu trình tích "Đóng dấu cơ quan" (Ký số trên hệ thống, tự thiết lập các cấp) =====
+    // Ký duyệt tại màn Danh sách là Ký duyệt của Lãnh đạo cấp cuối: ký số văn bản chưa có số, ngày, dấu; văn bản chuyển Văn thư của Đơn vị ban hành;
+    // hồ sơ giữ Chờ duyệt, dòng phụ "[Loại trình] - Chờ Văn thư ban hành"; chưa ban hành. Phiếu không tích: luồng cũ (ban hành ngay).
+    const lsGet = k => { try { return JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch (e) { return {}; } };
+    const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* bỏ qua */ } };
+    const vtNow = () => { const t = new Date(), p = n => String(n).padStart(2, '0'); return p(t.getDate()) + '/' + p(t.getMonth() + 1) + '/' + t.getFullYear() + ' ' + p(t.getHours()) + ':' + p(t.getMinutes()); };
+    const vtText = p => (p && p.vanThu) || (p && window.BTNN_PCKD && BTNN_PCKD.vanThuText ? BTNN_PCKD.vanThuText(p.donViBanHanh) : '') || '';
+    // Phiếu trình đang chờ duyệt có tích Đóng dấu cơ quan: hồ sơ chưa tách phần đơn vị - btnn_ht_status_v1.phieu (màn chi tiết lưu khi trình);
+    // QĐ hoàn trả của phần đơn vị - btnn_ht_units_v1.detail.units[].qd (chi_tiet_ho_so_hoan_tra_qd.js lưu)
+    function vtPhieuOf(d) {
+        if (!d || vtHs(d)) return null;
+        if (!isSplit(d)) {
+            const p = (lsGet('btnn_ht_status_v1')[d.code] || {}).phieu;
+            return p && p.dongDau && p.status === d.status ? { kind: 'hs', p } : null;
+        }
+        const st = lsGet('btnn_ht_units_v1')[d.code];
+        const units = (st && st.detail && st.detail.units) || [];
+        const list = units.filter(u => u && u.st === 'CD' && u.qd && u.qd.method !== 'offline' && u.qd.tuThietLap && u.qd.dongDau && !u.qd.choVanThu);
+        return list.length ? { kind: 'unit', st, units: list } : null;
+    }
+    function vtSubmit(d, loai, note) {
+        const v = vtPhieuOf(d);
+        if (!v) return false;
+        const k = HTKD_KIND[loai] || HTKD_KIND['Thành lập hội đồng'];
+        const at = vtNow(), y = note ? ' Ý kiến: ' + note : '';
+        let vt = '', by = 'Lãnh đạo';
+        if (v.kind === 'hs') {
+            vt = vtText(v.p); by = v.p.lanhDaoCuoi || by;
+            d.choVanThu = { at, by, donViBanHanh: v.p.donViBanHanh || '', donViBanHanhTen: v.p.donViBanHanhTen || '', vanThu: vt };
+            const all = lsGet('btnn_ht_status_v1');
+            all[d.code] = Object.assign({}, all[d.code] || {}, { status: d.status, vanThu: { status: d.status, info: d.choVanThu } });
+            lsSet('btnn_ht_status_v1', all);
+        } else {
+            // QĐ hoàn trả của phần đơn vị: phiếu giữ Chờ duyệt; cán bộ của phần đơn vị giữ Chờ duyệt (QĐ hoàn trả - Chờ Văn thư ban hành)
+            const s = splitOf(d);
+            v.units.forEach(u => {
+                const r = u.qd, bh = r.banHanh || {};
+                const lv = Array.isArray(r.levels) && r.levels.length ? r.levels[r.levels.length - 1] : null;
+                const ld = lv && Array.isArray(lv.leaders) ? (lv.leaders.find(x => x.id === (r.assignees || [])[r.levels.length - 1]) || lv.leaders[0] || {}).label : '';
+                vt = vtText(bh); by = ld || by;
+                r.level = Math.max(0, (r.levels || []).length - 1);
+                r.choVanThu = { at, by, donViBanHanh: bh.donViBanHanh || '', donViBanHanhTen: bh.donViBanHanhTen || '', vanThu: vt };
+                (r.hist = r.hist || []).unshift({ type: 'approve', label: 'Ký duyệt và chuyển Văn thư ban hành', name: by, at, msg: 'Ký duyệt và chuyển Văn thư ban hành (đã ký số văn bản chưa có số, ngày, dấu). Chờ Văn thư ban hành - ' + (vt || '--') + '.' + y });
+                (v.st.officers || []).forEach(o => { if (o.st === 'CD_HT' && (u.officers || []).includes(o.name)) o.vt = true; });
+                ((s && s.officers) || []).forEach(o => { if (o.st === 'CD_HT' && (u.officers || []).includes(o.name)) o.vt = true; });
+            });
+            const all = lsGet('btnn_ht_units_v1'); all[d.code] = v.st; lsSet('btnn_ht_units_v1', all);
+        }
+        d.gateLog = d.gateLog || [];
+        d.gateLog.push({ role: 'lanh_dao', gate: k.gate, result: 'Ký duyệt và chuyển Văn thư ban hành', at });
+        d.kdHist = d.kdHist || [];
+        d.kdHist.unshift({ loai, type: 'approve', label: 'Ký duyệt và chuyển Văn thư ban hành', name: by, at, msg: 'Đã ký số văn bản chưa có số, ngày, dấu. Chờ Văn thư ban hành - ' + (vt || '--') + '.' + y });
+        if (typeof htkdPersist === 'function') htkdPersist(d);
+        if (typeof htkdClose === 'function') htkdClose();
+        renderRefundTable();
+        if (typeof updateRefundTabCounts === 'function') updateRefundTabCounts();
+        if (typeof showToast === 'function') showToast(`Ký duyệt thành công ${k.doc} - hồ sơ ${d.code}. Văn bản chuyển Văn thư ban hành (${vt || '--'}); hồ sơ giữ trạng thái [Chờ duyệt].`, 'success');
+        return true;
+    }
+    // Thông tin tổng quan của popup Ký duyệt: phiếu trình tích Đóng dấu cơ quan (cấp cuối) - Đóng dấu cơ quan, Đơn vị ban hành, Văn thư xử lý
+    const baseOpen = window.htkdOpen;
+    if (typeof baseOpen === 'function') {
+        window.htkdOpen = function (event, id, mode) {
+            const r = baseOpen.apply(this, arguments);
+            try {
+                const d = dossiersList.find(x => x.id === id), v = vtPhieuOf(d), box = document.querySelector('#htkdSummary .htkd-box');
+                if (v && box && mode !== 'reject') {
+                    const p = v.kind === 'hs' ? v.p : (v.units[0].qd.banHanh || {});
+                    const row = (k2, val) => '<div class="htkd-row"><span>' + k2 + '</span><span>' + htkdE(val) + '</span></div>';
+                    box.insertAdjacentHTML('beforeend', row('Đóng dấu cơ quan', 'Có - sau khi Ký duyệt, văn bản chuyển Văn thư ban hành') + row('Đơn vị ban hành', p.donViBanHanhTen || '--') + row('Văn thư xử lý', vtText(p) || '--'));
+                }
+            } catch (e) { /* bỏ qua */ }
+            return r;
+        };
+    }
+
     // Ký duyệt / Từ chối QĐ hoàn trả của phần đơn vị (màn Ký duyệt dùng chung): cập nhật trạng thái chi tiết cán bộ đang Chờ duyệt (QĐ hoàn trả)
     const baseSubmit = window.htkdSubmit;
     if (typeof baseSubmit === 'function') {
@@ -511,6 +597,9 @@
             const d = ctx && ctx.d, approve = ctx && ctx.mode === 'approve';
             const loai = d ? htkdLoai(d) : '';
             const before = d ? d.status : '';
+            const noteKd = ((document.getElementById('htkdNote') || {}).value || '').trim();
+            // [vt4] Phiếu trình tích Đóng dấu cơ quan: chuyển Văn thư ban hành, không ban hành ngay
+            if (approve && d && vtSubmit(d, loai, noteKd)) return;
             baseSubmit();
             const s = d && splitOf(d);
             if (s && loai === 'QĐ hoàn trả' && d.status !== before) {
@@ -523,7 +612,12 @@
             if (d && !s && d.status !== before) {
                 try {
                     const all = JSON.parse(localStorage.getItem('btnn_ht_status_v1') || '{}') || {};
-                    all[d.code] = Object.assign({}, all[d.code] || {}, { status: d.status });
+                    const prev = all[d.code] || {};
+                    // [vt6] kq: kết quả Ký duyệt / Từ chối (ban hành ngay) để màn chi tiết nạp lại trạng thái mới và dữ liệu đi kèm (htStRestore - chi_tiet_ho_so_hoan_tra_tlhd.js),
+                    // kể cả sự kiện của Lịch sử xử lý QĐ thành lập Hội đồng. Người ký: Lãnh đạo cấp cuối của phiếu trình (nếu có); để trống thì màn chi tiết lấy theo cấp ký.
+                    const kq = { status: d.status, from: before, loai: /đình chỉ/i.test(loai) ? 'QĐ đình chỉ' : loai, type: approve ? 'approve' : 'reject', note: noteKd,
+                        by: approve ? ((prev.phieu && prev.phieu.lanhDaoCuoi) || '') : '', at: vtNow() };
+                    all[d.code] = Object.assign({}, prev, { status: d.status, kq });
                     localStorage.setItem('btnn_ht_status_v1', JSON.stringify(all));
                 } catch (e) { /* bỏ qua */ }
             }

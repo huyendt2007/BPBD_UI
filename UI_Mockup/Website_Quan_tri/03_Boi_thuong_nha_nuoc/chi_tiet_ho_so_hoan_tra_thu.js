@@ -73,7 +73,8 @@
     function statusCell(o) {
         const a = A();
         let h = '<div>' + (window.htPill ? window.htPill(a.ctText(o.ct)) : a.esc(a.ctText(o.ct))) + '</div>';
-        if (o.trinh && !/_DC$/.test(o.trinh)) h += '<div style="font-size:12px; color:#6d28d9;">' + a.esc(a.ctText(o.trinh)) + (/^BTC_/.test(o.trinh) ? ((r => r && r.reject ? ' - Lý do: ' + a.esc(r.reject.reason) : '')(o.mgKey != null ? (activeDossier.htMgs || [])[o.mgKey] : o.qd3)) : '') + '</div>';
+        // [vt3] QĐ miễn / giảm bổ sung đang ở bước Văn thư ban hành: "Chờ duyệt ([Loại trình] - Chờ Văn thư ban hành)"
+        if (o.trinh && !/_DC$/.test(o.trinh)) h += '<div style="font-size:12px; color:#6d28d9;">' + a.esc(a.ctText(o.trinh, a.vtTrinh ? a.vtTrinh(o) : false)) + (/^BTC_/.test(o.trinh) ? ((r => r && r.reject ? ' - Lý do: ' + a.esc(r.reject.reason) : '')(o.mgKey != null ? (activeDossier.htMgs || [])[o.mgKey] : o.qd3)) : '') + '</div>';
         h += a.dcLine(o);
         if (o.refund > 0) h += '<div style="font-size:12px; color:#b91c1c;">Cần trả lại: ' + a.money(o.refund) + ' đ</div>';
         if (o.refundDone) h += '<div style="font-size:12px; color:var(--text-muted);">Đã trả lại ' + a.money(o.refundDone.amt) + ' đ ngày ' + a.esc(o.refundDone.ngay) + '</div>';
@@ -206,7 +207,7 @@
         if (isMien) info.push(it('Số tiền được miễn', m(mienDuoc)));
         info.push(it('Số tiền đã nộp (lũy kế)', m(o.paid)), it('Số tiền còn phải thu', m(o.ct === 'THU' ? conLai(o) : 0)));
         if ((o.refund || 0) > 0) info.push(it('Số tiền cần trả lại', '<span style="color:#b91c1c;">' + m(o.refund) + '</span>'));
-        info.push(it('Trạng thái', (window.htPill ? window.htPill(a.ctText(o.ct)) : a.esc(a.ctText(o.ct))) + (o.trinh && !/_DC$/.test(o.trinh) ? '<div style="font-size:12px; color:#6d28d9; font-weight:500;">' + a.esc(a.ctText(o.trinh)) + '</div>' : '')));
+        info.push(it('Trạng thái', (window.htPill ? window.htPill(a.ctText(o.ct)) : a.esc(a.ctText(o.ct))) + (o.trinh && !/_DC$/.test(o.trinh) ? '<div style="font-size:12px; color:#6d28d9; font-weight:500;">' + a.esc(a.ctText(o.trinh, a.vtTrinh ? a.vtTrinh(o) : false)) + '</div>' : '')));
         let h = sec('fa-solid fa-user-tie', 'Thông tin hoàn trả', grid3(info));
         // Khối Quyết định giảm / miễn: chỉ hiển thị khi cán bộ có Quyết định tương ứng; nhiều lần: mỗi lần 01 khối, mới nhất trên cùng
         if (giamRecs.length) h += sec('fa-solid fa-arrow-down-wide-short', 'Quyết định giảm mức hoàn trả', giamRecs.map(x => x.html).join(''));

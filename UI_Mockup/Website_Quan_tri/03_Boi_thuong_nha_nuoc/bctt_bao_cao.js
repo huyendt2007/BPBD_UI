@@ -1630,9 +1630,9 @@
 
     // ---------------- MH02: Chi tiết / Nhập liệu (Sở Tư pháp) ----------------
     function fileRows(r, data, mode) {
-        // 04/11/2026 (nhanhl2): báo cáo tổng hợp của Bộ không trình ký - kết xuất Mẫu 42/BTNN ra PDF và Word, các mẫu khác ra PDF
+        // 04/11/2026 (nhanhl2): báo cáo tổng hợp của Bộ không trình ký - kết xuất PDF và Word (12/11/2026: cả 04 biểu mẫu tải được Word, người dùng chốt)
         if (isBtpReport(r)) return FORMS.map(function (f, i) {
-            var ten = f.file + '_' + r.year + '_' + r.unitId, w = f.id === 'm42';
+            var ten = f.file + '_' + r.year + '_' + r.unitId, w = true;
             return '<tr><td>' + (i + 1) + '</td><td class="text-left">' + f.code + ' - ' + f.title + '</td><td class="text-left"><i class="fa-solid fa-file-pdf" style="color:#dc2626;"></i> ' + ten + '.pdf' + (w ? '<br><i class="fa-solid fa-file-word" style="color:#2563eb;"></i> ' + ten + '.docx' : '') + '</td><td>' + (w ? 'PDF, Word' : 'PDF') + '</td>'
                 + '<td><button class="bctt-link" data-fview="' + f.id + '">Xem file</button>|<button class="bctt-link" data-fdl="' + esc(ten) + '.pdf">Tải PDF</button>' + (w ? '|<button class="bctt-link" data-fdl="' + esc(ten) + '.docx">Tải Word</button>' : '') + '</td></tr>';
         }).join('');
@@ -1641,10 +1641,11 @@
         var st = issued ? (r.kySo && r.kySo.sign) : r.submit;
         if (laTl(st)) return '<tr><td>1</td><td class="text-left">' + TL_FORM.title + '</td><td class="text-left"><i class="fa-solid fa-file-pdf" style="color:#dc2626;"></i> ' + esc(st.tep.name) + '</td><td>' + (issued ? 'Đã ban hành' : 'Dự thảo') + '</td>'
             + '<td><button class="bctt-link" data-fview="tl">Xem file</button>|<button class="bctt-link" data-fdl="' + esc(st.tep.name) + '">Tải file</button></td></tr>';
+        // 12/11/2026 (người dùng chốt): mỗi biểu mẫu tải thêm tệp Word, sinh theo số liệu và tệp mẫu .docx, không có chữ ký số, con dấu
         return FORMS.map(function (f, i) {
-            var name = f.file + '_' + r.year + '_' + maTep(r) + (issued ? '_signed' : '_du_thao') + '.pdf';
-            return '<tr><td>' + (i + 1) + '</td><td class="text-left">' + f.code + ' - ' + f.title + '</td><td class="text-left"><i class="fa-solid fa-file-pdf" style="color:#dc2626;"></i> ' + name + '</td><td>' + (issued ? 'Đã ban hành' : 'Dự thảo') + '</td>'
-                + '<td><button class="bctt-link" data-fview="' + f.id + '">Xem file</button>|<button class="bctt-link" data-fdl="' + esc(name) + '">Tải file</button></td></tr>';
+            var name = f.file + '_' + r.year + '_' + maTep(r) + (issued ? '_signed' : '_du_thao') + '.pdf', word = f.file + '_' + r.year + '_' + maTep(r) + (issued ? '' : '_du_thao') + '.docx';
+            return '<tr><td>' + (i + 1) + '</td><td class="text-left">' + f.code + ' - ' + f.title + '</td><td class="text-left"><i class="fa-solid fa-file-pdf" style="color:#dc2626;"></i> ' + name + '<br><i class="fa-solid fa-file-word" style="color:#2563eb;"></i> ' + word + '</td><td>' + (issued ? 'Đã ban hành' : 'Dự thảo') + '</td>'
+                + '<td><button class="bctt-link" data-fview="' + f.id + '">Xem file</button>|<button class="bctt-link" data-fdl="' + esc(name) + '">Tải file</button>|<button class="bctt-link" data-fdl="' + esc(word) + '">Tải Word</button></td></tr>';
         }).join('');
     }
     // Khối «Tệp báo cáo» (04 biểu mẫu, Xem file / Tải file) - dùng chung trang chi tiết của Sở và màn rà soát của Bộ (04/11/2026)
@@ -2487,7 +2488,8 @@
         var ngay = daKy ? /(\d{2})\/(\d{2})\/(\d{4})/.exec(l2.at) : null, tenKy = l2 ? userName(l2.leaderId) : '';
         var chucDanh = l2 && userTitle(l2.leaderId) === 'Cục trưởng' ? 'CỤC TRƯỞNG' : 'KT. CỤC TRƯỞNG<br>PHÓ CỤC TRƯỞNG';
         var guiNgay = String((r.issued && r.issued.at) || r.sentAt || '').slice(0, 10);
-        return '<div class="bctt-a4 p yc-vb" style="font-size:14.5px;line-height:1.55;">' + (daKy ? '' : '<div class="bctt-wm">DỰ THẢO</div>')
+        // 12/11/2026 (người dùng chốt): không in chữ «DỰ THẢO» lên văn bản ở mọi phân hệ
+        return '<div class="bctt-a4 p yc-vb" style="font-size:14.5px;line-height:1.55;">'
             + '<div style="display:flex;justify-content:space-between;text-align:center;font-size:13.5px;margin-top:10px;"><div style="width:46%"><b>BỘ TƯ PHÁP</b><br><b>CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM<br>VÀ BỒI THƯỜNG NHÀ NƯỚC</b><br>Số: ……/CĐK-BTNN</div>'
             + '<div style="width:52%"><b>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</b><br><b>Độc lập - Tự do - Hạnh phúc</b><br><i>Hà Nội, ngày ' + (ngay ? ngay[1] : '……') + ' tháng ' + (ngay ? ngay[2] : '……') + ' năm ' + (ngay ? ngay[3] : '……') + '</i></div></div>'
             + '<p style="text-align:center;margin-top:22px;"><b>V/v điều chỉnh báo cáo công tác bồi thường nhà nước năm ' + r.year + '</b></p>'
@@ -2583,7 +2585,7 @@
     function oKyTinh(sign, fid) {
         var n = sign.levels.length;
         var nl = sign.nguoiLap;
-        return (nl && nl.on !== false && !(nl.tat && nl.tat[fid]) && nl.viTri && nl.viTri[fid] ? oNlHtml(nl, nl.viTri[fid], false) : '')
+        return (fid !== 'm42' && nl && nl.on !== false && !(nl.tat && nl.tat[fid]) && nl.viTri && nl.viTri[fid] ? oNlHtml(nl, nl.viTri[fid], false) : '')   // Mẫu 42/BTNN không có chữ ký Người lập biểu
             + sign.levels.map(function (l, i) { return l.viTri && l.viTri[fid] ? oKyHtml(l, i, !!l.kySo || i === n - 1, l.viTri[fid], false) : ''; }).join('');
     }
     function ndHeader(code) {
@@ -2717,15 +2719,15 @@
         var html = '<div class="bctt-modal" style="width:100vw;height:100vh;max-width:100vw;max-height:100vh;border-radius:0;"><div class="bctt-mh"><div><div class="tt">' + esc(title) + '</div><div class="st">' + esc(data ? data.title : r.unitName + ' - năm ' + r.year) + '</div></div><button class="bctt-x" data-close>&times;</button></div>'
             + '<div class="bctt-split" style="flex:1;min-height:0;">' + viewerHtml(r, t, sign, data, 'bcttPv') + '</div>'
             + '<div class="bctt-mf"><button class="btn btn-secondary" data-close>Đóng</button>'
-            // 06/11/2026 (nhanhl2): báo cáo tổng hợp của Bộ - khi đang xem Mẫu 42/BTNN có thêm nút «Tải Word» (Mẫu 42/BTNN kết xuất PDF và Word, mẫu khác chỉ PDF)
-            + (isBtpReport(r) && !data ? '<button class="btn btn-outline-primary" id="bcttPvWord"' + (t === 'm42' ? '' : ' style="display:none;"') + '><i class="fa-solid fa-file-word"></i> Tải Word</button>' : '')
+            // 12/11/2026 (người dùng chốt): nút «Tải Word» cho cả 04 biểu mẫu, mọi báo cáo (Sở và tổng hợp của Bộ); ẩn khi đang xem tệp Cán bộ tải lên
+            + '<button class="btn btn-outline-primary" id="bcttPvWord"' + (coTl(t) ? ' style="display:none;"' : '') + '><i class="fa-solid fa-file-word"></i> Tải Word</button>'
             + '<button class="btn btn-primary" id="bcttPvDl"><i class="fa-solid fa-download"></i> Tải file</button></div></div>';
         openOv('bcttOv2', html); bindClose('bcttOv2');
         var cur = t, nutWord = $('bcttPvWord');
-        bindViewer(r, sign, data, 'bcttPv', function (x) { cur = x; if (nutWord) nutWord.style.display = x === 'm42' ? '' : 'none'; });
+        bindViewer(r, sign, data, 'bcttPv', function (x) { cur = x; if (nutWord) nutWord.style.display = coTl(x) ? 'none' : ''; });
         // 06/11/2026 (nhanhl2 chọn): tệp tải về của báo cáo tổng hợp lấy theo số liệu đã Lưu gần nhất; còn số liệu chưa Lưu thì nhắc Lưu trước, không tải
         var nhacLuu = function () { if (isBtpReport(r) && !data && chuaLuuBieuMau(r)) { toast(MSG_CHUA_LUU, 'error'); return true; } return false; };
-        if (nutWord) nutWord.onclick = function () { if (nhacLuu()) return; var f = FORMS.find(function (x) { return x.id === 'm42'; }); toast('Đã tải xuống tệp ' + f.file + '_' + r.year + '_' + r.unitId + '.docx.'); };
+        if (nutWord) nutWord.onclick = function () { if (nhacLuu()) return; if (coTl(cur)) return; var f = FORMS.find(function (x) { return x.id === cur; }); toast('Đã tải xuống tệp ' + f.file + '_' + (isBtpReport(r) ? r.year + '_' + r.unitId : (data && !data.kySo ? 'tong_hop_' : '') + r.year) + '.docx (không có chữ ký số, con dấu).'); };
         $('bcttPvDl').onclick = function () { if (nhacLuu()) return; if (coTl(cur)) { toast('Đã tải xuống tệp ' + tepTl(sign, data).name + '.'); return; } var f = FORMS.find(function (x) { return x.id === cur; }); toast('Đã tải xuống tệp ' + f.file + '_' + (isBtpReport(r) ? r.year + '_' + r.unitId : (data && !data.kySo ? 'tong_hop_' : '') + r.year) + '.pdf.'); };
     }
 
@@ -2931,7 +2933,8 @@
     function ktKySo(i) { return i === sub.levels.length - 1 || !!sub.levels[i].kySo; }
     function ktKyNhay(i, fid) { var l = sub.levels[i]; return !!l.kyNhay && !ktKySo(i) && !(l.bo && l.bo[ktF(fid)]); }
     function ktCoO(i, fid) { return ktKySo(i) || ktKyNhay(i, fid); }
-    function ktNlOn(fid) { return sub.nl.on[ktF(fid)] !== false; }
+    // 12/11/2026 (người dùng chốt): Mẫu 42/BTNN không có chữ ký Người lập biểu - không có ô ảnh chữ ký Chuyên viên trên Mẫu 42
+    function ktNlOn(fid) { var f = ktF(fid); return f !== 'm42' && sub.nl.on[f] !== false; }
     function ktO(k) { return k === 'nl' ? sub.nl : sub.levels[k]; }
     function ktDat(k, fid) { return !!ktO(k).placed[ktF(fid)]; }
     function subSign(doNeo, fid) {
@@ -3009,8 +3012,10 @@
             return '<div class="bctt-card kt-nl"><div class="h"><span>Chuyên viên lập báo cáo</span></div>'
                 + '<div style="font-size:13px;color:#334155;">' + esc(u.name) + (u.title ? ' - ' + esc(u.title) : '') + '</div>'
                 + '<div class="bctt-cap-tc"><label><input type="checkbox" data-kt-nl-kn' + (sub.nl.kyNhay ? ' checked' : '') + '> Ký nháy</label></div>'
-                + '<label class="bctt-kt-chk"><input type="checkbox" data-kt-nl-on' + (ktNlOn() ? ' checked' : '') + '><span>Chuyên viên lập báo cáo ký</span></label>'
-                + (ktNlOn() ? datO('nl', KT_CO.nl) : '')
+                + (sub.fid === 'm42'
+                    ? '<div class="formula-hint" style="margin-top:6px;">Mẫu 42/BTNN không có chữ ký Người lập biểu.</div>'
+                    : '<label class="bctt-kt-chk"><input type="checkbox" data-kt-nl-on' + (ktNlOn() ? ' checked' : '') + '><span>Chuyên viên lập báo cáo ký</span></label>'
+                        + (ktNlOn() ? datO('nl', KT_CO.nl) : ''))
                 + '</div>';
         }
         function the(l, i) {
@@ -3552,12 +3557,12 @@
             + '<div class="bctt-files"><div class="section-title" style="margin-bottom:10px;"><span>Tình hình gửi báo cáo của ' + PROVINCES.length + ' đơn vị</span></div>'
             + '<div class="filter-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;"><div class="form-group"><span class="form-label">Đơn vị báo cáo</span><input class="form-control" id="bcttBtpKw" placeholder="Nhập tên đơn vị để tìm kiếm" value="' + esc(btpState.kw) + '"></div>'
             + '<div class="form-group"><span class="form-label">Tình hình gửi</span><select class="form-control" id="bcttBtpSt"><option value="all">Tất cả (' + PROVINCES.length + ')</option><option value="sent"' + (btpState.sent === 'sent' ? ' selected' : '') + '>Đã gửi (' + issued.length + ')</option><option value="unsent"' + (btpState.sent === 'unsent' ? ' selected' : '') + '>Chưa gửi (' + (PROVINCES.length - issued.length) + ')</option></select></div></div>'
-            + '<div class="table-container" style="max-height:420px;overflow:auto;"><table class="custom-table" id="bcttBtpFiles"><thead><tr><th>STT</th><th>Đơn vị báo cáo</th><th>Tình hình gửi</th><th>Tình trạng tại đơn vị</th><th>Ngày gửi</th><th>Người lập</th><th>Người ký ban hành</th><th>Tệp báo cáo (Xem file | Tải file)</th></tr></thead><tbody>'
+            + '<div class="table-container" style="max-height:420px;overflow:auto;"><table class="custom-table" id="bcttBtpFiles"><thead><tr><th>STT</th><th>Đơn vị báo cáo</th><th>Tình hình gửi</th><th>Tình trạng tại đơn vị</th><th>Ngày gửi</th><th>Người lập</th><th>Người ký ban hành</th><th>Tệp báo cáo (Xem file | Tải file | Tải Word)</th></tr></thead><tbody>'
             + units.filter(function (u) { var ok = u.r && u.r.status === ST.BH; return (!btpState.kw || u.name.toLowerCase().indexOf(btpState.kw.toLowerCase()) >= 0) && (btpState.sent === 'all' || (btpState.sent === 'sent') === !!ok); }).map(function (u, i) {
                 var r = u.r, ok = r && r.status === ST.BH;
                 return '<tr' + (ok ? ' class="list-row" data-vrow="' + r.id + '" title="Click để xem chi tiết báo cáo (04 biểu mẫu)"' : '') + '><td>' + (i + 1) + '</td><td class="text-left">' + esc(u.name) + '</td><td>' + (ok ? '<span class="badge badge-success">Đã gửi</span>' : '<span class="badge badge-muted">Chưa gửi</span>') + '</td>'
                     + '<td class="text-left">' + (ok ? 'Đã gửi BTP' : (r ? r.status : 'Chưa tạo báo cáo')) + '</td><td>' + (ok ? r.issued.at : '--') + '</td><td class="text-left">' + (r ? esc(r.preparer.name) : '--') + '</td><td class="text-left">' + (ok ? esc(r.issued.signer) : '--') + '</td><td class="text-left">'
-                    + (ok ? FORMS.map(function (f) { return '<span class="bctt-chip">' + f.code + ' <button class="bctt-link" data-rid="' + r.id + '" data-fview="' + f.id + '">Xem file</button>|<button class="bctt-link" data-fdl="' + f.file + '_' + year + '_' + maTep(r) + '_signed.pdf">Tải file</button></span>'; }).join('') : '--')
+                    + (ok ? FORMS.map(function (f) { return '<span class="bctt-chip">' + f.code + ' <button class="bctt-link" data-rid="' + r.id + '" data-fview="' + f.id + '">Xem file</button>|<button class="bctt-link" data-fdl="' + f.file + '_' + year + '_' + maTep(r) + '_signed.pdf">Tải file</button>|<button class="bctt-link" data-fdl="' + f.file + '_' + year + '_' + maTep(r) + '.docx">Tải Word</button></span>'; }).join('') : '--')
                     // Bộ Tư pháp xem báo cáo của Sở Tư pháp: chỉ Tài liệu ban hành kèm theo (khối không ban hành kèm theo chỉ Sở Tư pháp trình xem được)
                     + (ok && r.submit && typeof window.tlktInlineHtml === 'function' ? window.tlktInlineHtml(r.submit.tlkt || [], { ownerUnit: r.unitId }) : '') + '</td></tr>';
             }).join('') + '</tbody></table></div></div></div>';

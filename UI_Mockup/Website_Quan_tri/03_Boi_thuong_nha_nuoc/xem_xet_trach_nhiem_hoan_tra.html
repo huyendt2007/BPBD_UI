@@ -2317,7 +2317,7 @@
             if (window.BDG) BDG.report('hoanTra', bdgPending, p); else if (p) p.textContent = bdgPending;
             if (d) d.textContent = dossiersList.filter(x => htInTab('done', x)).length;
             // Hồ sơ chờ Lãnh đạo duyệt: dùng cho Bàn làm việc Lãnh đạo; agency = cơ quan giải quyết bồi thường (xác định Lãnh đạo được trình); times = các mốc thời gian của hồ sơ (trình ký, ký duyệt/từ chối, quyết định, tạo) để lấy hồ sơ cập nhật gần nhất
-            try { localStorage.setItem('btnn_hoantra_summary', JSON.stringify({ pendingApproval: dossiersList.filter(x => HT_APPROVAL_STATES.includes(x.status)).map(x => ({ code: x.code, status: x.status, claimCode: x.claimCode, maVuViec: dossierVuViec(x), agency: x.agency || '', times: [x.kdSubmittedAt, ...(x.kdHist || []).map(h => h && h.at), ...(x.gateLog || []).map(g => g && g.at), x.qdDate, x.hdDate, x.dateCreated].filter(Boolean) })) })); } catch (e) { /* bỏ qua */ }
+            try { localStorage.setItem('btnn_hoantra_summary', JSON.stringify({ pendingApproval: dossiersList.filter(x => HT_APPROVAL_STATES.includes(x.status) && !x.choVanThu).map(x => ({ code: x.code, status: x.status, claimCode: x.claimCode, maVuViec: dossierVuViec(x), agency: x.agency || '', times: [x.kdSubmittedAt, ...(x.kdHist || []).map(h => h && h.at), ...(x.gateLog || []).map(g => g && g.at), x.qdDate, x.hdDate, x.dateCreated].filter(Boolean) })) })); } catch (e) { /* bỏ qua */ }
         }
 
         function updateKpiCountersRefund() {
@@ -2594,7 +2594,8 @@
             // Chú thích nút theo tên thao tác; thao tác không được phép hiển thị khóa mờ
             updateTooltip = 'Cập nhật'; approveTooltip = 'Ký duyệt'; rejectTooltip = 'Từ chối'; deleteTooltip = 'Xóa';
             // Ký duyệt / Từ chối: mọi Loại trình đang Chờ duyệt (Thành lập hội đồng, QĐ hoàn trả, Đình chỉ xem xét hoàn trả)
-            canApprove = canReject = currentMockRole !== 'tra_cuu' && HT_APPROVAL_STATES.includes(d.status);
+            // [vt3] Phiếu trình đang ở bước Văn thư ban hành (cấp cuối đã Ký duyệt, tích Đóng dấu cơ quan): không còn Ký duyệt / Từ chối
+            canApprove = canReject = currentMockRole !== 'tra_cuu' && HT_APPROVAL_STATES.includes(d.status) && !d.choVanThu;
             const disabledStyle = 'opacity: 0.35; pointer-events: none; cursor: not-allowed;';
 
             // Slot 1: Cập nhật
@@ -3740,7 +3741,7 @@
         function htkdOpen(event, id, mode) {
             if (event) event.stopPropagation();
             const d = dossiersList.find(x => x.id === id);
-            if (!d || !HT_APPROVAL_STATES.includes(d.status)) return;
+            if (!d || !HT_APPROVAL_STATES.includes(d.status) || d.choVanThu) return;
             htkdCtx = { d, mode: mode === 'reject' ? 'reject' : 'approve' };
             const approve = htkdCtx.mode === 'approve';
             const k = HTKD_KIND[htkdLoai(d)];
@@ -3948,7 +3949,7 @@
     </script>
     <!-- Phạm vi dữ liệu theo đơn vị + trạng thái 02 tầng (chi tiết / chung) của màn danh sách -->
     <script src="ht_du_lieu_mau.js?v=20261110ct2"></script>
-    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261109ro1"></script>
+    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261112vt6"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="ht_mock_role_bar.js?v=20261110ct2"></script>
     <script src="admin-ui-standardizer.js"></script>

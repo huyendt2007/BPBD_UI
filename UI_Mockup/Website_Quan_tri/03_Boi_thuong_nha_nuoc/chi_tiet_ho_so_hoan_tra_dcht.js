@@ -965,7 +965,7 @@ function dchtRenderInfoCard() {
     const fileIco = /\.pdf$/i.test(a.fileName || '') ? 'fa-file-pdf" style="color:#dc2626;' : 'fa-file-word" style="color:#2563eb;';
     html += `<div class="dcht-grid">`
         + it('Hình thức ký', a.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống')
-        + it('Số, ký hiệu văn bản', a.so && a.so.trim() && !/^\s*\/QĐ-\s*$/.test(a.so) ? dchtE(a.so) : emp)
+        + it('Số, ký hiệu văn bản', a.so && a.so.trim() && !/^\s*\/QĐ-\s*$/.test(a.so) ? dchtE(a.so) : '<i class="dcht-empty">Chưa có</i>') // chưa có số: "Chưa có" in nghiêng
         + it('Ngày văn bản', a.ngay ? dchtE(a.ngay) : emp)
         + it(activeDossier.status === dchtSt().D ? 'Văn bản' : 'Văn bản dự thảo', a.fileName ? `<a href="javascript:void(0)" class="dcht-file" onclick="dchtViewDoc()" title="${dchtE(a.fileName)}"><i class="fa-solid ${fileIco}"></i><span>${dchtE(a.fileName)}</span></a>` : emp)
         + (lead ? it('Lãnh đạo được giao ký duyệt', lead) : '')
@@ -1067,6 +1067,9 @@ function dchtFooterButtons() {
     wrap('renderStateLayout', orig => function () {
         // Chuẩn hóa trạng thái hồ sơ (dữ liệu cũ / tên mới kèm Loại trình) về mã nội bộ trước khi hiển thị
         try { if (activeDossier) htStNormalize(activeDossier); } catch (e) { /* bỏ qua */ }
+        try { if (typeof htStRestoreData === 'function') htStRestoreData(); } catch (e) { /* bỏ qua */ } // [vt6] dữ liệu đi kèm kết quả Ký duyệt / Từ chối tại màn Danh sách
+        try { if (typeof htLsRestore === 'function') htLsRestore(); } catch (e) { /* bỏ qua */ } // [vt5] nạp lại Lịch sử xử lý QĐ thành lập Hội đồng đã lưu
+        try { if (typeof htVtRestore === 'function') htVtRestore(); } catch (e) { /* bỏ qua */ } // [vt3] khôi phục cờ chờ Văn thư khi mở lại màn
         const r = orig.apply(this, arguments);
         try { dchtRenderInfoCard(); } catch (e) { /* bỏ qua */ }
         return r;

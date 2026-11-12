@@ -282,13 +282,12 @@ function kpdtAdvBody(item) {
     const cash = /tiền mặt/i.test(f.payMethod || '');
     const vv = kpdtVv(item.ycbtCode);
     const diff = typeof qdtuDiffRecipient === 'function' ? qdtuDiffRecipient(f) : false;
-    const total = (Number(f.tinhThan) || 0) + (Number(f.khac) || 0);
     kpdtCurFile = kpdtAdvFile(item, f);
     const claim = `<div class="kpdt-grid">${kpdtFld('Mã hồ sơ', kpdtClaimLink(item.ycbtCode, item.courtCaseId) + (vv ? ` <span style="font-weight:500; color:#64748b;">- Mã vụ việc ${kpdtEsc(vv)}</span>` : ''))}${kpdtFld('Cơ quan giải quyết', kpdtEsc(f.unitName))}</div>`;
     const nyc = `<div class="kpdt-grid">${kpdtFld('Họ và tên/Tên tổ chức', kpdtEsc(f.nycName))}${kpdtFld('Số định danh cá nhân/hộ chiếu/giấy tờ đi lại có giá trị quốc tế/Mã số của tổ chức', kpdtEsc(f.nycIdNo))}${kpdtFld('Địa chỉ', kpdtEsc(f.nycAddress), true)}</div>`;
-    const money = `<div class="kpdt-grid">${kpdtFld('Thiệt hại về tinh thần (đồng)', kpdtFmt(f.tinhThan))}${kpdtFld('Thiệt hại khác có thể tính được ngay mà không cần xác minh (đồng)', kpdtFmt(f.khac))}${(() => { const rt = r => r === '' || r == null ? '' : kpdtEsc((Number(r) || 0).toLocaleString('vi-VN', { maximumFractionDigits: 2 })); const d = f.rate; return kpdtFld('Tỷ lệ tạm ứng thiệt hại về tinh thần (%)', rt(f.rateTT != null ? f.rateTT : d)) + kpdtFld('Tỷ lệ tạm ứng thiệt hại khác có thể tính được ngay (%)', rt(f.rateKhac != null ? f.rateKhac : d)); })()}
-        <div class="kpdt-fld"><span class="form-label">Số tiền tạm ứng kinh phí (đồng)</span><div class="kpdt-ro">${kpdtFmt(f.amount)}</div><div class="kpdt-words">Viết bằng chữ: ${kpdtEsc(docTienBangChu(Number(f.amount) || 0))}</div></div></div>
-        <div class="kpdt-hint">Tổng số tiền tạm ứng được tính theo các thiệt hại: ${kpdtFmt(total)} đồng.</div>`;
+    // Bảng số tiền tạm ứng chỉ đọc, cùng cột, dòng với MH20 (qdtuMoneyTableRo); dòng Viết bằng chữ của tổng Mức tiền tạm ứng dưới bảng
+    const money = `${typeof qdtuMoneyTableRo === 'function' ? qdtuMoneyTableRo(f) : `<div class="kpdt-grid">${kpdtFld('Số tiền tạm ứng kinh phí (đồng)', kpdtFmt(f.amount))}</div>`}
+        <div class="kpdt-words">Viết bằng chữ: ${kpdtEsc(docTienBangChu(Number(f.amount) || 0))}</div>`;
     const rec = `<div class="kpdt-grid">${kpdtFld('Họ và tên người nhận tạm ứng kinh phí', kpdtEsc(f.recName))}${kpdtFld('Số định danh cá nhân/hộ chiếu/giấy tờ đi lại có giá trị quốc tế', kpdtEsc(f.recIdNo))}${kpdtFld('Địa chỉ', kpdtEsc(f.recAddress), true)}</div>
         <div class="kpdt-note"><i class="fa-solid fa-circle-info"></i> ${diff ? 'Người nhận tạm ứng khác Người yêu cầu: Quyết định tạm ứng có Điều 2 (thông tin người nhận tạm ứng kinh phí).' : 'Người nhận tạm ứng là Người yêu cầu: Quyết định tạm ứng không có Điều 2; các Điều sau được đánh số lại.'}</div>`;
     const pay = `<div class="kpdt-grid">${kpdtFld('Phương thức nhận tiền', kpdtEsc(f.payMethod))}<div></div>${cash ? kpdtFld('Cơ quan chi trả tiền mặt', kpdtEsc(f.cashPlace))

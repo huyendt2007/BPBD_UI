@@ -210,7 +210,12 @@
         try {
             if (activeDossier && !isSplitDossier()) {
                 const all = JSON.parse(localStorage.getItem('btnn_ht_status_v1') || '{}') || {};
-                all[activeDossier.code] = { status: activeDossier.status, dcOfficers: (activeDossier.refundOfficers || []).filter(o => o && o.dcPre).map(o => o.name) };
+                // [vt3] Cờ chờ Văn thư ban hành của phiếu trình đang chờ duyệt (không đổi trạng thái): màn Danh sách hiển thị dòng "[Loại trình] - Chờ Văn thư ban hành"
+                const vt = typeof htVtCho === 'function' ? htVtCho() : null;
+                // [vt6] Kết quả Ký duyệt / Từ chối tại màn Danh sách (kq): giữ khi hồ sơ vẫn ở trạng thái đó, để mở lại màn chi tiết vẫn nạp được (htStRestore)
+                const kq = (all[activeDossier.code] || {}).kq;
+                all[activeDossier.code] = { kq: kq && kq.status === activeDossier.status ? kq : null, status: activeDossier.status, dcOfficers: (activeDossier.refundOfficers || []).filter(o => o && o.dcPre).map(o => o.name), vanThu: vt ? { status: activeDossier.status, info: vt } : null, phieu: typeof htVtPhieu === 'function' ? htVtPhieu() : null, // [vt4] phieu: popup Ký duyệt tại Danh sách
+                    lsHD: typeof councilSignHistory !== 'undefined' ? councilSignHistory.slice(0, 50) : null }; // [vt5] Lịch sử xử lý QĐ thành lập Hội đồng (lưu đủ các bước)
                 localStorage.setItem('btnn_ht_status_v1', JSON.stringify(all));
             }
         } catch (e) { /* bỏ qua */ }

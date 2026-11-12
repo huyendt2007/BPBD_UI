@@ -95,8 +95,21 @@
     const xlText = o => ({ HT: '-', GIAM: 'Giảm mức hoàn trả', MIEN: 'Miễn hoàn trả' })[xlCode(o)];
     // Ghi chú lý do dưới Giảm/Miễn hoàn trả
     const lyDoNote = o => { const c = xlCode(o); const t = c === 'GIAM' ? o.lyDoGiam : (c === 'MIEN' ? o.lyDoMien : ''); return t ? '<div class="ht-note-i">' + (c === 'GIAM' ? 'Lý do giảm: ' : 'Lý do miễn: ') + esc(t) + '</div>' : ''; };
-    const ctText = c => { const v = CT[c]; return v ? (v[1] ? v[0] + ' (' + v[1] + ')' : v[0]) : ''; };
-    window.htStatusOf = o => (o && o.ct ? ctText(o.ct) + (o.trinh ? ' - ' + ctText(o.trinh) : '') : '');
+    // vt: phiếu trình của Loại trình đang ở bước Văn thư ban hành -> "Chờ duyệt ([Loại trình] - Chờ Văn thư ban hành)" [vt3]
+    const ctText = (c, vt) => { const v = CT[c]; return v ? (v[1] ? v[0] + ' (' + v[1] + (vt ? ' - Chờ Văn thư ban hành' : '') + ')' : v[0]) : ''; };
+    // [vt3] Cán bộ có Quyết định đang ở bước Văn thư ban hành: theo trạng thái chi tiết (QĐ hoàn trả của phần đơn vị) / theo trình ký phát sinh (QĐ đình chỉ, QĐ miễn / giảm bổ sung)
+    function vtCt(o) {
+        if (!o || !/^CD_/.test(o.ct || '')) return false;
+        if (o.ct === 'CD_HT') { const u = (activeDossier.htUnits || []).find(x => inUnit(o, x)); return !!(u && u.qd && u.qd.choVanThu); }
+        return !!(o.qd2 && o.qd2.choVanThu);
+    }
+    function vtTrinh(o) {
+        const t = (o && o.trinh) || '';
+        if (t === 'CD_DC') { const d = o.dcKey != null ? (activeDossier.htDcs || [])[o.dcKey] : null; return !!(d && d.choVanThu); }
+        if (/^CD_(MIEN|GIAM)$/.test(t)) { const m = o.mgKey != null ? (activeDossier.htMgs || [])[o.mgKey] : null; return !!((m && m.choVanThu) || (o.qd3 && o.qd3.choVanThu)); }
+        return false;
+    }
+    window.htStatusOf = o => (o && o.ct ? ctText(o.ct, vtCt(o)) + (o.trinh ? ' - ' + ctText(o.trinh, vtTrinh(o)) : '') : '');
 
     // ===== Mô hình dữ liệu phần đơn vị / cán bộ =====
     function officers() { return (activeDossier.refundOfficers || []).filter(o => o && o.name); }
@@ -106,7 +119,7 @@
             const all = readStore();
             all[activeDossier.code] = {
                 owner: activeDossier.ownerUnit || '',
-                officers: officers().map(o => ({ name: o.name, unit: o.agency, pay: payUnitOf(o), chet: isDeadO(o), st: o.ct, xl: xlCode(o), hd: o.hd || 0, giam: o.giam || 0, paid: o.paid || 0, hoan: !!o.ykhdDieuKienHoan, pt: STEP3.includes(o.ct) ? null : (o.total || 0), trinh: o.trinh || '', refund: o.refund || 0, stp: (o.payments || []).some(p => /^Sở Tư pháp/.test(p.unit || '')) })),
+                officers: officers().map(o => ({ name: o.name, unit: o.agency, pay: payUnitOf(o), chet: isDeadO(o), st: o.ct, xl: xlCode(o), hd: o.hd || 0, giam: o.giam || 0, paid: o.paid || 0, hoan: !!o.ykhdDieuKienHoan, pt: STEP3.includes(o.ct) ? null : (o.total || 0), trinh: o.trinh || '', refund: o.refund || 0, stp: (o.payments || []).some(p => /^Sở Tư pháp/.test(p.unit || '')), vt: vtCt(o) || vtTrinh(o) })), // [vt3] vt: Quyết định đang ở bước Văn thư ban hành
                 detail: { units: activeDossier.htUnits, dcs: activeDossier.htDcs || [], mgs: activeDossier.htMgs || [], recs: officers().map(o => ({ name: o.name, payUnit: payUnitOf(o), ct: o.ct, qd2: o.qd2 || null, qd3: o.qd3 || null, trinh: o.trinh || '', total: o.total, paid: o.paid || 0, payments: o.payments || [], refund: o.refund || 0, refundDone: o.refundDone || null, dcKey: o.dcKey != null ? o.dcKey : null })) }
             };
             localStorage.setItem(STORE_KEY, JSON.stringify(all));
@@ -396,7 +409,8 @@
     function officerAction() { return ''; }
     function officerStatusCell(o, idx) {
         // Pill trạng thái; chú thích QĐ miễn / giảm đã ban hành (xem văn bản tại cột Thao tác)
-        let h = '<div>' + (typeof htPill === 'function' ? htPill(ctText(o.ct)) : esc(ctText(o.ct))) + '</div>';
+        // [vt3] QĐ hoàn trả của phần đơn vị đang ở bước Văn thư ban hành: "Chờ duyệt (QĐ hoàn trả - Chờ Văn thư ban hành)"
+        let h = '<div>' + (typeof htPill === 'function' ? htPill(ctText(o.ct, vtCt(o))) : esc(ctText(o.ct, vtCt(o)))) + '</div>';
         const r = o.qd2;
         if (r && ['BTC_MIEN', 'BTC_GIAM'].includes(o.ct) && r.reject) h += '<div class="ht-note" style="color:#b45309;">Lý do bị trả lại: ' + esc(r.reject.reason) + '</div>';
         if (r && r.issuedAt) h += '<div class="ht-note">' + (baseKind(r.kind) === 'MIEN' ? 'QĐ miễn số: ' : 'QĐ giảm số: ') + esc(r.soKh || '-') + ' (' + esc(r.issuedAt) + ')</div>';
@@ -466,12 +480,14 @@
             body = tien + lyDo + (r.choVanThu ? item('Văn thư ban hành', 'Chờ Văn thư ban hành - ' + esc(r.choVanThu.vanThu || '--')) : item('Lãnh đạo được trình', esc(leaderLabel(r, r.level || 0)))) + item('Thời điểm trình', esc(sub ? sub.at : (r.ngay || '-'))) + item('Tệp văn bản', file('Bản dự thảo'))
                 + (r.reject ? item('Lý do trả lại', '<span style="color:#b45309;">' + esc(r.reject.reason) + '</span>') + item('Người trả lại', esc(r.reject.by)) + item('Thời điểm trả lại', esc(r.reject.at)) : '');
         }
-        const old = (r.hist || []).slice(1);
+        // [vt5] Lịch sử xử lý: đủ các bước của các lượt trình (Trình ký, Ký duyệt từng cấp, Ký duyệt và chuyển Văn thư ban hành, Từ chối, Ban hành), mới nhất trên cùng;
+        // phiếu trình đang ở bước Văn thư ban hành: dòng đầu "Chờ Văn thư ban hành - [Văn thư]"
+        const old = (r.choVanThu && !r.issuedAt ? [{ at: '', name: 'Văn thư', msg: 'Chờ Văn thư ban hành - ' + (r.choVanThu.vanThu || '--') }] : []).concat(r.hist || []);
         return '<div class="ht-qd-block" style="margin-top:16px; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px;"><div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;"><strong style="color:var(--primary-color);"><i class="fa-solid fa-file-contract"></i> ' + esc(k.doc) + (k.base ? ' (bổ sung)' : '') + '</strong>' + (window.htPill ? window.htPill(st) : esc(st)) + '</div>'
             + '<div class="info-grid">' + body + '</div>'
             // Tài liệu ban hành / không ban hành kèm theo của lượt trình (khối không ban hành chỉ đơn vị trình thấy)
             + (r.tlkt && r.tlkt.length && typeof tlktViewHtml === 'function' ? '<div style="margin-top:8px;">' + tlktViewHtml(r.tlkt, { ownerUnit: r.unit || o.agency || '' }) + '</div>' : '')
-            + (old.length ? '<details style="margin-top:8px;"><summary style="cursor:pointer; font-size:12.5px; color:#475569;">Lịch sử xử lý (' + old.length + ')</summary><ul style="margin:6px 0 0 18px; font-size:12.5px;">' + old.map(h => '<li>' + esc(h.at || '') + ' - ' + esc(h.name || '') + ': ' + esc(h.msg || '') + '</li>').join('') + '</ul></details>' : '')
+            + (old.length ? '<details style="margin-top:8px;"><summary style="cursor:pointer; font-size:12.5px; color:#475569;">Lịch sử xử lý (' + old.length + ')</summary><ul style="margin:6px 0 0 18px; font-size:12.5px;">' + old.map(h => '<li>' + (h.at ? esc(h.at) + ' - ' : '') + esc(h.name || '') + ': ' + esc(h.msg || '') + '</li>').join('') + '</ul></details>' : '')
             + '</div>';
     }
     // Xem chi tiết hoàn trả của cán bộ (Bước 4): các lượt Quyết định giảm / miễn của cán bộ, mới nhất trên cùng
@@ -519,7 +535,7 @@
     function dcLine(o) {
         const d = o.dcKey != null ? (activeDossier.htDcs || [])[o.dcKey] : null;
         let h = '';
-        if (/_DC$/.test(o.trinh || '')) h += '<div style="font-size:12px; color:#6d28d9;">' + esc(ctText(o.trinh)) + (o.trinh === 'BTC_DC' && d && d.reject ? ' - Lý do: ' + esc(d.reject.reason) : '') + '</div>';
+        if (/_DC$/.test(o.trinh || '')) h += '<div style="font-size:12px; color:#6d28d9;">' + esc(ctText(o.trinh, vtTrinh(o))) + (o.trinh === 'BTC_DC' && d && d.reject ? ' - Lý do: ' + esc(d.reject.reason) : '') + '</div>';
         if (d && d.st === 'DONE') h += '<div style="font-size:12px; color:var(--text-muted);">QĐ đình chỉ' + (d.soKh ? ' số ' + esc(d.soKh) : '') + ' ngày ' + esc(d.issuedAt) + ((d.dc && d.dc.pa && d.dc.pa[o.name]) ? ' - ' + (d.dc.pa[o.name] === 'HOAN' ? 'Hoàn trả lại số tiền đã thu' : 'Không hoàn trả lại số tiền đã thu') : '') + '</div>';
         return h;
     }
@@ -1275,7 +1291,8 @@
         const p = parse(target); if (!p) return baseCtx(target);
         const r = recOf(p.kind, p.key), k = KIND[p.kind];
         const ok = p.kind === 'DC' ? 'Đình chỉ hoàn trả' : p.kind === 'HT' ? 'Đã ban hành QĐ hoàn trả' : (baseKind(p.kind) === 'MIEN' ? 'Miễn hoàn trả' : 'Thu tiền hoàn trả');
-        return { kind: k.doc + ' (Mẫu số ' + k.mau + '/BTNN)', title: k.title, content: r.content, hist: r.hist.map(h => ({ type: h.type, name: h.name, at: h.at, msg: h.msg })), levels: r.levels, level: Math.min(r.level, r.levels.length - 1), label: i => r.levels[i].unit + ': ' + leaderLabel(r, i), staff: 'Cán bộ ' + ctxOf(p.kind, p.key).unit, okStatus: ok, noStatus: 'Bị trả lại (' + k.label + ')' };
+        // [vt3] choVanThu: phiếu trình đang ở bước Văn thư ban hành (Lịch sử trình ký có sự kiện chờ Văn thư ở trên cùng)
+        return { kind: k.doc + ' (Mẫu số ' + k.mau + '/BTNN)', title: k.title, content: r.content, hist: r.hist.map(h => ({ type: h.type, label: h.label || '', name: h.name, at: h.at, msg: h.msg })), levels: r.levels, level: Math.min(r.level, r.levels.length - 1), label: i => r.levels[i].unit + ': ' + leaderLabel(r, i), staff: 'Cán bộ ' + ctxOf(p.kind, p.key).unit, okStatus: ok, noStatus: 'Bị trả lại (' + k.label + ')', choVanThu: r.choVanThu || null };
     };
     // [ro1] Phiếu trình của màn Ký duyệt / Từ chối chung (khối Ký số / gán chữ ký theo cấp)
     window.ht3StateOf = function (target) { const p = parse(target); return p ? recOf(p.kind, p.key) : null; };
@@ -1306,6 +1323,7 @@
         if (typeof htVtApplies === 'function' && htVtApplies(r)) {
             if (r.choVanThu) return;
             const vt = htVtMark(r, leaderLabel(r, r.level));
+            r.hist[0].label = 'Ký duyệt và chuyển Văn thư ban hành';
             r.hist[0].msg = 'Ký duyệt và chuyển Văn thư ban hành (đã ký số văn bản chưa có số, ngày, dấu). Chờ Văn thư ban hành - ' + (vt || '--') + '.' + (note ? ' Ý kiến: ' + note : '');
             commit('Ký duyệt thành công. ' + KIND[p.kind].doc + ' chuyển Văn thư ban hành (' + (vt || '--') + '); hồ sơ giữ trạng thái Chờ duyệt.');
             return;
@@ -1352,7 +1370,7 @@
         else if (vis.some(o => o.ct === 'THU')) chung = 'Thu tiền hoàn trả';
         else if (vis.some(o => !['CBH_HT', 'BTC_HT', 'DC'].includes(o.ct) || /^CD_/.test(o.trinh || ''))) chung = 'Đang xử lý';
         const m = new Map();
-        vis.forEach(o => { const k = ctText(o.ct) + (o.trinh ? ' - ' + ctText(o.trinh) : ''); m.set(k, (m.get(k) || 0) + 1); });
+        vis.forEach(o => { const k = ctText(o.ct, vtCt(o)) + (o.trinh ? ' - ' + ctText(o.trinh, vtTrinh(o)) : ''); m.set(k, (m.get(k) || 0) + 1); });
         return { g: chung, lines: Array.from(m.entries()).map(([k, n]) => k + ': ' + n + ' cán bộ') };
     }
     window.htChungDetail = chungDetail;
@@ -1368,7 +1386,7 @@
         unitBadge: u => badge(u.status, u.st !== 'DONE' && allDc(u.unit) ? 'muted' : { CBH: 'warn', CD: 'info', BTC: 'bad', DONE: 'ok' }[u.st]),
         ensureModel, recOf, units: () => activeDossier.htUnits, persist, setFile: f => { if (S) { S.file = f; renderFileBoxes(); } },
         // Dùng cho Bước 4 (chi_tiet_ho_so_hoan_tra_thu.js)
-        commit, officers, unitsInView, seeOfficer, inUnit, unitKeyOf, canActUnit, isLeader, scope, myUnit, isTths, issuerOf, payUnitOf, xlCode, ctText, CT, money, esc, today, nowShort, tgt
+        commit, officers, unitsInView, seeOfficer, inUnit, unitKeyOf, canActUnit, isLeader, scope, myUnit, isTths, issuerOf, payUnitOf, xlCode, ctText, vtCt, vtTrinh, CT, money, esc, today, nowShort, tgt
     };
     document.addEventListener('DOMContentLoaded', () => { if (ensureModel()) { recomputeBase(); persist(); renderStateLayout(); } });
 })();

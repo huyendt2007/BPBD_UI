@@ -15,6 +15,13 @@
  *   ngày, dấu; hồ sơ giữ Chờ duyệt, dòng phụ "[Loại trình] - Chờ Văn thư ban hành" (tlhd.choVanThu / dcht.choVanThu / phiếu QĐ r.choVanThu);
  *   chưa chuyển trạng thái tiếp theo. Văn thư đóng dấu, ban hành tại Ban hành văn bản (dữ liệu mẫu riêng, không nối luồng tại trang này).
  *   Hàm dùng chung: htVtText(banHanh), htVtCho() (thông tin chờ Văn thư của Thành lập HĐ / QĐ đình chỉ, chấm dứt đang chờ duyệt).
+ * [vt3] 12/11/2026 - Cờ chờ Văn thư lưu sang dữ liệu
+ *   màn Danh sách (btnn_ht_status_v1.vanThu - ykhd.js) và khôi phục khi mở lại màn chi tiết (htVtRestore).
+ * [vt4] 12/11/2026 - Phiếu trình đang chờ duyệt lưu sang dữ liệu màn Danh sách (btnn_ht_status_v1.phieu: dongDau, Đơn vị ban hành, Văn thư) để popup
+ *   Ký duyệt tại màn Danh sách (xem_xet_hoan_tra_pham_vi.js) chuyển Văn thư ban hành như màn chi tiết. Thời điểm dd/mm/yyyy HH:mm (tlhdNow).
+ * [vt5] 12/11/2026 - Bỏ nút "Xem phiếu trình" và chế độ xem của màn Ký duyệt (người dùng chọn). Bảng Lịch sử xử lý Quyết định thành lập Hội đồng
+ *   lưu đủ các bước của phiếu đã trình (htLsRestore) và có dòng chờ "Chờ Văn thư ban hành - [Văn thư]" ở đầu bảng (htVtLsRow).
+ * [vt6] 12/11/2026 - Hồ sơ chưa tách phần đơn vị: kết quả Ký duyệt / Từ chối tại màn Danh sách (ban hành ngay) được nạp lại khi mở màn chi tiết (htStRestore).
  */
 
 const TLHD_MAX_FILE = 50 * 1024 * 1024;
@@ -34,7 +41,8 @@ function tlhdE(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
 function tlhdToast(msg, type) { if (typeof showToast === 'function') showToast(msg, type || 'info'); }
 function tlhdPad(n) { return String(n).padStart(2, '0'); }
 function tlhdToday() { const d = new Date(); return `${tlhdPad(d.getDate())}/${tlhdPad(d.getMonth() + 1)}/${d.getFullYear()}`; }
-function tlhdNow() { return typeof nowViShort === 'function' ? nowViShort() : new Date().toLocaleString('vi-VN'); }
+// Thời điểm dd/mm/yyyy HH:mm (SRS Xem xét trách nhiệm hoàn trả)
+function tlhdNow() { if (typeof nowViShort === 'function') return nowViShort(); const d = new Date(); return `${tlhdPad(d.getDate())}/${tlhdPad(d.getMonth() + 1)}/${d.getFullYear()} ${tlhdPad(d.getHours())}:${tlhdPad(d.getMinutes())}`; }
 function tlhdFold(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase(); }
 function tlhdFileSize(b) { return b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; }
 // [vt2] Phiếu trình áp dụng bước Văn thư ban hành: Ký số trên hệ thống, tự thiết lập các cấp, tích "Đóng dấu cơ quan"
@@ -56,6 +64,120 @@ function htVtCho() {
     if ((s === 'Chờ duyệt QĐ thành lập' || s === 'Chờ duyệt thành lập hội đồng') && activeDossier.tlhd) return activeDossier.tlhd.choVanThu || null;
     if ((s === 'Chờ duyệt QĐ đình chỉ' || s === 'Chờ duyệt QĐ chấm dứt') && activeDossier.dcht) return activeDossier.dcht.choVanThu || null;
     return null;
+}
+// [vt3] Phiếu trình chờ Văn thư của hồ sơ chưa tách phần đơn vị: 'council' (QĐ thành lập Hội đồng) / 'dcht' (QĐ đình chỉ, QĐ chấm dứt)
+function htVtTarget() { return /thành lập/i.test((typeof activeDossier !== 'undefined' && activeDossier && activeDossier.status) || '') ? 'council' : 'dcht'; }
+// [vt3] Mở lại màn chi tiết: khôi phục thông tin chờ Văn thư của phiếu trình đang chờ duyệt (hồ sơ chưa tách phần đơn vị) từ dữ liệu
+// màn Danh sách (btnn_ht_status_v1 - chi_tiet_ho_so_hoan_tra_ykhd.js lưu khi vẽ lại màn); trạng thái hồ sơ không đổi
+function htVtRestore() {
+    if (typeof activeDossier === 'undefined' || !activeDossier || htVtCho()) return;
+    let v = null;
+    try { v = ((JSON.parse(localStorage.getItem('btnn_ht_status_v1') || '{}') || {})[activeDossier.code] || {}).vanThu || null; } catch (e) { v = null; }
+    if (!v || !v.info || v.status !== activeDossier.status) return;
+    const council = htVtTarget() === 'council';
+    const a = council ? (typeof tlhdEnsureApproval === 'function' ? tlhdEnsureApproval() : activeDossier.tlhd) : activeDossier.dcht;
+    if (!a) return;
+    a.choVanThu = v.info;
+    if (Array.isArray(a.levels) && a.levels.length) a.level = a.levels.length - 1;
+    // [vt4] Lịch sử: sự kiện "Ký duyệt và chuyển Văn thư ban hành" của Lãnh đạo cấp cuối (Ký duyệt tại màn Danh sách hoặc trước khi mở lại màn)
+    const i = v.info, vt = i.vanThu || '--';
+    if (council && typeof councilSignHistory !== 'undefined' && !councilSignHistory.some(h => h && h.label === 'Ký duyệt và chuyển Văn thư ban hành'))
+        councilSignHistory.unshift({ type: 'approve', label: 'Ký duyệt và chuyển Văn thư ban hành', actor: i.by || 'Lãnh đạo', time: i.at || '', detail: `Quyết định thành lập Hội đồng: ký duyệt cấp cuối - đã ký số văn bản chưa có số, ngày, dấu. Chờ Văn thư ban hành - ${tlhdE(vt)}.` });
+    if (!council && !(activeDossier.timeline || []).some(x => /ký duyệt và chuyển Văn thư ban hành/.test((x && x.text) || ''))) {
+        const qd = /chấm dứt/i.test(activeDossier.status) ? 'Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả' : 'Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả';
+        (activeDossier.timeline = activeDossier.timeline || []).unshift({ time: i.at || '', text: `Lãnh đạo ${i.by || ''} ký duyệt và chuyển Văn thư ban hành ${qd} (đã ký số văn bản chưa có số, ngày, dấu). Chờ Văn thư ban hành - ${vt}.` });
+    }
+}
+// [vt4] Phiếu trình đang chờ duyệt của hồ sơ chưa tách phần đơn vị (QĐ thành lập Hội đồng / QĐ đình chỉ / QĐ chấm dứt): cờ Đóng dấu cơ quan, Đơn vị ban hành,
+// Văn thư, Lãnh đạo cấp cuối. Lưu sang dữ liệu màn Danh sách (btnn_ht_status_v1.phieu - ykhd.js) để popup Ký duyệt tại Danh sách áp dụng đúng nhánh
+function htVtPhieu() {
+    if (typeof activeDossier === 'undefined' || !activeDossier) return null;
+    const s = activeDossier.status;
+    const tl = s === 'Chờ duyệt QĐ thành lập' || s === 'Chờ duyệt thành lập hội đồng';
+    const a = tl ? activeDossier.tlhd : (s === 'Chờ duyệt QĐ đình chỉ' || s === 'Chờ duyệt QĐ chấm dứt') ? activeDossier.dcht : null;
+    if (!a || a.method === 'offline') return null;
+    const bh = a.banHanh || {};
+    const last = Array.isArray(a.levels) && a.levels.length ? a.levels.length - 1 : 0;
+    const ld = tl ? (a.levels ? tlhdLeaderLabelOf(a.levels, a.assignees || [], last) : '') : (typeof dchtLeaderLabel === 'function' && a.levels ? dchtLeaderLabel(a, last) : '');
+    return { status: s, dongDau: htVtApplies(a), donViBanHanh: bh.donViBanHanh || '', donViBanHanhTen: bh.donViBanHanhTen || '', vanThu: htVtText(bh), lanhDaoCuoi: ld || '' };
+}
+// [vt5] Lịch sử xử lý Quyết định thành lập Hội đồng (councilSignHistory - bảng s1AuditTableBody): lưu đủ các bước của phiếu đã trình (Trình ký,
+// Ký duyệt từng cấp, Ký duyệt và chuyển Văn thư ban hành, Từ chối) sang dữ liệu màn Danh sách (btnn_ht_status_v1.lsHD - ykhd.js) và nạp lại 01 lần
+// khi mở lại màn chi tiết, để lịch sử không mất khi chuyển qua lại màn Danh sách (kể cả Ký duyệt tại màn Danh sách)
+function htLsRestore() {
+    if (typeof activeDossier === 'undefined' || !activeDossier || typeof councilSignHistory === 'undefined') return;
+    if (htLsRestore.done === activeDossier.code) return;
+    htLsRestore.done = activeDossier.code;
+    let ls = null;
+    try { ls = ((JSON.parse(localStorage.getItem('btnn_ht_status_v1') || '{}') || {})[activeDossier.code] || {}).lsHD || null; } catch (e) { ls = null; }
+    if (Array.isArray(ls) && ls.length) councilSignHistory.splice(0, councilSignHistory.length, ...ls);
+}
+// [vt5] Dòng đang chờ ở đầu bảng Lịch sử xử lý Quyết định thành lập Hội đồng: "Chờ Văn thư ban hành - [Văn thư]"
+function htVtLsRow() {
+    const c = htVtTarget() === 'council' ? htVtCho() : null;
+    return c ? { type: 'wait', label: 'Chờ Văn thư ban hành', actor: 'Văn thư', time: '', detail: 'Chờ Văn thư ban hành - ' + tlhdE(c.vanThu || '--') } : null;
+}
+// [vt6] Hồ sơ chưa tách phần đơn vị: Lãnh đạo Ký duyệt / Từ chối tại màn Danh sách theo nhánh ban hành ngay (phiếu trình không tích Đóng dấu cơ quan).
+// Màn Danh sách lưu kết quả vào btnn_ht_status_v1[mã].kq (xem_xet_hoan_tra_pham_vi.js). Mở màn chi tiết: nạp trạng thái mới trước khi tính bước hiển thị
+// (gọi tại DOMContentLoaded của chi_tiet_ho_so_hoan_tra.html). Chỉ áp dụng khi trạng thái đã lưu vẫn là kết quả đó (kq.status = status).
+const HT_KQ_STATUS = ['Họp hội đồng', 'Bị trả lại thành lập HĐ', 'Đình chỉ xem xét hoàn trả', 'Bị trả lại QĐ đình chỉ', 'Chấm dứt hoàn trả', 'Bị trả lại QĐ chấm dứt'];
+const HT_KQ_DOC = { 'Thành lập hội đồng': 'Quyết định thành lập Hội đồng', 'QĐ đình chỉ': 'Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả', 'QĐ chấm dứt': 'Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả' };
+function htStRestore() {
+    if (typeof activeDossier === 'undefined' || !activeDossier) return false;
+    let v = null;
+    try { v = ((JSON.parse(localStorage.getItem('btnn_ht_status_v1') || '{}') || {})[activeDossier.code]) || null; } catch (e) { v = null; }
+    const k = v && v.kq;
+    if (!k || !v.status || k.status !== v.status || HT_KQ_STATUS.indexOf(k.status) < 0) return false;
+    if (typeof htStNormalize === 'function') htStNormalize(activeDossier);
+    if (activeDossier.status === k.status) return false;
+    activeDossier.status = k.status;
+    if (typeof htStView === 'function') activeDossier.loaiTrinh = htStView(k.status).loai;
+    htStRestore.kq = k; htStRestore.code = activeDossier.code; htStRestore.ls = Array.isArray(v.lsHD) && v.lsHD.length ? v.lsHD : null;
+    htStRestoreData();
+    return true;
+}
+// [vt6] Dữ liệu đi kèm kết quả tại màn Danh sách, áp dụng 01 lần: QĐ thành lập Hội đồng - ngay (cấp ký, Số / Ngày / Lãnh đạo ký hoặc Lý do bị trả lại,
+// sự kiện của Lịch sử xử lý QĐ thành lập Hội đồng); QĐ đình chỉ / chấm dứt - khi đã có lượt trình (dữ liệu mẫu tạo sau khi mở trang; gọi lại trong renderStateLayout)
+function htStRestoreData() {
+    const k = htStRestore.kq;
+    if (!k || typeof activeDossier === 'undefined' || !activeDossier || htStRestore.code !== activeDossier.code) return;
+    const tl = k.loai === 'Thành lập hội đồng', a = tl ? activeDossier.tlhd : activeDossier.dcht;
+    if (!tl && !a) return;
+    htStRestore.kq = null;
+    const ok = k.type === 'approve', at = k.at || tlhdNow();
+    const lv = a && Array.isArray(a.levels) && a.levels.length ? (ok ? a.levels.length - 1 : Math.min(a.level || 0, a.levels.length - 1)) : -1;
+    const lbl = lv < 0 ? '' : tl ? tlhdLeaderLabelOf(a.levels, a.assignees || [], lv) : (typeof dchtLeaderLabel === 'function' ? dchtLeaderLabel(a, lv) : '');
+    const by = k.by || lbl || (tl && ok ? activeDossier.hdLeader : '') || 'Lãnh đạo';
+    if (tl) {
+        activeDossier.qdStatus = null; activeDossier.qdCreated = false;
+        if (ok) {
+            if (a && Array.isArray(a.levels)) a.level = a.levels.length;
+            if (a && (a.soQD || '').trim()) activeDossier.hdDecision = a.soQD.trim();
+            activeDossier.hdSignDate = activeDossier.hdDate = (a && a.ngayQD) || at.slice(0, 10);
+            if (by !== 'Lãnh đạo') activeDossier.hdLeader = by;
+        } else {
+            if (a) a.level = 0;
+            activeDossier.councilRejectReason = k.note || '';
+            activeDossier.councilRejectActor = by;
+            activeDossier.councilRejectTime = at;
+        }
+        // Sự kiện của Lịch sử xử lý QĐ thành lập Hội đồng: đã lưu lịch sử (lsHD) thì ghi vào bản lưu để htLsRestore nạp lại (đã có thì không ghi lại);
+        // chưa lưu thì thêm vào bảng đang có
+        const ev = ok ? { type: 'approve', actor: by, time: at, detail: 'Ký duyệt Quyết định thành lập Hội đồng.' + (k.note ? ' Ý kiến: ' + k.note : '') }
+            : { type: 'reject', actor: by, time: at, detail: 'Lý do: "' + (k.note || '') + '"' };
+        if (htStRestore.ls && htStRestore.ls.some(x => x && x.type === ev.type && x.time === ev.time)) { /* đã có */ }
+        else if (htStRestore.ls) {
+            try {
+                const all = JSON.parse(localStorage.getItem('btnn_ht_status_v1') || '{}') || {};
+                if (all[activeDossier.code]) { all[activeDossier.code].lsHD = [ev].concat(htStRestore.ls).slice(0, 50); localStorage.setItem('btnn_ht_status_v1', JSON.stringify(all)); }
+            } catch (e) { /* bỏ qua */ }
+        } else if (typeof councilSignHistory !== 'undefined') councilSignHistory.unshift(ev);
+    } else if (ok) { a.signedAt = at; a.level = (a.levels || []).length; }
+    else { a.returned = { reason: k.note || '', by, at }; a.level = 0; }
+    const view = typeof htStView === 'function' ? htStView(k.status) : { name: k.status, loai: '' };
+    if (!activeDossier.timeline) activeDossier.timeline = [];
+    activeDossier.timeline.unshift({ time: at, text: (by === 'Lãnh đạo' ? 'Lãnh đạo' : 'Lãnh đạo ' + by) + (ok ? ' ký duyệt ' : ' từ chối ') + (HT_KQ_DOC[k.loai] || k.loai) + '. Hồ sơ chuyển sang trạng thái ['
+        + view.name + (view.loai ? ' (' + view.loai + ')' : '') + '].' + (k.note ? (ok ? ' Ý kiến: ' : ' Lý do: ') + k.note : '') });
 }
 // [tnht] Vị trí dòng "Số: ..." và dòng "[Địa danh], ngày ... tháng ... năm ..." của văn bản trình ký (tọa độ px trong trang A4 pg):
 // vị trí mặc định của ô Số, ô Ngày tại khối "Thông tin ban hành văn bản" (Bước 2). Dùng chung cho popup Thành lập HĐ, QĐ đình chỉ / chấm dứt, QĐ hoàn trả / miễn / giảm
