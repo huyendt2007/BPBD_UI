@@ -1759,6 +1759,77 @@ function filterTreasuryEligible() {
     showToast('Đang hiển thị các khoản đủ điều kiện trả lại ngân sách nhà nước.', 'info');
 }
 
+// ===================== [kpvv] Cột Mã vụ việc, Nơi thụ lý (lưới MH01) =====================
+// Nơi thụ lý theo Tra cứu vụ việc: bản ghi tạo từ vụ việc tại Tòa án (courtCaseId / origin) -> "Thụ lý tại Tòa án";
+// bản ghi từ hồ sơ Giải quyết YCBT (Quyết định GQBT, Quyết định tạm ứng) -> "Thụ lý tại CQGQBT".
+const KP_NTL_TOA_AN = 'Thụ lý tại Tòa án';
+const KP_NTL_CQGQBT = 'Thụ lý tại CQGQBT';
+function kpIsCourtItem(item) { return !!item && (!!item.courtCaseId || item.origin === 'Theo dõi vụ việc tại Tòa án'); }
+function kpNoiThuLy(item) { return kpIsCourtItem(item) ? KP_NTL_TOA_AN : KP_NTL_CQGQBT; }
+// Mã hồ sơ GQBT (BT-) của bản ghi: bản ghi theo vụ việc tại Tòa án không có hồ sơ GQBT -> '' (lưới, chi tiết, Ký duyệt hiển thị "-"; ô lọc Mã hồ sơ GQBT không khớp)
+function kpHoSoGqbt(item) { return !item || kpIsCourtItem(item) ? '' : String(item.ycbtCode || ''); }
+// Nguồn hồ sơ (chỉ menu Chi trả tiền bồi thường): Nguồn hồ sơ của hồ sơ GQBT theo Tiếp nhận hồ sơ (Tiếp nhận mới, Dịch vụ công, Chuyển CQGQBT, Xác định CQGQBT).
+// Lấy theo hồ sơ Giải quyết YCBT (claimsList), không có thì theo hồ sơ luồng xử lý (BTNN_WF); chưa có giá trị: Tiếp nhận mới (như Giải quyết YCBT).
+// Bản ghi theo vụ việc tại Tòa án không có hồ sơ GQBT -> '' (hiển thị "-").
+const KP_NGUON_VALUES = ['Tiếp nhận mới', 'Dịch vụ công', 'Chuyển CQGQBT', 'Xác định CQGQBT'];
+function kpNguonNorm(v) {
+    const s = String(v || '').trim();
+    if (!s) return '';
+    if (KP_NGUON_VALUES.includes(s)) return s;
+    if (window.BTNN_WF && typeof BTNN_WF.normalizeSource === 'function') return BTNN_WF.normalizeSource(s) || '';
+    return /dịch vụ công|dvc/i.test(s) ? 'Dịch vụ công' : 'Tiếp nhận mới';
+}
+function kpNguonMap() {
+    const m = {};
+    try { const W = window.BTNN_WF; (W && typeof W.loadRecords === 'function' ? W.loadRecords() : []).forEach(r => { const v = r && kpNguonNorm(r.nguonHoSo); if (v) [r.code, r.claimCode].forEach(c => { if (c) m[c] = v; }); }); } catch (e) { /* bỏ qua */ }
+    try { const l = JSON.parse(localStorage.getItem('claimsList') || '[]'); (Array.isArray(l) ? l : []).forEach(c => { const v = c && kpNguonNorm(c.nguonHoSo || c.nopKenh); if (v && c.code) m[c.code] = v; }); } catch (e) { /* bỏ qua */ }
+    return m;
+}
+function kpNguonHoSo(item, map) {
+    const hs = kpHoSoGqbt(item);
+    if (!hs) return '';
+    return (map || kpNguonMap())[hs] || KP_NGUON_VALUES[0];
+}
+function kpNguonHoSoHtml(v) {
+    if (!v) return '-';
+    const cls = v === 'Xác định CQGQBT' ? 'badge-info' : v === 'Dịch vụ công' ? 'badge-success' : v === 'Chuyển CQGQBT' ? 'badge-warning' : 'badge-draft';
+    return `<span class="badge ${cls}" style="white-space:nowrap;">${kpEsc(v)}</span>`;
+}
+function kpNoiThuLyHtml(v) { return (window.BTNN_NTL && typeof BTNN_NTL.badge === 'function') ? BTNN_NTL.badge(v) : kpEsc(v); }
+// Mã vụ việc (VVBT-): vụ việc tại Tòa án -> Mã vụ việc của vụ việc tại Tòa án; còn lại -> sổ đăng ký dùng chung như màn chi tiết (kpdtVv); không có: ''
+function kpVvOf(item, courtList) {
+    if (!item) return '';
+    const W = window.BTNN_WF;
+    const isVv = c => !!c && (W && typeof W.isVuViecCode === 'function' ? W.isVuViecCode(c) : /^VVBT-/.test(String(c)));
+    if (kpIsCourtItem(item)) {
+        const c = item.courtCaseId ? (courtList || loadCourtCases()).find(x => x && x.id === item.courtCaseId) : null;
+        const cc = (c && c.code) || item.courtCaseCode || item.ycbtCode;
+        if (isVv(cc)) return cc;
+    }
+    let vv = '';
+    try { vv = typeof kpdtVv === 'function' ? kpdtVv(item.ycbtCode) : ((W && W.vuViecOf && W.vuViecOf(item.ycbtCode, { create: false })) || ''); } catch (e) { vv = ''; }
+    return vv || (isVv(item.vvCode) ? item.vvCode : '');
+}
+function kpVvCellHtml(item, vv) {
+    if (!vv) return '-';
+    return `<a href="javascript:void(0)" onclick="event.stopPropagation(); kpOpenVuViec('${item.id}'); return false;" style="font-weight:700; color:var(--secondary-color); text-decoration:underline;">${kpEsc(vv)}</a>`;
+}
+// Click Mã vụ việc: Thụ lý tại Tòa án -> Xem chi tiết đúng vụ việc tại Tòa án (Theo dõi vụ việc tại Tòa án);
+// Thụ lý tại CQGQBT -> Chi tiết hồ sơ tại Giải quyết yêu cầu bồi thường (như Mã hồ sơ GQBT). Mở trong khung quản trị, menu trái chuyển theo.
+function kpOpenVuViec(id) {
+    const item = proposalsList.find(p => p && p.id === id);
+    if (!item) return;
+    if (kpNoiThuLy(item) !== KP_NTL_TOA_AN) { openLinkedClaimDetail(item.ycbtCode, ''); return; }
+    const url = item.courtCaseId
+        ? `theo_doi_vu_viec_toa_an.html?id=${encodeURIComponent(item.courtCaseId)}`
+        : `theo_doi_vu_viec_toa_an.html?code=${encodeURIComponent(kpVvOf(item) || item.courtCaseCode || item.ycbtCode)}`;
+    if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
+        window.parent.openAdminModule(url, 'theo_doi_vu_viec_toa_an.html');
+        return;
+    }
+    window.location.href = url;
+}
+
 function openLinkedClaimDetail(ycbtCode, courtCaseId) {
     // Vụ việc tại Tòa án: mở chi tiết tại màn hình Theo dõi vụ việc tại Tòa án, đúng vụ việc theo id (01 Mã vụ việc có thể có nhiều vụ việc tại Tòa án)
     if (courtCaseId || isCourtCaseCode(ycbtCode)) {
@@ -2387,8 +2458,23 @@ function renderProposalsTable() {
     const fromDateInput = document.getElementById('searchFromDate').value;
     const toDateInput = document.getElementById('searchToDate').value;
 
+    // [kpvv] Mã vụ việc (tìm gần đúng, không phân biệt hoa thường), Nơi thụ lý (lọc chính xác)
+    const courtList = loadCourtCases();
+    const vvInput = document.getElementById('searchVvCode');
+    const ntlInput = document.getElementById('searchNoiThuLy');
+    const vvCode = vvInput ? vvInput.value.trim().toLowerCase() : '';
+    const noiThuLy = ntlInput ? ntlInput.value : '';
+    // Nguồn hồ sơ: chỉ menu Chi trả tiền bồi thường, lọc chính xác
+    const nguonMap = kpNguonMap();
+    const nguonInput = document.getElementById('searchNguonHoSo');
+    const nguon = (nguonInput && kpMenu() === 'chi-tra') ? nguonInput.value : '';
+
     if (code) filtered = filtered.filter(item => item.code.toLowerCase().includes(code));
-    if (ycbtCode) filtered = filtered.filter(item => item.ycbtCode.toLowerCase().includes(ycbtCode));
+    if (vvCode) filtered = filtered.filter(item => kpVvOf(item, courtList).toLowerCase().includes(vvCode));
+    // Bản ghi theo vụ việc tại Tòa án không có Mã hồ sơ GQBT: không khớp khi lọc theo Mã hồ sơ GQBT
+    if (ycbtCode) filtered = filtered.filter(item => kpHoSoGqbt(item).toLowerCase().includes(ycbtCode));
+    if (noiThuLy) filtered = filtered.filter(item => kpNoiThuLy(item) === noiThuLy);
+    if (nguon) filtered = filtered.filter(item => kpNguonHoSo(item, nguonMap) === nguon);
     if (status) {
         if (status === 'Trả lại ngân sách nhà nước') {
             filtered = filtered.filter(item => item.status === 'Trả lại ngân sách nhà nước' || item.status === 'Đã sung quỹ');
@@ -2456,8 +2542,8 @@ function renderProposalsTable() {
                 valB = b.code || '';
                 break;
             case 'ycbtCode':
-                valA = a.ycbtCode || '';
-                valB = b.ycbtCode || '';
+                valA = kpHoSoGqbt(a);
+                valB = kpHoSoGqbt(b);
                 break;
             case 'nycName':
                 valA = a.nycName || '';
@@ -2504,7 +2590,7 @@ function renderProposalsTable() {
     const endIdx = Math.min(startIdx + pageSize, total);
 
     if (total === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy đề xuất cấp phát nào phù hợp</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="13" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy đề xuất cấp phát nào phù hợp</td></tr>`;
         document.getElementById('currentRange').innerText = "0-0";
         renderPaginationPages(1);
         return;
@@ -2583,11 +2669,14 @@ function renderProposalsTable() {
         tr.innerHTML = `
             <td style="text-align:center; vertical-align:middle;">${startIdx + idx + 1}</td>
             <td style="text-align:left; vertical-align:middle; font-weight:700; color:var(--primary-light);">${item.code}</td>
-            <td style="text-align:left; vertical-align:middle;"><a href="quan_ly_boi_thuong.html?id=${encodeURIComponent(item.ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html?v=1&menu=' + kpMenu())}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}', '${item.courtCaseId || ''}'); return false;" style="font-weight:700; color:var(--secondary-color); text-decoration:underline;">${item.ycbtCode}</a></td>
+            <td style="text-align:left; vertical-align:middle; white-space:nowrap;">${kpVvCellHtml(item, kpVvOf(item, courtList))}</td>
+            <td style="text-align:left; vertical-align:middle;">${kpHoSoGqbt(item) ? `<a href="quan_ly_boi_thuong.html?id=${encodeURIComponent(item.ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html?v=1&menu=' + kpMenu())}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}', '${item.courtCaseId || ''}'); return false;" style="font-weight:700; color:var(--secondary-color); text-decoration:underline;">${item.ycbtCode}</a>` : '-'}</td>
             <td style="text-align:left; vertical-align:middle; font-weight:600;">${item.nycName}</td>
             <td style="text-align:right; font-weight:700; vertical-align:middle;">${amtVal.toLocaleString('vi-VN')}</td>
             <td style="text-align:left; vertical-align:middle;">${item.user || '-'}</td>
             <td style="text-align:center; vertical-align:middle;">${kpdtSubmitDate(item) || '-'}</td>
+            <td class="kp-col-nguon" style="text-align:center; vertical-align:middle;">${kpNguonHoSoHtml(kpNguonHoSo(item, nguonMap))}</td>
+            <td style="text-align:center; vertical-align:middle;">${kpNoiThuLyHtml(kpNoiThuLy(item))}</td>
             <td class="kp-col-hn" style="text-align:center; vertical-align:middle;">${kpdtHanNhanSqHtml(item, treasuryInfo)}</td>
             <td style="text-align:center; vertical-align:middle;"><span class="badge ${badgeClass}">${displayStatus}</span></td>
             <td class="kp-act-td" style="text-align:center; vertical-align:middle;">
@@ -2659,6 +2748,8 @@ function clearFilters() {
     showTreasuryEligibleOnly = false;
     document.getElementById('searchProposalCode').value = '';
     document.getElementById('searchYcbtCode').value = '';
+    // [kpvv] Mã vụ việc, Nơi thụ lý về mặc định (Trống / Tất cả)
+    ['searchVvCode', 'searchNoiThuLy', 'searchNguonHoSo'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
     document.getElementById('searchProposalStatus').value = '';
     document.getElementById('searchNycName').value = '';
     document.getElementById('searchCbXuLy').value = '';

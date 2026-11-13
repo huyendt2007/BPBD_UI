@@ -1090,7 +1090,7 @@ function kptbLdOpen(id, mode) {
     const row = (k, v) => `<div class="kptbld-row"><span>${k}</span><span>${v}</span></div>`;
     const summary = `<div class="kptbld-box"><div class="kptbld-box-title"><i class="fa-solid fa-circle-info"></i> Thông tin tổng quan</div>`
         + row('Mã đề nghị', `<strong>${kpEsc(item.code)}</strong>`)
-        + row('Mã hồ sơ', kpEsc(item.ycbtCode))
+        + row('Mã hồ sơ', kpEsc((typeof kpHoSoGqbt === 'function' ? kpHoSoGqbt(item) : item.ycbtCode) || '-'))
         + row('Mã vụ việc', kpEsc(kptbVv(item.ycbtCode) || '--'))
         + row('Loại trình', kpEsc(KPTB_KIND))
         + row('Số tiền chi trả', `${kptbFmt(item.amount)} đồng`)
@@ -1351,7 +1351,7 @@ function kptbView(id) {
     const sec = (icon, title, body) => `<div class="kptb-dtl-sec"><div class="kptb-dtl-title"><i class="fa-solid ${icon}"></i> ${title}</div>${body}</div>`;
     const a = item.kptbApproval || null;
     const n = item.kptbNotice || null;
-    const general = `<div class="kptb-dtl-grid">${it('Mã đề nghị', kpEsc(item.code))}${it('Loại đề nghị', kpEsc(KPTB_TYPE))}${it('Trạng thái', `<span class="badge badge-info">${kpEsc(item.status)}</span>${item.status === KPTB_ST.REVIEW ? `<span class="kptb-sub">${kpEsc(KPTB_KIND + (typeof kpVtSub === 'function' ? kpVtSub(item) : ''))}</span>` : ''}`)}${it('Mã hồ sơ', kpEsc(item.ycbtCode))}${it('Mã vụ việc', kpEsc(kptbVv(item.ycbtCode)))}${it('Người yêu cầu', kpEsc(item.nycName))}${it('Số tiền chi trả', kptbFmt(item.amount) + ' đồng')}${it('Ngày tạo bản ghi', kpEsc(item.date))}${it('Cán bộ xử lý', kpEsc(item.user))}</div>`;
+    const general = `<div class="kptb-dtl-grid">${it('Mã đề nghị', kpEsc(item.code))}${it('Loại đề nghị', kpEsc(KPTB_TYPE))}${it('Trạng thái', `<span class="badge badge-info">${kpEsc(item.status)}</span>${item.status === KPTB_ST.REVIEW ? `<span class="kptb-sub">${kpEsc(KPTB_KIND + (typeof kpVtSub === 'function' ? kpVtSub(item) : ''))}</span>` : ''}`)}${it('Mã hồ sơ', kpEsc((typeof kpHoSoGqbt === 'function' ? kpHoSoGqbt(item) : item.ycbtCode) || '-'))}${it('Mã vụ việc', kpEsc(kptbVv(item.ycbtCode)))}${it('Người yêu cầu', kpEsc(item.nycName))}${it('Số tiền chi trả', kptbFmt(item.amount) + ' đồng')}${it('Ngày tạo bản ghi', kpEsc(item.date))}${it('Cán bộ xử lý', kpEsc(item.user))}</div>`;
     const decBody = `<div class="kptb-dtl-grid">${it('Số Quyết định', kpEsc(dec.decNo))}${it('Ngày ban hành', kpEsc(dec.issueDate))}${it('Cơ quan ban hành', kpEsc(dec.unitName))}${it('Tổng số tiền bồi thường', kptbFmt(dec.total) + ' đồng')}${it('Số tiền đã tạm ứng', kptbFmt(dec.advance) + ' đồng')}${it('Phương thức chi trả', kpEsc(kptbMethod(item)))}`
         + (cash ? `${it('Người nhận tiền', kpEsc(r.name || item.nycName))}${it('Số định danh cá nhân/CCCD', kpEsc(r.idNo))}${it('Địa điểm chi trả', kpEsc(po.cashPlace))}`
             : `${it('Chủ tài khoản', kpEsc(po.accHolder || r.name))}${it('Số tài khoản', kpEsc(po.account || r.account))}${it('Ngân hàng', kpEsc([po.bank || r.bank, po.branch || r.branch].filter(Boolean).join(' - ')))}`) + '</div>';

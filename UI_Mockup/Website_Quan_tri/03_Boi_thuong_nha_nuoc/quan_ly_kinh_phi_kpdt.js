@@ -348,7 +348,7 @@ function kpdtPayBody(item) {
     const info = getTreasuryInfo(item);
     const st = kpNormStatus(item.status);
     kpdtCurFile = kpdtPayFile(item);
-    const general = `<div class="kpdt-grid c3">${kpdtFld('Mã kinh phí', kpdtEsc(item.code))}${kpdtFld('Mã hồ sơ GQBT', kpdtClaimLink(item.ycbtCode, item.courtCaseId))}
+    const general = `<div class="kpdt-grid c3">${kpdtFld('Mã kinh phí', kpdtEsc(item.code))}${kpdtFld('Mã hồ sơ GQBT', (typeof kpHoSoGqbt === 'function' && !kpHoSoGqbt(item)) ? '-' : kpdtClaimLink(item.ycbtCode, item.courtCaseId))}
         ${kpdtFld('Mã vụ việc', kpdtEsc(kpdtVv(item.ycbtCode)))}${kpdtFld('Tên cá nhân/Tổ chức yêu cầu', kpdtEsc(item.nycName))}${kpdtFld('Số tiền chi trả', kpdtFmt(item.amount) + ' đồng')}
         ${kpdtFld('Ngày tạo', kpdtEsc(item.date))}${kpdtFld('Cán bộ xử lý', kpdtEsc(item.user))}${kpdtFld('Trạng thái', kpdtStatusHtml(item))}</div>`;
     const notice = `<div class="kpdt-grid">${kpdtFld('Hình thức ký', n ? (n.signMethod === 'Ký ngoài' ? 'Ký ngoài' : 'Ký số trên hệ thống') : '')}<div></div>
