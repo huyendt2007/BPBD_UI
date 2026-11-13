@@ -793,7 +793,7 @@
         </div>
     </div>
 
-    <!-- Modal Thêm mới / Sửa câu hỏi (Chuyên viên Sở Tư pháp) -->
+    <!-- Modal Thêm mới / Sửa câu hỏi (người dùng được phân quyền Thêm mới, Trình câu hỏi / Sửa, Trình lại, Xóa câu hỏi) -->
     <div class="modal-overlay" id="formModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -838,7 +838,7 @@
         </div>
     </div>
 
-    <!-- Modal Xem chi tiết + thao tác theo vai trò -->
+    <!-- Modal Xem chi tiết + thao tác theo trạng thái câu hỏi và quyền của người dùng -->
     <div class="modal-overlay" id="detailModal">
         <div class="modal-content" style="max-width: 900px;">
             <div class="modal-header">
@@ -889,197 +889,43 @@
     <script src="btnn_luong_xu_ly.js?v=20261112vt2"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261106kn1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
+    <script src="btnn_hoi_dap.js?v=20261113hd1"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261109tl1"></script>
     <script>
         // Hỏi đáp nghiệp vụ (góp ý khách hàng 02/11/2026)
-        // Luồng: Chuyên viên STP soạn -> Lãnh đạo Phòng (Sở) duyệt -> Lãnh đạo Sở duyệt -> Lãnh đạo Cục phân công -> Lãnh đạo Phòng phân công -> Chuyên viên BTP trả lời
-        // Sở Tư pháp chưa có tài khoản Lãnh đạo Phòng: Chuyên viên trình thẳng Lãnh đạo Sở
-        // Câu trả lời: mọi cấp tham gia đều xem được, không chuyển ngược qua từng cấp
-        // Chưa chốt với khách hàng: câu trả lời có cần Lãnh đạo Phòng / Lãnh đạo Cục duyệt trước khi phát hành không (mockup: Chuyên viên BTP gửi trả lời trực tiếp)
+        // Quy tắc dùng chung (trạng thái, quyền chức năng, đơn vị đang xử lý câu hỏi, người xử lý hiện tại, dữ liệu mẫu): btnn_hoi_dap.js (BTNN_HD),
+        // dùng chung với Bàn làm việc Lãnh đạo. Nguyên tắc phân quyền 13/11/2026 (phương án B): người xử lý ở bước giao cho nhóm là tài khoản được phân quyền
+        // tương ứng thuộc đúng đơn vị đang xử lý câu hỏi; không xét Chức vụ, Nhóm Lãnh đạo. Tên trạng thái, nút, nhãn lịch sử giữ nguyên.
+        // Câu trả lời: mọi người dùng xem được câu hỏi đều xem được, không chuyển ngược qua từng cấp; gửi trực tiếp, không qua bước duyệt.
         const W = window.BTNN_WF || null;
         const PV = window.BTNN_PHAMVI || null;
-        const BTP_CUC = 'CĐK-01';
-        const BTP_PHONG = 'PLN-02';
+        const HDM = window.BTNN_HD;
+        const QH = HDM.Q;
 
         const TOPICS = ['Tiếp nhận hồ sơ yêu cầu bồi thường', 'Xác định cơ quan giải quyết bồi thường', 'Giải quyết yêu cầu bồi thường', 'Kinh phí bồi thường', 'Trách nhiệm hoàn trả', 'Phục hồi danh dự', 'Báo cáo, thống kê', 'Khác'];
         // 06/11/2026: bỏ trạng thái Nháp và nút Lưu nháp (BTNN không có lưu nháp)
-        const ST = {
-            WAIT_PHONG_SO: 'Chờ Lãnh đạo Phòng duyệt',
-            WAIT_SO: 'Chờ Lãnh đạo Sở duyệt',
-            RETURNED: 'Bị trả lại',
-            WAIT_CUC: 'Chờ Lãnh đạo Cục phân công',
-            WAIT_PHONG: 'Chờ Lãnh đạo Phòng phân công',
-            ANSWERING: 'Đang trả lời',
-            ANSWERED: 'Đã trả lời'
-        };
-        const STATUS_ORDER = [ST.WAIT_PHONG_SO, ST.WAIT_SO, ST.RETURNED, ST.WAIT_CUC, ST.WAIT_PHONG, ST.ANSWERING, ST.ANSWERED];
-        const SENT = [ST.WAIT_CUC, ST.WAIT_PHONG, ST.ANSWERING, ST.ANSWERED];
+        const ST = HDM.ST;
         const BADGE = {
             [ST.WAIT_PHONG_SO]: 'badge-warning', [ST.WAIT_SO]: 'badge-warning', [ST.RETURNED]: 'badge-danger', [ST.WAIT_CUC]: 'badge-warning',
             [ST.WAIT_PHONG]: 'badge-warning', [ST.ANSWERING]: 'badge-info', [ST.ANSWERED]: 'badge-success'
         };
 
-        // VAI TRÒ theo người dùng giả lập
-        const me = () => (W ? W.getCurrentUser() : null) || { id: 'canbonv', name: 'Nguyễn Văn Cán Bộ', unitId: BTP_PHONG, title: 'Chuyên viên' };
-        const userName = id => (W && W.userName ? W.userName(id) : id) || id || '';
-        const unitName = id => (PV && PV.unitName(id)) || (W && W.unitName ? W.unitName(id) : id) || '';
+        // Người dùng giả lập (thanh Người dùng giả lập); quyền chức năng của người dùng giả lập theo vai trò mẫu Quản trị hệ thống gán (BTNN_HD.vaiTroMau)
+        const me = HDM.me, userName = HDM.userName, unitName = HDM.unitName;
         const stpOfMe = () => (PV ? PV.stpOf(me().unitId) : '');
-        function role() {
-            const u = me();
-            const lv = PV ? PV.level() : 'BTP';
-            if (lv === 'STP') return /Giám đốc/i.test(u.title) ? 'STP_LD' : /Trưởng phòng/i.test(u.title) ? 'STP_LDP' : 'STP_CV';
-            if (lv === 'BTP') {
-                if (u.unitId === BTP_CUC) return 'CUC_LD';
-                if (u.unitId === BTP_PHONG) return /Trưởng phòng/i.test(u.title) ? 'PHONG_LD' : 'BTP_CV';
-                return 'BTP_VIEW';
-            }
-            return lv === 'UBND_TINH' ? 'UBND_VIEW' : 'OTHER';
-        }
-        const usersOf = (unitId, titleRe) => (W ? W.USERS : []).filter(u => u.unitId === unitId && titleRe.test(u.title));
+        const coQuyen = perm => HDM.coQuyen(perm);
+        // Quy tắc 1 (phạm vi xem), quy tắc 2 (người xử lý hiện tại, tab Chờ xử lý), quy tắc 12 (tab Đã xử lý), cột Người xử lý hiện tại
+        const canSee = q => HDM.canSee(q);
+        const isMyTask = q => HDM.isMyTask(q);
+        const isDoneByMe = q => HDM.isDoneByMe(q);
+        const currentHandler = q => HDM.currentHandler(q);
 
-        // Phạm vi xem: STP xem câu hỏi của Sở mình (mọi trạng thái); Bộ Tư pháp xem câu hỏi đã gửi của mọi Sở; UBND cấp tỉnh xem câu hỏi đã gửi của Sở trực thuộc
-        function canSee(q) {
-            const r = role();
-            if (r === 'STP_CV' || r === 'STP_LDP' || r === 'STP_LD') return q.unit === stpOfMe();
-            if (['CUC_LD', 'PHONG_LD', 'BTP_CV', 'BTP_VIEW'].includes(r)) return SENT.includes(q.status);
-            if (r === 'UBND_VIEW') return SENT.includes(q.status) && PV && PV.managedStps(PV.root()).includes(q.unit);
-            return false;
-        }
-        // Người đang phải xử lý: dùng cho tab Chờ xử lý và cột Người xử lý hiện tại
-        function isMyTask(q) {
-            const r = role(), u = me();
-            if (q.status === ST.RETURNED && r === 'STP_CV') return q.unit === stpOfMe() && q.creator === u.id;
-            if (q.status === ST.WAIT_PHONG_SO && r === 'STP_LDP') return q.unit === stpOfMe();
-            if (q.status === ST.WAIT_SO && r === 'STP_LD') return q.unit === stpOfMe();
-            if (q.status === ST.WAIT_CUC && r === 'CUC_LD') return true;
-            if (q.status === ST.WAIT_PHONG && r === 'PHONG_LD') return q.phongLead === u.id;
-            if (q.status === ST.ANSWERING && r === 'BTP_CV') return q.officer === u.id;
-            return false;
-        }
-        // Tab Đã xử lý: câu hỏi không phải việc đang chờ của người dùng và người dùng đã tham gia xử lý (đã tạo hoặc có dòng Lịch sử xử lý do người dùng thực hiện);
-        // vai trò chỉ xem (Bộ Tư pháp ngoài Cục/Phòng, UBND cấp tỉnh): mọi câu hỏi trong phạm vi xem
-        function isDoneByMe(q) {
-            if (isMyTask(q)) return false;
-            const r = role(), id = me().id;
-            if (r === 'BTP_VIEW' || r === 'UBND_VIEW') return true;
-            return q.creator === id || (q.history || []).some(h => h.by === id) || !!(q.answer && q.answer.by === id);
-        }
-        function currentHandler(q) {
-            switch (q.status) {
-                case ST.RETURNED: return userName(q.creator);
-                case ST.WAIT_PHONG_SO: return 'Lãnh đạo Phòng - ' + unitName(q.unit);
-                case ST.WAIT_SO: return 'Lãnh đạo ' + unitName(q.unit);
-                case ST.WAIT_CUC: return 'Lãnh đạo Cục';
-                case ST.WAIT_PHONG: return userName(q.phongLead);
-                case ST.ANSWERING: return userName(q.officer);
-                default: return '—';
-            }
-        }
-
-        // MOCK DATA
+        // DỮ LIỆU (localStorage btnn_hoi_dap_nghiep_vu, dữ liệu mẫu tại btnn_hoi_dap.js)
         const p2 = x => String(x).padStart(2, '0');
-        const fmtDate = d => `${p2(d.getDate())}/${p2(d.getMonth() + 1)}/${d.getFullYear()}`;
-        const fmtTime = d => `${p2(d.getHours())}:${p2(d.getMinutes())} ${fmtDate(d)}`;
-        const ago = (days, h) => { const d = new Date(); d.setDate(d.getDate() - days); d.setHours(h || 9, 0, 0, 0); return d; };
-        const H = (days, h, by, action, note) => ({ at: fmtTime(ago(days, h)), by, action, note: note || '' });
-        function buildSeed() {
-            const y = new Date().getFullYear();
-            return [
-                {
-                    code: `HD-${y}-001`, unit: 'STP-HN', creator: 'cv_hn1', topic: 'Xác định cơ quan giải quyết bồi thường',
-                    title: 'Xác định cơ quan giải quyết bồi thường khi người thi hành công vụ đã chuyển công tác',
-                    content: 'Người thi hành công vụ gây thiệt hại đã chuyển công tác sang cơ quan khác trước khi có văn bản làm căn cứ yêu cầu bồi thường. Đề nghị Bộ Tư pháp hướng dẫn cơ quan nào là cơ quan giải quyết bồi thường trong trường hợp này.',
-                    legal: 'Điều 33 đến Điều 39 Luật Trách nhiệm bồi thường của Nhà nước', files: ['CV_STP_HN_de_nghi_huong_dan.pdf'],
-                    status: ST.ANSWERED, sentAt: fmtDate(ago(20)), phongLead: 'tpbt', officer: 'hatt',
-                    answer: { content: 'Cơ quan giải quyết bồi thường là cơ quan trực tiếp quản lý người thi hành công vụ tại thời điểm thực hiện hành vi gây thiệt hại. Trường hợp cơ quan đó đã giải thể hoặc sáp nhập thì xác định theo quy định về kế thừa quyền, nghĩa vụ.', files: ['CV_BTP_tra_loi_HD-001.pdf'], by: 'hatt', at: fmtTime(ago(8, 15)) },
-                    history: [H(21, 10, 'cv_hn1', 'Trình Lãnh đạo Phòng'), H(21, 15, 'tp_hctp_hn', 'Duyệt, trình Lãnh đạo Sở'), H(20, 14, 'gdso_hn', 'Duyệt, gửi Bộ Tư pháp'), H(19, 9, 'cuctruong', 'Phân công Lãnh đạo Phòng', 'Giao Trần Văn Bồi Thường'), H(18, 10, 'tpbt', 'Phân công Chuyên viên', 'Giao Trần Thị Thu Hà'), H(8, 15, 'hatt', 'Gửi trả lời')]
-                },
-                {
-                    code: `HD-${y}-002`, unit: 'STP-HCM', creator: 'cv_hcm1', topic: 'Kinh phí bồi thường',
-                    title: 'Tạm ứng kinh phí bồi thường khi chưa có quyết định giải quyết bồi thường',
-                    content: 'Người bị thiệt hại đề nghị tạm ứng kinh phí trong quá trình xác minh thiệt hại. Đề nghị hướng dẫn hồ sơ đề nghị tạm ứng và mức tạm ứng tối đa.',
-                    legal: 'Điều 44 Luật Trách nhiệm bồi thường của Nhà nước', files: [],
-                    status: ST.ANSWERING, sentAt: fmtDate(ago(6)), phongLead: 'tpbt', officer: 'canbonv',
-                    history: [H(7, 9, 'cv_hcm1', 'Trình Lãnh đạo Sở'), H(6, 11, 'gdso_hcm', 'Duyệt, gửi Bộ Tư pháp'), H(5, 9, 'cucpho', 'Phân công Lãnh đạo Phòng', 'Giao Trần Văn Bồi Thường'), H(4, 14, 'tpbt', 'Phân công Chuyên viên', 'Giao Nguyễn Văn Cán Bộ')]
-                },
-                {
-                    code: `HD-${y}-003`, unit: 'STP-HP', creator: 'cv_hp1', topic: 'Trách nhiệm hoàn trả',
-                    title: 'Xác định mức hoàn trả khi nhiều người thi hành công vụ cùng gây thiệt hại',
-                    content: 'Vụ việc có 03 người thi hành công vụ cùng gây thiệt hại với mức độ lỗi khác nhau. Đề nghị hướng dẫn cách xác định mức hoàn trả của từng người.',
-                    legal: 'Điều 65 Luật Trách nhiệm bồi thường của Nhà nước', files: ['Ho_so_vu_viec_HP.pdf'],
-                    status: ST.WAIT_PHONG, sentAt: fmtDate(ago(3)), phongLead: 'tpbt',
-                    history: [H(4, 9, 'cv_hp1', 'Trình Lãnh đạo Sở'), H(3, 10, 'gdso_hp', 'Duyệt, gửi Bộ Tư pháp'), H(2, 9, 'cuctruong', 'Phân công Lãnh đạo Phòng', 'Giao Trần Văn Bồi Thường')]
-                },
-                {
-                    code: `HD-${y}-004`, unit: 'STP-HN', creator: 'cv_hn2', topic: 'Báo cáo, thống kê',
-                    title: 'Cách thống kê vụ việc chuyển tiếp từ kỳ báo cáo trước',
-                    content: 'Đề nghị hướng dẫn cách thống kê các vụ việc đã thụ lý ở kỳ trước nhưng chưa giải quyết xong vào Mẫu số 03 kỳ này.',
-                    legal: '', files: [],
-                    status: ST.WAIT_CUC, sentAt: fmtDate(ago(1)),
-                    history: [H(3, 15, 'cv_hn2', 'Trình Lãnh đạo Phòng'), H(2, 9, 'tp_hctp_hn', 'Duyệt, trình Lãnh đạo Sở'), H(1, 9, 'gdso_hn', 'Duyệt, gửi Bộ Tư pháp')]
-                },
-                {
-                    code: `HD-${y}-005`, unit: 'STP-HN', creator: 'cv_hn1', topic: 'Tiếp nhận hồ sơ yêu cầu bồi thường',
-                    title: 'Tiếp nhận hồ sơ yêu cầu bồi thường gửi qua dịch vụ bưu chính thiếu thành phần',
-                    content: 'Hồ sơ gửi qua bưu chính thiếu bản sao văn bản làm căn cứ yêu cầu bồi thường. Sở có được trả lại hồ sơ hay phải tiếp nhận và yêu cầu bổ sung?',
-                    legal: 'Điều 41, Điều 42 Luật Trách nhiệm bồi thường của Nhà nước', files: [],
-                    status: ST.WAIT_SO, sentAt: '',
-                    history: [H(1, 8, 'cv_hn1', 'Trình Lãnh đạo Phòng'), H(0, 8, 'tp_hctp_hn', 'Duyệt, trình Lãnh đạo Sở')]
-                },
-                {
-                    code: `HD-${y}-006`, unit: 'STP-HN', creator: 'cv_hn1', topic: 'Phục hồi danh dự',
-                    title: 'Hình thức phục hồi danh dự khi người bị thiệt hại không yêu cầu',
-                    content: 'Người bị thiệt hại không có yêu cầu phục hồi danh dự. Cơ quan giải quyết bồi thường có phải chủ động tổ chức xin lỗi công khai không?',
-                    legal: '', files: [],
-                    status: ST.RETURNED, sentAt: '', returnReason: 'Bổ sung tình tiết vụ việc và căn cứ pháp lý trước khi gửi Bộ Tư pháp.',
-                    history: [H(4, 9, 'cv_hn1', 'Trình Lãnh đạo Phòng'), H(3, 14, 'tp_hctp_hn', 'Duyệt, trình Lãnh đạo Sở'), H(2, 16, 'gdso_hn', 'Trả lại', 'Bổ sung tình tiết vụ việc và căn cứ pháp lý trước khi gửi Bộ Tư pháp.')]
-                },
-                {
-                    code: `HD-${y}-007`, unit: 'STP-HN', creator: 'cv_hn1', topic: 'Khác',
-                    title: 'Lưu trữ hồ sơ giải quyết bồi thường sau khi hoàn thành chi trả',
-                    content: 'Thời hạn lưu trữ hồ sơ giải quyết bồi thường tại cơ quan giải quyết bồi thường là bao lâu?',
-                    legal: '', files: [],
-                    status: ST.WAIT_PHONG_SO, sentAt: '',
-                    history: [H(0, 10, 'cv_hn1', 'Trình Lãnh đạo Phòng')]
-                },
-                {
-                    code: `HD-${y}-008`, unit: 'STP-HN', creator: 'cv_hn2', topic: 'Giải quyết yêu cầu bồi thường',
-                    title: 'Thương lượng khi người yêu cầu bồi thường ủy quyền cho luật sư',
-                    content: 'Người yêu cầu bồi thường ủy quyền cho luật sư tham gia thương lượng. Biên bản thương lượng có cần chữ ký của người yêu cầu bồi thường không?',
-                    legal: 'Điều 46 Luật Trách nhiệm bồi thường của Nhà nước', files: [],
-                    status: ST.WAIT_PHONG_SO, sentAt: '',
-                    history: [H(0, 9, 'cv_hn2', 'Trình Lãnh đạo Phòng')]
-                },
-                // Câu hỏi đang giao Chuyên viên Trần Thị Thu Hà trả lời (tab Chờ xử lý của người dùng giả lập mặc định không trống)
-                {
-                    code: `HD-${y}-009`, unit: 'STP-HCM', creator: 'cv_hcm1', topic: 'Giải quyết yêu cầu bồi thường',
-                    title: 'Thời hạn xác minh thiệt hại khi phải trưng cầu giám định',
-                    content: 'Vụ việc phải trưng cầu giám định thương tật để xác định thiệt hại về sức khỏe. Thời gian chờ kết quả giám định có được tính vào thời hạn xác minh thiệt hại không?',
-                    legal: 'Điều 45 Luật Trách nhiệm bồi thường của Nhà nước', files: ['CV_STP_HCM_hoi_thoi_han_xac_minh.pdf'],
-                    status: ST.ANSWERING, sentAt: fmtDate(ago(5)), phongLead: 'tpbt', officer: 'hatt',
-                    history: [H(6, 9, 'cv_hcm1', 'Trình Lãnh đạo Sở'), H(5, 10, 'gdso_hcm', 'Duyệt, gửi Bộ Tư pháp'), H(4, 9, 'cuctruong', 'Phân công Lãnh đạo Phòng', 'Giao Trần Văn Bồi Thường'), H(3, 14, 'tpbt', 'Phân công Chuyên viên', 'Giao Trần Thị Thu Hà')]
-                },
-                {
-                    code: `HD-${y}-010`, unit: 'STP-HP', creator: 'cv_hp1', topic: 'Kinh phí bồi thường',
-                    title: 'Chi trả tiền bồi thường khi người được bồi thường đã chết',
-                    content: 'Người được bồi thường chết sau khi Quyết định giải quyết bồi thường có hiệu lực nhưng trước khi nhận tiền. Cơ quan giải quyết bồi thường chi trả cho ai và cần những giấy tờ gì?',
-                    legal: '', files: [],
-                    status: ST.ANSWERING, sentAt: fmtDate(ago(2)), phongLead: 'tpbt', officer: 'hatt',
-                    history: [H(3, 9, 'cv_hp1', 'Trình Lãnh đạo Sở'), H(2, 10, 'gdso_hp', 'Duyệt, gửi Bộ Tư pháp'), H(2, 15, 'cucpho', 'Phân công Lãnh đạo Phòng', 'Giao Trần Văn Bồi Thường'), H(1, 9, 'tpbt', 'Phân công Chuyên viên', 'Giao Trần Thị Thu Hà')]
-                }
-            ].map((q, i) => Object.assign({ id: i + 1, createdAt: q.history[0].at.split(' ')[1] }, q));
-        }
-
-        const DB_KEY = 'btnn_hoi_dap_nghiep_vu';
-        const DB_VERSION = 'v4'; // v4: gộp nhánh ngadt63 (HD-009, HD-010) + bỏ Nháp
+        const fmtDate = HDM.fmtDate, fmtTime = HDM.fmtTime;
         let questions = [];
-        function loadData() {
-            try { if (localStorage.getItem(DB_KEY + '_version') === DB_VERSION) questions = JSON.parse(localStorage.getItem(DB_KEY) || '[]'); } catch (e) { questions = []; }
-            if (!questions.length) { questions = buildSeed(); saveData(); }
-        }
-        function saveData() {
-            try { localStorage.setItem(DB_KEY, JSON.stringify(questions)); localStorage.setItem(DB_KEY + '_version', DB_VERSION); } catch (e) { /* mockup */ }
-        }
+        function loadData() { questions = HDM.load(); }
+        function saveData() { HDM.save(questions); }
         const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         const parseDate = s => { const m = /^(\d{2})\/(\d{2})\/(\d{4})/.exec(s || ''); return m ? new Date(+m[3], +m[2] - 1, +m[1]) : null; };
         const statusBadge = st => `<span class="badge ${BADGE[st] || 'badge-secondary'}">${esc(st)}</span>`;
@@ -1103,30 +949,15 @@
             if (W && W.mountUserSwitcher) W.mountUserSwitcher();
         });
 
-        // Rule 6: chỉ Chuyên viên Sở Tư pháp thêm mới câu hỏi, chỉ ở tab Chờ xử lý (important: lớp chuẩn hóa .uxu-btn-tb đặt display !important)
+        // Nút Thêm mới câu hỏi: chỉ hiển thị khi người dùng được phân quyền Thêm mới, Trình câu hỏi và ở tab Chờ xử lý (important: lớp chuẩn hóa .uxu-btn-tb đặt display !important)
         function updateCreateBtn() {
-            document.getElementById('btnCreate').style.setProperty('display', role() === 'STP_CV' && activeTab === 'pending' ? 'inline-flex' : 'none', 'important');
+            document.getElementById('btnCreate').style.setProperty('display', coQuyen(QH.THEM) && activeTab === 'pending' ? 'inline-flex' : 'none', 'important');
         }
 
-        // Bộ lọc Trạng thái: chỉ gồm các trạng thái có thể có ở tab đang chọn theo vai trò (như Tiếp nhận hồ sơ, Kinh phí); nạp lại khi chuyển tab
-        function tabStatuses(tab, r) {
-            const SENT4 = [ST.WAIT_CUC, ST.WAIT_PHONG, ST.ANSWERING, ST.ANSWERED];
-            const P = { STP_CV: [ST.RETURNED], STP_LDP: [ST.WAIT_PHONG_SO], STP_LD: [ST.WAIT_SO], CUC_LD: [ST.WAIT_CUC], PHONG_LD: [ST.WAIT_PHONG], BTP_CV: [ST.ANSWERING] };
-            const D = {
-                STP_CV: [ST.WAIT_PHONG_SO, ST.WAIT_SO].concat(SENT4),
-                STP_LDP: [ST.RETURNED, ST.WAIT_SO].concat(SENT4),
-                STP_LD: [ST.WAIT_PHONG_SO, ST.RETURNED].concat(SENT4), // câu hỏi Lãnh đạo Sở đã trả lại, Chuyên viên trình lại
-                CUC_LD: [ST.WAIT_PHONG, ST.ANSWERING, ST.ANSWERED],
-                PHONG_LD: [ST.ANSWERING, ST.ANSWERED],
-                BTP_CV: [ST.ANSWERED],
-                BTP_VIEW: SENT4, UBND_VIEW: SENT4
-            };
-            const list = (tab === 'pending' ? P : D)[r] || [];
-            return STATUS_ORDER.filter(s => list.includes(s));
-        }
+        // Bộ lọc Trạng thái (quy tắc 13): trạng thái có thể có ở tab đang chọn theo quyền chức năng của người dùng (hợp các quyền); nạp lại khi chuyển tab
         function fillStatusFilter() {
             const sel = document.getElementById('filterStatus'), cur = sel.value;
-            const opts = tabStatuses(activeTab, role());
+            const opts = HDM.tabStatuses(activeTab);
             sel.innerHTML = '<option value="">Tất cả</option>' + opts.map(s => `<option value="${s}">${s}</option>`).join('');
             sel.value = opts.includes(cur) ? cur : '';
         }
@@ -1167,7 +998,7 @@
             const list = activeTab === 'pending' ? pending : done;
             const tbody = document.getElementById('tableBody');
 
-            if (role() === 'OTHER') {
+            if (!HDM.coPhamVi()) {
                 tbody.innerHTML = PV ? PV.denyRow(9) : '';
                 document.getElementById('paginationBox').style.display = 'none';
                 return;
@@ -1186,9 +1017,10 @@
             document.getElementById('pageInfo').innerText = `Hiển thị ${start + 1} - ${end} của ${total} bản ghi`;
             tbody.innerHTML = list.slice(start, end).map((q, i) => {
                 // Cột Thao tác: bộ nút cố định (Sửa, Xóa, Xử lý); nút không được thao tác hiển thị mờ
-                const canEdit = role() === 'STP_CV' && isMyTask(q);
+                // Sửa, Xóa: quyền Sửa, Trình lại, Xóa câu hỏi + câu hỏi Bị trả lại do người dùng tạo; Xử lý: câu hỏi chờ người dùng xử lý + quyền thao tác của trạng thái
+                const canEdit = HDM.canEdit(q);
                 const canDel = canEdit;
-                const canAct = isMyTask(q) && !canEdit;
+                const canAct = HDM.canAct(q) && !canEdit;
                 const ib = (on, cls, icon, title, offTitle, call) => on
                     ? `<button data-admin-icon-normalized="1" class="icon-btn ${cls}" title="${title}" onclick="event.stopPropagation(); ${call}"><i class="fa-solid ${icon}"></i></button>`
                     : `<button data-admin-icon-normalized="1" class="icon-btn ${cls} disabled" title="${offTitle}" disabled><i class="fa-solid ${icon}"></i></button>`;
@@ -1286,7 +1118,7 @@
             document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
         }
         function openCreateModal() {
-            if (role() !== 'STP_CV') return;
+            if (!coQuyen(QH.THEM)) return;
             clearErrors();
             document.getElementById('qForm').reset();
             document.getElementById('qId').value = '';
@@ -1309,7 +1141,7 @@
         }
         function openEditModal(id) {
             const q = questions.find(x => x.id === id);
-            if (!q || !isMyTask(q) || role() !== 'STP_CV') return;
+            if (!q || !HDM.canEdit(q)) return;
             clearErrors();
             document.getElementById('qId').value = q.id;
             document.getElementById('qUnit').value = unitName(q.unit);
@@ -1337,7 +1169,11 @@
                 content: document.getElementById('qContent').value.trim(), legal: document.getElementById('qLegal').value.trim(), files: docs
             };
             let q;
-            if (id) { q = questions.find(x => x.id === parseInt(id)); Object.assign(q, fields); }
+            if (id) {
+                q = guard(parseInt(id), ST.RETURNED, HDM.canEdit);
+                if (!q) return;
+                Object.assign(q, fields);
+            }
             else {
                 const y = new Date().getFullYear();
                 const nextNo = questions.filter(x => x.code.startsWith(`HD-${y}-`)).length + 1;
@@ -1352,8 +1188,9 @@
         }
         function deleteQuestion(id) {
             const q = questions.find(x => x.id === id);
-            if (!q || role() !== 'STP_CV' || !isMyTask(q)) return;
+            if (!q || !HDM.canEdit(q)) return;
             openConfirm(`Bạn có chắc chắn muốn xóa câu hỏi "${q.code} - ${q.title}" không?`, () => {
+                if (!guard(id, ST.RETURNED, HDM.canEdit)) return;
                 questions = questions.filter(x => x.id !== id);
                 saveData(); closeModal('detailModal'); refreshTable();
                 showToast('Xóa câu hỏi thành công', 'success');
@@ -1361,11 +1198,14 @@
         }
         function addHistory(q, action, note) { q.history.push({ at: fmtTime(new Date()), by: me().id, action, note: note || '' }); }
 
-        // ===== Xem chi tiết + thao tác theo vai trò =====
+        // ===== Xem chi tiết + thao tác theo trạng thái câu hỏi và quyền của người dùng =====
+        // Thanh Tiến trình xử lý: câu hỏi trình thẳng tới Chờ Lãnh đạo Sở duyệt ở lần trình gần nhất (quy tắc 3) thì không hiển thị bước Lãnh đạo Phòng (Sở) duyệt
         function flowHtml(q) {
-            const steps = ['Soạn câu hỏi', 'Lãnh đạo Phòng (Sở) duyệt', 'Lãnh đạo Sở duyệt', 'Lãnh đạo Cục phân công', 'Lãnh đạo Phòng (Bộ) phân công', 'Chuyên viên trả lời', 'Đã trả lời'];
-            const cur = { [ST.RETURNED]: 0, [ST.WAIT_PHONG_SO]: 1, [ST.WAIT_SO]: 2, [ST.WAIT_CUC]: 3, [ST.WAIT_PHONG]: 4, [ST.ANSWERING]: 5, [ST.ANSWERED]: 6 }[q.status];
-            return '<div class="hd-flow">' + steps.map((s, i) => `<span class="step ${i < cur || q.status === ST.ANSWERED ? 'done' : i === cur ? 'cur' : ''}">${s}</span>`).join('<i class="fa-solid fa-chevron-right"></i>') + '</div>';
+            const all = [['soan', 'Soạn câu hỏi'], ['phong', 'Lãnh đạo Phòng (Sở) duyệt'], ['so', 'Lãnh đạo Sở duyệt'], ['cuc', 'Lãnh đạo Cục phân công'], ['pbo', 'Lãnh đạo Phòng (Bộ) phân công'], ['cv', 'Chuyên viên trả lời'], ['xong', 'Đã trả lời']];
+            const steps = HDM.quaDuyetPhong(q) ? all : all.filter(s => s[0] !== 'phong');
+            const curKey = { [ST.RETURNED]: 'soan', [ST.WAIT_PHONG_SO]: 'phong', [ST.WAIT_SO]: 'so', [ST.WAIT_CUC]: 'cuc', [ST.WAIT_PHONG]: 'pbo', [ST.ANSWERING]: 'cv', [ST.ANSWERED]: 'xong' }[q.status];
+            const cur = steps.findIndex(s => s[0] === curKey);
+            return '<div class="hd-flow">' + steps.map((s, i) => `<span class="step ${i < cur || q.status === ST.ANSWERED ? 'done' : i === cur ? 'cur' : ''}">${s[1]}</span>`).join('<i class="fa-solid fa-chevron-right"></i>') + '</div>';
         }
         function openDetail(id) {
             const q = questions.find(x => x.id === id);
@@ -1398,75 +1238,94 @@
                 + '</tbody></table></div></div>';
             document.getElementById('detailBody').innerHTML = html;
 
-            // Nút thao tác theo vai trò và trạng thái (Rule 6: không áp dụng thì ẩn)
-            const r = role(), mine = isMyTask(q);
+            // Nút thao tác: chỉ hiển thị khi câu hỏi chờ người dùng xử lý (quy tắc 2) và người dùng được phân quyền thao tác của trạng thái (không áp dụng thì ẩn)
+            const act = HDM.canAct(q);
             let foot = '<button class="btn btn-secondary" onclick="closeModal(\'detailModal\')">Đóng</button>';
-            if (mine && r === 'STP_CV') {
+            if (act && q.status === ST.RETURNED && HDM.canEdit(q)) {
                 foot += `<button class="btn btn-outline-danger" onclick="deleteQuestion(${q.id})"><i class="fa-solid fa-trash"></i> Xóa</button>`;
                 foot += `<button class="btn btn-outline-primary" onclick="openEditModal(${q.id})"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>`
-                    + `<button class="btn btn-primary" onclick="submitToLeader(${q.id})"><i class="fa-solid fa-paper-plane"></i> Trình ${submitTarget(q).label}</button>`;
+                    + `<button class="btn btn-primary" onclick="submitToLeader(${q.id})"><i class="fa-solid fa-paper-plane"></i> Trình ${HDM.routeOnSubmit(q).label}</button>`;
             }
-            if (mine && r === 'STP_LDP') {
+            if (act && q.status === ST.WAIT_PHONG_SO) {
                 foot += `<button class="btn btn-outline-danger" onclick="openReturn(${q.id})"><i class="fa-solid fa-rotate-left"></i> Trả lại</button>`
                     + `<button class="btn btn-primary" onclick="approvePhongSo(${q.id})"><i class="fa-solid fa-check"></i> Duyệt, trình Lãnh đạo Sở</button>`;
             }
-            if (mine && r === 'STP_LD') {
+            if (act && q.status === ST.WAIT_SO) {
                 foot += `<button class="btn btn-outline-danger" onclick="openReturn(${q.id})"><i class="fa-solid fa-rotate-left"></i> Trả lại</button>`
                     + `<button class="btn btn-primary" onclick="approveSo(${q.id})"><i class="fa-solid fa-check"></i> Duyệt, gửi Bộ Tư pháp</button>`;
             }
-            if (mine && r === 'CUC_LD') foot += `<button class="btn btn-primary" onclick="openAssign(${q.id}, 'phong')"><i class="fa-solid fa-user-plus"></i> Phân công Lãnh đạo Phòng</button>`;
-            if (mine && r === 'PHONG_LD') foot += `<button class="btn btn-primary" onclick="openAssign(${q.id}, 'cv')"><i class="fa-solid fa-user-plus"></i> Phân công Chuyên viên</button>`;
-            if (mine && r === 'BTP_CV') foot += `<button class="btn btn-primary" onclick="openAnswer(${q.id})"><i class="fa-solid fa-reply"></i> Trả lời</button>`;
-            if (canUpdateAnswer(q)) foot += `<button class="btn btn-primary" onclick="openAnswer(${q.id}, true)"><i class="fa-solid fa-pen-to-square"></i> Cập nhật trả lời</button>`;
+            if (act && q.status === ST.WAIT_CUC) foot += `<button class="btn btn-primary" onclick="openAssign(${q.id})"><i class="fa-solid fa-user-plus"></i> Phân công Lãnh đạo Phòng</button>`;
+            if (act && q.status === ST.WAIT_PHONG) foot += `<button class="btn btn-primary" onclick="openAssign(${q.id})"><i class="fa-solid fa-user-plus"></i> Phân công Chuyên viên</button>`;
+            if (act && q.status === ST.ANSWERING) foot += `<button class="btn btn-primary" onclick="openAnswer(${q.id})"><i class="fa-solid fa-reply"></i> Trả lời</button>`;
+            if (HDM.canUpdateAnswer(q)) foot += `<button class="btn btn-primary" onclick="openAnswer(${q.id}, true)"><i class="fa-solid fa-pen-to-square"></i> Cập nhật trả lời</button>`;
             document.getElementById('detailFooter').innerHTML = foot;
             setPageTitle('Chi tiết Hỏi đáp nghiệp vụ');
             document.getElementById('detailModal').classList.add('active');
         }
 
-        // Lãnh đạo Phòng của Sở Tư pháp: tài khoản thuộc cây đơn vị của Sở, chức vụ Trưởng/Phó Trưởng phòng
-        const soPhongLeads = stp => (W ? W.USERS : []).filter(u => PV && PV.stpOf(u.unitId) === stp && /Trưởng phòng/i.test(u.title));
-        function submitTarget(q) { return soPhongLeads(q.unit).length ? { status: ST.WAIT_PHONG_SO, label: 'Lãnh đạo Phòng' } : { status: ST.WAIT_SO, label: 'Lãnh đạo Sở' }; }
+        // Xử lý đồng thời (quy tắc 2): bước giao cho nhóm có nhiều người xử lý hiện tại, người thao tác trước được ghi nhận.
+        // Trước khi lưu, tải lại câu hỏi; câu hỏi không còn ở trạng thái đã mở hoặc không còn chờ người dùng xử lý thì báo [MSG-ERR-BTNN-HDNV-001], tải lại danh sách, không lưu.
+        function guard(id, status, check) {
+            loadData();
+            const q = questions.find(x => x.id === id);
+            if (q && q.status === status && (check || isMyTask)(q)) return q;
+            ['actModal', 'formModal', 'detailModal'].forEach(closeModal);
+            refreshTable();
+            showToast(HDM.MSG_DA_XU_LY, 'error');
+            return null;
+        }
+        // Trình câu hỏi (quy tắc 3): trạng thái và đơn vị đang xử lý theo đơn vị của người tạo câu hỏi
         function submitQuestion(q) {
-            const t = submitTarget(q);
-            q.status = t.status; delete q.returnReason; addHistory(q, 'Trình ' + t.label);
+            const t = HDM.routeOnSubmit(q);
+            q.status = t.status; q.handlerUnit = t.unit; delete q.returnReason; addHistory(q, 'Trình ' + t.label);
             return t.label;
         }
         function submitToLeader(id) {
-            const q = questions.find(x => x.id === id);
+            const q = guard(id, ST.RETURNED, HDM.canEdit);
+            if (!q) return;
             const label = submitQuestion(q);
             done(q, `Đã trình ${label} câu hỏi ${q.code}`);
         }
         function approvePhongSo(id) {
-            const q = questions.find(x => x.id === id);
-            openConfirm(`Duyệt và trình Lãnh đạo Sở câu hỏi ${q.code}?`, () => {
-                q.status = ST.WAIT_SO; addHistory(q, 'Duyệt, trình Lãnh đạo Sở');
+            const q0 = questions.find(x => x.id === id);
+            openConfirm(`Duyệt và trình Lãnh đạo Sở câu hỏi ${q0.code}?`, () => {
+                const q = guard(id, ST.WAIT_PHONG_SO);
+                if (!q) return;
+                q.status = ST.WAIT_SO; q.handlerUnit = q.unit; addHistory(q, 'Duyệt, trình Lãnh đạo Sở');
                 done(q, `Đã trình Lãnh đạo Sở câu hỏi ${q.code}`);
             }, 'Xác nhận trình', { okLabel: 'Đồng ý', okClass: 'btn-primary', okIcon: 'fa-paper-plane' });
         }
         function approveSo(id) {
-            const q = questions.find(x => x.id === id);
-            openConfirm(`Duyệt và gửi câu hỏi ${q.code} lên Bộ Tư pháp?`, () => {
-                q.status = ST.WAIT_CUC; q.sentAt = fmtDate(new Date()); addHistory(q, 'Duyệt, gửi Bộ Tư pháp');
+            const q0 = questions.find(x => x.id === id);
+            openConfirm(`Duyệt và gửi câu hỏi ${q0.code} lên Bộ Tư pháp?`, () => {
+                const q = guard(id, ST.WAIT_SO);
+                if (!q) return;
+                // Đơn vị đang xử lý chuyển thành đơn vị nhận câu hỏi (Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước)
+                q.status = ST.WAIT_CUC; q.handlerUnit = HDM.CUC; q.sentAt = fmtDate(new Date()); addHistory(q, 'Duyệt, gửi Bộ Tư pháp');
                 done(q, `Đã gửi câu hỏi ${q.code} lên Bộ Tư pháp`);
             }, 'Xác nhận gửi', { okLabel: 'Đồng ý', okClass: 'btn-primary', okIcon: 'fa-paper-plane' });
         }
         function openReturn(id) {
-            const q = questions.find(x => x.id === id);
-            openAct('Trả lại câu hỏi ' + q.code,
+            const q0 = questions.find(x => x.id === id), st0 = q0.status;
+            openAct('Trả lại câu hỏi ' + q0.code,
                 `<div class="form-group"><label class="form-label">Lý do trả lại <span style="color: var(--danger-color);">*</span></label>
                  <textarea id="actReason" class="form-control" rows="4" maxlength="2000"></textarea><span class="field-error-text" id="error_actReason">Đây là trường bắt buộc</span></div>`,
                 '<i class="fa-solid fa-rotate-left"></i> Trả lại', () => {
                     const v = document.getElementById('actReason').value.trim();
                     if (!v) { document.getElementById('actReason').classList.add('is-invalid'); document.getElementById('error_actReason').style.display = 'block'; document.getElementById('actReason').focus(); return false; }
-                    q.status = ST.RETURNED; q.returnReason = v; addHistory(q, 'Trả lại', v);
+                    const q = guard(id, st0);
+                    if (!q) return;
+                    q.status = ST.RETURNED; q.returnReason = v; q.handlerUnit = HDM.unitOf(q.creator); addHistory(q, 'Trả lại', v);
                     done(q, `Đã trả lại câu hỏi ${q.code}`);
                 });
         }
-        function openAssign(id, level) {
-            const q = questions.find(x => x.id === id);
-            const users = level === 'phong' ? usersOf(BTP_PHONG, /Trưởng phòng/i) : usersOf(BTP_PHONG, /Chuyên viên/i);
-            const label = level === 'phong' ? 'Lãnh đạo Phòng' : 'Chuyên viên';
-            openAct(`Phân công ${label} - ${q.code}`,
+        // Popup Phân công: danh sách người được giao lọc theo quyền chức năng và đơn vị đang xử lý câu hỏi (BTNN_HD.ungVien), không theo Chức vụ
+        function openAssign(id) {
+            const q0 = questions.find(x => x.id === id), st0 = q0.status;
+            const buoc1 = st0 === ST.WAIT_CUC;
+            const users = HDM.ungVien(q0);
+            const label = buoc1 ? 'Lãnh đạo Phòng' : 'Chuyên viên';
+            openAct(`Phân công ${label} - ${q0.code}`,
                 `<div class="form-group"><label class="form-label">${label} xử lý <span style="color: var(--danger-color);">*</span></label>
                  <select id="actUser" class="form-select"><option value="">-- Lựa chọn --</option>${users.map(u => `<option value="${u.id}">${esc(u.name)} - ${esc(u.title)} (${esc(unitName(u.unitId))})</option>`).join('')}</select>
                  <span class="field-error-text" id="error_actUser">Đây là trường bắt buộc</span></div>
@@ -1474,16 +1333,14 @@
                 '<i class="fa-solid fa-user-plus"></i> Phân công', () => {
                     const uid = document.getElementById('actUser').value;
                     if (!uid) { document.getElementById('actUser').classList.add('is-invalid'); document.getElementById('error_actUser').style.display = 'block'; return false; }
+                    const q = guard(id, st0);
+                    if (!q) return;
                     const note = ['Giao ' + userName(uid), document.getElementById('actNote').value.trim()].filter(Boolean).join('. ');
-                    if (level === 'phong') { q.phongLead = uid; q.status = ST.WAIT_PHONG; addHistory(q, 'Phân công Lãnh đạo Phòng', note); }
+                    // Bước 1: đơn vị đang xử lý chuyển thành đơn vị của người được giao phân công
+                    if (buoc1) { q.phongLead = uid; q.handlerUnit = HDM.unitOf(uid); q.status = ST.WAIT_PHONG; addHistory(q, 'Phân công Lãnh đạo Phòng', note); }
                     else { q.officer = uid; q.status = ST.ANSWERING; addHistory(q, 'Phân công Chuyên viên', note); }
                     done(q, `Đã phân công ${userName(uid)} xử lý câu hỏi ${q.code}`);
                 });
-        }
-        // Câu hỏi Đã trả lời: Chuyên viên Bộ Tư pháp đã trả lời (hoặc được phân công trả lời) được cập nhật câu trả lời; ghi Lịch sử xử lý nội dung thay đổi
-        function canUpdateAnswer(q) {
-            const id = me().id;
-            return q.status === ST.ANSWERED && !!q.answer && role() === 'BTP_CV' && (q.answer.by === id || q.officer === id);
         }
         // So sánh tài liệu theo tên tệp (dữ liệu cũ lưu tên tệp dạng chuỗi, dữ liệu mới lưu { name, file })
         const docLabel = f => typeof f === 'string' ? f : ((f && ((f.file && f.file.name) || f.name)) || '');
@@ -1496,9 +1353,10 @@
             return lines;
         }
         function openAnswer(id, isUpdate) {
-            const q = questions.find(x => x.id === id);
+            let q = questions.find(x => x.id === id);
             if (isUpdate) {
-                if (!canUpdateAnswer(q)) return;
+                // Cập nhật trả lời: người đã gửi câu trả lời hoặc người được giao trả lời, được phân quyền Cập nhật câu trả lời
+                if (!HDM.canUpdateAnswer(q)) return;
                 openAct('Cập nhật trả lời câu hỏi ' + q.code,
                     `<div class="hd-question" style="margin-bottom: 12px;"><strong>${esc(q.title)}</strong>\n${esc(q.content)}</div>
                      <div class="form-group"><label class="form-label">Nội dung trả lời <span style="color: var(--danger-color);">*</span></label>
@@ -1509,6 +1367,8 @@
                         if (!v) { document.getElementById('actAnswer').classList.add('is-invalid'); document.getElementById('error_actAnswer').style.display = 'block'; document.getElementById('actAnswer').focus(); return false; }
                         const docs = readDocs('hda');
                         if (!docs) return false;
+                        q = guard(id, ST.ANSWERED, HDM.canUpdateAnswer);
+                        if (!q) return;
                         const lines = answerDiff(q.answer, v, docs);
                         if (!lines.length) { closeModal('actModal'); showToast('Câu trả lời không có thay đổi.', 'info'); return; }
                         Object.assign(q.answer, { content: v, files: docs, updatedBy: me().id, updatedAt: fmtTime(new Date()) });
@@ -1528,6 +1388,8 @@
                     if (!v) { document.getElementById('actAnswer').classList.add('is-invalid'); document.getElementById('error_actAnswer').style.display = 'block'; document.getElementById('actAnswer').focus(); return false; }
                     const docs = readDocs('hda');
                     if (!docs) return false;
+                    q = guard(id, ST.ANSWERING);
+                    if (!q) return;
                     q.answer = { content: v, files: docs, by: me().id, at: fmtTime(new Date()) };
                     q.status = ST.ANSWERED; addHistory(q, 'Gửi trả lời');
                     done(q, `Đã gửi trả lời câu hỏi ${q.code}`);

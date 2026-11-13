@@ -50,6 +50,7 @@
 
     <script src="btnn_luong_xu_ly.js?v=20261112vt2"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
+    <script src="btnn_hoi_dap.js?v=20261113hd1"></script>
     <script src="bctt_chuong.js?v=20261105nv"></script>
     <script>
         const WF = BTNN_WF;
@@ -103,37 +104,16 @@
             return V.cua(WF.getCurrentUserId()).map(x => row(`Năm ${x.r.year}`, `${x.nhan} - ${bo ? x.r.unitName : (KY_BC[x.r.period] || x.r.period)}`, '', x.ngan));
         }
 
-        // Hỏi đáp nghiệp vụ: câu hỏi chờ Lãnh đạo đang đăng nhập xử lý (cùng quy tắc isMyTask của hoi_dap_nghiep_vu.html)
-        // LĐ Phòng (Sở) duyệt, LĐ Sở duyệt gửi Bộ, LĐ Cục phân công LĐ Phòng, LĐ Phòng (Bộ) phân công Chuyên viên
-        const HD = { WAIT_PHONG_SO: 'Chờ Lãnh đạo Phòng duyệt', WAIT_SO: 'Chờ Lãnh đạo Sở duyệt', WAIT_CUC: 'Chờ Lãnh đạo Cục phân công', WAIT_PHONG: 'Chờ Lãnh đạo Phòng phân công' };
-        const HD_KEY = 'btnn_hoi_dap_nghiep_vu', HD_VERSION = 'v4'; // v4 (06/11/2026): bỏ trạng thái Nháp (HD-007 chuyển Chờ Lãnh đạo Phòng duyệt) + gộp nhánh ngadt63 (HD-009, HD-010)
-        // Dữ liệu mẫu câu hỏi đang chờ Lãnh đạo (dùng khi phân hệ Hỏi đáp chưa mở lần nào), khớp buildSeed của hoi_dap_nghiep_vu.html
-        function hdFallback() {
-            const y = new Date().getFullYear();
-            return [
-                { code: `HD-${y}-003`, unit: 'STP-HP', status: HD.WAIT_PHONG, phongLead: 'tpbt', title: 'Xác định mức hoàn trả khi nhiều người thi hành công vụ cùng gây thiệt hại' },
-                { code: `HD-${y}-004`, unit: 'STP-HN', status: HD.WAIT_CUC, title: 'Cách thống kê vụ việc chuyển tiếp từ kỳ báo cáo trước' },
-                { code: `HD-${y}-005`, unit: 'STP-HN', status: HD.WAIT_SO, title: 'Tiếp nhận hồ sơ yêu cầu bồi thường gửi qua dịch vụ bưu chính thiếu thành phần' },
-                { code: `HD-${y}-007`, unit: 'STP-HN', status: HD.WAIT_PHONG_SO, title: 'Lưu trữ hồ sơ giải quyết bồi thường sau khi hoàn thành chi trả' },
-                { code: `HD-${y}-008`, unit: 'STP-HN', status: HD.WAIT_PHONG_SO, title: 'Thương lượng khi người yêu cầu bồi thường ủy quyền cho luật sư' }
-            ];
-        }
+        // Hỏi đáp nghiệp vụ: câu hỏi đang chờ người dùng đang đăng nhập duyệt hoặc phân công, cùng quy tắc người xử lý hiện tại của trang Hỏi đáp
+        // (btnn_hoi_dap.js: quyền chức năng + đơn vị đang xử lý câu hỏi + người được giao; không xét Chức vụ). Chưa mở trang Hỏi đáp lần nào: dùng dữ liệu mẫu, không lưu.
         function hdItems() {
-            const PV = window.BTNN_PHAMVI;
-            if (!PV) return [];
-            let qs = null;
-            try { if (localStorage.getItem(HD_KEY + '_version') === HD_VERSION) qs = JSON.parse(localStorage.getItem(HD_KEY) || 'null'); } catch (e) { qs = null; }
-            const u = WF.getCurrentUser(), lv = PV.level(), stp = PV.stpOf(u.unitId);
-            const mine = q => {
-                if (lv === 'STP') return q.unit === stp && ((q.status === HD.WAIT_PHONG_SO && /Trưởng phòng/i.test(u.title)) || (q.status === HD.WAIT_SO && /Giám đốc/i.test(u.title)));
-                if (lv !== 'BTP') return false;
-                if (q.status === HD.WAIT_CUC) return u.unitId === 'CĐK-01';
-                return q.status === HD.WAIT_PHONG && u.unitId === 'PLN-02' && /Trưởng phòng/i.test(u.title) && q.phongLead === u.id;
-            };
+            const HDM = window.BTNN_HD, PV = window.BTNN_PHAMVI;
+            if (!HDM || !PV) return [];
+            const ST = HDM.ST, DUYET = [ST.WAIT_PHONG_SO, ST.WAIT_SO], PHAN_CONG = [ST.WAIT_CUC, ST.WAIT_PHONG];
             const lastAt = q => Math.max(0, ...((q.history || []).map(h => timeOf(h.at))));
-            return ((qs && qs.length) ? qs : hdFallback()).filter(mine)
+            return HDM.load({ save: false }).filter(q => DUYET.concat(PHAN_CONG).includes(q.status) && HDM.canSee(q) && HDM.isMyTask(q))
                 .sort((a, b) => lastAt(b) - lastAt(a))
-                .map(q => row(q.code, `${/duyệt$/.test(q.status) ? 'Chờ duyệt' : 'Chờ phân công'}: ${q.title}`, '', PV.unitName(q.unit)));
+                .map(q => row(q.code, `${DUYET.includes(q.status) ? 'Chờ duyệt' : 'Chờ phân công'}: ${q.title}`, '', PV.unitName(q.unit)));
         }
 
         // Công việc của Lãnh đạo đang đăng nhập theo từng khối

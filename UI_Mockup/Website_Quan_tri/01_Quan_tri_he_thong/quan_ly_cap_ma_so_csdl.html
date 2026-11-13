@@ -144,6 +144,13 @@
 
         .required-mark { color: var(--danger-color); margin-left: 4px; }
 
+        /* Popup biểu mẫu (Tạo mới/Hiệu chỉnh, Kích hoạt, Từ chối, Gia hạn, Khóa/Mở khóa): form chuẩn BTNN.
+           Hàng trường cách nhau 16px; không áp cho popup Xem chi tiết (dùng detail-row). */
+        .modal-body:not(#viewModalBody) > :is(.form-group, .grid-2-cols, .grid-3-cols, .grid-4-cols) { margin-bottom: 16px; }
+        .modal-body:not(#viewModalBody) > :is(.form-group, .grid-2-cols, .grid-3-cols, .grid-4-cols):last-child { margin-bottom: 0; }
+        .modal-body:not(#viewModalBody) :is(.grid-2-cols, .grid-3-cols, .grid-4-cols) { row-gap: 16px; }
+        .modal-body .form-label { color: #334155; }
+
         /* Buttons */
         .btn {
             font-weight: 600;
@@ -2483,5 +2490,6 @@
     <script src="bpbd_filter_toggle.js"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
+    <script src="../02_Bien_phap_bao_dam/bpbd_dong_bo_giao_dien.js?v=20261113f"></script>
 </body>
 </html>

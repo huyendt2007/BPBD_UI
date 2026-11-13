@@ -36,6 +36,20 @@
  *    .banHanh để vẽ ô Số, ô Ngày, ô Dấu và các dòng Đơn vị ban hành, Văn thư xử lý ở cấp cuối. Phân hệ lưu phiếu trình riêng: toLegacy(col) trả thêm
  *    dongDau, banHanh; decorateLegacy(st) đọc st.dongDau / st.banHanh; decorateSimple(a, s) đọc s.dongDau / s.banHanh (s = st.lvCol hoặc phiếu đã lưu);
  *    simpleMount(st) gọi reset(st.prevLv, st.prevDongDau, st.prevBanHanh); prevBanHanhOf(x) lấy banHanh từ phiếu trình đã lưu.
+ * [vt2] 13/11/2026 - Tách khối và nút Đặt vị trí (người dùng yêu cầu 13/11/2026):
+ *    - Bước 2 có 02 khối riêng dưới nút Thêm cấp: "Số, ký hiệu và ngày văn bản" (Số, ký hiệu văn bản; Địa danh; Ngày văn bản; chỉ khi soNgay
+ *      có trường nhập) và "Đóng dấu cơ quan, đơn vị ban hành" (ô tích, Đơn vị ban hành, Văn thư xử lý, nút Đặt lại vị trí của ô Dấu).
+ *    - Nút "Đặt vị trí" cho Số, ký hiệu văn bản (ô Số) và cho Địa danh, Ngày văn bản (ô Ngày), giống "Đặt chữ ký": bấm thì ô hiện trên văn bản
+ *      tại vị trí mặc định để kéo; sau khi đặt có "Đã đặt vị trí" và nút "Đặt lại". Chưa đặt: ô không hiện ở Bước 2, hệ thống dùng vị trí mặc định.
+ *    - collect().banHanh có thêm datViTri: { so, ngay } (true = người trình đã bấm Đặt vị trí); viTri.so / viTri.ngay vẫn có giá trị
+ *      (chưa đặt: vị trí mặc định) để màn Ký duyệt và màn Văn thư dùng lại.
+ *    - [vt3] 13/11/2026 (người dùng duyệt): ô Dấu cũng có nút "Đặt vị trí" trong khối "Đóng dấu cơ quan, đơn vị ban hành", chỉ hiện khi tích,
+ *      cùng cách với ô Số, ô Ngày; thay nút "Đặt lại vị trí" cũ của khối. collect().banHanh.datViTri có thêm dau. Trang soNgay 'o' không còn
+ *      nút đặt lại ô Số, ô Ngày (hiện không trang nào dùng 'o').
+ *      Ô đã đặt vị trí có nút "×" (Xóa vị trí đã đặt) - trở về chưa đặt. Bỏ nhãn "Văn thư điền khi ban hành" (Bước 2 và màn Ký duyệt)
+ *      và bỏ dòng "Văn thư xử lý: …" dưới Đơn vị ban hành ở popup trình; logic chuyển Văn thư theo con dấu giữ nguyên.
+ *    - Địa danh (người dùng chốt 13/11/2026): tích Đóng dấu cơ quan - mặc định Tỉnh/Thành phố của Đơn vị ban hành (như cũ);
+ *      bỏ tích - để trống (xóa giá trị tự điền, giữ giá trị người dùng tự nhập). Chuỗi in khi Địa danh trống bắt đầu bằng "ngày".
  * 6. Hàm hỗ trợ: SEALS (con dấu giả lập: { ma, ten, donViSoHuu, donViVanThu, taiKhoanVanThu: [], trangThai, kichThuoc } - nhập 1 trong 2 hoặc cả 2 trường văn thư),
  *    sealsOf(unitId) (con dấu Hoạt động), vanThuOfSeal(seal) -> { cachVanThu, donViVanThu, donViVanThuTen, taiKhoan, text }, vanThuText(unitId)
  *    (chuỗi sau "Văn thư xử lý: ", nhiều con dấu nối bằng "; "), isVanThuOfSeal(seal, { id?, hoTen, donVi }),
@@ -212,6 +226,12 @@
     .pc-bh-prev { margin-top: 6px; font: italic 13.5px 'Times New Roman', serif; color: #1e293b; background: #fff; border: 1px dashed #cbd5e1; border-radius: 6px; padding: 5px 8px; }
     .pc-bh-vt { margin-top: 6px; font-size: 11.5px; color: #475569; }
     .pc-bh-acts { display: flex; justify-content: flex-start; }
+    .pc-bh-wrap { display: flex; flex-direction: column; gap: 10px; }
+    .pc-bh-dat { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
+    .pc-bh-dat .pc-bh-note { font-size: 11px; color: #94a3b8; }
+    .pc-bhbox .pc-bh-x { position: absolute; top: -9px; right: -9px; width: 18px; height: 18px; border-radius: 50%; border: none; background: #dc2626; color: #fff; font: 700 13px/18px Inter, system-ui, sans-serif; font-style: normal; padding: 0; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+    .pc-bhbox.dau .pc-bh-x { top: 10%; right: 10%; }
+    .pc-bhbox .pc-bh-x:hover { background: #b91c1c; }
     .pc-bhbox { position: absolute; z-index: 12; background: #fff; border: 1.5px dashed #0f766e; border-radius: 4px; padding: 2px 8px; font: 14px 'Times New Roman', Times, serif; color: #111; cursor: move; white-space: nowrap; box-sizing: border-box; box-shadow: 0 2px 8px rgba(15,118,110,.18); user-select: none; line-height: 1.5; text-align: center; }
     .pc-bhbox.ngay { font-style: italic; }
     .pc-bhbox.cho { color: #64748b; border-color: #94a3b8; background: rgba(255,255,255,.96); }
@@ -487,7 +507,7 @@
     // Kích thước ô Dấu: Kích thước (px) của con dấu Hoạt động đầu tiên của Đơn vị ban hành; chưa có Đơn vị ban hành: mặc định 150 của cấu hình con dấu
     const D_DAU = 150;
     function dauSizeOf(unitId) { const s = sealsOf(unitId)[0]; return (s && s.kichThuoc) || D_DAU; }
-    // Vẽ ô Số, ô Ngày, ô Dấu chỉ đọc theo vị trí đã lưu (màn Ký duyệt); tích Đóng dấu cơ quan: khung mờ có nhãn "Văn thư điền khi ban hành"
+    // Vẽ ô Số, ô Ngày, ô Dấu chỉ đọc theo vị trí đã lưu (màn Ký duyệt); tích Đóng dấu cơ quan: khung mờ (khung chờ)
     function drawBhView(pg, bh, dongDau) {
         if (!pg || !bh) return;
         const vt = bh.viTri || {};
@@ -501,11 +521,12 @@
             box.innerHTML = html;
             pg.appendChild(box);
         };
-        // Tích: Lãnh đạo ký số văn bản chưa có số, ngày, dấu - các ô là khung mờ, nội dung "Văn thư điền khi ban hành"
+        // Tích: Lãnh đạo ký số văn bản chưa có số, ngày, dấu - các ô là khung mờ (khung chờ)
+        // [vt3] 13/11/2026: bỏ nội dung "Văn thư điền khi ban hành"; khung chờ "Số: ……", "[Địa danh], ngày … tháng … năm …", "Dấu cơ quan"
         if (dongDau) {
-            if (vt.so) add(vt.so, 'so cho', 'Văn thư điền khi ban hành');
-            if (vt.ngay) add(vt.ngay, 'ngay cho', 'Văn thư điền khi ban hành');
-            if (vt.dau) add(vt.dau, 'dau', 'Dấu cơ quan<small>Văn thư điền khi ban hành</small>', vt.dau.d || D_DAU);
+            if (vt.so) add(vt.so, 'so cho', esc('Số: ……'));
+            if (vt.ngay) add(vt.ngay, 'ngay cho', esc(NGAY_CHO(bh.diaDanh)));
+            if (vt.dau) add(vt.dau, 'dau', 'Dấu cơ quan', vt.dau.d || D_DAU);
             return;
         }
         // Không tích: ô Số, ô Ngày có giá trị hiển thị dạng xem trước nội dung sẽ chèn khi Lãnh đạo cấp cuối Ký duyệt
@@ -517,7 +538,8 @@
 
     function levelSetup(cfg) {
         ensureCss();
-        const newBh = () => ({ so: '', diaDanh: '', diaDanhSua: false, ngay: '', donVi: '', viTri: { so: null, ngay: null, dau: null } });
+        // [vt2] dat: người trình đã bấm "Đặt vị trí" cho ô Số / ô Ngày (chưa đặt: ô không hiện ở Bước 2, dùng vị trí mặc định)
+        const newBh = () => ({ so: '', diaDanh: '', diaDanhSua: false, ngay: '', donVi: '', viTri: { so: null, ngay: null, dau: null }, dat: { so: false, ngay: false, dau: false } });
         const S = { levels: [], combos: [], drag: null, dongDau: true, bh: newBh(), lastKey: null, wasLocked: false, dv: null, dvCfg: null, fp: null };
         const newLevel = () => ({ leader: '', kyNhay: false, kySo: false, kySoChon: false, sig: null });
         const defSig = (i, last) => (last ? { x: 480, y: 860, w: 245, h: 110 } : { x: 60 + (i % 2) * 210, y: 860 + Math.floor(i / 2) * 100, w: 200, h: 90 });
@@ -536,10 +558,12 @@
         const locked = () => !!lastLeader() && dvList().length === 0;
         const ddOn = () => online() && !locked() && !!S.dongDau;
         function normalizeLast() { const n = S.levels.length; S.levels.forEach((l, i) => { l.kySo = i === n - 1 ? true : !!l.kySoChon; }); }
-        // Địa danh mặc định: Tỉnh/Thành phố của Đơn vị ban hành; không tích: đơn vị Lãnh đạo cấp cuối; chưa chọn: đơn vị cán bộ trình
+        // Địa danh mặc định: tích Đóng dấu cơ quan - Tỉnh/Thành phố của Đơn vị ban hành (chưa có Đơn vị ban hành: đơn vị Lãnh đạo cấp cuối,
+        // chưa chọn: đơn vị cán bộ trình - như cũ); [vt2] 13/11/2026 bỏ tích (hoặc ô tích bị khóa): để trống, người dùng tự nhập
         function diaDanhDefault() {
+            if (!ddOn()) return '';
             const lu = WF.getUser(lastLeader()), su = WF.getUser(submitterId());
-            return diaDanhOf(ddOn() && S.bh.donVi ? S.bh.donVi : (lu ? lu.unitId : (su ? su.unitId : '')));
+            return diaDanhOf(S.bh.donVi ? S.bh.donVi : (lu ? lu.unitId : (su ? su.unitId : '')));
         }
         // Lãnh đạo cấp cuối đổi (chọn, thêm, xóa, đổi thứ tự cấp): tính lại Đơn vị ban hành về đơn vị gần nhất; Địa danh theo mặc định khi chưa sửa tay
         function syncBh() {
@@ -558,7 +582,11 @@
             if (typeof b.soKyHieu === 'string') S.bh.so = b.soKyHieu;
             if (typeof b.ngayVanBan === 'string') S.bh.ngay = b.ngayVanBan;
             const vt = b.viTri || {};
-            ['so', 'ngay', 'dau'].forEach(k => { if (vt[k] && typeof vt[k].x === 'number') S.bh.viTri[k] = { x: vt[k].x, y: vt[k].y }; });
+            // [vt2] Đã bấm Đặt vị trí lần trước: điền lại vị trí; chưa đặt thì để theo vị trí mặc định. Dữ liệu cũ (chưa có datViTri): có vị trí là đã đặt
+            const dv0 = b.datViTri || null;
+            // [vt3] ô Dấu cùng cách với ô Số, ô Ngày
+            ['so', 'ngay', 'dau'].forEach(k => { S.bh.dat[k] = dv0 && dv0[k] !== undefined ? !!dv0[k] : !!(vt[k] && typeof vt[k].x === 'number'); });
+            ['so', 'ngay', 'dau'].forEach(k => { if (S.bh.dat[k] && vt[k] && typeof vt[k].x === 'number') S.bh.viTri[k] = { x: vt[k].x, y: vt[k].y }; });
             if (b.donViBanHanh !== undefined) { S.lastKey = lastLeader(); const list = dvList(); S.bh.donVi = b.donViBanHanh ? (list.includes(b.donViBanHanh) ? b.donViBanHanh : '') : (list[0] || ''); }
             if (typeof b.diaDanh === 'string') { S.bh.diaDanh = b.diaDanh; S.bh.diaDanhSua = b.diaDanh.trim() !== diaDanhDefault(); }
         }
@@ -572,17 +600,33 @@
             S.bh = newBh(); S.lastKey = null; S.wasLocked = false;
             if (b) applyBanHanh(b);
         }
+        // [vt2] 13/11/2026: 02 khối riêng - "Số, ký hiệu và ngày văn bản" (chỉ khi soNgay có trường nhập) và "Đóng dấu cơ quan, đơn vị ban hành"
         function bhHtml() {
             const f = soNgayFields();
-            return `<div class="pc-bh" data-bh="blk">
-                <div class="pc-bh-title"><i class="fa-solid fa-stamp"></i> Thông tin ban hành văn bản</div>
-                ${f ? `<div class="pc-bh-f"><span class="pc-lbl">Số, ký hiệu văn bản</span><input type="text" class="pc-input" data-bh="so" maxlength="50" placeholder="Nhập số, ký hiệu văn bản" autocomplete="off"></div>
+            return `<div class="pc-bh-wrap" data-bh="blk">
+                ${f ? `<div class="pc-bh" data-bh="blkso">
+                <div class="pc-bh-title"><i class="fa-solid fa-hashtag" style="color:#0f766e;"></i> Số, ký hiệu và ngày văn bản</div>
+                <div class="pc-bh-f"><span class="pc-lbl">Số, ký hiệu văn bản</span><input type="text" class="pc-input" data-bh="so" maxlength="50" placeholder="Nhập số, ký hiệu văn bản" autocomplete="off"><div class="pc-bh-dat" data-bh="ctl-so"></div></div>
                 <div class="pc-bh-f"><span class="pc-lbl">Địa danh</span><input type="text" class="pc-input" data-bh="dia" maxlength="100" placeholder="Nhập địa danh" autocomplete="off"></div>
-                <div class="pc-bh-f"><span class="pc-lbl">Ngày văn bản</span><div class="pc-date"><input type="text" class="pc-input" data-bh="ngay" maxlength="10" placeholder="dd/mm/yyyy" autocomplete="off"><i class="fa-regular fa-calendar-days"></i></div><div class="pc-err" data-err="ngay">Ngày không hợp lệ (dd/mm/yyyy)</div><div class="pc-bh-prev" data-bh="prev" style="display:none;"></div></div>` : ''}
+                <div class="pc-bh-f"><span class="pc-lbl">Ngày văn bản</span><div class="pc-date"><input type="text" class="pc-input" data-bh="ngay" maxlength="10" placeholder="dd/mm/yyyy" autocomplete="off"><i class="fa-regular fa-calendar-days"></i></div><div class="pc-err" data-err="ngay">Ngày không hợp lệ (dd/mm/yyyy)</div><div class="pc-bh-prev" data-bh="prev" style="display:none;"></div><div class="pc-bh-dat" data-bh="ctl-ngay"></div></div>
+                </div>` : ''}
+                <div class="pc-bh" data-bh="blkdd">
+                <div class="pc-bh-title"><i class="fa-solid fa-stamp"></i> Đóng dấu cơ quan, đơn vị ban hành</div>
                 <label class="pc-dongdau" data-bh="ddl"><input type="checkbox" data-act="dd"><span><b>Đóng dấu cơ quan</b><span class="pc-dongdau-sub">Sau khi Lãnh đạo cấp cuối Ký duyệt, văn bản chuyển Văn thư đóng dấu và ban hành.</span><span class="pc-dongdau-lock" data-bh="lock" style="display:none;">Đơn vị của Lãnh đạo cấp cuối và các đơn vị cấp trên chưa có con dấu Hoạt động.</span><span class="pc-dongdau-lock" data-bh="nodau" style="display:none;">Đơn vị của Lãnh đạo cấp cuối không có con dấu. Văn bản do đơn vị này ban hành thì bỏ tích Đóng dấu cơ quan.</span></span></label>
-                <div class="pc-bh-f" data-bh="dvg"><span class="pc-lbl">Đơn vị ban hành<span class="pc-req">*</span></span><div data-bh="dv"></div><div class="pc-err" data-err="dv">Đây là trường bắt buộc</div><div class="pc-bh-vt" data-bh="vt"></div></div>
-                <div class="pc-bh-acts"><button type="button" class="pc-btn sm" data-bh="reset" title="Đưa ô Số, ô Ngày và ô Dấu về vị trí mặc định"><i class="fa-solid fa-rotate-left"></i> Đặt lại vị trí</button></div>
+                <div class="pc-bh-f" data-bh="dvg"><span class="pc-lbl">Đơn vị ban hành<span class="pc-req">*</span></span><div data-bh="dv"></div><div class="pc-err" data-err="dv">Đây là trường bắt buộc</div></div>
+                <div class="pc-bh-f" data-bh="dauctl"><span class="pc-lbl">Vị trí đóng dấu</span><div class="pc-bh-dat" data-bh="ctl-dau" style="margin-top:0;"></div></div>
+                </div>
             </div>`;
+        }
+        // [vt2] Nút "Đặt vị trí" (chưa đặt) hoặc "Đã đặt vị trí" + "Đặt lại" (đã đặt) dưới ô Số, ký hiệu văn bản và dưới khối Địa danh, Ngày văn bản
+        function paintDat() {
+            const w = host(); if (!w) return;
+            [['so', 'Đặt ô Số trên văn bản'], ['ngay', 'Đặt ô Ngày ([Địa danh], ngày … tháng … năm …) trên văn bản'], ['dau', 'Đặt ô Dấu trên văn bản']].forEach(([k, tip]) => {
+                const el = w.querySelector(`[data-bh="ctl-${k}"]`); if (!el) return;
+                el.innerHTML = S.bh.dat[k]
+                    ? `<span class="pc-bh-note">Đã đặt vị trí</span><button type="button" class="pc-btn sm" data-bh-act="lai" data-k="${k}" title="Đưa ô về vị trí mặc định"><i class="fa-solid fa-rotate-left"></i> Đặt lại</button>`
+                    : `<button type="button" class="btn btn-secondary btn-sm" data-bh-act="dat" data-k="${k}" title="${tip}" style="font-size:12px;"><i class="fa-solid fa-location-crosshairs"></i> Đặt vị trí</button><span class="pc-bh-note">Chưa đặt: dùng vị trí mặc định</span>`;
+            });
         }
         function render() {
             const w = host(); if (!w) return;
@@ -656,7 +700,8 @@
             const q = s => w.querySelector(`[data-bh="${s}"]`);
             const so = q('so'), dia = q('dia'), ngay = q('ngay');
             if (so) { so.value = S.bh.so; so.addEventListener('input', () => { S.bh.so = so.value; renderBhBoxes(); }); }
-            if (dia) { dia.value = S.bh.diaDanh; dia.addEventListener('input', () => { S.bh.diaDanh = dia.value; S.bh.diaDanhSua = true; paintPrev(); renderBhBoxes(); }); }
+            // [vt2] Có chữ người dùng tự nhập: giữ khi đổi Đóng dấu cơ quan / Đơn vị ban hành; xóa hết chữ thì lại theo mặc định
+            if (dia) { dia.value = S.bh.diaDanh; dia.addEventListener('input', () => { S.bh.diaDanh = dia.value; S.bh.diaDanhSua = dia.value.trim() !== ''; paintPrev(); renderBhBoxes(); }); }
             if (ngay) bindNgay(ngay, w.querySelector('[data-err="ngay"]'));
             else if (S.fp) { try { S.fp.destroy(); } catch (e) { /* bỏ qua */ } S.fp = null; }
             const dd = w.querySelector('[data-act="dd"]');
@@ -668,8 +713,17 @@
                 onChange: v => { S.bh.donVi = v; if (S.dv) S.dv.setInvalid(false); const e = w.querySelector('[data-err="dv"]'); if (e) e.style.display = 'none'; refreshBh(); }
             };
             S.dv = dvHost ? combo(dvHost, S.dvCfg) : null;
-            const rs = q('reset');
-            if (rs) rs.addEventListener('click', () => { S.bh.viTri = { so: null, ngay: null, dau: null }; renderBhBoxes(); });
+            // [vt2][vt3] Đặt vị trí / Đặt lại của ô Số, ô Ngày, ô Dấu: giống Đặt chữ ký - ô hiện tại vị trí mặc định, cuộn văn bản tới ô để kéo
+            // (blk được dựng lại mỗi lần render nên trình nghe không bị nhân đôi)
+            const blkAll = q('blk');
+            if (blkAll) blkAll.addEventListener('click', e => {
+                const b = e.target.closest('[data-bh-act]'); if (!b) return;
+                const k = b.getAttribute('data-k'); if (!['so', 'ngay', 'dau'].includes(k)) return;
+                S.bh.dat[k] = true; S.bh.viTri[k] = null;
+                paintDat(); renderBhBoxes();
+                const pg = page(), bx = pg && pg.querySelector(`.pc-bhbox[data-bh="${k}"]`);
+                if (bx && bx.scrollIntoView) bx.scrollIntoView({ block: 'center' });
+            });
         }
         // Ô ngày: flatpickr (d/m/Y) nếu trang có; giữ chữ cán bộ gõ để báo "Ngày không hợp lệ (dd/mm/yyyy)" (flatpickr tự đổi ngày sai)
         function bindNgay(inp, err) {
@@ -718,12 +772,14 @@
                 S.dv.set(S.bh.donVi, true);
                 S.dv.refresh();
             }
+            // [vt3] 13/11/2026: bỏ dòng "Văn thư xử lý: …" dưới Đơn vị ban hành ở popup trình (logic chuyển Văn thư theo con dấu giữ nguyên)
             const vt = blk.querySelector('[data-bh="vt"]');
             if (vt) { const t = on && S.bh.donVi ? vanThuText(S.bh.donVi) : ''; vt.textContent = t ? 'Văn thư xử lý: ' + t : ''; vt.style.display = t ? '' : 'none'; }
             const dia = blk.querySelector('[data-bh="dia"]');
             if (dia && document.activeElement !== dia && dia.value !== S.bh.diaDanh) dia.value = S.bh.diaDanh;
-            const rs = blk.querySelector('[data-bh="reset"]'); if (rs) rs.parentElement.style.display = (soNgayOn() || on) ? '' : 'none';
-            paintPrev();
+            // [vt3] Dòng "Vị trí đóng dấu" (Đặt vị trí ô Dấu): chỉ khi tích Đóng dấu cơ quan
+            const dc = blk.querySelector('[data-bh="dauctl"]'); if (dc) dc.style.display = on ? '' : 'none';
+            paintPrev(); paintDat();
         }
         // ---- Ô Số, ô Ngày, ô Dấu trên văn bản: chỉ di chuyển, không đổi kích thước; không bắt buộc kéo ----
         function lastSig() { const n = S.levels.length; const l = S.levels[n - 1]; return (l && l.sig) || defSig(Math.max(0, n - 1), true); }
@@ -737,7 +793,7 @@
         const dauD = () => dauSizeOf(ddOn() ? S.bh.donVi : '');
         function dauDefault() { const s = lastSig(), d = dauD(); return { x: Math.max(10, Math.round(s.x + s.w / 3 - d)), y: Math.max(10, Math.round(s.y + s.h / 2 - d / 2)) }; }
         function posOf(k, defs) { const p = S.bh.viTri[k]; if (p) return p; return k === 'dau' ? dauDefault() : (defs || docDefaults())[k]; }
-        // Tích Đóng dấu cơ quan: ô Số, ô Ngày, ô Dấu luôn hiển thị (chưa nhập: khung chờ mờ, nhãn "Văn thư điền khi ban hành");
+        // Tích Đóng dấu cơ quan: ô Số, ô Ngày, ô Dấu luôn hiển thị (chưa nhập: khung chờ mờ);
         // không tích: ô Số, ô Ngày chỉ hiển thị khi đã nhập giá trị
         function renderBhBoxes() {
             const pg = page(); if (!pg) return;
@@ -746,7 +802,10 @@
             if (getComputedStyle(pg).position === 'static') pg.style.position = 'relative';
             const on = ddOn(), sn = soNgayOn();
             const defs = docDefaults();
-            const tag = on ? '<span class="pc-bh-tag">Văn thư điền khi ban hành</span>' : '';
+            // [vt3] 13/11/2026: bỏ nhãn "Văn thư điền khi ban hành" trên ô Số, ô Ngày (người dùng yêu cầu)
+            const tag = '';
+            // [vt3] Ô đã đặt vị trí có nút "×" (Xóa vị trí đã đặt): gỡ ô khỏi văn bản, trở về chưa đặt (dùng vị trí mặc định)
+            const coXoa = k => k === 'dau' || soNgayFields();
             const add = (k, cls, html, minW) => {
                 const p = posOf(k, defs);
                 const box = document.createElement('div');
@@ -756,22 +815,27 @@
                 Object.assign(box.style, { left: p.x + 'px', top: p.y + 'px' });
                 if (k === 'dau') Object.assign(box.style, { width: dauD() + 'px', height: dauD() + 'px' });
                 else if (minW) box.style.minWidth = minW + 'px';
-                box.innerHTML = html;
+                box.innerHTML = html + (coXoa(k) ? '<button type="button" class="pc-bh-x" data-bh-x="' + k + '" title="Xóa vị trí đã đặt">×</button>' : '');
                 box.addEventListener('mousedown', e => {
                     if (e.button !== 0) return;
                     e.preventDefault(); e.stopPropagation();
+                    if (e.target.closest('.pc-bh-x')) { S.bh.dat[k] = false; S.bh.viTri[k] = null; paintDat(); renderBhBoxes(); return; }
                     const r = box.getBoundingClientRect();
                     S.drag = { bh: k, box, ox: e.clientX - r.left, oy: e.clientY - r.top };
                 });
                 pg.appendChild(box);
             };
             if (sn) {
+                // [vt2] Trang có trường nhập: ô Số, ô Ngày chỉ hiện sau khi bấm Đặt vị trí (giống ô ký); chưa nhập giá trị thì là khung chờ.
+                // Trang chỉ có ô (soNgay 'o'): như cũ - tích Đóng dấu cơ quan thì luôn hiện, không tích thì hiện khi có giá trị
+                const f = soNgayFields();
                 const so = String(S.bh.so || '').trim();
-                if (so || on) add('so', 'so' + (so ? '' : ' cho'), tag + esc('Số: ' + (so || '……')), defs.so.w || 0);
+                if (f ? S.bh.dat.so : (so || on)) add('so', 'so' + (so ? '' : ' cho'), tag + esc('Số: ' + (so || '……')), defs.so.w || 0);
                 const nc = ngayChu(S.bh.diaDanh, S.bh.ngay);
-                if (nc || on) add('ngay', 'ngay' + (nc ? '' : ' cho'), tag + esc(nc || NGAY_CHO(S.bh.diaDanh)), defs.ngay.w || 0);
+                if (f ? S.bh.dat.ngay : (nc || on)) add('ngay', 'ngay' + (nc ? '' : ' cho'), tag + esc(nc || NGAY_CHO(S.bh.diaDanh)), defs.ngay.w || 0);
             }
-            if (on) add('dau', 'dau', 'Dấu cơ quan');
+            // [vt3] Ô Dấu chỉ hiện sau khi bấm Đặt vị trí (chưa đặt: vị trí mặc định trùm 1/3 bên trái ô ký cấp cuối)
+            if (on && S.bh.dat.dau) add('dau', 'dau', 'Dấu cơ quan');
         }
         function refreshBh() { syncBh(); updateBhUi(); renderBhBoxes(); }
         function setBanHanh(b) {
@@ -878,7 +942,9 @@
                 banHanh = {
                     soKyHieu: sn ? String(S.bh.so || '').trim() : '', diaDanh: dia, ngayVanBan: sn ? ngay : '', ngayChu: sn ? ngayChu(dia, ngay) : '',
                     dongDau: dd, donViBanHanh: dd ? S.bh.donVi : '', donViBanHanhTen: dd && S.bh.donVi ? WF.unitName(S.bh.donVi) : '', vanThu: dd && S.bh.donVi ? vanThuText(S.bh.donVi) : '',
-                    viTri: { so: sn ? cp(posOf('so', defs), defs.so.w) : null, ngay: sn ? cp(posOf('ngay', defs), defs.ngay.w) : null, dau: dd ? Object.assign(cp(posOf('dau')), { d: dauD() }) : null }
+                    viTri: { so: sn ? cp(posOf('so', defs), defs.so.w) : null, ngay: sn ? cp(posOf('ngay', defs), defs.ngay.w) : null, dau: dd ? Object.assign(cp(posOf('dau')), { d: dauD() }) : null },
+                    // [vt2] true: người trình đã bấm Đặt vị trí; false: viTri là vị trí mặc định
+                    datViTri: { so: sn && (soNgayFields() ? !!S.bh.dat.so : true), ngay: sn && (soNgayFields() ? !!S.bh.dat.ngay : true), dau: dd && !!S.bh.dat.dau }
                 };
             }
             return { levels, pcSig, dongDau: dd, banHanh, assignees: levels.map(l => l.leader), path: levels.map(l => { const u = WF.getUser(l.leader); return u ? u.unitId : ''; }) };
