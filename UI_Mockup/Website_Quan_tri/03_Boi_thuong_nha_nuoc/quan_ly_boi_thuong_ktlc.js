@@ -1,8 +1,8 @@
 /* [ktlc] Không thụ lý lý do KTL_01 (Không thuộc thẩm quyền) - Quy tắc "Chuyển hồ sơ cho" theo cấp đơn vị và số lần đã chuyển
  * Phạm vi áp dụng: hồ sơ Giải quyết YCBT có nguồn gốc Tiếp nhận mới / Dịch vụ công, chưa từng qua bước Xác định CQGQBT.
  * - Lần 1 (chưa từng chuyển do KTL_01): đơn vị trung ương -> Bộ Tư pháp / Cơ quan giải quyết bồi thường khác;
- *   đơn vị địa phương -> Sở Tư pháp cùng tỉnh, thành phố (hệ thống tự xác định) / Cơ quan giải quyết bồi thường khác.
- * - Từ lần 2 (hồ sơ đã chuyển ít nhất 01 lần do KTL_01): bắt buộc Bộ Tư pháp (trung ương) / Sở Tư pháp cùng tỉnh (địa phương);
+ *   đơn vị cấp Tỉnh, Xã -> Sở Tư pháp cùng tỉnh, thành phố (hệ thống tự xác định) / Cơ quan giải quyết bồi thường khác.
+ * - Từ lần 2 (hồ sơ đã chuyển ít nhất 01 lần do KTL_01): bắt buộc Bộ Tư pháp (trung ương) / Sở Tư pháp cùng tỉnh (cấp Tỉnh, Xã);
  *   khi ban hành, hệ thống tự tạo hồ sơ Xác định CQGQBT tại cơ quan nhận (Sở Tư pháp: luồng STP tham mưu, UBND tỉnh xem).
  * - Hồ sơ đã qua Xác định CQGQBT / nguồn khác: giữ 03 lựa chọn như trước.
  * Nạp tại quan_ly_boi_thuong.html (popup Không thụ lý, ban hành, khối chuyển ở màn chi tiết, dữ liệu mẫu)
@@ -10,12 +10,14 @@
  */
 var KTLC_VERSION = '20261027ktl2';
 var KTLC_LABELS = { BTP: 'Bộ Tư pháp', STP: 'Sở Tư pháp', CQ: 'Cơ quan giải quyết bồi thường khác' };
-// Thuộc tính "Cấp đơn vị" của đơn vị gốc trên Cơ cấu tổ chức (Quản trị hệ thống): dữ liệu mẫu gán cho cây đơn vị của BTNN_WF
-var KTLC_CAP = { TW: 'Trung ương', DP: 'Địa phương' };
+// Thuộc tính "Cấp đơn vị" (Trung ương / Tỉnh / Xã) trên Cơ cấu tổ chức (Quản trị hệ thống): dữ liệu mẫu gán cho cây đơn vị của BTNN_WF
+// Tỉnh và Xã cùng nhóm địa phương: lựa chọn chuyển hồ sơ là Sở Tư pháp cùng tỉnh, thành phố
+var KTLC_CAP = { TW: 'Trung ương', TINH: 'Tỉnh', XA: 'Xã' };
 var KTLC_CAP_MAU = {
     'Trung ương': ['BTP-01', 'VKSNDTC', 'TANDTC', 'VPCP', 'TTCP', 'BTC'],
-    'Địa phương': ['STP-HN', 'STP-HCM', 'STP-HP', 'UBND-CG', 'UBND-HK', 'UBND-HM', 'UBND-LD', 'UBND-DD', 'UBND-HN', 'THADS-LD', 'THADS-HP', 'THADS-HN',
-        'TAND-LD', 'TAND-HN', 'TAND-HK', 'TAND-LC', 'TAND-NT', 'CA-TX', 'CA-HM', 'VKS-Q1', 'VKS-HP', 'CCTHADS-BT', 'CCTHADS-CG', 'CCTHADS-TT', 'CCTS-BD']
+    'Tỉnh': ['STP-HN', 'STP-HCM', 'STP-HP', 'UBND-LD', 'UBND-HN', 'THADS-LD', 'THADS-HP', 'THADS-HN',
+        'TAND-LD', 'TAND-HN', 'TAND-HK', 'TAND-LC', 'TAND-NT', 'VKS-Q1', 'VKS-HP', 'CCTHADS-BT', 'CCTHADS-CG', 'CCTHADS-TT', 'CCTS-BD'],
+    'Xã': ['UBND-CG', 'UBND-HK', 'UBND-HM', 'UBND-DD', 'CA-TX', 'CA-HM']
 };
 // Suy cấp khi đơn vị chưa có thuộc tính Cấp đơn vị: đơn vị gốc trung ương (Bộ, cơ quan ngang Bộ, TAND tối cao, VKSND tối cao)
 var KTLC_TW_IDS = ['BTP-01', 'VKSNDTC', 'TANDTC', 'VPCP', 'TTCP', 'BTC'];
@@ -40,8 +42,9 @@ function ktlcCapOf(unitId) {
     var root = ktlcRoot(unitId);
     var u = W && root ? W.getUnit(root) : null;
     if (!u) return '';
-    if (u.capDonVi === KTLC_CAP.TW || u.capDonVi === KTLC_CAP.DP) return u.capDonVi;
-    return ktlcIsTWGuess(u, root) ? KTLC_CAP.TW : KTLC_CAP.DP;
+    if (u.capDonVi === KTLC_CAP.TW || u.capDonVi === KTLC_CAP.TINH || u.capDonVi === KTLC_CAP.XA) return u.capDonVi;
+    if (ktlcIsTWGuess(u, root)) return KTLC_CAP.TW;
+    return /(^|\s)(UBND|Ủy ban nhân dân|Công an)\s+(phường|xã|đặc khu)/i.test(u.name || '') ? KTLC_CAP.XA : KTLC_CAP.TINH;
 }
 function ktlcIsTW(unitId) { return ktlcCapOf(unitId) === KTLC_CAP.TW; }
 // Suy cấp trung ương theo Loại cơ quan (nếu có), danh sách đơn vị gốc trung ương, hoặc tên (Bộ ..., ... tối cao, ... Chính phủ)

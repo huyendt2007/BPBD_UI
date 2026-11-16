@@ -740,7 +740,7 @@ function tlhdFileCardHtml(f, viewJs, removeJs) {
 }
 // Kiểm tra định dạng / dung lượng: trả về thông báo lỗi hoặc '' nếu hợp lệ
 function tlhdCheckFile(file, exts) {
-    if (!exts.test(file.name)) return 'Tệp không đúng định dạng cho phép.';
+    if (!exts.test(file.name)) return 'Định dạng tệp tin không hợp lệ.';   // SRS MH05 Tải tệp (sửa 16/11/2026)
     if (file.size > TLHD_MAX_FILE) return 'Dung lượng tệp vượt quá 50MB cho phép.';
     return '';
 }
@@ -1297,7 +1297,7 @@ function tlhdIssueOffline() {
     activeDossier.hdDate = today;
     activeDossier.hdSignDate = today;
     activeDossier.hdFileName = tlhdState.offlineFile.name;
-    activeDossier.hdLeader = 'Ký ngoài hệ thống';
+    activeDossier.hdLeader = 'Ký ngoài';
     activeDossier.status = TLHD_OFF_TARGET;
     const now = tlhdNow();
     if (typeof councilSignHistory !== 'undefined') councilSignHistory.unshift({ type: 'approve', actor: 'Cán bộ xử lý', time: now, detail: `Ban hành Quyết định thành lập Hội đồng ký ngoài hệ thống (tệp ${tlhdE(tlhdState.offlineFile.name)}).` });
@@ -1363,7 +1363,7 @@ function tlhdApproveLevel(note) {
     if (typeof councilSignHistory !== 'undefined') councilSignHistory.unshift({ type: 'approve', actor: who, time: now, detail: `Ký duyệt (${how}) Quyết định thành lập Hội đồng, chuyển Lãnh đạo ${tlhdE(next)} (Cấp ${a.level + 1}).` + (y ? ` Ý kiến: ${tlhdE(y)}` : '') });
     if (!activeDossier.timeline) activeDossier.timeline = [];
     activeDossier.timeline.unshift({ time: now, text: `Lãnh đạo ${who} ký duyệt Quyết định thành lập Hội đồng, chuyển Lãnh đạo cấp tiếp theo.` });
-    tlhdToast('Ký duyệt thành công. Quyết định thành lập Hội đồng được chuyển Lãnh đạo cấp tiếp theo.', 'success');
+    tlhdToast(`Đã ký duyệt Thành lập hội đồng hồ sơ ${activeDossier.code}, chuyển ${next} ký duyệt.`, 'success'); // [MSG-SUC-BTNN-HT-021]
     if (typeof renderStateLayout === 'function') renderStateLayout();
     return true;
 }

@@ -181,6 +181,18 @@ function cdpdApplyMode(on, isNew) {
     });
     if (on) handleRequestTypeChange('honor');
     else if (isNew) { document.getElementsByName('claimRequestType').forEach(function (r) { r.checked = r.value === 'both'; }); handleRequestTypeChange('both'); }
+    // [vv2] Cơ quan giải quyết bồi thường: tự điền đơn vị gốc của tài khoản đang đăng nhập, không cho sửa
+    var cq = cdpdEl('claimCqNhan');
+    if (cq) {
+        if (on) {
+            var mine = cdpdLoginRootName();
+            if (mine && (isNew || !cq.value)) cq.value = mine;
+            cq.readOnly = true; cq.removeAttribute('list'); cq.placeholder = '';
+            cq.title = 'Tự động theo đơn vị của tài khoản đang đăng nhập';
+        } else {
+            cq.readOnly = false; cq.setAttribute('list', 'cqNhanList'); cq.placeholder = 'Chọn hoặc nhập cơ quan giải quyết...'; cq.title = '';
+        }
+    }
     // Hình thức tiếp nhận: hệ thống gán, chỉ đọc
     var sel = cdpdEl('claimHinhThucTiepNhan'), txt = cdpdEl('cdpdHttnText');
     show(sel, !on); show(txt, on);
@@ -249,6 +261,16 @@ function cdpdApplyMode(on, isNew) {
     }
 }
 function cdpdSetMode(on) { cdpdApplyMode(on, !editingClaimId); }
+// Tên đơn vị gốc (trên Cơ cấu tổ chức) của tài khoản đang đăng nhập
+function cdpdLoginRootName() {
+    try {
+        var W = gqW(); if (!W) return '';
+        var id = typeof gqActingUserId === 'function' ? gqActingUserId() : W.getCurrentUserId();
+        var u = W.getUser(id); if (!u) return '';
+        var root = (W.getRootId && W.getRootId(u.unitId)) || u.unitId;
+        return W.unitName(root) || '';
+    } catch (e) { return ''; }
+}
 // Hình thức tiếp nhận của hồ sơ = Cán bộ chủ động phục hồi danh dự khi có đủ thông tin
 function cdpdSetHttnSelect() {
     var sel = cdpdEl('claimHinhThucTiepNhan'); if (!sel) return;
@@ -273,6 +295,8 @@ function cdpdAfterOpenForm(id) {
         block.style.display = '';
         radios.forEach(function (r) { r.checked = r.value === 'cdpd'; r.disabled = true; });
         cdpdApplyMode(true, true);
+        // [vv2] Dữ liệu ban đầu của form: dùng khi lần đầu chuyển sang Vụ việc mới / Đã tồn tại vụ việc
+        if (typeof claimVvModeInitBlank === 'function') claimVvModeInitBlank();
     } else if (cdpdIs(claim)) {
         block.style.display = '';
         radios.forEach(function (r) { r.checked = r.value === 'cdpd'; r.disabled = true; });
@@ -695,7 +719,8 @@ function cdpdApplyIssued(c, m26, signerName, signerTitle) {
 function cdpdDelete(id) {
     var c = gqClaim(id);
     if (!c || !cdpdIs(c) || canonicalClaimStatus(c.status) !== 'Bị trả lại' || !cdpdIsCreator(c)) { showToast('Chỉ cán bộ tạo hồ sơ được xóa hồ sơ chủ động phục hồi danh dự ở trạng thái Bị trả lại.', 'error'); return; }
-    showConfirmModal('Bạn có chắc chắn muốn xóa hồ sơ ' + claimVvLabel(c) + ' không?', function () {
+    // [MSG-CFM-SYS-001]: [Tên bản ghi] = Mã hồ sơ (nhiều hồ sơ có thể cùng Mã vụ việc)
+    showConfirmModal('Bạn có chắc chắn muốn xóa bản ghi ' + c.code + ' không?', function () {
         var idx = claimsList.indexOf(c);
         if (idx >= 0) claimsList.splice(idx, 1);
         try { var W = gqW(); if (W) { W.removeRecord(c.code); if (W.unlinkVuViec) W.unlinkVuViec(c.code); } if (typeof gqRecMap !== 'undefined') delete gqRecMap[c.code]; } catch (e) { /* mockup */ }
@@ -703,7 +728,7 @@ function cdpdDelete(id) {
         var detail = cdpdEl('caseDetailSection');
         if (detail && detail.style.display === 'block') { detail.style.display = 'none'; var list = cdpdEl('subTabContentResolver'); if (list) list.style.display = 'block'; }
         renderClaimsTable();
-        showToast('Đã xóa hồ sơ chủ động phục hồi danh dự.', 'success');
+        showToast('Xóa hồ sơ thành công!', 'success'); // [MSG-SUC-BTNN-TN-001] dùng chung cho thao tác Xóa hồ sơ
     });
 }
 // Cử người phục hồi danh dự: popup Phân công dùng chung (btnn_lanh_dao_actions.js) theo luồng của đơn vị (BTNN_WF.PHDD_ASSIGN)

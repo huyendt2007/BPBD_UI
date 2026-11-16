@@ -51,10 +51,13 @@
         const a = A(), s = a.scope(), B = window.htActBtn;
         const view = window.htViewOfficerBtn(idx, 'ht4OpenHistory');
         if (s === 'lanh_dao') {
+            // Vị trí 2 (Ghi nhận nộp tiền hoặc Ghi nhận trả lại tiền) hiển thị khóa mờ, không có tooltip lý do (SRS sửa 16/11/2026, câu 8 đợt 2)
+            const vt2 = (o.refund || 0) > 0 ? B('fa-solid fa-hand-holding-dollar', 'Ghi nhận trả lại tiền', '', false, '', '#d97706')
+                : B('fa-solid fa-money-bill-transfer', 'Ghi nhận nộp tiền', '', false, '', '#16a34a');
             // Lượt trình 01 cán bộ (dữ liệu cũ); QĐ chung: Ký duyệt / Từ chối tại khối Quyết định miễn / giảm mức hoàn trả bổ sung
             return /^CD_(MIEN|GIAM)$/.test(o.trinh || '') && o.mgKey == null && o.qd3
-                ? view + ' ' + act('ht3Approve(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-file-signature', 'Ký duyệt', true) + ' ' + act('ht3Reject(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-ban', 'Từ chối', true)
-                : view;
+                ? view + ' ' + vt2 + ' ' + act('ht3Approve(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-file-signature', 'Ký duyệt', true) + ' ' + act('ht3Reject(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-ban', 'Từ chối', true)
+                : view + ' ' + vt2;
         }
         const own = canPay(o), noOwn = 'Đơn vị của bạn không thực hiện thu tiền của cán bộ này';
         // Nút 2 đổi chế độ theo tình trạng: có số tiền cần trả lại -> Ghi nhận trả lại tiền; còn lại -> Ghi nhận nộp tiền
@@ -252,11 +255,11 @@
         if (P.mode === 'pay') {
             o.payments = (o.payments || []).concat([rec]);
             o.paid = (o.paid || 0) + amt;
-            if (conLai(o) === 0) { o.ct = 'DONE'; msg = 'Ghi nhận nộp tiền thành công. Cán bộ đã hoàn thành nghĩa vụ hoàn trả.'; }
-            else msg = 'Ghi nhận nộp tiền thành công. Còn phải thu ' + a.money(conLai(o)) + ' đ.';
+            if (conLai(o) === 0) o.ct = 'DONE';
+            msg = 'Ghi nhận nộp tiền hoàn trả ngân sách thành công.'; // [MSG-SUC-BTNN-HT-014]
         } else {
             o.refundDone = rec; o.paid = (o.paid || 0) - amt; o.refund = 0;
-            // Trả lại số tiền nộp thừa (dữ liệu cũ) -> Hoàn thành
+            // Trả lại số tiền nộp thừa (nộp trong lúc QĐ giảm bổ sung chờ duyệt) -> Hoàn thành [MSG-SUC-BTNN-HT-024]
             o.ct = 'DONE'; msg = 'Ghi nhận trả lại tiền thành công. Cán bộ chuyển Hoàn thành.';
         }
         ht4Close();

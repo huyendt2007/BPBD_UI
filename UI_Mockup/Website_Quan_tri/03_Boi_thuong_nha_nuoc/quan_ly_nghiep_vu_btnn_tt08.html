@@ -589,7 +589,7 @@
                 <span class="form-label" id="mainContentLabel">Nội dung xử lý<span class="required">*</span></span>
                 <textarea class="form-control" id="mainContent" placeholder="Nhập nội dung..."></textarea>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="resultGroup">
                 <span class="form-label" id="resultLabel">Nội dung kết quả</span>
                 <textarea class="form-control" id="resultContent" placeholder="Nhập nội dung kết quả..."></textarea>
             </div>
@@ -637,7 +637,7 @@
 
     <script src="btnn_luong_xu_ly.js?v=20261112vt2"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
-    <script src="btnn_pham_vi_don_vi.js?v=20261109stp1"></script>
+    <script src="btnn_pham_vi_don_vi.js?v=20261116dv1"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261109stp1"></script>
     <script src="btnn_popup_xoa.js?v=20261106ro1"></script>
     <script>
@@ -879,7 +879,7 @@
                 ],
                 // Đơn vị thực hiện của hồ sơ (Sở Tư pháp của người tạo; chốt 09/11/2026: chỉ Sở Tư pháp thao tác, Bộ Tư pháp/Cục chỉ xem)
                 units: { 'KNTC-BTNN-2026-001': 'STP-HN', 'KNTC-BTNN-2026-002': 'STP-HN', 'KNTC-BTNN-2026-007': 'STP-HP', 'KNTC-BTNN-2026-010': 'STP-HCM', 'KNTC-BTNN-2026-013': 'STP-HP', 'KNTC-BTNN-2026-014': 'STP-HN', 'KNTC-BTNN-2026-003': 'STP-HN', 'KNTC-BTNN-2026-004': 'STP-HCM', 'KNTC-BTNN-2026-005': 'STP-HCM', 'KNTC-BTNN-2026-006': 'STP-HP', 'KNTC-BTNN-2026-008': 'STP-HN', 'KNTC-BTNN-2026-009': 'STP-HN', 'KNTC-BTNN-2026-011': 'STP-HCM', 'KNTC-BTNN-2026-012': 'STP-HP' },
-                // Hồ sơ Đang xử lý đã cập nhật kết quả (Kết quả xác minh/xử lý): icon Hoàn thành sáng
+                // Hồ sơ Đang xử lý đã cập nhật kết quả (Kết quả thực hiện biện pháp): icon Hoàn thành sáng
                 extra: {
                     'KNTC-BTNN-2026-002': { resultContent: 'Đã xác minh nội dung kiến nghị; đề nghị cơ quan giải quyết bồi thường bổ sung hồ sơ theo quy định.' },
                     'KNTC-BTNN-2026-008': { resultContent: 'Đã xác minh, khiếu nại có cơ sở; yêu cầu cơ quan giải quyết bồi thường thụ lý lại hồ sơ.' },
@@ -891,7 +891,7 @@
                     'KNTC-BTNN-2026-014': { resultContent: 'Đã có văn bản trả lời kiến nghị về quản lý nhà nước công tác bồi thường.' }
                 },
                 mainContentLabel: 'Nội dung tiếp nhận',
-                resultLabel: 'Kết quả xác minh/xử lý và biện pháp xử lý/khắc phục',
+                resultLabel: 'Kết quả thực hiện biện pháp', // KH chốt 16/11/2026: 01 trường chung
                 rows: [
                     ['KNTC-BTNN-2026-001', 'Ông Nguyễn Văn D', 'Khiếu nại', 'Giải quyết yêu cầu bồi thường', 'BT-2026-012', '02/08/2026', 'Ngô Thị Lan', 'Đang xử lý'],
                     ['KNTC-BTNN-2026-002', 'UBND phường Hoàn Kiếm, Thành phố Hà Nội', 'Kiến nghị', 'Kiểm tra công tác BTNN', '—', '01/08/2026', 'Đỗ Văn Chung', 'Đang xử lý'],
@@ -1308,15 +1308,17 @@
 
         // Phạm vi dữ liệu Bộ Tư pháp - Sở Tư pháp: cột Đơn vị thực hiện chỉ hiển thị với người dùng thuộc Bộ Tư pháp/Cục (sau cột mã hồ sơ)
         // Cán bộ xử lý: cán bộ đã nhập hồ sơ (người tạo); Đơn vị thực hiện đặt ngay sau cột Cán bộ xử lý
+        // Khiếu nại, tố cáo: bộ lọc và cột Đơn vị thực hiện hiển thị với mọi người dùng (chốt 16/11/2026, PM-137 hủy)
+        const showUnit = () => PV.isBtp() || moduleKey === 'khieu_nai';
         const officerIndex = () => currentConfig.columns.indexOf('Cán bộ xử lý');
         function gridColumns() {
             const cols = currentConfig.columns, i = officerIndex();
-            return PV.isBtp() ? [...cols.slice(0, i + 1), 'Đơn vị thực hiện', ...cols.slice(i + 1)] : cols;
+            return showUnit() ?[...cols.slice(0, i + 1), 'Đơn vị thực hiện', ...cols.slice(i + 1)] : cols;
         }
         function displayRow(src) {
             let base = src;
             if (moduleKey === 'huong_dan' && src[3] === 'Khác') { base = [...src]; base[3] = hdMethodText(src); base.unit = src.unit; }
-            if (!PV.isBtp()) return base;
+            if (!showUnit()) return base;
             const i = officerIndex();
             const r = [...base.slice(0, i + 1), PV.unitName(PV.ownerOf(src)), ...base.slice(i + 1)];
             r.unit = PV.ownerOf(src);
@@ -1690,6 +1692,18 @@
                 el.disabled = locked;
             });
             document.querySelectorAll('#businessForm .case-btn').forEach(btn => { btn.disabled = locked; });
+            // Khiếu nại, tố cáo: 01 trường "Kết quả thực hiện biện pháp" (KH chốt 16/11/2026); Thêm mới/Sửa không hiển thị; Cập nhật kết quả chỉ nhập trường này, trường khác khóa; Xem chi tiết: trống hiển thị "-"
+            if (moduleKey === 'khieu_nai') {
+                const hideResult = mode === 'new' || mode === 'edit';
+                document.getElementById('resultGroup').style.display = hideResult ? 'none' : '';
+                const resultIds = ['resultContent'];
+                if (mode === 'update') {
+                    document.querySelectorAll('#businessForm input, #businessForm select, #businessForm textarea').forEach(el => { el.disabled = !resultIds.includes(el.id); });
+                    document.querySelectorAll('#businessForm .case-btn').forEach(btn => { btn.disabled = true; });
+                    docReadOnly = true; renderDocuments();
+                }
+                if (mode === 'view') resultIds.forEach(id => { const el = document.getElementById(id); if (!el.value.trim()) el.value = '-'; });
+            }
             renderFeedback(code, mode);
             renderHistory(isNew ? '' : code);
             if (mode === 'view') {
@@ -1929,7 +1943,7 @@
             document.getElementById('pageSubtitle').innerText = currentConfig.subtitle;
             // Bộ lọc Đơn vị thực hiện (chỉ người dùng thuộc Bộ Tư pháp/Cục) đặt sau 02 ô tìm kiếm đầu
             const filterHtml = currentConfig.filters.map(renderFilterControl);
-            filterHtml.splice(2, 0, PV.filterHtml({ label: 'Đơn vị thực hiện', includeBtp: false }));
+            filterHtml.splice(2, 0, PV.filterHtml({ label: 'Đơn vị thực hiện', includeBtp: false, always: showUnit() }));
             document.getElementById('filterGrid').innerHTML = filterHtml.join('');
             initDatePickers(document.getElementById('filterGrid'));
             const units = currentConfig.units || {};

@@ -875,13 +875,14 @@
                         </div>
                         <span class="field-error" id="errLoaiCoQuan">Vui lòng chọn Loại cơ quan, đơn vị.</span>
                     </div>
-                    <!-- Cấp đơn vị: bắt buộc với cơ quan, đơn vị gốc; đơn vị trực thuộc dùng Cấp đơn vị của đơn vị gốc (chỉ đọc) -->
+                    <!-- Cấp đơn vị: bắt buộc với mọi cơ quan, đơn vị; Thêm đơn vị trực thuộc tự điền theo đơn vị cha, được chọn lại -->
                     <div class="form-group">
                         <label class="form-label">Cấp đơn vị <span class="required" id="mCapDonViReq">*</span></label>
                         <select class="form-control" id="mCapDonVi" onchange="document.getElementById('errCapDonVi').style.display='none'">
                             <option value="">-- Chọn Cấp đơn vị --</option>
                             <option value="Trung ương">Trung ương</option>
-                            <option value="Địa phương">Địa phương</option>
+                            <option value="Tỉnh">Tỉnh</option>
+                            <option value="Xã">Xã</option>
                         </select>
                         <span class="field-error" id="errCapDonVi">Đây là trường bắt buộc</span>
                     </div>
@@ -1243,7 +1244,7 @@
                 stt: "",
                 parentId: null,
                 loai: "Cơ quan ngoài ngành",
-                capDonVi: "Địa phương",
+                capDonVi: "Tỉnh",
                 tinhThanh: "Thành phố Hà Nội",
                 dienThoai: "02438253600",
                 diaChi: "Số 1B Trần Phú, Hà Đông, Hà Nội",
@@ -1253,14 +1254,14 @@
                 ],
                 collapsed: false
             },
-            // [ct1] Cơ quan dữ liệu mẫu Hoàn trả (Địa phương, cấp xã; đồng bộ cây đơn vị BTNN_WF)
+            // [ct1] Cơ quan dữ liệu mẫu Hoàn trả (Cấp đơn vị Xã; đồng bộ cây đơn vị BTNN_WF)
             {
                 id: "UBND-VH",
                 name: "UBND phường Việt Hưng",
                 stt: "",
                 parentId: null,
                 loai: "Cơ quan ngoài ngành",
-                capDonVi: "Địa phương",
+                capDonVi: "Xã",
                 tinhThanh: "Thành phố Hà Nội",
                 dienThoai: "02438271101",
                 diaChi: "Phường Việt Hưng, Thành phố Hà Nội",
@@ -1277,7 +1278,7 @@
                 stt: "",
                 parentId: null,
                 loai: "Cơ quan ngoài ngành",
-                capDonVi: "Địa phương",
+                capDonVi: "Xã",
                 tinhThanh: "Thành phố Hà Nội",
                 dienThoai: "02438271102",
                 diaChi: "Phường Bồ Đề, Thành phố Hà Nội",
@@ -1294,7 +1295,7 @@
                 stt: "",
                 parentId: null,
                 loai: "Cơ quan ngoài ngành",
-                capDonVi: "Địa phương",
+                capDonVi: "Xã",
                 tinhThanh: "Thành phố Hải Phòng",
                 dienThoai: "02253271103",
                 diaChi: "Phường Hải An, Thành phố Hải Phòng",
@@ -1306,17 +1307,18 @@
                 collapsed: false
             }
         ];
-        // Cấp đơn vị của cơ quan, đơn vị gốc mẫu (Trung ương / Địa phương); đơn vị trực thuộc dùng Cấp đơn vị của đơn vị gốc
-        const ORG_CAP_MAU = { "BTP-01": "Trung ương", "BCA-01": "Trung ương", "BCT-01": "Trung ương", "STP-HN": "Địa phương" };
+        // Cấp đơn vị mẫu (Trung ương / Tỉnh / Xã); mỗi cơ quan, đơn vị có Cấp đơn vị riêng
+        const ORG_CAP_MAU = { "BTP-01": "Trung ương", "BCA-01": "Trung ương", "BCT-01": "Trung ương", "STP-HN": "Tỉnh" };
         function initCapDonVi() { orgData.forEach(n => { if (!n.parentId && !n.capDonVi && ORG_CAP_MAU[n.id]) n.capDonVi = ORG_CAP_MAU[n.id]; }); }
         function rootOf(node) { let n = node; while (n && n.parentId) n = orgData.find(x => x.id === n.parentId); return n || node; }
-        function capDonViOf(node) { const r = node ? rootOf(node) : null; return (r && r.capDonVi) || ""; }
-        // Ô Cấp đơn vị trên popup: đơn vị gốc chọn (bắt buộc); đơn vị trực thuộc khóa, hiển thị Cấp đơn vị của đơn vị gốc
-        function setCapDonViForm(isRoot, value) {
+        // Cấp đơn vị của bản ghi; dữ liệu mẫu chưa khai báo thì lấy theo cơ quan, đơn vị cấp trên gần nhất có giá trị
+        function capDonViOf(node) { let n = node; while (n) { if (n.capDonVi) return n.capDonVi; n = n.parentId ? orgData.find(x => x.id === n.parentId) : null; } return ""; }
+        // Ô Cấp đơn vị trên popup: bắt buộc chọn với mọi cơ quan, đơn vị
+        function setCapDonViForm(value) {
             const sel = document.getElementById('mCapDonVi');
             sel.value = value || "";
-            sel.disabled = !isRoot;
-            document.getElementById('mCapDonViReq').style.display = isRoot ? "" : "none";
+            sel.disabled = false;
+            document.getElementById('mCapDonViReq').style.display = "";
             document.getElementById('errCapDonVi').style.display = "none";
         }
 
@@ -1644,7 +1646,7 @@
             document.getElementById('mTenDonVi').value = "";
             document.getElementById('mTenVietTat').value = "";
             setLoaiCoQuanForm("");
-            setCapDonViForm(isRoot, isRoot ? "" : capDonViOf(activeNode));
+            setCapDonViForm(isRoot ? "" : capDonViOf(activeNode));
             document.getElementById('mEmail').value = "";
             document.getElementById('mSoDienThoai').value = "";
             document.getElementById('mTinhThanh').value = "";
@@ -1672,7 +1674,7 @@
             document.getElementById('mTenDonVi').value = node.name;
             document.getElementById('mTenVietTat').value = node.tenVietTat || "";
             setLoaiCoQuanForm(node.loaiCoQuan);
-            setCapDonViForm(!node.parentId, capDonViOf(node));
+            setCapDonViForm(capDonViOf(node));
             document.getElementById('mEmail').value = node.email || "";
             document.getElementById('mSoDienThoai').value = node.dienThoai || "";
             document.getElementById('mTinhThanh').value = node.tinhThanh || "";
@@ -1696,13 +1698,11 @@
             const addVal = document.getElementById('mDiaChi').value.trim();
             const statusVal = document.getElementById('mTrangThai').value;
 
-            // Cấp đơn vị: bắt buộc với cơ quan, đơn vị gốc (Thêm cơ quan, đơn vị / Sửa đơn vị không có đơn vị cha)
-            const editNode = modalMode === "edit" ? orgData.find(n => n.id === selectedNodeId) : null;
-            const isRootForm = modalMode === "create" ? modalIsRoot : !!(editNode && !editNode.parentId);
+            // Cấp đơn vị: bắt buộc với mọi cơ quan, đơn vị
             const capVal = document.getElementById('mCapDonVi').value;
-            if (isRootForm && !capVal) document.getElementById('errCapDonVi').style.display = "block";
+            if (!capVal) document.getElementById('errCapDonVi').style.display = "block";
             if (!loaiCqVal) document.getElementById('errLoaiCoQuan').style.display = "block";
-            if (!idVal || !nameVal || !loaiCqVal || !tinhVal || (isRootForm && !capVal)) {
+            if (!idVal || !nameVal || !loaiCqVal || !tinhVal || !capVal) {
                 showToast("Vui lòng nhập đầy đủ các trường bắt buộc (*)", "error");
                 return;
             }
@@ -1731,7 +1731,7 @@
                     tenVietTat: shortVal,
                     parentId: modalIsRoot ? null : activeNode.id,
                     loaiCoQuan: loaiCqVal,
-                    capDonVi: modalIsRoot ? capVal : "",
+                    capDonVi: capVal,
                     email: emailVal,
                     dienThoai: telVal,
                     tinhThanh: tinhVal,
@@ -1749,7 +1749,7 @@
                     node.name = nameVal;
                     node.tenVietTat = shortVal;
                     node.loaiCoQuan = loaiCqVal;
-                    if (!node.parentId) node.capDonVi = capVal;
+                    node.capDonVi = capVal;
                     node.email = emailVal;
                     node.dienThoai = telVal;
                     node.tinhThanh = tinhVal;
@@ -1814,8 +1814,8 @@
         // Kết quả kiểm tra dữ liệu mẫu của tệp (thực tế hệ thống đọc sheet Du_lieu và kiểm tra theo quy tắc nhận file)
         const IMPORT_HEADERS = ["STT", "Mã cơ quan, đơn vị cha", "Mã cơ quan, đơn vị (*)", "Tên cơ quan, đơn vị (*)", "Tên cơ quan, đơn vị viết tắt", "Loại cơ quan, đơn vị (*)", "Email", "Số điện thoại", "Tỉnh/Thành phố (*)", "Phường/Xã", "Địa chỉ chi tiết", "Trạng thái", "Cấp đơn vị"];
         const IMPORT_SAMPLE = [
-            { row: 3, data: ["1", "", "STP-DN", "Sở Tư pháp Thành phố Đà Nẵng", "STP Đà Nẵng", "Sở", "stp@danang.gov.vn", "", "Thành phố Đà Nẵng", "Phường Hải Châu", "Số 1 đường Bạch Đằng", "Đang hoạt động", "Địa phương"] },
-            { row: 4, data: ["2", "STP-DN", "STP-DN-HCTP", "Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Đà Nẵng", "", "Phòng / Ban", "", "", "Thành phố Đà Nẵng", "", "", "", ""] },
+            { row: 3, data: ["1", "", "STP-DN", "Sở Tư pháp Thành phố Đà Nẵng", "STP Đà Nẵng", "Sở", "stp@danang.gov.vn", "", "Thành phố Đà Nẵng", "Phường Hải Châu", "Số 1 đường Bạch Đằng", "Đang hoạt động", "Tỉnh"] },
+            { row: 4, data: ["2", "STP-DN", "STP-DN-HCTP", "Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Đà Nẵng", "", "Phòng / Ban", "", "", "Thành phố Đà Nẵng", "", "", "", "Tỉnh"] },
             { row: 5, data: ["3", "", "BTP-01", "Bộ Tư pháp", "BTP", "Bộ", "", "0243823456", "Thành phố Hà Nội", "", "", "Đang hoạt động", "Trung ương"] },
             { row: 6, data: ["4", "", "UBND-DN", "", "", "Ủy ban nhân dân", "ubnd@danang", "", "", "", "", "Hoạt động", ""] }
         ];
@@ -1881,9 +1881,9 @@
             if (tel && !/^\d{10}$/.test(tel)) errs.push('Số điện thoại không hợp lệ (yêu cầu 10 chữ số)');
             if (!tinh) errs.push('Tỉnh/Thành phố không được để trống');
             if (status && status !== 'Đang hoạt động' && status !== 'Ngừng hoạt động') errs.push('Trạng thái không hợp lệ (chỉ nhận Đang hoạt động hoặc Ngừng hoạt động)');
-            // Cấp đơn vị: chỉ xét với cơ quan, đơn vị gốc (không có Mã cha); đơn vị trực thuộc bỏ qua, lấy theo cấp của đơn vị gốc
-            if (!parent && cap && cap !== 'Trung ương' && cap !== 'Địa phương') errs.push('Cấp đơn vị không hợp lệ (chỉ nhận Trung ương hoặc Địa phương)');
-            else if (!parent && !cap && !(exists && mode !== 'Thêm mới')) errs.push('Cấp đơn vị không được để trống với cơ quan, đơn vị gốc');
+            // Cấp đơn vị: chỉ nhận Trung ương / Tỉnh / Xã; thêm mới bắt buộc, cập nhật bỏ trống thì giữ nguyên
+            if (cap && !['trung ương', 'tỉnh', 'xã'].includes(cap.toLowerCase())) errs.push('Cấp đơn vị không hợp lệ (chỉ nhận Trung ương, Tỉnh hoặc Xã)');
+            else if (!cap && !(exists && mode !== 'Thêm mới')) errs.push('Cấp đơn vị không được để trống');
             return errs;
         }
 
@@ -1903,7 +1903,7 @@
             document.getElementById('importStats').innerText = `Tổng số: ${importChecked.length} dòng | Hợp lệ: ${ok} dòng | Lỗi: ${bad} dòng`;
             document.getElementById('linkErrorFile').style.display = bad ? 'inline' : 'none';
             document.getElementById('importPreviewBody').innerHTML = importChecked.map(r => `
-                <tr><td style="text-align:center;">${r.row}</td><td>${r.data[2] || '-'}</td><td>${r.data[3] || '-'}</td><td>${r.data[5] || '-'}</td><td>${r.data[1] ? '-' : (r.data[12] || '-')}</td>
+                <tr><td style="text-align:center;">${r.row}</td><td>${r.data[2] || '-'}</td><td>${r.data[3] || '-'}</td><td>${r.data[5] || '-'}</td><td>${r.data[12] || '-'}</td>
                 <td>${r.errors.length ? '<span class="badge badge-danger">Lỗi</span>' : '<span class="badge badge-success">Hợp lệ</span>'}</td>
                 <td style="font-size:12.5px;">${r.errors.join('; ')}</td></tr>`).join('');
             document.getElementById('importCheck').style.display = 'block';
@@ -1922,9 +1922,9 @@
                     // Cập nhật: cột không bắt buộc để trống thì giữ nguyên giá trị hiện tại
                     cur.name = d[3]; cur.loaiCoQuan = loai.code; cur.tinhThanh = d[8];
                     if (d[4]) cur.tenVietTat = d[4]; if (d[6]) cur.email = d[6]; if (d[7]) cur.dienThoai = d[7];
-                    if (d[9]) cur.phuongXa = d[9]; if (d[10]) cur.diaChi = d[10]; if (d[11]) cur.trangThai = d[11]; if (!cur.parentId && d[12]) cur.capDonVi = d[12];
+                    if (d[9]) cur.phuongXa = d[9]; if (d[10]) cur.diaChi = d[10]; if (d[11]) cur.trangThai = d[11]; if (d[12]) cur.capDonVi = d[12];
                 } else if (mode !== 'Cập nhật bản ghi hiện có') {
-                    orgData.push({ id: d[2], name: d[3], tenVietTat: d[4], parentId: d[1] || null, loaiCoQuan: loai.code, email: d[6], dienThoai: d[7], tinhThanh: d[8], phuongXa: d[9], diaChi: d[10], trangThai: d[11] || 'Đang hoạt động', officers: [], collapsed: false, capDonVi: d[1] ? undefined : d[12] });
+                    orgData.push({ id: d[2], name: d[3], tenVietTat: d[4], parentId: d[1] || null, loaiCoQuan: loai.code, email: d[6], dienThoai: d[7], tinhThanh: d[8], phuongXa: d[9], diaChi: d[10], trangThai: d[11] || 'Đang hoạt động', officers: [], collapsed: false, capDonVi: d[12] });
                 }
             });
             const bad = importChecked.filter(r => r.errors.length);

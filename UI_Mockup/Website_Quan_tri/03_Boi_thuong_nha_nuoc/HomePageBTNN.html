@@ -945,13 +945,13 @@
                             { title: "Theo dõi, đôn đốc công tác BTNN", icon: "fa-solid fa-list-check", url: "quan_ly_theo_doi_don_doc_btnn.html?v=20261109stp1" },
                             { title: "Tập huấn, bồi dưỡng", icon: "fa-solid fa-chalkboard-user", url: "tap_huan_boi_duong_btnn.html?v=20261109stp1" },
                             { title: "Hướng dẫn nghiệp vụ", icon: "fa-solid fa-book-open", url: "quan_ly_nghiep_vu_btnn_tt08.html?module=huong_dan&v=20261109stp1" },
-                            // Menu cha cấp 3, 02 menu con cấp 4: Sở Tư pháp lập báo cáo tại «Báo cáo công tác BTNN», Bộ Tư pháp xử lý báo cáo các Sở gửi lên tại «Xử lý báo cáo Công tác BTNN»
+                            // Menu cha cấp 3, 02 menu con cấp 4: Sở Tư pháp lập báo cáo tại «Báo cáo công tác BTNN», Bộ Tư pháp tổng hợp báo cáo các Sở gửi lên tại «Tổng hợp báo cáo Công tác BTNN» (16/11/2026)
                             // Badge nhóm = tổng badge 2 mục con (bdg_bcttGroup, tính trong BDG.mountMenu)
                             {
                                 title: "Báo cáo công tác BTNN", icon: "fa-solid fa-chart-column", badgeKey: "bdg_bcttGroup", badgeType: "danger",
                                 children: [
                                     { title: "Báo cáo công tác BTNN", icon: "fa-solid fa-file-arrow-up", badgeKey: "bdg_bctt", badgeType: "danger", url: "bao_cao_cong_tac_btnn.html" },
-                                    { title: "Xử lý báo cáo Công tác BTNN", icon: "fa-solid fa-file-circle-check", badgeKey: "bdg_bctt_bo", badgeType: "danger", url: "xu_ly_bao_cao_cong_tac_btnn.html" }
+                                    { title: "Tổng hợp báo cáo Công tác BTNN", icon: "fa-solid fa-file-circle-check", badgeKey: "bdg_bctt_bo", badgeType: "danger", url: "xu_ly_bao_cao_cong_tac_btnn.html" }
                                 ]
                             },
                             { title: "Thông tin đầu mối thực hiện công tác BTNN", icon: "fa-solid fa-address-book", url: "dau_moi_theo_tinh.html?v=20261106db3" },
@@ -971,7 +971,7 @@
                             { title: "Báo cáo chi tiết giải quyết vụ việc tồn đọng, kéo dài", url: "../temp_placeholder.html", hidden: true }
                         ]
                     },
-                    { title: "Hỗ trợ người bị thiệt hại thực hiện quyền yêu cầu bồi thường", icon: "fa-solid fa-hand-holding-heart", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=ho_tro_nguoi_bi_thiet_hai&v=20261106db3" },
+                    { title: "Hỗ trợ người bị thiệt hại thực hiện quyền yêu cầu bồi thường", icon: "fa-solid fa-hand-holding-heart", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=ho_tro_nguoi_bi_thiet_hai&v=20261116dv1" },
                     {
                         title: "Yêu cầu, kiến nghị các vụ việc BTNN", icon: "fa-solid fa-bullhorn",
                         children: [
@@ -981,7 +981,7 @@
                             { title: "Kiến nghị Thủ trưởng cơ quan xem xét lại quyết định hoàn trả", icon: "fa-solid fa-arrows-rotate", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_xem_xet_qd_hoan_tra&v=20261106db3" }
                         ]
                     },
-                    { title: "Khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN", icon: "fa-solid fa-person-circle-exclamation", badgeKey: "bdg_kntc", badgeType: "danger", url: "quan_ly_nghiep_vu_btnn_tt08.html?module=khieu_nai&v=20261109stp1" },
+                    { title: "Khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN", icon: "fa-solid fa-person-circle-exclamation", badgeKey: "bdg_kntc", badgeType: "danger", url: "quan_ly_nghiep_vu_btnn_tt08.html?module=khieu_nai&v=20261116dv1" },
                     {
                         // Badge nhóm = badge Hỏi đáp nghiệp vụ (bdg_hoiDapGroup, tính trong BDG.mountMenu)
                         title: "Hỏi đáp", icon: "fa-solid fa-circle-question", badgeKey: "bdg_hoiDapGroup", badgeType: "danger",
@@ -1018,12 +1018,7 @@
                         title: "Dashboard trực quan về quản lý BTNN",
                         children: [
                             { title: "Xem màn hình trực quan thông tin chung BTNN", url: "dashboard_btnn.html?module=tong_quan" },
-                            { title: "Cấu hình lựa chọn hình thức hiển thị BTNN", url: "dashboard_btnn.html?module=cau_hinh" },
-                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo thời gian", url: "dashboard_btnn.html?module=pt_thoi_gian" },
-                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo địa phương", url: "dashboard_btnn.html?module=pt_dia_phuong" },
-                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo phạm vi", url: "dashboard_btnn.html?module=pt_pham_vi" },
-                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo cơ quan", url: "dashboard_btnn.html?module=pt_co_quan" },
-                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo cấp", url: "dashboard_btnn.html?module=pt_cap" },
+                            { title: "Phân tích tình hình BTNN", url: "dashboard_btnn.html?module=pt_danh_gia" },
                             { title: "Phân tích tình hình giải quyết vụ việc cả nước", url: "dashboard_btnn.html?module=pt_ca_nuoc" }
                         ]
                     },

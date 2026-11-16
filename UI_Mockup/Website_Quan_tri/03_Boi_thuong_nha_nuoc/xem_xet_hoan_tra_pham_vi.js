@@ -173,7 +173,8 @@
         if (l.every(ended)) {
             // Đình chỉ cả hồ sơ (06/11/2026): mọi cán bộ Đình chỉ hoàn trả, trừ cán bộ Không xem xét TNHT đã kết thúc từ Bước 2
             if (l.some(o => o.st === 'DC') && l.every(o => o.st === 'DC' || o.st === 'KXX')) return 'Đình chỉ xem xét hoàn trả';
-            if (l.every(o => o.st === 'MIEN')) return 'Miễn hoàn trả';
+            // Miễn hoàn trả: mọi cán bộ Miễn hoàn trả, không tính cán bộ Không xem xét TNHT (SRS Q08, 16/11/2026)
+            if (l.some(o => o.st === 'MIEN') && l.every(o => o.st === 'MIEN' || o.st === 'KXX')) return 'Miễn hoàn trả';
             return 'Hoàn thành';
         }
         if (l.some(o => o.st === 'THU')) return 'Thu tiền hoàn trả';
@@ -274,7 +275,9 @@
         if (typeof htRoleKey === 'function' && htRoleKey() !== 'lanh_dao' && Wh && Wh.isPhoiHopOnly && d && Wh.isPhoiHopOnly(d.claimCode || d.maVuViec)) return false;
         if (!sc.visible) return false;
         const p = pendingOf(d, sc);
-        return tab === 'pending' ? p : (!p && gatesOf(d, sc).length > 0);
+        // Tab Đã xử lý: hồ sơ trong phạm vi không còn phần việc chờ, kể cả người chưa thao tác (Lãnh đạo chưa được giao, Cán bộ tra cứu,
+        // đơn vị giám sát khi mọi cán bộ đã kết thúc) — SRS Quy tắc 02 tab sửa 16/11/2026, câu 7 đợt 2
+        return tab === 'pending' ? p : !p;
     };
     window.htGatesHtml = function (d) {
         const g = gatesOf(d, scopeOf(d));
@@ -472,7 +475,7 @@
             const tr = document.createElement('tr');
             tr.style.cursor = 'pointer';
             tr.onclick = e => { if (!e.target.closest('.icon-btn') && !e.target.closest('a') && e.target.tagName !== 'BUTTON') window.location.href = detailUrl(d, 'view', focusStepOf(d, r.sc)); };
-            const pct = m.tong ? Math.min(100, Math.round(m.paid / m.tong * 100)) : 0;
+            const pct = m.tong ? Math.min(100, Math.floor(m.paid / m.tong * 100)) : 0;
             const tip = ('Số tiền theo ý kiến Hội đồng: ' + fmt(m.hd) + ' đ\nTiền hoàn trả (sau giảm, trừ miễn, đình chỉ): ' + fmt(m.tong) + ' đ\nĐã thu: ' + fmt(m.paid) + ' đ\nCòn phải thu: ' + fmt(m.conLai) + ' đ');
             const tien = m.anyIssued ? '<span title="' + tip + '">' + fmt(m.tong) + '</span>' : '--';
             const prog = m.anyIssued && !m.tong
@@ -582,7 +585,7 @@
                 if (v && box && mode !== 'reject') {
                     const p = v.kind === 'hs' ? v.p : (v.units[0].qd.banHanh || {});
                     const row = (k2, val) => '<div class="htkd-row"><span>' + k2 + '</span><span>' + htkdE(val) + '</span></div>';
-                    box.insertAdjacentHTML('beforeend', row('Đóng dấu cơ quan', 'Có - sau khi Ký duyệt, văn bản chuyển Văn thư ban hành') + row('Đơn vị ban hành', p.donViBanHanhTen || '--') + row('Văn thư xử lý', vtText(p) || '--'));
+                    box.insertAdjacentHTML('beforeend', row('Đóng dấu cơ quan', 'Có - sau khi Ký duyệt, văn bản chuyển Văn thư ban hành') + row('Đơn vị ban hành', p.donViBanHanhTen || '--'));   // [vt5] 13/11/2026: bỏ dòng "Văn thư xử lý" ở màn Ký duyệt
                 }
             } catch (e) { /* bỏ qua */ }
             return r;

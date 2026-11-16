@@ -486,7 +486,7 @@ function dchtSetBusy(busy) {
 }
 function dchtCancelConvert() { dchtState.converting = false; dchtConvToken += 1; dchtSetBusy(false); }
 function dchtFileMsg(f, re, list) {
-    if (!re.test(f.name || '')) return `Tệp không đúng định dạng. Chỉ chấp nhận ${list}.`;
+    if (!re.test(f.name || '')) return 'Định dạng tệp tin không hợp lệ.';   // SRS MH10 Tải tệp (sửa 16/11/2026)
     if (f.size > 50 * 1024 * 1024) return 'Tệp vượt quá dung lượng cho phép (tối đa 50MB).';
     return '';
 }
@@ -811,7 +811,7 @@ function dchtSubmitOnline() {
     dchtLog(`Trình ký đến ${String(lead1).split(/ - | [(]/)[0].trim()} - ${S.qd} (Mẫu 39/BTNN).` + (typeof tlktNote === 'function' ? tlktNote(activeDossier.dcht.attachments) : ''));
     dchtClose();
     // Chế độ chấm dứt: [MSG-SUC-BTNN-HT-026]
-    dchtToast(cd ? 'Trình ký Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả thành công.' : `Đã trình Lãnh đạo ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Hồ sơ chuyển sang trạng thái [Chờ duyệt (QĐ đình chỉ)].`, 'success');
+    dchtToast(cd ? 'Trình ký Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả thành công.' : 'Trình ký Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả thành công.' /* [MSG-SUC-BTNN-HT-029] */, 'success');
     dchtAfter();
 }
 // [MSG-SUC-BTNN-HT-027]
@@ -840,7 +840,7 @@ function dchtIssueOffline() {
     activeDossier.status = S.D;
     dchtLog(`Ban hành ${S.qd} ký ngoài hệ thống (tệp ${dchtState.offlineFile.name}). Hồ sơ chuyển sang trạng thái [${S.D}].`);
     dchtClose();
-    dchtToast(cd ? CDHT_MSG_DONE : `Đã ban hành Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả (Ký ngoài). Hồ sơ chuyển sang trạng thái [${DCHT_ST_DONE}].`, 'success');
+    dchtToast(cd ? CDHT_MSG_DONE : `Ban hành Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả thành công. Hồ sơ chuyển sang trạng thái [${DCHT_ST_DONE}].` /* [MSG-SUC-BTNN-HT-030] */, 'success');
     dchtAfter();
 }
 
@@ -870,7 +870,8 @@ function dchtApproveLevel() {
     const how = (window.BTNN_PCKD && BTNN_PCKD.howText(a)) || 'ký nháy'; // [ro1] theo thiết lập cấp khi trình
     a.level += 1;
     dchtLog(`Lãnh đạo ${who} ký duyệt (${how}) ${dchtSt().ngan}, chuyển Lãnh đạo cấp tiếp theo.`);
-    dchtToast('Ký duyệt thành công. ' + dchtSt().ngan + ' được chuyển Lãnh đạo cấp tiếp theo.', 'success');
+    // [MSG-SUC-BTNN-HT-021]
+    dchtToast('Đã ký duyệt ' + dchtSt().loai + ' hồ sơ ' + activeDossier.code + ', chuyển ' + (dchtLeaderLabel(a, a.level) || ('Lãnh đạo cấp ' + (a.level + 1))) + ' ký duyệt.', 'success');
     dchtAfter();
     return true;
 }
@@ -893,7 +894,7 @@ function dchtFinalSign() {
     const S = dchtSt(), cd = dchtIsCd();
     activeDossier.status = S.D;
     dchtLog(`Lãnh đạo ${who} ký duyệt (ký số) ${S.qd}. Hồ sơ chuyển sang trạng thái [${S.D}].`);
-    dchtToast(cd ? CDHT_MSG_DONE : `Ký duyệt thành công. Hệ thống ký số Quyết định đình chỉ; hồ sơ chuyển sang trạng thái [${DCHT_ST_DONE}].`, 'success');
+    dchtToast(cd ? CDHT_MSG_DONE : 'Đã ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Hồ sơ chuyển [Đình chỉ xem xét hoàn trả].' /* [MSG-SUC-BTNN-HT-022] */, 'success');
     dchtAfter();
 }
 function dchtLeaderReject() {
@@ -912,7 +913,8 @@ function dchtApplyReject(reason) {
     const S = dchtSt();
     activeDossier.status = S.R;
     dchtLog(`Lãnh đạo ${who} từ chối ${S.qd}. Lý do: ${reason}`);
-    dchtToast(`Đã từ chối ${S.ngan}. Hồ sơ chuyển sang trạng thái [Bị trả lại (${S.loai})].`, 'success');
+    // QĐ đình chỉ: [MSG-SUC-BTNN-HT-023]; QĐ chấm dứt: SRS chưa gán mã, giữ câu cũ
+    dchtToast(dchtIsCd() ? 'Đã từ chối Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả. Hồ sơ chuyển [Bị trả lại].' : 'Đã từ chối Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Quyết định đình chỉ chuyển [Bị trả lại].', 'success');
     dchtAfter();
 }
 

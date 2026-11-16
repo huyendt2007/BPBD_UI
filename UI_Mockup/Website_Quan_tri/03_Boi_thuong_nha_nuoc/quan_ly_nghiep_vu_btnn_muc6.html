@@ -894,7 +894,7 @@
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
     <script src="btnn_luong_xu_ly.js?v=20261112vt2"></script>
-    <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
+    <script src="btnn_pham_vi_don_vi.js?v=20261116dv1"></script>
     <script src="btnn_popup_xoa.js?v=20261106ro1"></script>
     <script>
         const PV = window.BTNN_PHAMVI;
@@ -1409,7 +1409,8 @@
         // Người dùng thuộc Bộ Tư pháp/Cục: xem bản ghi của mọi Sở Tư pháp, chỉ xem; người dùng thuộc Sở Tư pháp: bản ghi của Sở mình; đơn vị khác: không xem được
         const STP_SCOPE_MODULES = ['ho_tro_nguoi_bi_thiet_hai', 'kien_nghi_xu_ly_vi_pham', 'kien_nghi_khang_nghi_ban_an', 'yeu_cau_huy_qd_gqbt', 'kien_nghi_xem_xet_qd_hoan_tra'];
         const stpScope = STP_SCOPE_MODULES.includes(moduleKey);
-        const showUnitCol = () => stpScope && PV.isBtp();
+        // Hỗ trợ người bị thiệt hại: bộ lọc và cột Đơn vị thực hiện hiển thị với mọi người dùng (chốt 16/11/2026, PM-134 hủy)
+        const showUnitCol = () => stpScope && (PV.isBtp() || moduleKey === 'ho_tro_nguoi_bi_thiet_hai');
         // Dữ liệu mẫu: dòng 1-6 của Sở Tư pháp Thành phố Hà Nội, dòng 7-10 của Sở Tư pháp Thành phố Hồ Chí Minh, dòng 11-14 của Sở Tư pháp Thành phố Hải Phòng
         const seedUnitOf = i => i < 6 ? 'STP-HN' : i < 10 ? 'STP-HCM' : 'STP-HP';
         // Nhóm "Nghiệp vụ dùng cho BTP": chỉ cán bộ Bộ Tư pháp (Cục) được thêm mới, sửa, xóa; đơn vị khác chỉ xem
@@ -2970,7 +2971,7 @@
             document.getElementById('pageTitle').innerHTML = `<i class="fa-solid ${config.icon}"></i> ${config.title}`;
             const filterHtml = config.filters.map(renderFilterControl);
             // Bộ lọc Đơn vị thực hiện (chỉ người dùng thuộc Bộ Tư pháp/Cục) đặt sau 02 ô tìm kiếm đầu
-            if (stpScope) filterHtml.splice(2, 0, PV.filterHtml({ label: 'Đơn vị thực hiện', includeBtp: false }));
+            if (stpScope) filterHtml.splice(2, 0, PV.filterHtml({ label: 'Đơn vị thực hiện', includeBtp: false, always: showUnitCol() }));
             document.getElementById('filterGrid').innerHTML = filterHtml.join('');
             // Nhóm "Nghiệp vụ dùng cho STP": chỉ người dùng thuộc Sở Tư pháp được thêm mới
             // setProperty important: btnn_uxu_dong_bo.js đặt display !important cho .uxu-btn-tb

@@ -97,9 +97,12 @@
         return `<div class="pvdv-node" data-id="${esc(id)}" style="padding-left:${depth * 18}px"><label class="pvdv-opt"><input type="checkbox" value="${esc(id)}" onchange="BTNN_PHAMVI._toggle('${fid}', this)"> <span>${esc(unitName(id))}</span></label></div>`
             + children(id).map(k => nodeHtml(fid, k.id, depth + 1)).join('');
     }
+    // opts.always: hiển thị với mọi người dùng xem được bản ghi (chốt 16/11/2026 cho Hỗ trợ người bị thiệt hại, Khiếu nại tố cáo);
+    // người dùng không thuộc Bộ Tư pháp/Cục: cây chỉ gồm đơn vị trong phạm vi xem (Sở mình; UBND cấp tỉnh: các Sở trực thuộc)
     function filterHtml(opts) {
-        if (!isBtp()) return '';
-        const o = Object.assign({ id: 'filter_unit', label: 'Đơn vị thực hiện', includeBtp: true }, opts || {});
+        const o = Object.assign({ id: 'filter_unit', label: 'Đơn vị thực hiện', includeBtp: true, always: false }, opts || {});
+        if (!isBtp() && !o.always) return '';
+        const roots = isBtp() ? treeRoots(o.includeBtp) : level() === 'UBND_TINH' ? managedStps(root()) : [root()];
         return `<div class="form-group pvdv-wrap" data-pvdv="${o.id}"><span class="form-label">${esc(o.label)}</span>
             <input type="hidden" id="${o.id}" value="">
             <div class="pvdv-box">
@@ -109,9 +112,9 @@
                     <input class="form-control pvdv-search" id="${o.id}_q" placeholder="Nhập tên đơn vị để tìm kiếm..." autocomplete="off" oninput="BTNN_PHAMVI._search('${o.id}')">
                     <div class="pvdv-tools">
                         <label class="pvdv-opt pvdv-all"><input type="checkbox" data-role="all" onchange="BTNN_PHAMVI._toggle('${o.id}', this)"> <span>Tất cả</span></label>
-                        <button type="button" class="pvdv-quick" onclick="BTNN_PHAMVI._quickStp('${o.id}')"><i class="fa-solid fa-check-double"></i> Các Sở Tư pháp</button>
+                        ${isBtp() ? `<button type="button" class="pvdv-quick" onclick="BTNN_PHAMVI._quickStp('${o.id}')"><i class="fa-solid fa-check-double"></i> Các Sở Tư pháp</button>` : ''}
                     </div>
-                    <div class="pvdv-tree">${treeRoots(o.includeBtp).map(id => nodeHtml(o.id, id, 0)).join('')}</div>
+                    <div class="pvdv-tree">${roots.map(id => nodeHtml(o.id, id, 0)).join('')}</div>
                 </div>
             </div></div>`;
     }

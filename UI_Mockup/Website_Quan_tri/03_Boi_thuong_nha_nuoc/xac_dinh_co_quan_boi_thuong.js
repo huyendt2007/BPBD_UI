@@ -3440,7 +3440,7 @@ function afterSubmitted(code, message) {
 // ---------------- Popup Trình ký (dùng chung 03 Nội dung trình: Kết quả xác định CQGQBT / Yêu cầu bổ sung / Không thụ lý) ----------------
 // Bước 1: Soạn thông tin & Chọn lãnh đạo (2 cấp); Bước 2 (chỉ Ký số): Định vị chữ ký Lãnh đạo Phòng & Lãnh đạo Đơn vị (02 hộp chữ ký)
 const XS_META = {
-    [XD_KIND.KQ]: { title: 'TRÌNH KÝ KẾT QUẢ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG', reasonLabel: '', docTitle: 'VỀ VIỆC XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG', icon: 'fa-scale-balanced' },
+    [XD_KIND.KQ]: { title: 'TRÌNH KÝ THAM MƯU KẾT QUẢ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG', reasonLabel: '', docTitle: 'VỀ VIỆC XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG', icon: 'fa-scale-balanced' },
     [XD_KIND.YCBS]: { title: 'TRÌNH KÝ YÊU CẦU BỔ SUNG HỒ SƠ', reasonLabel: 'Nội dung yêu cầu bổ sung', docTitle: 'VỀ VIỆC YÊU CẦU BỔ SUNG HỒ SƠ', icon: 'fa-file-circle-question' },
     [XD_KIND.KTL]: { title: 'TRÌNH KÝ KHÔNG THỤ LÝ HỒ SƠ', reasonLabel: 'Lý do không thụ lý', docTitle: 'VỀ VIỆC KHÔNG THỤ LÝ YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG', icon: 'fa-ban' }
 };

@@ -232,6 +232,8 @@
     .pc-bhbox .pc-bh-x { position: absolute; top: -9px; right: -9px; width: 18px; height: 18px; border-radius: 50%; border: none; background: #dc2626; color: #fff; font: 700 13px/18px Inter, system-ui, sans-serif; font-style: normal; padding: 0; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
     .pc-bhbox.dau .pc-bh-x { top: 10%; right: 10%; }
     .pc-bhbox .pc-bh-x:hover { background: #b91c1c; }
+    .pc-sig .pc-sig-x { position: absolute; top: -9px; right: -9px; width: 18px; height: 18px; border-radius: 50%; border: none; background: #dc2626; color: #fff; font: 700 13px/18px Inter, system-ui, sans-serif; padding: 0; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,.25); z-index: 2; }
+    .pc-sig .pc-sig-x:hover { background: #b91c1c; }
     .pc-bhbox { position: absolute; z-index: 12; background: #fff; border: 1.5px dashed #0f766e; border-radius: 4px; padding: 2px 8px; font: 14px 'Times New Roman', Times, serif; color: #111; cursor: move; white-space: nowrap; box-sizing: border-box; box-shadow: 0 2px 8px rgba(15,118,110,.18); user-select: none; line-height: 1.5; text-align: center; }
     .pc-bhbox.ngay { font-style: italic; }
     .pc-bhbox.cho { color: #64748b; border-color: #94a3b8; background: rgba(255,255,255,.96); }
@@ -858,10 +860,12 @@
                 box.className = 'pc-sig' + (i === n - 1 ? ' last' : '');
                 box.setAttribute('data-i', i);
                 Object.assign(box.style, { left: l.sig.x + 'px', top: l.sig.y + 'px', width: l.sig.w + 'px', height: l.sig.h + 'px', zIndex: 10 });
-                box.innerHTML = `<div class="pc-sig-tags">${l.kyNhay ? '<span class="pc-tag">Ký nháy</span>' : ''}${l.kySo ? '<span class="pc-tag ks">Ký số</span>' : ''}</div><div class="pc-sig-name">${esc(sigTitle(S.levels, i))}</div><div class="sig-resize-handle"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>`;
+                box.innerHTML = `<div class="pc-sig-tags">${l.kyNhay ? '<span class="pc-tag">Ký nháy</span>' : ''}${l.kySo ? '<span class="pc-tag ks">Ký số</span>' : ''}</div><div class="pc-sig-name">${esc(sigTitle(S.levels, i))}</div><div class="sig-resize-handle"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div><button type="button" class="pc-sig-x" title="Xóa ô ký">×</button>`;
                 box.addEventListener('mousedown', e => {
                     if (e.button !== 0) return;
                     e.preventDefault(); e.stopPropagation();
+                    // [vt5] 13/11/2026: nút × (Xóa ô ký) - gỡ ô ký của cấp, trở về chưa đặt chữ ký (nút Đặt chữ ký hiện lại; kiểm tra bắt buộc khi trình như cũ)
+                    if (e.target.closest('.pc-sig-x')) { l.sig = null; render(); renderSigs(); return; }
                     const rs = e.target.closest('.sig-resize-handle');
                     const r = box.getBoundingClientRect();
                     S.drag = rs ? { i, box, mode: 'r', sx: e.clientX, sy: e.clientY, w: l.sig.w, h: l.sig.h } : { i, box, mode: 'm', ox: e.clientX - r.left, oy: e.clientY - r.top };
@@ -1100,7 +1104,7 @@
         // vùng phải; màn Ký duyệt của phân hệ không có khối Thông tin tổng quan thì đặt trong khối Ký số
         const sumRows = !last ? [] : [['Đóng dấu cơ quan', dongDau ? 'Có - sau khi Ký duyệt, văn bản chuyển Văn thư ban hành' : 'Không']].concat(dongDau && bh ? [
             ['Đơn vị ban hành', bh.donViBanHanhTen || (bh.donViBanHanh ? unitLabel(bh.donViBanHanh) : '--')],
-            ['Văn thư xử lý', bh.vanThu || vanThuText(bh.donViBanHanh) || '--'],
+            // [vt5] 13/11/2026: bỏ dòng "Văn thư xử lý" ở màn Ký duyệt (logic chuyển Văn thư theo con dấu giữ nguyên)
             ['Số, ký hiệu dự kiến', String(bh.soKyHieu || '').trim() || 'Chưa có'],
             ['Ngày văn bản dự kiến', bh.ngayVanBan || 'Chưa có']] : []);
         const inSum = sumRows.length > 0 && addSummaryRows(blockHost, sumRows);

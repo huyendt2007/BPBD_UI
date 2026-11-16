@@ -723,7 +723,7 @@
         showCustomConfirm('Bạn có chắc chắn muốn xóa cán bộ này khỏi danh sách không?', () => {
             activeDossier.refundOfficers.splice(index, 1);
             renderOfficerTable();
-            showToast('Xóa cán bộ thành công.', 'success');
+            showToast('Xóa người thi hành công vụ gây thiệt hại thành công.', 'success'); // [MSG-SUC-BTNN-HT-009]
         });
     };
     window.saveOfficerStep2 = function () {
@@ -762,7 +762,7 @@
             need('oPostponeStart', !!(el('oPostponeStart') && el('oPostponeStart').value.trim()));
             need('oPostponeFile', (ykhdPostponeFiles || []).length > 0);
             const s = el('oPostponeStart') ? el('oPostponeStart').value.trim() : '', e = el('oPostponeEnd') ? el('oPostponeEnd').value.trim() : '';
-            if (s && e && typeof parseDateVN === 'function' && parseDateVN(e) < parseDateVN(s)) need('oPostponeEnd', false, 'Ngày kết thúc hoãn phải lớn hơn hoặc bằng ngày bắt đầu');
+            if (s && e && typeof parseDateVN === 'function' && parseDateVN(e) < parseDateVN(s)) need('oPostponeEnd', false, 'Ngày kết thúc hoãn không được nhỏ hơn Ngày bắt đầu hoãn.');
         }
         if (errs.length) { const first = errs[0]; if (first.focus) first.focus(); if (first.scrollIntoView) first.scrollIntoView({ block: 'center' }); return; }
         const idx = parseInt(el('editOfficerIndex').value, 10);
@@ -786,7 +786,7 @@
         closeOfficerStep2Modal();
         renderOfficerTable();
         const e = el('ht2OfficerError'); if (e) e.style.display = 'none';
-        showToast(idx >= 0 ? 'Cập nhật cán bộ thành công.' : 'Thêm cán bộ thành công.', 'success');
+        showToast('Lưu thông tin người thi hành công vụ gây thiệt hại thành công.', 'success'); // [MSG-SUC-BTNN-HT-008]
     };
 
     // ===== Lưu ý kiến hội đồng =====

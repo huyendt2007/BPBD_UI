@@ -1088,7 +1088,7 @@
                             <span class="form-label">Hình thức ban hành<span class="required">*</span></span>
                             <select class="form-control" id="formCouncilSignMode" required>
                                 <option>Ký số trên hệ thống</option>
-                                <option>Ký bên ngoài</option>
+                                <option>Ký ngoài</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -1167,7 +1167,7 @@
                             <span class="form-label">Hình thức ban hành<span class="required">*</span></span>
                             <select class="form-control" id="formIssueSignMode" required>
                                 <option>Ký số trên hệ thống</option>
-                                <option>Ký bên ngoài</option>
+                                <option>Ký ngoài</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -1368,7 +1368,7 @@
                             <span class="form-label">Hình thức ban hành<span class="required">*</span></span>
                             <select class="form-control" id="refundObligationSignMode">
                                 <option>Ký số trên hệ thống</option>
-                                <option>Ký bên ngoài</option>
+                                <option>Ký ngoài</option>
                             </select>
                         </div>
                     </div>
@@ -1454,7 +1454,9 @@
 
     <!-- MODAL SELECT CLAIM TO REFUND (NEW SEARCH AND CHOOSE LIST) -->
     <div class="modal" id="selectClaimToRefundModal">
-        <div class="modal-content" style="max-width: 750px;">
+        <!-- Nới rộng và giữ tiêu đề cột trên một dòng (quy tắc lưới của bộ mẫu) -->
+        <style>#selectClaimToRefundModal .custom-table th { white-space: nowrap; }</style>
+        <div class="modal-content" style="max-width: 1000px;">
             <div class="modal-header">
                 <h3 class="modal-title"><i class="fa-solid fa-circle-plus"></i> Lập hồ sơ hoàn trả: Chọn vụ việc bồi thường</h3>
                 <button type="button" class="close-modal" onclick="closeRefundModal('selectClaimToRefundModal')">&times;</button>
@@ -1477,6 +1479,20 @@
                             <!-- Populated dynamically by JS -->
                         </tbody>
                     </table>
+                </div>
+                <!-- Phân trang 10 dòng mỗi trang, như lưới danh sách hồ sơ (SRS MH02, Q15 16/11/2026) -->
+                <div class="pagination-bar" style="padding: 12px 0 0;">
+                    <div class="pagination-left">
+                        <span>Số dòng hiển thị:</span>
+                        <select class="page-size-select" id="pageSizeSelectClaim" onchange="pageSizeClaim = parseInt(this.value); currentPageClaim = 1; renderSelectClaimRows();">
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        <span>Hiển thị <span id="currentRangeClaim" style="font-weight: 600;">0-0</span> trong tổng số <span id="totalCountClaim" style="font-weight: 600;">0</span> bản ghi</span>
+                    </div>
+                    <div class="pagination-pages" id="paginationPagesClaim"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1574,7 +1590,7 @@
     <!-- JAVASCRIPT CONTROLLERS -->
     <!-- ============================================== -->
     <script src="btnn_luong_xu_ly.js?v=20261112vt2"></script>
-    <script src="btnn_phan_cong_ky_duyet.js?v=20261113vt4"></script>
+    <script src="btnn_phan_cong_ky_duyet.js?v=20261113vt5"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script>
         // Xem xét trách nhiệm hoàn trả: đơn vị người xem theo vai trò giả lập (htMockScope); Lãnh đạo (ký duyệt) xem được mọi khối.
@@ -2914,6 +2930,8 @@
 
         // Hồ sơ GQBT đã hoàn tất chi trả (vụ việc Giải quyết YCBT trạng thái Hoàn thành); popup chỉ hiển thị vụ việc chưa có hồ sơ hoàn trả
         const PAID_CLAIM_CODES = ['BT-2026-008', 'BT-2026-012'];
+        let pageSizeClaim = 10, currentPageClaim = 1;
+        function setPageClaim(page) { currentPageClaim = page; renderSelectClaimRows(); }
         function renderSelectClaimRows() {
             const body = document.getElementById('selectClaimToRefundBody');
             if (!body) return;
@@ -2932,9 +2950,22 @@
                     <td style="text-align:center;"><button class="btn btn-primary btn-sm" onclick="selectClaimForRefund('${c}')" style="padding:4px 8px; font-size:11.5px; height:28px;">Khởi tạo hồ sơ</button></td>
                 </tr>`;
             });
-            body.innerHTML = rows.length ? rows.join('') : '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy dữ liệu phù hợp.</td></tr>';
+            const tong = rows.length, soTrang = Math.ceil(tong / pageSizeClaim) || 1;
+            currentPageClaim = Math.min(Math.max(1, currentPageClaim), soTrang);
+            const dau = (currentPageClaim - 1) * pageSizeClaim, cuoi = Math.min(dau + pageSizeClaim, tong);
+            document.getElementById('totalCountClaim').innerText = tong;
+            document.getElementById('currentRangeClaim').innerText = tong ? `${dau + 1}-${cuoi}` : '0-0';
+            const p = currentPageClaim;
+            let ph = `<span class="page-item ${p === 1 ? 'disabled' : ''}" onclick="${p === 1 ? '' : 'setPageClaim(1)'}" title="Trang đầu">&verbar;&lt;&lt;</span>`
+                + `<span class="page-item ${p === 1 ? 'disabled' : ''}" onclick="${p === 1 ? '' : 'setPageClaim(' + (p - 1) + ')'}" title="Trang trước">&lt;</span>`;
+            for (let i = 1; i <= soTrang; i++) ph += `<span class="page-item ${p === i ? 'active' : ''}" onclick="setPageClaim(${i})">${i}</span>`;
+            ph += `<span class="page-item ${p === soTrang ? 'disabled' : ''}" onclick="${p === soTrang ? '' : 'setPageClaim(' + (p + 1) + ')'}" title="Trang sau">&gt;</span>`
+                + `<span class="page-item ${p === soTrang ? 'disabled' : ''}" onclick="${p === soTrang ? '' : 'setPageClaim(' + soTrang + ')'}" title="Trang cuối">&gt;&gt;&verbar;</span>`;
+            document.getElementById('paginationPagesClaim').innerHTML = ph;
+            body.innerHTML = tong ? rows.slice(dau, cuoi).join('') : '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy dữ liệu phù hợp.</td></tr>';
         }
         function openSelectClaimModal() {
+            currentPageClaim = 1;
             renderSelectClaimRows();
             document.getElementById('selectClaimToRefundModal').classList.add('visible');
         }
@@ -3808,14 +3839,14 @@
                 });
                 // QĐ chấm dứt: [MSG-SUC-BTNN-HT-027]
                 if (loai === 'QĐ chấm dứt') showToast('Ban hành Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả thành công. Hồ sơ chuyển sang trạng thái [Chấm dứt hoàn trả].', 'success');
-                else showToast(`Ký duyệt thành công ${k.doc} - hồ sơ ${d.code}. Hồ sơ chuyển sang trạng thái [${htStView(d.status).name}].`, 'success');
+                else showToast({ 'Thành lập hội đồng': 'Phê duyệt và ban hành Quyết định thành lập Hội đồng thành công.', 'QĐ hoàn trả': 'Ban hành Quyết định hoàn trả kinh phí bồi thường thành công.', 'QĐ đình chỉ': 'Đã ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Hồ sơ chuyển [Đình chỉ xem xét hoàn trả].', 'Đình chỉ xem xét hoàn trả': 'Đã ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Hồ sơ chuyển [Đình chỉ xem xét hoàn trả].' }[loai] || `Ký duyệt thành công ${k.doc} - hồ sơ ${d.code}. Hồ sơ chuyển sang trạng thái [${htStView(d.status).name}].`, 'success'); // [MSG-SUC-BTNN-HT-003], [013], [022]
             } else {
                 d.status = HT_LOAI_CODE['Bị trả lại'][loai];
                 (d.refundOfficers || []).forEach(o => {
                     if (loai === 'Thành lập hội đồng') { o.status = 'Bị trả lại thành lập HĐ'; o.loi = 'Chờ cập nhật lại dự thảo'; o.progressClass = 'danger'; }
                     else if (loai === 'QĐ hoàn trả') { o.status = 'Bị trả lại QĐ hoàn trả'; o.progressClass = 'danger'; }
                 });
-                showToast(`Đã từ chối ${k.doc} - hồ sơ ${d.code}. Hồ sơ chuyển sang trạng thái [Bị trả lại] (Loại trình: ${loai}).`, 'info');
+                showToast({ 'Thành lập hội đồng': 'Đã ghi nhận từ chối phê duyệt Quyết định thành lập Hội đồng kèm lý do.', 'QĐ hoàn trả': 'Đã ghi nhận từ chối phê duyệt dự thảo Quyết định hoàn trả kèm lý do.', 'QĐ đình chỉ': 'Đã từ chối Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Quyết định đình chỉ chuyển [Bị trả lại].', 'Đình chỉ xem xét hoàn trả': 'Đã từ chối Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Quyết định đình chỉ chuyển [Bị trả lại].' }[loai] || `Đã từ chối ${k.doc} - hồ sơ ${d.code}. Hồ sơ chuyển sang trạng thái [Bị trả lại] (Loại trình: ${loai}).`, 'success'); // [MSG-SUC-BTNN-HT-004], [012], [023]
             }
             d.loaiTrinh = htStView(d.status).loai;
             htkdPersist(d);
@@ -3831,7 +3862,7 @@
                 unlinkRefundDossier(id);
                 currentPageRefund = 1;
                 renderRefundTable();
-                showToast("Đã xóa hồ sơ hoàn trả " + id + " thành công!", "info");
+                showToast('Xóa hồ sơ xem xét trách nhiệm hoàn trả thành công.', 'success'); // [MSG-SUC-BTNN-HT-018]
             });
         }
 
@@ -3948,8 +3979,8 @@
         });
     </script>
     <!-- Phạm vi dữ liệu theo đơn vị + trạng thái 02 tầng (chi tiết / chung) của màn danh sách -->
-    <script src="ht_du_lieu_mau.js?v=20261110ct2"></script>
-    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261112vt6"></script>
+    <script src="ht_du_lieu_mau.js?v=20261116tl1"></script>
+    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261116mg2"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="ht_mock_role_bar.js?v=20261110ct2"></script>
     <script src="admin-ui-standardizer.js"></script>

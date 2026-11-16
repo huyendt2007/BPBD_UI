@@ -121,13 +121,24 @@
         opts = opts || {};
         const base = opts.basePath || '';
         const mainId = opts.mainFrameId || 'mainContentIframe';
-        let queue = [], running = null, timer = null, lastMain = {};
+        let queue = [], running = null, timer = null, lastMain = {}, henVe = null;
+        // Phân hệ đã nạp ngầm trong lần mở trang này, theo ngữ cảnh: trang nạp ngầm tự ghi dữ liệu mẫu làm đổi dấu vân tay dữ liệu,
+        // nên chỉ dùng dấu vân tay thì vòng nạp ngầm lặp mãi gây giật (13/11/2026). Xóa khi đổi người dùng hoặc trang đang mở đổi số lượng.
+        let daDo = {};
+        // Chạy fn khi trình duyệt rảnh, sau ít nhất ms mili giây (trang đang xem được ưu tiên)
+        function nghi(fn, ms) {
+            setTimeout(() => { if (global.requestIdleCallback) global.requestIdleCallback(fn, { timeout: 3000 }); else fn(); }, ms || 0);
+        }
+        // Gộp nhiều lần vẽ lại liền nhau (sự kiện storage dồn dập khi trang nạp ngầm ghi dữ liệu mẫu) thành 01 lần
+        function veGop() { clearTimeout(henVe); henVe = setTimeout(render, 250); }
 
         const shown = {};
         function paint(key, n) {
+            // Chỉ ghi khi giá trị đổi: tránh vẽ lại menu hàng trăm lần lúc các trang nạp ngầm ghi dữ liệu mẫu (giảm giật, 13/11/2026)
+            const chu = fmt(n || 0), hien = n > 0 ? '' : 'none';
             document.querySelectorAll(`.menu-badge[data-badge-key="bdg_${key}"]`).forEach(el => {
-                el.innerText = fmt(n || 0);
-                el.style.display = n > 0 ? '' : 'none';
+                if (el.textContent !== chu) el.textContent = chu;
+                if (el.style.display !== hien) el.style.display = hien;
             });
         }
         // Badge nhóm menu = tổng badge các mục con: "Giải quyết bồi thường" (02 mục con), "Kinh phí" (02 menu con)
@@ -165,7 +176,7 @@
         // Tính lại các phân hệ chưa có số của ngữ cảnh hiện tại hoặc dữ liệu đã thay đổi (mỗi phân hệ tối đa 01 lần/lượt)
         function schedule(delay) {
             clearTimeout(timer);
-            timer = setTimeout(runCycle, delay == null ? 800 : delay);
+            timer = setTimeout(() => nghi(runCycle), delay == null ? 800 : delay);
         }
         function runCycle() {
             const c = readCache();
@@ -174,6 +185,7 @@
             MODULE_IDS.forEach(m => {
                 if (main.includes(m) || queue.includes(m) || (running && running.m === m)) return;
                 if (m === 'tiepNhan' && receptionLive()) return;
+                if (daDo[m] === ctxOf(m)) return;
                 if (!cacheValid(c, m, fp)) queue.push(m);
             });
             next();
@@ -185,7 +197,7 @@
             running = null;
             setTimeout(() => { try { f.remove(); } catch (e) { /* bỏ qua */ } }, 0);
             render();
-            next();
+            nghi(next, 600);   // nghỉ giữa hai trang nạp ngầm cho trang đang xem phản hồi (13/11/2026)
         }
         function next() {
             if (running) return;
@@ -194,6 +206,7 @@
             while (queue.length && cacheValid(c, queue[0], fp)) queue.shift();
             if (!queue.length) return;
             const m = queue.shift();
+            daDo[m] = ctxOf(m);
             const f = document.createElement('iframe');
             f.className = 'bdg-probe-frame';
             f.setAttribute('aria-hidden', 'true');
@@ -218,19 +231,23 @@
                 if (d.ctx === ctxOf(d.module)) setMenuBadge(d.module, d.count); else render();
                 // Trang đang mở thay đổi số lượng / ngữ cảnh: tính lại các phân hệ khác (dữ liệu dùng chung có thể đã đổi)
                 const key = d.ctx + '#' + d.count;
-                if (lastMain[d.module] !== key) { lastMain[d.module] = key; schedule(); }
+                if (lastMain[d.module] !== key) { if (d.module in lastMain) daDo = {}; lastMain[d.module] = key; schedule(); }
             }
         });
         // Đổi người dùng giả lập / dữ liệu ở cửa sổ khác: hiển thị lại theo ngữ cảnh mới và tính lại khi cần
         global.addEventListener('storage', event => {
-            if (!event.key || event.key === CACHE_KEY) { render(); return; }
+            if (!event.key || event.key === CACHE_KEY) { veGop(); return; }
             if (/^(btnn_demo_user_v1|btnn_wf_records_v1|btnn_flow_config_v2|receptionClaimsList_v2026|bctt_role_v1|kp_role_v1|bhvb_role_v1|btnn_ban_hanh_van_ban_v\d+)$/.test(event.key)) {
-                render();
-                if (event.key === 'btnn_demo_user_v1' || event.key === 'bctt_role_v1' || event.key === 'kp_role_v1' || event.key === 'bhvb_role_v1') schedule();
+                veGop();
+                if (event.key === 'btnn_demo_user_v1' || event.key === 'bctt_role_v1' || event.key === 'kp_role_v1' || event.key === 'bhvb_role_v1') schedule();   // ngữ cảnh đổi thì daDo tự không khớp
             }
         });
         render();
-        schedule(opts.initialDelay == null ? 1500 : opts.initialDelay);
+        // Bắt đầu nạp ngầm sau khi trang đang xem trong khung chính tải xong (tránh tranh tài nguyên lúc mở trang)
+        const khungChinh = mainFrame(), cho = opts.initialDelay == null ? 1500 : opts.initialDelay;
+        let daHen = false;
+        const batDau = () => { if (!daHen) { daHen = true; schedule(cho); } };
+        if (khungChinh) { khungChinh.addEventListener('load', batDau, { once: true }); setTimeout(batDau, 6000); } else batDau();
         return { render, refresh: () => schedule(0), setMenuBadge };
     }
 

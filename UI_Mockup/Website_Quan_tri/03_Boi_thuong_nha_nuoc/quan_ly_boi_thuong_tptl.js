@@ -19,7 +19,7 @@
 (function () {
     var TPTL_SEED_VER = '20261027tptl3';
     var ROLE = { CQGQ: 'Cơ quan giải quyết bồi thường', BTP: 'Bộ Tư pháp', STP: 'Sở Tư pháp', VKS: 'Viện kiểm sát' };
-    var CAP_TW = 'Trung ương', CAP_DP = 'Địa phương';
+    var CAP_TW = 'Trung ương', CAP_TINH = 'Tỉnh', CAP_XA = 'Xã';
     var ERR = '<div class="error-message" style="color:#dc2626; font-size:11px; display:none;">Đây là trường bắt buộc</div>';
     var CHIP = 'display:inline-block; padding:1px 8px; border-radius:10px; font-size:11.5px; font-weight:600; background:#e0f2fe; color:#075985; margin:0 4px 2px 0;';
     var st = { claimId: null, agencies: [] };
@@ -63,10 +63,11 @@
         if (me && (!claim || (cq.id && cq.id === me.rootId))) return { id: me.rootId, name: me.rootName, src: 'login', login: me };
         return Object.assign(cq, { src: 'claim', login: me });
     }
-    // Cấp đơn vị: thuộc tính Cấp đơn vị của đơn vị gốc (ktlcCapOf); chưa khai báo thì suy theo tên
+    // Cấp đơn vị (Trung ương / Tỉnh / Xã): thuộc tính Cấp đơn vị của đơn vị gốc (ktlcCapOf); chưa khai báo thì suy theo tên
     function capOf(unitId, name) {
         try { if (unitId && typeof ktlcCapOf === 'function') { var c = ktlcCapOf(unitId); if (c) return c; } } catch (e) { /* mockup */ }
-        return /^Bộ\s|tối cao|Chính phủ|Trung ương/i.test(name || '') ? CAP_TW : CAP_DP;
+        if (/^Bộ\s|tối cao|Chính phủ|Trung ương/i.test(name || '')) return CAP_TW;
+        return /(^|\s)(UBND|Ủy ban nhân dân|Công an)\s+(phường|xã|đặc khu)/i.test(name || '') ? CAP_XA : CAP_TINH;
     }
     // Tỉnh/Thành phố của đơn vị: thực tế lấy theo thuộc tính Tỉnh/Thành phố của đơn vị trên Cơ cấu tổ chức; mockup suy theo tên đơn vị
     var CITIES = ['Hà Nội', 'Hồ Chí Minh', 'Hải Phòng', 'Đà Nẵng', 'Cần Thơ', 'Huế'];

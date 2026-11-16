@@ -189,6 +189,21 @@
                 if (ex.dc.pa) r.dc.pa[o.name] = ex.dc.pa;
                 o.dcKey = ex.dc.key;
             }
+            // QĐ giảm mức hoàn trả bổ sung chung đã ban hành (dữ liệu mẫu cán bộ có số tiền cần trả lại)
+            if (ex.mg) {
+                const sd = window.htShiftDate || String;
+                activeDossier.htMgs = activeDossier.htMgs || [];
+                let r = activeDossier.htMgs[ex.mg.key];
+                if (!r) {
+                    r = seedRec('BGIAM', u, 'DONE');
+                    Object.assign(r, { st: 'DONE', unit: u.unit, names: [], supp: { rows: {} }, soKh: ex.mg.soKh || '94/QĐ-UBND', ngay: sd(ex.mg.ngay), issuedAt: sd(ex.mg.ngay) });
+                    r.hist = [{ type: 'approve', name: leaderLabel(r, r.levels.length - 1), at: sd(ex.mg.ngay + ' 15:00'), msg: 'Ký duyệt' }, { type: 'submit', name: 'Cán bộ ' + issuerOf(u), at: sd(ex.mg.trinh + ' 09:00'), msg: KIND.BGIAM.content }];
+                    activeDossier.htMgs[ex.mg.key] = r;
+                }
+                r.names.push(o.name);
+                r.supp.rows[o.name] = { phaiHT: ex.mg.phaiHT, duocGiam: ex.mg.duocGiam, giam: ex.mg.phaiHT - ex.mg.duocGiam, lyDo: ex.mg.lyDo || '' };
+                o.mgKey = ex.mg.key;
+            }
         });
         activeDossier.ht3Ready = true;
         syncUnitStatusText();
@@ -665,9 +680,12 @@
         if (!u || !mgCan(u) || list.some(o => !o || !mgEligible(o))) { showToast('Cán bộ được chọn không đủ điều kiện trình Quyết định ' + (base === 'MIEN' ? 'miễn' : 'giảm mức') + ' hoàn trả bổ sung.', 'warning'); return; }
         if (base === 'GIAM') {
             const khongVoY = list.filter(o => o.loi !== 'Vô ý');
-            if (khongVoY.length) { showToast('Giảm mức hoàn trả chỉ áp dụng khi Mức độ lỗi là Vô ý: ' + khongVoY.map(o => o.name).join(', ') + '.', 'warning'); return; }
-            const het = list.filter(o => giamMaxOf(o) <= 0);
-            if (het.length) { showToast('Cán bộ đã được giảm đủ 30% Tổng số tiền phải hoàn trả: ' + het.map(o => o.name).join(', ') + '.', 'warning'); return; }
+            // SRS (Q06, 16/11/2026): TH2 và TH3 cùng xảy ra thì hiển thị cả hai câu, mỗi câu một dòng
+            const het = list.filter(o => o.loi === 'Vô ý' && giamMaxOf(o) <= 0);
+            const cau = [];
+            if (khongVoY.length) cau.push('Giảm mức hoàn trả chỉ áp dụng khi Mức độ lỗi là Vô ý: ' + khongVoY.map(o => o.name).join(', ') + '.');
+            if (het.length) cau.push('Cán bộ đã được giảm đủ 30% Số tiền cần hoàn trả: ' + het.map(o => o.name).join(', ') + '.');
+            if (cau.length) { showToast(cau.join('<br>'), 'warning'); return; }
         }
         activeDossier.htMgs = activeDossier.htMgs || [];
         MG_DRAFT = { unit: u.unit, names: list.map(o => o.name) };
@@ -979,7 +997,7 @@
     // Giảm mức hoàn trả: Số tiền hoàn trả được giảm tối đa 30% Tổng số tiền phải hoàn trả theo QĐ hoàn trả; tại bước Thu tiền hoàn trả không lớn hơn Số tiền còn lại phải hoàn trả
     const conLaiOf = o => Math.max(0, (o.total || 0) - (o.paid || 0));
     // Giảm bổ sung: cộng dồn các lần giảm (kể cả giảm theo ý kiến Hội đồng) không quá 30% Tổng số tiền phải hoàn trả theo QĐ hoàn trả; không lớn hơn Số tiền còn phải thu
-    const giamMaxOf = o => { const hd = o.hd || o.total || 0; return Math.max(0, Math.min(Math.floor(hd * 0.3) - Math.max(0, hd - (o.total || 0)), conLaiOf(o))); };
+    const giamMaxOf = o => { const hd = o.hd || o.total || 0; return Math.max(0, Math.min(Math.round(hd * 0.3) - Math.max(0, hd - (o.total || 0)), conLaiOf(o))); };
     function giamMax(kind, o) { return KIND[kind].base ? giamMaxOf(o) : Math.floor((o.hd || o.total || 0) * 0.3); }
     function giamMaxText(kind) { return '30% Tổng số tiền phải hoàn trả theo Quyết định hoàn trả' + (KIND[kind].base ? ' (cộng dồn các lần giảm), không lớn hơn Số tiền còn lại phải hoàn trả' : ''); }
     // QĐ giảm bổ sung chung: Số tiền còn phải hoàn trả của từng cán bộ = Số tiền phải hoàn trả hiện tại - Số tiền hoàn trả được giảm
@@ -1199,7 +1217,8 @@
             r.hist.unshift({ type: 'approve', name: 'Cán bộ ' + (S.ctx.issuer || S.ctx.unit), at: nowShort(), msg: 'Ban hành ' + KIND[kind].doc + ' ký ngoài hệ thống (tệp ' + r.fileName + ').' });
             setRec(kind, key, r);
             ht3Close();
-            issue(kind, key, 'Ban hành ' + KIND[kind].doc + ' thành công.');
+            // QĐ hoàn trả [MSG-SUC-BTNN-HT-013]; QĐ đình chỉ [MSG-SUC-BTNN-HT-030]; QĐ miễn / giảm bổ sung [MSG-SUC-BTNN-HT-031]
+            issue(kind, key, kind === 'HT' ? 'Ban hành Quyết định hoàn trả kinh phí bồi thường thành công.' : (kind === 'DC' ? 'Ban hành Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả thành công. Hồ sơ chuyển sang trạng thái [Đình chỉ xem xét hoàn trả].' : 'Ban hành ' + KIND[kind].doc + ' thành công.'));
         };
         const msg = 'Văn bản ký ngoài sẽ được ban hành trực tiếp, bỏ qua bước duyệt của Lãnh đạo trên hệ thống. Bạn có chắc chắn muốn ban hành văn bản?';
         if (api().confirmBox) api().confirmBox('Xác nhận ban hành văn bản', msg, 'Ban hành', go);
@@ -1235,7 +1254,11 @@
                 o.trinh = ''; o.mgKey = key;
                 if (KIND[kind].base === 'MIEN') { o.ct = 'MIEN'; o.total = o.paid || 0; o.refund = 0; return; }
                 o.total = sp.giam;
-                o.ct = sp.giam > (o.paid || 0) ? 'THU' : 'DONE';
+                const paid = o.paid || 0;
+                // TH2: lớn hơn số đã nộp -> Thu tiền hoàn trả; TH3: bằng -> Hoàn thành; TH4: nhỏ hơn (nộp trong lúc chờ duyệt) -> giữ Thu tiền hoàn trả, có số tiền cần trả lại
+                if (sp.giam > paid) { o.ct = 'THU'; o.refund = 0; }
+                else if (sp.giam === paid) { o.ct = 'DONE'; o.refund = 0; }
+                else { o.ct = 'THU'; o.refund = paid - sp.giam; }
             });
         } else if (KIND[kind].base) {
             // Miễn / Giảm bổ sung khi đang thu tiền
@@ -1315,7 +1338,8 @@
         r.hist.unshift({ type: 'approve', name: leaderLabel(r, r.level), at: nowShort(), msg: (how ? 'Ký duyệt (' + how + ').' : 'Ký duyệt') + (note ? ' Ý kiến: ' + note : '') });
         if (r.level < r.levels.length - 1) {
             r.level++;
-            commit('Ký duyệt thành công. Hồ sơ chuyển Lãnh đạo cấp ' + (r.level + 1) + ' - ' + r.levels[r.level].unit + '.');
+            // [MSG-SUC-BTNN-HT-021]
+            commit('Đã ký duyệt ' + KIND[p.kind].label + ' hồ sơ ' + activeDossier.code + ', chuyển ' + leaderLabel(r, r.level) + ' ký duyệt.');
             return;
         }
         // [vt2] Cấp cuối, phiếu trình tích Đóng dấu cơ quan: ký số văn bản chưa có số, ngày, dấu; chuyển Văn thư ban hành; phiếu giữ Chờ duyệt
@@ -1329,7 +1353,8 @@
             return;
         }
         // [tnht] Không tự cấp số: Số, ký hiệu theo giá trị cán bộ nhập tại Bước 2; còn trống thì hiển thị "Chưa có" in nghiêng
-        issue(p.kind, p.key, 'Ký duyệt và ban hành ' + KIND[p.kind].doc + ' thành công.');
+        // MH12: QĐ đình chỉ [MSG-SUC-BTNN-HT-022] (TH6); QĐ hoàn trả [MSG-SUC-BTNN-HT-013], QĐ miễn / giảm [MSG-SUC-BTNN-HT-031] (TH5)
+        issue(p.kind, p.key, p.kind === 'DC' ? 'Đã ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Hồ sơ chuyển [Đình chỉ xem xét hoàn trả].' : (p.kind === 'HT' ? 'Ban hành Quyết định hoàn trả kinh phí bồi thường thành công.' : 'Ban hành ' + KIND[p.kind].doc + ' thành công.'));
     };
     const baseReject = window.submitRejectReason;
     window.submitRejectReason = function () {
@@ -1347,7 +1372,8 @@
         else if (KIND[p.kind].base) activeDossier.refundOfficers[p.key].trinh = 'BTC_' + KIND[p.kind].base;
         else activeDossier.refundOfficers[p.key].ct = 'BTC_' + p.kind;
         closeRejectReasonModal();
-        commit('Đã từ chối ' + KIND[p.kind].doc + '. Hồ sơ chuyển trạng thái Bị trả lại.');
+        // QĐ đình chỉ [MSG-SUC-BTNN-HT-023]; QĐ hoàn trả, miễn, giảm [MSG-SUC-BTNN-HT-012]
+        commit(p.kind === 'DC' ? 'Đã từ chối Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Quyết định đình chỉ chuyển [Bị trả lại].' : 'Đã ghi nhận từ chối phê duyệt dự thảo Quyết định hoàn trả kèm lý do.');
     };
 
     // ===== Badge trạng thái đầu màn: trạng thái chung theo phạm vi người xem (cùng quy tắc roll-up với màn danh sách) =====
@@ -1366,7 +1392,7 @@
         // Thứ tự: trạng thái đích (100% kết thúc) > Thu tiền hoàn trả > Đang xử lý > Chờ xử lý
         const ended = o => ENDED.includes(o.ct) && !o.trinh;
         let chung = 'Chờ xử lý';
-        if (vis.length && vis.every(ended)) chung = vis.some(o => o.ct === 'DC') && vis.every(o => o.ct === 'DC' || o.ct === 'KXX') ? 'Đình chỉ xem xét hoàn trả' : (vis.every(o => o.ct === 'MIEN') ? 'Miễn hoàn trả' : 'Hoàn thành');
+        if (vis.length && vis.every(ended)) chung = vis.some(o => o.ct === 'DC') && vis.every(o => o.ct === 'DC' || o.ct === 'KXX') ? 'Đình chỉ xem xét hoàn trả' : (vis.some(o => o.ct === 'MIEN') && vis.every(o => o.ct === 'MIEN' || o.ct === 'KXX') ? 'Miễn hoàn trả' : 'Hoàn thành');
         else if (vis.some(o => o.ct === 'THU')) chung = 'Thu tiền hoàn trả';
         else if (vis.some(o => !['CBH_HT', 'BTC_HT', 'DC'].includes(o.ct) || /^CD_/.test(o.trinh || ''))) chung = 'Đang xử lý';
         const m = new Map();

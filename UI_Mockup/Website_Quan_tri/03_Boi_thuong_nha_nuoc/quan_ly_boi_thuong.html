@@ -2656,7 +2656,7 @@
                                     <span class="form-label">Tạm ứng Thiệt hại khác tính được ngay (đồng)</span>
                                     <input type="text" inputmode="numeric" class="form-control" id="claimAdvanceKhacVal" style="text-align: right;"
                                         placeholder="0" oninput="formatCurrencyInput(this); clearAdvanceError(this); sumClaimAdvance()">
-                                    <div class="error-message" id="errClaimAdvanceKhacVal" style="display: none;">Số tiền tạm ứng thiệt hại khác phải nhỏ hơn tổng các loại thiệt hại khác đã yêu cầu bồi thường</div>
+                                    <div class="error-message" id="errClaimAdvanceKhacVal" style="display: none;">Số tiền tạm ứng thiệt hại khác không được vượt quá tổng các loại thiệt hại khác đã yêu cầu bồi thường</div>
                                 </div>
                             </div>
 
@@ -7965,13 +7965,56 @@
             const r = document.querySelector('input[name="claimVuViecMode"]:checked');
             return r && r.value === 'existing' ? 'existing' : 'new';
         }
-        // Vụ việc mới: ẩn khối chọn vụ việc và xóa vụ việc đã chọn;
-        // Đã tồn tại vụ việc: hiện ô nhập Mã vụ việc + Tìm kiếm / Tìm kiếm nâng cao (bắt buộc chọn)
+        // Vụ việc mới: ẩn khối chọn vụ việc; Đã tồn tại vụ việc: hiện ô nhập Mã vụ việc + Tìm kiếm / Tìm kiếm nâng cao (bắt buộc chọn)
+        // [vv2] Mỗi lựa chọn giữ dữ liệu nhập riêng: đổi lựa chọn thì lưu tạm dữ liệu của lựa chọn đang dùng và hiển thị lại dữ liệu đã nhập
+        //       của lựa chọn kia (lần đầu chọn: form trống như khi mở form); khi Trình chỉ lưu dữ liệu của lựa chọn đang chọn.
+        var claimVvModeCur = 'new', claimVvModeState = { new: null, existing: null }, claimVvModeBlank = null;
+        const CLAIM_VV_SNAP_SKIP = ['claimVuViecPick', 'claimVvLinkCode', 'claimVvLinkAgency', 'claimVvLinkStatus', 'claimCqNhan', 'claimVuViecReadonly', 'claimHoSoCodeReadonly'];
+        function claimVvModeReset() { claimVvModeCur = 'new'; claimVvModeState = { new: null, existing: null }; claimVvModeBlank = null; }
+        function claimVvSnapForm() {
+            const panel = document.getElementById('inlineClaimFormPanel');
+            if (!panel) return null;
+            const skipName = n => n === 'claimVuViecMode' || n === 'cdpdModeRadio';
+            const vals = {}, named = {};
+            panel.querySelectorAll('input[id], select[id], textarea[id]').forEach(el => {
+                if (CLAIM_VV_SNAP_SKIP.includes(el.id) || el.type === 'file' || skipName(el.name)) return;
+                vals[el.id] = (el.type === 'checkbox' || el.type === 'radio') ? { c: el.checked } : { v: el.value };
+            });
+            panel.querySelectorAll('input[type="radio"][name]').forEach(el => { if (!skipName(el.name) && el.checked) named[el.name] = el.value; });
+            const copy = x => JSON.parse(JSON.stringify(x == null ? null : x));
+            return { vals, named, vbcc: copy(vanBanCanCuRows), docs: copy(currentDocsList), link: copy(claimVvLink) };
+        }
+        function claimVvApplySnap(s) {
+            if (!s) return;
+            loadVanBanCanCuRows(s.vbcc || []);
+            currentDocsList = Array.isArray(s.docs) ? s.docs : [];
+            if (typeof renderDocsTable === 'function') renderDocsTable();
+            Object.keys(s.named).forEach(n => document.getElementsByName(n).forEach(r => { r.checked = r.value === s.named[n]; }));
+            Object.keys(s.vals).forEach(id => { const el = document.getElementById(id); if (!el) return; const x = s.vals[id]; if ('c' in x) el.checked = x.c; else el.value = x.v; });
+            claimVvLink = s.link || null;
+            renderClaimVvLink();
+            // Đồng bộ phần hiển thị phụ thuộc giá trị vừa điền lại
+            try { toggleNycTypeFields(); } catch (e) { /* mockup */ }
+            try { const c = document.getElementById('claimNYCCountry'); if (c) toggleClaimCountrySelect(c.value); } catch (e) { /* mockup */ }
+            try { updateClaimWardOptions(false); } catch (e) { /* mockup */ }
+            try { const role = document.getElementById('claimNYCRole'); toggleNbthBlock(role ? role.value : undefined); } catch (e) { /* mockup */ }
+            document.querySelectorAll('#claimHonorSection input[type="checkbox"]').forEach(cb => cb.dispatchEvent(new Event('change')));
+            document.querySelectorAll('#inlineClaimFormPanel .is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        }
+        // Gọi sau khi mở form Thêm mới: dữ liệu ban đầu của form, dùng khi lần đầu chuyển sang một lựa chọn
+        function claimVvModeInitBlank() { claimVvModeBlank = claimVvSnapForm(); }
         function toggleClaimVuViecMode() {
-            const existing = getClaimVuViecMode() === 'existing';
+            const mode = getClaimVuViecMode();
+            const existing = mode === 'existing';
             const pick = document.getElementById('claimVuViecPickGroup');
             if (pick) pick.style.display = existing ? '' : 'none';
-            if (!existing) claimVvClearLink(false);
+            if (mode !== claimVvModeCur) {
+                claimVvModeState[claimVvModeCur] = claimVvSnapForm();
+                const target = claimVvModeState[mode] || claimVvModeBlank;
+                if (target) claimVvApplySnap(target);
+                else if (!existing) claimVvClearLink(false);
+                claimVvModeCur = mode;
+            } else if (!existing && claimVvLink) claimVvClearLink(false);
             const el = document.getElementById('claimVuViecPick'); if (el) el.classList.remove('is-invalid');
             const er = document.getElementById('errClaimVuViecPick'); if (er) er.style.display = 'none';
         }
@@ -8223,6 +8266,7 @@
             show('claimVuViecModeGroup', true);
             show('claimVuViecReadonlyGroup', false);
             show('claimHoSoCodeReadonlyGroup', false);
+            claimVvModeReset();
             claimVvClearLink(false);
             document.getElementsByName('claimVuViecMode').forEach(r => { r.checked = r.value === 'new'; });
             toggleClaimVuViecMode();
@@ -12002,9 +12046,9 @@
                     }
                 }
 
-                // Kiểm tra tạm ứng thiệt hại khác: bắt buộc nhỏ hơn tổng các loại thiệt hại khác đã yêu cầu
+                // Kiểm tra tạm ứng thiệt hại khác: không vượt quá tổng các loại thiệt hại khác đã yêu cầu (trừ nhóm V, gồm cả nhóm VII)
                 if (khac > 0) {
-                    if (khac >= thietHaiKhacTotal) {
+                    if (khac > thietHaiKhacTotal) {
                         const el = document.getElementById('claimAdvanceKhacVal');
                         el.classList.add('is-invalid');
                         const err = document.getElementById('errClaimAdvanceKhacVal');
@@ -24909,9 +24953,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <!-- [lth][th2c] Thiệt hại 02 cấp (nhóm / mục chi tiết DM_27) tại Nhập liệu hồ sơ, Xác minh thiệt hại, Thương lượng, Xem chi tiết; tích bổ sung mục / Yêu cầu phục hồi danh dự; popup xác nhận Hoàn thành xác minh -->
     <script src="quan_ly_boi_thuong_lth.js?v=20261106dvc11"></script>
     <!-- [ktlc] Không thụ lý KTL_01: Chuyển hồ sơ cho theo cấp đơn vị / số lần chuyển, tự tạo hồ sơ Xác định CQGQBT -->
-    <script src="quan_ly_boi_thuong_ktlc.js?v=20261030k3"></script>
+    <script src="quan_ly_boi_thuong_ktlc.js?v=20261116cdv"></script>
     <!-- [tptl] Thành phần tham gia thương lượng: 1. Cơ quan, tổ chức (thành phần bắt buộc theo Cấp đơn vị / Lĩnh vực, Không tham gia + Lý do; thành phần khác), 2. Người yêu cầu bồi thường / người đại diện / người bảo vệ quyền lợi ích hợp pháp (đặt sau lth, ktlc) -->
-    <script src="quan_ly_boi_thuong_tptl.js?v=20261109sd1"></script>
+    <script src="quan_ly_boi_thuong_tptl.js?v=20261116cdv"></script>
     <!-- [nbth] Người bị thiệt hại Cá nhân/Tổ chức, địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại; bắt buộc khi trình Thông báo thụ lý (đặt trước cdpd) -->
     <script src="quan_ly_boi_thuong_nbth.js?v=20261109sd1"></script>
     <!-- [kttr] Trước Popup Trình duyệt Thông báo thụ lý: Danh sách vụ việc của Người bị thiệt hại (chỉ khi có hồ sơ trùng; đặt sau nbth, trước cdpd) -->
@@ -24920,9 +24964,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="quan_ly_boi_thuong_kttr.js?v=20261102kt1"></script>
     <!-- [cdpd] Tạo yêu cầu - Cán bộ chủ động phục hồi danh dự khi có đủ thông tin: form tối thiểu, trình Thông báo tổ chức thực hiện phục hồi danh dự (chỉ Tải lên từ máy / Ký ngoài) -->
     <script src="btnn_lanh_dao_actions.js?v=20261112vt2"></script>
-    <script src="btnn_phan_cong_ky_duyet.js?v=20261113vt4"></script>
+    <script src="btnn_phan_cong_ky_duyet.js?v=20261113vt5"></script>
     <script src="quan_ly_boi_thuong_ccq.js?v=20261112sn1"></script>
-    <script src="quan_ly_boi_thuong_cdpd.js?v=20261112sn1"></script>
+    <script src="quan_ly_boi_thuong_cdpd.js?v=20261116vv2"></script>
     <!-- [dgq] Dừng giải quyết (Mẫu 05/BTNN): popup trình ký Thông báo dừng giải quyết, khối Thông tin dừng giải quyết, dữ liệu mẫu BT-2026-541..544 (đặt sau dcgq, hdcv) -->
     <script src="quan_ly_boi_thuong_dgq.js?v=20261112sn1"></script>
     <!-- [mh05] Xem chi tiết hồ sơ: khối Lý do bị trả lại / Không thụ lý / Chuyển CQGQBT / Thông tin xử lý và trình duyệt tại Tab 2; hồ sơ Bị trả lại mở Tab 2 + cuộn tới khối; dải thông báo không được xem (đặt sau mọi script bọc showCaseDetail) -->

@@ -1252,7 +1252,7 @@
                 <div class="ht-s1-grid" id="s1OfficialGrid">
                     <div class="form-group">
                         <span class="form-label">Hình thức ban hành</span>
-                        <div class="info-value" id="s1OfficialPublishType" style="font-weight:600;">Trình ký điện tử trên hệ thống</div>
+                        <div class="info-value" id="s1OfficialPublishType" style="font-weight:600;">Ký số trên hệ thống</div>
                     </div>
                     <div class="form-group">
                         <span class="form-label">Đơn vị ban hành</span>
@@ -1526,11 +1526,11 @@
                     <span class="form-label" style="margin-bottom: 0; font-weight:700;">Hình thức ban hành:</span>
                     <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer;">
                         <input type="radio" name="s3PublishTypeRadio" value="digital" checked onchange="handleS3PublishTypeChange(this.value)">
-                        Trình ký điện tử trên hệ thống
+                        Ký số trên hệ thống
                     </label>
                     <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer;">
                         <input type="radio" name="s3PublishTypeRadio" value="offline" onchange="handleS3PublishTypeChange(this.value)">
-                        Ký ngoài hệ thống
+                        Ký ngoài
                     </label>
                     <span id="s3PublishTypeNote" style="display:none; font-size:12.5px; color:#b91c1c; font-style:italic; font-weight:600;"></span>
                 </div>
@@ -1779,11 +1779,11 @@
                         <div style="display: flex; gap: 24px; flex-wrap: wrap;">
                             <label style="display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; cursor: pointer;">
                                 <input type="radio" name="createCouncilPublishType" value="digital" checked onchange="toggleCreateCouncilPublishType(this.value)">
-                                Trình ký điện tử trên hệ thống
+                                Ký số trên hệ thống
                             </label>
                             <label style="display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; cursor: pointer;">
                                 <input type="radio" name="createCouncilPublishType" value="offline" onchange="toggleCreateCouncilPublishType(this.value)">
-                                Ký ngoài hệ thống
+                                Ký ngoài
                             </label>
                         </div>
                     </div>
@@ -2183,7 +2183,7 @@
                             <span class="form-label">Hình thức ban hành <span class="required" style="color:red;">*</span></span>
                             <select class="form-control" id="issueQdSignMode" onchange="toggleIssueQdSignMode(this.value)">
                                 <option>Ký số trên hệ thống</option>
-                                <option>Ký bên ngoài</option>
+                                <option>Ký ngoài</option>
                             </select>
                         </div>
                         <div class="form-group" id="issueQdSignerDigitalContainer">
@@ -2701,7 +2701,7 @@
 
 
         <script src="btnn_luong_xu_ly.js?v=20261112vt2"></script>
-        <script src="btnn_phan_cong_ky_duyet.js?v=20261113vt4"></script>
+        <script src="btnn_phan_cong_ky_duyet.js?v=20261113vt5"></script>
         <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
         <script>
             // Xem xét trách nhiệm hoàn trả: đơn vị người xem theo vai trò giả lập (htMockScope); Lãnh đạo (ký duyệt) xem được mọi khối.
@@ -4716,7 +4716,7 @@
                     detail: `Lý do: "${reason}"`
                 });
 
-                showToast('Lãnh đạo đã từ chối phê duyệt Quyết định thành lập. Lý do đã lưu vào lịch sử xử lý.', 'warning');
+                showToast('Đã ghi nhận từ chối phê duyệt Quyết định thành lập Hội đồng kèm lý do.', 'success'); // [MSG-SUC-BTNN-HT-004]
                  // Trả quyền tác nghiệp về Cán bộ xử lý để sửa lại hồ sơ bị trả lại
                  restoreStaffPerspective();
                 switchSimulatorState(1.3);
@@ -4807,7 +4807,7 @@
                 }
 
                 // Fields
-                document.getElementById('s1OfficialPublishType').innerText = activeDossier.hdPublishType === 'offline' ? 'Ký ngoài hệ thống' : 'Trình ký điện tử trên hệ thống';
+                document.getElementById('s1OfficialPublishType').innerText = activeDossier.hdPublishType === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống';
                 document.getElementById('s1OfficialIssuingUnit').innerText = activeDossier.hdIssuingUnit || activeDossier.agency || 'Sở Tư pháp Hà Nội';
                 // Số quyết định: chưa có giá trị thì hiển thị "Chưa có" in nghiêng (không tự cấp số; dữ liệu cũ "Chờ cấp số" coi như chưa có)
                 const s1No = (activeDossier.hdDecision || '').trim();
@@ -6094,12 +6094,10 @@
                 }
             }
 
+            // Tài liệu đính kèm nộp tiền theo [BR-FILE-014]: Xóa gỡ ngay, không hỏi xác nhận (SRS sửa 16/11/2026, câu 6 đợt 2)
             function confirmRemovePayFile(idx) {
-                showCustomConfirm("Bạn có chắc chắn muốn xóa tệp đính kèm này không?", () => {
-                    payUploadedFiles.splice(idx, 1);
-                    renderPayFilesList();
-                    showToast("Đã gỡ tệp đính kèm.", "info");
-                });
+                payUploadedFiles.splice(idx, 1);
+                renderPayFilesList();
             }
 
             function openPaymentModal(index) {
@@ -7833,7 +7831,9 @@
             function ykhdDownloadMau35() {
                 const officers = activeDossier.refundOfficers || [];
                 if (!officers.length) {
-                    showToast('Vui lòng thêm người thi hành công vụ gây thiệt hại trước khi tải Mẫu 35/BTNN.', 'warning');
+                    // [MSG-ERR-BTNN-HT-007] dưới bảng danh sách cán bộ; không tải (SRS sửa 16/11/2026, câu 1 đợt 2)
+                    const e = document.getElementById('ht2OfficerError');
+                    if (e) { e.innerText = 'Vui lòng ghi nhận tối thiểu một người thi hành công vụ gây thiệt hại trước khi thực hiện thao tác này.'; e.style.display = 'block'; e.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
                     return;
                 }
                 const code = activeDossier.maVuViec || activeDossier.code || '';
@@ -8056,16 +8056,16 @@
         </script>
     <!-- Popup Thành lập Hội đồng xem xét trách nhiệm hoàn trả (Mẫu 33/BTNN) - bố cục như Popup Không thụ lý hồ sơ -->
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
-    <script src="chi_tiet_ho_so_hoan_tra_tlhd.js?v=20261112vt6"></script>
-    <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261112vt6"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_tlhd.js?v=20261116tl2"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261116tl3"></script>
     <!-- Dữ liệu mẫu bổ sung phủ các trạng thái của Ma trận chuyển trạng thái (dùng chung màn Danh sách) -->
-    <script src="ht_du_lieu_mau.js?v=20261110ct2"></script>
+    <script src="ht_du_lieu_mau.js?v=20261116tl1"></script>
     <!-- Bước 1 / Bước 2 Ý kiến của Hội đồng, Stepper 04 bước, phạm vi người xem theo đơn vị -->
-    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261112vt6"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261116tl2"></script>
     <!-- Bước 3: trình ký 02 tầng tại đơn vị (QĐ hoàn trả Mẫu 36; QĐ miễn Mẫu 38 / QĐ giảm Mẫu 37; QĐ đình chỉ Mẫu 39 cấp cán bộ) -->
-    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261112vt5"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261116tl3"></script>
     <!-- Bước 4: thu tiền hoàn trả theo phần đơn vị (nộp tiền nhiều đợt, miễn / giảm bổ sung, trả lại tiền) -->
-    <script src="chi_tiet_ho_so_hoan_tra_thu.js?v=20261112vt3"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_thu.js?v=20261116tl2"></script>
     <!-- Thanh giả lập người dùng dùng chung màn Danh sách / Chi tiết, Khôi phục dữ liệu mẫu -->
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="ht_mock_role_bar.js?v=20261110ct2"></script>
