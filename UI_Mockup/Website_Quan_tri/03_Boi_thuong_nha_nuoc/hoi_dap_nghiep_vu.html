@@ -889,7 +889,8 @@
     <script src="btnn_luong_xu_ly.js?v=20261112vt2"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261106kn1"></script>
     <script src="btnn_pham_vi_don_vi.js?v=20261030dvth2"></script>
-    <script src="btnn_hoi_dap.js?v=20261113hd1"></script>
+    <script src="btnn_phan_cong_ky_duyet.js?v=20261113vt4"></script>
+    <script src="btnn_hoi_dap.js?v=20261117pc21"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261109tl1"></script>
     <script>
         // Hỏi đáp nghiệp vụ (góp ý khách hàng 02/11/2026)
@@ -1202,7 +1203,7 @@
         // Thanh Tiến trình xử lý: câu hỏi trình thẳng tới Chờ Lãnh đạo Sở duyệt ở lần trình gần nhất (quy tắc 3) thì không hiển thị bước Lãnh đạo Phòng (Sở) duyệt
         function flowHtml(q) {
             const all = [['soan', 'Soạn câu hỏi'], ['phong', 'Lãnh đạo Phòng (Sở) duyệt'], ['so', 'Lãnh đạo Sở duyệt'], ['cuc', 'Lãnh đạo Cục phân công'], ['pbo', 'Lãnh đạo Phòng (Bộ) phân công'], ['cv', 'Chuyên viên trả lời'], ['xong', 'Đã trả lời']];
-            const steps = HDM.quaDuyetPhong(q) ? all : all.filter(s => s[0] !== 'phong');
+            const steps = all.filter(s => (s[0] !== 'phong' || HDM.quaDuyetPhong(q)) && (s[0] !== 'pbo' || HDM.quaPhanCongPhong(q)));
             const curKey = { [ST.RETURNED]: 'soan', [ST.WAIT_PHONG_SO]: 'phong', [ST.WAIT_SO]: 'so', [ST.WAIT_CUC]: 'cuc', [ST.WAIT_PHONG]: 'pbo', [ST.ANSWERING]: 'cv', [ST.ANSWERED]: 'xong' }[q.status];
             const cur = steps.findIndex(s => s[0] === curKey);
             return '<div class="hd-flow">' + steps.map((s, i) => `<span class="step ${i < cur || q.status === ST.ANSWERED ? 'done' : i === cur ? 'cur' : ''}">${s[1]}</span>`).join('<i class="fa-solid fa-chevron-right"></i>') + '</div>';
@@ -1254,8 +1255,7 @@
                 foot += `<button class="btn btn-outline-danger" onclick="openReturn(${q.id})"><i class="fa-solid fa-rotate-left"></i> Trả lại</button>`
                     + `<button class="btn btn-primary" onclick="approveSo(${q.id})"><i class="fa-solid fa-check"></i> Duyệt, gửi Bộ Tư pháp</button>`;
             }
-            if (act && q.status === ST.WAIT_CUC) foot += `<button class="btn btn-primary" onclick="openAssign(${q.id})"><i class="fa-solid fa-user-plus"></i> Phân công Lãnh đạo Phòng</button>`;
-            if (act && q.status === ST.WAIT_PHONG) foot += `<button class="btn btn-primary" onclick="openAssign(${q.id})"><i class="fa-solid fa-user-plus"></i> Phân công Chuyên viên</button>`;
+            if (act && (q.status === ST.WAIT_CUC || q.status === ST.WAIT_PHONG)) foot += `<button class="btn btn-primary" onclick="openAssign(${q.id})"><i class="fa-solid fa-user-plus"></i> Phân công</button>`;
             if (act && q.status === ST.ANSWERING) foot += `<button class="btn btn-primary" onclick="openAnswer(${q.id})"><i class="fa-solid fa-reply"></i> Trả lời</button>`;
             if (HDM.canUpdateAnswer(q)) foot += `<button class="btn btn-primary" onclick="openAnswer(${q.id}, true)"><i class="fa-solid fa-pen-to-square"></i> Cập nhật trả lời</button>`;
             document.getElementById('detailFooter').innerHTML = foot;
@@ -1319,28 +1319,97 @@
                     done(q, `Đã trả lại câu hỏi ${q.code}`);
                 });
         }
-        // Popup Phân công: danh sách người được giao lọc theo quyền chức năng và đơn vị đang xử lý câu hỏi (BTNN_HD.ungVien), không theo Chức vụ
+        // [pc17] Popup Phân công giống Popup Phân công xử lý hồ sơ - Tiếp nhận hồ sơ (người dùng quyết định 17/11/2026):
+        // [pc20] Theo quyền và đơn vị, không dùng Nhóm Lãnh đạo: Đơn vị nhận (bắt buộc, đơn vị có người được phân quyền Phân công trả lời) + Lãnh đạo nhận (chọn nhiều, không bắt buộc;
+        // để trống = mọi tài khoản được phân quyền Phân công trả lời của đơn vị nhận); Chuyên viên xử lý (quyền Trả lời câu hỏi). Dùng combo chung BTNN_PCKD.combo.
+        const MSG_LXL_020 = 'Đơn vị nhận hoặc Lãnh đạo nhận không còn hợp lệ. Vui lòng chọn lại.';
+        const MSG_HDNV_002 = 'Chuyên viên xử lý không còn hợp lệ. Vui lòng chọn lại.';
         function openAssign(id) {
             const q0 = questions.find(x => x.id === id), st0 = q0.status;
-            const buoc1 = st0 === ST.WAIT_CUC;
-            const users = HDM.ungVien(q0);
-            const label = buoc1 ? 'Lãnh đạo Phòng' : 'Chuyên viên';
-            openAct(`Phân công ${label} - ${q0.code}`,
-                `<div class="form-group"><label class="form-label">${label} xử lý <span style="color: var(--danger-color);">*</span></label>
-                 <select id="actUser" class="form-select"><option value="">-- Lựa chọn --</option>${users.map(u => `<option value="${u.id}">${esc(u.name)} - ${esc(u.title)} (${esc(unitName(u.unitId))})</option>`).join('')}</select>
-                 <span class="field-error-text" id="error_actUser">Đây là trường bắt buộc</span></div>
-                 <div class="form-group"><label class="form-label">Ý kiến chỉ đạo</label><textarea id="actNote" class="form-control" rows="3" maxlength="2000"></textarea></div>`,
-                '<i class="fa-solid fa-user-plus"></i> Phân công', () => {
-                    const uid = document.getElementById('actUser').value;
-                    if (!uid) { document.getElementById('actUser').classList.add('is-invalid'); document.getElementById('error_actUser').style.display = 'block'; return false; }
+            const PC = window.BTNN_PCKD; if (PC && PC.ensureCss) PC.ensureCss();
+            const nhan = uid => { const u = (window.BTNN_WF && BTNN_WF.getUser) ? BTNN_WF.getUser(uid) : null; return u ? `${u.name} - ${u.title}` : userName(uid); };
+            const req = '<span style="color: var(--danger-color);">*</span>';
+            // Hình thức: Phân công chỉ chọn được khi đơn vị đang xử lý có đơn vị trực thuộc cấp dưới trực tiếp có Lãnh đạo (giống Tiếp nhận hồ sơ)
+            // [pc18] Đơn vị nhận: các phòng thuộc Bộ Tư pháp; Phân công mờ khi không có phòng nào có Lãnh đạo
+            // [pc19] Chờ Lãnh đạo Phòng phân công: chỉ giao trong phạm vi phòng (đơn vị trực thuộc / chuyên viên của phòng)
+            const laPhong = st0 === HDM.ST.WAIT_PHONG, tenPhong = unitName(q0.handlerUnit);
+            const canUnit = HDM.donViNhanHopLe(q0).length > 0;
+            const unitHint = laPhong
+                ? (canUnit ? 'Giao đơn vị trực thuộc ' + tenPhong : 'Không có đơn vị trực thuộc có người được phân quyền Phân công')
+                : (canUnit ? 'Giao phòng thuộc Bộ Tư pháp' : 'Không có phòng có người được phân quyền Phân công');
+            const offHint = laPhong ? 'Giao 01 chuyên viên của ' + tenPhong + ' trả lời' : 'Giao 01 chuyên viên thuộc các phòng của Bộ Tư pháp trả lời';
+            const body = `<div class="form-group" style="margin-bottom: 16px;"><label class="form-label">Hình thức ${req}</label>
+                   <div class="pc-mode">
+                     <label id="actModeUnitL" class="${canUnit ? '' : 'off'}"><input type="radio" name="actMode" value="unit" ${canUnit ? '' : 'disabled'}><span><b>Phân công</b><small>${unitHint}</small></span></label>
+                     <label id="actModeOffL"><input type="radio" name="actMode" value="officer"><span><b>Chuyển chuyên viên phụ trách trực tiếp</b><small>${offHint}</small></span></label>
+                   </div></div>
+                <div id="actUnitBlock">
+                   <div class="form-group" style="margin-bottom: 16px;"><label class="form-label">Đơn vị nhận ${req}</label><div id="actUnit"></div><span class="field-error-text" id="error_actUnit">Đây là trường bắt buộc</span></div>
+                   <div class="form-group" style="margin-bottom: 16px;"><label class="form-label">Lãnh đạo nhận</label><div id="actLeaders"></div><div style="font-size: 12px; color: #64748b; margin-top: 4px;">Để trống: giao mọi người được phân quyền Phân công trả lời của đơn vị nhận.</div></div>
+                </div>
+                <div id="actOffBlock">
+                   <div class="form-group" style="margin-bottom: 16px;"><label class="form-label">Chuyên viên xử lý ${req}</label><div id="actUser"></div><span class="field-error-text" id="error_actUser">Đây là trường bắt buộc</span></div>
+                </div>
+                <div class="form-group" style="margin-bottom: 16px;"><label class="form-label">Ý kiến chỉ đạo</label><textarea id="actNote" class="form-control" rows="3" maxlength="2000" placeholder="Nhập ý kiến chỉ đạo..."></textarea></div>`;
+            let cUnit, cLeaders, cUser, mode = canUnit ? 'unit' : 'officer';
+            openAct(`Phân công xử lý câu hỏi ${q0.code}`, body, '<i class="fa-solid fa-user-plus"></i> Phân công', () => {
+                const showErr = (k, on) => { const e = document.getElementById('error_' + k); if (e) e.style.display = on ? 'block' : 'none'; };
+                const ykien = document.getElementById('actNote').value.trim();
+                if (mode === 'unit') {
+                    const unit = cUnit.get(), leaders = cLeaders.get();
+                    if (!unit) { cUnit.setInvalid(true); showErr('actUnit', true); return false; }
                     const q = guard(id, st0);
                     if (!q) return;
-                    const note = ['Giao ' + userName(uid), document.getElementById('actNote').value.trim()].filter(Boolean).join('. ');
-                    // Bước 1: đơn vị đang xử lý chuyển thành đơn vị của người được giao phân công
-                    if (buoc1) { q.phongLead = uid; q.handlerUnit = HDM.unitOf(uid); q.status = ST.WAIT_PHONG; addHistory(q, 'Phân công Lãnh đạo Phòng', note); }
-                    else { q.officer = uid; q.status = ST.ANSWERING; addHistory(q, 'Phân công Chuyên viên', note); }
+                    // TH3: Đơn vị nhận / Lãnh đạo nhận không còn hợp lệ
+                    const dsLd = HDM.lanhDaoNhan(unit).map(u => u.id);
+                    if (!HDM.donViNhanHopLe(q).includes(unit) || leaders.some(x => !dsLd.includes(x))) { showToast(MSG_LXL_020, 'error'); cUnit.refresh(); cLeaders.refresh(); return false; }
+                    const ai = leaders.length ? leaders.map(userName).join(', ') : 'Lãnh đạo đơn vị';
+                    const note = ['Giao ' + unitName(unit) + ' - ' + ai, ykien].filter(Boolean).join('. ');
+                    // Đơn vị đang xử lý chuyển thành Đơn vị nhận
+                    q.phongUnit = unit; q.phongLeads = leaders.slice(); delete q.phongLead; q.handlerUnit = unit; q.status = ST.WAIT_PHONG;
+                    addHistory(q, 'Phân công Lãnh đạo Phòng', note);
+                    done(q, `Đã phân công ${unitName(unit)} xử lý câu hỏi ${q.code}`);
+                } else {
+                    const uid = cUser.get();
+                    if (!uid) { cUser.setInvalid(true); showErr('actUser', true); return false; }
+                    const q = guard(id, st0);
+                    if (!q) return;
+                    if (!HDM.chuyenVienXuLy(q).some(u => u.id === uid)) { showToast(MSG_HDNV_002, 'error'); cUser.refresh(); return false; }
+                    const note = ['Giao ' + userName(uid), ykien].filter(Boolean).join('. ');
+                    // Đơn vị đang xử lý: phòng của chuyên viên được giao
+                    q.officer = uid; q.handlerUnit = HDM.unitOf(uid); q.status = ST.ANSWERING; addHistory(q, 'Phân công Chuyên viên', note);
                     done(q, `Đã phân công ${userName(uid)} xử lý câu hỏi ${q.code}`);
-                });
+                }
+            });
+            if (!PC || !PC.combo) return;
+            cUnit = PC.combo(document.getElementById('actUnit'), {
+                placeholder: 'Chọn đơn vị nhận...', emptyText: 'Không tìm thấy đơn vị phù hợp',
+                options: () => HDM.donViNhan(q0).map(u => ({ value: u, label: unitName(u) })),
+                onChange: v => {
+                    cUnit.setInvalid(false); document.getElementById('error_actUnit').style.display = 'none';
+                    cLeaders.set([], true); cLeaders.setDisabled(!v); cLeaders.refresh();
+                }
+            });
+            cLeaders = PC.combo(document.getElementById('actLeaders'), {
+                multi: true, placeholder: 'Chọn Lãnh đạo nhận (không bắt buộc)...',
+                options: () => { const u = cUnit.get(); return u ? HDM.lanhDaoNhan(u).map(x => ({ value: x.id, label: nhan(x.id) })) : []; }
+            });
+            cLeaders.setDisabled(true);
+            cUser = PC.combo(document.getElementById('actUser'), {
+                placeholder: 'Chọn chuyên viên xử lý...', emptyText: 'Không tìm thấy cán bộ phù hợp',
+                options: () => HDM.chuyenVienXuLy(q0).map(u => ({ value: u.id, label: `${nhan(u.id)} (${unitName(u.unitId)})` })),
+                onChange: () => { cUser.setInvalid(false); document.getElementById('error_actUser').style.display = 'none'; }
+            });
+            const setMode = m => {
+                mode = m;
+                document.getElementById('actUnitBlock').style.display = m === 'unit' ? '' : 'none';
+                document.getElementById('actOffBlock').style.display = m === 'unit' ? 'none' : '';
+                document.getElementById('actModeUnitL').classList.toggle('on', m === 'unit');
+                document.getElementById('actModeOffL').classList.toggle('on', m !== 'unit');
+                document.querySelector(`input[name="actMode"][value="${m}"]`).checked = true;
+            };
+            document.querySelectorAll('input[name="actMode"]').forEach(r => r.addEventListener('change', () => setMode(r.value)));
+            setMode(mode);
         }
         // So sánh tài liệu theo tên tệp (dữ liệu cũ lưu tên tệp dạng chuỗi, dữ liệu mới lưu { name, file })
         const docLabel = f => typeof f === 'string' ? f : ((f && ((f.file && f.file.name) || f.name)) || '');

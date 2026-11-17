@@ -9460,6 +9460,29 @@
                     ${f('Hình thức tiếp nhận', e(normalizeHinhThucTiepNhan(claim.hinhThucTiepNhan, claim.nguonHoSo)))}
                     ${f('Cán bộ giải quyết', e(getClaimOfficerNamesText(claim)))}
                 </div>`;
+            // [cdpdct] Hồ sơ cán bộ chủ động phục hồi danh dự: các khối hiển thị đúng như form Thêm mới
+            // (bảng Văn bản làm căn cứ; Hành vi gây thiệt hại + Mối quan hệ nhân quả; Hình thức phục hồi danh dự (Điều 56) với 02 lựa chọn)
+            if (typeof cdpdIs === 'function' && cdpdIs(claim)) {
+                const vbTable = `<div class="table-container"><table class="custom-table" style="min-width:760px; font-size:12.5px;"><thead><tr style="background-color:var(--table-header-bg);"><th style="width:60px; text-align:center;">STT</th><th style="text-align:center;">Tên văn bản căn cứ</th><th style="width:280px; text-align:center;">File đính kèm</th><th style="width:110px; text-align:center;">Thao tác</th></tr></thead><tbody>${vbRows || '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Không có dữ liệu</td></tr>'}</tbody></table></div>`;
+                const row = (label, value) => `<div><strong style="color:var(--text-muted);">${label}:</strong> <br><span style="color:var(--text-main); font-style:italic;">${value}</span></div>`;
+                const behaviorBody = `<div style="display:grid; grid-template-columns:1fr; gap:12px; font-size:13px; line-height:1.6;">
+                    ${row('Hành vi gây thiệt hại của người thi hành công vụ', e(claim.hanhVi))}
+                    ${row('Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại', e(claim.nhanQua))}
+                </div>`;
+                const chk = (on, text) => `<label style="font-size:13.5px; display:flex; align-items:center; gap:8px; color:#334155; cursor:default;"><input type="checkbox" disabled${on ? ' checked' : ''}> ${text}</label>`;
+                const cdForms = `<div style="margin-bottom:6px; font-weight:700; color:#0e7490; font-size:12.5px;">Hình thức phục hồi danh dự (Điều 56):</div>
+                    <div style="display:flex; flex-direction:column; gap:8px; margin-left:10px;">
+                        ${chk(forms.apology, 'Trực tiếp xin lỗi và cải chính công khai tại nơi cư trú / trụ sở (Điều 58)')}
+                        ${chk(forms.news, 'Đăng báo xin lỗi và cải chính công khai (Điều 59)')}
+                    </div>`;
+                return head + relatedClaimBannerHtml(claim)
+                    + card('phddInfoPerson', 'fa-solid fa-user-shield', 'NGƯỜI ĐƯỢC PHỤC HỒI DANH DỰ / NGƯỜI ĐẠI DIỆN / NGƯỜI THỪA KẾ', personBody)
+                    + card('phddInfoBase', 'fa-solid fa-scale-balanced', 'CĂN CỨ PHỤC HỒI DANH DỰ', vbTable)
+                    + card('phddInfoBehavior', 'fa-solid fa-circle-info', 'HÀNH VI GÂY THIỆT HẠI VÀ MỐI QUAN HỆ NHÂN QUẢ', behaviorBody)
+                    + card('phddInfoForms', 'fa-solid fa-ribbon', 'HÌNH THỨC PHỤC HỒI DANH DỰ', cdForms)
+                    + card('phddInfoReceive', 'fa-solid fa-building-columns', 'THÔNG TIN TIẾP NHẬN', recvBody)
+                    + card('phddInfoFiles', 'fa-solid fa-paperclip', 'TÀI LIỆU ĐÍNH KÈM HỒ SƠ', files);
+            }
             return head + relatedClaimBannerHtml(claim)
                 + card('phddInfoPerson', 'fa-solid fa-user-shield', 'NGƯỜI ĐƯỢC PHỤC HỒI DANH DỰ / NGƯỜI ĐẠI DIỆN / NGƯỜI THỪA KẾ', personBody)
                 + card('phddInfoBase', 'fa-solid fa-scale-balanced', 'CĂN CỨ PHỤC HỒI DANH DỰ', baseBody)

@@ -1285,6 +1285,11 @@
             '.bctt-view{flex:1;min-width:0;background:#334155;overflow:auto;padding:0 0 20px;display:flex;flex-direction:column;}',
             '.bctt-view .bctt-tabs{background:#1e293b;border:0;margin:0;padding:0 10px;position:sticky;top:0;z-index:2;}',
             '.bctt-view .bctt-tab{color:#cbd5e1;}.bctt-view .bctt-tab.active{color:#fff;border-bottom-color:#60a5fa;}',
+            // [tai1] 17/11/2026 (nhanhl2 duyệt): hàng «Trang [n] / [N]», «Tải xuống», «Tải Word» dưới thanh tab biểu mẫu, đứng yên cùng thanh tab khi cuộn văn bản
+            '.bctt-view .bctt-vdau{position:sticky;top:0;z-index:3;}.bctt-view .bctt-vdau .bctt-tabs{position:static;}',
+            '.bctt-tai{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff;border-bottom:1px solid #e2e8f0;padding:6px 12px;}',
+            '.bctt-tai .tr{font-size:13px;color:#334155;font-weight:500;min-width:84px;}.bctt-tai .btn{font-size:12.5px;padding:3px 10px;border:1px solid #2563eb !important;border-radius:6px;background:#fff;color:#1d4ed8;}.bctt-tai .btn:hover{background:#eff6ff;}',   // nút viền xanh như Dev (bộ chuẩn hóa nút của trang bỏ viền btn-outline-primary ở hàng này)
+            '.bctt-tai-hd{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 12px 6px;font-size:12px;color:#64748b;}',
             '.bctt-side{width:360px;flex-shrink:0;border-left:1px solid #e2e8f0;overflow:auto;padding:16px;background:#fff;}',
             '.bctt-card{border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-bottom:12px;}',
             '.bctt-card .h{font-weight:700;font-size:13px;color:#1e293b;display:flex;align-items:center;gap:8px;margin-bottom:8px;}',
@@ -2835,8 +2840,53 @@
     function viewerHtml(r, tab, sign, data, idp) {
         idp = idp || 'bcttV';
         // [tl4] tệp tải lên cũng có 04 tab biểu mẫu (bỏ thanh «tệp tải lên • n trang» của 01 tệp gộp)
-        return '<div class="bctt-view"><div class="bctt-tabs" id="' + idp + 'Tabs">' + FORMS.map(function (f) { return '<button class="bctt-tab' + (f.id === tab ? ' active' : '') + '" data-vtab="' + f.id + '">' + f.code + '</button>'; }).join('') + '</div>'
+        return '<div class="bctt-view"><div class="bctt-vdau"><div class="bctt-tabs" id="' + idp + 'Tabs">' + FORMS.map(function (f) { return '<button class="bctt-tab' + (f.id === tab ? ' active' : '') + '" data-vtab="' + f.id + '">' + f.code + '</button>'; }).join('') + '</div>'
+            + (THANH_TAI[idp] ? thanhTaiHtml(idp) : '') + '</div>'
             + '<div id="' + idp + 'Doc">' + docHtml(r, tab, sign, data) + '</div></div>';
+    }
+    // [tai1] 17/11/2026 (nhanhl2 duyệt kế hoạch): hàng dưới thanh tab biểu mẫu gồm «Trang [n] / [N]» của biểu mẫu đang xem, nút «Tải xuống» (PDF)
+    // và «Tải Word» (.docx, ẩn khi đang xem tệp Cán bộ tải lên), như khung đặt ô ký trên Dev. Có ở MH04 Bước 2 (bcttSv), MH05 Ký duyệt / Từ chối (bcttKv)
+    // MH04 có thêm dòng hướng dẫn kéo ô dưới hàng. MH06 Xem file (bcttPv, cả Sở và báo cáo tổng hợp của Bộ) KHÔNG có hàng này: nút «Tải file»,
+    // «Tải Word» để ở chân popup (nhanhl2 chốt 17/11/2026).
+    var THANH_TAI = { bcttSv: 'trinh', bcttKv: 'ky' };
+    function thanhTaiHtml(idp) {
+        return '<div class="bctt-tai" id="' + idp + 'Tai"><span class="tr" id="' + idp + 'Trang">Trang 1 / 1</span>'
+            + '<button type="button" class="btn btn-outline-primary btn-sm" id="' + idp + 'TaiPdf" title="Tải tệp PDF của biểu mẫu đang xem"><i class="fa-solid fa-download"></i> Tải xuống</button>'
+            + '<button type="button" class="btn btn-outline-primary btn-sm" id="' + idp + 'TaiWord" title="Tải tệp Word (.docx) của biểu mẫu đang xem, không có chữ ký số, ảnh chữ ký và con dấu"><i class="fa-solid fa-file-word"></i> Tải Word</button></div>'
+            + (THANH_TAI[idp] === 'trinh' ? '<div class="bctt-tai-hd">Kéo ô để đặt vị trí, kéo góc dưới bên phải để đổi kích thước.</div>' : '');
+    }
+    // Trang đang xem là trang chứa điểm giữa phần văn bản đang nhìn thấy. Biểu mẫu do Hệ thống sinh: mỗi trang cao bằng khổ A4 theo bề ngang trang;
+    // tệp tải lên: mỗi trang là 01 khung trang (TL_H). Ẩn «Tải Word» khi biểu mẫu đang xem là tệp tải lên.
+    function capNhatTrang(idp) {
+        var doc = $(idp + 'Doc'), o = $(idp + 'Trang'); if (!doc || !o) return;
+        var view = doc.closest('.bctt-view'), a4 = doc.querySelector('.bctt-a4'); if (!view || !a4) return;
+        var tl = a4.classList.contains('tl'), nw = $(idp + 'TaiWord');
+        var cao = tl ? TL_H + TL_GAP : Math.max(1, Math.round(a4.offsetWidth * 1.4142));
+        var tong = tl ? Math.max(1, a4.querySelectorAll('.bctt-tl-trang').length) : Math.max(1, Math.ceil((a4.offsetHeight - 4) / cao));
+        var rv = view.getBoundingClientRect(), ra = a4.getBoundingClientRect();
+        var n = Math.min(tong, Math.max(1, Math.floor((rv.top + view.clientHeight / 2 - ra.top) / cao) + 1));
+        o.textContent = 'Trang ' + n + ' / ' + tong;
+        if (nw) nw.style.display = tl ? 'none' : '';
+    }
+    // ctx: fid() biểu mẫu đang xem; tl() lần trình hoặc dữ liệu có nguồn «Tải lên từ máy» (null nếu không); ghiChu: bản tải về; nhacLuu(): true thì không tải
+    function ganThanhTai(r, idp, ctx) {
+        var doc = $(idp + 'Doc'); if (!doc || !$(idp + 'Trang')) return;
+        var view = doc.closest('.bctt-view');
+        if (view) view.addEventListener('scroll', function () { capNhatTrang(idp); });
+        if (window.MutationObserver) new MutationObserver(function () { capNhatTrang(idp); }).observe(doc, { childList: true });
+        setTimeout(function () { capNhatTrang(idp); }, 0);
+        var ten = function () { var f = FORMS.find(function (x) { return x.id === ctx.fid(); }) || FORMS[0]; return f.file + '_' + r.year + '_' + maKy(r) + '_' + maTep(r); };
+        $(idp + 'TaiPdf').onclick = function () {
+            if (ctx.nhacLuu && ctx.nhacLuu()) return;
+            var tls = ctx.tl ? ctx.tl() : null;
+            if (tls) { var tp = tepCua(tls, ctx.fid()); if (tp) toast('Đã tải xuống tệp ' + tp.name + '.'); else toast('Biểu mẫu chưa có tệp tải lên.', 'error'); return; }
+            toast('Đã tải xuống tệp ' + ten() + '.pdf' + (ctx.ghiChu || '') + '.');
+        };
+        $(idp + 'TaiWord').onclick = function () {
+            if (ctx.nhacLuu && ctx.nhacLuu()) return;
+            if (ctx.tl && ctx.tl()) return;
+            toast('Đã tải xuống tệp ' + ten() + '.docx (không có chữ ký số, ảnh chữ ký và con dấu).');
+        };
     }
     function bindViewer(r, sign, data, idp, onTab) {
         idp = idp || 'bcttV';
@@ -2869,6 +2919,7 @@
         bindViewer(r, sign, data, 'bcttPv', function (x) { cur = x; });
         // 06/11/2026 (nhanhl2 chọn): tệp tải về của báo cáo tổng hợp lấy theo số liệu đã Lưu gần nhất; còn số liệu chưa Lưu thì nhắc Lưu trước, không tải
         var nhacLuu = function () { if (isBtpReport(r) && !data && chuaLuuBieuMau(r)) { toast(MSG_CHUA_LUU, 'error'); return true; } return false; };
+        // [tai1] hàng «Tải xuống», «Tải Word» dưới thanh tab: cùng tệp với nút «Tải file», «Tải Word» ở chân popup (Sở và báo cáo tổng hợp của Bộ)
         if (nutWord) nutWord.onclick = function () { if (nhacLuu()) return; if (nguonTl) return; var f = FORMS.find(function (x) { return x.id === cur; }); toast('Đã tải xuống tệp ' + f.file + '_' + r.year + '_' + maKy(r) + '_' + maTep(r) + '.docx (không có chữ ký số, con dấu).'); };
         $('bcttPvDl').onclick = function () { if (nhacLuu()) return; if (nguonTl) { var tp = tepCua(nguonTl, cur); if (tp) toast('Đã tải xuống tệp ' + tp.name + '.'); else toast('Biểu mẫu chưa có tệp tải lên.', 'error'); return; } var f = FORMS.find(function (x) { return x.id === cur; }); toast('Đã tải xuống tệp ' + f.file + '_' + r.year + '_' + maKy(r) + '_' + maTep(r) + '.pdf.'); };
     }
@@ -3291,7 +3342,7 @@
             host.innerHTML = '<div class="bctt-bh" id="bcttBh"><div class="bctt-bh-td"><i class="fa-solid fa-stamp"></i> ĐÓNG DẤU CƠ QUAN, ĐƠN VỊ BAN HÀNH</div>'
                 + '<label class="bctt-dd' + (lk ? ' locked' : '') + '"><input type="checkbox" id="bcttBhDd"' + (on ? ' checked' : '') + (lk ? ' disabled' : '') + '><span><b>Đóng dấu cơ quan</b><span class="s">Sau khi Lãnh đạo cấp cuối Ký duyệt, ' + (laTep ? 'bộ 04 tệp tải lên' : 'bộ 04 biểu mẫu') + ' chuyển Văn thư đóng dấu và ban hành.</span>'
                 + (lk ? '<span class="lk">Đơn vị của Lãnh đạo cấp cuối và các đơn vị cấp trên chưa có con dấu Hoạt động.</span>' : '') + '</span></label>'
-                + (on ? '<div class="bctt-bh-f"><span class="form-label">Đơn vị ban hành<span style="color:red;">*</span></span><select class="form-control" id="bcttBhDv"' + (key ? '' : ' disabled') + '><option value="">' + (key ? '-- Chọn đơn vị ban hành --' : '-- Chọn Lãnh đạo cấp cuối trước --') + '</option>'
+                + (on ? '<div class="bctt-bh-f"><span class="form-label">Đơn vị ban hành<span style="color:red;">*</span></span><select class="form-control" id="bcttBhDv"' + (key ? '' : ' disabled') + '><option value="">' + (key ? '-- Chọn đơn vị ban hành --' : 'Chọn Lãnh đạo cấp cuối trước') + '</option>'
                     + list.map(function (u) { return '<option value="' + esc(u) + '"' + (u === b.donVi ? ' selected' : '') + '>' + esc(vtTenDv(u)) + '</option>'; }).join('') + '</select>'
                     + '<div class="bctt-err" id="bcttBhDvErr">Đây là trường bắt buộc</div></div>'   // [vt3] bỏ dòng «Văn thư xử lý: …» (logic chuyển Văn thư giữ nguyên)
                     + '<div class="bctt-bh-f"><span class="form-label">Vị trí đóng dấu</span><div class="bctt-bh-dat">'
@@ -3439,6 +3490,8 @@
             $('bcttKtVanTrinh').onclick = function () { closeOv('bcttOv2'); sub.boQuaCanhBao = true; $('bcttSubGo').click(); };
         }
         bindViewer(r, subSign(), null, 'bcttSv', function (fid) { sub.fid = fid; veThe(); veVanBan(); });
+        // [tai1] Tải xuống: bản Dự thảo theo số liệu đang lưu, không có ô ký, ô Dấu vừa đặt; nguồn tải lên thì tải tệp tải lên của biểu mẫu
+        ganThanhTai(r, 'bcttSv', { fid: function () { return sub.fid; }, tl: function () { return sub.nguon === 'tl' ? subSign() : null; }, ghiChu: ' (bản Dự thảo theo số liệu đang lưu, chưa có các ô ký và ô Dấu vừa đặt)' });
         function doiCap() { veThe(); veVanBan(); }
         $('bcttKtThem').onclick = function () { sub.levels.push(capMoi()); doiCap(); };
         onClk(theBox, function (e) {
@@ -3566,7 +3619,10 @@
         var full = $('bcttFull'); full.innerHTML = html; full.classList.add('on');
         full.querySelectorAll('[data-close]').forEach(function (b) { b.onclick = function () { full.classList.remove('on'); full.innerHTML = ''; }; });
         // [vt1] Ô Dấu (khung mờ) theo vị trí cán bộ đặt trên từng biểu mẫu
-        bindViewer(r, s, null, 'bcttKv', function (fid) { veDauXem('bcttKv', s, fid); });
+        var kvFid = 'm42';
+        bindViewer(r, s, null, 'bcttKv', function (fid) { kvFid = fid; veDauXem('bcttKv', s, fid); });
+        // [tai1] Tải xuống: bản Dự thảo đang trình, có chữ ký của các cấp đã ký duyệt (giống văn bản đang xem)
+        ganThanhTai(r, 'bcttKv', { fid: function () { return kvFid; }, tl: function () { return laTl(s) ? s : null; }, ghiChu: ' (bản Dự thảo, có chữ ký của các cấp đã ký duyệt)' });
         veDauXem('bcttKv', s, 'm42');
         var bo = laTl(s) ? 'cả 04 tệp báo cáo' : 'cả 04 biểu mẫu';   // [tl4] thông báo dạng Toast: «cả 04 biểu mẫu» thay bằng «cả 04 tệp báo cáo»
         $('bcttKOk').onclick = function () {

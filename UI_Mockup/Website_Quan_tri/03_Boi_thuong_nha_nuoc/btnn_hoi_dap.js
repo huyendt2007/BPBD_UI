@@ -4,7 +4,9 @@
  * Nguyên tắc phân quyền 13/11/2026 (phương án B):
  * - Câu hỏi lưu "đơn vị đang xử lý câu hỏi" (q.handlerUnit). Ở bước giao cho nhóm (Chờ Lãnh đạo Phòng duyệt, Chờ Lãnh đạo Sở duyệt, Chờ Lãnh đạo Cục phân công),
  *   người xử lý hiện tại là tài khoản được phân quyền tương ứng có đơn vị công tác đúng bằng đơn vị đang xử lý (không tính đơn vị trực thuộc); người thao tác trước được ghi nhận.
- * - Luồng không xét Chức vụ, Nhóm Lãnh đạo hay tên vai trò. Tên trạng thái, nút, nhãn lịch sử, thông báo giữ nguyên (người dùng quyết định 13/11/2026).
+ * - Bước duyệt không xét Chức vụ, Nhóm Lãnh đạo hay tên vai trò. Tên trạng thái, nút, nhãn lịch sử, thông báo giữ nguyên (người dùng quyết định 13/11/2026).
+ * - [pc20] Bước phân công theo quyền và đơn vị, không dùng Nhóm Lãnh đạo (người dùng chọn theo Ma trận 05 trên main, 17/11/2026): người nhận Chờ Lãnh đạo Cục phân công /
+ *   Chờ Lãnh đạo Phòng phân công, danh sách Đơn vị nhận, Lãnh đạo nhận, Chuyên viên xử lý chỉ xét quyền chức năng, đơn vị, tài khoản Đang hoạt động.
  * - Giả lập (chỉ mockup): quyền chức năng của tài khoản = quyền của vai trò mẫu do Quản trị hệ thống gán theo cột ✓ của Ma trận (vaiTroMau).
  * Yêu cầu nạp trước: btnn_luong_xu_ly.js (BTNN_WF), btnn_pham_vi_don_vi.js (BTNN_PHAMVI).
  */
@@ -80,6 +82,16 @@
     // Tài khoản đang hoạt động được phân quyền perm, có đơn vị công tác thuộc danh sách unitIds (đúng đơn vị, không tính đơn vị trực thuộc)
     function nguoiCoQuyen(perm, unitIds) {
         return (W() ? W().USERS : []).filter(u => dangHoatDong(u) && unitIds.includes(u.unitId) && coQuyen(perm, u));
+    }
+    // [pc20] Theo Ma trận phân quyền (05 mục pq-phan-cong-thu-hoi, main 17/11/2026): Phân công theo quyền và đơn vị, không dùng Nhóm Lãnh đạo.
+    // laLanhDao chỉ còn dùng để giả lập vai trò mẫu (vaiTroMau), không dùng trong luồng xử lý.
+    const laLanhDao = u => !!u && !!W() && !!W().isNhomLanhDaoUser && W().isNhomLanhDaoUser(u.id);
+    // Người được phân công tại đơn vị: tài khoản Đang hoạt động thuộc đơn vị, được phân quyền Phân công trả lời
+    function lanhDaoPhanCong(unitId) { return nguoiCoQuyen(Q.PHAN_CONG, [unitId]); }
+    // Người nhận câu hỏi Chờ Lãnh đạo Phòng phân công: Lãnh đạo nhận còn hợp lệ; không còn ai (hoặc không chọn) thì mọi tài khoản được phân quyền Phân công trả lời của Đơn vị nhận
+    function nguoiNhanPhong(q) {
+        const ds = lanhDaoPhanCong(q.handlerUnit), chon = (q.phongLeads || []).filter(id => ds.some(u => u.id === id));
+        return chon.length ? chon : ds.map(u => u.id);
     }
 
     // ---------- Định dạng thời gian ----------
@@ -183,9 +195,14 @@
         if (q && !q.handlerUnit) {
             const m = {
                 [ST.RETURNED]: unitOf(q.creator), [ST.WAIT_PHONG_SO]: unitOf(q.creator), [ST.WAIT_SO]: q.unit, [ST.WAIT_CUC]: CUC,
-                [ST.WAIT_PHONG]: unitOf(q.phongLead), [ST.ANSWERING]: unitOf(q.officer)
+                [ST.WAIT_PHONG]: unitOf(q.phongLead || (q.phongLeads || [])[0]), [ST.ANSWERING]: unitOf(q.officer)
             };
             q.handlerUnit = m[q.status] || '';
+        }
+        // [pc17] Dữ liệu cũ lưu 01 người được giao phân công (phongLead): chuyển thành Đơn vị nhận + Lãnh đạo nhận
+        if (q && !q.phongLeads) {
+            q.phongLeads = q.phongLead ? [q.phongLead] : [];
+            if (q.phongLead && !q.phongUnit) q.phongUnit = unitOf(q.phongLead);
         }
         return q;
     }
@@ -223,7 +240,7 @@
             case ST.WAIT_PHONG_SO:
             case ST.WAIT_SO: return coQuyen(Q.DUYET, u) && u.unitId === q.handlerUnit && u.id !== q.creator;
             case ST.WAIT_CUC: return coQuyen(Q.PHAN_CONG, u) && u.unitId === q.handlerUnit;
-            case ST.WAIT_PHONG: return q.phongLead === u.id;
+            case ST.WAIT_PHONG: return nguoiNhanPhong(q).includes(u.id);
             case ST.ANSWERING: return q.officer === u.id;
             default: return false;
         }
@@ -251,7 +268,7 @@
             case ST.WAIT_PHONG_SO:
             case ST.WAIT_SO:
             case ST.WAIT_CUC: return unitName(q.handlerUnit) || '—';
-            case ST.WAIT_PHONG: return userName(q.phongLead);
+            case ST.WAIT_PHONG: { const c = (q.phongLeads || []).filter(id => nguoiNhanPhong(q).includes(id)); return c.length ? c.map(userName).join(', ') : (unitName(q.handlerUnit) || '—'); }
             case ST.ANSWERING: return userName(q.officer);
             default: return '—';
         }
@@ -273,16 +290,50 @@
         return !h || h.action === 'Trình Lãnh đạo Phòng';
     }
 
-    // ---------- Popup Phân công: danh sách người được giao ----------
-    // Chờ Lãnh đạo Cục phân công: tài khoản được phân quyền Phân công trả lời thuộc đơn vị trực thuộc cấp dưới trực tiếp của đơn vị đang xử lý câu hỏi.
-    // Chờ Lãnh đạo Phòng phân công: tài khoản được phân quyền Trả lời câu hỏi thuộc đơn vị đang xử lý câu hỏi (đơn vị của người được giao phân công).
-    function ungVien(q) {
+    // ---------- Popup Phân công (giống Popup Phân công xử lý hồ sơ - Tiếp nhận hồ sơ, 02 hình thức) ----------
+    // [pc18] Người dùng yêu cầu 17/11/2026: danh sách lấy theo các phòng thuộc Bộ Tư pháp (toàn cây đơn vị của Bộ), không chỉ đơn vị trực thuộc của đơn vị đang xử lý.
+    // - Phân công: Đơn vị nhận = các phòng thuộc Bộ Tư pháp (trừ đơn vị đang xử lý) có ít nhất 01 tài khoản Đang hoạt động được phân quyền Phân công trả lời [pc20].
+    //   Lãnh đạo nhận (không bắt buộc, chọn nhiều) = các tài khoản đó của Đơn vị nhận.
+    // - Chuyển chuyên viên phụ trách trực tiếp: Chuyên viên xử lý = tài khoản thuộc các phòng của Bộ Tư pháp, được phân quyền Trả lời câu hỏi.
+    // Áp dụng cho bước Chờ Lãnh đạo Cục phân công; bước Chờ Lãnh đạo Phòng phân công xem [pc19].
+    const LOAI_PHONG = ['Phòng / Ban', 'Văn phòng'];
+    const DANG_PHAN_CONG = q => q.status === ST.WAIT_CUC || q.status === ST.WAIT_PHONG;
+    function phongThuocBo() {
         const w = W();
-        if (!w) return [];
-        if (q.status === ST.WAIT_CUC) return nguoiCoQuyen(Q.PHAN_CONG, w.getChildren(q.handlerUnit).map(x => x.id));
-        if (q.status === ST.WAIT_PHONG) return nguoiCoQuyen(Q.TRA_LOI, [q.handlerUnit]);
-        return [];
+        if (!w || !w.getDescendants) return [];
+        return w.getDescendants(BTP).filter(id => LOAI_PHONG.includes(((w.getUnit && w.getUnit(id)) || {}).loaiCoQuan));
     }
+    function coLanhDao(unitId) { return lanhDaoPhanCong(unitId).length > 0; }
+    // [pc19] Người dùng yêu cầu 17/11/2026: Lãnh đạo Phòng (Chờ Lãnh đạo Phòng phân công) chỉ giao trong phạm vi phòng mình:
+    // Đơn vị nhận = đơn vị trực thuộc cấp dưới trực tiếp của phòng; Chuyên viên xử lý = tài khoản của phòng và đơn vị trực thuộc.
+    // Lãnh đạo Cục (Chờ Lãnh đạo Cục phân công) giữ [pc18]: các phòng thuộc Bộ Tư pháp.
+    function conTrucTiep(unitId) {
+        const w = W();
+        return w && w.getDescendants ? w.getDescendants(unitId).filter(id => ((w.getUnit && w.getUnit(id)) || {}).parentId === unitId) : [];
+    }
+    function phamViPhong(unitId) { const w = W(); return [unitId].concat(w && w.getDescendants ? w.getDescendants(unitId) : []); }
+    // [pc20] Chỉ liệt kê đơn vị có ít nhất 01 tài khoản Đang hoạt động được phân quyền Phân công trả lời (như Tiếp nhận hồ sơ theo Ma trận 05)
+    function donViNhan(q) {
+        let ds = [];
+        if (q.status === ST.WAIT_CUC) ds = phongThuocBo().filter(id => id !== q.handlerUnit);
+        else if (q.status === ST.WAIT_PHONG) ds = conTrucTiep(q.handlerUnit);
+        return ds.filter(coLanhDao);
+    }
+    // Giữ tên cũ cho nơi khác còn gọi: danh sách Đơn vị nhận đã chỉ gồm đơn vị chọn được
+    function donViNhanHopLe(q) { return donViNhan(q); }
+    function lanhDaoNhan(unitId) { return unitId ? lanhDaoPhanCong(unitId) : []; }
+    function chuyenVienXuLy(q) {
+        if (!DANG_PHAN_CONG(q)) return [];
+        const pham = q.status === ST.WAIT_PHONG ? phamViPhong(q.handlerUnit) : phongThuocBo();
+        return nguoiCoQuyen(Q.TRA_LOI, pham);
+    }
+    // Thanh Tiến trình xử lý: câu hỏi có qua bước Lãnh đạo Phòng (Bộ) phân công không (Lãnh đạo Cục chọn Chuyển chuyên viên thì không qua)
+    function quaPhanCongPhong(q) {
+        if (q.status === ST.WAIT_CUC || q.status === ST.WAIT_PHONG) return true;
+        return (q.history || []).some(h => h.action === 'Phân công Lãnh đạo Phòng') || !(q.history || []).some(h => h.action === 'Phân công Chuyên viên');
+    }
+    // Giữ tên cũ cho trang khác còn gọi (Bàn làm việc Lãnh đạo): mọi người có thể được giao
+    function ungVien(q) { return [].concat(...donViNhanHopLe(q).map(lanhDaoNhan), chuyenVienXuLy(q)); }
 
     // ---------- Quy tắc 13: bộ lọc Trạng thái theo tab và quyền chức năng ----------
     const TAB_CHO = {
@@ -309,6 +360,6 @@
         vaiTroMau, quyen, coQuyen, chiXem, nguoiCoQuyen,
         buildSeed, ensureFields, load, save,
         coPhamVi, canSee, isMyTask, canAct, canEdit, canUpdateAnswer, isDoneByMe, currentHandler,
-        routeOnSubmit, quaDuyetPhong, ungVien, tabStatuses
+        routeOnSubmit, quaDuyetPhong, ungVien, donViNhan, donViNhanHopLe, coLanhDao, phongThuocBo, lanhDaoNhan, chuyenVienXuLy, quaPhanCongPhong, laLanhDao, nguoiNhanPhong, tabStatuses
     };
 })(window);
