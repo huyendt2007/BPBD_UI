@@ -1483,7 +1483,15 @@
     var listTab = 'pending';
     // 03/11/2026 (QDDA_012): Lãnh đạo xem mọi báo cáo của Sở trừ `Chờ nhập liệu`; tài khoản UBND tỉnh chỉ xem báo cáo `Đã gửi BTP`
     // 06/11/2026 (nhanhl2, QDDA_020): bỏ vai trò UBND tỉnh chỉ xem; Lãnh đạo UBND tỉnh (người ký Cấp 3) có phạm vi xem như Lãnh đạo Sở
-    function inScope(r) { if (r.unitId !== DEMO_UNIT) return false; return role === 'cb_stp' || r.status !== ST.DANG; }
+    // 17/11/2026 (nhanhl2, QDDA_029; thay một phần QDDA_012 ý 5 và QDDA_020): Lãnh đạo chỉ xem báo cáo có liên quan tới mình, tức được chọn ở một
+    // cấp của lượt trình gần nhất (r.submit) mà cấp đó đã tới lượt (đang chờ mình ký, hoặc mình đã Ký duyệt, Từ chối). Không xem khi cấp của mình chưa
+    // tới lượt, khi chỉ có ở lượt trình trước, và báo cáo `Đã gửi BTP` mà mình không ký. Cán bộ Sở Tư pháp vẫn xem mọi báo cáo của đơn vị.
+    function lienQuan(r) {
+        var s = r.submit; if (!s || !s.levels) return false;
+        var id = me().userId;
+        return s.levels.some(function (l, k) { return l.leaderId === id && (k <= s.current || !!l.result); });
+    }
+    function inScope(r) { if (r.unitId !== DEMO_UNIT) return false; if (role === 'cb_stp') return true; return r.status !== ST.DANG && (lienQuan(r) || coPhanCongSo(r)); }
     // 04/11/2026 (nhanhl2): báo cáo «Bị trả lại» (Bộ Tư pháp trả lại) nằm ở Chờ xử lý của cả Lãnh đạo Phòng và Lãnh đạo Sở (chỉ xem, không sửa)
     function isPending(r) { if (role === 'cb_stp') return canEdit(r); return canApprove(r) || coPhanCongSo(r); }   // 06/11/2026 (nhanhl2, QDDA_020): Lãnh đạo UBND tỉnh có việc chờ ký
     function leaderActed(r) { var nm = me().name; return (r.history || []).some(function (h) { return h.actor === nm && /^(Ký duyệt|Từ chối)/.test(h.action || ''); }); }
