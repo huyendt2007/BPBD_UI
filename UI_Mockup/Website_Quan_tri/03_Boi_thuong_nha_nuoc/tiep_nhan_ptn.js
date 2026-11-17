@@ -418,7 +418,7 @@ function lvApply(p, col) {
     Object.assign(p.approval, { path: col.path.slice(), assignees: col.assignees.slice(), leaders: col.levels.map(l => [l.leader]), levels: col.levels, tuThietLap: true, signDoc: { pcSig: col.pcSig, dongDau: !!col.dongDau, banHanh: col.banHanh || null } });
 }
 function lvHow(a) { const l = a && a.tuThietLap ? (a.levels || [])[a.level] : null; return l ? (l.kySo ? ' - đã ký số' : (l.kyNhay ? ' - đã gán chữ ký nháy' : ' - đã gán chữ ký')) : ''; }
-// MSG-ERR-BTNN-LXL-007: đơn vị cán bộ trình và đơn vị cấp trên chưa có tài khoản thuộc Nhóm Lãnh đạo
+// Không có Lãnh đạo để chọn ký: đơn vị cán bộ trình và đơn vị cấp trên chưa có tài khoản thuộc Nhóm Lãnh đạo (khác quy tắc chặn Chuyển CQGQBT đã bỏ 17/11/2026)
 function noLeaderMsg() { const u = W.getCurrentUser(); const root = u ? (W.getRootId(u.unitId) || u.unitId) : ''; return `Đơn vị ${W.unitName(root)} chưa có tài khoản thuộc Nhóm Lãnh đạo. Vui lòng liên hệ Quản trị hệ thống.`; }
 function canAct(p, uid) {
     if (!p || p.status !== ST.REVIEW || !p.approval) return false;

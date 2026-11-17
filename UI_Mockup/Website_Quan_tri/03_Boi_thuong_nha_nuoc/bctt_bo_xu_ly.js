@@ -19,15 +19,18 @@
     // ---------------- Tiện ích ngày ----------------
     function toDate(s) { const m = /(\d{2})\/(\d{2})\/(\d{4})/.exec(String(s || '')); return m ? new Date(+m[3], +m[2] - 1, +m[1]) : null; }
     function ngayGuiBo(r) { return (r.issued && r.issued.at) || r.sentAt || ''; }
-    function guiCham(r) { const d = toDate(ngayGuiBo(r)); return !!d && d >= B.hanGui(r.year, r.period).han; }
+    // 16/11/2026 (câu hỏi 1, nhanhl2 duyệt đợt 2): gửi chậm tính từ ngày bắt đầu quá hạn (quaTu, ngày liền sau ngày cuối cùng còn được gửi),
+    // nên báo cáo ban hành đúng ngày cuối cùng (07/12, 30/01 năm sau, hoặc ngày làm việc được lùi tới) vẫn đúng hạn
+    function guiCham(r) { const d = toDate(ngayGuiBo(r)); return !!d && d >= B.hanGui(r.year, r.period).quaTu; }
 
-    // Dữ liệu mẫu: năm 2025 có 02 Sở gửi chậm kỳ thực tế (hạn trước 08/12/2025) để có dữ liệu «Gửi chậm» (giữ từ bản 04/11/2026)
+    // Dữ liệu mẫu: năm 2025 có 02 Sở gửi chậm kỳ thực tế (thời hạn gửi chậm nhất là ngày 08/12/2025 vì 07/12/2025 là Chủ nhật, ban hành 15/12 và 16/12/2025) để có dữ liệu «Gửi chậm» (giữ từ bản 04/11/2026)
+    // 16/11/2026 (lỗi U3 phiếu Tổng hợp): trả về true khi vừa đổi dữ liệu, để init vẽ lại MH01 (cột «Gửi chậm» không còn ghi 0 lúc đầu)
     function damBao() {
-        const db = B.db(); if (db.boSeed === 'bo2') return;
+        const db = B.db(); if (db.boSeed === 'bo2') return false;
         db.reports.filter(r => !B.isBtpReport(r) && r.year === 2025 && r.period === 'thuc_te' && r.status === ST.BH).slice(0, 2)
             .forEach((r, i) => { const at = (15 + i) + '/12/2025 10:00'; if (r.issued) r.issued.at = at; if (r.kySo) r.kySo.at = at; });
         db.reports.filter(r => B.isBtpReport(r) && r.year === 2025 && r.period === 'thuc_te' && r.src).forEach(r => { delete r.src.cham; });
-        db.boSeed = 'bo2'; B.save();
+        db.boSeed = 'bo2'; B.save(); return true;
     }
 
     // ---------------- Tab chính ----------------
@@ -51,9 +54,10 @@
     // 06/11/2026: bỏ cột Trạng thái xử lý tại Bộ, Cán bộ chủ trì; báo cáo Sở đang trình phê duyệt lại sau khi đã gửi tính Chưa gửi BTP (dòng phụ ghi rõ)
     function veTinhHinh() {
         const db = B.db();
-        const nam = [...new Set(db.reports.map(r => r.year))].sort((a, b) => b - a);
+        // 16/11/2026 (mục 6.7 kế hoạch, mặc định): danh sách năm chỉ lấy năm có báo cáo của đơn vị (mọi trạng thái), bỏ báo cáo tổng hợp của Bộ
+        const nam = [...new Set(db.reports.filter(r => !B.isBtpReport(r)).map(r => r.year))].sort((a, b) => b - a);
         if (!st.thKy.nam) st.thKy = { nam: String(nam[0]), ky: 'thuc_te', tg: '' };
-        const y = +st.thKy.nam, p = st.thKy.ky, han = B.hanGui(y, p), quaHan = new Date() >= han.han;
+        const y = +st.thKy.nam, p = st.thKy.ky, han = B.hanGui(y, p), quaHan = new Date() >= han.quaTu;   // 16/11/2026: quá hạn từ ngày liền sau ngày cuối cùng còn được gửi
         const dong = B.PROVINCES.map(pr => {
             const so = B.dvName(pr), r = db.reports.find(x => !B.isBtpReport(x) && x.unitName === so && x.year === y && x.period === p);
             const daGui = !!r && r.status === ST.BH;
@@ -78,7 +82,7 @@
             </div>
         </div>
         <div class="card-section th-tong">
-            <div class="th-tieu-de"><span>Tổng hợp tình hình gửi báo cáo năm ${y} - ${esc(B.PERIODS[p].label)}</span><span class="th-han"><i class="fa-regular fa-calendar"></i> Hạn gửi: trước ngày ${esc(han.txt)}</span></div>
+            <div class="th-tieu-de"><span>Tổng hợp tình hình gửi báo cáo năm ${y} - ${esc(B.PERIODS[p].label)}</span><span class="th-han"><i class="fa-regular fa-calendar"></i> ${esc(han.cum)}</span></div><!-- 16/11/2026 (nhanhl2 duyệt đợt 2): câu thống nhất «Thời hạn gửi chậm nhất là ngày dd/mm/yyyy» -->
             <div class="th-cap-nhat"><i class="fa-regular fa-clock"></i> Dữ liệu cập nhật tới thời điểm hiện tại: <strong>${esc(B.nowText())}</strong></div>
             <div class="th-the-hang">
                 ${the('gui', 'fa-circle-check', 'tot', nGui, 'Đã gửi BTP')}
@@ -126,7 +130,7 @@
 
     // ---------------- Khởi tạo ----------------
     function init() {
-        damBao();
+        if (damBao()) B.refresh();   // 16/11/2026 (lỗi U3): vẽ lại MH01 sau khi nạp dữ liệu mẫu 02 đơn vị gửi chậm
         $('boMainTabs').onclick = e => { const b = e.target.closest('[data-chinh]'); if (!b) return; st.chinh = b.dataset.chinh; if (st.chinh === 'tong') B.refresh(); veChinh(); };
         window.BCTT_KHI_DOI_VAI_TRO = () => { st.chinh = 'tong'; veChinh(); };
         veChinh();

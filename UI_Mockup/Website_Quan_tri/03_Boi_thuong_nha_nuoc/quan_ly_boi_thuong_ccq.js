@@ -6,13 +6,70 @@
  *   -> Tiếp tục (Ký số) -> Bước 2: Thiết lập các cấp trình ký (cách đặt ô ký hiện có), Nội dung trình -> Trình Lãnh đạo
  * - Trình: vụ việc "Chờ duyệt", Loại trình "Chuyển CQGQBT"; cấp cuối Ký duyệt -> "Đã chuyển CQGQBT", tạo hồ sơ tại cơ quan tiếp nhận mới
  * - Ký ngoài: tải PDF đã ký -> xác nhận -> ban hành trực tiếp (Đã chuyển CQGQBT, tạo hồ sơ tại cơ quan tiếp nhận mới)
+ * - [ccqf] Chốt 16/11/2026: từ lần chuyển thứ 2 (Mã vụ việc đã có từ 01 lần chuyển do Không thụ lý KTL_01; thao tác Chuyển CQGQBT không tính lần),
+ *   Cơ quan tiếp nhận mới bắt buộc Bộ Tư pháp (Cấp đơn vị Trung ương) / Sở Tư pháp cùng tỉnh, thành phố (Tỉnh, Xã), chọn sẵn, chỉ đọc;
+ *   ban hành -> hệ thống tự tạo hồ sơ Xác định CQGQBT (XD-) tại Bộ Tư pháp / Sở Tư pháp thay cho hồ sơ BT-. Đếm lần theo quan_ly_boi_thuong_ktlc.js.
  * Dùng tiện ích sẵn có của quan_ly_boi_thuong.html (gqW, gqClaim, gqRecord, gqSubmit, gqSign*, ktlx*, tlktGqRestore, tlktGqExtra, gqMountTargetUnitTree).
  */
 var CCQ_KIND = 'Chuyển CQGQBT';
 var CCQ_RESULT = 'Đã chuyển CQGQBT';
 var CCQ_OFF_MSG = 'Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.';
 var CCQ_CONTENT = 'Kính trình Lãnh đạo xem xét, ký duyệt văn bản chuyển hồ sơ sang cơ quan giải quyết bồi thường khác.';
-var ccqS = { claim: null, online: null, offline: null };
+var ccqS = { claim: null, online: null, offline: null, forced: null };
+
+// ---------- [ccqf] Lần chuyển thứ 2 trở đi: bắt buộc Bộ Tư pháp / Sở Tư pháp ----------
+// Trả về null khi lần chuyển thứ nhất; ngược lại { lan, mode, tw, unitId, targetUnitId, loaiYeuCau, message }
+function ccqForcedRule(claim) {
+    var W = gqW();
+    if (!W || !claim || typeof ktlcRule !== 'function') return null;
+    var rec = null;
+    try { rec = gqRecord(claim); } catch (e) { rec = null; }
+    var unitId = typeof ktlcUnitOf === 'function' ? ktlcUnitOf(claim, rec, true) : '';
+    var rule = ktlcRule(claim, rec, unitId);
+    if (!rule || !rule.forced) return null;
+    var mode = rule.modes[0];
+    var target = '';
+    if (mode === 'BTP') target = ((W.getRootUnits ? W.getRootUnits() : []).find(function (x) { return /^BTP/.test(x.id); }) || {}).id || '';
+    else target = rule.stpId || (W.stpOfUnit ? W.stpOfUnit(unitId) : '');
+    return {
+        lan: rule.lan, mode: mode, tw: rule.tw, unitId: unitId, targetUnitId: target, loaiYeuCau: W.REQUEST_TYPE_XD,
+        message: target ? '' : 'Không xác định được Sở Tư pháp quản lý ' + W.unitName(unitId) + '.'
+    };
+}
+// Thay cây đơn vị bằng ô chỉ đọc (đơn vị bắt buộc) + dòng thông tin
+function ccqApplyForced(claim) {
+    var W = gqW();
+    var f = ccqS.forced = ccqForcedRule(claim);
+    if (!f) return;
+    var box = ccqEl('gqTransferUnitBox');
+    if (!box) return;
+    var u = f.targetUnitId ? W.getUnit(f.targetUnitId) : null;
+    var label = u ? (W.unitTreeLabel ? W.unitTreeLabel(u.id) : ((u.code || u.id) + ' - ' + u.name)) : '--';
+    var org = f.tw ? 'Bộ Tư pháp' : 'Sở Tư pháp';
+    // Bỏ cây đơn vị đã gắn (lần chuyển thứ nhất mới dùng cây)
+    box.classList.remove('wf-utree'); box.__utree = null;
+    box.innerHTML = '<input type="hidden" id="gqTransferUnit" value="' + gqE(f.targetUnitId) + '">'
+        + '<div id="ccqForcedUnit" class="form-control" style="background:#f1f5f9; color:#0f172a; font-weight:600; cursor:not-allowed;" aria-readonly="true"><i class="fa-solid fa-lock" style="color:#94a3b8; margin-right:6px;"></i>' + gqE(label) + '</div>'
+        + '<div class="ktlc-note" style="font-size:12.5px; color:#475569; background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:6px 10px; margin-top:8px;"><i class="fa-solid fa-circle-info"></i> '
+        + gqE('Hồ sơ đã được chuyển ' + f.lan + ' lần do không thuộc thẩm quyền. Bắt buộc chuyển ' + org + ' để xác định cơ quan giải quyết bồi thường; khi ban hành, hệ thống tự tạo hồ sơ Xác định cơ quan giải quyết bồi thường.') + '</div>';
+    if (f.message) { var e = ccqEl('gqTransferUnitErr'); if (e) { if (!e.dataset.req) e.dataset.req = e.textContent; e.textContent = f.message; e.style.display = 'block'; } }
+}
+// Thông tin bổ sung cho hồ sơ Xác định CQGQBT tự tạo (khối Thông tin hồ sơ chuyển đến tại Xác định CQGQBT) + lịch sử người thực hiện Hệ thống
+function ccqForcedAction(claim, content) {
+    var f = ccqS.forced, W = gqW();
+    if (!f || !W) return {};
+    var rec = null;
+    try { rec = gqRecord(claim); } catch (e) { rec = null; }
+    var code = rec ? rec.code : claim.code;
+    return {
+        loaiYeuCau: f.loaiYeuCau,
+        recExtra: {
+            ktlcLan: f.lan,
+            ktlcFrom: { code: code, maVuViec: (rec && rec.maVuViec) || '', unitId: f.unitId, mode: f.mode, lan: f.lan, auto: true, applies: true, via: 'Chuyển CQGQBT', reason: 'Chuyển CQGQBT (lần chuyển thứ 2 trở đi)', content: content || '', at: W.nowText() }
+        },
+        sysHistory: { action: 'Tự tạo hồ sơ Xác định CQGQBT', note: 'Hồ sơ ' + code + ' của ' + W.unitName(f.unitId) + ' Chuyển CQGQBT khi Mã vụ việc đã chuyển ' + f.lan + ' lần do không thuộc thẩm quyền; hệ thống tự tạo hồ sơ Xác định CQGQBT.' }
+    };
+}
 
 function ccqEl(id) { return document.getElementById(id); }
 function ccqIsOffline() { var r = ccqEl('ccqSigningMethodOffline'); return !!(r && r.checked); }
@@ -105,6 +162,8 @@ function ccqOpen(claimId) {
     ['gqTransferUnit', 'gqTransferContent'].forEach(ccqClearErr);
     ccqEl('ccqFooterMsg').innerText = '';
     if (typeof gqMountTargetUnitTree === 'function') gqMountTargetUnitTree(claim, act ? act.targetUnitId : '');
+    // [ccqf] Lần chuyển thứ 2 trở đi: Bộ Tư pháp / Sở Tư pháp chọn sẵn, chỉ đọc (Bị trả lại: xác định lại theo quy tắc)
+    ccqApplyForced(claim);
     ccqEl('ccqSignContent').value = CCQ_CONTENT;
     // [sn1] Bước 2 có khối Thông tin ban hành văn bản (Số, ký hiệu, Địa danh, Ngày văn bản; trình lại điền theo phiếu trình trước)
     gqSignInit('ccq', claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null, { kind: CCQ_KIND });
@@ -123,6 +182,7 @@ function closeCcqModal() {
     var modal = ccqEl('modalccq');
     if (modal) { modal.style.display = 'none'; modal.classList.remove('active'); modal.classList.remove('visible'); }
     ccqS.claim = null;
+    ccqS.forced = null;
 }
 function ccqToggleSigningMethod(method) {
     var isOnline = method === 'online';
@@ -203,16 +263,15 @@ function ccqOfflineRemove() {
 // Cơ quan tiếp nhận mới, Nội dung/Căn cứ chuyển: trả về ô lỗi đầu tiên
 function ccqValidateInfo() {
     var first = null;
-    if (!gqVal('gqTransferUnit')) { if (typeof gqMark === 'function') gqMark('gqTransferUnit', true); var e1 = ccqEl('gqTransferUnitErr'); if (e1) { if (e1.dataset.req) e1.textContent = e1.dataset.req; e1.style.display = 'block'; } first = ccqEl('gqTransferUnitBox'); }
+    // [ccqf] Lần chuyển thứ 2 trở đi, không xác định được Sở Tư pháp: không cho Tiếp tục / Ban hành
+    if (ccqS.forced && ccqS.forced.message) {
+        var ef = ccqEl('gqTransferUnitErr'); if (ef) { ef.textContent = ccqS.forced.message; ef.style.display = 'block'; }
+        first = ccqEl('ccqForcedUnit') || ccqEl('gqTransferUnitBox');
+    } else if (!gqVal('gqTransferUnit')) { if (typeof gqMark === 'function') gqMark('gqTransferUnit', true); var e1 = ccqEl('gqTransferUnitErr'); if (e1) { if (e1.dataset.req) e1.textContent = e1.dataset.req; e1.style.display = 'block'; } first = ccqEl('gqTransferUnitBox'); }
     else {
+        // Bỏ kiểm tra cơ quan nhận chưa có tài khoản thuộc Nhóm Lãnh đạo (chốt 17/11/2026): hồ sơ mới tạo Chờ phân công, xử lý theo phân quyền chức năng
         var e2 = ccqEl('gqTransferUnitErr');
-        // [ro1] MSG-ERR-BTNN-LXL-007: cơ quan nhận (đơn vị gốc) chưa có tài khoản thuộc Nhóm Lãnh đạo -> chặn chuyển
-        var Wc = gqW(), tid = gqVal('gqTransferUnit'), root = Wc ? (Wc.getRootId(tid) || tid) : '';
-        if (Wc && Wc.leadersOfUnit && !Wc.leadersOfUnit(root).length) {
-            if (e2) { if (!e2.dataset.req) e2.dataset.req = e2.textContent; e2.textContent = 'Đơn vị ' + Wc.unitName(root) + ' chưa có tài khoản thuộc Nhóm Lãnh đạo. Vui lòng liên hệ Quản trị hệ thống.'; e2.style.display = 'block'; }
-            if (typeof gqMark === 'function') gqMark('gqTransferUnit', true);
-            first = ccqEl('gqTransferUnitBox');
-        } else if (e2) { if (e2.dataset.req) e2.textContent = e2.dataset.req; e2.style.display = 'none'; }
+        if (e2) { if (e2.dataset.req) e2.textContent = e2.dataset.req; e2.style.display = 'none'; }
     }
     if (!gqVal('gqTransferContent')) first = first || ccqSetErr('gqTransferContent'); else ccqClearErr('gqTransferContent');
     return first;
@@ -273,7 +332,7 @@ function ccqSubmitOnline() {
     var draftDoc = { source: 'uploaded', formNo: '', docTitle: 'Văn bản chuyển cơ quan giải quyết bồi thường', generatedName: '', uploadedName: fileName, bodyHtml: '' };
     // [sn1] Số, ký hiệu / Ngày văn bản theo khối Thông tin ban hành văn bản (Bước 2)
     var signDoc = Object.assign({ method: 'Ký số', file: fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords, docNumber: sign.soKyHieu, docDate: sign.ngayVanBan }, tlktGqExtra('ccq', ccqS.online, 'upload', sign.content));
-    var res = gqSubmit(claim, CCQ_KIND, sign.content, files, { assignee: sign.assignees[0] || '', assignees: sign.assignees, draftDoc: draftDoc, signDoc: signDoc, action: { type: 'transfer', targetUnitId: unitId, content: tc, files: files } });
+    var res = gqSubmit(claim, CCQ_KIND, sign.content, files, { assignee: sign.assignees[0] || '', assignees: sign.assignees, draftDoc: draftDoc, signDoc: signDoc, action: Object.assign({ type: 'transfer', targetUnitId: unitId, content: tc, files: files }, ccqForcedAction(claim, tc)) });
     if (!res || res.ok === false) { ccqEl('ccqFooterMsg').innerText = res ? res.message : 'Không trình được hồ sơ.'; return; }
     gqSaveData(claim, { transferRequest: { via: CCQ_KIND, targetUnitId: unitId, targetName: W.unitName(unitId), content: tc, files: files, fileName: fileName, signingMethod: 'Ký số' } });
     closeCcqModal();
@@ -309,7 +368,7 @@ function ccqIssueOffline() {
     try {
         var rec = gqEnsureRecord(claim) || gqRecord(claim);
         if (rec && W) {
-            newCode = W.performTransfer(rec, { type: 'transfer', targetUnitId: unitId, content: tc, files: files }) || '';
+            newCode = W.performTransfer(rec, Object.assign({ type: 'transfer', targetUnitId: unitId, content: tc, files: files }, ccqForcedAction(claim, tc))) || '';
             rec.status = CCQ_RESULT;
             W.addHistory(rec, 'Ban hành Chuyển CQGQBT (Ký ngoài)', 'Chuyển ' + W.unitName(unitId) + (newCode ? ' (hồ sơ ' + newCode + ')' : '') + '. Văn bản đã ký: ' + file + '.');
             W.upsertRecord(rec);
@@ -319,13 +378,15 @@ function ccqIssueOffline() {
     claim.wfReturned = null;
     if (!Array.isArray(claim.timeline)) claim.timeline = [];
     claim.timeline.push({ title: 'Ban hành Chuyển CQGQBT (Ký ngoài)', date: gqToday(), desc: 'Văn bản chuyển cơ quan đã ký ngoài hệ thống (' + file + '). Chuyển ' + (W ? W.unitName(unitId) : unitId) + (newCode ? ', tạo hồ sơ ' + newCode : '') + '. Vụ việc chuyển sang trạng thái [' + CCQ_RESULT + '].', status: 'active' });
-    gqSaveData(claim, { status: CCQ_RESULT, transferRequest: { via: CCQ_KIND, targetUnitId: unitId, targetName: W ? W.unitName(unitId) : '', content: tc, files: files, fileName: file, signedFile: file, signingMethod: 'Ký ngoài', newCode: newCode, issuedAt: gqNow() } });
+    var forced = ccqS.forced;
+    gqSaveData(claim, { status: CCQ_RESULT, transferRequest: { via: CCQ_KIND, targetUnitId: unitId, targetName: W ? W.unitName(unitId) : '', content: tc, files: files, fileName: file, signedFile: file, signingMethod: 'Ký ngoài', newCode: newCode, issuedAt: gqNow(), loaiYeuCau: forced ? forced.loaiYeuCau : '' } });
     closeCcqModal();
     saveClaimsToLocal();
     renderClaimsTable();
     var detail = document.getElementById('caseDetailSection');
     if (detail && detail.style.display === 'block' && selectedClaimId === claim.id) showCaseDetail(claim.id, false);
-    showToast('Đã ban hành Chuyển CQGQBT (Ký ngoài) vụ việc ' + ccqVvCode(claim) + '. Trạng thái: ' + CCQ_RESULT + '.', 'success');
+    showToast('Đã ban hành Chuyển CQGQBT (Ký ngoài) vụ việc ' + ccqVvCode(claim) + '. Trạng thái: ' + CCQ_RESULT + '.'
+        + (forced && newCode ? ' Hệ thống đã tự tạo hồ sơ Xác định cơ quan giải quyết bồi thường ' + newCode + ' tại ' + W.unitName(unitId) + '.' : ''), 'success');
 }
 
 // Thay popup Chuyển CQGQBT cũ (quan_ly_boi_thuong.html) bằng popup 02 bước

@@ -2017,27 +2017,37 @@
             return { ok: false, message: 'Vui lòng chọn hình thức chuyển cơ quan tiếp nhận mới.' };
         }
         const tRoot = getRootId(target) || target;
-        if (!isUnitConfigured(tRoot, ft)) return { ok: false, message: `Đơn vị ${unitName(tRoot)} chưa có tài khoản thuộc Nhóm Lãnh đạo. Vui lòng liên hệ Quản trị hệ thống.` };
+        // Không chặn khi cơ quan nhận chưa có tài khoản thuộc Nhóm Lãnh đạo (chốt 17/11/2026): hồ sơ mới tạo Chờ phân công, xử lý theo phân quyền chức năng
         return { ok: true, mode, targetUnitId: target, rootUnitId: tRoot, loaiYeuCau: loai, label: KTL_TRANSFER_LABELS[mode] };
     }
     // Khối "Chuyển cơ quan tiếp nhận mới" dùng chung (Popup Không thụ lý hồ sơ của cán bộ / Thủ trưởng):
-    // Radio 03 tùy chọn; Chuyển Sở Tư pháp hiển thị chỉ đọc Sở Tư pháp xác định được; Chuyển trực tiếp hiển thị cây đơn vị (khóa đơn vị gốc của hồ sơ)
+    // Radio theo Cấp đơn vị của đơn vị gốc: Trung ương -> Bộ Tư pháp; Tỉnh, Xã -> Sở Tư pháp quản lý; luôn kèm Cơ quan giải quyết bồi thường khác.
+    // Không hiển thị đồng thời Bộ Tư pháp và Sở Tư pháp. Chuyển Sở Tư pháp hiển thị chỉ đọc Sở Tư pháp xác định được; Chuyển trực tiếp hiển thị cây đơn vị (khóa đơn vị gốc của hồ sơ)
+    function ktlIsTrungUong(rootId) {
+        const u = getUnit(rootId);
+        if (!u) return false;
+        if (u.capDonVi) return u.capDonVi === 'Trung ương';
+        return rootId === 'BTP-01' || /^Bộ\s|tối cao|Chính phủ|quân sự Trung ương/i.test(u.name || '');
+    }
     function mountKtlTransfer(container, options) {
         if (!container) return null;
         const o = Object.assign({ rec: null, mode: '', unitId: '', name: 'ktlMode', treeInputId: '', onChange: null }, options || {});
         const rec = o.rec || {};
         const root = getRootId(rec.rootUnitId) || rec.rootUnitId || '';
         const stp = stpOfUnit(root);
-        const radio = m => `<label style="display:flex; align-items:center; gap:8px; font-weight:600; cursor:pointer; margin:4px 0;"><input type="radio" name="${esc(o.name)}" value="${m}"> ${esc(KTL_TRANSFER_LABELS[m])}</label>`;
+        const hidden = ktlIsTrungUong(root) ? 'STP' : 'BTP';
+        if (o.mode === hidden) o.mode = '';
+        // Khoảng cách: .wf-ktl-modes xếp dọc, cách nhau 10px (CSS trong ensureUnitTreeCss); mỗi lựa chọn một dòng
+        const radio = m => `<label style="display:${m === hidden ? 'none' : 'flex'}; align-items:center; gap:8px; font-weight:600; cursor:pointer; margin:0;"><input type="radio" name="${esc(o.name)}" value="${m}"> ${esc(KTL_TRANSFER_LABELS[m])}</label>`;
         container.innerHTML = `<div class="wf-ktl-modes">
             ${radio('BTP')}
             ${radio('STP')}
-            <div class="wf-ktl-sub" data-for="STP" style="display:none; margin:2px 0 6px 24px; font-size:12.5px;">${stp
+            <div class="wf-ktl-sub" data-for="STP" style="display:none; margin:-4px 0 0 24px; font-size:12.5px;">${stp
                 ? `<span style="color:#475569;">Sở Tư pháp quản lý:</span> <b>${esc(unitName(stp))}</b>`
                 : `<span style="color:#dc2626;">Không xác định được Sở Tư pháp quản lý ${esc(unitName(root))}.</span>`}</div>
             ${radio('CQ')}
-            <div class="wf-ktl-sub" data-for="CQ" style="display:none; margin:2px 0 6px 24px;"><div class="wf-ktl-tree"></div></div>
-            <div class="wf-ktl-err" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;"></div>
+            <div class="wf-ktl-sub" data-for="CQ" style="display:none; margin:2px 0 0 24px;"><div class="wf-ktl-tree"></div></div>
+            <div class="wf-ktl-err" style="display:none; color:#dc2626; font-size:12px; margin-top:-6px;"></div>
         </div>`;
         const tree = mountUnitTree(container.querySelector('.wf-ktl-tree'), {
             inputId: o.treeInputId, value: o.unitId || '', disabledIds: [root, rec.currentUnitId].filter(Boolean),
@@ -2128,7 +2138,12 @@
             transferFiles: files,
             historyAction: 'Nhận hồ sơ chuyển CQGQBT',
             historyNote: `Hồ sơ ${rec.code} do ${unitName(rec.rootUnitId)} chuyển đến (${via}). Loại hồ sơ: ${loai}. Chờ lãnh đạo ${target.name} phân công.`
-        }));
+        }, action.recExtra && typeof action.recExtra === 'object' ? action.recExtra : {}));
+        // [ccqf] Chuyển CQGQBT từ lần chuyển thứ 2: hồ sơ Xác định CQGQBT do hệ thống tự tạo, ghi lịch sử người thực hiện Hệ thống
+        if (action.sysHistory && action.sysHistory.action) {
+            const nr = getRecord(newCode);
+            if (nr) { (nr.history = nr.history || []).push({ at: nowText(), userId: '', userName: 'Hệ thống', action: action.sysHistory.action, note: action.sysHistory.note || '' }); upsertRecord(nr); }
+        }
         if (rec.maVuViec) linkVuViec(newCode, rec.maVuViec);
         rec.transferTo = { targetUnitId: target.id, code: newCode, mode: action.mode || '', loaiYeuCau: loai, content: action.content || '', files, at: nowText() };
         return newCode;
@@ -2796,7 +2811,11 @@
             '.wf-utree-ic{color:#2563eb;width:16px;text-align:center;flex:0 0 16px;}',
             '.wf-utree-code{color:#64748b;font-size:12px;white-space:nowrap;}',
             '.wf-utree-empty{padding:10px;color:#64748b;font-style:italic;}',
-            '.wf-utree.is-invalid .wf-utree-display{border-color:#dc2626;}'
+            '.wf-utree.is-invalid .wf-utree-display{border-color:#dc2626;}',
+            // Khối "Chuyển hồ sơ cho" (mountKtlTransfer): mỗi lựa chọn một dòng, cách nhau 10px; ô chọn cơ quan cách lựa chọn 12px
+            '.wf-ktl-modes{display:flex;flex-direction:column;align-items:stretch;gap:10px;}',
+            '.wf-ktl-modes > label{display:flex;align-items:center;gap:8px;align-self:flex-start;margin:0;}',
+            '.wf-ktl-modes > .ktlc-note{margin:0 !important;}'
         ].join('\n');
         document.head.appendChild(st);
     }

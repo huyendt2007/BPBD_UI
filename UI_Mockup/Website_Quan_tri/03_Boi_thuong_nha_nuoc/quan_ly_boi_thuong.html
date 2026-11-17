@@ -4142,7 +4142,7 @@
     </div>
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
-    <script src="btnn_luong_xu_ly.js?v=20261112vt2"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261117gap"></script>
     <script src="btnn_dvc_sync.js?v=20261106dvc11"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
@@ -7816,7 +7816,8 @@
             'Hoãn giải quyết', 'Tạm đình chỉ', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Đã chuyển CQGQBT', 'Không thụ lý', 'Yêu cầu bổ sung'
         ];
         // Chuyển CQGQBT: các Trạng thái vụ việc được phép (Yêu cầu bổ sung là chưa thụ lý: không được Chuyển CQGQBT)
-        const GQ_TRANSFER_CASE_STATES = ['Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Đang phục hồi danh dự', 'Hoãn giải quyết'];
+        // Chốt 17/11/2026: không gồm Đang phục hồi danh dự (Chỉ yêu cầu phục hồi danh dự không có Chuyển CQGQBT; Yêu cầu cả hai chỉ ở trạng thái này khi nhánh Giải quyết YCBT đã Hoàn thành)
+        const GQ_TRANSFER_CASE_STATES = ['Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Hoãn giải quyết'];
         // Chuẩn hóa giá trị trạng thái khi đọc dữ liệu (dữ liệu cũ trong localStorage -> 17 Trạng thái vụ việc).
         // Bảng ánh xạ chỉ dùng để đọc dữ liệu cũ, viết dạng không dấu; mọi chỗ ghi/so sánh trạng thái chỉ dùng tên mới.
         const GQ_LEGACY_STATUS = {
@@ -20264,7 +20265,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         // Trước đó (Chờ tiếp nhận / Yêu cầu bổ sung / Bị trả lại): chuyển cơ quan qua Không thụ lý - lý do KTL_01.
         const GQ_TRANSFER_STATES = ['Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoãn giải quyết'];
         function gqTransferBlockReason(claim) {
-            // Chuyển CQGQBT theo Trạng thái vụ việc: Cử người giải quyết bồi thường, Xác minh thiệt hại, Thương lượng, Chờ ban hành QĐ, Đang phục hồi danh dự, Hoãn giải quyết
+            // Chuyển CQGQBT theo Trạng thái vụ việc: Cử người giải quyết bồi thường, Xác minh thiệt hại, Thương lượng, Chờ ban hành QĐ, Hoãn giải quyết
             if (typeof GQ_TRANSFER_CASE_STATES !== 'undefined') {
                 const cs = caseStatusLabel(claim);
                 // Chưa thụ lý (Chờ tiếp nhận / Yêu cầu bổ sung): chuyển cơ quan qua Không thụ lý
@@ -20274,9 +20275,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const st = canonicalClaimStatus(claim.status);
             const caseSt = typeof getClaimCaseStatus === 'function' ? getClaimCaseStatus(claim) : st;
             if (CLAIM_DONE_TAB_STATES.includes(caseSt)) return `Không áp dụng ở trạng thái ${caseSt}`;
-            // Đang phục hồi danh dự (Chỉ yêu cầu phục hồi danh dự hoặc Cả hai): hồ sơ đã thụ lý, chưa kết thúc
-            const phddOpen = typeof isPhddStarted === 'function' && isPhddStarted(claim) && claim.phddStatus && !PHDD_DONE_STATES.includes(claim.phddStatus);
-            if (caseSt === CASE_PHDD_PENDING_STATUS || phddOpen) return '';
+            // Đang phục hồi danh dự: không được Chuyển CQGQBT (chốt 17/11/2026)
+            if (caseSt === CASE_PHDD_PENDING_STATUS) return `Không áp dụng ở trạng thái ${caseSt}`;
             if (['Chờ tiếp nhận', 'Yêu cầu bổ sung', 'Bị trả lại', 'Cử người giải quyết bồi thường'].includes(st)) return 'Hồ sơ chưa cử người giải quyết: chuyển cơ quan qua thao tác Không thụ lý với lý do KTL_01';
             if (!GQ_TRANSFER_STATES.includes(st)) return `Không áp dụng ở trạng thái ${st}`;
             return '';
@@ -24953,7 +24953,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <!-- [lth][th2c] Thiệt hại 02 cấp (nhóm / mục chi tiết DM_27) tại Nhập liệu hồ sơ, Xác minh thiệt hại, Thương lượng, Xem chi tiết; tích bổ sung mục / Yêu cầu phục hồi danh dự; popup xác nhận Hoàn thành xác minh -->
     <script src="quan_ly_boi_thuong_lth.js?v=20261106dvc11"></script>
     <!-- [ktlc] Không thụ lý KTL_01: Chuyển hồ sơ cho theo cấp đơn vị / số lần chuyển, tự tạo hồ sơ Xác định CQGQBT -->
-    <script src="quan_ly_boi_thuong_ktlc.js?v=20261116cdv"></script>
+    <script src="quan_ly_boi_thuong_ktlc.js?v=20261116ccq"></script>
     <!-- [tptl] Thành phần tham gia thương lượng: 1. Cơ quan, tổ chức (thành phần bắt buộc theo Cấp đơn vị / Lĩnh vực, Không tham gia + Lý do; thành phần khác), 2. Người yêu cầu bồi thường / người đại diện / người bảo vệ quyền lợi ích hợp pháp (đặt sau lth, ktlc) -->
     <script src="quan_ly_boi_thuong_tptl.js?v=20261116cdv"></script>
     <!-- [nbth] Người bị thiệt hại Cá nhân/Tổ chức, địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại; bắt buộc khi trình Thông báo thụ lý (đặt trước cdpd) -->
@@ -24965,7 +24965,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <!-- [cdpd] Tạo yêu cầu - Cán bộ chủ động phục hồi danh dự khi có đủ thông tin: form tối thiểu, trình Thông báo tổ chức thực hiện phục hồi danh dự (chỉ Tải lên từ máy / Ký ngoài) -->
     <script src="btnn_lanh_dao_actions.js?v=20261112vt2"></script>
     <script src="btnn_phan_cong_ky_duyet.js?v=20261113vt5"></script>
-    <script src="quan_ly_boi_thuong_ccq.js?v=20261112sn1"></script>
+    <script src="quan_ly_boi_thuong_ccq.js?v=20261117nld"></script>
     <script src="quan_ly_boi_thuong_cdpd.js?v=20261116vv2"></script>
     <!-- [dgq] Dừng giải quyết (Mẫu 05/BTNN): popup trình ký Thông báo dừng giải quyết, khối Thông tin dừng giải quyết, dữ liệu mẫu BT-2026-541..544 (đặt sau dcgq, hdcv) -->
     <script src="quan_ly_boi_thuong_dgq.js?v=20261112sn1"></script>

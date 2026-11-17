@@ -283,7 +283,7 @@
 
     <div id="toast" class="toast-notif"></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261112vt2"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261117gap"></script>
     <!-- Màn Ký duyệt / Từ chối dùng chung (Xác định CQGQBT): bố cục 2 vùng + khối Tài liệu đính kèm chỉ đọc -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
@@ -731,7 +731,7 @@
             document.getElementById('kDetail').value = '';
             document.getElementById('kContent').value = '';
             ['kReasonErr', 'kUnitErr', 'kContentErr'].forEach(id => document.getElementById(id).style.display = 'none');
-            // Radio 03 tùy chọn: Chuyển Bộ Tư pháp / Chuyển Sở Tư pháp (Sở Tư pháp quản lý xác định theo cây đơn vị) / Chuyển trực tiếp tới Cơ quan giải quyết bồi thường
+            // Radio theo Cấp đơn vị: Bộ Tư pháp (Trung ương) hoặc Sở Tư pháp quản lý (Tỉnh, Xã), kèm Chuyển trực tiếp tới Cơ quan giải quyết bồi thường
             ktlTree = WF.mountKtlTransfer(document.getElementById('kUnitTree'), { rec, name: 'kMode', treeInputId: 'kUnit', onChange: () => { document.getElementById('kUnitErr').style.display = 'none'; } });
             toggleKtlTransfer();
             openOverlay('ktlOverlay');
