@@ -50,7 +50,7 @@
                 // 06/11/2026 (nhanhl2): chỉ Lãnh đạo Sở đã ký nháy ở Cấp 2 của lần trình này nhận thông báo, không phải mọi Lãnh đạo Sở (khớp SRS quy tắc 14)
                 var cap2 = r.submit && Array.isArray(r.submit.levels) ? r.submit.levels.filter(function (l) { return l.level === 2; })[0] : null;
                 var guiBo = r.status === 'Đã gửi BTP' && ((vt === 'ld_so' && !!cap2 && cap2.leaderId === UID_SO.ld_so) || (vt === 'cb_stp' && (!r.preparer || r.preparer.userId === UID_SO.cb_stp)));
-                if (guiBo) them('fa-paper-plane', '#ECFDF5', '#047857', 'Báo cáo công tác BTNN ' + nam(r) + ' của ' + esc(r.unitName) + ' <b>đã được Lãnh đạo UBND tỉnh ký số và gửi Bộ Tư pháp</b>.', (r.issued && r.issued.at) || r.sentAt, SO, mo, 'Đã gửi Bộ Tư pháp', true);
+                if (guiBo) them('fa-paper-plane', '#ECFDF5', '#047857', 'Báo cáo công tác BTNN ' + nam(r) + ' của ' + esc(r.unitName) + ' <b>đã được Lãnh đạo cấp cuối ký số và gửi Bộ Tư pháp</b>.', (r.issued && r.issued.at) || r.sentAt, SO, mo, 'Đã gửi Bộ Tư pháp', true);
                 else if (choKy(r) && UID_SO[vt]) {
                     var l = r.submit.levels[r.submit.current];
                     if (l && l.leaderId === UID_SO[vt]) them('fa-file-signature', '#F5F3FF', '#7C3AED', biTraVe(r)

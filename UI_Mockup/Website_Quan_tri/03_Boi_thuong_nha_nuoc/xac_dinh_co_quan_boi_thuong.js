@@ -1925,7 +1925,7 @@ function showFormScreen(id = null, mode = null) {
             title.innerHTML = `<i class="fa-solid fa-file-pen"></i> SỬA THÔNG TIN HỒ SƠ YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`;
             if (submitBtn) submitBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Lưu`;
         }
-        setReceiveMethodField(BTNN_WF.normalizeReceiveMethod(item.hinhThucTiepNhan));
+        setReceiveMethodField(BTNN_WF.normalizeReceiveMethod(item.hinhThucTiepNhan), xdDvcCode(item));
         document.getElementById('formLinhVuc').value = item.linhVuc;
         document.getElementById('formNYCName').value = item.nycName || '';
         // Loại người yêu cầu trước (danh sách Tư cách lọc theo Loại), sau đó chọn Tư cách của hồ sơ
@@ -1989,14 +1989,43 @@ function showFormScreen(id = null, mode = null) {
     toggleNbthBlock();
 }
 
-// Hình thức tiếp nhận (DM_25): hồ sơ đến từ Tiếp nhận hồ sơ, mặc định theo giá trị đã tiếp nhận, cho phép điều chỉnh trong đủ các giá trị DM_25
-function setReceiveMethodField(value) {
+// [dvc13] Mã hồ sơ DVC của hồ sơ (nguồn Dịch vụ công hoặc kế thừa khi chuyển cơ quan); hồ sơ khác: rỗng
+function xdDvcCode(item) {
+    return (item && window.BTNN_WF && BTNN_WF.dvcCodeOfClaim) ? (BTNN_WF.dvcCodeOfClaim(item) || '') : '';
+}
+// [dvc13] Hình thức tiếp nhận hiển thị: hồ sơ có Mã hồ sơ DVC cố định Dịch vụ công; còn lại theo dữ liệu (DM_25)
+function xdHinhThucOf(item) {
+    const M = BTNN_WF.RECEIVE_METHODS;
+    return xdDvcCode(item) ? M.MOI_TRUONG_SO : (BTNN_WF.normalizeReceiveMethod(item && item.hinhThucTiepNhan) || M.TRUC_TIEP);
+}
+// [dvc13] Cột Hình thức tiếp nhận của lưới: badge; hồ sơ có Mã hồ sơ DVC: dòng phụ Mã hồ sơ DVC (chữ nhỏ màu xám)
+function xdHinhThucCellHtml(item) {
+    const M = BTNN_WF.RECEIVE_METHODS, h = xdHinhThucOf(item), dc = xdDvcCode(item);
+    const cls = h === M.MOI_TRUONG_SO ? 'badge-success' : (h === M.BUU_CHINH ? 'badge-warning' : 'badge-draft');
+    return `<span class="badge ${cls}" style="white-space:normal;">${escapeHtml(h)}</span>`
+        + (dc ? `<div style="font-size:11.5px; color:var(--text-muted); margin-top:4px; white-space:nowrap;" title="Mã hồ sơ DVC">${escapeHtml(dc)}</div>` : '');
+}
+
+// Hình thức tiếp nhận (DM_25): mặc định theo giá trị đã tiếp nhận, cho phép điều chỉnh Trực tiếp / Qua dịch vụ bưu chính;
+// [dvc13] hồ sơ có Mã hồ sơ DVC: cố định Dịch vụ công, chỉ đọc; không chọn tay Dịch vụ công cho hồ sơ khác
+function setReceiveMethodField(value, dvcCode) {
     const sel = document.getElementById('formHinhThucTiepNhan');
     if (!sel) return;
-    const all = BTNN_WF.RECEIVE_METHOD_ORDER;
-    sel.innerHTML = all.map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}</option>`).join('');
-    sel.value = all.includes(value) ? value : BTNN_WF.RECEIVE_METHODS.TRUC_TIEP;
+    const M = BTNN_WF.RECEIVE_METHODS;
+    // [dvc13] Mã hồ sơ DVC (chỉ đọc): chỉ hiển thị khi hồ sơ có mã
+    { const g = document.getElementById('formDvcCodeGroup'); if (g) g.style.display = dvcCode ? '' : 'none'; const i = document.getElementById('formDvcCode'); if (i) i.value = dvcCode || ''; }
+    if (dvcCode) {
+        sel.innerHTML = `<option value="${escapeAttr(M.MOI_TRUONG_SO)}">${escapeHtml(M.MOI_TRUONG_SO)}</option>`;
+        sel.value = M.MOI_TRUONG_SO;
+        sel.disabled = true;
+        sel.title = 'Hồ sơ có Mã hồ sơ DVC: Hình thức tiếp nhận cố định Dịch vụ công. Không cho phép thay đổi.';
+        return;
+    }
+    const opts = (BTNN_WF.FORM_RECEIVE_METHODS || [M.TRUC_TIEP, M.BUU_CHINH]).slice();
+    sel.innerHTML = opts.map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}</option>`).join('');
+    sel.value = opts.includes(value) ? value : M.TRUC_TIEP;
     sel.disabled = false;
+    sel.title = '';
 }
 
 function showProcessScreen(id) {
@@ -2134,7 +2163,9 @@ function renderXdProfileBody(item) {
     document.getElementById('dtCode').innerText = item.code;
     // Các trường chi tiết tiếp nhận & người yêu cầu
     document.getElementById('dtMaVuViec').innerText = item.maVuViec || '-';
-    document.getElementById('dtHinhThucTiepNhan').innerText = BTNN_WF.normalizeReceiveMethod(item.hinhThucTiepNhan) || BTNN_WF.RECEIVE_METHODS.TRUC_TIEP;
+    document.getElementById('dtHinhThucTiepNhan').innerText = xdHinhThucOf(item);
+    // [dvc13] Mã hồ sơ DVC: chỉ hiển thị khi hồ sơ có mã
+    { const dc = xdDvcCode(item); const row = document.getElementById('dtDvcCodeRow'); if (row) row.style.display = dc ? '' : 'none'; const v = document.getElementById('dtDvcCode'); if (v) v.innerText = dc; }
     document.getElementById('dtLinhVuc').innerText = item.linhVuc || '';
 
     // Người yêu cầu bồi thường: Tư cách → Loại người yêu cầu → trường theo Cá nhân / Tổ chức (không hiển thị Giới tính)
@@ -3071,6 +3102,7 @@ function resetFilters() {
     document.getElementById('filterCode').value = '';
     document.getElementById('filterCaseCode').value = '';
     document.getElementById('filterClaimCode').value = '';
+    document.getElementById('filterDvcCode').value = '';
     document.getElementById('filterName').value = '';
     document.getElementById('filterVictim').value = '';
     document.getElementById('filterLinhVuc').value = '';
@@ -3095,6 +3127,7 @@ function xdApplyTabDates() {
 function filterData() {
     const code = document.getElementById('filterCode').value.trim().toLowerCase();
     const claimCode = document.getElementById('filterClaimCode').value.trim().toLowerCase();
+    const dvcCodeQ = document.getElementById('filterDvcCode').value.trim().toLowerCase();
     const name = document.getElementById('filterName').value.trim().toLowerCase();
     const caseCode = document.getElementById('filterCaseCode').value.trim().toLowerCase();
     const victim = document.getElementById('filterVictim').value.trim().toLowerCase();
@@ -3116,6 +3149,7 @@ function filterData() {
         if (!xdInTab(xdTab, item)) return false;
         if (code && !item.code.toLowerCase().includes(code)) return false;
         if (claimCode && !(item.claimCode || '').toLowerCase().includes(claimCode)) return false;
+        if (dvcCodeQ && !xdDvcCode(item).toLowerCase().includes(dvcCodeQ)) return false;
         if (name && !(item.nycName || '').toLowerCase().includes(name)) return false;
         if (caseCode && !(item.maVuViec || '').toLowerCase().includes(caseCode)) return false;
         if (victim && !String(victimNameOf(item)).replace(/^-$/, '').toLowerCase().includes(victim)) return false;
@@ -3152,7 +3186,7 @@ function renderTable() {
     const totalPages = Math.ceil(total / pageSize);
 
     if (total === 0) {
-        tbody.innerHTML = `<tr><td colspan="13" style="text-align:center; color:var(--text-muted); padding:30px; font-style:italic;">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="14" style="text-align:center; color:var(--text-muted); padding:30px; font-style:italic;">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>`;
         document.getElementById('rangeText').innerText = "Hiển thị 0-0 trong số 0 bản ghi";
         renderPagination(0);
         return;
@@ -3180,6 +3214,7 @@ function renderTable() {
             <td style="font-size:12px; color:var(--text-muted);">${escapeHtml((item.linhVuc || '').replace("TRONG HOẠT ĐỘNG ", ""))}</td>
             <td style="font-size:12px; color:var(--text-muted);" title="${escapeAttr(hanhVi)}">${escapeHtml(hanhVi.length > 50 ? hanhVi.slice(0, 50) + "..." : hanhVi)}</td>
             <td style="text-align:center;">${escapeHtml(item.date || '')}</td>
+            <td style="text-align:center;">${xdHinhThucCellHtml(item)}</td>
             <td>${unitWithTypeHtml(item.rootUnitId, true)}</td>
             <td>${escapeHtml(item.chuTri ? BTNN_WF.userName(item.chuTri) : '--')}</td>
             <td style="text-align:center;">${renderYcbtCodesCell(item)}</td>

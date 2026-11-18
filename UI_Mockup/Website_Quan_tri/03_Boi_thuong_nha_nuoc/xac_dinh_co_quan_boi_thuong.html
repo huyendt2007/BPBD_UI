@@ -58,6 +58,10 @@
                     <input type="text" class="form-control" id="filterClaimCode" placeholder="Nhập mã hồ sơ GQBT...">
                 </div>
                 <div>
+                    <span class="form-label">Mã hồ sơ DVC</span>
+                    <input type="text" class="form-control" id="filterDvcCode" placeholder="Nhập mã hồ sơ DVC...">
+                </div>
+                <div>
                     <span class="form-label">Tên cá nhân/Tổ chức yêu cầu</span>
                     <input type="text" class="form-control" id="filterName" placeholder="Nhập tên cá nhân/tổ chức yêu cầu...">
                 </div>
@@ -146,6 +150,7 @@
                             <th style="min-width: 170px;">Lĩnh vực thiệt hại</th>
                             <th style="min-width: 200px;">Hành vi gây thiệt hại của người thi hành công vụ</th>
                             <th style="width: 130px; text-align: center;">Ngày tiếp nhận</th>
+                            <th style="width: 150px; text-align: center;">Hình thức tiếp nhận</th>
                             <th style="min-width: 170px;">Cơ quan xử lý</th>
                             <th style="min-width: 150px;">Cán bộ xử lý</th>
                             <th style="width: 140px; text-align: center;">Mã hồ sơ GQBT</th>
@@ -219,6 +224,11 @@
                         <option value="Trực tiếp">Trực tiếp</option>
                         <option value="Qua dịch vụ bưu chính">Qua dịch vụ bưu chính</option>
                     </select>
+                </div>
+                <!-- [dvc13] Mã hồ sơ DVC: chỉ hiển thị khi hồ sơ có mã (Hình thức tiếp nhận = Dịch vụ công), kế thừa từ hồ sơ gốc, chỉ đọc -->
+                <div class="form-group" id="formDvcCodeGroup" style="display: none;">
+                    <span class="form-label">Mã hồ sơ DVC</span>
+                    <input type="text" class="form-control" id="formDvcCode" disabled>
                 </div>
                 <div class="form-group">
                     <span class="form-label">Lĩnh vực phát sinh thiệt hại<span class="required">*</span></span>
@@ -822,6 +832,10 @@
                         <div class="detail-label">Mã vụ việc</div>
                         <div class="detail-value" style="font-weight: 700;" id="dtMaVuViec"></div>
                     </div>
+                    <div class="detail-row" id="dtDvcCodeRow" style="display:none;">
+                        <div class="detail-label">Mã hồ sơ DVC</div>
+                        <div class="detail-value" style="font-weight: 700;" id="dtDvcCode"></div>
+                    </div>
                     <div class="detail-row">
                         <div class="detail-label">Trạng thái xử lý</div>
                         <div class="detail-value" id="dtStatus"></div>
@@ -1240,12 +1254,14 @@
     </div>
 
     <!-- External javascript logic -->
-    <script src="btnn_luong_xu_ly.js?v=20261117nld"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261118dvc14"></script>
+    <!-- [dvc14] Gửi kết quả về Dịch vụ công khi ban hành văn bản Xác định CQGQBT (bước 22, 23, 24) -->
+    <script src="btnn_dvc_sync.js?v=20261118dvc14"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261112vt2"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261116tk1"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261118dvc14"></script>
     <script src="quan_ly_boi_thuong_ktlc.js?v=20261116ccq"></script>
     <script src="btnn_phan_cong_ky_duyet.js?v=20261113vt5"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>

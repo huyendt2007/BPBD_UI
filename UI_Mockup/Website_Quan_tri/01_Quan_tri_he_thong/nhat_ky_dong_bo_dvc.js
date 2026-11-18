@@ -6,11 +6,12 @@
  *   Gửi lại (chỉ bản tin Lỗi, giữ nguyên transaction_id, popup xác nhận); Kết xuất Excel.
  * - Thông báo hiển thị trực tiếp đầu danh sách (không dùng toast).
  * - Dữ liệu mẫu gắn với hồ sơ Nguồn hồ sơ = Dịch vụ công của trang Giải quyết yêu cầu bồi thường; lưu localStorage theo phiên bản NKDV_SEED_VER.
+ * - [dvc14] 20 bước (thêm bước 21 Chuyển CQGQBT, 22 - 24 Xác định CQGQBT); Mã hồ sơ XD- mở chi tiết tại trang Xác định cơ quan giải quyết bồi thường.
  */
-var NKDV_SEED_VER = '20261106dvc11';
+var NKDV_SEED_VER = '20261118dvc14';
 var NKDV_KEY = 'btnn_dvc_sync_log';
 var NKDV_KEY_VER = 'btnn_dvc_sync_log_ver';
-// [dvc11] 16 bước theo Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.1 (thứ tự theo luồng);
+// [dvc14] 20 bước theo Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.1 (thứ tự theo luồng);
 // số bước cố định; không sử dụng số 8 (Quyết định hủy), 9 (Quyết định sửa chữa, bổ sung), 16 (Thông báo chi trả), 20 (Giải quyết lại)
 var NKDV_STEPS = [
     ['YEU_CAU_BO_SUNG', 'Thông báo về việc yêu cầu bổ sung hồ sơ yêu cầu bồi thường (Mẫu 03/BTNN)', 1],
@@ -28,13 +29,19 @@ var NKDV_STEPS = [
     ['THONG_BAO_PHUC_HOI_DANH_DU', 'Thông báo về việc tổ chức thực hiện phục hồi danh dự (Mẫu 26/BTNN)', 15],
     ['Y_KIEN_TU_CHOI_PHUC_HOI_DANH_DU', 'Ý kiến từ chối phục hồi danh dự (vụ việc chỉ yêu cầu phục hồi danh dự)', 17],
     ['Y_KIEN_DE_NGHI_CHUA_THUC_HIEN_PHDD', 'Ý kiến đề nghị chưa thực hiện phục hồi danh dự (vụ việc chỉ yêu cầu phục hồi danh dự)', 18],
-    ['VU_VIEC_HOAN_THANH', 'Hoàn thành phục hồi danh dự (vụ việc chỉ yêu cầu phục hồi danh dự)', 19]
+    ['VU_VIEC_HOAN_THANH', 'Hoàn thành phục hồi danh dự (vụ việc chỉ yêu cầu phục hồi danh dự)', 19],
+    ['CHUYEN_CQGQBT', 'Văn bản chuyển hồ sơ sang cơ quan giải quyết bồi thường khác', 21],
+    // [dvc14] Xác định CQGQBT: hồ sơ XD- có Mã hồ sơ DVC (Hình thức tiếp nhận Dịch vụ công)
+    ['KET_QUA_XDCQ', 'Văn bản kết quả xác định cơ quan giải quyết bồi thường', 22],
+    ['XDCQ_YEU_CAU_BO_SUNG', 'Văn bản yêu cầu bổ sung hồ sơ (Xác định cơ quan giải quyết bồi thường)', 23],
+    ['XDCQ_KHONG_THU_LY', 'Văn bản không thụ lý (Xác định cơ quan giải quyết bồi thường)', 24]
 ];
 var NKDV_CASE = {
     CU_NGUOI_GIAI_QUYET: 'Cử người giải quyết bồi thường', XAC_MINH_THIET_HAI: 'Xác minh thiệt hại', THUONG_LUONG: 'Thương lượng',
     CHO_BAN_HANH_QD: 'Chờ ban hành QĐ', CHO_CHI_TRA: 'Chờ chi trả', HOAN_THANH: 'Hoàn thành', DANG_PHUC_HOI_DANH_DU: 'Đang phục hồi danh dự',
     HOAN_GIAI_QUYET: 'Hoãn giải quyết', TAM_DINH_CHI: 'Tạm đình chỉ', DINH_CHI_GIAI_QUYET: 'Đình chỉ giải quyết', DUNG_GIAI_QUYET: 'Dừng giải quyết',
-    KHONG_THU_LY: 'Không thụ lý', YEU_CAU_BO_SUNG: 'Yêu cầu bổ sung', TU_CHOI_PHUC_HOI_DANH_DU: 'Từ chối phục hồi danh dự', HOAN_PHUC_HOI_DANH_DU: 'Hoãn phục hồi danh dự'
+    KHONG_THU_LY: 'Không thụ lý', YEU_CAU_BO_SUNG: 'Yêu cầu bổ sung', TU_CHOI_PHUC_HOI_DANH_DU: 'Từ chối phục hồi danh dự', HOAN_PHUC_HOI_DANH_DU: 'Hoãn phục hồi danh dự',
+    DA_CHUYEN_CQGQBT: 'Đã chuyển CQGQBT'
 };
 // [dvc11] Mã trạng thái DVC theo trạng thái vụ việc sau bước (Bảng trạng thái liên thông - mục 3.3); bỏ cơ chế gửi lại mã gần nhất
 var NKDV_DVC_NAME = { 2: 'Được tiếp nhận', 3: 'Không được tiếp nhận', 4: 'Đang xử lý', 5: 'Yêu cầu bổ sung', 8: 'Dừng xử lý', 9: 'Đã xử lý xong', 10: 'Đã trả kết quả' };
@@ -113,7 +120,9 @@ function nkdvSeed() {
         ['H48.12.2026.000437', 'API-20260904-000437', 'VVBT-2026-437', 'BT-2026-437', 'Sở Tư pháp Hà Nội', 'YEU_CAU_BO_SUNG', 'YEU_CAU_BO_SUNG', '30/10/2026 09:02:00', ['49/TB-STP', '30/10/2026', KS], 'Thong_bao_yeu_cau_bo_sung_BT-2026-437_da_ky.pdf', 198340, 'RETRYING', [[('30/10/2026 09:02:06'), 429, 'RATE_LIMITED', 'Vượt hạn mức lượt gọi/phút.']]],
         ['H48.12.2026.000544', 'API-20260905-000544', 'VVBT-2026-544', 'BT-2026-544', 'Sở Tư pháp Hà Nội', 'THONG_BAO_DUNG_GIAI_QUYET', 'DUNG_GIAI_QUYET', '24/10/2026 10:45:00', ['46/TB-STP', '24/10/2026', KS], 'Thong_bao_dung_giai_quyet_BT-2026-544_da_ky.pdf', 233019, 'SUCCESS', [ok('24/10/2026 10:45:09')]],
         ['H48.12.2026.000162', 'API-20260925-000162', 'VVBT-2026-470', 'BT-2026-062', 'UBND phường Ba Đình', 'THONG_BAO_PHUC_HOI_DANH_DU', 'DANG_PHUC_HOI_DANH_DU', '21/10/2026 16:05:00', ['12/TB-UBND', '21/10/2026', KS], 'Thong_bao_to_chuc_phuc_hoi_danh_du_BT-2026-062.pdf', 207455, 'SUCCESS', [ok('21/10/2026 16:05:12')]],
-        ['H48.12.2026.000103', 'API-20260810-000103', 'VVBT-2026-450', 'BT-2026-003-B', 'UBND phường Cầu Giấy', 'QUYET_DINH_GIAI_QUYET', 'CHO_CHI_TRA', '02/10/2026 09:00:00', ['18/QĐ-UBND', '02/10/2026', KS], 'QD_giai_quyet_boi_thuong_BT-2026-003-B_da_ky.pdf', 356998, 'SUCCESS', [ok('02/10/2026 09:00:15')]]
+        ['H48.12.2026.000103', 'API-20260810-000103', 'VVBT-2026-450', 'BT-2026-003-B', 'UBND phường Cầu Giấy', 'QUYET_DINH_GIAI_QUYET', 'CHO_CHI_TRA', '02/10/2026 09:00:00', ['18/QĐ-UBND', '02/10/2026', KS], 'QD_giai_quyet_boi_thuong_BT-2026-003-B_da_ky.pdf', 356998, 'SUCCESS', [ok('02/10/2026 09:00:15')]],
+        // [dvc14] Bước 22: Sở Tư pháp ban hành Kết quả xác định CQGQBT của hồ sơ XD- kế thừa Mã hồ sơ DVC (mã 4 Đang xử lý)
+        ['H48.12.2026.000168', 'API-20261009-000168', 'VVBT-2026-476', 'XD-2026-201', 'Sở Tư pháp TP. Hà Nội', 'KET_QUA_XDCQ', 'DA_CHUYEN_CQGQBT', '16/11/2026 15:20:00', ['52/TB-STP', '16/11/2026', KS], 'Van_ban_ket_qua_xac_dinh_CQGQBT_XD-2026-201_da_ky.pdf', 274380, 'SUCCESS', [ok('16/11/2026 15:20:12')]]
     ];
     return raw.map(function (r, i) {
         var seq = String(i + 1).padStart(3, '0');
@@ -225,6 +234,9 @@ var NKDV_PERM = (function () {
     return { resend: q !== 'xem', export: q !== 'xem' };
 })();
 var NKDV_GQ_URL = '../03_Boi_thuong_nha_nuoc/quan_ly_boi_thuong.html?id=';
+// [dvc14] Mã hồ sơ XD- (bước 22, 23, 24): mở chi tiết tại trang Xác định cơ quan giải quyết bồi thường
+var NKDV_XD_URL = '../03_Boi_thuong_nha_nuoc/xac_dinh_co_quan_boi_thuong.html?readonly=1&detail=';
+function nkdvDossierUrl(code) { return (/^XD-/i.test(code || '') ? NKDV_XD_URL : NKDV_GQ_URL) + encodeURIComponent(code || ''); }
 function nkdvRender() {
     var total = nkdvFiltered.length, pages = Math.max(1, Math.ceil(total / nkdvSize));
     if (nkdvPage > pages) nkdvPage = pages;
@@ -237,7 +249,7 @@ function nkdvRender() {
             + '<td style="text-align:center; white-space:nowrap;">' + nkdvE(m.sentAt) + '</td>'
             + '<td style="white-space:nowrap;">' + nkdvE(m.dvcCode) + '</td>'
             + '<td style="white-space:nowrap;">' + nkdvE(m.caseCode) + '</td>'
-            + '<td style="white-space:nowrap;"><a href="' + NKDV_GQ_URL + encodeURIComponent(m.dossierCode) + '" target="_blank" class="action-link">' + nkdvE(m.dossierCode) + '</a></td>'
+            + '<td style="white-space:nowrap;"><a href="' + nkdvDossierUrl(m.dossierCode) + '" target="_blank" class="action-link">' + nkdvE(m.dossierCode) + '</a></td>'
             + '<td>' + nkdvE(m.stepName) + '</td>'
             + '<td style="text-align:center;">' + nkdvE(m.caseStatusName) + '</td>'
             + '<td style="text-align:center;">' + nkdvBadge(m.result) + '</td>'
@@ -304,7 +316,7 @@ function nkdvOpen(id) {
             + nkdvF('Mã hồ sơ DVC', nkdvE(m.dvcCode))
             + nkdvF('Số tiếp nhận', nkdvE(m.receiptNo))
             + nkdvF('Mã vụ việc', nkdvE(m.caseCode))
-            + nkdvF('Mã hồ sơ', '<a class="action-link" target="_blank" href="' + NKDV_GQ_URL + encodeURIComponent(m.dossierCode) + '">' + nkdvE(m.dossierCode) + '</a>')
+            + nkdvF('Mã hồ sơ', '<a class="action-link" target="_blank" href="' + nkdvDossierUrl(m.dossierCode) + '">' + nkdvE(m.dossierCode) + '</a>')
             + nkdvF('Bước', nkdvE(m.stepName), 'ro-span-2')
             + nkdvF('Trạng thái vụ việc gửi', nkdvE(m.caseStatusName) + ' <span class="nkdv-code">' + nkdvE(m.caseStatus) + '</span>')
             + nkdvF('Trạng thái Dịch vụ công gửi', m.dvcStatusCode ? nkdvE(m.dvcStatusName) + ' <span class="nkdv-code">' + nkdvE(m.dvcStatusCode) + '</span>' : '---')

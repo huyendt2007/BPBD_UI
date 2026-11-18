@@ -146,7 +146,7 @@
     const RECEIVE_METHODS = { MOI_TRUONG_SO: 'Dịch vụ công', TRUC_TIEP: 'Trực tiếp', BUU_CHINH: 'Qua dịch vụ bưu chính' };
     RECEIVE_METHODS.DVC = RECEIVE_METHODS.MOI_TRUONG_SO; // tên cũ, giữ để các trang đang dùng không lỗi
     // [cdpd] Giá trị DM_25 do hệ thống gán (không có trong lựa chọn của form): Cán bộ chủ động phục hồi danh dự
-    RECEIVE_METHODS.CAN_BO_PHUC_HOI_DANH_DU = 'Cán bộ chủ động phục hồi danh dự khi có đủ thông tin';
+    RECEIVE_METHODS.CAN_BO_PHUC_HOI_DANH_DU = 'Cán bộ chủ động phục hồi danh dự'; // 18/11/2026 đổi tên (bỏ "khi có đủ thông tin")
     const RECEIVE_METHOD_ORDER = [RECEIVE_METHODS.MOI_TRUONG_SO, RECEIVE_METHODS.TRUC_TIEP, RECEIVE_METHODS.BUU_CHINH];
     const FORM_RECEIVE_METHODS = [RECEIVE_METHODS.TRUC_TIEP, RECEIVE_METHODS.BUU_CHINH];
     // [cdpd] Đủ 04 giá trị DM_25 theo thứ tự trên hệ thống (hiển thị/lọc); RECEIVE_METHOD_ORDER giữ 03 giá trị cho lựa chọn trên form
@@ -949,6 +949,18 @@
         list.slice().forEach(r => { if (isXdRec(r) && migrateXdRecord(r, list)) changed = true; });
         // Giải quyết YCBT: chuẩn hóa trạng thái cũ của hồ sơ luồng về 17 Trạng thái vụ việc
         list.forEach(r => { if (r && r.module === 'YCBT' && migrateYcbtRecord(r)) changed = true; });
+        // [dvc13] Hình thức tiếp nhận ban đầu Dịch vụ công: giữ cố định Dịch vụ công qua mọi lần chuyển cơ quan
+        // (hồ sơ có Mã hồ sơ DVC theo chuỗi chuyển: nguồn Dịch vụ công, hoặc hồ sơ chuyển đến từ hồ sơ đó)
+        {
+            const byCode = {};
+            list.forEach(r => { if (r && r.code) byCode[r.code] = r; });
+            list.forEach(r => {
+                if (!r) return;
+                let x = r, dvc = false; const seen = {};
+                while (x && !seen[x.code]) { seen[x.code] = 1; if (x.dvcDossierCode || normalizeSource(x.nguonHoSo) === SOURCES.DVC) { dvc = true; break; } x = x.transferFromCode ? byCode[x.transferFromCode] : null; }
+                if (dvc && r.hinhThucTiepNhan !== RECEIVE_METHODS.MOI_TRUONG_SO) { r.hinhThucTiepNhan = RECEIVE_METHODS.MOI_TRUONG_SO; changed = true; }
+            });
+        }
         // Hồ sơ mẫu nguồn Dịch vụ công đã phân công cán bộ (dữ liệu cũ dùng Mã hồ sơ = Mã vụ việc): sinh Mã hồ sơ BT-, giữ Mã vụ việc
         list.forEach(r => {
             if (!r || r.module !== 'YCBT' || !/^TN-DVC-/.test(r.seedKey || '') || !isVuViecCode(r.code) || [STATUS.CHO_PHAN_CONG, STATUS.DANG_PHAN_CONG].includes(r.status)) return;
@@ -1211,6 +1223,8 @@
         // Giá trị cũ Bộ phận Một cửa (đã bỏ khỏi DM_25): hồ sơ nộp trực tiếp
         if (/một cửa/i.test(s)) return RECEIVE_METHODS.TRUC_TIEP;
         if (/trực tiếp/i.test(s)) return RECEIVE_METHODS.TRUC_TIEP;
+        // [cdpd18] Tên cũ "... khi có đủ thông tin" -> Cán bộ chủ động phục hồi danh dự
+        if (/chủ động phục hồi danh dự/i.test(s)) return RECEIVE_METHODS.CAN_BO_PHUC_HOI_DANH_DU;
         return s;
     }
     function normalizeSource(v) {
@@ -1220,6 +1234,27 @@
         if (/chuyển/i.test(s)) return SOURCES.CHUYEN;
         if (/xác định/i.test(s)) return SOURCES.XDCQ;
         return SOURCES.TIEP_NHAN;
+    }
+    // [dvc12] Mã hồ sơ DVC (chốt 17/11/2026): hồ sơ nguồn Dịch vụ công (dvcDossierCode lưu khi nhận; dữ liệu mẫu chưa có thì sinh theo mã nhận ban đầu);
+    // hồ sơ chuyển cơ quan (Chuyển CQGQBT, Không thụ lý KTL_01, hồ sơ từ Xác định CQGQBT) kế thừa mã của hồ sơ đầu chuỗi (lần theo transferFromCode)
+    function dvcDossierCodeOf(rec) {
+        const seen = {};
+        let r = rec;
+        while (r && !seen[r.code]) {
+            seen[r.code] = 1;
+            if (r.dvcDossierCode) return r.dvcDossierCode;
+            if (normalizeSource(r.nguonHoSo) === SOURCES.DVC) return 'H48.12.2026.' + (String(r.receptionCode || r.code || '').match(/\d+/g) || ['0']).join('').slice(-6).padStart(6, '0');
+            if (!r.transferFromCode) break;
+            r = getRecord(r.transferFromCode);
+        }
+        return '';
+    }
+    // [dvc12] Mã hồ sơ DVC của hồ sơ Giải quyết YCBT (claim): mã lưu trên hồ sơ, hoặc theo hồ sơ luồng cùng mã, hoặc theo chính hồ sơ (nguồn / chuỗi chuyển)
+    function dvcCodeOfClaim(c) {
+        if (!c) return '';
+        if (c.dvcDossierCode) return c.dvcDossierCode;
+        const rec = c.code ? getRecord(c.code) : null;
+        return (rec && dvcDossierCodeOf(rec)) || dvcDossierCodeOf(c);
     }
     // ---------------- Mã vụ việc toàn trình ----------------
     // - Mã vụ việc VVBT-yyyy-xxx: sinh 01 lần tại điểm vào đầu tiên (Tiếp nhận mới, Dịch vụ công,
@@ -1957,6 +1992,7 @@
                 rec.status = STATUS.KHONG_THU_LY;
                 rec.ktlReason = a.reason || a.content || '';
             }
+            xdDvcSend(rec, a.kind, a.signDoc ? a.signDoc.signedFile : '', a.signDoc ? a.signDoc.method : 'Ký số trên hệ thống'); // [dvc14]
             const sdNote = a.signDoc ? ` ${a.signDoc.method === 'Ký ngoài' ? 'Văn bản ký ngoài' : 'Văn bản đã ký số'}: ${a.signDoc.signedFile}.` : '';
             addHistory(rec, 'Ký duyệt', `Ký duyệt cấp cuối (${unitName(unitId)}) - đã ký số văn bản: ${a.kind}.${sdNote}${extraNote} Hồ sơ chuyển [${rec.status}].${note ? ' Ý kiến: ' + note : ''}`, null, { kind: a.kind });
         } else {
@@ -2217,8 +2253,29 @@
             rec.ktlReason = reason || '';
             addHistory(rec, 'Ban hành Không thụ lý (Ký ngoài)', `Văn bản đã ký ngoài: ${file}.`);
         }
+        xdDvcSend(rec, kind, file, 'Ký ngoài'); // [dvc14]
         upsertRecord(rec);
         return { ok: true, record: rec, ycbtCode };
+    }
+
+    // [dvc14] Xác định CQGQBT - hồ sơ có Mã hồ sơ DVC (Hình thức tiếp nhận Dịch vụ công): ban hành văn bản thì gửi kết quả về Dịch vụ công
+    // Bước 22 Kết quả xác định CQGQBT (mã 4, nội dung ghi CQGQBT đã xác định), 23 Yêu cầu bổ sung (mã 5), 24 Không thụ lý (mã 8);
+    // ghi bản tin qua btnn_dvc_sync.js (trang chưa nạp btnn_dvc_sync.js: bỏ qua). Hồ sơ không có Mã hồ sơ DVC: không gửi.
+    function xdDvcSend(rec, kind, file, method) {
+        try {
+            const D = window.BTNN_DVC;
+            const key = rec ? dvcDossierCodeOf(rec) : '';
+            if (!D || !key) return null;
+            const isKq = kind === KIND_KQXD;
+            const step = isKq ? 'KET_QUA_XDCQ' : kind === 'Yêu cầu bổ sung' ? 'XDCQ_YEU_CAU_BO_SUNG' : 'XDCQ_KHONG_THU_LY';
+            const unit = unitName(getRootId(rec.rootUnitId) || rec.rootUnitId);
+            const target = isKq ? unitName(xdTargetUnitId(rec)) : '';
+            return D.record(Object.assign({}, rec, { agency: unit, dvcDossierCode: key }), step, {
+                caseStatusName: rec.status, processingUnit: unit,
+                content: isKq ? `Xác định ${target} là cơ quan giải quyết bồi thường; chuyển hồ sơ đến ${target} để giải quyết.` : '',
+                fileName: file || '', doc: { signingMethod: /ngoài/i.test(method || '') ? 'KY_NGOAI' : 'KY_SO' }
+            });
+        } catch (e) { return null; }
     }
 
     // ---------------- Xác định CQGQBT: lịch sử Yêu cầu bổ sung / Bị trả lại ----------------
@@ -4016,7 +4073,7 @@
         receptionPendingItems, receptionPendingCount, receptionSeeded,
         CATALOG_TYPE, STATUS, SUBMIT_KINDS, APPROVAL_KINDS, KTL_CATALOG_TYPE, DEFAULT_KTL_REASONS, XD_AUTHORITY_UNITS, REQUEST_TYPE_XD, REQUEST_TYPE_YCBT,
         FLOW_TYPES, FLOW_TYPE_NAMES, FLOW_TYPE_ORDER, SOURCES, RECEIVE_METHODS, RECEIVE_METHOD_CATALOG, RECEIVE_METHOD_ORDER, RECEIVE_METHOD_ALL, FORM_RECEIVE_METHODS, UBND_TINH_STP, ubndTinhOfStp,
-        flowRootIds, flowTypeOf, normalizeReceiveMethod, normalizeSource, nextVuViecCode, uniqueVuViecFor, isVuViecCode, linkVuViec, unlinkVuViec, vuViecOf, listVuViec, xdViewOnlyStpRoots, isXdViewOnlyUser,
+        flowRootIds, flowTypeOf, normalizeReceiveMethod, normalizeSource, dvcDossierCodeOf, dvcCodeOfClaim, nextVuViecCode, uniqueVuViecFor, isVuViecCode, linkVuViec, unlinkVuViec, vuViecOf, listVuViec, xdViewOnlyStpRoots, isXdViewOnlyUser,
         ORG_UNITS, USERS, DEFAULT_REQUEST_TYPES, KIND_KP_TB, KIND_KP_QDTU,
         getUnit, unitName, isStpUnit, ADDR_WARDS, agencyAddress, getChildren, getRootId, getAncestors, getDescendants, getRootUnits, unitTreeLabel, searchUnits, mountUnitTree,
         getUser, userName, userLabel, usersInUnitTree,

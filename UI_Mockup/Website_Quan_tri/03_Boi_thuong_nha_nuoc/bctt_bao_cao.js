@@ -630,7 +630,7 @@
     }
     function kySoData(r, k) {
         k = k || r.kySo; if (!k) return null;
-        return { m41: k.m41, m42: k.m42, m43: k.m43, m04: k.m04, signDate: k.signDate, sign: k.sign, kySo: true, title: r.unitName + ' - năm ' + r.year + ' - bản Lãnh đạo UBND tỉnh ký ngày ' + (k.at || '--') };   // 06/11/2026 (nhanhl2, QDDA_020)
+        return { m41: k.m41, m42: k.m42, m43: k.m43, m04: k.m04, signDate: k.signDate, sign: k.sign, kySo: true, title: r.unitName + ' - năm ' + r.year + ' - bản Lãnh đạo cấp cuối ký ngày ' + (k.at || '--') };   // 06/11/2026 (nhanhl2, QDDA_020)
     }
     // 04/11/2026 (nhanhl2): báo cáo bị Bộ trả lại - Lãnh đạo Sở phân công Phòng (`Bị trả lại` sang `Đang phân công`), Lãnh đạo Phòng giao Cán bộ
     // (`Đang phân công` sang `Yêu cầu điều chỉnh`); chỉ Cán bộ được giao mới cập nhật, trình ký lại
@@ -1779,7 +1779,7 @@
         var k = 'sau-gui|' + r.id + '|' + r.capNhatSauGui.at;
         return '<div class="bctt-sau-gui' + tgLop(k) + '" data-tg="' + esc(k) + '"><i class="fa-solid fa-circle-info"></i><div style="flex:1;min-width:0;"><div class="tg-dau"><b>Số liệu đã được cập nhật sau khi gửi Bộ Tư pháp</b>' + tgNut(k) + '</div>'
             + '<div class="tg-than">Lần cập nhật gần nhất: ' + esc(r.capNhatSauGui.at) + ' - ' + esc(r.capNhatSauGui.by)
-            + '. Tệp báo cáo vẫn là bản Lãnh đạo UBND tỉnh ký ngày ' + esc((r.kySo && r.kySo.at) || '--') + '. Bộ Tư pháp lấy số liệu đang lưu khi đồng bộ số liệu báo cáo tổng hợp.</div></div></div>';
+            + '. Tệp báo cáo vẫn là bản Lãnh đạo cấp cuối ký ngày ' + esc((r.kySo && r.kySo.at) || '--') + '. Bộ Tư pháp lấy số liệu đang lưu khi đồng bộ số liệu báo cáo tổng hợp.</div></div></div>';
     }
     // Khối «Các bản đã ký trước»: bản đã ký được lưu lại khi Cán bộ Sở trình phê duyệt lại báo cáo đã gửi
     function banKyTruocHtml(r) {
@@ -1802,7 +1802,7 @@
         var html = '<div class="bctt-modal" style="width:660px;"><div class="bctt-mh"><div><div class="tt">Lưu và Trình phê duyệt lại</div><div class="st">Báo cáo công tác bồi thường nhà nước năm ' + r.year + ' - ' + esc(PERIODS[r.period].label) + '</div></div><button class="bctt-x" data-close>&times;</button></div>'
             + '<div class="bctt-mb"><div class="bctt-alert" style="margin:0;"><b class="t"><i class="fa-solid fa-triangle-exclamation"></i> Báo cáo sẽ phải ký duyệt lại</b>Báo cáo đã gửi Bộ Tư pháp. Khi trình phê duyệt lại:</div>'
             + '<ul style="margin:10px 0 0;padding-left:20px;line-height:1.7;"><li>Tệp báo cáo được lập lại theo số liệu mới và chưa có chữ ký.</li>'
-            + '<li>Bản Lãnh đạo UBND tỉnh ký ngày ' + esc(k.at || '--') + (k.signer ? ' (' + esc(k.signer) + ')' : '') + ' được lưu vào khối «Các bản đã ký trước» để xem lại.</li>'
+            + '<li>Bản Lãnh đạo cấp cuối ký ngày ' + esc(k.at || '--') + (k.signer ? ' (' + esc(k.signer) + ')' : '') + ' được lưu vào khối «Các bản đã ký trước» để xem lại.</li>'
             // 16/11/2026 (câu hỏi 5, QDDA_023): báo cáo đi lại các cấp Cán bộ tự thiết lập, không cố định 03 cấp; chữ «chọn Hủy bỏ» theo SRS MH03 chức năng 13
             + '<li>Báo cáo trở về trạng thái chưa gửi Bộ Tư pháp cho tới khi được ký duyệt lại ở cấp cuối và ban hành. Trong thời gian này, Bộ Tư pháp không lấy số liệu của báo cáo khi đồng bộ số liệu báo cáo tổng hợp.</li></ul>'
             + '<p style="margin-top:8px;">Nếu chọn «Hủy bỏ» ở cửa sổ Gửi phê duyệt, số liệu và trạng thái báo cáo giữ nguyên như trước. Bạn có muốn tiếp tục?</p></div>'
@@ -1826,7 +1826,7 @@
         var html = '<div class="bctt-modal" style="width:620px;"><div class="bctt-mh"><div><div class="tt">Lưu báo cáo đã gửi Bộ Tư pháp</div><div class="st">Báo cáo công tác bồi thường nhà nước năm ' + r.year + ' - ' + esc(PERIODS[r.period].label) + '</div></div><button class="bctt-x" data-close>&times;</button></div>'
             + '<div class="bctt-mb"><div class="bctt-alert" style="margin:0;"><b class="t"><i class="fa-solid fa-triangle-exclamation"></i> Báo cáo đã gửi Bộ Tư pháp</b>Khi lưu:</div>'
             + '<ul style="margin:10px 0 0;padding-left:20px;line-height:1.7;"><li>Số liệu mới được lưu, báo cáo vẫn ở trạng thái Đã gửi BTP.</li>'
-            + '<li>Tệp báo cáo và tài liệu kèm theo giữ nguyên bản Lãnh đạo UBND tỉnh ký ngày ' + esc(k.at || '--') + ', không thể hiện số liệu mới.</li>'
+            + '<li>Tệp báo cáo và tài liệu kèm theo giữ nguyên bản Lãnh đạo cấp cuối ký ngày ' + esc(k.at || '--') + ', không thể hiện số liệu mới.</li>'
             + '<li>Bộ Tư pháp lấy số liệu mới khi đồng bộ số liệu báo cáo tổng hợp.</li></ul>'
             + '<p style="margin-top:8px;">Muốn tệp báo cáo thể hiện số liệu mới, dùng nút «Lưu và Trình phê duyệt lại». Bạn có muốn lưu?</p></div>'
             + '<div class="bctt-mf"><button class="btn btn-secondary" data-close>Hủy bỏ</button><button class="btn btn-primary" id="bcttLuuSauGuiOk"><i class="fa-solid fa-floppy-disk"></i> Lưu</button></div></div>';
@@ -3207,6 +3207,15 @@
         var b = TL_H + TL_GAP, i = Math.max(0, Math.min(TL_TRANG - 1, Math.floor((c.y + c.h / 2) / b))), top = i * b;
         c.y = Math.max(top, Math.min(c.y, top + TL_H - c.h)); c.trang = i + 1; return c;
     }
+    // 18/11/2026 (nhanhl2): chỉ ô ký số và ô Dấu phải gọn trong 01 trang, áp dụng cả biểu mẫu do Hệ thống sinh (mỗi trang cao bằng khổ A4 theo bề ngang)
+    // và tệp tải lên. Ô ký nháy, ảnh chữ ký chuyên viên đặt ở trang bất kỳ, được đè lên chỗ nối giữa hai trang (chỉ ghi số trang chứa cạnh trên).
+    function kepTrang(c, el) {
+        if (sub.nguon === 'tl') return tlKep(c);
+        var cao = Math.max(1, Math.round(el.offsetWidth * 1.4142)), tong = Math.max(1, Math.ceil((el.offsetHeight - 4) / cao));
+        var i = Math.max(0, Math.min(tong - 1, Math.floor((c.y + c.h / 2) / cao))), top = i * cao, day = Math.min(el.clientHeight, top + cao);
+        c.y = Math.max(top, Math.min(c.y, day - c.h)); c.trang = i + 1; return c;
+    }
+    function trangCanhTren(c) { return sub.nguon === 'tl' ? Math.max(1, Math.min(TL_TRANG, Math.floor(c.y / (TL_H + TL_GAP)) + 1)) : null; }
     // [tl1] Trang đang xem của tệp tải lên: trang chứa tâm phần văn bản đang nhìn thấy
     function tlTrangXem() { var c = ktGiuaKhung(); return Math.max(0, Math.min(TL_TRANG - 1, Math.floor((c.y + c.h / 2) / (TL_H + TL_GAP)))); }
     // Vị trí mặc định của ô ký nháy và ảnh chữ ký chuyên viên trên một biểu mẫu: dựng biểu mẫu ngoài màn hình để đo chỗ Người lập biểu và kích thước trang
@@ -3412,7 +3421,7 @@
                 };
                 var up = function () {
                     bx.classList.remove('keo'); document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up);
-                    var pd0 = sub.bh.dau[sub.fid]; if (laTep && pd0) { var q = tlKep({ x: pd0.x, y: pd0.y, w: d, h: d }); sub.bh.dau[sub.fid] = { x: q.x, y: q.y }; bx.style.top = q.y + 'px'; }   // [tl4] ô Dấu gọn trong 01 trang của tệp
+                    var pd0 = sub.bh.dau[sub.fid]; if (pd0) { var q = kepTrang({ x: pd0.x, y: pd0.y, w: d, h: d }, trang); sub.bh.dau[sub.fid] = { x: q.x, y: q.y }; bx.style.top = q.y + 'px'; }   // [tl4] ô Dấu gọn trong 01 trang (18/11/2026: cả biểu mẫu do Hệ thống sinh)
                 };
                 document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
             });
@@ -3460,7 +3469,7 @@
                         else { c.x = Math.max(0, Math.min(Math.round(ox + ev.clientX - sx), trang.clientWidth - c.w)); c.y = Math.max(0, Math.min(Math.round(oy + ev.clientY - sy), trang.clientHeight - c.h)); }
                         capNhatToaDo();
                     };
-                    var up = function () { bx.classList.remove('keo'); document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); if (laTep) { tlKep(c); capNhatToaDo(); } };   // [tl1] ô ký gọn trong 01 trang
+                    var up = function () { bx.classList.remove('keo'); document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); if (ktLaCuoi(k)) { kepTrang(c, trang); capNhatToaDo(); } else if (laTep) { c.trang = trangCanhTren(c); } };   // 18/11/2026: chỉ ô ký số gọn trong 01 trang
                     document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
                 });
             });
@@ -3538,7 +3547,7 @@
             var nCap = sub.levels.length;
             sub.levels.forEach(function (l, i) {
                 var cb = theBox.querySelector('[data-cb="' + i + '"]'), er = theBox.querySelector('[data-cap-err="' + i + '"]');
-                var msg = !l.leaderId ? 'Đây là trường bắt buộc' : (i === nCap - 1 && !isBtpReport(r) && !laLdUbnd(l.leaderId) ? 'Lãnh đạo ở cấp cuối phải là Lãnh đạo Ủy ban nhân dân tỉnh.' : '');
+                var msg = !l.leaderId ? 'Đây là trường bắt buộc' : '';   // 18/11/2026 (nhanhl2): cấp cuối không bắt buộc là Lãnh đạo UBND tỉnh, bỏ kiểm tra
                 cb.classList.toggle('invalid', !!msg); er.textContent = msg || 'Đây là trường bắt buộc'; er.classList.toggle('on', !!msg);
                 if (msg && !first) first = cb.querySelector('.bctt-cb-box');
             });
@@ -3698,12 +3707,12 @@
     function createBtpReport(year, period) {
         // 06/11/2026 (SRS MH01 chức năng 3 TH1): cùng câu thông báo với Popup Tạo báo cáo tổng hợp; tải lại danh sách
         if (btpReportOf(year, period)) { toast('Đã có báo cáo tổng hợp của kỳ ' + PERIODS[period].label + ' năm ' + year + '.', 'error'); showList(); return; }
-        if (!issuedOf(year, period).length) { toast('Chưa có đơn vị nào gửi báo cáo của kỳ này.', 'error'); return; }
+        // 18/11/2026 (nhanhl2): lập được cả khi kỳ chưa có đơn vị nào Đã gửi BTP (số liệu 03 biểu mẫu trống, lấy sau bằng Đồng bộ số liệu từ các đơn vị)
         var r = newBtpReport(year, period, ST.DANG, DB.reports);
         var a = btpAuto(DB.reports, year, period); a.src.snap = chupDonVi(issuedOf(year, period));
         applyAuto(r, a); // bỏ phần minh họa ô đã sửa của dữ liệu mẫu
         r.history = [{ at: nowText(), actor: me().name, action: 'Lập báo cáo tổng hợp', note: 'Tổng hợp từ ' + r.src.n + ' báo cáo đã gửi (' + r.src.n + '/' + PROVINCES.length + ' đơn vị).' }];
-        DB.reports.push(r); save(); toast('Đã lập báo cáo tổng hợp từ ' + r.src.n + ' đơn vị đã gửi.');
+        DB.reports.push(r); save(); toast(r.src.n ? 'Đã lập báo cáo tổng hợp từ ' + r.src.n + ' đơn vị đã gửi.' : 'Đã lập báo cáo tổng hợp. Chưa có đơn vị nào gửi báo cáo của kỳ này.');
         showDetail(r.id, showList);
     }
     // Thao tác báo cáo của Bộ tại danh sách kỳ: thao tác chưa đủ điều kiện hiển thị mờ (disabled), kèm chú thích lý do
@@ -3722,7 +3731,7 @@
             + '<div class="bctt-mb"><div class="form-group" style="margin-bottom:12px;"><span class="form-label">Năm báo cáo<span style="color:red;">*</span></span><select class="form-control" id="bcttTYear"><option value="">-- Chọn năm báo cáo --</option>' + [y0 + 1, y0, y0 - 1, y0 - 2].map(function (v) { return '<option>' + v + '</option>'; }).join('') + '</select><div class="bctt-err" id="bcttTYearErr">Đây là trường bắt buộc</div></div>'
             + '<div class="form-group"><span class="form-label">Loại kỳ báo cáo<span style="color:red;">*</span></span><select class="form-control" id="bcttTPeriod"><option value="">-- Chọn loại kỳ báo cáo --</option>' + Object.keys(PERIODS).map(function (k) { return '<option value="' + k + '">' + PERIODS[k].label + '</option>'; }).join('') + '</select><div class="bctt-err" id="bcttTPeriodErr">Đây là trường bắt buộc</div></div>'
             // 06/11/2026 (SRS MH02): Mẫu 42/BTNN do Bộ tự nhập, không tổng hợp
-            + '<div class="form-hint" style="margin-top:10px;">Số liệu Mẫu 41/BTNN, Mẫu 43/BTNN và Mẫu số 04 (TT 08/2019) được tổng hợp từ báo cáo Đã gửi BTP của các đơn vị cùng kỳ. Mẫu 42/BTNN do Bộ Tư pháp tự nhập.</div></div>'
+            + '<div class="form-hint" style="margin-top:10px;">Số liệu Mẫu 41/BTNN, Mẫu 43/BTNN và Mẫu số 04 (TT 08/2019) được tổng hợp từ báo cáo Đã gửi BTP của các đơn vị cùng kỳ. Mẫu 42/BTNN do Bộ Tư pháp tự nhập. Kỳ chưa có đơn vị nào gửi vẫn lập được, số liệu 03 biểu mẫu được lấy khi đồng bộ số liệu từ các đơn vị.</div></div>'
             + '<div class="bctt-mf"><button class="btn btn-secondary" data-close>Hủy bỏ</button><button class="btn btn-success" id="bcttTOk"><i class="fa-solid fa-plus"></i> Tạo báo cáo</button></div></div>';
         openOv('bcttOv1', html); bindClose('bcttOv1');
         $('bcttTOk').onclick = function () {
@@ -3730,7 +3739,6 @@
             [['bcttTYear', y], ['bcttTPeriod', p]].forEach(function (x) { var bad = !x[1]; $(x[0]).classList.toggle('bctt-invalid', bad); $(x[0] + 'Err').classList.toggle('on', bad); if (bad && !first) first = $(x[0]); });
             if (first) { first.focus(); return; }
             if (btpReportOf(+y, p)) { toast('Đã có báo cáo tổng hợp của kỳ ' + PERIODS[p].label + ' năm ' + y + '.', 'error'); return; }
-            if (!issuedOf(+y, p).length) { toast('Chưa có đơn vị nào gửi báo cáo của kỳ này.', 'error'); return; }
             closeOv('bcttOv1'); createBtpReport(+y, p);
         };
     }

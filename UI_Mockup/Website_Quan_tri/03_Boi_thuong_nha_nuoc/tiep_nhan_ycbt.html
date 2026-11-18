@@ -126,6 +126,10 @@
             padding: 12px;
         }
 
+        .meta-grid.has-dvc {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+
         /* Form Tiếp nhận: bỏ khoảng trống thừa phía trên khi chưa có khối thông tin hồ sơ */
         #formMetaGrid[style*="none"] + .info-group-title { margin-top: 0; }
         /* Khối Người yêu cầu: Card form hiện đại, phân nhóm rõ ràng */
@@ -243,7 +247,8 @@
 
             .grid-4-cols,
             .grid-2,
-            .meta-grid {
+            .meta-grid,
+            .meta-grid.has-dvc {
                 grid-template-columns: 1fr;
             }
 
@@ -369,6 +374,10 @@
                         <input id="filterCode" class="form-control" placeholder="Nhập mã vụ việc...">
                     </div>
                     <div class="form-group">
+                        <span class="form-label">Mã hồ sơ DVC</span>
+                        <input id="filterDvcCode" class="form-control" placeholder="Nhập mã hồ sơ DVC...">
+                    </div>
+                    <div class="form-group">
                         <span class="form-label">Loại hồ sơ</span>
                         <select id="filterRequestType" class="form-control">
                             <option value="">Tất cả</option>
@@ -490,6 +499,10 @@
                     <div class="meta-item">
                         <label>Mã vụ việc</label>
                         <strong id="formCodeText" style="color:var(--primary-light);">Tự sinh sau khi lưu</strong>
+                    </div>
+                    <div class="meta-item" id="formDvcCodeItem" style="display:none;">
+                        <label>Mã hồ sơ DVC</label>
+                        <strong id="formDvcCodeText">--</strong>
                     </div>
                     <div class="meta-item">
                         <label>Thời điểm tiếp nhận</label>
@@ -992,7 +1005,7 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261112vt2"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261118dvc14"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261112vt2"></script>
     <script src="btnn_phan_cong_ky_duyet.js?v=20261113vt5"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
@@ -1559,6 +1572,15 @@
         function fromWfTime(value) {
             const p = String(value || "").split(" ");
             return p.length === 2 && p[0].includes(":") ? `${p[1]} ${p[0]}` : (value || "");
+        }
+        // [dvc12] Mã hồ sơ DVC: hồ sơ nguồn Dịch vụ công và hồ sơ kế thừa khi chuyển cơ quan; hồ sơ khác: rỗng
+        // [dvc13] Hình thức tiếp nhận hiển thị: hồ sơ có Mã hồ sơ DVC cố định Dịch vụ công; còn lại theo dữ liệu
+        function receiveMethodView(item) {
+            return dvcCodeOfItem(item) ? RECEIVE_METHODS.MOI_TRUONG_SO : (item.nopKenh || RECEIVE_METHODS.TRUC_TIEP);
+        }
+        function dvcCodeOfItem(item) {
+            if (!item || !BTNN_WF.dvcDossierCodeOf) return "";
+            return BTNN_WF.dvcDossierCodeOf(BTNN_WF.getRecord(item.code) || item) || "";
         }
         // Dòng hiển thị từ hồ sơ luồng (hồ sơ không thuộc danh sách tiếp nhận của cán bộ đang đăng nhập)
         function rowFromRecord(rec) {
@@ -2127,6 +2149,7 @@
 
         function getFilteredRows() {
             const code = normalize(getValue("filterCode"));
+            const dvcCode = normalize(getValue("filterDvcCode")); // [dvc12]
             const requestType = getValue("filterRequestType");
             const source = getValue("filterSource");
             const status = getValue("filterStatus");
@@ -2139,11 +2162,12 @@
             return getTabRows(receptionTab).filter(item => {
                 const itemDate = parseDate(item.receivedAt || item.date);
                 if (code && !normalize(item.maVuViec || item.code).includes(code) && !normalize(item.code).includes(code)) return false;
+                if (dvcCode && !normalize(dvcCodeOfItem(item)).includes(dvcCode)) return false;
                 if (status && (item.status || "Chờ phân công") !== status) return false;
                 if (requestType && (item.requestType || REQUEST_TYPE_YCBT) !== requestType) return false;
                 if (source && getSourceOf(item) !== source) return false;
                 if (requester && !normalize(item.nyc).includes(requester)) return false;
-                if (receiveMethod && (item.nopKenh || RECEIVE_METHODS.TRUC_TIEP) !== receiveMethod) return false;
+                if (receiveMethod && receiveMethodView(item) !== receiveMethod) return false;
                 if (fieldGroup && (item.fromWorkflow ? item.fieldGroupName !== getFieldGroupName(fieldGroup) : (item.fieldGroup || "") !== fieldGroup)) return false;
                 if (fromDate && itemDate && itemDate < fromDate) return false;
                 if (toDate && itemDate && itemDate > toDate) return false;
@@ -2205,7 +2229,7 @@
                             <td><strong>${escapeHtml(item.nyc || "--")}</strong></td>
                             <td>${escapeHtml(item.requestType || REQUEST_TYPE_YCBT)}</td>
                             <td><span class="badge ${getSourceBadge(source)}">${escapeHtml(source)}</span></td>
-                            <td><span class="badge ${getReceiveMethodBadge(item.nopKenh)}">${escapeHtml(item.nopKenh || RECEIVE_METHODS.TRUC_TIEP)}</span></td>
+                            <td><span class="badge ${getReceiveMethodBadge(receiveMethodView(item))}">${escapeHtml(receiveMethodView(item))}</span>${(() => { const dc = dvcCodeOfItem(item); return dc ? `<div class="muted" style="font-size:11.5px; font-weight:400; margin-top:4px; white-space:nowrap;" title="Mã hồ sơ DVC">${escapeHtml(dc)}</div>` : ""; })()}</td>
                             <td><span class="muted">${escapeHtml(item.fromWorkflow ? item.fieldGroupName : getFieldGroupName(item.fieldGroup))}</span></td>
                             <td style="text-align:center;">${escapeHtml(item.receivedAt || item.date || "--")}</td>
                             <td>${escapeHtml(item.receivedBy || "-")}</td>
@@ -2247,7 +2271,7 @@
         }
 
         function resetFilters() {
-            ["filterCode", "filterRequester"].forEach(id => setValue(id, ""));
+            ["filterCode", "filterDvcCode", "filterRequester"].forEach(id => setValue(id, ""));
             ["filterRequestType", "filterSource", "filterReceiveMethod", "filterFieldGroup", "filterStatus"].forEach(id => setValue(id, ""));
             initDates();
             currentPage = 1;
@@ -2467,6 +2491,11 @@
             const claimSource = getSourceOf(claim);
             document.getElementById("formSourceBadge").innerHTML = claim ? `<span class="badge ${getSourceBadge(claimSource)}">${escapeHtml(claimSource)}</span>` : "";
             setText("formCodeText", claim ? (claim.maVuViec || claim.code) : "Tự sinh sau khi lưu");
+            // [dvc12] Mã hồ sơ DVC: chỉ hiển thị khi hồ sơ có mã (nguồn Dịch vụ công hoặc kế thừa khi chuyển cơ quan)
+            const dvcCodeView = claim ? dvcCodeOfItem(claim) : "";
+            document.getElementById("formDvcCodeItem").style.display = dvcCodeView ? "" : "none";
+            document.getElementById("formMetaGrid").classList.toggle("has-dvc", !!dvcCodeView);
+            setText("formDvcCodeText", dvcCodeView || "--");
             setText("formReceivedAtText", claim ? (claim.receivedAt || claim.date || "--") : "Tự sinh sau khi lưu");
             // Cán bộ tiếp nhận: hồ sơ nguồn khác Tiếp nhận mới chưa có người phân công đầu tiên hiển thị "-"
             setText("formReceivedByText", claim ? (claim.receivedBy || (claim.fromWorkflow ? "-" : CURRENT_OFFICER)) : CURRENT_OFFICER);
@@ -2486,7 +2515,7 @@
                 setSelectDisplay("formFieldGroup", claim.fieldGroup || "");
             } else {
                 setValue("formRequestType", claim ? (claim.requestType || REQUEST_TYPE_YCBT) : "");
-                setValue("formReceiveMethod", claim ? normalizeReceiveMethod(claim.nopKenh) : "Trực tiếp");
+                setValue("formReceiveMethod", claim ? (dvcCodeOfItem(claim) ? RECEIVE_METHODS.MOI_TRUONG_SO : normalizeReceiveMethod(claim.nopKenh)) : "Trực tiếp");
                 setValue("formRequesterRole", claim ? (claim.nycRole || "Người bị thiệt hại") : "Người bị thiệt hại");
                 setValue("formFieldGroup", claim ? (claim.fieldGroup || "") : "");
             }

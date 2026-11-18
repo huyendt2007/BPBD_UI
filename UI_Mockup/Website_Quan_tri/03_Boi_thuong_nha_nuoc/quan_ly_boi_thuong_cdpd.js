@@ -1,9 +1,9 @@
 /*
- * Tạo yêu cầu - Cán bộ chủ động phục hồi danh dự khi có đủ thông tin (prefix cdpd) - Giải quyết yêu cầu bồi thường
+ * Tạo yêu cầu - Cán bộ chủ động phục hồi danh dự (prefix cdpd) - Giải quyết yêu cầu bồi thường
  * 1. Form Tạo yêu cầu: trường "Hình thức tạo hồ sơ" chỉ còn "Cán bộ chủ động phục hồi danh dự" (06/11/2026: bỏ "Tiếp nhận yêu cầu bồi thường";
  *    hồ sơ yêu cầu bồi thường tạo tại Tiếp nhận hồ sơ, vào Giải quyết YCBT qua Chờ tiếp nhận).
  *    Chọn "Cán bộ chủ động phục hồi danh dự": Loại yêu cầu khóa "Chỉ yêu cầu phục hồi danh dự"; Hình thức tiếp nhận hệ thống gán
- *    "Cán bộ chủ động phục hồi danh dự khi có đủ thông tin" (DM_25 - CAN_BO_PHUC_HOI_DANH_DU); Nguồn hồ sơ giữ "Tiếp nhận mới";
+ *    "Cán bộ chủ động phục hồi danh dự" (DM_25 - CAN_BO_PHUC_HOI_DANH_DU); Nguồn hồ sơ giữ "Tiếp nhận mới";
  *    ẩn Ngày văn bản yêu cầu bồi thường, Yêu cầu khôi phục quyền, lợi ích khác, Tư cách người yêu cầu (giữ nội bộ "Người bị thiệt hại");
  *    Văn bản làm căn cứ bắt buộc tối thiểu 01 dòng có tệp; chọn được vụ việc ở mọi trạng thái (tạo song song hồ sơ đang giải quyết); không có khối Phương thức đề nghị nhận thông báo, tiêu đề "Nội dung khác & Tài liệu đính kèm".
  *    Nút "Trình Lãnh đạo" -> popup trình. Thông báo lỗi/thành công hiển thị trực tiếp (dưới ô / dải thông báo), không dùng toast.
@@ -14,14 +14,14 @@
  * 3. Cử người phục hồi danh dự: Lãnh đạo phân công qua các cấp theo luồng của đơn vị (BTNN_WF.PHDD_ASSIGN, popup Phân công dùng chung BTNN_LD.openAssign);
  *    cấp trung gian Chuyển đơn vị giữ trạng thái; Phân công cán bộ -> Đang phục hồi danh dự, tiến trình phục hồi danh dự từ Bước 1 (Trình thông báo).
  *    Quyền xem (Cán bộ): người tạo thấy tại Chờ xử lý tới khi Ký duyệt, sau đó tại Đã xử lý (trừ khi được phân công); người được phân công thấy tại Chờ xử lý; cán bộ khác không thấy.
- * 4. Lưới / bộ lọc / chi tiết: nhãn "Cán bộ chủ động PHDD" dưới Nguồn hồ sơ; bộ lọc Hình thức tiếp nhận có giá trị CAN_BO_PHUC_HOI_DANH_DU.
+ * 4. Lưới / bộ lọc / chi tiết: không còn nhãn riêng dưới Nguồn hồ sơ (bỏ 18/11/2026), nhận biết qua Hình thức tiếp nhận; bộ lọc Hình thức tiếp nhận có giá trị CAN_BO_PHUC_HOI_DANH_DU.
  * 5. Dữ liệu mẫu (người tạo Đỗ Văn Chung - cv_hn1, Sở Tư pháp TP. Hà Nội): Chờ duyệt, Bị trả lại, Cử người phục hồi danh dự (cấp Sở; cấp Phòng),
  *    Đang phục hồi danh dự (phân công Ngô Thị Lan - cv_hn2), theo phiên bản CDPD_SEED_VER.
  *    [pdchet] BT-2026-528: người bị thiệt hại đã chết, Cử người phục hồi danh dự (cấp Sở); chưa có thì bổ sung, không đổi phiên bản.
  * Dùng tiện ích sẵn có: gq*, ktlx*, tlkt*, ctvvm* (quan_ly_boi_thuong_ctvv.js), saveNewClaim, openInlineClaimForm.
  */
 var CDPD_KIND = 'Chủ động phục hồi danh dự'; // Nội dung trình (Loại trình)
-var CDPD_HTTN = (window.BTNN_WF && BTNN_WF.RECEIVE_METHODS && BTNN_WF.RECEIVE_METHODS.CAN_BO_PHUC_HOI_DANH_DU) || 'Cán bộ chủ động phục hồi danh dự khi có đủ thông tin';
+var CDPD_HTTN = (window.BTNN_WF && BTNN_WF.RECEIVE_METHODS && BTNN_WF.RECEIVE_METHODS.CAN_BO_PHUC_HOI_DANH_DU) || 'Cán bộ chủ động phục hồi danh dự';
 var CDPD_DOC_TITLE = 'Phê duyệt chủ động phục hồi danh dự';
 var CDPD_CONTENT_DEFAULT = 'Kính trình Lãnh đạo xem xét, phê duyệt chủ động phục hồi danh dự.';
 var CDPD_CU_NGUOI = 'Cử người phục hồi danh dự'; // trạng thái sau khi Lãnh đạo Ký duyệt (BTNN_WF.STATUS_CU_NGUOI_PHDD)
@@ -43,7 +43,7 @@ var cdpdOrig = {};        // nội dung gốc của các nhãn đổi theo chế
 
 function cdpdEl(id) { return document.getElementById(id); }
 function cdpdE(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
-function cdpdIs(claim) { return !!claim && (claim.cdpd === true || claim.hinhThucTiepNhan === CDPD_HTTN); }
+function cdpdIs(claim) { return !!claim && (claim.cdpd === true || claim.hinhThucTiepNhan === CDPD_HTTN || /chủ động phục hồi danh dự/i.test(claim.hinhThucTiepNhan || '')); }
 // Loại yêu cầu = Chỉ yêu cầu phục hồi danh dự (mọi nguồn hồ sơ)
 function cdpdHonorOnly(c) { try { return !!c && (typeof claimRequestKind === 'function' ? claimRequestKind(c) === 'honor' : c.requestType === 'honor'); } catch (e) { return false; } }
 function cdpdShow(el, on, disp) { if (el) el.style.display = on ? (disp || '') : 'none'; }
@@ -271,7 +271,7 @@ function cdpdLoginRootName() {
         return W.unitName(root) || '';
     } catch (e) { return ''; }
 }
-// Hình thức tiếp nhận của hồ sơ = Cán bộ chủ động phục hồi danh dự khi có đủ thông tin
+// Hình thức tiếp nhận của hồ sơ = Cán bộ chủ động phục hồi danh dự
 function cdpdSetHttnSelect() {
     var sel = cdpdEl('claimHinhThucTiepNhan'); if (!sel) return;
     if (!Array.from(sel.options).some(function (o) { return o.value === CDPD_HTTN; })) { var o = document.createElement('option'); o.value = CDPD_HTTN; o.textContent = CDPD_HTTN; sel.appendChild(o); }
@@ -936,13 +936,8 @@ function cdpdApplyAssigned(c, r) {
         if (role === 'thu-truong' && !isDetailEditMode && cdpdIs(claim) && typeof h === 'string') return cdpdRecallBtn(claim, true) + h;
         return h;
     };
-    // Nhãn riêng dưới Nguồn hồ sơ (lưới, màn chi tiết)
-    var oBadge = window.renderNguonHoSoBadge;
-    if (typeof oBadge === 'function') window.renderNguonHoSoBadge = function (value, claim) {
-        var h = oBadge.apply(this, arguments);
-        if (claim && cdpdIs(claim)) h += '<div style="margin-top:4px;"><span class="badge cdpd-badge" title="Hình thức tiếp nhận: ' + cdpdE(CDPD_HTTN) + '"><i class="fa-solid fa-ribbon"></i> Cán bộ chủ động PHDD</span></div>';
-        return h;
-    };
+    // [cdpd18] 18/11/2026: bỏ nhãn «Cán bộ chủ động PHDD» dưới Nguồn hồ sơ (lưới, màn chi tiết);
+    // hồ sơ cán bộ chủ động phục hồi danh dự nhận biết qua Hình thức tiếp nhận (cột trên lưới, trường trên màn chi tiết)
     // Khối 1 tab Phục hồi danh dự: ghi chú văn bản trình khi tạo hồ sơ chủ động
     var oDec = window.ctvvM26Decorate;
     if (typeof oDec === 'function') window.ctvvM26Decorate = function (claim) {
@@ -1064,7 +1059,7 @@ function cdpdSeed() {
     if (done && typeof gqRefreshClaimsFromWorkflow === 'function') gqRefreshClaimsFromWorkflow(false);
     return done;
 }
-// Bộ lọc Hình thức tiếp nhận: bổ sung giá trị Cán bộ chủ động phục hồi danh dự khi có đủ thông tin
+// Bộ lọc Hình thức tiếp nhận: bổ sung giá trị Cán bộ chủ động phục hồi danh dự
 function cdpdInitFilter() {
     var sel = cdpdEl('searchHinhThucTiepNhan');
     if (sel && !Array.from(sel.options).some(function (o) { return o.value === CDPD_HTTN; })) {

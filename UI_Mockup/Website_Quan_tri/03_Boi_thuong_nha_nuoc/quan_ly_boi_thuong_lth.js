@@ -1037,7 +1037,15 @@
         'Hoãn giải quyết': 'HOAN_GIAI_QUYET', 'Tạm đình chỉ': 'TAM_DINH_CHI', 'Đình chỉ giải quyết': 'DINH_CHI_GIAI_QUYET', 'Dừng giải quyết': 'DUNG_GIAI_QUYET',
         'Đã chuyển CQGQBT': 'DA_CHUYEN_CQGQBT', 'Không thụ lý': 'KHONG_THU_LY', 'Yêu cầu bổ sung': 'YEU_CAU_BO_SUNG' };
     var dvcSnap = {};
-    function dvcSource(c) { return /dich vu cong/.test(noAcc(c && c.nguonHoSo)); }
+    // [dvc12] Hồ sơ có Mã hồ sơ DVC: nguồn Dịch vụ công hoặc kế thừa khi chuyển cơ quan (btnn_dvc_sync.js dvcKey)
+    function dvcSource(c) { return window.BTNN_DVC && BTNN_DVC.isDvc ? BTNN_DVC.isDvc(c) : /dich vu cong/.test(noAcc(c && c.nguonHoSo)); }
+    // [dvc12] Nội dung xử lý khi chuyển cơ quan: ghi tên cơ quan tiếp nhận mới
+    function dvcTransferContent(c) {
+        var W = window.BTNN_WF, r = W && W.getRecord ? W.getRecord(c.code) : null, t = r && r.transferTo;
+        var tr = (c.gqData && c.gqData.transferRequest) || c.transferRequest || {};
+        var name = (t && t.targetUnitId && W.unitName ? W.unitName(t.targetUnitId) : '') || tr.targetName || '';
+        return name ? 'Chuyển hồ sơ đến ' + name + ' để giải quyết theo thẩm quyền.' : '';
+    }
     function dvcStepOf(prev, c) {
         var cur = c.status, paused = prev === 'Hoãn giải quyết' || prev === 'Tạm đình chỉ';
         if (cur === 'Hoãn giải quyết') return 'QUYET_DINH_HOAN';
@@ -1048,8 +1056,9 @@
         if (cur === 'Cử người giải quyết bồi thường') return 'THONG_BAO_THU_LY';
         if (cur === 'Yêu cầu bổ sung') return 'YEU_CAU_BO_SUNG';
         if (cur === 'Không thụ lý') return 'THONG_BAO_KHONG_THU_LY';
-        // Không thụ lý lý do "Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình": hồ sơ chuyển Đã chuyển CQGQBT (không gửi với thao tác Chuyển CQGQBT)
+        // Không thụ lý lý do "Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình": hồ sơ chuyển Đã chuyển CQGQBT (bước 2, mã 4)
         if (cur === 'Đã chuyển CQGQBT' && (c.ktlReasonCode === 'KTL_01' || /không thụ lý/i.test(JSON.stringify((c.timeline || []).slice(-2))))) return 'THONG_BAO_KHONG_THU_LY';
+        if (cur === 'Đã chuyển CQGQBT') return 'CHUYEN_CQGQBT'; // [dvc12] bước 21: thao tác Chuyển CQGQBT, mã 4
         if (cur === 'Xác minh thiệt hại' || (cur === 'Đang phục hồi danh dự' && /Cử người|Chờ duyệt|Bị trả lại/.test(prev))) return 'QUYET_DINH_CU_NGUOI';
         if (cur === 'Thương lượng' && prev === 'Xác minh thiệt hại') return 'BAO_CAO_XAC_MINH';
         if (cur === 'Chờ ban hành QĐ' && prev === 'Thương lượng' && c.negotiation && c.negotiation.participation === 'DONG_Y') return 'BIEN_BAN_THUONG_LUONG';
@@ -1063,15 +1072,18 @@
         var now = p(n.getDate()) + '/' + p(n.getMonth() + 1) + '/' + n.getFullYear() + ' ' + p(n.getHours()) + ':' + p(n.getMinutes()) + ':' + p(n.getSeconds());
         var dig = (String(c.code || '').match(/\d+/g) || ['0']).join('').slice(-6).padStart(6, '0');
         var f = step === 'BAO_CAO_XAC_MINH' ? pdfNorm((c.xmReportFiles || [])[0]) : (step === 'BIEN_BAN_THUONG_LUONG' ? pdfNorm(c.negotiation && c.negotiation.bienBan) : null);
-        var fileName = f ? f.name : step.toLowerCase() + '_' + c.code + '_da_ky.pdf';
+        var trq = (c.gqData && c.gqData.transferRequest) || c.transferRequest || {};
+        // [dvc12] Bước 21 Chuyển CQGQBT: gửi kèm văn bản chuyển cơ quan đã ký (Ký số: tệp đã ký số; Ký ngoài: tệp PDF đã ký, đóng dấu tải lên)
+        var fileName = f ? f.name : (step === 'CHUYEN_CQGQBT' && (trq.signedFile || trq.fileName) ? (trq.signedFile || trq.fileName) : step.toLowerCase() + '_' + c.code + '_da_ky.pdf');
         var size = f && Number(f.size) ? Number(f.size) : 200000 + (Number(dig) % 300000);
         var entry = {
             transactionId: 'KQ-' + c.code + '-' + step + '-' + n.getTime().toString(36).toUpperCase(),
-            dvcCode: c.dvcDossierCode || ('H48.12.2026.' + dig), receiptNo: c.dvcReceiptNo || ('API-2026-' + dig),
+            dvcCode: (window.BTNN_DVC && BTNN_DVC.dvcKey ? BTNN_DVC.dvcKey(c) : c.dvcDossierCode) || ('H48.12.2026.' + dig), receiptNo: c.dvcReceiptNo || ('API-2026-' + dig),
             caseCode: c.maVuViec || '', dossierCode: c.code, agency: c.agency || '', stepCode: step,
+            processingUnit: c.agency || '', content: (step === 'CHUYEN_CQGQBT' || c.status === 'Đã chuyển CQGQBT') ? dvcTransferContent(c) : '',
             caseStatus: DVC_CASE[c.status] || '', caseStatusName: c.status, eventTime: now,
             dvcStatusCode: window.BTNN_DVC ? BTNN_DVC.dvcCodeOf(c, step, DVC_CASE[c.status] || '') : 0,
-            document: (step === 'BAO_CAO_XAC_MINH' || step === 'BIEN_BAN_THUONG_LUONG') ? null : { docNo: '', docDate: now.slice(0, 10), signingMethod: 'KY_SO', signerName: '', signerPosition: '' },
+            document: (step === 'BAO_CAO_XAC_MINH' || step === 'BIEN_BAN_THUONG_LUONG') ? null : { docNo: '', docDate: now.slice(0, 10), signingMethod: (step === 'CHUYEN_CQGQBT' && /ngoài/i.test(trq.signingMethod || '')) ? 'KY_NGOAI' : 'KY_SO', signerName: '', signerPosition: '' },
             fileName: fileName, fileSize: size, result: 'SUCCESS', sentAt: now
         };
         try { var l = JSON.parse(localStorage.getItem('btnn_dvc_sync_log_new') || '[]'); l.push(entry); localStorage.setItem('btnn_dvc_sync_log_new', JSON.stringify(l)); } catch (e) { /* mockup */ }
