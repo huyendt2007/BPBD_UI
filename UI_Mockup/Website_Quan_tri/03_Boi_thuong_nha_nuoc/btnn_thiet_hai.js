@@ -177,9 +177,13 @@
     function itemRow(o, grp, it, d, on, hid) {
         var cols = o.cols || [];
         var dyn = grp.code === KHAC;
-        var cells = cols.map(function (col) {
+        // Dòng thiệt hại khác: nút Xóa dòng (icon thùng rác) đặt ở cuối dòng, trong ô cột cuối; bảng không có cột thì đặt cuối ô Tên
+        var delBtn = (dyn && o.khac) ? '<button type="button" class="btn btn-sm btn-outline-danger bth-kdel" title="Xóa dòng" aria-label="Xóa dòng" onclick="BTNN_TH.delKhac(this)"><i class="fa-solid fa-trash"></i></button>' : '';
+        var cells = cols.map(function (col, ci) {
             var v = col.v ? (Number(col.v(it.code, d, on)) || 0) : 0;
-            return '<td data-col="' + col.k + '"' + (col.sum ? ' data-v="' + v + '"' : '') + ' style="' + (col.align === 'right' ? 'text-align:right; white-space:nowrap;' : '') + (col.style || '') + '">' + (col.td ? col.td(it.code, d, on) : '') + '</td>';
+            var inner = col.td ? col.td(it.code, d, on) : '';
+            if (delBtn && ci === cols.length - 1) inner = '<div class="bth-kend"><div class="bth-kend-v">' + inner + '</div>' + delBtn + '</div>';
+            return '<td data-col="' + col.k + '"' + (col.sum ? ' data-v="' + v + '"' : '') + ' style="' + (col.align === 'right' ? 'text-align:right; white-space:nowrap;' : '') + (col.style || '') + '">' + inner + '</td>';
         }).join('');
         var cb = '';
         if (o.check) {
@@ -194,7 +198,7 @@
             nameCell = '<div style="display:flex; gap:6px; align-items:flex-start;">' + cb
                 + '<div style="flex:1; min-width:0;"><input type="text" class="form-control form-control-sm bth-kname" id="' + o.khac.nameId(it.code) + '" maxlength="500" value="' + esc((d && (d.name || d.label)) || NAMES[it.code] ? nm : '') + '" placeholder="Nhập tên / nội dung thiệt hại..." oninput="BTNN_TH.khacName(this)">'
                 + '<div class="error-message" style="color:#dc2626; font-size:11px; display:none;">Đây là trường bắt buộc</div></div>'
-                + '<button type="button" class="btn btn-sm btn-outline-danger bth-kdel" title="Xóa dòng" onclick="BTNN_TH.delKhac(this)"><i class="fa-solid fa-trash"></i> Xóa</button></div>';
+                + (cols.length ? '' : delBtn) + '</div>';
         } else if (dyn) {
             nameCell = '<span style="font-weight:600;">' + cb + esc(nm) + '</span>';
         } else {
@@ -426,7 +430,11 @@
             + '.bth-table .bth-cnt{font-weight:400;color:#64748b;font-size:12px;}'
             + '.bth-table tr.bth-off td{color:#64748b;}'
             + '.bth-table tr.bth-total td{background:#f1f5f9;font-weight:700;}'
-            + '.bth-table .bth-kdel{white-space:nowrap;}'
+            + '.bth-table .bth-kdel{white-space:nowrap;flex:none;width:32px;height:31px;padding:0;display:inline-flex;align-items:center;justify-content:center;color:#dc2626 !important;background:#fef2f2 !important;border:1px solid #fecaca !important;border-radius:6px;}'
+            + '.bth-table .bth-kdel:hover{background:#fee2e2 !important;border-color:#fca5a5 !important;}'
+            + '.bth-table .bth-kdel i{color:#dc2626 !important;}'
+            + '.bth-table .bth-kend{display:flex;align-items:flex-start;gap:8px;}'
+            + '.bth-table .bth-kend-v{flex:1;min-width:0;}'
             + '.bth-table tr.bth-hide,.bth-table tr.bth-del{display:none !important;}';
         (document.head || document.documentElement).appendChild(s);
     }

@@ -586,14 +586,14 @@ function dchtDocHtml(d) {
         </div>
         <div style="text-align:center; margin-bottom:14px;">
             <div style="font-weight:bold; font-size:15px;">QUYẾT ĐỊNH</div>
-            <div style="font-weight:bold; font-size:14px;">${d.mode === 'cd' ? 'Chấm dứt' : 'Đình chỉ'} việc xem xét trách nhiệm hoàn trả</div>
+            <div style="font-weight:bold; font-size:14px;">Đình chỉ việc xem xét trách nhiệm hoàn trả</div><!-- 19/11/2026 (nhanhl2, QDDA_035): chế độ chấm dứt giữ tên văn bản «Đình chỉ» của Mẫu 39/BTNN -->
             <div style="border-bottom:1px solid #000; width:120px; margin:4px auto 10px;"></div>
             <div style="font-weight:bold; font-size:14px;">${dchtE(typeof tlhdHeadTitle === 'function' ? tlhdHeadTitle() : 'THỦ TRƯỞNG CƠ QUAN')}</div>
         </div>
         ${canCu}
         <div style="text-align:center; font-weight:bold; margin:10px 0;">QUYẾT ĐỊNH:</div>
         ${d.mode === 'cd'
-            ? `<p style="${p}"><strong>Điều 1.</strong> Chấm dứt việc xem xét trách nhiệm hoàn trả trong vụ việc yêu cầu bồi thường của ${dchtE(dchtVictim())} vì ${dchtE(String(d.lyDo || '……').replace(/^./, c => c.toLowerCase()))}.</p>`
+            ? `<p style="${p}"><strong>Điều 1.</strong> Đình chỉ việc xác định trách nhiệm hoàn trả trong vụ việc yêu cầu bồi thường của ${dchtE(dchtVictim())} vì ${dchtE(String(d.lyDo || '……').replace(/^./, c => c.toLowerCase()))}.</p>`
             : `<p style="${p}"><strong>Điều 1.</strong> Đình chỉ việc xác định trách nhiệm hoàn trả trong vụ việc yêu cầu bồi thường của ${dchtE(dchtVictim())} vì ${dchtE(d.vbCanCu || '……')} không còn là văn bản làm căn cứ yêu cầu bồi thường.</p>`}
         <p style="${p}"><strong>Điều 2.</strong> Quyết định này có hiệu lực kể từ ngày ký./.</p>
         <div style="display:flex; justify-content:space-between; margin-top:24px; min-height:170px;">
@@ -1047,7 +1047,7 @@ function dchtFooterButtons() {
             const sub = /^Trình/.test(x.text), rj = /từ chối/.test(x.text);
             return { type: sub ? 'submit' : (rj ? 'reject' : 'approve'), name: sub ? staff : ((/^Lãnh đạo (.+?) (ký duyệt|từ chối)/.exec(x.text) || [])[1] || 'Lãnh đạo'), at: x.time, msg: x.text };
         });
-        return Object.assign(c, { kind: 'Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả (Mẫu số 39/BTNN)', title: 'QUYẾT ĐỊNH VỀ VIỆC CHẤM DỨT VIỆC XEM XÉT TRÁCH NHIỆM HOÀN TRẢ', hist, okStatus: CDHT_ST_DONE, noStatus: 'Bị trả lại (QĐ chấm dứt)' });
+        return Object.assign(c, { kind: 'Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả (Mẫu số 39/BTNN)', title: 'QUYẾT ĐỊNH VỀ VIỆC ĐÌNH CHỈ VIỆC XEM XÉT TRÁCH NHIỆM HOÀN TRẢ' /* 19/11/2026 (QDDA_035): tên văn bản theo Mẫu 39/BTNN */, hist, okStatus: CDHT_ST_DONE, noStatus: 'Bị trả lại (QĐ chấm dứt)' });
     });
     wrap('openPreviewFromLeaderModal', orig => function () {
         if (typeof pendingLeaderSignTarget !== 'undefined' && pendingLeaderSignTarget === 'dcht') { dchtViewDoc(); return; }
