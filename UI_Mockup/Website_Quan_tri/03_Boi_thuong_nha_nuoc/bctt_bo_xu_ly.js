@@ -61,7 +61,7 @@
         const dong = B.PROVINCES.map(pr => {
             const so = B.dvName(pr), r = db.reports.find(x => !B.isBtpReport(x) && x.unitName === so && x.year === y && x.period === p);
             const daGui = !!r && r.status === ST.BH;
-            return { so: so, r: r, daGui: daGui, cham: daGui && guiCham(r), trinhLai: !!r && !daGui && !!(r.bkKy && r.bkKy.length) };
+            return { so: so, dp: pr, r: r, daGui: daGui, cham: daGui && guiCham(r), trinhLai: !!r && !daGui && !!(r.bkKy && r.bkKy.length) };
         });
         const nGui = dong.filter(d => d.daGui).length, nCham = dong.filter(d => d.cham).length, nChua = dong.length - nGui;
         // 06/11/2026 (nhanhl2): Tình trạng gửi có thêm giá trị «Gửi chậm» (đã gửi BTP sau hạn gửi) để khớp thẻ Gửi chậm của khối số liệu
@@ -91,13 +91,13 @@
             </div>
         </div>
         <div class="card-section"><div class="table-container"><table class="custom-table" id="boThBang"><thead><tr>
-            <th>STT</th><th>Năm báo cáo</th><th>Đơn vị báo cáo</th><th>Tình trạng gửi</th><th>Ngày gửi BTP</th><th>Gửi chậm</th>
+            <th>STT</th><th>Năm báo cáo</th><th>Địa phương</th><th>Tình trạng gửi</th><th>Ngày gửi BTP</th><th>Gửi chậm</th>
         </tr></thead><tbody></tbody></table></div></div>`;
         // 06/11/2026 (SRS MH07): khối Bộ lọc tìm kiếm thu gọn / mở rộng được (Accordion, mặc định mở); khối dựng sau khi trang tải nên phải gắn lại
         if (window.BpbdFilterToggle) window.BpbdFilterToggle.autoAttach();
         UI.luoi({
             bang: '#boThBang', duLieu: dong.filter(loc), kichThuoc: 50, rong: 'Không có dữ liệu',
-            cot: [{ hien: (d, i) => i }, { hien: () => y }, { hien: d => `<span class="cell-strong">${esc(d.so)}</span>` },
+            cot: [{ hien: (d, i) => i }, { hien: () => y }, { hien: d => `<span class="cell-strong">${esc(d.dp)}</span>` }   /* 19/11/2026 (BA lead): cột Địa phương thay cột Đơn vị báo cáo */,
                 { hien: d => d.daGui ? '<span class="badge badge-success">Đã gửi BTP</span>' : `<span class="badge badge-secondary th-chua">Chưa gửi BTP</span>${d.trinhLai ? '<span class="badge-sub">Đơn vị đang trình phê duyệt lại báo cáo đã gửi</span>' : ''}` },
                 { hien: d => d.daGui ? `<span class="nowrap">${esc(ngayGuiBo(d.r))}</span>` : '--' },
                 { hien: d => d.daGui ? (d.cham ? '<span class="badge badge-warning"><i class="fa-solid fa-clock"></i> Có</span>' : 'Không') : '--' }],

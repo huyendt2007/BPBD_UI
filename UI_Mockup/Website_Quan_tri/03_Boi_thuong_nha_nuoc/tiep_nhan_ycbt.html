@@ -553,6 +553,16 @@
                         <div class="error-message">Đây là trường bắt buộc</div>
                     </div>
                 </div>
+                <!-- [cqgq1] Cơ quan giải quyết bồi thường: chỉ hiển thị khi Loại hồ sơ = Giải quyết yêu cầu bồi thường.
+                     Mặc định Đơn vị của tài khoản đang đăng nhập; danh sách = đơn vị đó và các đơn vị cấp trên trực tiếp tới đơn vị cấp cao nhất (không chọn ngang cấp).
+                     Phiếu tiếp nhận được ban hành: hồ sơ chuyển Chờ phân công tại cơ quan đã chọn -->
+                <div id="formCqgqRow" class="grid-3" style="display: none; gap: 16px; margin-bottom: 14px;">
+                    <div class="form-group" style="margin-bottom: 0; grid-column: span 2;">
+                        <span class="form-label">Cơ quan giải quyết bồi thường<span class="required">*</span></span>
+                        <select id="formCqgq" class="form-control"></select>
+                        <div class="error-message">Đây là trường bắt buộc</div>
+                    </div>
+                </div>
                 <!-- Loại yêu cầu giải quyết bồi thường: chỉ hiển thị khi Loại hồ sơ = Giải quyết yêu cầu bồi thường; dòng riêng ngay dưới khối tổng quan.
                      Giá trị lưu (requestKind) dùng chung với phân hệ Giải quyết YCBT: both | money | honor -->
                 <div class="form-group" id="formRequestKindGroup" style="display: none; margin-bottom: 14px;">
@@ -1005,7 +1015,7 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261118dvc14"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261119cqgq1"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261112vt2"></script>
     <script src="btnn_phan_cong_ky_duyet.js?v=20261113vt5"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
@@ -1660,6 +1670,25 @@
         function isYcbtRequestType() { return getValue("formRequestType") === REQUEST_TYPE_YCBT; }
         function toggleRequestKindGroup() {
             document.getElementById("formRequestKindGroup").style.display = isYcbtRequestType() ? "block" : "none";
+            const cqgqRow = document.getElementById("formCqgqRow");
+            if (cqgqRow) cqgqRow.style.display = isYcbtRequestType() ? "grid" : "none";
+        }
+        // [cqgq1] Cơ quan giải quyết bồi thường (Tiếp nhận mới, Loại hồ sơ Giải quyết YCBT): Đơn vị của tài khoản đang đăng nhập
+        // và các đơn vị cấp trên trực tiếp tới đơn vị cấp cao nhất trên Cơ cấu tổ chức; không gồm đơn vị ngoài nhánh này
+        function cqgqChain() { return BTNN_WF.getAncestors(CURRENT_USER.unitId); }
+        function defaultCqgqUnit() { return CURRENT_USER.unitId; }
+        // Cơ quan giải quyết bồi thường đã lưu của hồ sơ; hồ sơ cũ chưa có giá trị: đơn vị gốc (hồ sơ chờ phân công tại đơn vị gốc như trước)
+        function cqgqOf(item) { return item ? (item.cqgqUnitId || item.rootUnitId || "") : ""; }
+        function setCqgq(value, isReadOnly, textIfEmpty) {
+            const el = document.getElementById("formCqgq");
+            if (!el) return;
+            const ids = cqgqChain();
+            if (value && !ids.includes(value)) ids.push(value);
+            el.innerHTML = ids.map(id => `<option value="${escapeAttr(id)}">${escapeHtml(BTNN_WF.unitName(id))}</option>`).join("")
+                || `<option value="">${escapeHtml(textIfEmpty || "---")}</option>`;
+            el.value = value || defaultCqgqUnit();
+            if (!el.value && el.options.length) el.selectedIndex = 0;
+            el.disabled = !!isReadOnly;
         }
         function getRequestKind() {
             const checked = document.querySelector('input[name="formRequestKind"]:checked');
@@ -1910,6 +1939,9 @@
                 maVuViec: claim.maVuViec || undefined,
                 hinhThucTiepNhan: claim.nopKenh,
                 rootUnitId: claim.rootUnitId,
+                // [cqgq1] Loại hồ sơ Giải quyết YCBT: hồ sơ Chờ phân công tại Cơ quan giải quyết bồi thường đã chọn (đơn vị gốc của luồng phân công)
+                cqgqUnitId: claim.requestType === REQUEST_TYPE_YCBT && claim.cqgqUnitId ? claim.cqgqUnitId : undefined,
+                targetUnitId: claim.requestType === REQUEST_TYPE_YCBT && claim.cqgqUnitId ? claim.cqgqUnitId : undefined,
                 receivedAt: toWfTime(claim.receivedAt),
                 date: claim.date,
                 receivedBy: claim.receivedBy,
@@ -2520,6 +2552,8 @@
                 setValue("formFieldGroup", claim ? (claim.fieldGroup || "") : "");
             }
             setRequestKind(claim ? claim.requestKind : REQUEST_KIND_DEFAULT, isReadOnly && !!claim);
+            // [cqgq1] Cơ quan giải quyết bồi thường: thêm mới mặc định Đơn vị của tài khoản; sửa / xem: theo bản ghi
+            setCqgq(claim ? cqgqOf(claim) : defaultCqgqUnit(), isReadOnly && !!claim);
             // Khối tổng quan: 3 trường xếp thành lưới 3 cột (Tiếp nhận hồ sơ không có trường Vụ việc liên quan)
             const ovContainer = document.getElementById("overviewFieldsContainer");
             if (ovContainer) {
@@ -2695,6 +2729,9 @@
                 claim.requestType = getValue("formRequestType");
                 // Loại yêu cầu giải quyết bồi thường: chỉ lưu khi Loại hồ sơ = Giải quyết yêu cầu bồi thường
                 if (claim.requestType === REQUEST_TYPE_YCBT) claim.requestKind = getRequestKind(); else delete claim.requestKind;
+                // [cqgq1] Cơ quan giải quyết bồi thường: chỉ lưu khi Loại hồ sơ = Giải quyết yêu cầu bồi thường
+                if (claim.requestType === REQUEST_TYPE_YCBT) { claim.cqgqUnitId = getValue("formCqgq") || defaultCqgqUnit(); claim.agency = BTNN_WF.unitName(claim.cqgqUnitId); }
+                else { delete claim.cqgqUnitId; claim.agency = BTNN_WF.unitName(claim.rootUnitId); }
                 Object.assign(claim, readNycFields());
                 claim.nopKenh = getValue("formReceiveMethod");
                 claim.fieldGroup = getValue("formFieldGroup");
@@ -2747,6 +2784,8 @@
                 nguonHoSo: SOURCES.TIEP_NHAN,
                 requestType: getValue("formRequestType"),
                 requestKind: isYcbtRequestType() ? getRequestKind() : undefined,
+                // [cqgq1] Cơ quan giải quyết bồi thường đã chọn (Loại hồ sơ Giải quyết YCBT)
+                cqgqUnitId: isYcbtRequestType() ? (getValue("formCqgq") || defaultCqgqUnit()) : undefined,
                 nyc: getValue("formRequester"),
                 nycName: getValue("formRequester"),
                 nycPhone: normalizeVnPhone(getValue("formPhone"))
@@ -2764,7 +2803,7 @@
                 vanBanCanCu: vanBanCanCuVal,
                 hanhVi: getValue("formHanhVi"),
                 status: "Chờ phân công",
-                agency: BTNN_WF.unitName(CURRENT_ROOT_UNIT),
+                agency: BTNN_WF.unitName(isYcbtRequestType() ? (getValue("formCqgq") || defaultCqgqUnit()) : CURRENT_ROOT_UNIT),
                 totalNum: 0,
                 advanceNum: 0,
                 restoreHonor: false,
@@ -2794,7 +2833,7 @@
             const rec = BTNN_WF.createPendingRecord(buildWorkflowData(newClaim));
             newClaim.currentUnitId = rec.currentUnitId;
             saveClaims();
-            showToast(`Đã lưu thông tin. Hồ sơ ${newCode} chuyển Lãnh đạo ${BTNN_WF.unitName(CURRENT_ROOT_UNIT)} phân công [Chờ phân công]!`, "success");
+            showToast(`Đã lưu thông tin. Hồ sơ ${newCode} chuyển Lãnh đạo ${BTNN_WF.unitName(rec.currentUnitId || CURRENT_ROOT_UNIT)} phân công [Chờ phân công]!`, "success");
             closeReceptionForm();
         }
 
@@ -3264,7 +3303,7 @@
     <!-- [nbth] Văn bản yêu cầu bồi thường mặc định; Người bị thiệt hại Cá nhân/Tổ chức; địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại -->
     <script src="tiep_nhan_nbth.js?v=20261109tt1"></script>
     <!-- Trình ký Phiếu tiếp nhận (Mẫu 02/BTNN): thay thao tác In Phiếu tiếp nhận -->
-    <script src="tiep_nhan_ptn.js?v=20261112vt2"></script>
+    <script src="tiep_nhan_ptn.js?v=20261119cqgq1"></script>
     <!-- [dvc] Hồ sơ nguồn Dịch vụ công: Xem chi tiết đầy đủ theo bố cục Nhập liệu hồ sơ vụ việc; dữ liệu mẫu đầy đủ (bảng thiệt hại DM_27 dùng btnn_thiet_hai.js) -->
     <script src="btnn_thiet_hai.js?v=20261030dm28"></script>
     <script src="tiep_nhan_dvc.js?v=20261109sd1"></script>

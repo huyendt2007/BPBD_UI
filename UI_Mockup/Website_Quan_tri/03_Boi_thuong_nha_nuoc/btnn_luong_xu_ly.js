@@ -1484,7 +1484,7 @@
         if (!rec.nguonHoSo) rec.nguonHoSo = SOURCES.TIEP_NHAN;
         // Mã hồ sơ đã có trong sổ đăng ký (VD dữ liệu mẫu nạp sẵn): dùng Mã vụ việc đã đăng ký
         if (!rec.maVuViec) rec.maVuViec = /^VVBT-/.test(rec.code || '') ? rec.code : (vuViecOf(rec.code, { create: false }) || nextVuViecCode());
-        addHistory(rec, data.historyAction || 'Tiếp nhận hồ sơ', data.historyNote || `Chuyển lãnh đạo ${unitName(rec.rootUnitId)} phân công xử lý.`, data.createdBy);
+        addHistory(rec, data.historyAction || 'Tiếp nhận hồ sơ', data.historyNote || `Chuyển lãnh đạo ${unitName(rec.currentUnitId || rec.rootUnitId)} phân công xử lý.`, data.createdBy);
         delete rec.historyAction; delete rec.historyNote;
         return upsertRecord(rec);
     }

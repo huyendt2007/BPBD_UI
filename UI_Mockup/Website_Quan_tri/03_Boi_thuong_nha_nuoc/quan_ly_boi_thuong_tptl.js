@@ -47,21 +47,18 @@
         var root = w.getRootId(u.unitId) || u.unitId;
         return { userId: u.id, userName: u.name, rootId: root, rootName: w.unitName(root) };
     }
-    // Cơ quan giải quyết bồi thường của hồ sơ (đơn vị gốc trên Cơ cấu tổ chức; không khớp thì giữ tên trên hồ sơ)
+    // [cqgq2] Cơ quan giải quyết bồi thường gán với hồ sơ: hồ sơ có mã đơn vị (cqgqUnitId, chọn tại Tiếp nhận hồ sơ) lấy đúng đơn vị đó;
+    // còn lại dò theo tên trên hồ sơ (đơn vị gốc trên Cơ cấu tổ chức; không khớp thì giữ tên trên hồ sơ)
     function claimCq(claim) {
+        var w = W();
+        if (w && claim && claim.cqgqUnitId && w.getUnit(claim.cqgqUnitId)) return { id: claim.cqgqUnitId, name: w.unitName(claim.cqgqUnitId) };
         var u = resolveRoot(claim && claim.agency);
         if (u) return { id: u.id, name: u.name };
         return { id: '', name: (claim && claim.agency) || 'Cơ quan giải quyết bồi thường' };
     }
-    // Cơ quan giải quyết bồi thường = đơn vị gốc của tài khoản đang đăng nhập (useLogin).
-    // Mockup: tài khoản giả lập không thuộc Cơ quan giải quyết bồi thường của hồ sơ -> lấy theo hồ sơ, kèm chú thích (src = 'claim').
-    // Dữ liệu mẫu (useLogin = false): lấy theo Cơ quan giải quyết bồi thường của hồ sơ.
+    // [cqgq2] Cơ quan giải quyết bồi thường = Cơ quan giải quyết bồi thường gán với hồ sơ (không theo đơn vị của tài khoản đang đăng nhập)
     function cqgqOf(claim, useLogin) {
-        var cq = claimCq(claim);
-        if (!useLogin) return Object.assign(cq, { src: 'seed' });
-        var me = loginInfo();
-        if (me && (!claim || (cq.id && cq.id === me.rootId))) return { id: me.rootId, name: me.rootName, src: 'login', login: me };
-        return Object.assign(cq, { src: 'claim', login: me });
+        return Object.assign(claimCq(claim), { src: useLogin ? 'hs' : 'seed' });
     }
     // Cấp đơn vị (Trung ương / Tỉnh / Xã): thuộc tính Cấp đơn vị của đơn vị gốc (ktlcCapOf); chưa khai báo thì suy theo tên
     function capOf(unitId, name) {
@@ -206,6 +203,7 @@
     function srcNote(cq) {
         if (!cq) return '';
         var me = cq.login;
+        if (cq.src === 'hs' || cq.src === 'seed') return '<div id="tptlSrcNote" data-src="hs" style="font-size:12px; color:#475569; margin-top:4px;">Cơ quan giải quyết bồi thường gán với hồ sơ: ' + E(cq.name) + '. Thành phần bắt buộc xác định theo Cấp đơn vị của cơ quan này.</div>';
         if (cq.src === 'login') return '<div id="tptlSrcNote" data-src="login" style="font-size:12px; color:#475569; margin-top:4px;">Đơn vị đang đăng nhập: ' + E(cq.name) + ' (tài khoản ' + E(me.userName) + '). Thành phần bắt buộc xác định theo Cấp đơn vị của đơn vị này.</div>';
         return '<div id="tptlSrcNote" data-src="claim" style="font-size:12px; color:#92400e; background:#fffbeb; border:1px dashed #f59e0b; padding:4px 8px; margin-top:4px;">Giả lập: tài khoản đang đăng nhập' + (me ? ' (' + E(me.userName) + ' - ' + E(me.rootName) + ')' : '') + ' không thuộc Cơ quan giải quyết bồi thường của hồ sơ; mockup lấy theo Cơ quan giải quyết bồi thường của hồ sơ (' + E(cq.name) + '). Chọn Cán bộ đang đăng nhập thuộc cơ quan này để thử theo đơn vị đăng nhập.</div>';
     }

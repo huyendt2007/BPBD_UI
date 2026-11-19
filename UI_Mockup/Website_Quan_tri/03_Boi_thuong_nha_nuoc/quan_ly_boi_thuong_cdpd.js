@@ -312,6 +312,13 @@ function cdpdAfterOpenForm(id) {
     } else {
         block.style.display = 'none';
         cdpdApplyMode(false, false);
+        // [cqgq2] Hồ sơ chuyển từ Tiếp nhận hồ sơ (mọi nguồn): theo Cơ quan giải quyết bồi thường gán với hồ sơ, chỉ đọc
+        var cqr = cdpdEl('claimCqNhan');
+        if (cqr) {
+            cqr.readOnly = true; cqr.removeAttribute('list'); cqr.placeholder = '';
+            cqr.title = 'Theo Cơ quan giải quyết bồi thường gán với hồ sơ';
+            cqr.style.background = '#f1f5f9'; cqr.style.color = '#475569'; cqr.style.cursor = 'not-allowed';
+        }
     }
 }
 // Trình Lãnh đạo: kiểm tra riêng của hồ sơ chủ động -> dùng kiểm tra và lưu của form (saveNewClaim) -> mở popup trình

@@ -4151,7 +4151,7 @@
     </div>
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
-    <script src="btnn_luong_xu_ly.js?v=20261118dvc14"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261119cqgq1"></script>
     <script src="btnn_dvc_sync.js?v=20261118dvc15"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
@@ -8860,7 +8860,7 @@
             if (rec.xdCode) {
                 timeline.push({ title: 'Nhận hồ sơ từ Xác định CQGQBT', date: rec.date || date, desc: `Nhận hồ sơ từ Xác định CQGQBT ${rec.xdCode}: ${rec.transferContent || ''}`.trim(), status: 'completed' });
             }
-            timeline.push({ title: 'Phân công cán bộ xử lý', date, desc: officer ? `Lãnh đạo ${W.unitName(rec.rootUnitId)} phân công cán bộ chủ trì: ${officer}` : 'Đã phân công cán bộ xử lý', status: 'active' });
+            timeline.push({ title: 'Phân công cán bộ xử lý', date, desc: officer ? `Lãnh đạo ${W.unitName(rec.cqgqUnitId || rec.rootUnitId)} phân công cán bộ chủ trì: ${officer}` : 'Đã phân công cán bộ xử lý', status: 'active' });
             const nbth = rec.nbth && rec.nycRole && rec.nycRole !== NBTH_ROLE ? JSON.parse(JSON.stringify(rec.nbth)) : null;
             // Mã vụ việc kế thừa từ hồ sơ luồng (Tiếp nhận / Xác định CQGQBT / Chuyển CQGQBT); hồ sơ luồng cũ chưa có: theo sổ đăng ký
             const maVuViec = isVvCode(rec.maVuViec) ? rec.maVuViec : (rec.transferFromCode ? W.vuViecOf(rec.transferFromCode) : W.vuViecOf(rec.code));
@@ -8906,7 +8906,10 @@
                 hanhVi: rec.hanhVi || '',
                 nhanQua: '',
                 status: 'Chờ tiếp nhận',
-                agency: W.unitName(rec.rootUnitId),
+                // [cqgq1] Cơ quan giải quyết bồi thường: hồ sơ Tiếp nhận mới kế thừa cơ quan đã chọn khi tiếp nhận; nguồn khác theo đơn vị gốc
+                agency: W.unitName(rec.cqgqUnitId || rec.rootUnitId),
+                cqgqUnitId: rec.cqgqUnitId || rec.rootUnitId || '',
+                cqgqFromReception: true,
                 assignedOfficer: officer,
                 nguonHoSo,
                 hinhThucTiepNhan,
@@ -25021,7 +25024,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <!-- [ktlc] Không thụ lý KTL_01: Chuyển hồ sơ cho theo cấp đơn vị / số lần chuyển, tự tạo hồ sơ Xác định CQGQBT -->
     <script src="quan_ly_boi_thuong_ktlc.js?v=20261116ccq"></script>
     <!-- [tptl] Thành phần tham gia thương lượng: 1. Cơ quan, tổ chức (thành phần bắt buộc theo Cấp đơn vị / Lĩnh vực, Không tham gia + Lý do; thành phần khác), 2. Người yêu cầu bồi thường / người đại diện / người bảo vệ quyền lợi ích hợp pháp (đặt sau lth, ktlc) -->
-    <script src="quan_ly_boi_thuong_tptl.js?v=20261116cdv"></script>
+    <script src="quan_ly_boi_thuong_tptl.js?v=20261119cqgq2"></script>
     <!-- [nbth] Người bị thiệt hại Cá nhân/Tổ chức, địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại; bắt buộc khi trình Thông báo thụ lý (đặt trước cdpd) -->
     <script src="quan_ly_boi_thuong_nbth.js?v=20261109sd1"></script>
     <!-- [kttr] Trước Popup Trình duyệt Thông báo thụ lý: Danh sách vụ việc của Người bị thiệt hại (chỉ khi có hồ sơ trùng; đặt sau nbth, trước cdpd) -->
@@ -25032,7 +25035,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="btnn_lanh_dao_actions.js?v=20261112vt2"></script>
     <script src="btnn_phan_cong_ky_duyet.js?v=20261113vt5"></script>
     <script src="quan_ly_boi_thuong_ccq.js?v=20261117nld"></script>
-    <script src="quan_ly_boi_thuong_cdpd.js?v=20261118cdpd19"></script>
+    <script src="quan_ly_boi_thuong_cdpd.js?v=20261119cqgq3"></script>
     <!-- [dgq] Dừng giải quyết (Mẫu 05/BTNN): popup trình ký Thông báo dừng giải quyết, khối Thông tin dừng giải quyết, dữ liệu mẫu BT-2026-541..544 (đặt sau dcgq, hdcv) -->
     <script src="quan_ly_boi_thuong_dgq.js?v=20261112sn1"></script>
     <!-- [mh05] Xem chi tiết hồ sơ: khối Lý do bị trả lại / Không thụ lý / Chuyển CQGQBT / Thông tin xử lý và trình duyệt tại Tab 2; hồ sơ Bị trả lại mở Tab 2 + cuộn tới khối; dải thông báo không được xem (đặt sau mọi script bọc showCaseDetail) -->

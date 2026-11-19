@@ -1028,7 +1028,8 @@ function release(p) {
         let data = null;
         if (c && pageClaims() && typeof global.buildWorkflowData === 'function') { try { data = global.buildWorkflowData(c); } catch (e) { data = null; } }
         data = data || p.wfData;
-        if (data) rec = W.createPendingRecord(Object.assign({}, data, { historyNote: `Phiếu tiếp nhận đã được ký duyệt, ban hành. Chuyển lãnh đạo ${W.unitName(data.rootUnitId)} phân công xử lý.` }));
+        // [cqgq1] Loại hồ sơ Giải quyết YCBT: Chờ phân công tại Cơ quan giải quyết bồi thường đã chọn khi tiếp nhận (targetUnitId)
+        if (data) rec = W.createPendingRecord(Object.assign({}, data, { historyNote: `Phiếu tiếp nhận đã được ký duyệt, ban hành. Chuyển lãnh đạo ${W.unitName(data.targetUnitId || data.rootUnitId)} phân công xử lý.` }));
     }
     updateClaim(p.code, x => { x.status = rec ? rec.status : REC_ST.ASSIGN; if (rec) { x.currentUnitId = rec.currentUnitId; x.maVuViec = rec.maVuViec || x.maVuViec; } });
     return rec;
@@ -1320,7 +1321,7 @@ function ldSubmit() {
     }
     put(p); ldClose();
     const rel = last && isFlow(p) ? release(p) : null;
-    toast(last ? `Đã ký duyệt Phiếu tiếp nhận hồ sơ ${p.maVuViec}. ${isFlow(p) ? 'Hồ sơ chuyển [' + ((rel && rel.status) || REC_ST.ASSIGN) + '], chuyển Lãnh đạo ' + W.unitName(p.rootUnitId) + ' phân công.' : 'Phiếu tiếp nhận chuyển [' + ST.DONE + '].'}` : `Đã ký duyệt Phiếu tiếp nhận hồ sơ ${p.maVuViec}, chuyển ${levelText(a, a.level)} ký duyệt.`, 'success');
+    toast(last ? `Đã ký duyệt Phiếu tiếp nhận hồ sơ ${p.maVuViec}. ${isFlow(p) ? 'Hồ sơ chuyển [' + ((rel && rel.status) || REC_ST.ASSIGN) + '], chuyển Lãnh đạo ' + W.unitName((rel && rel.currentUnitId) || p.rootUnitId) + ' phân công.' : 'Phiếu tiếp nhận chuyển [' + ST.DONE + '].'}` : `Đã ký duyệt Phiếu tiếp nhận hồ sơ ${p.maVuViec}, chuyển ${levelText(a, a.level)} ký duyệt.`, 'success');
     ldDone();
 }
 function ldDone() {
