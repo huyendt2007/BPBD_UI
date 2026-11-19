@@ -10,7 +10,7 @@
  * Nạp sau chi_tiet_ho_so_hoan_tra_ykhd.js.
  * [tnht] 12/11/2026 - Ký số trên hệ thống (Mẫu 34-38, QĐ đình chỉ Mẫu 39 tại Bước 3): bỏ "Số, ký hiệu văn bản", "Ngày văn bản" ở Bước 1; nhập tại khối
  *   "Thông tin ban hành văn bản" của Bước 2 (soNgay: true), không bắt buộc; ghi về r.soKh / r.ngay; lưu r.dongDau, r.banHanh; trình lại điền lại đủ khối.
- *   Ký duyệt cấp cuối không tự cấp số (số trống: hiển thị "Chưa có" in nghiêng); ngày ban hành theo Ngày văn bản đã nhập, trống thì ngày ký duyệt.
+ *   Ký duyệt cấp cuối không tự cấp số (số trống: hiển thị "-", BA lead chốt 18/11/2026); ngày ban hành theo Ngày văn bản đã nhập, trống thì ngày ký duyệt.
  * [vt2] 12/11/2026 - Phiếu trình tích "Đóng dấu cơ quan": cấp cuối Ký duyệt -> r.choVanThu (htVtMark - chi_tiet_ho_so_hoan_tra_tlhd.js), phiếu giữ
  *   Chờ duyệt (r.st 'CD'), dòng phụ "[Loại trình] - Chờ Văn thư ban hành", Lãnh đạo không còn Ký duyệt / Từ chối; chưa chạy issue() (ban hành).
  */
@@ -182,7 +182,7 @@
                 let r = activeDossier.htDcs[ex.dc.key];
                 if (!r) {
                     r = seedRec('DC', u, ex.dc.st);
-                    Object.assign(r, { st: ex.dc.st, unit: u.unit, names: [], dc: { pa: {}, canCu: typeof DCHT_CAN_CU_DEFAULT !== 'undefined' ? (Array.isArray(DCHT_CAN_CU_DEFAULT) ? DCHT_CAN_CU_DEFAULT.join('\n') : String(DCHT_CAN_CU_DEFAULT)) : '', vbCanCu: 'Bản án số 05/2025/HS-ST ngày 12/03/2025 của Tòa án nhân dân quận Long Biên', noiNhan: typeof dchtNoiNhanDefault === 'function' ? dchtNoiNhanDefault() : '' } });
+                    Object.assign(r, { st: ex.dc.st, whole: !!ex.dc.whole, unit: u.unit, names: [], dc: { pa: {}, canCu: typeof DCHT_CAN_CU_DEFAULT !== 'undefined' ? (Array.isArray(DCHT_CAN_CU_DEFAULT) ? DCHT_CAN_CU_DEFAULT.join('\n') : String(DCHT_CAN_CU_DEFAULT)) : '', vbCanCu: 'Bản án số 05/2025/HS-ST ngày 12/03/2025 của Tòa án nhân dân quận Long Biên', noiNhan: typeof dchtNoiNhanDefault === 'function' ? dchtNoiNhanDefault() : '' } });
                     activeDossier.htDcs[ex.dc.key] = r;
                 }
                 r.names.push(o.name);
@@ -406,7 +406,7 @@
         const off = r.method === 'offline';
         h += '<div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap; background:#eff6ff; border:1px solid #dbeafe; border-radius:8px; padding:10px 14px;">'
             + cell('Hình thức ký', off ? 'Ký ngoài' : 'Ký số trên hệ thống')
-            + cell('Số, ký hiệu văn bản', off ? '-' : (r.soKh ? esc(r.soKh) : '<i>Chưa có</i>'))
+            + cell('Số, ký hiệu văn bản', off ? '-' : (r.soKh ? esc(r.soKh) : '-'))
             + cell('Ngày văn bản', off ? '-' : esc(u.st === 'DONE' ? (r.issuedAt || r.ngay) : r.ngay || '-'))
             + cell('Tệp văn bản Quyết định', qdFileCell(r, 'HT', i))
             + '</div>'
@@ -1352,7 +1352,7 @@
             commit('Ký duyệt thành công. ' + KIND[p.kind].doc + ' chuyển Văn thư ban hành (' + (vt || '--') + '); hồ sơ giữ trạng thái Chờ duyệt.');
             return;
         }
-        // [tnht] Không tự cấp số: Số, ký hiệu theo giá trị cán bộ nhập tại Bước 2; còn trống thì hiển thị "Chưa có" in nghiêng
+        // [tnht] Không tự cấp số: Số, ký hiệu theo giá trị cán bộ nhập tại Bước 2; còn trống thì hiển thị "-" (BA lead chốt 18/11/2026)
         // MH12: QĐ đình chỉ [MSG-SUC-BTNN-HT-022] (TH6); QĐ hoàn trả [MSG-SUC-BTNN-HT-013], QĐ miễn / giảm [MSG-SUC-BTNN-HT-031] (TH5)
         issue(p.kind, p.key, p.kind === 'DC' ? 'Đã ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Hồ sơ chuyển [Đình chỉ xem xét hoàn trả].' : (p.kind === 'HT' ? 'Ban hành Quyết định hoàn trả kinh phí bồi thường thành công.' : 'Ban hành ' + KIND[p.kind].doc + ' thành công.'));
     };
@@ -1400,11 +1400,35 @@
         return { g: chung, lines: Array.from(m.entries()).map(([k, n]) => k + ': ' + n + ' cán bộ') };
     }
     window.htChungDetail = chungDetail;
+    // [bd1] 18/11/2026: badge đầu màn hình chi tiết theo «Quy tắc badge trạng thái đầu màn hình chi tiết» của SRS (trạng thái chi tiết của cả hồ sơ,
+    // không tổng hợp theo phạm vi dữ liệu của người xem, có thể khác cột Trạng thái của danh sách). Mọi cán bộ Miễn hoàn trả: badge Miễn hoàn trả (nhanhl2 chốt 18/11/2026)
+    const LOAI_BADGE = { 'QĐ thành lập hội đồng': 'Thành lập hội đồng' };
+    function badgeChiTiet() {
+        const s = activeDossier.status;
+        if (!ensureModel()) {
+            // Hồ sơ chưa chốt ý kiến của Hội đồng hoặc không chia phần đơn vị: trạng thái chi tiết của hồ sơ; Chờ duyệt / Bị trả lại kèm nhãn Loại trình
+            if (HS_TRINH[s]) return { g: HS_TRINH[s][0], loai: (LOAI_BADGE[HS_TRINH[s][1]] || HS_TRINH[s][1]) + (HS_TRINH[s][0] === 'Chờ duyệt' && typeof htVtCho === 'function' && htVtCho() ? ' - Chờ Văn thư ban hành' : '') };
+            return { g: s || 'Chờ thành lập hội đồng' };
+        }
+        const l = officers(), co = l.filter(o => o.ct !== 'KXX');
+        // Điều kiện 1: mọi cán bộ Đình chỉ hoàn trả (không tính Không xem xét TNHT)
+        if (co.length && co.every(o => o.ct === 'DC')) return { g: 'Đình chỉ xem xét hoàn trả' };
+        // Điều kiện 2: mọi cán bộ Miễn hoàn trả (không tính Không xem xét TNHT)
+        if (co.length && co.every(o => o.ct === 'MIEN' && !o.trinh)) return { g: 'Miễn hoàn trả' };
+        // Điều kiện 3: mọi cán bộ đã kết thúc
+        if (l.length && l.every(o => ENDED.includes(o.ct) && !o.trinh)) return { g: 'Hoàn thành' };
+        // Điều kiện 4: còn cán bộ chưa có Quyết định hoàn trả được ban hành (Chờ ban hành, Chờ duyệt, Bị trả lại với Loại trình QĐ hoàn trả)
+        if (l.some(o => ['CBH_HT', 'CD_HT', 'BTC_HT'].includes(o.ct))) return { g: 'Chờ ban hành QĐ hoàn trả' };
+        // Điều kiện 5: còn lại
+        return { g: 'Thu tiền hoàn trả' };
+    }
+    window.htBadgeChiTiet = badgeChiTiet;
     window.getDossierStatusBadge = function () {
-        const c = chungDetail();
-        // Chỉ 01 badge trạng thái chung (trạng thái chi tiết xem tại từng bước)
-        return '<span style="display:inline-flex; flex-direction:column; align-items:flex-start;"><span class="badge" id="htChungBadge" style="background:' + (CHUNG_TONE[c.g] || CHUNG_TONE['Chờ xử lý']) + '; font-weight:700; font-size:12px; padding:4px 10px;">' + esc(c.g) + '</span>'
-            + (c.loai ? '<span id="htLoaiTrinh" style="font-size:11px; font-weight:400; color:#64748b; margin-top:2px;">' + esc(c.loai) + '</span>' : '') + '</span>';
+        const c = badgeChiTiet();
+        const t = (typeof HT_ST_STYLE !== 'undefined' && HT_ST_STYLE[c.g]) || ['#fffbeb', '#b45309', '#fde68a'];
+        // Chỉ 01 badge; Chờ duyệt / Bị trả lại có nhãn Loại trình ở bên phải badge
+        return '<span style="display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap;"><span class="badge" id="htChungBadge" style="background:' + t[0] + '; color:' + t[1] + '; border:1px solid ' + t[2] + '; font-weight:700; font-size:12px; padding:4px 10px;">' + esc(c.g) + '</span>'
+            + (c.loai ? '<span id="htLoaiTrinh" style="font-size:11.5px; font-weight:500; color:#64748b; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:10px; padding:2px 8px;">' + esc(c.loai) + '</span>' : '') + '</span>';
     };
 
     window.ht3Api = {

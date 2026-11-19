@@ -9,7 +9,7 @@
  * và các hàm sẵn có của chi_tiet_ho_so_hoan_tra.html (activeDossier, showToast, showCustomConfirm, switchSimulatorState...).
  * [tnht] 12/11/2026 - Ký số trên hệ thống: bỏ "Số quyết định", "Ngày quyết định" ở Bước 1 (Mẫu 33/BTNN); nhập "Số, ký hiệu văn bản", "Ngày văn bản"
  *   tại khối "Thông tin ban hành văn bản" của Bước 2 (BTNN_PCKD.levelSetup soNgay: true), không bắt buộc; ghi về tlhd.soQD / tlhd.ngayQD.
- *   Lưu tlhd.dongDau, tlhd.banHanh (toLegacy); trình lại điền lại đủ khối Bước 2. Không tự cấp số khi Ký duyệt cấp cuối (còn trống: hiển thị "Chưa có" in nghiêng).
+ *   Lưu tlhd.dongDau, tlhd.banHanh (toLegacy); trình lại điền lại đủ khối Bước 2. Không tự cấp số khi Ký duyệt cấp cuối (còn trống: hiển thị "-").
  *   Hàm dùng chung cho popup trình của phân hệ Hoàn trả: tlhdDocPos (vị trí dòng số, ngày của văn bản), htPrevBanHanh (khối Bước 2 lần trình trước).
  * [vt2] 12/11/2026 - Phiếu trình tích "Đóng dấu cơ quan" (Ký số trên hệ thống, tự thiết lập cấp): Lãnh đạo cấp cuối Ký duyệt -> ký số văn bản chưa có số,
  *   ngày, dấu; hồ sơ giữ Chờ duyệt, dòng phụ "[Loại trình] - Chờ Văn thư ban hành" (tlhd.choVanThu / dcht.choVanThu / phiếu QĐ r.choVanThu);
@@ -1221,7 +1221,7 @@ function tlhdSubmitOnline() {
         attachments: typeof tlktGet === 'function' ? tlktGet('tlhd') : []
     };
     activeDossier.hdPublishType = 'digital';
-    activeDossier.hdDecision = d.soQD || ''; // Chưa có số: để trống (hiển thị "Chưa có" in nghiêng)
+    activeDossier.hdDecision = d.soQD || ''; // Chưa có số: để trống (hiển thị "-")
     activeDossier.hdDate = 'Chờ ký';
     activeDossier.hdSignDate = 'Chờ ký';
     activeDossier.hdFileName = fileName;

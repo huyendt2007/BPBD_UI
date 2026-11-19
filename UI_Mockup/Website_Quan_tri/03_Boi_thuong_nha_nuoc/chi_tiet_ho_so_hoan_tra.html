@@ -3844,7 +3844,7 @@
                         });
                     }
                     // Lãnh đạo cấp cuối (được giao) ký số: Số quyết định, Ngày quyết định theo khối Thông tin ban hành văn bản (Bước 2) của Popup Thành lập Hội đồng
-                    // [tnht] Không tự cấp số: số còn trống để trống (hiển thị "Chưa có" in nghiêng)
+                    // [tnht] Không tự cấp số: số còn trống để trống (hiển thị "-")
                     const tlhdA = activeDossier.tlhd;
                     const tlhdSigner = (tlhdA && typeof tlhdLeaderLabelOf === 'function') ? tlhdLeaderLabelOf(tlhdA.levels || [], tlhdA.assignees || [], (tlhdA.levels || []).length - 1) : '';
                     if (tlhdA) {
@@ -4071,7 +4071,13 @@
                 if (pageHeaderTitle) {
                     // Hàng 1: trái - mã hồ sơ; phải (01 dòng) - "Trạng thái:" + badge trạng thái + nhãn Loại trình (Chờ duyệt / Bị trả lại)
                     let statusBadgeHtml;
-                    if (typeof htStView === 'function' && typeof HT_ST_STYLE !== 'undefined' && activeDossier.status && activeDossier.status !== (typeof HT_ST_DRAFT !== 'undefined' ? HT_ST_DRAFT : '')) {
+                    // [bd1] 18/11/2026: badge theo «Quy tắc badge trạng thái đầu màn hình chi tiết» của SRS (chi_tiet_ho_so_hoan_tra_qd.js, htBadgeChiTiet)
+                    const bct = typeof window.htBadgeChiTiet === 'function' ? window.htBadgeChiTiet() : null;
+                    if (bct && typeof HT_ST_STYLE !== 'undefined') {
+                        const s = HT_ST_STYLE[bct.g] || ['#fffbeb', '#b45309', '#fde68a'];
+                        statusBadgeHtml = `<span class="ht-hdr-badge" style="background:${s[0]}; color:${s[1]}; border-color:${s[2]};">${bct.g}</span>`
+                            + (bct.loai ? `<span class="ht-hdr-tag">${bct.loai}</span>` : '');
+                    } else if (typeof htStView === 'function' && typeof HT_ST_STYLE !== 'undefined' && activeDossier.status && activeDossier.status !== (typeof HT_ST_DRAFT !== 'undefined' ? HT_ST_DRAFT : '')) {
                         const v = htStView(activeDossier.status);
                         const s = HT_ST_STYLE[v.name] || ['#f1f5f9', '#475569', '#cbd5e1'];
                         statusBadgeHtml = `<span class="ht-hdr-badge" style="background:${s[0]}; color:${s[1]}; border-color:${s[2]};">${v.name}</span>`
@@ -4809,11 +4815,11 @@
                 // Fields
                 document.getElementById('s1OfficialPublishType').innerText = activeDossier.hdPublishType === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống';
                 document.getElementById('s1OfficialIssuingUnit').innerText = activeDossier.hdIssuingUnit || activeDossier.agency || 'Sở Tư pháp Hà Nội';
-                // Số quyết định: chưa có giá trị thì hiển thị "Chưa có" in nghiêng (không tự cấp số; dữ liệu cũ "Chờ cấp số" coi như chưa có)
+                // Số quyết định: chưa có giá trị thì hiển thị "-" (BA lead chốt 18/11/2026; không tự cấp số; dữ liệu cũ "Chờ cấp số" coi như chưa có)
                 const s1No = (activeDossier.hdDecision || '').trim();
                 const s1NoEl = document.getElementById('s1OfficialNo');
                 if (s1No && !/^(Chờ|Chưa) cấp số$/.test(s1No)) s1NoEl.innerText = s1No;
-                else if (isPendingStatus || isRejectedStatus || activeDossier.tlhd || /^(Chờ|Chưa) cấp số$/.test(s1No)) s1NoEl.innerHTML = '<i>Chưa có</i>';
+                else if (isPendingStatus || isRejectedStatus || activeDossier.tlhd || /^(Chờ|Chưa) cấp số$/.test(s1No)) s1NoEl.innerHTML = '-';
                 else s1NoEl.innerText = '45/QĐ-STP';
                 document.getElementById('s1OfficialSignDate').innerText = activeDossier.hdSignDate || activeDossier.hdDate || '02/04/2026';
 
@@ -6801,7 +6807,7 @@
                 if (mode === 'digital') {
                     const signer = document.getElementById('createCouncilLeader').value;
                     activeDossier.hdLeader = signer;
-                    activeDossier.hdDecision = ''; // [tnht] không tự cấp số; chưa có số hiển thị "Chưa có" in nghiêng
+                    activeDossier.hdDecision = ''; // [tnht] không tự cấp số; chưa có số hiển thị "-"
                     activeDossier.hdSignDate = 'Chờ ký';
                     activeDossier.hdDate = 'Chờ ký';
                     activeDossier.status = 'Chờ duyệt QĐ thành lập';
@@ -8056,14 +8062,14 @@
         </script>
     <!-- Popup Thành lập Hội đồng xem xét trách nhiệm hoàn trả (Mẫu 33/BTNN) - bố cục như Popup Không thụ lý hồ sơ -->
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
-    <script src="chi_tiet_ho_so_hoan_tra_tlhd.js?v=20261116tl2"></script>
-    <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261116tl3"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_tlhd.js?v=20261118sk1"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261118sk1"></script>
     <!-- Dữ liệu mẫu bổ sung phủ các trạng thái của Ma trận chuyển trạng thái (dùng chung màn Danh sách) -->
-    <script src="ht_du_lieu_mau.js?v=20261116tl1"></script>
+    <script src="ht_du_lieu_mau.js?v=20261118bd1"></script>
     <!-- Bước 1 / Bước 2 Ý kiến của Hội đồng, Stepper 04 bước, phạm vi người xem theo đơn vị -->
     <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261116tl2"></script>
     <!-- Bước 3: trình ký 02 tầng tại đơn vị (QĐ hoàn trả Mẫu 36; QĐ miễn Mẫu 38 / QĐ giảm Mẫu 37; QĐ đình chỉ Mẫu 39 cấp cán bộ) -->
-    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261116tl3"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261118sk1"></script>
     <!-- Bước 4: thu tiền hoàn trả theo phần đơn vị (nộp tiền nhiều đợt, miễn / giảm bổ sung, trả lại tiền) -->
     <script src="chi_tiet_ho_so_hoan_tra_thu.js?v=20261116tl2"></script>
     <!-- Thanh giả lập người dùng dùng chung màn Danh sách / Chi tiết, Khôi phục dữ liệu mẫu -->

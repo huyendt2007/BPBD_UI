@@ -1086,6 +1086,8 @@
             document: (step === 'BAO_CAO_XAC_MINH' || step === 'BIEN_BAN_THUONG_LUONG') ? null : { docNo: '', docDate: now.slice(0, 10), signingMethod: (step === 'CHUYEN_CQGQBT' && /ngoài/i.test(trq.signingMethod || '')) ? 'KY_NGOAI' : 'KY_SO', signerName: '', signerPosition: '' },
             fileName: fileName, fileSize: size, result: 'SUCCESS', sentAt: now
         };
+        // [dvc15] Tên trạng thái gửi kèm mã (TenTrangThai): mã 4 -> tên trạng thái của hồ sơ sau bước; mã khác -> tên trạng thái Dịch vụ công
+        entry.dvcStatusName = window.BTNN_DVC && BTNN_DVC.statusNameOf ? BTNN_DVC.statusNameOf(entry.dvcStatusCode, c.status) : '';
         try { var l = JSON.parse(localStorage.getItem('btnn_dvc_sync_log_new') || '[]'); l.push(entry); localStorage.setItem('btnn_dvc_sync_log_new', JSON.stringify(l)); } catch (e) { /* mockup */ }
         return entry;
     }

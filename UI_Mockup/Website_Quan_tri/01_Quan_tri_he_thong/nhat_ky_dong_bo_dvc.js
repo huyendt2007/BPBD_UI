@@ -7,6 +7,8 @@
  * - Thông báo hiển thị trực tiếp đầu danh sách (không dùng toast).
  * - Dữ liệu mẫu gắn với hồ sơ Nguồn hồ sơ = Dịch vụ công của trang Giải quyết yêu cầu bồi thường; lưu localStorage theo phiên bản NKDV_SEED_VER.
  * - [dvc14] 20 bước (thêm bước 21 Chuyển CQGQBT, 22 - 24 Xác định CQGQBT); Mã hồ sơ XD- mở chi tiết tại trang Xác định cơ quan giải quyết bồi thường.
+ * - [dvc15] Tên trạng thái gửi kèm mã (TenTrangThai, dvcStatusName): mã 4 -> tên trạng thái của hồ sơ sau bước (caseStatusName),
+ *   không gửi 'Đang xử lý'; mã khác -> tên trạng thái Dịch vụ công (Tài liệu kết nối DVC - mục 3, neo dvc-ten-trang-thai).
  */
 var NKDV_SEED_VER = '20261118dvc14';
 var NKDV_KEY = 'btnn_dvc_sync_log';
@@ -56,7 +58,8 @@ function nkdvDvcCode(m) {
 function nkdvFillDvc(list) {
     list.slice().sort(function (a, b) { return nkdvKey(a.eventTime) < nkdvKey(b.eventTime) ? -1 : 1; }).forEach(function (m) {
         if (!m.dvcStatusCode) m.dvcStatusCode = nkdvDvcCode(m);
-        m.dvcStatusName = NKDV_DVC_NAME[m.dvcStatusCode] || '';
+        // [dvc15] Mã 4: gửi kèm tên trạng thái của hồ sơ sau bước; mã khác: tên trạng thái Dịch vụ công
+        m.dvcStatusName = Number(m.dvcStatusCode) === 4 && m.caseStatusName ? m.caseStatusName : (NKDV_DVC_NAME[m.dvcStatusCode] || '');
     });
 }
 // Bỏ bản tin không hợp lệ theo quy tắc mã kết thúc (dữ liệu cũ trong localStorage)

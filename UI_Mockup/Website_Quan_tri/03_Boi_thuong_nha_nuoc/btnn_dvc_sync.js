@@ -20,6 +20,8 @@
  *   bước 22 Kết quả xác định CQGQBT (KET_QUA_XDCQ, mã 4), 23 Yêu cầu bổ sung (XDCQ_YEU_CAU_BO_SUNG, mã 5), 24 Không thụ lý (XDCQ_KHONG_THU_LY, mã 8)
  *   - gọi từ btnn_luong_xu_ly.js xdDvcSend(). Không lùi mã: hồ sơ đã gửi mã 4 không gửi lại mã 1, 2, 3
  *   (Thông báo thụ lý -> mã 4; Không thụ lý lý do khác -> mã 8); Yêu cầu bổ sung vẫn gửi mã 5.
+ * - [dvc15] Chốt 18/11/2026 (quy định Dịch vụ công): tên trạng thái gửi kèm mã (TenTrangThai, lưu dvcStatusName) -
+ *   mã 4: tên trạng thái của hồ sơ trên hệ thống BTNN sau bước (caseStatusName), không gửi 'Đang xử lý'; mã khác: tên trạng thái Dịch vụ công.
  * Bước, mã trạng thái: Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.1, 3.2, 3.3.
  */
 (function () {
@@ -65,6 +67,8 @@
     }
     // [dvc10] Mã trạng thái DVC theo trạng thái vụ việc (Bảng trạng thái liên thông - mục 3.3)
     var DVC_NAME = { 2: 'Được tiếp nhận', 3: 'Không được tiếp nhận', 4: 'Đang xử lý', 5: 'Yêu cầu bổ sung', 8: 'Dừng xử lý', 9: 'Đã xử lý xong', 10: 'Đã trả kết quả' };
+    // [dvc15] Tên trạng thái gửi kèm mã (TenTrangThai): mã 4 -> tên trạng thái BTNN của hồ sơ sau bước; mã khác -> tên trạng thái Dịch vụ công
+    function statusNameOf(code, caseName) { return Number(code) === 4 && caseName ? caseName : (DVC_NAME[code] || ''); }
     var DVC_OF = { CU_NGUOI_GIAI_QUYET: 2, KHONG_THU_LY: 3, YEU_CAU_BO_SUNG: 5, TU_CHOI_PHUC_HOI_DANH_DU: 8, DINH_CHI_GIAI_QUYET: 8, DUNG_GIAI_QUYET: 8, HOAN_THANH: 9, CHO_CHI_TRA: 10 };
     // [dvc11] Mã kết thúc: sau mã 8, 9, 10 không gửi bản tin nào khác của hồ sơ
     var END_CODES = { 8: 1, 9: 1, 10: 1 };
@@ -117,7 +121,7 @@
             dvcCode: dvcKey(c) || ('H48.12.2026.' + dig), receiptNo: c.dvcReceiptNo || ('API-2026-' + dig),
             caseCode: c.maVuViec || '', dossierCode: c.code, agency: c.agency || '', stepCode: step,
             processingUnit: opt.processingUnit || c.agency || '', content: opt.content || '',
-            caseStatus: CASE[st] || '', caseStatusName: st, dvcStatusCode: dvcCode, dvcStatusName: DVC_NAME[dvcCode] || '', eventTime: now,
+            caseStatus: CASE[st] || '', caseStatusName: st, dvcStatusCode: dvcCode, dvcStatusName: statusNameOf(dvcCode, st), eventTime: now,
             document: noDoc ? null : Object.assign({ docNo: '', docDate: now.slice(0, 10), signingMethod: 'KY_SO', signerName: '', signerPosition: '' }, opt.doc || {}),
             fileName: step === 'VU_VIEC_HOAN_THANH' ? '' : (opt.fileName || (step.toLowerCase() + '_' + c.code + '_da_ky.pdf')),
             fileSize: step === 'VU_VIEC_HOAN_THANH' ? 0 : (Number(opt.fileSize) || (200000 + (Number(dig) % 300000))),
@@ -165,5 +169,5 @@
             if (c.phddStatus === 'Hoàn thành' && p.phddStatus && p.phddStatus !== 'Hoàn thành') record(c, 'VU_VIEC_HOAN_THANH', { caseStatusName: 'Hoàn thành', phddOnly: true, fileName: '', fileSize: 0 });
         });
     };
-    window.BTNN_DVC = { record: record, isDvc: isDvc, dvcKey: dvcKey, inherited: inherited, reached4: reached4, claimOf: claimOf, dvcCodeOf: dvcCodeOf, isClosed: isClosed, blocked: blocked, dvcName: DVC_NAME, watch: function (k, fn) { WATCH[k] = fn; } };
+    window.BTNN_DVC = { record: record, isDvc: isDvc, dvcKey: dvcKey, inherited: inherited, reached4: reached4, claimOf: claimOf, dvcCodeOf: dvcCodeOf, isClosed: isClosed, blocked: blocked, dvcName: DVC_NAME, statusNameOf: statusNameOf, watch: function (k, fn) { WATCH[k] = fn; } };
 })();

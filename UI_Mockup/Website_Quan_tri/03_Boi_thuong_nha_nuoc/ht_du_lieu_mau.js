@@ -33,6 +33,9 @@
  *   + 01 cán bộ Không có lỗi; chạy đủ luồng Lưu ý kiến hội đồng -> 02 phần đơn vị -> trình / ký duyệt QĐ hoàn trả -> Thu tiền hoàn trả
  * - 16/11/2026 (tl1) - HT-2026-046 (Thu tiền hoàn trả): cán bộ nộp tiền trong lúc QĐ giảm mức hoàn trả bổ sung chờ duyệt; QĐ ban hành thì số đã nộp lớn hơn số tiền sau giảm
  *   -> giữ Thu tiền hoàn trả, có số tiền cần trả lại, cột Thao tác hiện Ghi nhận trả lại tiền (SRS chức năng 25 TH4, ngày 14/11/2026)
+ * - 18/11/2026 (dc3) - HT-2026-047 (Đình chỉ xem xét hoàn trả): đình chỉ cả hồ sơ tại Bước 3, đã ban hành QĐ đình chỉ (Ký ngoài), chưa có QĐ hoàn trả;
+ *   thanh tiến trình giữ tại Bước 3, Bước 4 Chưa mở khóa, mở sẵn Bước 3 (SRS HT dòng 329, 407)
+ * - 18/11/2026 (bd1) - HT-2026-048: mọi cán bộ Miễn hoàn trả theo QĐ hoàn trả đã ban hành, 01 cán bộ Không có lỗi; badge đầu màn hình chi tiết «Miễn hoàn trả»
  * - 06/11/2026: bỏ đình chỉ một phần cán bộ (chốt với khách hàng); đình chỉ luôn áp dụng cả hồ sơ, tới trước khi có Quyết định hoàn trả được ban hành
  * Nạp sau khối dữ liệu của trang, trước các add-on xem_xet_hoan_tra_pham_vi.js / chi_tiet_ho_so_hoan_tra_ykhd.js / _qd.js.
  */
@@ -49,7 +52,9 @@
     // 05/11 (dc1): thêm hồ sơ thử thêm người và đình chỉ (HT-2026-040 đến 044)
     // 10/11 (ct1): thêm hồ sơ tố tụng hình sự HT-2026-045 (Họp hội đồng)
     // 16/11 (tl1): thêm hồ sơ HT-2026-046 (cán bộ có số tiền cần trả lại)
-    const SEED_VER = '20261116tl1', SEED_CODES = ['HT-2026-046', 'HT-2026-025', 'HT-2026-026', 'HT-2026-027', 'HT-2026-001', 'HT-2026-021', 'HT-2026-028', 'HT-2026-030', 'HT-2026-031', 'HT-2026-038', 'HT-2026-039', 'HT-2026-044'];
+    // 18/11 (dc3): thêm hồ sơ HT-2026-047 (Đình chỉ xem xét hoàn trả, đình chỉ tại Bước 3)
+    // 18/11 (bd1): thêm hồ sơ HT-2026-048 (mọi cán bộ Miễn hoàn trả)
+    const SEED_VER = '20261118bd1', SEED_CODES = ['HT-2026-048', 'HT-2026-047', 'HT-2026-046', 'HT-2026-025', 'HT-2026-026', 'HT-2026-027', 'HT-2026-001', 'HT-2026-021', 'HT-2026-028', 'HT-2026-030', 'HT-2026-031', 'HT-2026-038', 'HT-2026-039', 'HT-2026-044'];
     // Hồ sơ chưa tách phần đơn vị đổi trạng thái mẫu: xóa trạng thái đã lưu của màn Chi tiết
     const STATUS_CODES = ['HT-2026-011', 'HT-2026-012', 'HT-2026-020', 'HT-2026-029', 'HT-2026-032', 'HT-2026-033', 'HT-2026-034', 'HT-2026-035', 'HT-2026-036', 'HT-2026-037', 'HT-2026-040', 'HT-2026-041', 'HT-2026-042', 'HT-2026-043', 'HT-2026-045'];
     try {
@@ -206,6 +211,19 @@
             officers: [OF('Quang Văn Dừng', U_B, 'Đội trưởng Đội trật tự đô thị', 'Vô ý', 22000000, 'Nhiều lần'), OF('Rơ Thị Thi', U_B, 'Công chức địa chính - xây dựng', 'Vô ý', 16000000, 'Một lần'),
                 OF('Sử Văn Công', U_B, 'Phó Chủ tịch phường', 'Cố ý nhưng không bị truy cứu trách nhiệm hình sự', 30000000, 'Nhiều lần')]
         },
+        // [dc3] Đình chỉ xem xét hoàn trả - đình chỉ cả hồ sơ tại Bước 3: đã ban hành QĐ đình chỉ (Mẫu 39/BTNN), chưa có QĐ hoàn trả được ban hành.
+        // Thanh tiến trình giữ tại Bước 3 (Bước 1, 2 Đã hoàn thành; Bước 3 Đang xử lý; Bước 4 Chưa mở khóa), mở sẵn Bước 3
+        {
+            id: 'HT-2026-047', claimCode: 'BT-2026-847', claimSummary: 'Tạm đình chỉ hoạt động cơ sở sản xuất dựa trên kết quả kiểm tra sau đó bị hủy bỏ.', claimAmt: 48000000, status: 'Đình chỉ xem xét hoàn trả', hdDecision: '74/QĐ-TLHD', hdDate: '08/08/2026',
+            // Đã chốt ý kiến Hội đồng: phần đơn vị có sẵn, chưa ban hành QĐ hoàn trả (giữ trạng thái chung Đình chỉ xem xét hoàn trả khi mở trang)
+            extra: { htUnits: [{ unit: U_CHU, st: 'CBH', files: [], officers: ['Tăng Văn Ngừng', 'Ứng Thị Dịu'] }] },
+            officers: [OF('Tăng Văn Ngừng', U_B, 'Phó Trưởng phòng Kinh tế', 'Vô ý', 5000000, 'Một lần'), OF('Ứng Thị Dịu', U_B, 'Chuyên viên phòng Kinh tế', 'Vô ý', 3000000, 'Một lần')]
+        },
+        // [bd1] Mọi cán bộ Miễn hoàn trả theo ý kiến Hội đồng (QĐ hoàn trả đã ban hành), 01 cán bộ Không có lỗi: badge đầu màn hình chi tiết «Miễn hoàn trả»
+        {
+            id: 'HT-2026-048', claimCode: 'BT-2026-848', claimSummary: 'Thu hồi giấy phép hành nghề khi chưa đủ căn cứ, người hành nghề bị gián đoạn thu nhập.', claimAmt: 36000000, status: 'Hoàn thành', hdDecision: '75/QĐ-TLHD', hdDate: '05/08/2026',
+            officers: [OF('Vi Văn Miên', U_B, 'Chuyên viên phòng Y tế', 'Vô ý', 6000000, ''), OF('Hứa Thị Khoan', U_B, 'Phó Trưởng phòng Y tế', 'Vô ý', 8000000, ''), OF('Lò Văn Đức', U_B, 'Cán bộ văn phòng', 'Không có lỗi', 0, '')]
+        },
         // [ct1] Bước 2 - Họp hội đồng, lĩnh vực tố tụng hình sự: demo chạy đủ luồng Lưu ý kiến hội đồng -> phân tách 02 phần đơn vị (UBND Phường Bồ Đề, UBND phường Hải An)
         // -> Chuyên viên từng cơ quan trình QĐ hoàn trả -> Chủ tịch UBND ký duyệt -> Thu tiền hoàn trả; 01 cán bộ Không có lỗi (Không xem xét TNHT)
         {
@@ -245,6 +263,10 @@
         'Yên Văn Bảo': ['CBH_HT', 'HT'], 'Âu Thị Giảm': ['CBH_HT', 'GIAM', 11000000], 'Bế Văn Tâm': ['CBH_HT', 'HT'],
         // HT-2026-044 (Bước 3): thử đình chỉ cả hồ sơ
         'Quang Văn Dừng': ['CBH_HT', 'HT'], 'Rơ Thị Thi': ['CBH_HT', 'HT'], 'Sử Văn Công': ['CBH_HT', 'HT'],
+        // HT-2026-047 (dc3): mọi cán bộ Đình chỉ hoàn trả theo QĐ đình chỉ cả hồ sơ đã ban hành tại Bước 3
+        // HT-2026-048 (bd1): mọi cán bộ Miễn hoàn trả theo QĐ hoàn trả; cán bộ Không có lỗi: Không xem xét TNHT
+        'Vi Văn Miên': ['MIEN', 'MIEN', 0, { paid: 0, total: 0 }], 'Hứa Thị Khoan': ['MIEN', 'MIEN', 0, { paid: 0, total: 0 }], 'Lò Văn Đức': ['KXX', 'HT', 0, { total: 0 }],
+        'Tăng Văn Ngừng': ['DC', 'HT', 0, { total: 0, dc: { key: 0, st: 'DONE', whole: true } }], 'Ứng Thị Dịu': ['DC', 'HT', 0, { total: 0, dc: { key: 0, st: 'DONE', whole: true } }],
         // HT-2026-046: QĐ giảm bổ sung chung (giảm 1.500.000, trình 22/09, ban hành 25/09); đợt nộp thứ hai trong lúc chờ duyệt -> cần trả lại 500.000
         'Thạch Văn Dư': ['THU', 'HT', 0, { paid: 4000000, total: 3500000, refund: 500000, pays: [['21/09/2026', 2000000], ['23/09/2026', 2000000]], mg: { key: 0, phaiHT: 5000000, duocGiam: 1500000, trinh: '22/09/2026', ngay: '25/09/2026', soKh: '94/QĐ-UBND', lyDo: 'Cán bộ có hoàn cảnh gia đình khó khăn, đã chủ động nộp tiền hoàn trả trước thời hạn.' } }],
         'Quan Thị Hòa': ['THU', 'HT', 0, { paid: 2000000 }]
@@ -272,6 +294,8 @@
         'HT-2026-038': { owner: U_CHU, officers: [L('Uông Văn Quyết', U_A, 'CBH_HT', { hd: 30000000 }), L('Văn Thị Hương', U_A, 'CBH_HT', { hd: 20000000, chet: true }), L('Xa Văn Đúng', U_A, 'KXX', { hd: 0 })] },
         'HT-2026-039': { owner: U_CHU, officers: [L('Yên Văn Bảo', U_B, 'CBH_HT', { hd: 35000000 }), L('Âu Thị Giảm', U_B, 'CBH_HT', { xl: 'GIAM', hd: 15000000, giam: 11000000 }), L('Bế Văn Tâm', U_B, 'CBH_HT', { hd: 18000000, chet: true })] },
         'HT-2026-044': { owner: U_CHU, officers: [L('Quang Văn Dừng', U_B, 'CBH_HT', { hd: 22000000 }), L('Rơ Thị Thi', U_B, 'CBH_HT', { hd: 16000000 }), L('Sử Văn Công', U_B, 'CBH_HT', { hd: 30000000 })] },
+        'HT-2026-048': { owner: U_CHU, officers: [L('Vi Văn Miên', U_B, 'MIEN', { xl: 'MIEN', hd: 6000000 }), L('Hứa Thị Khoan', U_B, 'MIEN', { xl: 'MIEN', hd: 8000000 }), L('Lò Văn Đức', U_B, 'KXX', { hd: 0 })] },
+        'HT-2026-047': { owner: U_CHU, officers: [L('Tăng Văn Ngừng', U_B, 'DC', { hd: 5000000 }), L('Ứng Thị Dịu', U_B, 'DC', { hd: 3000000 })] },
         'HT-2026-046': { owner: U_CHU, officers: [L('Thạch Văn Dư', U_A, 'THU', { hd: 5000000, paid: 4000000, pt: 3500000, refund: 500000 }), L('Quan Thị Hòa', U_A, 'THU', { hd: 12000000, paid: 2000000 })] }
     };
 
@@ -345,7 +369,7 @@
     try {
         let createdCodes = [];
         try { createdCodes = (JSON.parse(localStorage.getItem('btnn_hoantra_created_v1') || '[]') || []).map(d => d && (d.code || d.id)); } catch (e) { createdCodes = []; }
-        const isSeed = d => d && /^HT-2026-0(0[1-9]|[1-3]\d|4[0-6])$/.test(d.code || d.id || '') && !createdCodes.includes(d.code || d.id);
+        const isSeed = d => d && /^HT-2026-0(0[1-9]|[1-3]\d|4[0-8])$/.test(d.code || d.id || '') && !createdCodes.includes(d.code || d.id);
         const walk = (o, key) => {
             if (typeof o === 'string') return window.htShiftDate(o, /deadline|nextDate|^han[A-Z]/i.test(key || ''));
             if (Array.isArray(o)) { o.forEach((v, i) => { o[i] = walk(v, key); }); return o; }

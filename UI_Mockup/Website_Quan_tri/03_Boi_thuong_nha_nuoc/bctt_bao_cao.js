@@ -2777,7 +2777,7 @@
             + '<td class="c" style="vertical-align:top;"><div class="b">THỦ TRƯỞNG ĐƠN VỊ</div><div class="i">(ký, ghi rõ họ tên và đóng dấu)</div>' + signBlock(r, sign) + '</td></tr></table>' + knBlock(sign) + '</div>';
     }
     function docM43(r, d, sign) {
-        var m43 = d.m43, tot = m43Total(m43), p = dateParts(d.signDate || '');
+        var m43 = d.m43, tot = m43Total(m43), p = dateParts((d.m42 && d.m42.ngay) || (r.m42 && r.m42.ngay) || '');   // [nbc] 18/11/2026 (nhanhl2): dòng ngày ở vị trí ký Thủ trưởng lấy theo Ngày báo cáo của Mẫu 42/BTNN, in cả bản dự thảo
         function cells(o) { var s = ''; for (var c = 2; c <= 27; c++) s += '<td>' + fmt(o[c], M43_MONEY[c]) + '</td>'; return s; }
         var head = m43Head().replace(/ style="min-width:150px;"/, '');
         var rows = '<tr><td></td>' + cells(tot) + '</tr>' + GROUPS.map(function (g) { return '<tr><td class="b">' + g.k + '</td><td class="l b" colspan="26">' + g.name + '</td></tr><tr><td></td>' + cells(m43Row(m43[g.k])) + '</tr>'; }).join('');
@@ -2789,7 +2789,7 @@
     }
     // Văn bản Mẫu số 04 theo đúng Biểu mẫu số 04 - Thông tư số 08/2019/TT-BTP: dòng tổng (không nhãn) ngay dưới dòng số cột, ký Người lập biểu / Thủ trưởng cơ quan, mục Nguồn lấy số liệu
     function docM04(r, d, sign) {
-        var m04 = d.m04 || emptyM04(), p = dateParts(d.signDate || '');
+        var m04 = d.m04 || emptyM04(), p = dateParts((d.m42 && d.m42.ngay) || (r.m42 && r.m42.ngay) || '');   // [nbc] 18/11/2026 (nhanhl2): dòng ngày ở vị trí ký Thủ trưởng lấy theo Ngày báo cáo của Mẫu 42/BTNN, in cả bản dự thảo
         function cells(o) { var s = ''; for (var c = 2; c <= 15; c++) s += '<td style="text-align:right;">' + fmt(o[c], M04_MONEY[c]) + '</td>'; return s; }
         var head = m04Head().replace(/ style="min-width:150px;"/, '');
         var rows = '<tr><td></td>' + cells(m04Total(m04)) + '</tr>' + GROUPS.map(function (g) { return '<tr><td class="b">' + g.k + '</td><td class="l b" colspan="14">' + g.name + '</td></tr><tr><td></td>' + cells(m04Row(m04[g.k])) + '</tr>'; }).join('');
