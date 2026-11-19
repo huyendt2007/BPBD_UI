@@ -336,7 +336,21 @@
             + '<p style="' + p + ' font-style:italic;">Căn cứ Luật Trách nhiệm bồi thường của Nhà nước; căn cứ Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả số ' + esc(/^\d/.test(activeDossier.hdDecision || '') ? activeDossier.hdDecision : '……') + '; xét Văn bản kiến nghị của Hội đồng (Mã hồ sơ: ' + esc(activeDossier.code) + '),</p>'
             + '<div style="text-align:center; font-weight:bold; margin:10px 0;">QUYẾT ĐỊNH:</div>' + body
             + '<p style="' + p + '"><strong>Điều 2.</strong> Quyết định này có hiệu lực kể từ ngày ký./.</p>'
-            + '<div style="display:flex; justify-content:flex-end; margin-top:30px;"><div id="ht3SignAnchor" style="text-align:center; width:52%;"><div style="font-weight:bold;">THỦ TRƯỞNG CƠ QUAN</div><div style="height:80px;"></div></div></div>';
+            + '<div style="display:flex; justify-content:space-between; margin-top:30px;"><div style="width:44%; font-size:12px;"><strong><em>Nơi nhận:</em></strong><br>' + nnHtml(kind, ctx) + '</div><div id="ht3SignAnchor" style="text-align:center; width:52%;"><div style="font-weight:bold;">THỦ TRƯỞNG CƠ QUAN</div><div style="height:80px;"></div></div></div>';
+    }
+    // [nn1] Nơi nhận mặc định của QĐ hoàn trả (Mẫu 36), giảm (Mẫu 37), miễn (Mẫu 38): dòng đầu theo mẫu; mỗi cơ quan trả lương 01 dòng (không lặp; bỏ cơ quan trùng
+    // cơ quan quản lý nhà nước về công tác BTNN hoặc trùng đơn vị ban hành); cơ quan quản lý nhà nước về công tác BTNN; Lưu: VT, HSVV.
+    function nnDefault(kind, ctx) {
+        const qlnn = typeof dchtQlnn === 'function' ? dchtQlnn() : 'Sở Tư pháp ……';
+        const same = (x, y) => String(x || '').trim().toLowerCase() === String(y || '').trim().toLowerCase();
+        const issuer = ctx.issuer || ctx.unit, list = ctx.list || (ctx.officer ? [ctx.officer] : []), pays = [];
+        list.forEach(o => { const p = o && (o.payUnit || o.agency); if (p && !pays.some(x => same(x, p)) && !same(p, qlnn) && !same(p, issuer)) pays.push(p); });
+        return [baseKind(kind) === 'HT' ? '- Như Điều 3;' : '- Như Điều 1 (để thực hiện);'].concat(pays.map(p => '- ' + p + ';'), ['- ' + qlnn + ';', '- Lưu: VT, HSVV.']).join('\n');
+    }
+    // Nơi nhận in trên văn bản: theo giá trị trường (lượt trình đã lưu: r.noiNhan); lượt trình cũ chưa có trường thì theo mặc định
+    function nnHtml(kind, ctx) {
+        const v = ctx.nn != null ? ctx.nn : nnDefault(kind, ctx);
+        return String(v || '').split('\n').map(s => s.trim()).filter(Boolean).map(esc).join('<br>') || '- ……;';
     }
     let DC_DRAFT = null; // lượt trình QĐ đình chỉ mới: { unit, names }
     let MG_DRAFT = null; // lượt trình QĐ miễn / giảm bổ sung chung mới: { unit, names }
@@ -804,6 +818,8 @@
             + '<div class="gqx-field"><label class="form-label">Căn cứ<span class="gqx-req">*</span></label><textarea id="ht3DcCanCu" class="form-control" rows="4" maxlength="4000" placeholder="Nhập căn cứ, mỗi căn cứ 01 dòng" oninput="ht3Clr(\'ht3DcCanCu\')"></textarea><div id="ht3DcCanCuErr" class="gqx-err">' + REQ + '</div></div>'
             + '<div class="gqx-field"><label class="form-label">Văn bản làm căn cứ yêu cầu bồi thường<span class="gqx-req">*</span></label><textarea id="ht3DcVb" class="form-control" rows="2" maxlength="1000" placeholder="Nhập tên, số hiệu, ngày ban hành, cơ quan ban hành văn bản làm căn cứ yêu cầu bồi thường" oninput="ht3Clr(\'ht3DcVb\')"></textarea><div id="ht3DcVbErr" class="gqx-err">' + REQ + '</div></div>'
             + '<div class="gqx-field" style="margin-bottom:0;"><label class="form-label">Nơi nhận</label><textarea id="ht3DcNoiNhan" class="form-control" rows="3" maxlength="2000" placeholder="Nhập nơi nhận, mỗi nơi nhận 01 dòng"></textarea></div></div>'
+            // [nn1] 19/11/2026: QĐ hoàn trả, giảm, miễn (Mẫu 36, 37, 38): trường Nơi nhận thuộc khối Thông tin điền vào Mẫu (nhanhl2 chốt theo ý BA lead, lỗi N21)
+            + '<div id="ht3NnWrap" class="gqx-field" style="display:none; margin-bottom:0;"><label class="form-label" for="ht3NoiNhan">Nơi nhận</label><textarea id="ht3NoiNhan" class="form-control" rows="4" maxlength="2000" placeholder="Nhập nơi nhận, mỗi nơi nhận 01 dòng"></textarea></div>'
             + '<div class="tlhd-gen-row" style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:8px;"><div class="gqx-file-hint" id="ht3GenHint"></div><button type="button" class="btn-preview-doc btn btn-secondary btn-sm" onclick="ht3Preview()"><i class="fa-solid fa-eye"></i> Xem trước văn bản</button></div></div>'
             + '<div id="ht3Upload" style="display:none;"><input type="file" id="ht3File" accept=".pdf,.doc,.docx" style="display:none;" onchange="ht3OnFile(this)"><div id="ht3FileBox"></div><div id="ht3FileErr" class="gqx-err">' + REQ + '</div></div>'
             // Ký ngoài: Số, ký hiệu và Ngày của văn bản đã ký (như popup Ký ngoài QĐ GQBT)
@@ -863,9 +879,11 @@
         el('ht3MetaTitle').innerHTML = '<i class="fa-solid fa-sliders" style="color:#2563eb;"></i> Thông tin điền vào Mẫu ' + k.mau + '/BTNN';
         el('ht3GenHint').innerText = 'Hệ thống tự động sinh ' + k.doc + ' theo Mẫu ' + k.mau + '/BTNN từ thông tin đang nhập.';
         el('ht3OffNote').innerHTML = '<i class="fa-solid fa-circle-info"></i> Khi bấm <strong>Ban hành văn bản</strong>, văn bản được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống).';
-        // [tnht] Mẫu 34-38: không có khối "Thông tin điền vào Mẫu" (chỉ dòng ghi chú và nút Xem trước văn bản); QĐ đình chỉ (Mẫu 39): giữ khối
-        el('ht3Meta').classList.toggle('tlhd-meta', kind === 'DC');
-        el('ht3MetaTitle').style.display = kind === 'DC' ? '' : 'none';
+        // [nn1] Mọi Loại trình có khối "Thông tin điền vào Mẫu": QĐ đình chỉ (Mẫu 39) và QĐ hoàn trả, giảm, miễn (Mẫu 36, 37, 38: trường Nơi nhận)
+        el('ht3Meta').classList.add('tlhd-meta');
+        el('ht3MetaTitle').style.display = '';
+        el('ht3NnWrap').style.display = kind === 'DC' ? 'none' : '';
+        el('ht3NoiNhan').value = kind === 'DC' ? '' : (rejected && prev.noiNhan != null ? prev.noiNhan : nnDefault(kind, ctx));
         el('ht3OffSo').value = rejected && prev.method === 'offline' ? (prev.soKh || '') : '';
         el('ht3OffNgay').value = rejected && prev.method === 'offline' ? (prev.ngay || today()) : today();
         el('ht3Content').value = rejected ? prev.content : k.content;
@@ -1034,6 +1052,7 @@
         // giam: Số tiền còn phải hoàn trả (số tiền sau giảm) - giữ tên trường cũ cho bộ sinh văn bản
         return { phaiHT: phai, duocGiam: duoc, giam: Math.max(0, phai - duoc), lyDo };
     }
+    function readNn() { return S && S.kind !== 'DC' && el('ht3NoiNhan') ? el('ht3NoiNhan').value : null; }
     function readDc() {
         if (!S || S.kind !== 'DC') return null;
         return { pa: {}, canCu: el('ht3DcCanCu').value, vbCanCu: el('ht3DcVb').value.trim(), noiNhan: el('ht3DcNoiNhan').value };
@@ -1044,7 +1063,7 @@
         return Object.assign({}, ctx, { supp, officer: Object.assign({}, ctx.officer, { total: supp.phaiHT }) });
     }
     // [tnht] Văn bản sinh ở Bước 1 / Xem trước: dòng số, ký hiệu và dòng ngày để trống (nhập tại Bước 2)
-    function curDocHtml() { return docHtml(S.kind, Object.assign(docCtx(S.ctx, readSupp()), { dc: readDc() }), '', ''); }
+    function curDocHtml() { return docHtml(S.kind, Object.assign(docCtx(S.ctx, readSupp()), { dc: readDc(), nn: readNn() }), '', ''); }
     window.ht3Preview = function () {
         const page = '<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><title>Xem trước văn bản<\/title><style>body{background:#e2e8f0;margin:0;padding:24px;}.page{width:794px;min-height:1123px;margin:0 auto;background:#fff;padding:50px 65px;box-sizing:border-box;font-family:"Times New Roman",serif;font-size:14px;line-height:1.6;}<\/style><\/head><body><div class="page">' + curDocHtml() + '<\/div><\/bo' + 'dy><\/ht' + 'ml>';
         try { window.open(URL.createObjectURL(new Blob([page], { type: 'text/html;charset=utf-8' })), '_blank'); } catch (e) { /* bỏ qua */ }
@@ -1182,7 +1201,7 @@
             tlkt: typeof tlktGet === 'function' ? tlktGet('ht3') : [], // Ký ngoài: chỉ Tài liệu ban hành kèm theo
             levels: S.levels, assignees: S.assignees.slice(), content: el('ht3Content').value.trim(), level: 0,
             hist: (recOf(S.kind, S.key) || { hist: [] }).hist.slice(), supp: readSupp(),
-            dc: readDc(), unit: S.ctx.unit, names: (S.ctx.list || []).map(o => o.name), whole: !!S.ctx.whole
+            dc: readDc(), noiNhan: readNn(), unit: S.ctx.unit, names: (S.ctx.list || []).map(o => o.name), whole: !!S.ctx.whole
         };
     }
     window.ht3Submit = function () {
@@ -1294,7 +1313,7 @@
     window.ht3OpenDoc = function (kind, key) {
         const r = recOf(kind, key); if (!r) return;
         if (r.method === 'offline' || r.docSrc === 'upload') { showToast('Đang mở xem tệp tin: ' + r.fileName, 'info'); return; }
-        const html = docHtml(kind, docCtx(ctxOf(kind, key), r.supp), r.soKh, r.issuedAt || r.ngay);
+        const html = docHtml(kind, Object.assign(docCtx(ctxOf(kind, key), r.supp), { nn: r.noiNhan }), r.soKh, r.issuedAt || r.ngay);
         const page = '<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><title>' + esc(r.fileName) + '<\/title><style>body{background:#e2e8f0;margin:0;padding:24px;}.page{width:794px;min-height:1123px;margin:0 auto;background:#fff;padding:50px 65px;box-sizing:border-box;font-family:"Times New Roman",serif;font-size:14px;line-height:1.6;}<\/style><\/head><body><div class="page">' + html + '<\/div><\/bo' + 'dy><\/ht' + 'ml>';
         try { window.open(URL.createObjectURL(new Blob([page], { type: 'text/html;charset=utf-8' })), '_blank'); } catch (e) { /* bỏ qua */ }
     };
@@ -1325,7 +1344,7 @@
         const r = recOf(p.kind, p.key);
         // [tnht] Lượt trình có khối Thông tin ban hành văn bản: văn bản trình ký để trống dòng số, ngày; ô Số, ô Ngày vẽ theo vị trí đã đặt
         const bhOn = !!(r.banHanh && !r.issuedAt);
-        const html = r.docSrc === 'gen' ? docHtml(p.kind, docCtx(ctxOf(p.kind, p.key), r.supp), bhOn ? '' : r.soKh, bhOn ? '' : r.ngay) : '';
+        const html = r.docSrc === 'gen' ? docHtml(p.kind, Object.assign(docCtx(ctxOf(p.kind, p.key), r.supp), { nn: r.noiNhan }), bhOn ? '' : r.soKh, bhOn ? '' : r.ngay) : '';
         return { name: r.fileName, html, open: () => ht3OpenDoc(p.kind, p.key) };
     };
     const baseConfirm = window.confirmLeaderDigitalSign;
