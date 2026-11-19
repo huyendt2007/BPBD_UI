@@ -303,14 +303,14 @@ var HST_VERSION = '20261119hst1';
             + '<div id="hstWPhB" style="display:none"><label class="form-label">Bước phục hồi danh dự hiện tại' + R + '</label><select class="form-control" id="hstPhB" onchange="HST.render()"><option value="TB">Bước 1: Thông báo</option><option value="PH" selected>Bước 2: Ý kiến phản hồi của người yêu cầu</option><option value="TC">Bước 3: Thực hiện</option></select></div>'
             + '<div><label class="form-label">Ngày tiếp nhận' + R + '</label><input class="form-control" id="hstNgayTn" placeholder="dd/mm/yyyy"><div class="hst-err" id="hstNgayTnErr">Đây là trường bắt buộc</div></div>'
             + '<div><label class="form-label">Nơi thụ lý' + R + '</label><select class="form-control" id="hstNoiThuLy"><option value="">-- Chọn nơi thụ lý --</option><option>Thụ lý tại CQGQBT</option><option>Thụ lý tại Tòa án</option></select><div class="hst-err" id="hstNoiThuLyErr">Đây là trường bắt buộc</div></div>'
-            + '<div><label class="form-label">Mã hồ sơ DVC</label><input class="form-control" id="hstDvc" placeholder="Nhập mã hồ sơ DVC (nếu có)"></div>'
+            + '<div id="hstWDvc" style="display:none"><label class="form-label">Mã hồ sơ DVC</label><input class="form-control" id="hstDvc" placeholder="Nhập mã hồ sơ DVC (nếu có)"></div>'
             + '</div>';
         if (initBox && initBox.parentNode === body) body.insertBefore(top, initBox.nextSibling); else body.insertBefore(top, body.firstChild);
         // Nguồn hồ sơ: chọn được
         var ng = el('claimNguonHoSo');
         if (ng && !el('hstNguon')) {
             var s = document.createElement('select');
-            s.id = 'hstNguon'; s.className = 'form-control'; s.style.display = 'none';
+            s.id = 'hstNguon'; s.className = 'form-control'; s.style.display = 'none'; s.onchange = function () { H.nguonDoi(); };
             s.innerHTML = ['Tiếp nhận mới', 'Dịch vụ công', 'Chuyển CQGQBT', 'Xác định CQGQBT'].map(function (v) { return '<option>' + v + '</option>'; }).join('');
             ng.parentNode.insertBefore(s, ng.nextSibling);
             var note = document.createElement('div'); note.id = 'hstNguonNote'; note.className = 'hst-note'; note.style.display = 'none'; note.textContent = 'Nguồn gốc thật của hồ sơ giấy.';
@@ -432,6 +432,7 @@ var HST_VERSION = '20261119hst1';
             if (ht && !ht.value) ht.value = 'Trực tiếp'; // mặc định Trực tiếp
             el('hstSt').value = ''; el('hstNgayTn').value = ''; el('hstDvc').value = ''; el('hstNoiThuLy').value = ''; H._tab = 1;
             ['hstStErr', 'hstNgayTnErr', 'hstNoiThuLyErr'].forEach(function (id) { show(id, false); }); ['hstSt', 'hstNgayTn', 'hstNoiThuLy'].forEach(function (id) { el(id).classList.remove('is-invalid'); });
+            H.nguonDoi();
             H.render();
         } else {
             show('claimNguonHoSo', true); show('hstNguon', false); show('hstNguonNote', false);
@@ -439,6 +440,12 @@ var HST_VERSION = '20261119hst1';
             if (ht2) Array.prototype.slice.call(ht2.options).forEach(function (o) { if (o.dataset.hst) o.remove(); });
         }
     }
+    // Mã hồ sơ DVC: chỉ hiện khi Nguồn hồ sơ là Dịch vụ công
+    H.nguonDoi = function () {
+        var dvc = el('hstNguon') && el('hstNguon').value === 'Dịch vụ công';
+        if (el('hstWDvc')) el('hstWDvc').style.display = dvc ? '' : 'none';
+        if (!dvc && el('hstDvc')) el('hstDvc').value = '';
+    };
     H.isOn = function () { return on; };
     // Mở form Nhập hồ sơ tồn: form Nhập liệu hồ sơ vụ việc (Thêm mới), bỏ chế độ Cán bộ chủ động phục hồi danh dự
     H.open = function () {
@@ -504,7 +511,7 @@ var HST_VERSION = '20261119hst1';
         if (first) { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); first.focus(); return; }
         hook = {
             loai: loai, st: el('hstSt').value, prev: +el('hstPrev').value, ph: el('hstPh').value, phB: el('hstPhB').value, ht: el('hstHt').value,
-            ngay: el('hstNgayTn').value.trim(), noiThuLy: el('hstNoiThuLy').value, dvc: el('hstDvc').value.trim(), nguon: el('hstNguon').value, httn: el('claimHinhThucTiepNhan').value
+            ngay: el('hstNgayTn').value.trim(), noiThuLy: el('hstNoiThuLy').value, dvc: el('hstNguon').value === 'Dịch vụ công' ? el('hstDvc').value.trim() : '', nguon: el('hstNguon').value, httn: el('claimHinhThucTiepNhan').value
         };
         try { saveNewClaim(); } finally { /* hook còn: form không qua kiểm tra chung */ if (hook && !hook.used) hook = null; }
     };
