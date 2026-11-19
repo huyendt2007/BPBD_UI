@@ -1231,6 +1231,16 @@
         .gqx-date > i { position:absolute; right:12px; top:50%; transform:translateY(-50%); color:#2563eb; cursor:pointer; font-size:15px; }
         .gqx-hint { font-size:12px; color:#64748b; margin-top:5px; }
         .gqx-err { display:none; color:#dc2626; font-size:12px; margin-top:4px; }
+        /* [dvbh1] Combobox có tìm kiếm - Đơn vị ban hành (Ký ngoài) */
+        .qs-dvbh { position:relative; }
+        .qs-dvbh .form-control { padding-right:30px; }
+        .qs-dvbh-caret { position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#64748b; font-size:12px; cursor:pointer; }
+        .qs-dvbh-list { display:none; position:absolute; left:0; right:0; top:calc(100% + 2px); z-index:60; max-height:220px; overflow:auto; margin:0; padding:4px 0; list-style:none; background:#fff; border:1px solid #cbd5e1; border-radius:6px; box-shadow:0 8px 20px rgba(15,23,42,.12); }
+        .qs-dvbh.open .qs-dvbh-list { display:block; }
+        .qs-dvbh-list li { padding:7px 12px; font-size:13px; cursor:pointer; }
+        .qs-dvbh-list li:hover, .qs-dvbh-list li.hl { background:#eff6ff; }
+        .qs-dvbh-list li.on { font-weight:600; color:#1d4ed8; }
+        .qs-dvbh-list li.empty { color:#94a3b8; cursor:default; background:none; }
         /* Hình thức ký: 2 thẻ cùng chiều cao, mỗi thẻ 2 dòng (tiêu đề + mô tả) */
         .sign-cards-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:10px; align-items:stretch; }
         .sign-card { position:relative; display:flex; align-items:center; justify-content:space-between; padding:10px 12px; min-height:58px; height:100%; box-sizing:border-box; border:1.5px solid #cbd5e1; border-radius:8px; background:#ffffff; cursor:pointer; transition:all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow:0 1px 2px rgba(0,0,0,0.03); margin:0; }
@@ -1815,6 +1825,19 @@
 
                     <!-- Ký ngoài: chỉ đính kèm tệp PDF đã ký & đóng dấu -->
                     <div id="hqdOffSec" style="display:none;">
+                        <!-- [dvbh2] Đơn vị ban hành (Ký ngoài): giống Ký ngoài của Quyết định giải quyết bồi thường; lưu làm Cơ quan ban hành -->
+                        <div class="gqx-grid2" style="margin-bottom:14px;">
+                            <div class="gqx-field">
+                                <label class="form-label" for="hqdOffUnitInput">Đơn vị ban hành<span class="gqx-req">*</span></label>
+                                <div class="qs-dvbh" id="hqdOffUnitBox">
+                                    <input type="text" class="form-control" id="hqdOffUnitInput" autocomplete="off" oninput="dvbhFilter('hqd')" onfocus="dvbhOpen('hqd')" onblur="dvbhBlur('hqd')" onkeydown="dvbhKey('hqd', event)">
+                                    <i class="fa-solid fa-chevron-down qs-dvbh-caret" onmousedown="event.preventDefault(); dvbhToggle('hqd')"></i>
+                                    <input type="hidden" id="hqdOffUnit">
+                                    <ul class="qs-dvbh-list" id="hqdOffUnitList"></ul>
+                                </div>
+                                <div class="gqx-err" id="hqdOffUnitErr">Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
                         <input type="file" id="hqdOffInput" accept=".pdf" style="display:none;" onchange="hqdUploadOff(this)">
                         <div id="hqdOffBox"></div>
                         <div class="gqx-err" id="hqdOffErr">Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.</div>
@@ -1958,6 +1981,19 @@
 
                     <!-- Ký ngoài: chỉ đính kèm tệp PDF đã ký & đóng dấu -->
                     <div id="scbOffSec" style="display:none;">
+                        <!-- [dvbh2] Đơn vị ban hành (Ký ngoài): giống Ký ngoài của Quyết định giải quyết bồi thường; lưu làm Cơ quan ban hành -->
+                        <div class="gqx-grid2" style="margin-bottom:14px;">
+                            <div class="gqx-field">
+                                <label class="form-label" for="scbOffUnitInput">Đơn vị ban hành<span class="gqx-req">*</span></label>
+                                <div class="qs-dvbh" id="scbOffUnitBox">
+                                    <input type="text" class="form-control" id="scbOffUnitInput" autocomplete="off" oninput="dvbhFilter('scb')" onfocus="dvbhOpen('scb')" onblur="dvbhBlur('scb')" onkeydown="dvbhKey('scb', event)">
+                                    <i class="fa-solid fa-chevron-down qs-dvbh-caret" onmousedown="event.preventDefault(); dvbhToggle('scb')"></i>
+                                    <input type="hidden" id="scbOffUnit">
+                                    <ul class="qs-dvbh-list" id="scbOffUnitList"></ul>
+                                </div>
+                                <div class="gqx-err" id="scbOffUnitErr">Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
                         <input type="file" id="scbOffInput" accept=".pdf" style="display:none;" onchange="scbUploadOff(this)">
                         <div id="scbOffBox"></div>
                         <div class="gqx-err" id="scbOffErr">Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.</div>
@@ -2194,6 +2230,18 @@
                                 <label class="form-label" for="qsOffLeader">Người ký<span class="gqx-req">*</span></label>
                                 <select class="form-control" id="qsOffLeader" onchange="qsErr('qsOffLeader', false)"></select>
                                 <div class="gqx-err" id="qsOffLeaderErr">Đây là trường bắt buộc</div>
+                            </div>
+                            <!-- [dvbh1] Đơn vị ban hành (Ký ngoài): Combobox có tìm kiếm; mặc định Đơn vị của tài khoản đang đăng nhập;
+                                 danh sách = đơn vị đó và các đơn vị cấp trên trực tiếp tới đơn vị cấp cao nhất; lưu làm Cơ quan ban hành -->
+                            <div class="gqx-field">
+                                <label class="form-label" for="qsOffUnitInput">Đơn vị ban hành<span class="gqx-req">*</span></label>
+                                <div class="qs-dvbh" id="qsOffUnitBox">
+                                    <input type="text" class="form-control" id="qsOffUnitInput" autocomplete="off" oninput="dvbhFilter('qs')" onfocus="dvbhOpen('qs')" onblur="dvbhBlur('qs')" onkeydown="dvbhKey('qs', event)">
+                                    <i class="fa-solid fa-chevron-down qs-dvbh-caret" onmousedown="event.preventDefault(); dvbhToggle('qs')"></i>
+                                    <input type="hidden" id="qsOffUnit">
+                                    <ul class="qs-dvbh-list" id="qsOffUnitList"></ul>
+                                </div>
+                                <div class="gqx-err" id="qsOffUnitErr">Đây là trường bắt buộc</div>
                             </div>
                         </div>
                         <div class="gqx-field" style="margin:14px 0 0;">
@@ -2870,10 +2918,26 @@
             return `${statusBadge(d.status)}${sub ? `<div class="wf-sub${d.status === ST.TRA_LAI ? ' returned' : ''}">${esc(sub)}</div>` : ''}`;
         }
         function unitLabel(d) { return d.unitId ? W.unitName(d.unitId) : (d.agency || '--'); }
+        // [dvbh1] Cơ quan ban hành theo Hình thức ký (SRS 19/11/2026): Ký ngoài = Đơn vị ban hành chọn khi ban hành;
+        // Ký số tích Đóng dấu cơ quan = Đơn vị ban hành chọn tại Bước 2; Ký số không tích = đơn vị của Lãnh đạo cấp cuối; dữ liệu cũ: đơn vị của hồ sơ
+        function issuerUnitId(d) {
+            if (!d) return '';
+            if (d.issuingUnitId) return d.issuingUnitId;
+            const sd = d.signDoc || {};
+            if (sd.method === 'Ký số') {
+                const bh = sd.banHanh || {};
+                if (sd.dongDau && bh.donViBanHanh) return bh.donViBanHanh;
+                const lastLeader = (sd.assignees || []).filter(Boolean).slice(-1)[0];
+                const u = lastLeader && W.getUser(lastLeader);
+                if (u && u.unitId) return u.unitId;
+            }
+            return d.unitId || '';
+        }
+        function issuerLabel(d) { const id = issuerUnitId(d); return id ? W.unitName(id) : (d.agency || '--'); }
         function populateUnitFilter() {
             const sel = $('searchDecUnit');
             const cur = sel.value;
-            const ids = Array.from(new Set(decisions.map(d => d.unitId).filter(Boolean)));
+            const ids = Array.from(new Set(decisions.map(d => issuerUnitId(d)).filter(Boolean)));
             sel.innerHTML = '<option value="">Tất cả</option>' + ids.map(id => `<option value="${esc(id)}">${esc(W.unitName(id))}</option>`).join('');
             sel.value = cur;
         }
@@ -2893,7 +2957,7 @@
                 if (vv && !String(qdVvCode(d.claimCode) || '').toLowerCase().includes(vv)) return false;
                 if (st && d.status !== st) return false;
                 if (kind && !([ST.CHO_DUYET, ST.TRA_LAI].includes(d.status) && d.wfKind === kind)) return false;
-                if (unit && d.unitId !== unit) return false;
+                if (unit && issuerUnitId(d) !== unit) return false;
                 if (from || to) {
                     const dt = parseVnDate(d.issueDate || d.decDate);
                     if (!dt) return false;
@@ -2963,7 +3027,7 @@
                     <td style="text-align:center;">${(d.issueDate || d.decDate) ? esc(d.issueDate || d.decDate) : '<span style="color:#94a3b8; font-style:italic;">-</span>'}</td>
                     <td style="text-align:right; font-weight:600;">${fmt(d.total)}</td>
                     <td>${(d.approvedBy || d.leaderId) ? esc(W.userName(d.approvedBy || d.leaderId)) : '-'}</td>
-                    <td>${esc(unitLabel(d))}</td>
+                    <td>${esc(issuerLabel(d))}</td>
                     <td style="text-align:center;"><a href="javascript:void(0)" onclick="event.stopPropagation(); openLinkedClaimDetail('${esc(d.claimCode)}')" style="font-weight:600; color:var(--secondary-color); text-decoration:underline;">${esc(d.claimCode)}</a></td>
                     <td style="text-align:center;">${esc(qdVvCode(d.claimCode) || '-')}</td>
                     <td style="text-align:center;">${statusCell(d)}</td>
@@ -3306,7 +3370,7 @@
             $('qdDetailBody').innerHTML = `${alerts}
                 <div class="dtl-card"><div class="dtl-card-head"><i class="fa-solid fa-file-lines"></i> Thông tin chung của Quyết định${hasAmend ? '<span class="ctqd-goc">Quyết định gốc</span>' : ''}</div><div class="dtl-card-body"><div class="dtl-grid cols-3" id="ctqdInfoGrid">
                     ${dtlItem('Mã vụ việc - Người yêu cầu', `<a href="javascript:void(0)" onclick="openLinkedClaimDetail('${esc(d.claimCode)}')">${esc(d.claimCode)}</a> - ${esc(d.nycName)}`)}
-                    ${dtlItem('Cơ quan ban hành', esc(unitLabel(d)))}
+                    ${dtlItem('Cơ quan ban hành', esc(issuerLabel(d)))}
                     ${dtlItem('Trạng thái', statusCell(d))}
                     ${dtlItem('Số quyết định', esc(d.decNo || '-'))}
                     ${dtlItem('Ngày quyết định', esc(d.issueDate || '-'))}
@@ -4096,6 +4160,7 @@
             $('qsOffDate').value = W.dateText();
             const offLeaders = [...new Set(levels.reduce((acc, lv) => acc.concat(lv.leaders), []))];
             $('qsOffLeader').innerHTML = '<option value="">-- Chọn Lãnh đạo --</option>' + offLeaders.map(id => `<option value="${esc(id)}">${esc(W.userLabel(id))}</option>`).join('');
+            dvbhInit('qs');
             if (window.flatpickr && !$('qsOffDate')._flatpickr) flatpickr('#qsOffDate', { dateFormat: 'd/m/Y', allowInput: true });
             ['qsOffDate'].forEach(id => { const fp = $(id)._flatpickr; if (fp) fp.setDate($(id).value, false, 'd/m/Y'); });
             qsRenderOff();
@@ -4279,12 +4344,49 @@
             data.signDoc = { method: 'Ký số', file: f.name, docNo: bhs.docNo, docDate: bhs.docDate, dongDau: bhs.dongDau, banHanh: bhs.banHanh, canCu: data.canCu, noiNhan: $('qsNoiNhan').value, assignees: qs.assignees.slice(), sigCoords: JSON.parse(JSON.stringify(qs.coords)), attachments: typeof tlktGet === 'function' ? tlktGet('qdgq') : [] };
             if (qdSubmitDecision(data, { assignees: qs.assignees.slice(), signDoc: data.signDoc, bodyHtml: f.generated ? f.html : '', levels: lv ? lv.levels : undefined, pcSig: lv ? lv.pcSig : undefined })) closeQdSign();
         }
+        // [dvbh1] Đơn vị ban hành (Ký ngoài): Combobox có tìm kiếm. Danh sách = Đơn vị của tài khoản đang đăng nhập và các đơn vị cấp trên trực tiếp
+        // lần lượt tới đơn vị cấp cao nhất (giống Cơ quan giải quyết bồi thường - Tiếp nhận hồ sơ); không gồm đơn vị cùng cấp, khác nhánh
+        // Dùng chung cho Ký ngoài của Quyết định (qs), Hủy QĐ (hqd), Sửa chữa, bổ sung QĐ (scb): phần tử {p}OffUnitInput / {p}OffUnit / {p}OffUnitList / {p}OffUnitBox / {p}OffUnitErr
+        function dvbhIds() { const u = W.getCurrentUser(); return u && u.unitId ? W.getAncestors(u.unitId) : []; }
+        function dvbhNorm(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase(); }
+        function dvbhErr(p, on) { $(p + 'OffUnitErr').style.display = on ? 'block' : 'none'; $(p + 'OffUnitInput').classList.toggle('is-invalid', !!on); }
+        function dvbhSet(p, id) { $(p + 'OffUnit').value = id || ''; $(p + 'OffUnitInput').value = id ? W.unitName(id) : ''; if (id) dvbhErr(p, false); }
+        function dvbhInit(p) { dvbhSet(p, dvbhIds()[0] || ''); dvbhErr(p, false); dvbhClose(p); }
+        function dvbhRender(p, q) {
+            const n = dvbhNorm(q), cur = $(p + 'OffUnit').value;
+            const ids = dvbhIds().filter(id => !n || dvbhNorm(W.unitName(id)).includes(n));
+            $(p + 'OffUnitList').innerHTML = ids.length
+                ? ids.map((id, i) => `<li data-id="${esc(id)}" class="${id === cur ? 'on' : ''}${i === 0 && n ? ' hl' : ''}" onmousedown="event.preventDefault(); dvbhPick('${p}', '${esc(id)}')">${esc(W.unitName(id))}</li>`).join('')
+                : '<li class="empty">Không có dữ liệu</li>';
+        }
+        function dvbhOpen(p) { dvbhRender(p, ''); $(p + 'OffUnitBox').classList.add('open'); $(p + 'OffUnitInput').select(); }
+        function dvbhClose(p) { $(p + 'OffUnitBox').classList.remove('open'); }
+        function dvbhToggle(p) { if ($(p + 'OffUnitBox').classList.contains('open')) { dvbhClose(p); $(p + 'OffUnitInput').blur(); } else $(p + 'OffUnitInput').focus(); }
+        function dvbhFilter(p) { $(p + 'OffUnit').value = ''; dvbhRender(p, $(p + 'OffUnitInput').value); $(p + 'OffUnitBox').classList.add('open'); }
+        function dvbhPick(p, id) { dvbhSet(p, id); dvbhClose(p); }
+        // Rời ô: chữ gõ trùng đúng tên 01 đơn vị trong danh sách thì chọn đơn vị đó; không trùng thì để trống (báo lỗi khi Ban hành văn bản)
+        function dvbhBlur(p) {
+            if (!$(p + 'OffUnit').value) {
+                const t = dvbhNorm($(p + 'OffUnitInput').value.trim());
+                const hit = t ? dvbhIds().find(id => dvbhNorm(W.unitName(id)) === t) : '';
+                dvbhSet(p, hit || '');
+            }
+            dvbhClose(p);
+        }
+        function dvbhKey(p, e) {
+            if (e.key === 'Escape') { dvbhClose(p); return; }
+            if (e.key === 'Enter') { e.preventDefault(); const li = $(p + 'OffUnitList').querySelector('li[data-id]'); if (li) dvbhPick(p, li.getAttribute('data-id')); }
+        }
+        // Kiểm tra bắt buộc khi Ban hành văn bản: true = còn trống
+        function dvbhCheck(p) { const bad = !$(p + 'OffUnit').value; dvbhErr(p, bad); return bad; }
         // Ký ngoài: ban hành trực tiếp, không trình Lãnh đạo
         function qsIssueOffline(confirmed) {
-            // Bắt buộc: Số quyết định, Ngày quyết định, Người ký, Tệp PDF đã ký & đóng dấu (Tổng số tiền lấy theo Form Quyết định)
+            // Bắt buộc: Số quyết định, Ngày quyết định, Người ký, Đơn vị ban hành, Tệp PDF đã ký & đóng dấu (Tổng số tiền lấy theo Form Quyết định)
             const offIds = ['qsOffNo', 'qsOffDate', 'qsOffLeader'];
             const bad = offIds.filter(id => !$(id).value.trim());
             offIds.forEach(id => qsErr(id, bad.includes(id)));
+            const unitBad = dvbhCheck('qs');
+            if (unitBad) bad.push('qsOffUnitInput');
             $('qsOffFileErr').style.display = qs.offFile ? 'none' : 'block';
             const qsDz = $('qsOffBox').querySelector('.qdx-drop'); if (qsDz) qsDz.classList.toggle('is-error', !qs.offFile);
             if (bad.length || !qs.offFile) { if (bad.length) $(bad[0]).focus(); return; }
@@ -4299,8 +4401,8 @@
             if (!d) { d = { id: 'QD-' + Date.now().toString(36), decisionType: 'Quyết định giải quyết bồi thường', amendments: [], history: [], createdBy: W.getCurrentUserId(), createdAt: W.nowText() }; decisions.unshift(d); }
             delete data.note;
             const offName = qs.offFile.name;
-            Object.assign(d, data, { signMethod: 'Ký ngoài', signDoc: { method: 'Ký ngoài', file: offName, attachments: typeof tlktGet === 'function' ? tlktGet('qdgq') : [] }, signedFile: offName, status: ST.DA_BH, returned: null, request: null, decNo: $('qsOffNo').value.trim(), issueDate: $('qsOffDate').value.trim() || W.dateText(), approvedBy: $('qsOffLeader').value, updatedAt: new Date().toISOString() });
-            addDecHistory(d, 'Ban hành Quyết định (Ký ngoài)', `Số ${d.decNo || '-'} ngày ${d.issueDate}. Tệp đã ký: ${offName}.`);
+            Object.assign(d, data, { signMethod: 'Ký ngoài', signDoc: { method: 'Ký ngoài', file: offName, attachments: typeof tlktGet === 'function' ? tlktGet('qdgq') : [] }, signedFile: offName, status: ST.DA_BH, returned: null, request: null, decNo: $('qsOffNo').value.trim(), issueDate: $('qsOffDate').value.trim() || W.dateText(), approvedBy: $('qsOffLeader').value, issuingUnitId: $('qsOffUnit').value, updatedAt: new Date().toISOString() });
+            addDecHistory(d, 'Ban hành Quyết định (Ký ngoài)', `Số ${d.decNo || '-'} ngày ${d.issueDate} - ${W.unitName(d.issuingUnitId)}. Tệp đã ký: ${offName}.`);
             // Liên thông như Ký số (quy tắc 9): hồ sơ luồng, ghi Số/Ngày/Số tiền vào vụ việc, vụ việc Chờ chi trả
             saveDecisions();
             qdgqIssueLinks(d);
@@ -4381,7 +4483,7 @@
             $('hqdSubUnit').innerText = unitLabel(d) || '--';
             const info = $('hqdInfo');
             info.className = 'scb-info' + (resubmit && d.returned ? ' returned' : '');
-            info.innerHTML = `<div><i class="fa-solid fa-file-lines"></i> Quyết định bị hủy: số <b>${esc(d.decNo || '-')}</b> ngày <b>${esc(d.issueDate || '-')}</b> - ${esc(unitLabel(d))}</div>`
+            info.innerHTML = `<div><i class="fa-solid fa-file-lines"></i> Quyết định bị hủy: số <b>${esc(d.decNo || '-')}</b> ngày <b>${esc(d.issueDate || '-')}</b> - ${esc(issuerLabel(d))}</div>`
                 + (resubmit && d.returned ? `<div style="margin-top:4px;"><i class="fa-solid fa-circle-exclamation"></i> Bị trả lại bởi${esc(W.userName(d.returned.by))} (${esc(d.returned.at)}): ${esc(d.returned.reason)}</div>` : '');
             $('hqdCanCu').value = sd.canCu || HQD_CAN_CU_DEFAULT;
             $('hqdReason').value = prev && prev.content ? prev.content : '';
@@ -4393,6 +4495,7 @@
             document.querySelectorAll('#hqdModal .gqx-err, #hqdModal .scb-err').forEach(e => { e.style.display = 'none'; });
             $('hqdMethodOn').checked = true;
             hqdRenderOff();
+            dvbhInit('hqd');
             hqdSetDocSrc('gen');
             tlktQdRestore(hqd, 'hqd', prev, sd, false); // Tài liệu không ban hành kèm theo: không bắt buộc (chốt 06/11/2026)
             hqdSetMethod('Ký số');
@@ -4578,9 +4681,11 @@
             showToast(`Đã trình Lãnh đạo phê duyệt ${KIND_HUY}.`, 'success');
             showList();
         }
-        // Ký ngoài: chỉ bắt buộc tệp PDF đã ký & đóng dấu; ban hành trực tiếp, không trình Lãnh đạo; Quyết định chuyển Hủy quyết định
+        // Ký ngoài: bắt buộc Đơn vị ban hành, tệp PDF đã ký & đóng dấu; ban hành trực tiếp, không trình Lãnh đạo; Quyết định chuyển Hủy quyết định
         function hqdIssueOffline(confirmed) {
-            if (!hqd.offFile) { $('hqdOffErr').style.display = 'block'; const dz = $('hqdOffBox').querySelector('.qdx-drop'); if (dz) dz.classList.add('is-error'); return; }
+            const unitBad = dvbhCheck('hqd');
+            if (!hqd.offFile) { $('hqdOffErr').style.display = 'block'; const dz = $('hqdOffBox').querySelector('.qdx-drop'); if (dz) dz.classList.add('is-error'); }
+            if (unitBad || !hqd.offFile) { if (unitBad) $('hqdOffUnitInput').focus(); return; }
             // Popup xác nhận trước khi ban hành
             if (confirmed !== true) { qdxConfirmIssue('Quyết định hủy Quyết định giải quyết bồi thường', 'Quyết định giải quyết bồi thường chuyển sang trạng thái "Hủy quyết định"', () => hqdIssueOffline(true)); return; }
             const d = getDec(hqd.id); if (!d) return;
@@ -4588,10 +4693,10 @@
             const at = W.nowText();
             if (W.getRecord(d.claimCode)) W.ensureClaimRecord({ code: d.claimCode, status: RESULT_STATUS[KIND_HUY] });
             // [hqdhl] Ban hành Ký ngoài: Quyết định hủy tự chuyển Có hiệu lực
-            d.cancel = { kind: KIND_HUY, content: '', signMethod: 'Ký ngoài', draftDoc: { source: 'uploaded', uploadedName: name }, approvedBy: '', issuedBy: W.getCurrentUserId(), at, hieuLuc: QDH_HL_ON, hieuLucAt: at, attachments: typeof tlktGet === 'function' ? tlktGet('hqd') : [] };
+            d.cancel = { kind: KIND_HUY, content: '', signMethod: 'Ký ngoài', issuingUnitId: $('hqdOffUnit').value, draftDoc: { source: 'uploaded', uploadedName: name }, approvedBy: '', issuedBy: W.getCurrentUserId(), at, hieuLuc: QDH_HL_ON, hieuLucAt: at, attachments: typeof tlktGet === 'function' ? tlktGet('hqd') : [] };
             d.status = ST.DA_HUY; d.request = null; d.returned = null; d.wfKind = ''; d.lastKind = KIND_HUY; d.updatedAt = new Date().toISOString();
             updateClaimInStorage(d.claimCode, { decStatus: ST.DA_HUY, cancelReason: '', cancelDecDate: W.dateText(), cancelHieuLuc: QDH_HL_ON });
-            addDecHistory(d, 'Ban hành Quyết định hủy Quyết định giải quyết bồi thường (Ký ngoài)', `Tệp đã ký: ${name}. Quyết định hủy [${QDH_HL_ON}].`);
+            addDecHistory(d, 'Ban hành Quyết định hủy Quyết định giải quyết bồi thường (Ký ngoài)', `Đơn vị ban hành: ${W.unitName(d.cancel.issuingUnitId)}. Tệp đã ký: ${name}. Quyết định hủy [${QDH_HL_ON}].`);
             saveDecisions();
             closeHqdModal();
             showToast('Đã ban hành Quyết định hủy Quyết định giải quyết bồi thường (Ký ngoài).', 'success');
@@ -4677,7 +4782,7 @@
             $('scbSubUnit').innerText = unitLabel(d) || '--';
             const info = $('scbInfo');
             info.className = 'scb-info' + (resubmit && d.returned ? ' returned' : '');
-            info.innerHTML = `<div><i class="fa-solid fa-file-lines"></i> Quyết định được sửa chữa, bổ sung: số <b>${esc(d.decNo || '-')}</b> ngày <b>${esc(d.issueDate || '-')}</b> - ${esc(unitLabel(d))}</div>`
+            info.innerHTML = `<div><i class="fa-solid fa-file-lines"></i> Quyết định được sửa chữa, bổ sung: số <b>${esc(d.decNo || '-')}</b> ngày <b>${esc(d.issueDate || '-')}</b> - ${esc(issuerLabel(d))}</div>`
                 + (resubmit && d.returned ? `<div style="margin-top:4px;"><i class="fa-solid fa-circle-exclamation"></i> Bị trả lại bởi${esc(W.userName(d.returned.by))} (${esc(d.returned.at)}): ${esc(d.returned.reason)}</div>` : '');
             $('scbContent').value = prev && prev.content ? prev.content : scbContentDefault(d);
             $('scbEffDate').value = prev && prev.effectiveDate ? prev.effectiveDate : (d.effectiveText || '60 ngày kể từ ngày người yêu cầu bồi thường nhận được quyết định'); // [scbhl]
@@ -4687,6 +4792,7 @@
             document.querySelectorAll('#scbModal .gqx-err, #scbModal .scb-err').forEach(e => { e.style.display = 'none'; });
             $('scbMethodOn').checked = true;
             scbRenderOff();
+            dvbhInit('scb');
             scbSetDocSrc('gen');
             tlktQdRestore(scb, 'scb', prev, sd, false);
             scbSetMethod('Ký số');
@@ -4877,19 +4983,21 @@
             showToast(`Đã trình Lãnh đạo phê duyệt ${KIND_SC}.`, 'success');
             showList();
         }
-        // Ký ngoài: chỉ bắt buộc tệp PDF đã ký & đóng dấu; ban hành trực tiếp, không trình Lãnh đạo
+        // Ký ngoài: bắt buộc Đơn vị ban hành, tệp PDF đã ký & đóng dấu; ban hành trực tiếp, không trình Lãnh đạo
         function scbIssueOffline(confirmed) {
-            if (!scb.offFile) { $('scbOffErr').style.display = 'block'; const dz = $('scbOffBox').querySelector('.qdx-drop'); if (dz) dz.classList.add('is-error'); return; }
+            const unitBad = dvbhCheck('scb');
+            if (!scb.offFile) { $('scbOffErr').style.display = 'block'; const dz = $('scbOffBox').querySelector('.qdx-drop'); if (dz) dz.classList.add('is-error'); }
+            if (unitBad || !scb.offFile) { if (unitBad) $('scbOffUnitInput').focus(); return; }
             // Popup xác nhận trước khi ban hành
             if (confirmed !== true) { qdxConfirmIssue('Quyết định sửa chữa, bổ sung Quyết định giải quyết bồi thường', 'Quyết định giải quyết bồi thường chuyển "Đã ban hành", chờ cập nhật hiệu lực', () => scbIssueOffline(true)); return; }
             const d = getDec(scb.id); if (!d) return;
             const name = scb.offFile.name;
             if (scb.resubmit && W.getRecord(d.claimCode)) W.ensureClaimRecord({ code: d.claimCode, status: ST.DA_BH });
-            (d.amendments = d.amendments || []).push({ kind: KIND_SC, content: '', signMethod: 'Ký ngoài', draftDoc: { source: 'uploaded', uploadedName: name }, approvedBy: '', issuedBy: W.getCurrentUserId(), at: W.nowText(), attachments: typeof tlktGet === 'function' ? tlktGet('scb') : [] });
+            (d.amendments = d.amendments || []).push({ kind: KIND_SC, content: '', signMethod: 'Ký ngoài', issuingUnitId: $('scbOffUnit').value, draftDoc: { source: 'uploaded', uploadedName: name }, approvedBy: '', issuedBy: W.getCurrentUserId(), at: W.nowText(), attachments: typeof tlktGet === 'function' ? tlktGet('scb') : [] });
             // [schl] Quyết định sửa chữa, bổ sung ban hành: Quyết định chuyển Đã ban hành, chờ Cập nhật hiệu lực (kinh phí tính khi Có hiệu lực)
             d.scPending = { n: d.amendments.length, at: W.nowText(), prevHieuLuc: d.hieuLuc || '' }; d.hieuLuc = '';
             d.status = ST.DA_BH; d.request = null; d.returned = null; d.wfKind = ''; d.lastKind = KIND_SC; d.updatedAt = new Date().toISOString();
-            addDecHistory(d, 'Ban hành Quyết định sửa chữa, bổ sung (Ký ngoài)', `Tệp đã ký: ${name}. Quyết định chuyển [Đã ban hành], chờ cập nhật hiệu lực.`);
+            addDecHistory(d, 'Ban hành Quyết định sửa chữa, bổ sung (Ký ngoài)', `Đơn vị ban hành: ${W.unitName($('scbOffUnit').value)}. Tệp đã ký: ${name}. Quyết định chuyển [Đã ban hành], chờ cập nhật hiệu lực.`);
             saveDecisions();
             closeScbModal();
             showToast('Đã ban hành Quyết định sửa chữa, bổ sung Quyết định giải quyết bồi thường (Ký ngoài).', 'success');
@@ -5383,7 +5491,7 @@
         });
         window.addEventListener('storage', e => { if (e.key === W.KEYS.RECORDS || e.key === KEY_DEC) { decisions = loadDecisions(); if ($('contentListDecisions').style.display !== 'none') showList(); } });
     </script>
-    <script src="quyet_dinh_gqbt_ctqd.js?v=20261109ro1"></script>
+    <script src="quyet_dinh_gqbt_ctqd.js?v=20261119dvbh"></script>
     <!-- [hlqd] Cập nhật hiệu lực QĐ: Đã ban hành -> Có hiệu lực (tạo bản ghi Chi trả tiền bồi thường) / Không có hiệu lực -->
     <script src="quyet_dinh_gqbt_hlqd.js?v=20261109ld1"></script>
     <!-- [scbf] Sửa chữa, bổ sung QĐ theo Form (điền sẵn nội dung QĐ, tự sinh Nội dung sửa chữa, bổ sung); liên thông kinh phí khi QĐ sửa chữa, bổ sung ban hành (Hủy QĐ không liên thông Kinh phí) -->

@@ -115,6 +115,12 @@ function ctqdDownload(id, which, idx) {
     if (f.uploaded) { showToast('Giả lập tải tệp: ' + f.name, 'info'); return; }
     W.downloadDocWord(f.html, ctqdBase(f.name));
 }
+// [dvbh2] Cơ quan ban hành của Quyết định hủy / lần sửa chữa, bổ sung: Ký ngoài = Đơn vị ban hành chọn khi ban hành;
+// Ký số = Đơn vị ban hành tại Bước 2 (tích Đóng dấu cơ quan) hoặc đơn vị Lãnh đạo cấp cuối; dữ liệu cũ: Cơ quan ban hành của Quyết định gốc
+function ctqdIssuer(x, d) {
+    var id = (typeof issuerUnitId === 'function' && (issuerUnitId(Object.assign({}, x, { unitId: '' })) || issuerUnitId(d))) || '';
+    return id ? W.unitName(id) : '-';
+}
 // Khối Quyết định đã bị hủy: thông tin hủy (lưới) + dòng File Quyết định hủy (tách riêng)
 function ctqdCancelHtml(d) {
     var c = d.cancel; if (!c) return '';
@@ -123,6 +129,7 @@ function ctqdCancelHtml(d) {
     var g = '<div class="ctqd-grid">'
         + ctqdF('Hình thức ký', esc(ctqdSignText(c.signMethod)))
         + ctqdF(off ? 'Người ban hành' : 'Lãnh đạo ký duyệt hủy', esc(W.userLabel(off ? c.issuedBy : c.approvedBy) || ''))
+        + ctqdF('Cơ quan ban hành', esc(ctqdIssuer(c, d)))
         + ctqdF('Thời điểm hủy', esc(c.at || ''))
         + (c.decNo || sd.docNo ? ctqdF('Số quyết định hủy', esc(c.decNo || sd.docNo)) : '')
         + ctqdF('Hiệu lực', 'Kể từ ngày ký') // [hqdhl] cố định theo Mẫu 20/BTNN
@@ -172,6 +179,7 @@ function ctqdAmendHtml(d) {
             + ctqdF('Ngày quyết định', esc(inf.date))
             + ctqdF('Hình thức ký', esc(inf.sign))
             + ctqdF(off ? 'Người ban hành' : 'Lãnh đạo ký duyệt', esc(W.userLabel(off ? a.issuedBy : a.approvedBy) || ''))
+            + ctqdF('Cơ quan ban hành', esc(ctqdIssuer(a, d)))
             + (a.effectiveDate ? ctqdF('Hiệu lực của Quyết định', esc(a.effectiveDate)) : '')
             + (a.content ? ctqdF('Nội dung sửa chữa, bổ sung', esc(a.content), true) : '')
             + '</div>' + ctqdFileSec('File Quyết định sửa chữa, bổ sung đã ký ban hành', inf.file, '', d.id, 'amend', i) + ctqdDocs(a.attachments || (a.signDoc || {}).attachments, d) + '</div>');
