@@ -1046,6 +1046,14 @@
         var name = (t && t.targetUnitId && W.unitName ? W.unitName(t.targetUnitId) : '') || tr.targetName || '';
         return name ? 'Chuyển hồ sơ đến ' + name + ' để giải quyết theo thẩm quyền.' : '';
     }
+    // [dvc16] Mã cơ quan nhận mới: Mã cơ quan, đơn vị (Quản lý cơ cấu tổ chức) của cơ quan nhận hồ sơ; mockup dùng mã định danh đơn vị
+    function dvcTransferUnitCode(c) {
+        var W = window.BTNN_WF, r = W && W.getRecord ? W.getRecord(c.code) : null;
+        var t = (r && r.transferTo) || c.transferTo || {};
+        var id = t.targetUnitId || '';
+        var u = id && W && W.getUnit ? W.getUnit(id) : null;
+        return u ? (u.code || u.id) : id;
+    }
     function dvcStepOf(prev, c) {
         var cur = c.status, paused = prev === 'Hoãn giải quyết' || prev === 'Tạm đình chỉ';
         if (cur === 'Hoãn giải quyết') return 'QUYET_DINH_HOAN';
@@ -1088,6 +1096,11 @@
         };
         // [dvc15] Tên trạng thái gửi kèm mã (TenTrangThai): mã 4 -> tên trạng thái của hồ sơ sau bước; mã khác -> tên trạng thái Dịch vụ công
         entry.dvcStatusName = window.BTNN_DVC && BTNN_DVC.statusNameOf ? BTNN_DVC.statusNameOf(entry.dvcStatusCode, c.status) : '';
+        // [dvc16] 19/11/2026: Không thụ lý lý do không thuộc thẩm quyền (bước 2, mã 4): TenTrangThai = "Đã chuyển CQGQBT [Mã cơ quan nhận mới]"
+        if (step === 'THONG_BAO_KHONG_THU_LY' && c.status === 'Đã chuyển CQGQBT' && Number(entry.dvcStatusCode) === 4) {
+            var mcq = dvcTransferUnitCode(c);
+            if (mcq) entry.dvcStatusName = 'Đã chuyển CQGQBT ' + mcq;
+        }
         try { var l = JSON.parse(localStorage.getItem('btnn_dvc_sync_log_new') || '[]'); l.push(entry); localStorage.setItem('btnn_dvc_sync_log_new', JSON.stringify(l)); } catch (e) { /* mockup */ }
         return entry;
     }

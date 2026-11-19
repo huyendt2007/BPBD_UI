@@ -216,8 +216,8 @@
         const isOrg = nycType() === T_TC;
         const role = getValue('claimNYCRole');
         let ids = [];
-        // Khối Thông tin vụ việc liên kết đang hiển thị: bắt buộc chọn vụ việc (nhập mà chưa chọn được coi là bỏ trống)
-        if (linkCondition() && !link) { setValue('tdtaLinkCode', ''); ids.push('tdtaLinkCode'); }
+        // Khối Thông tin vụ việc liên kết: không bắt buộc chọn vụ việc (19/11/2026); nhập mã mà chưa chọn được vụ việc thì không lưu vụ việc liên kết
+        if (linkCondition() && !link) { setValue('tdtaLinkCode', ''); const e = $('tdtaLinkCodeError'); if (e) e.style.display = 'none'; $('tdtaLinkCode').classList.remove('is-invalid', 'error'); }
         ids.push('claimNYCRole', 'claimNYCName');
         ids = ids.concat(isOrg ? ['claimNYCOrgCode', 'claimNYCRepName', 'claimNYCRepPosition'] : ['claimNYCBirth']);
         ids.push('claimNYCPhone');

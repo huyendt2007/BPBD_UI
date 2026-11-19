@@ -59,6 +59,8 @@ function nkdvFillDvc(list) {
     list.slice().sort(function (a, b) { return nkdvKey(a.eventTime) < nkdvKey(b.eventTime) ? -1 : 1; }).forEach(function (m) {
         if (!m.dvcStatusCode) m.dvcStatusCode = nkdvDvcCode(m);
         // [dvc15] Mã 4: gửi kèm tên trạng thái của hồ sơ sau bước; mã khác: tên trạng thái Dịch vụ công
+        // [dvc16] Bản tin đã có tên gửi kèm riêng (bước 2 Không thụ lý không thuộc thẩm quyền: "Đã chuyển CQGQBT [Mã cơ quan nhận mới]"): giữ nguyên
+        if (Number(m.dvcStatusCode) === 4 && m.stepCode === 'THONG_BAO_KHONG_THU_LY' && /^Đã chuyển CQGQBT \S/.test(m.dvcStatusName || '')) return;
         m.dvcStatusName = Number(m.dvcStatusCode) === 4 && m.caseStatusName ? m.caseStatusName : (NKDV_DVC_NAME[m.dvcStatusCode] || '');
     });
 }

@@ -1823,10 +1823,30 @@
                         <div class="gqx-err" id="hqdDocErr">Đây là trường bắt buộc</div>
                     </div>
 
-                    <!-- Ký ngoài: chỉ đính kèm tệp PDF đã ký & đóng dấu -->
+                    <!-- Ký ngoài: thông tin Quyết định hủy đã ký + tệp PDF đã ký & đóng dấu (đồng nhất Ký ngoài MH02b) -->
                     <div id="hqdOffSec" style="display:none;">
-                        <!-- [dvbh2] Đơn vị ban hành (Ký ngoài): giống Ký ngoài của Quyết định giải quyết bồi thường; lưu làm Cơ quan ban hành -->
                         <div class="gqx-grid2" style="margin-bottom:14px;">
+                            <div class="gqx-field">
+                                <label class="form-label" for="hqdOffNo">Số quyết định hủy<span class="gqx-req">*</span></label>
+                                <input type="text" class="form-control" id="hqdOffNo" maxlength="100" placeholder="Nhập số quyết định hủy" oninput="hqdErr('hqdOffNo', false)">
+                                <div class="gqx-err" id="hqdOffNoErr">Đây là trường bắt buộc</div>
+                            </div>
+                            <div class="gqx-field">
+                                <label class="form-label" for="hqdOffDate">Ngày quyết định hủy<span class="gqx-req">*</span></label>
+                                <div class="gqx-date">
+                                    <input type="text" class="form-control" id="hqdOffDate" placeholder="dd/mm/yyyy" readonly onchange="hqdErr('hqdOffDate', false)">
+                                    <i class="fa-regular fa-calendar-days" onclick="var i=document.getElementById('hqdOffDate'); if(i._flatpickr) i._flatpickr.open();" title="Chọn ngày"></i>
+                                </div>
+                                <div class="gqx-err" id="hqdOffDateErr">Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+                        <div class="gqx-grid2" style="margin-bottom:14px;">
+                            <div class="gqx-field">
+                                <label class="form-label" for="hqdOffLeader">Người ký<span class="gqx-req">*</span></label>
+                                <select class="form-control" id="hqdOffLeader" onchange="hqdErr('hqdOffLeader', false)"></select>
+                                <div class="gqx-err" id="hqdOffLeaderErr">Đây là trường bắt buộc</div>
+                            </div>
+                            <!-- [dvbh2] Đơn vị ban hành (Ký ngoài): giống Ký ngoài của Quyết định giải quyết bồi thường; lưu làm Cơ quan ban hành -->
                             <div class="gqx-field">
                                 <label class="form-label" for="hqdOffUnitInput">Đơn vị ban hành<span class="gqx-req">*</span></label>
                                 <div class="qs-dvbh" id="hqdOffUnitBox">
@@ -1838,9 +1858,17 @@
                                 <div class="gqx-err" id="hqdOffUnitErr">Đây là trường bắt buộc</div>
                             </div>
                         </div>
-                        <input type="file" id="hqdOffInput" accept=".pdf" style="display:none;" onchange="hqdUploadOff(this)">
-                        <div id="hqdOffBox"></div>
-                        <div class="gqx-err" id="hqdOffErr">Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.</div>
+                        <div class="gqx-field">
+                            <label class="form-label" for="hqdOffReason">Lý do hủy Quyết định<span class="gqx-req">*</span></label>
+                            <textarea class="form-control" id="hqdOffReason" rows="3" maxlength="4000" style="font-size:12.5px;" placeholder="Nhập lý do hủy Quyết định" oninput="hqdErr('hqdOffReason', false)"></textarea>
+                            <div class="gqx-err" id="hqdOffReasonErr">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="gqx-field" style="margin:14px 0 0;">
+                            <label class="form-label">Tệp văn bản PDF đã ký &amp; đóng dấu<span class="gqx-req">*</span></label>
+                            <input type="file" id="hqdOffInput" accept=".pdf" style="display:none;" onchange="hqdUploadOff(this)">
+                            <div id="hqdOffBox"></div>
+                            <div class="gqx-err" id="hqdOffErr">Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.</div>
+                        </div>
                         <div class="qdx-status-note"><i class="fa-solid fa-circle-info"></i> Khi bấm <strong>Ban hành văn bản</strong>, Quyết định hủy Quyết định giải quyết bồi thường được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống) và Quyết định giải quyết bồi thường chuyển sang trạng thái <strong>Hủy quyết định</strong>.</div>
                     </div>
                 </div>
@@ -4491,6 +4519,14 @@
             $('hqdConsequence').value = sd.consequence || '';
             $('hqdNoiNhan').value = sd.noiNhan || HQD_NOI_NHAN_DEFAULT;
             $('hqdNote').value = '';
+            // Ký ngoài: Số / Ngày quyết định hủy, Người ký, Lý do hủy Quyết định (đồng nhất Ký ngoài MH02b)
+            $('hqdOffNo').value = '';
+            $('hqdOffDate').value = W.dateText();
+            $('hqdOffReason').value = '';
+            const hqdOffLeaders = [...new Set(levels.reduce((acc, lv) => acc.concat(lv.leaders), []))];
+            $('hqdOffLeader').innerHTML = '<option value="">-- Chọn Lãnh đạo --</option>' + hqdOffLeaders.map(uid => `<option value="${esc(uid)}">${esc(W.userLabel(uid))}</option>`).join('');
+            if (window.flatpickr && !$('hqdOffDate')._flatpickr) flatpickr('#hqdOffDate', { dateFormat: 'd/m/Y', allowInput: true });
+            if ($('hqdOffDate')._flatpickr) $('hqdOffDate')._flatpickr.setDate($('hqdOffDate').value, false, 'd/m/Y');
             clearInvalid($('hqdModal'));
             document.querySelectorAll('#hqdModal .gqx-err, #hqdModal .scb-err').forEach(e => { e.style.display = 'none'; });
             $('hqdMethodOn').checked = true;
@@ -4683,9 +4719,14 @@
         }
         // Ký ngoài: bắt buộc Đơn vị ban hành, tệp PDF đã ký & đóng dấu; ban hành trực tiếp, không trình Lãnh đạo; Quyết định chuyển Hủy quyết định
         function hqdIssueOffline(confirmed) {
+            // Bắt buộc: Số quyết định hủy, Ngày quyết định hủy, Người ký, Đơn vị ban hành, Lý do hủy Quyết định, Tệp PDF đã ký & đóng dấu
+            const offIds = ['hqdOffNo', 'hqdOffDate', 'hqdOffLeader', 'hqdOffReason'];
+            const bad = offIds.filter(id => !$(id).value.trim());
+            offIds.forEach(id => hqdErr(id, bad.includes(id)));
+            $('hqdOffErr').style.display = hqd.offFile ? 'none' : 'block';
+            const dz = $('hqdOffBox').querySelector('.qdx-drop'); if (dz) dz.classList.toggle('is-error', !hqd.offFile);
             const unitBad = dvbhCheck('hqd');
-            if (!hqd.offFile) { $('hqdOffErr').style.display = 'block'; const dz = $('hqdOffBox').querySelector('.qdx-drop'); if (dz) dz.classList.add('is-error'); }
-            if (unitBad || !hqd.offFile) { if (unitBad) $('hqdOffUnitInput').focus(); return; }
+            if (bad.length || unitBad || !hqd.offFile) { if (bad.length) $(bad[0]).focus(); else if (unitBad) $('hqdOffUnitInput').focus(); return; }
             // Popup xác nhận trước khi ban hành
             if (confirmed !== true) { qdxConfirmIssue('Quyết định hủy Quyết định giải quyết bồi thường', 'Quyết định giải quyết bồi thường chuyển sang trạng thái "Hủy quyết định"', () => hqdIssueOffline(true)); return; }
             const d = getDec(hqd.id); if (!d) return;
@@ -4693,10 +4734,11 @@
             const at = W.nowText();
             if (W.getRecord(d.claimCode)) W.ensureClaimRecord({ code: d.claimCode, status: RESULT_STATUS[KIND_HUY] });
             // [hqdhl] Ban hành Ký ngoài: Quyết định hủy tự chuyển Có hiệu lực
-            d.cancel = { kind: KIND_HUY, content: '', signMethod: 'Ký ngoài', issuingUnitId: $('hqdOffUnit').value, draftDoc: { source: 'uploaded', uploadedName: name }, approvedBy: '', issuedBy: W.getCurrentUserId(), at, hieuLuc: QDH_HL_ON, hieuLucAt: at, attachments: typeof tlktGet === 'function' ? tlktGet('hqd') : [] };
+            const offNo = $('hqdOffNo').value.trim(), offDate = $('hqdOffDate').value.trim(), offSigner = $('hqdOffLeader').value, offReason = $('hqdOffReason').value.trim();
+            d.cancel = { kind: KIND_HUY, content: offReason, decNo: offNo, decDate: offDate, signer: offSigner, signMethod: 'Ký ngoài', issuingUnitId: $('hqdOffUnit').value, draftDoc: { source: 'uploaded', uploadedName: name }, signedFile: name, approvedBy: '', issuedBy: W.getCurrentUserId(), at, hieuLuc: QDH_HL_ON, hieuLucAt: at, attachments: typeof tlktGet === 'function' ? tlktGet('hqd') : [] };
             d.status = ST.DA_HUY; d.request = null; d.returned = null; d.wfKind = ''; d.lastKind = KIND_HUY; d.updatedAt = new Date().toISOString();
-            updateClaimInStorage(d.claimCode, { decStatus: ST.DA_HUY, cancelReason: '', cancelDecDate: W.dateText(), cancelHieuLuc: QDH_HL_ON });
-            addDecHistory(d, 'Ban hành Quyết định hủy Quyết định giải quyết bồi thường (Ký ngoài)', `Đơn vị ban hành: ${W.unitName(d.cancel.issuingUnitId)}. Tệp đã ký: ${name}. Quyết định hủy [${QDH_HL_ON}].`);
+            updateClaimInStorage(d.claimCode, { decStatus: ST.DA_HUY, cancelReason: offReason, cancelDecNo: offNo, cancelDecDate: offDate, cancelSigner: W.userName(offSigner) || '', cancelHieuLuc: QDH_HL_ON });
+            addDecHistory(d, 'Ban hành Quyết định hủy Quyết định giải quyết bồi thường (Ký ngoài)', `Số ${offNo} ngày ${offDate}. Người ký: ${W.userName(offSigner) || '-'}. Đơn vị ban hành: ${W.unitName($('hqdOffUnit').value)}. Lý do hủy: ${offReason}. Tệp đã ký: ${name}. Quyết định hủy [${QDH_HL_ON}].`);
             saveDecisions();
             closeHqdModal();
             showToast('Đã ban hành Quyết định hủy Quyết định giải quyết bồi thường (Ký ngoài).', 'success');
@@ -5491,7 +5533,7 @@
         });
         window.addEventListener('storage', e => { if (e.key === W.KEYS.RECORDS || e.key === KEY_DEC) { decisions = loadDecisions(); if ($('contentListDecisions').style.display !== 'none') showList(); } });
     </script>
-    <script src="quyet_dinh_gqbt_ctqd.js?v=20261119dvbh"></script>
+    <script src="quyet_dinh_gqbt_ctqd.js?v=20261119hkn2"></script>
     <!-- [hlqd] Cập nhật hiệu lực QĐ: Đã ban hành -> Có hiệu lực (tạo bản ghi Chi trả tiền bồi thường) / Không có hiệu lực -->
     <script src="quyet_dinh_gqbt_hlqd.js?v=20261109ld1"></script>
     <!-- [scbf] Sửa chữa, bổ sung QĐ theo Form (điền sẵn nội dung QĐ, tự sinh Nội dung sửa chữa, bổ sung); liên thông kinh phí khi QĐ sửa chữa, bổ sung ban hành (Hủy QĐ không liên thông Kinh phí) -->

@@ -132,6 +132,8 @@ function ctqdCancelHtml(d) {
         + ctqdF('Cơ quan ban hành', esc(ctqdIssuer(c, d)))
         + ctqdF('Thời điểm hủy', esc(c.at || ''))
         + (c.decNo || sd.docNo ? ctqdF('Số quyết định hủy', esc(c.decNo || sd.docNo)) : '')
+        + (c.decDate || sd.docDate ? ctqdF('Ngày quyết định hủy', esc(c.decDate || sd.docDate)) : '')
+        + (off && c.signer ? ctqdF('Người ký', esc(W.userLabel(c.signer) || '')) : '') // Ký ngoài: Người ký nhập tại popup Hủy QĐ
         + ctqdF('Hiệu lực', 'Kể từ ngày ký') // [hqdhl] cố định theo Mẫu 20/BTNN
         + ctqdF('Trạng thái Quyết định hủy', esc(c.hieuLuc || 'Có hiệu lực')) // [hqdhl] tự Có hiệu lực khi cấp cuối Ký duyệt / ban hành Ký ngoài
         + ctqdF('Lý do hủy Quyết định', esc(c.content || ''), true)
