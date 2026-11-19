@@ -708,7 +708,8 @@
             const m = String(today.getMonth() + 1).padStart(2, '0');
             const y = today.getFullYear();
             list.forEach((claim, idx) => {
-                if (!claim || !claim.id || !String(claim.id).startsWith('HS')) return;
+                // [hst] Hồ sơ tồn giữ ngày tiếp nhận trên giấy, không dời ngày dữ liệu mẫu
+                if (!claim || claim.ton || !claim.id || !String(claim.id).startsWith('HS')) return;
                 const dayNum = (idx % 8) + 1;
                 claim.date = `${String(dayNum).padStart(2, '0')}/${m}/${y}`;
                 claim.deadline = `${String(Math.min(dayNum + 10, 28)).padStart(2, '0')}/${m}/${y}`;
@@ -1060,7 +1061,7 @@
                 tr.innerHTML = `
                     <td style="text-align:center;">${start + idx + 1}</td>
                     <td class="code-cell">${escapeHtml(vuViecOfItem(item) || '-')}</td>
-                    <td style="text-align:center;">${codeHtml}</td>
+                    <td style="text-align:center;">${codeHtml}${item.ton ? '<br><span title="Hồ sơ đã giải quyết trên giấy, nhập vào hệ thống" style="display:inline-block;white-space:nowrap;background:#e5e7eb;color:#374151;border-radius:4px;padding:2px 6px;font-size:10.5px;font-weight:600;margin-top:4px">Hồ sơ tồn</span>' : ''}</td>
                     <td>${escapeHtml(item.nyc || '-')}</td>
                     <td style="text-align:center;">${escapeHtml(item.nycDocNo || '-')}</td>
                     <td>${escapeHtml(item.victimName || '-')}</td>
