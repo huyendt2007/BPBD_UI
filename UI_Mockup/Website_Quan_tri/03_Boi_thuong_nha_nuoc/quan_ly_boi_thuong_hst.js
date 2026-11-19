@@ -474,6 +474,19 @@ var HST_VERSION = '20261119hst1';
         });
         return first;
     }
+    // Nhập hoặc chọn giá trị thì bỏ báo lỗi bắt buộc của ô đó
+    function boLoiKhiNhap(ev) {
+        var c = ev.target;
+        if (!c || !c.classList || !c.classList.contains('is-invalid') || !String(c.value || '').trim()) return;
+        if (!c.closest('#hstTop') && !c.closest('#hstSteps')) return;
+        c.classList.remove('is-invalid');
+        var e = c.id && el(c.id + 'Err');
+        if (e) e.style.display = 'none';
+        var n = c.nextElementSibling;
+        if (n && n.classList.contains('hst-loi')) n.remove();
+    }
+    document.addEventListener('input', boLoiKhiNhap, true);
+    document.addEventListener('change', boLoiKhiNhap, true);
     // Lưu hồ sơ tồn: kiểm tra riêng -> kiểm tra & lưu chung của form (saveNewClaim) -> gán trạng thái đã chọn
     H.save = function () {
         var loai = H.loai(), first = null;
