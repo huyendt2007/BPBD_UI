@@ -437,14 +437,22 @@ var HST_VERSION = '20261119hst1';
         } else {
             show('claimNguonHoSo', true); show('hstNguon', false); show('hstNguonNote', false);
             var ht2 = el('claimHinhThucTiepNhan');
-            if (ht2) Array.prototype.slice.call(ht2.options).forEach(function (o) { if (o.dataset.hst) o.remove(); });
+            if (ht2) { Array.prototype.slice.call(ht2.options).forEach(function (o) { if (o.dataset.hst) o.remove(); }); ht2.disabled = false; }
         }
     }
-    // Mã hồ sơ DVC: chỉ hiện khi Nguồn hồ sơ là Dịch vụ công
+    // Nguồn hồ sơ Dịch vụ công: hiện Mã hồ sơ DVC; Hình thức tiếp nhận = Dịch vụ công, khóa không cho sửa.
+    // Nguồn khác: ẩn Mã hồ sơ DVC, Hình thức tiếp nhận không có giá trị Dịch vụ công.
     H.nguonDoi = function () {
         var dvc = el('hstNguon') && el('hstNguon').value === 'Dịch vụ công';
         if (el('hstWDvc')) el('hstWDvc').style.display = dvc ? '' : 'none';
         if (!dvc && el('hstDvc')) el('hstDvc').value = '';
+        var ht = el('claimHinhThucTiepNhan');
+        if (!ht) return;
+        var o = Array.prototype.filter.call(ht.options, function (x) { return x.value === 'Dịch vụ công'; })[0];
+        if (o) { o.hidden = !dvc; o.disabled = !dvc; }
+        if (dvc) ht.value = 'Dịch vụ công';
+        else if (ht.value === 'Dịch vụ công' || !ht.value) ht.value = 'Trực tiếp';
+        ht.disabled = dvc;
     };
     H.isOn = function () { return on; };
     // Mở form Nhập hồ sơ tồn: form Nhập liệu hồ sơ vụ việc (Thêm mới), bỏ chế độ Cán bộ chủ động phục hồi danh dự
