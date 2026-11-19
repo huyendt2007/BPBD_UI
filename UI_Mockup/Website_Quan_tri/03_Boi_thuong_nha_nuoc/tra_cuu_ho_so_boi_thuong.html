@@ -455,13 +455,14 @@
     <script>
         // Trạng thái vụ việc Giải quyết YCBT (danh sách gốc GQ_CASE_STATUSES tại quan_ly_boi_thuong.html)
         const allStatuses = [
-            'Chờ tiếp nhận', 'Chờ duyệt', 'Bị trả lại', 'Cử người giải quyết bồi thường', 'Cử người phục hồi danh dự', 'Xác minh thiệt hại', 'Thương lượng',
+            'Chờ phân công', 'Đang phân công', 'Chờ tiếp nhận', 'Chờ duyệt', 'Bị trả lại', 'Cử người giải quyết bồi thường', 'Cử người phục hồi danh dự', 'Xác minh thiệt hại', 'Thương lượng',
             'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành', 'Đang phục hồi danh dự', 'Hoãn phục hồi danh dự', 'Từ chối phục hồi danh dự',
             'Hoãn giải quyết', 'Tạm đình chỉ', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Đã chuyển CQGQBT', 'Không thụ lý', 'Yêu cầu bổ sung'
         ];
-        // Phạm vi tra cứu: toàn bộ vụ việc từ "Chờ tiếp nhận" trở đi, mọi Trạng thái vụ việc (thứ tự hiển thị tại bộ lọc Trạng thái).
+        // Phạm vi tra cứu: toàn bộ vụ việc từ "Chờ phân công" trở đi, mọi Trạng thái vụ việc (thứ tự hiển thị tại bộ lọc Trạng thái).
+        // [pc1] 19/11/2026: thêm Chờ phân công, Đang phân công (hồ sơ Loại hồ sơ Giải quyết yêu cầu bồi thường đang phân công tại Tiếp nhận hồ sơ)
         const TCVV_STATUSES = [
-            'Chờ tiếp nhận', 'Yêu cầu bổ sung', 'Không thụ lý', 'Cử người giải quyết bồi thường', 'Cử người phục hồi danh dự', 'Chờ duyệt', 'Bị trả lại', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả',
+            'Chờ phân công', 'Đang phân công', 'Chờ tiếp nhận', 'Yêu cầu bổ sung', 'Không thụ lý', 'Cử người giải quyết bồi thường', 'Cử người phục hồi danh dự', 'Chờ duyệt', 'Bị trả lại', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả',
             'Hoãn giải quyết', 'Tạm đình chỉ', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Đã chuyển CQGQBT', 'Đang phục hồi danh dự', 'Hoãn phục hồi danh dự', 'Từ chối phục hồi danh dự', 'Hoàn thành'
         ];
 
@@ -540,6 +541,9 @@
         // Danh sách tra cứu: hồ sơ Giải quyết YCBT của toàn hệ thống (từ Chờ tiếp nhận trở đi) + vụ việc tại Tòa án theo phạm vi xem của Theo dõi vụ việc tại Tòa án
         function tcvvBuildList() {
             const gq = allClaims.map(tcvvBuildRow).filter(tcvvInScope);
+            // [pc1] Hồ sơ Loại hồ sơ Giải quyết yêu cầu bồi thường đang Chờ phân công / Đang phân công: lấy từ kho luồng xử lý (chưa có ở claimsList)
+            const daCo = new Set(gq.map(r => r.code));
+            tcvvAssignRows().forEach(r => { if (!daCo.has(r.code)) gq.push(r); });
             let court = [];
             try { court = window.BTNN_NTL ? BTNN_NTL.loadCourtCases().filter(BTNN_NTL.canViewCourt).map(tcvvBuildCourtRow) : []; } catch (e) { court = []; }
             tcvvList = gq.concat(court);
@@ -846,9 +850,31 @@
             }
         }
 
-        // Phạm vi tra cứu: toàn bộ vụ việc từ Chờ tiếp nhận trở đi (mọi Nội dung trình của Chờ duyệt / Bị trả lại, mọi trường hợp Đã chuyển CQGQBT)
+        // Phạm vi tra cứu: toàn bộ vụ việc từ Chờ phân công trở đi (mọi Nội dung trình của Chờ duyệt / Bị trả lại, mọi trường hợp Đã chuyển CQGQBT)
         function tcvvInScope(row) {
             return TCVV_STATUSES.includes(row.status);
+        }
+
+        // [pc1] 19/11/2026: dòng tra cứu của hồ sơ luồng Loại hồ sơ Giải quyết yêu cầu bồi thường (module YCBT) đang Chờ phân công / Đang phân công.
+        // Hồ sơ chưa có ở Giải quyết YCBT (claimsList bỏ qua 02 trạng thái này): Mã hồ sơ GQBT hiển thị chữ thường, không mở Xem chi tiết.
+        function tcvvAssignRows() {
+            const W = window.BTNN_WF;
+            if (!W || typeof W.loadRecords !== 'function') return [];
+            const pending = W.STATUS ? [W.STATUS.CHO_PHAN_CONG, W.STATUS.DANG_PHAN_CONG] : ['Chờ phân công', 'Đang phân công'];
+            let records = [];
+            try { records = W.loadRecords() || []; } catch (e) { return []; }
+            return records.filter(r => r && r.module === 'YCBT' && r.code && pending.includes(r.status)).map(r => {
+                const kind = ['both', 'money', 'honor'].includes(r.requestKind) ? r.requestKind : 'money';
+                const row = tcvvBuildRow({
+                    id: 'WF-' + r.code, code: r.code, maVuViec: r.maVuViec || '', date: r.date || '',
+                    nyc: r.nycName || '', nycRole: r.nycRole, role: r.nycRole, nycDocNo: r.nycDocNo || '',
+                    nbth: r.nbth || null, nbthOrgName: r.nbthOrgName || '', requestType: kind, status: r.status,
+                    agency: W.unitName ? W.unitName(r.rootUnitId) : '', fieldGroup: ''
+                });
+                row.status = r.status;
+                row.pendingAssign = true;
+                return row;
+            });
         }
 
         // Người bị thiệt hại (cùng quy tắc với Giải quyết yêu cầu bồi thường): người yêu cầu là người bị thiệt hại thì lấy tên người yêu cầu
@@ -1022,10 +1048,13 @@
             }
             tcvvFiltered.slice(start, end).forEach((item, idx) => {
                 // Vụ việc tại Tòa án: đã thuộc phạm vi xem của Theo dõi vụ việc tại Tòa án -> luôn xem chi tiết (click dòng)
-                const canView = item.court ? true : tcvvCanViewDetail(item);
+                const canView = item.court ? true : (item.pendingAssign ? false : tcvvCanViewDetail(item));
                 const tr = document.createElement('tr');
                 // Vụ việc được xem chi tiết: Mã hồ sơ GQBT là HyperLink; vụ việc còn lại: chữ thường + tooltip, chỉ xem trên danh sách
-                const codeHtml = item.court ? '-' : canView
+                // [pc1] Hồ sơ Chờ phân công / Đang phân công: chữ thường, không mở Xem chi tiết
+                const codeHtml = item.court ? '-' : item.pendingAssign
+                    ? `<span class="tcvv-code-plain" title="Hồ sơ đang phân công tại Tiếp nhận hồ sơ, chưa có thông tin giải quyết">${escapeHtml(item.code)}</span>`
+                    : canView
                     ? `<a class="tcvv-link" href="javascript:void(0)" onclick="tcvvOpenDetail('${escapeHtml(item.code)}')">${escapeHtml(item.code)}</a>`
                     : (item.code ? `<span class="tcvv-code-plain" title="${TCVV_NO_DETAIL_MSG}">${escapeHtml(item.code)}</span>` : '-');
                 tr.innerHTML = `
@@ -1113,7 +1142,7 @@
         function statusBadge(status) {
             let cls = 'badge-info';
             if (status === 'Hoàn thành') cls = 'badge-success';
-            else if (['Chờ tiếp nhận', 'Chờ duyệt', 'Cử người giải quyết bồi thường', 'Cử người phục hồi danh dự'].includes(status)) cls = 'badge-pending';
+            else if (['Chờ phân công', 'Đang phân công', 'Chờ tiếp nhận', 'Chờ duyệt', 'Cử người giải quyết bồi thường', 'Cử người phục hồi danh dự'].includes(status)) cls = 'badge-pending';
             else if (['Yêu cầu bổ sung', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoãn giải quyết', 'Tạm đình chỉ', 'Hoãn phục hồi danh dự'].includes(status)) cls = 'badge-warning';
             else if (status === 'Bị trả lại') cls = 'badge-tra-lai';
             else if (['Không thụ lý', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Từ chối phục hồi danh dự'].includes(status)) cls = 'badge-danger';
