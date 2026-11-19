@@ -353,6 +353,7 @@ var HST_VERSION = '20261119hst1';
         el('hstTab2').style.display = ph ? '' : 'none';
         H.tab(!ph ? 1 : !bt ? 2 : (H._tab || 1));
         el('hstPhNhan').textContent = loai === 'honor' ? 'Trạng thái Giải quyết YCBT hiện tại' : 'Trạng thái Phục hồi danh dự hiện tại';
+        H.vbccTieuDe(loai);
         var cd = H.cd();
         var cur = el('hstPh').value;
         el('hstPh').innerHTML = PH_CHON.filter(function (x) { return !x.cdpd || cd; }).map(function (x) { return '<option value="' + x.v + '">' + x.t + '</option>'; }).join('');
@@ -433,9 +434,11 @@ var HST_VERSION = '20261119hst1';
             if (ht) ht.value = 'Trực tiếp'; // mặc định Trực tiếp
             el('hstSt').value = ''; el('hstNgayTn').value = ''; el('hstDvc').value = ''; el('hstNoiThuLy').value = ''; H._tab = 1;
             ['hstStErr', 'hstNgayTnErr', 'hstNoiThuLyErr'].forEach(function (id) { show(id, false); }); ['hstSt', 'hstNgayTn', 'hstNoiThuLy'].forEach(function (id) { el(id).classList.remove('is-invalid'); });
+            H.vbccLoi(false);
             H.nguonDoi();
             H.render();
         } else {
+            H.vbccLoi(false); H.vbccTieuDe(null);
             show('claimNguonHoSo', true); show('hstNguon', false); show('hstNguonNote', false);
             var ht2 = el('claimHinhThucTiepNhan');
             if (ht2) { Array.prototype.slice.call(ht2.options).forEach(function (o) { if (o.dataset.hst) o.remove(); else { o.hidden = false; o.disabled = false; } }); ht2.disabled = false; if (ht2.value === HT_CD || ht2.value === HT_DVC || !ht2.value) ht2.value = 'Trực tiếp'; }
@@ -462,6 +465,29 @@ var HST_VERSION = '20261119hst1';
         else if (!ht.value || ht.value === HT_DVC || (ht.value === HT_CD && !cdOk)) ht.value = 'Trực tiếp';
         ht.disabled = dvc;
     };
+    // Văn bản làm căn cứ yêu cầu bồi thường / phục hồi danh dự: bắt buộc tối thiểu 01 dòng có tệp (hồ sơ tồn)
+    var VBCC_MSG = 'Vui lòng nhập tối thiểu 01 văn bản làm căn cứ có tệp đính kèm.', vbccGoc = null;
+    H.vbccTieuDe = function (loai) {
+        var t = document.querySelector('#claimVanBanCanCuSection .info-group-title'); if (!t) return;
+        if (vbccGoc == null) vbccGoc = t.innerHTML;
+        t.innerHTML = loai == null ? vbccGoc : (loai === 'honor' ? 'Văn bản làm căn cứ phục hồi danh dự' : 'Văn bản làm căn cứ yêu cầu bồi thường') + ' <span class="required">*</span>';
+    };
+    H.vbccCoTep = function () {
+        var rows = typeof collectVanBanCanCuRows === 'function' ? collectVanBanCanCuRows() : [];
+        return rows.some(function (r) { return r.file; });
+    };
+    H.vbccLoi = function (v) {
+        var sec = el('claimVanBanCanCuSection'); if (!sec) return;
+        var e = el('hstVbccErr');
+        if (!e && v) { e = document.createElement('div'); e.id = 'hstVbccErr'; e.style.cssText = 'color:#dc2626;font-size:12px;margin-top:6px'; e.textContent = VBCC_MSG; sec.appendChild(e); }
+        if (e) e.style.display = v ? 'block' : 'none';
+        var tb = el('claimVanBanCanCuTable'); if (tb) tb.style.outline = v ? '1px solid #dc2626' : '';
+    };
+    // Tải tệp vào bảng thì bỏ báo lỗi
+    document.addEventListener('change', function (ev) {
+        if (!on || !ev.target || !ev.target.closest || !ev.target.closest('#claimVanBanCanCuSection')) return;
+        setTimeout(function () { if (H.vbccCoTep()) H.vbccLoi(false); }, 50);
+    }, true);
     H.isOn = function () { return on; };
     // Mở form Nhập hồ sơ tồn: form Nhập liệu hồ sơ vụ việc (Thêm mới), bỏ chế độ Cán bộ chủ động phục hồi danh dự
     H.open = function () {
@@ -522,6 +548,7 @@ var HST_VERSION = '20261119hst1';
         var badN = !el('hstNoiThuLy').value;
         el('hstNoiThuLyErr').style.display = badN ? 'block' : 'none'; el('hstNoiThuLy').classList.toggle('is-invalid', badN);
         if (badN) first = first || el('hstNoiThuLy');
+        if (!H.vbccCoTep()) { H.vbccLoi(true); first = first || el('claimVanBanCanCuSection'); } else H.vbccLoi(false);
         var loiKhoi = kiemKhoi();
         if (!first && loiKhoi) { H.tab(loiKhoi.closest('#hstFPh') ? 2 : 1); first = loiKhoi; }
         if (first) { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); first.focus(); return; }
