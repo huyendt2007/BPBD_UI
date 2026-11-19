@@ -938,6 +938,15 @@
                     <i class="fa-regular fa-calendar-days"></i>
                 </div>
             </div>
+            <div>
+                <span class="form-label">Hồ sơ tồn</span>
+                <!-- [hst] Hồ sơ hoàn trả tồn (nhập kết quả cuối) -->
+                <select class="form-control" id="filterHoSoTonHt" style="height:34px;">
+                    <option value="">Tất cả</option>
+                    <option value="1">Có</option>
+                    <option value="0">Không</option>
+                </select>
+            </div>
             <div style="display: flex; gap: 8px; justify-content: flex-end; align-items: flex-end; grid-column: 1 / -1;">
                 <button type="button" class="btn btn-clear-filter" onclick="resetRefundFilters()">
                     <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
@@ -958,6 +967,8 @@
             <!-- Action Buttons Toolbar -->
             <div style="display: flex; gap: 8px; align-items: center;">
                 <button class="btn btn-primary" id="btnCreateRefundDossier" onclick="openSelectClaimModal()" style="height: 32px; padding: 0 12px; font-size: 12.5px;"><i class="fa-solid fa-circle-plus"></i> Lập hồ sơ hoàn trả mới</button>
+                <!-- [hst] Nhập hồ sơ hoàn trả tồn: ghi nhận kết quả cuối hồ sơ làm ngoài hệ thống (xem_xet_hoan_tra_hst.js); cùng điều kiện hiển thị nút Lập hồ sơ hoàn trả mới -->
+                <button class="btn btn-secondary" id="btnImportTonRefund" onclick="HTT.open()" style="height: 32px; padding: 0 12px; font-size: 12.5px;"><i class="fa-solid fa-box-archive"></i> Nhập hồ sơ hoàn trả tồn</button>
                 <button class="btn btn-secondary" onclick="exportRefundToExcel()" style="height: 32px; padding: 0 12px; font-size: 12.5px;"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
             </div>
         </div>
@@ -2391,6 +2402,8 @@
                 } else {
                     btnCreate.style.display = 'inline-flex';
                 }
+                const btnTon = document.getElementById('btnImportTonRefund');
+                if (btnTon) btnTon.style.display = btnCreate.style.display;
             }
 
             const thAction = document.getElementById('thActionsRefund');
@@ -2687,6 +2700,7 @@
                     if (!matchAgency && !matchSubAgency) return false;
                 }
                 if (statusVal && htStView(item.status).name !== statusVal) return false;
+                if (window.HTT && !HTT.match(item)) return false;
 
                 // Lọc nhanh theo KPI (Tất cả / Chờ duyệt / Bị trả lại)
                 if (activeKpiFilterRefund === 'Chờ duyệt') {
@@ -2808,6 +2822,8 @@
 
                 tr.onclick = (e) => {
                     if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn') && !e.target.closest('a')) {
+                        // [hst] Hồ sơ hoàn trả tồn: chỉ có kết quả cuối -> mở popup chế độ xem
+                        if (d.ton && window.HTT) { HTT.view(d.id); return; }
                         window.location.href = `chi_tiet_ho_so_hoan_tra.html?mode=view&id=${d.id}&focusStep=${focusStep}&role=${currentMockRole}`;
                     }
                 };
@@ -2852,7 +2868,7 @@
 
                 tr.innerHTML = `
                     <td style="text-align:center;">${startIndex + index + 1}</td>
-                    <td style="text-align:center; font-weight:700; color:var(--primary-color);">${d.code}</td>
+                    <td style="text-align:center; font-weight:700; color:var(--primary-color);">${d.code}${window.HTT ? HTT.badge(d) : ''}</td>
                     <td>${getOfficersColumnHtml(d.refundOfficers)}</td>
                     <td style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:135px;" title="${agencyDisplay.replace(/<[^>]*>?/gm, '')}">${agencyDisplay}</td>
                     <td style="text-align:center; font-weight:600;" title="${claimLabel(d.claimCode)}">${dossierVuViec(d) || '-'}</td>
@@ -2915,6 +2931,7 @@
             if (document.getElementById('filterOfficerName')) document.getElementById('filterOfficerName').value = '';
             if (document.getElementById('filterAgency')) document.getElementById('filterAgency').value = '';
             if (document.getElementById('filterStatusRefund')) document.getElementById('filterStatusRefund').value = '';
+            if (document.getElementById('filterHoSoTonHt')) document.getElementById('filterHoSoTonHt').value = '';
             if (document.getElementById('filterFromDate')) document.getElementById('filterFromDate').value = '01/09/2026';
             if (document.getElementById('filterToDate')) document.getElementById('filterToDate').value = '11/09/2026';
 
@@ -3980,7 +3997,9 @@
     </script>
     <!-- Phạm vi dữ liệu theo đơn vị + trạng thái 02 tầng (chi tiết / chung) của màn danh sách -->
     <script src="ht_du_lieu_mau.js?v=20261118bd1"></script>
-    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261116mg2"></script>
+    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261119hst2"></script>
+    <!-- [hst] Nhập hồ sơ hoàn trả tồn (đặt sau pham_vi: bọc htInTab, renderRefundTable dùng HTT.row) -->
+    <script src="xem_xet_hoan_tra_hst.js?v=20261119hst3"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="ht_mock_role_bar.js?v=20261110ct2"></script>
     <script src="admin-ui-standardizer.js"></script>

@@ -424,6 +424,9 @@
         // Lập hồ sơ hoàn trả mới: chỉ Đơn vị tạo Hội đồng, tab Chờ xử lý
         const btnNew = document.getElementById('btnCreateRefundDossier');
         if (btnNew) btnNew.style.setProperty('display', htTab === 'pending' && htScope === 'don_vi_chu' ? 'inline-flex' : 'none', 'important');
+        // [hst] Nhập hồ sơ hoàn trả tồn: cùng điều kiện hiển thị nút Lập hồ sơ hoàn trả mới
+        const btnTon = document.getElementById('btnImportTonRefund');
+        if (btnTon) btnTon.style.setProperty('display', htTab === 'pending' && htScope === 'don_vi_chu' ? 'inline-flex' : 'none', 'important');
         const val = id => ((document.getElementById(id) || {}).value || '').trim().toLowerCase();
         const fCode = val('filterDossierCode'), fVv = val('filterClaimCode'), fGq = val('filterGqbtCode'), fCb = val('filterOfficerName');
         const fUnit = (document.getElementById('filterAgency') || {}).value || '';
@@ -434,6 +437,8 @@
         updateRefundTabCounts();
         const rows = dossiersList.filter(d => htInTab(htTab, d)).map(d => {
             const sc = scopeOf(d);
+            // [hst] Hồ sơ hoàn trả tồn: chỉ có kết quả cuối (trạng thái, số tiền, cán bộ nhập khi tạo)
+            if (d.ton && window.HTT) return HTT.row(d, sc);
             return { d, sc, chung: chungOf(d, sc), m: money(sc), off: officersOfRow(d, sc) };
         }).filter(r => {
             if (fCode && !String(r.d.code || '').toLowerCase().includes(fCode)) return false;
@@ -442,6 +447,7 @@
             if (fCb && !r.off.some(o => o.name.toLowerCase().includes(fCb))) return false;
             if (fUnit && !r.off.some(o => o.unit === fUnit)) return false;
             if (fSt && r.chung !== fSt) return false;
+            if (window.HTT && !HTT.match(r.d)) return false;
             if (fFrom !== null || fTo !== null) {
                 const dc = dayNum(r.d.dateCreated);
                 if (dc === null) return false;
@@ -474,7 +480,7 @@
             const d = r.d, m = r.m;
             const tr = document.createElement('tr');
             tr.style.cursor = 'pointer';
-            tr.onclick = e => { if (!e.target.closest('.icon-btn') && !e.target.closest('a') && e.target.tagName !== 'BUTTON') window.location.href = detailUrl(d, 'view', focusStepOf(d, r.sc)); };
+            tr.onclick = e => { if (!e.target.closest('.icon-btn') && !e.target.closest('a') && e.target.tagName !== 'BUTTON') { if (d.ton && window.HTT) { HTT.view(d.id); return; } window.location.href = detailUrl(d, 'view', focusStepOf(d, r.sc)); } };
             const pct = m.tong ? Math.min(100, Math.floor(m.paid / m.tong * 100)) : 0;
             const tip = ('Số tiền theo ý kiến Hội đồng: ' + fmt(m.hd) + ' đ\nTiền hoàn trả (sau giảm, trừ miễn, đình chỉ): ' + fmt(m.tong) + ' đ\nĐã thu: ' + fmt(m.paid) + ' đ\nCòn phải thu: ' + fmt(m.conLai) + ' đ');
             const tien = m.anyIssued ? '<span title="' + tip + '">' + fmt(m.tong) + '</span>' : '--';
@@ -488,7 +494,7 @@
             const tl = trinhLabel(d);
             const sub = tl ? '<div class="ht-trinh-sub">' + tl + '</div>' : '';
             tr.innerHTML = '<td style="text-align:center;">' + (start + i + 1) + '</td>'
-                + '<td style="text-align:center; font-weight:700; color:var(--primary-color);">' + d.code + '</td>'
+                + '<td style="text-align:center; font-weight:700; color:var(--primary-color);">' + d.code + (window.HTT ? HTT.badge(d) : '') + '</td>'
                 + '<td>' + officerCell(r.off) + '</td>'
                 + '<td style="max-width:150px; white-space:normal;">' + unitCell(r.off) + '</td>'
                 + '<td style="text-align:center; font-weight:600;" title="' + claimLabel(d.claimCode) + '">' + (dossierVuViec(d) || '-') + '</td>'

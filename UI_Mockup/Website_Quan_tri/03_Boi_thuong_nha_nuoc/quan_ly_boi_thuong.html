@@ -1864,6 +1864,17 @@
                             placeholder="Nhập cơ quan giải quyết...">
                     </div>
                 </div>
+                <div class="grid-4-cols" style="margin-bottom: 16px;">
+                    <div>
+                        <span class="form-label">Hồ sơ tồn</span>
+                        <!-- [hst] Hồ sơ đã giải quyết trên giấy, nhập bằng chức năng Nhập hồ sơ tồn -->
+                        <select class="form-control" id="searchHoSoTon">
+                            <option value="">Tất cả</option>
+                            <option value="1">Có</option>
+                            <option value="0">Không</option>
+                        </select>
+                    </div>
+                </div>
                 <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;">
                     <button class="btn btn-secondary" onclick="resetClaimsFilter()"><i
                             class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
@@ -1884,6 +1895,9 @@
                 <div style="display: flex; gap: 8px; align-items: center;">
                     <button class="btn btn-primary" id="btnCreateClaimRequest" onclick="openInlineClaimForm(null)"><i
                             class="fa-solid fa-plus"></i> Tạo yêu cầu</button>
+                    <!-- [hst] Nhập hồ sơ tồn: nhập hồ sơ đã giải quyết trên giấy (quan_ly_boi_thuong_hst.js); hiển thị cùng điều kiện nút Tạo yêu cầu -->
+                    <button class="btn btn-secondary" id="btnImportTonClaim" onclick="HST.open()"><i
+                            class="fa-solid fa-box-archive"></i> Nhập hồ sơ tồn</button>
                     <button class="btn btn-secondary" onclick="exportExcelB()"><i class="fa-solid fa-file-excel"></i>
                         Kết xuất Excel</button>
                 </div>
@@ -10047,6 +10061,8 @@
             // Nút Tạo yêu cầu chỉ dùng để lập hồ sơ mới: chỉ hiện tại Tab "Vụ việc chờ xử lý" với vai trò Cán bộ xử lý
             const btnCreate = document.getElementById('btnCreateClaimRequest');
             if (btnCreate) btnCreate.style.display = (tab === 'cho-xu-ly' && getCurrentSimulatedRole() !== 'thu-truong') ? 'inline-flex' : 'none';
+            const btnTon = document.getElementById('btnImportTonClaim');
+            if (btnTon) btnTon.style.display = btnCreate ? btnCreate.style.display : 'none';
             currentClaimsPage = 1;
             renderClaimsTable();
         }
@@ -10138,6 +10154,9 @@
             if (searchApprovalKind && typeof gqApprovalKindOf === 'function') {
                 filtered = filtered.filter(item => gqApprovalKindOf(item) === searchApprovalKind);
             }
+            // [hst] Hồ sơ tồn: Có / Không
+            const searchHoSoTon = document.getElementById('searchHoSoTon') ? document.getElementById('searchHoSoTon').value : '';
+            if (searchHoSoTon) filtered = filtered.filter(item => (item.ton ? '1' : '0') === searchHoSoTon);
 
             const parseDateVi = (str) => {
                 if (!str) return null;
@@ -10232,7 +10251,7 @@
                 tr.innerHTML = `
                     <td style="text-align:center;">${startIdx + index + 1}</td>
                     <td style="text-align:center;"><strong>${ycEsc(claimVvCode(item))}</strong></td>
-                    <td style="text-align:center;">${ycEsc(item.code)}</td>
+                    <td style="text-align:center;">${ycEsc(item.code)}${window.HST ? HST.badge(item) : ''}</td>
                     <td><strong>${getClaimRequesterName(item)}</strong></td>
                     <td>${ycEsc(getClaimVictimName(item))}</td>
                     <td style="font-size:12px; color:var(--text-muted);">${getFieldGroupName(item.fieldGroup)}</td>
@@ -10318,6 +10337,7 @@
             if (document.getElementById('searchHinhThucTiepNhan')) document.getElementById('searchHinhThucTiepNhan').value = '';
             if (document.getElementById('searchApprovalKind')) document.getElementById('searchApprovalKind').value = '';
             if (document.getElementById('searchRequestKind')) document.getElementById('searchRequestKind').value = '';
+            if (document.getElementById('searchHoSoTon')) document.getElementById('searchHoSoTon').value = '';
             tcvvGqQuickPhdd = false;
             if (document.getElementById('searchPhddStatus')) document.getElementById('searchPhddStatus').value = '';
             setDefaultClaimsSearchDates();
@@ -25042,6 +25062,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="quan_ly_boi_thuong_mh05.js?v=20261030m3"></script>
     <!-- [gql] Hủy QĐ -> Đình chỉ hoặc Giải quyết lại: thao tác Giải quyết lại (Thao tác khác MH01 / thanh thao tác MH04), dòng phụ "QĐ đã bị hủy", lần thương lượng, khối Quyết định đã bị hủy; dữ liệu mẫu BT-2026-561, BT-2026-562 -->
     <script src="quan_ly_boi_thuong_gql.js?v=20261106gql16"></script>
+    <!-- [hst] Nhập hồ sơ tồn: form Nhập liệu hồ sơ vụ việc chế độ hồ sơ tồn, nhãn Hồ sơ tồn ở lưới / chi tiết, dữ liệu mẫu BT-2025-901..904 (đặt sau gql, cdpd) -->
+    <script src="quan_ly_boi_thuong_hst.js?v=20261119hst6"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_tieu_de_man.js?v=20261103td2"></script>
