@@ -19,7 +19,7 @@
     if (MODE === 'bo') { try { var q0 = new URLSearchParams(location.search); NHUNG = q0.get('nhung') || ''; NHUNG_DV = q0.get('dv') || ''; NHUNG_TAB = q0.get('tab') || ''; } catch (e) { /* bỏ qua */ } }
     var ROLES_SO = ['cb_stp', 'ld_phong', 'ld_so', 'ld_ubnd'];   // 06/11/2026 (nhanhl2, QDDA_020): bỏ vai trò «UBND tỉnh» chỉ xem
     var KEY_ROLE = 'bctt_role_v1' + (MODE === 'bo' ? '_bo' : '');
-    var SEED = 's21_van_thu_tra_lai'; // 16/11/2026: báo cáo mẫu Văn thư trả lại, họ tên Lãnh đạo UBND tỉnh ký, mã tỉnh giả trong tên tệp; 's20_ubnd_3cap'; // 06/11/2026 (nhanhl2, QDDA_020): đơn vị báo cáo là UBND tỉnh, luồng ký 3 cấp; 's19_ma_tinh'; // 06/11/2026: 34 tỉnh, thành phố xếp theo mã đơn vị hành chính cấp tỉnh; 's18_bi_tra_lai'; // 06/11/2026: «Yêu cầu điều chỉnh» đổi tên thành «Bị trả lại»; 's17_bo_khong_ra_soat'; // 06/11/2026: bỏ luồng Bộ Tư pháp trả lại báo cáo của Sở; 's16_khongky'; // 04/11/2026: báo cáo tổng hợp của Bộ không trình ký; Sở phân công xử lý báo cáo bị trả lại; // 04/11/2026: thêm báo cáo tổng hợp các kỳ 2022 - 2024 cho từng người dùng tab Tổng hợp báo cáo; // 03/11/2026: luồng ký báo cáo tổng hợp của Bộ 3 cấp // 03/11/2026: tên trạng thái mới, thứ tự tab, vai trò UBND tỉnh (QDDA_012) // đổi giá trị khi đổi dữ liệu mẫu: trình duyệt đang lưu bản cũ sẽ tự nạp lại
+    var SEED = 's22_tu_choi_ve_can_bo'; // 20/11/2026 (QDDA_038): Lãnh đạo ở cấp nào từ chối thì báo cáo Sở cũng trả Cán bộ; 's21_van_thu_tra_lai'; // 16/11/2026: báo cáo mẫu Văn thư trả lại, họ tên Lãnh đạo UBND tỉnh ký, mã tỉnh giả trong tên tệp; 's20_ubnd_3cap'; // 06/11/2026 (nhanhl2, QDDA_020): đơn vị báo cáo là UBND tỉnh, luồng ký 3 cấp; 's19_ma_tinh'; // 06/11/2026: 34 tỉnh, thành phố xếp theo mã đơn vị hành chính cấp tỉnh; 's18_bi_tra_lai'; // 06/11/2026: «Yêu cầu điều chỉnh» đổi tên thành «Bị trả lại»; 's17_bo_khong_ra_soat'; // 06/11/2026: bỏ luồng Bộ Tư pháp trả lại báo cáo của Sở; 's16_khongky'; // 04/11/2026: báo cáo tổng hợp của Bộ không trình ký; Sở phân công xử lý báo cáo bị trả lại; // 04/11/2026: thêm báo cáo tổng hợp các kỳ 2022 - 2024 cho từng người dùng tab Tổng hợp báo cáo; // 03/11/2026: luồng ký báo cáo tổng hợp của Bộ 3 cấp // 03/11/2026: tên trạng thái mới, thứ tự tab, vai trò UBND tỉnh (QDDA_012) // đổi giá trị khi đổi dữ liệu mẫu: trình duyệt đang lưu bản cũ sẽ tự nạp lại
     var KIND = 'Báo cáo công tác BTNN';
     var DEMO_UNIT = 'STP-HN';
     var DEMO_SUB = 'STP-HN-HCTP';
@@ -389,7 +389,8 @@
         var hn25 = newReport(0, PROVINCES[0], 2025, 'chinh_thuc', ST.BH); list.push(hn25);
         // Giả lập Lãnh đạo Sở Tư pháp Hà Nội: (1) chờ Cấp 2 - Lãnh đạo Sở (Cấp 1 đã ký nháy); (2) chờ Cấp 1 - Lãnh đạo Phòng; (3) Bị trả lại (Lãnh đạo Từ chối)
         // 03/11/2026: thêm 03 báo cáo chờ Cấp 2 (năm 2023, 2022) để tab Chờ xử lý của Lãnh đạo Sở có nhiều bản ghi
-        // 06/11/2026 (nhanhl2, QDDA_020): luồng 3 cấp - chờ Cấp 2 (Lãnh đạo Sở), chờ Cấp 3 (Lãnh đạo UBND tỉnh) và báo cáo Lãnh đạo UBND tỉnh từ chối, trả về Lãnh đạo Sở xem xét lại
+        // 06/11/2026 (nhanhl2, QDDA_020): luồng 3 cấp - chờ Cấp 2 (Lãnh đạo Sở), chờ Cấp 3 (Lãnh đạo UBND tỉnh) và báo cáo Lãnh đạo UBND tỉnh từ chối
+        // 20/11/2026 (BA lead chốt, QDDA_038): Lãnh đạo UBND tỉnh từ chối thì báo cáo trả thẳng Cán bộ, không về Lãnh đạo Sở xem xét lại
         var choCap = function (year, period, cap) {
             var c = newReport(0, PROVINCES[0], year, period, ST.CHO);
             c.submit.levels.slice(0, cap).forEach(function (a, k) {
@@ -401,9 +402,9 @@
         };
         var ubTc = choCap(2023, 'thuc_te', 2), sTc = ubTc.submit, ldU = sTc.levels[2], ldS = sTc.levels[1], atU = seedAt(2023, 'thuc_te', 3, '16:00');
         var lyDoU = 'Mẫu 42/BTNN: đề nghị bổ sung đánh giá việc xử lý kỷ luật người thi hành công vụ gây thiệt hại trước khi ký ban hành.';
-        ubTc.status = ST.TC; ubTc.reject = { reason: lyDoU, byName: ldU.leaderName, level: 3, at: atU, traVe: true };
-        sTc.levels.slice(1).forEach(function (l) { l.result = null; l.at = ''; l.note = ''; }); sTc.current = 1;
-        ubTc.history.push({ at: atU, actor: ldU.leaderName, action: 'Từ chối và trả về ' + ldS.leaderName + ' (Cấp 2) xem xét lại', note: lyDoU });
+        ubTc.status = ST.TC; ldU.result = 'rejected'; ldU.at = atU; ldU.note = lyDoU;
+        ubTc.reject = { reason: lyDoU, byName: ldU.leaderName, level: 3, at: atU };
+        ubTc.history.push({ at: atU, actor: ldU.leaderName, action: 'Từ chối', note: lyDoU });
         list.push(choCap(2025, 'thuc_te', 1), choCap(2023, 'chinh_thuc', 2), ubTc, choCap(2022, 'chinh_thuc', 2));
         list.push(newReport(0, PROVINCES[0], 2024, 'chinh_thuc', ST.CHO));
         var tc = newReport(0, PROVINCES[0], 2024, 'thuc_te', ST.CHO), t1 = tc.submit.levels[0];
@@ -630,7 +631,9 @@
     // Cán bộ cập nhật báo cáo của đơn vị mình (Sở Tư pháp Hà Nội / báo cáo tổng hợp của Bộ Tư pháp) khi Đang nhập liệu hoặc Bị trả lại
     // 04/11/2026 (nhanhl2): Lãnh đạo cấp 2 trở lên từ chối thì báo cáo chuyển `Yêu cầu điều chỉnh` nhưng vẫn trong luồng ký (r.reject.traVe): trả về Lãnh đạo
     // cấp liền dưới ký duyệt lại hoặc từ chối; cán bộ chưa sửa được. Chỉ Lãnh đạo cấp 1 từ chối mới trả cán bộ; cán bộ gửi phê duyệt lại thì về `Chờ duyệt`
-    function traVe(r) { return !!r && r.status === ST.TC && !!r.reject && !!r.reject.traVe; }
+    // 20/11/2026 (BA lead chốt, QDDA_038): báo cáo của Sở bị Lãnh đạo ở cấp nào từ chối cũng trả Cán bộ, không còn «đang được Lãnh đạo xem xét lại»;
+    // traVe chỉ còn với báo cáo tổng hợp của Bộ (dữ liệu cũ, báo cáo này không còn trình ký)
+    function traVe(r) { return !!r && isBtpReport(r) && r.status === ST.TC && !!r.reject && !!r.reject.traVe; }
     function choKy(r) { return !!r && !!r.submit && (r.status === ST.CHO || traVe(r)); }
     // 06/11/2026 (nhanhl2): Lãnh đạo Phòng, Lãnh đạo Cục của Bộ Tư pháp cũng xem và sửa báo cáo tổng hợp khi được phân quyền (mockup: hai vai trò giả lập có quyền);
     // Lãnh đạo Bộ chỉ xem và kết xuất (QDDA_016)
@@ -3677,7 +3680,8 @@
                 if (!note) { $('bcttKNote').classList.add('bctt-invalid'); $('bcttKNoteErr').classList.add('on'); $('bcttKNote').focus(); return; }
                 // 04/11/2026 (nhanhl2): Lãnh đạo cấp 2 trở lên từ chối - báo cáo chuyển `Yêu cầu điều chỉnh`, trả về Lãnh đạo cấp liền dưới (traVe) để ký duyệt lại
                 // hoặc từ chối; kết quả ký từ cấp dưới trở lên được xóa để ký lại. Lãnh đạo cấp 1 từ chối thì trả cán bộ lập báo cáo (như trước)
-                if (s.current > 0) {
+                // 20/11/2026 (BA lead chốt, QDDA_038): báo cáo của Sở bị từ chối ở cấp nào cũng trả Cán bộ như cấp 1; nhánh trả về cấp dưới chỉ còn cho báo cáo của Bộ
+                if (s.current > 0 && isBtpReport(r)) {
                     var duoi = s.levels[s.current - 1], at = nowText();
                     r.status = ST.TC; r.reject = { reason: note, byName: lv.leaderName, level: lv.level, at: at, traVe: true };
                     s.levels.slice(s.current - 1).forEach(function (l) { l.result = null; l.at = ''; l.note = ''; });

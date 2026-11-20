@@ -10,7 +10,7 @@
  * - [dvc15] Tên trạng thái gửi kèm mã (TenTrangThai, dvcStatusName): mã 4 -> tên trạng thái của hồ sơ sau bước (caseStatusName),
  *   không gửi 'Đang xử lý'; mã khác -> tên trạng thái Dịch vụ công (Tài liệu kết nối DVC - mục 3, neo dvc-ten-trang-thai).
  */
-var NKDV_SEED_VER = '20261118dvc14';
+var NKDV_SEED_VER = '20261120dvc17';
 var NKDV_KEY = 'btnn_dvc_sync_log';
 var NKDV_KEY_VER = 'btnn_dvc_sync_log_ver';
 // [dvc14] 20 bước theo Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.1 (thứ tự theo luồng);
@@ -59,8 +59,11 @@ function nkdvFillDvc(list) {
     list.slice().sort(function (a, b) { return nkdvKey(a.eventTime) < nkdvKey(b.eventTime) ? -1 : 1; }).forEach(function (m) {
         if (!m.dvcStatusCode) m.dvcStatusCode = nkdvDvcCode(m);
         // [dvc15] Mã 4: gửi kèm tên trạng thái của hồ sơ sau bước; mã khác: tên trạng thái Dịch vụ công
-        // [dvc16] Bản tin đã có tên gửi kèm riêng (bước 2 Không thụ lý không thuộc thẩm quyền: "Đã chuyển CQGQBT [Mã cơ quan nhận mới]"): giữ nguyên
-        if (Number(m.dvcStatusCode) === 4 && m.stepCode === 'THONG_BAO_KHONG_THU_LY' && /^Đã chuyển CQGQBT \S/.test(m.dvcStatusName || '')) return;
+        // [dvc17] 20/11/2026: hồ sơ Đã chuyển CQGQBT (bước 2, 21, 22) gửi mã 4 luôn kèm mã cơ quan nhận: "Đã chuyển CQGQBT [Mã cơ quan nhận mới]"
+        if (Number(m.dvcStatusCode) === 4 && m.caseStatus === 'DA_CHUYEN_CQGQBT') {
+            if (!/^Đã chuyển CQGQBT \S/.test(m.dvcStatusName || '')) m.dvcStatusName = 'Đã chuyển CQGQBT' + (m.receiverCode ? ' ' + m.receiverCode : '');
+            return;
+        }
         m.dvcStatusName = Number(m.dvcStatusCode) === 4 && m.caseStatusName ? m.caseStatusName : (NKDV_DVC_NAME[m.dvcStatusCode] || '');
     });
 }
@@ -103,7 +106,7 @@ function nkdvAddMin(dt, min) {
 function nkdvKey(dt) { var m = /^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):?(\d{2})?/.exec(dt || ''); return m ? m[3] + m[2] + m[1] + m[4] + m[5] + (m[6] || '00') : ''; }
 
 // ---------- Dữ liệu mẫu ----------
-// [dvcCode, receiptNo, caseCode, dossierCode, agency, step, caseStatus, eventTime, doc|null, fileName, fileSize, result, attempts[[at, http, code, message]]]
+// [dvcCode, receiptNo, caseCode, dossierCode, agency, step, caseStatus, eventTime, doc|null, fileName, fileSize, result, attempts[[at, http, code, message]], receiverCode (Đã chuyển CQGQBT)]
 function nkdvSeed() {
     var KS = 'KY_SO', KN = 'KY_NGOAI', LD = ['Lê Hoàng Nam', 'Giám đốc'];
     var ok = function (at) { return [at, 200, 'SUCCESS', null]; };
@@ -127,7 +130,7 @@ function nkdvSeed() {
         ['H48.12.2026.000162', 'API-20260925-000162', 'VVBT-2026-470', 'BT-2026-062', 'UBND phường Ba Đình', 'THONG_BAO_PHUC_HOI_DANH_DU', 'DANG_PHUC_HOI_DANH_DU', '21/10/2026 16:05:00', ['12/TB-UBND', '21/10/2026', KS], 'Thong_bao_to_chuc_phuc_hoi_danh_du_BT-2026-062.pdf', 207455, 'SUCCESS', [ok('21/10/2026 16:05:12')]],
         ['H48.12.2026.000103', 'API-20260810-000103', 'VVBT-2026-450', 'BT-2026-003-B', 'UBND phường Cầu Giấy', 'QUYET_DINH_GIAI_QUYET', 'CHO_CHI_TRA', '02/10/2026 09:00:00', ['18/QĐ-UBND', '02/10/2026', KS], 'QD_giai_quyet_boi_thuong_BT-2026-003-B_da_ky.pdf', 356998, 'SUCCESS', [ok('02/10/2026 09:00:15')]],
         // [dvc14] Bước 22: Sở Tư pháp ban hành Kết quả xác định CQGQBT của hồ sơ XD- kế thừa Mã hồ sơ DVC (mã 4 Đang xử lý)
-        ['H48.12.2026.000168', 'API-20261009-000168', 'VVBT-2026-476', 'XD-2026-201', 'Sở Tư pháp TP. Hà Nội', 'KET_QUA_XDCQ', 'DA_CHUYEN_CQGQBT', '16/11/2026 15:20:00', ['52/TB-STP', '16/11/2026', KS], 'Van_ban_ket_qua_xac_dinh_CQGQBT_XD-2026-201_da_ky.pdf', 274380, 'SUCCESS', [ok('16/11/2026 15:20:12')]]
+        ['H48.12.2026.000168', 'API-20261009-000168', 'VVBT-2026-476', 'XD-2026-201', 'Sở Tư pháp TP. Hà Nội', 'KET_QUA_XDCQ', 'DA_CHUYEN_CQGQBT', '16/11/2026 15:20:00', ['52/TB-STP', '16/11/2026', KS], 'Van_ban_ket_qua_xac_dinh_CQGQBT_XD-2026-201_da_ky.pdf', 274380, 'SUCCESS', [ok('16/11/2026 15:20:12')], 'UBND-BD']
     ];
     return raw.map(function (r, i) {
         var seq = String(i + 1).padStart(3, '0');
@@ -137,7 +140,7 @@ function nkdvSeed() {
         var last = at[at.length - 1];
         return {
             id: 'NKDV' + seq, transactionId: tx, dvcCode: r[0], receiptNo: r[1], caseCode: r[2], dossierCode: r[3], agency: r[4],
-            stepCode: r[5], stepName: nkdvStepName(r[5]), caseStatus: r[6], caseStatusName: NKDV_CASE[r[6]] || r[6], eventTime: r[7],
+            stepCode: r[5], stepName: nkdvStepName(r[5]), caseStatus: r[6], caseStatusName: NKDV_CASE[r[6]] || r[6], receiverCode: r[13] || '', eventTime: r[7],
             document: r[8] ? { docNo: r[8][0], docDate: r[8][1], signingMethod: r[8][2], signerName: LD[0], signerPosition: r[5] === 'QUYET_DINH_HOAN' ? '' : LD[1] } : null,
             file: { fileId: fid, fileName: r[9], fileSize: r[10], mimeType: 'application/pdf', hashAlgorithm: 'SHA-256', hashValue: nkdvHash(r[9] + r[3]) },
             result: r[11], attempts: at, sentAt: last.at,
@@ -156,7 +159,7 @@ function nkdvLoad() {
         if (!x || nkdvList.some(function (m) { return m.transactionId === x.transactionId; })) return;
         nkdvList.push({
             id: 'NKDVN' + Date.now().toString(36) + i, transactionId: x.transactionId, dvcCode: x.dvcCode, receiptNo: x.receiptNo, caseCode: x.caseCode, dossierCode: x.dossierCode, agency: x.agency,
-            stepCode: x.stepCode, stepName: nkdvStepName(x.stepCode), caseStatus: x.caseStatus, caseStatusName: x.caseStatusName, dvcStatusCode: x.dvcStatusCode || 0, eventTime: x.eventTime, document: x.document,
+            stepCode: x.stepCode, stepName: nkdvStepName(x.stepCode), caseStatus: x.caseStatus, caseStatusName: x.caseStatusName, dvcStatusCode: x.dvcStatusCode || 0, dvcStatusName: x.dvcStatusName || '', receiverCode: x.receiverCode || '', eventTime: x.eventTime, document: x.document,
             file: { fileId: 'f' + nkdvHash(x.transactionId).slice(0, 7) + '-0000-7000-8000-' + nkdvHash(x.fileName).slice(0, 12), fileName: x.fileName, fileSize: x.fileSize, mimeType: 'application/pdf', hashAlgorithm: 'SHA-256', hashValue: nkdvHash(x.fileName + x.dossierCode) },
             result: x.result || 'SUCCESS', attempts: [{ at: x.sentAt, http: 200, code: 'SUCCESS', message: null }], sentAt: x.sentAt, nextRetryAt: ''
         });
