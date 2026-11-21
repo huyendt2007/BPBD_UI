@@ -24,6 +24,8 @@
  *   mã 4: tên trạng thái của hồ sơ trên hệ thống BTNN sau bước (caseStatusName), không gửi 'Đang xử lý'; mã khác: tên trạng thái Dịch vụ công.
  * - [dvc17] Chốt 20/11/2026: hồ sơ Đã chuyển CQGQBT gửi mã 4 luôn kèm tên 'Đã chuyển CQGQBT [Mã cơ quan nhận mới]' (bước 2 Không thụ lý
  *   không thuộc thẩm quyền, bước 21 Chuyển CQGQBT, bước 22 Kết quả xác định CQGQBT); mã cơ quan nhận: receiverCode().
+ * - [dvc18] Chốt 20/11/2026: Lưu hồ sơ tồn không gửi (window.BTNN_DVC_MUTE); hồ sơ tồn Giải quyết YCBT đang dở có Mã hồ sơ DVC: bước làm tiếp gửi như hồ sơ thường.
+ * - [dvc19] Chốt 20/11/2026: hồ sơ tồn Xác định CQGQBT không gửi Dịch vụ công ở mọi bước (isTonXd).
  * Bước, mã trạng thái: Tài liệu kết nối, chia sẻ dữ liệu với Dịch vụ công quốc gia (Ket_noi_chia_se_Dich_vu_cong_BTNN.md) - mục 3.1, 3.2, 3.3.
  */
 (function () {
@@ -103,7 +105,29 @@
         var decs = parse(localStorage.getItem('btnn_qd_gqbt_v2')) || [];
         return decs.some(function (d) { return d && (d.claimCode === c.code || d.claimCode === c.id) && (d.status === 'Đã ban hành' || d.status === 'Hủy quyết định'); });
     }
-    function blocked(c, step) { return !!NEVER_STEPS[step] || isClosed(c, step); }
+    // [dvc18] 20/11/2026 (chốt lại): hồ sơ tồn không gửi tại thời điểm nhập (BTNN_DVC_MUTE bật trong lúc Lưu hồ sơ tồn);
+    // hồ sơ tồn đang giải quyết dở có Mã hồ sơ DVC: các bước làm tiếp trên hệ thống gửi như hồ sơ thường.
+    // Hồ sơ nhập ở trạng thái đã kết thúc (Hoàn thành, Đã chuyển CQGQBT...) không có bước tiếp theo nên không gửi.
+    function isTon(c) {
+        if (!c) return false;
+        if (c.ton) return true;
+        try {
+            var W = window.BTNN_WF, r = W && W.getRecord && c.code ? W.getRecord(c.code) : null;
+            if (r && r.ton) return true;
+            var cl = claimOf(c.code); if (cl && cl.ton) return true;
+            if (typeof claimsList !== 'undefined' && Array.isArray(claimsList)) return claimsList.some(function (x) { return x && x.code === c.code && x.ton; });
+        } catch (e) { /* mockup */ }
+        return false;
+    }
+    // [dvc19] 20/11/2026: hồ sơ tồn Xác định CQGQBT không gửi Dịch vụ công ở mọi bước (kể cả bước làm tiếp sau khi nhập)
+    function isTonXd(c) {
+        if (!c) return false;
+        try {
+            var W = window.BTNN_WF, r = c.module === 'XD' ? c : (W && W.getRecord && c.code ? W.getRecord(c.code) : null);
+            return !!(r && r.module === 'XD' && r.ton);
+        } catch (e) { return false; }
+    }
+    function blocked(c, step) { return !!window.BTNN_DVC_MUTE || isTonXd(c) || !!NEVER_STEPS[step] || isClosed(c, step); }
     // [dvc14] Hồ sơ đã gửi mã 4 (tính theo Mã hồ sơ DVC): hồ sơ kế thừa khi chuyển cơ quan, hoặc đã có bản tin mã 4
     function reached4(c) {
         if (inherited(c)) return true;
@@ -189,5 +213,5 @@
             if (c.phddStatus === 'Hoàn thành' && p.phddStatus && p.phddStatus !== 'Hoàn thành') record(c, 'VU_VIEC_HOAN_THANH', { caseStatusName: 'Hoàn thành', phddOnly: true, fileName: '', fileSize: 0 });
         });
     };
-    window.BTNN_DVC = { record: record, isDvc: isDvc, dvcKey: dvcKey, inherited: inherited, reached4: reached4, claimOf: claimOf, dvcCodeOf: dvcCodeOf, isClosed: isClosed, blocked: blocked, dvcName: DVC_NAME, statusNameOf: statusNameOf, receiverCode: receiverCode, transferName: transferName, watch: function (k, fn) { WATCH[k] = fn; } };
+    window.BTNN_DVC = { record: record, isDvc: isDvc, dvcKey: dvcKey, inherited: inherited, reached4: reached4, claimOf: claimOf, dvcCodeOf: dvcCodeOf, isClosed: isClosed, blocked: blocked, isTon: isTon, dvcName: DVC_NAME, statusNameOf: statusNameOf, receiverCode: receiverCode, transferName: transferName, watch: function (k, fn) { WATCH[k] = fn; } };
 })();

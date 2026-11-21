@@ -77,6 +77,7 @@ var HST_VERSION = '20261119hst1';
             '.hst-grid>div>.form-label,.hst-grid2>div>.form-label{order:0;margin-top:auto}',
             '.hst-grid>div>.hst-note,.hst-grid2>div>.hst-note{order:1;margin:-2px 0 6px}',
             '.hst-grid>div>.hst-err{order:3;position:absolute;top:100%;left:0}',
+            '.hst-grid>div>.hst-loi{order:3;position:absolute;top:100%;left:0;white-space:nowrap}',
             '.hst-grid>div.hst-ph{display:block}',
             '.hst-full{grid-column:1/-1}',
             '.hst-err{display:none;color:#dc2626;font-size:12px;margin-top:4px}',
@@ -90,6 +91,7 @@ var HST_VERSION = '20261119hst1';
             '.hst-blk-b{padding:14px}',
             '.hst-paper{display:inline-flex;align-items:center;gap:5px;background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;white-space:nowrap}',
             '.hst-kn{border:1px dashed #cbd5e1;border-radius:6px;padding:12px;margin-top:8px;background:#fcfcfd}',
+            '.hst-grid+.hst-kn{margin-top:24px}',
             '.hst-kn-h{font-size:12.5px;font-weight:600;color:#334155;margin-bottom:10px;display:flex;gap:8px;align-items:center}',
             '.hst-kn-tag{background:#fef3c7;color:#b45309;border-radius:4px;padding:1px 6px;font-size:10.5px}',
             '.hst-ph{background:repeating-linear-gradient(45deg,#f8fafc,#f8fafc 8px,#f1f5f9 8px,#f1f5f9 16px);border:1px solid #e2e8f0;border-radius:6px;padding:12px;color:#475569;font-size:12.5px}',
@@ -130,6 +132,7 @@ var HST_VERSION = '20261119hst1';
     function fld(nhan, ctl, bb, note) { return '<div><label class="form-label">' + nhan + (bb ? R : '') + '</label>' + (note ? '<div class="hst-note">' + note + '</div>' : '') + ctl + '</div>'; }
     function inp(ph, v, extra) { return '<input class="form-control" placeholder="' + (ph || '') + '"' + (v != null ? ' value="' + v + '"' : '') + (extra || '') + '>'; }
     function date() { return inp('dd/mm/yyyy'); }
+    function dateId(id) { return inp('dd/mm/yyyy', null, ' id="' + id + '"'); }
     function ta(ph) { return '<textarea class="form-control" rows="2" placeholder="' + ph + '"></textarea>'; }
     function blk(no, title, body) {
         return '<div class="hst-blk"><div class="hst-blk-h"><span>' + no + '. ' + title + '</span></div><div class="hst-blk-b">' + body + '</div></div>';
@@ -162,7 +165,7 @@ var HST_VERSION = '20261119hst1';
         var unit = o.unit ? '<div><label class="form-label">Đơn vị ban hành' + R + '</label><select class="form-control"><option>' + esc(H.unitName()) + '</option></select></div>' : '<div></div>';
         return '<div class="hst-kn"><div class="hst-kn-h"><i class="fa-solid fa-file-signature"></i> ' + title + '</div><div class="hst-grid">'
             + '<div><label class="form-label">Số văn bản' + rq + '</label>' + inp('Nhập số, ký hiệu văn bản') + '</div>'
-            + '<div><label class="form-label">Ngày văn bản' + rq + '</label>' + date() + '</div>'
+            + '<div><label class="form-label">Ngày văn bản' + rq + '</label>' + (o.ngayId ? dateId(o.ngayId) : date()) + '</div>'
             + '<div><label class="form-label">Người ký' + rq + '</label>' + inp('Nhập họ tên, chức vụ người ký') + '</div>' + unit
             + '<div class="hst-full">' + tlCoDinh([ten].concat(o.them || [])) + '</div></div></div>';
     }
@@ -251,23 +254,24 @@ var HST_VERSION = '20261119hst1';
         var ma = phMa(), p = PHS.filter(function (x) { return x.v === ma; })[0] || PHS[2];
         var shown = p.v === 'HT' ? 4 : p.done;
         el('hstStepperPh').innerHTML = PH_STEPS.map(function (t, i) { return '<div class="hst-st ' + (i < shown ? 'done' : (i === p.done && p.yk == null && p.v !== 'CN' ? 'cur' : '')) + '" data-n="' + (i + 1) + '">' + t + '</div>'; }).join('');
-        var nt = { CN: 'Hồ sơ cán bộ chủ động đã được phê duyệt, chờ Lãnh đạo phân công trên hệ thống.', TB: 'Thông báo tổ chức thực hiện phục hồi danh dự lập và trình ký trên hệ thống như hồ sơ thường.', PH: 'Thông báo đã ban hành trên giấy; tiếp nhận ý kiến phản hồi trên hệ thống.', TC: 'Người bị thiệt hại đã đồng ý; ghi nhận kết quả tổ chức thực hiện trên hệ thống.', HO: 'Khi lưu, hệ thống ghi 01 lần hoãn. Cán bộ «Tiếp tục thực hiện phục hồi danh dự» trên hệ thống khi có căn cứ.', TU: 'Nhánh Phục hồi danh dự kết thúc ở «Từ chối phục hồi danh dự».', HT: 'Đã tổ chức thực hiện xong; nhánh Phục hồi danh dự «Hoàn thành».' }[p.v];
+        var nt = { CN: 'Hồ sơ cán bộ chủ động đã được phê duyệt, chờ Lãnh đạo phân công trên hệ thống.', TB: 'Thông báo tổ chức thực hiện phục hồi danh dự lập và trình ký trên hệ thống như hồ sơ thường.', PH: 'Thông báo đã ban hành trên giấy; nhập ý kiến phản hồi đã nhận của người bị thiệt hại.', TC: 'Người bị thiệt hại đã đồng ý; ghi nhận kết quả tổ chức thực hiện trên hệ thống.', HO: 'Khi lưu, hệ thống ghi 01 lần hoãn. Cán bộ «Tiếp tục thực hiện phục hồi danh dự» trên hệ thống khi có căn cứ.', TU: 'Nhánh Phục hồi danh dự kết thúc ở «Từ chối phục hồi danh dự».', HT: 'Đã tổ chức thực hiện xong; nhánh Phục hồi danh dự «Hoàn thành».' }[p.v];
         el('hstPhNote').innerHTML = '<div class="hst-alert i"><i class="fa-solid fa-circle-info" style="margin-top:3px"></i><div>' + nt + ' Người bị thiệt hại «Đã chết» thì không có bước Ý kiến phản hồi.</div></div>';
         var h = '';
         if (loai === 'honor') {
             var canBo = p.v === 'CN' ? '' : '<div class="hst-grid" style="margin-top:12px"><div><label class="form-label">Cán bộ phục hồi danh dự' + R + '</label><div class="hst-note">Tài khoản trên hệ thống, nhận hồ sơ để xử lý tiếp.</div><select class="form-control"><option>' + esc(H.me()) + '</option></select></div></div>';
             h += cd ? blk(nx(), 'Phê duyệt chủ động phục hồi danh dự', kn('Văn bản phê duyệt chủ động phục hồi danh dự') + canBo)
-                : blk(nx(), 'Tiếp nhận hồ sơ - Thụ lý', '<div class="hst-grid">' + fld('Ngày thụ lý', date(), true) + '</div>' + kn('Thông báo thụ lý hồ sơ (Mẫu 04/BTNN)') + canBo);
+                : blk(nx(), 'Tiếp nhận hồ sơ - Thụ lý', '<div class="hst-grid">' + fld('Ngày thụ lý', dateId('hstNgayTl'), true) + '</div>' + kn('Thông báo thụ lý hồ sơ (Mẫu 04/BTNN)', { ngayId: 'hstNgayTbTl' }) + canBo);
         }
         if (p.done >= 1) h += blk(nx(), 'Thông báo tổ chức phục hồi danh dự', '<div class="hst-grid">'
             + '<div class="hst-full"><label class="form-label">Cơ quan thực hiện việc phục hồi danh dự' + R + '</label>' + inp('Nhập tên cơ quan thực hiện việc phục hồi danh dự') + '</div>'
             + '<div class="hst-full"><label class="form-label">Hình thức phục hồi danh dự (Điều 56)' + R + '</label><div class="hst-checks"><label><input type="checkbox" checked> Trực tiếp xin lỗi và cải chính công khai tại nơi cư trú / trụ sở (Điều 58)</label><label><input type="checkbox"> Đăng báo xin lỗi và cải chính công khai (Điều 59)</label></div></div>'
             + '<div class="hst-full"><label class="form-label">Nội dung tổ chức thực hiện phục hồi danh dự</label>' + ta('Dự kiến thời gian, địa điểm... theo văn bản đã ban hành') + '</div></div>'
             + kn('Thông báo tổ chức thực hiện phục hồi danh dự'));
-        if (p.done >= 2) {
-            var sel = p.yk != null ? p.yk : 0;
+        // 20/11 (Cách A): Bước 2 hiện khối Ý kiến phản hồi để nhập; Bước 3 / Hoàn thành: ý kiến khóa sẵn Đồng ý, không cho chọn lại
+        if (p.done >= 2 || p.v === 'PH') {
+            var sel = p.yk != null ? p.yk : 0, khoa = p.v === 'TC' || p.v === 'HT';
             h += blk(nx(), 'Ý kiến phản hồi của người yêu cầu', '<div class="hst-grid">'
-                + '<div class="hst-full"><label class="form-label">Ý kiến của người bị thiệt hại' + R + '</label><div class="hst-radios">' + YK.map(function (t, i) { return '<label><input type="radio" name="hstYk"' + (i === sel ? ' checked' : '') + '> ' + t + '</label>'; }).join('') + '</div></div>'
+                + '<div class="hst-full"><label class="form-label">Ý kiến của người bị thiệt hại' + R + '</label><div class="hst-radios">' + YK.map(function (t, i) { return '<label' + (khoa && i !== 0 ? ' style="opacity:.5;cursor:not-allowed"' : '') + '><input type="radio" name="hstYk"' + (i === sel ? ' checked' : '') + (khoa ? ' disabled' : '') + '> ' + t + '</label>'; }).join('') + '</div>' + (khoa ? '<div class="hst-note">Đã sang bước Thực hiện: ý kiến của người bị thiệt hại là Đồng ý thực hiện phục hồi danh dự.</div>' : '') + '</div>'
                 + fld('Ngày nhận được ý kiến phản hồi', date(), true) + fld('Hình thức gửi phản hồi', '<select class="form-control"><option>Bằng văn bản</option><option>Trực tiếp tại trụ sở</option><option>Khác</option></select>', true) + '<div></div><div></div>'
                 + (p.v === 'HO' ? '<div class="hst-full"><label class="form-label">Lý do đề nghị chưa thực hiện' + R + '</label>' + ta('Ghi rõ lý do đề nghị chưa thực hiện phục hồi danh dự...') + '</div>' : '')
                 + '<div class="hst-full"><label class="form-label">Nội dung ý kiến chi tiết / Yêu cầu điều chỉnh</label>' + ta('') + '</div>'
@@ -302,9 +306,17 @@ var HST_VERSION = '20261119hst1';
             + '<div id="hstWPhB" style="display:none"><label class="form-label">Bước phục hồi danh dự hiện tại' + R + '</label><select class="form-control" id="hstPhB" onchange="HST.render()"><option value="TB">Bước 1: Thông báo</option><option value="PH" selected>Bước 2: Ý kiến phản hồi của người yêu cầu</option><option value="TC">Bước 3: Thực hiện</option></select></div>'
             + '<div><label class="form-label">Ngày tiếp nhận' + R + '</label><input class="form-control" id="hstNgayTn" placeholder="dd/mm/yyyy"><div class="hst-err" id="hstNgayTnErr">Đây là trường bắt buộc</div></div>'
             + '<div><label class="form-label">Nơi thụ lý' + R + '</label><select class="form-control" id="hstNoiThuLy"><option value="">-- Chọn nơi thụ lý --</option><option>Thụ lý tại CQGQBT</option><option>Thụ lý tại Tòa án</option></select><div class="hst-err" id="hstNoiThuLyErr">Đây là trường bắt buộc</div></div>'
-            + '<div id="hstWDvc" style="display:none"><label class="form-label">Mã hồ sơ DVC</label><input class="form-control" id="hstDvc" placeholder="Nhập mã hồ sơ DVC (nếu có)"></div>'
             + '</div>';
         if (initBox && initBox.parentNode === body) body.insertBefore(top, initBox.nextSibling); else body.insertBefore(top, body.firstChild);
+        // 20/11: Số hồ sơ trên giấy + Mã hồ sơ DVC (chỉ Nguồn Dịch vụ công): hàng riêng ngay dưới hàng Nguồn hồ sơ / Hình thức tiếp nhận
+        var ngRow = el('claimNguonHoSo') ? el('claimNguonHoSo').closest('.grid-3-cols') : null;
+        if (ngRow && !el('hstRowGiay')) {
+            var rg = document.createElement('div');
+            rg.id = 'hstRowGiay'; rg.className = 'grid-3-cols'; rg.style.cssText = 'margin-bottom:16px;display:none';
+            rg.innerHTML = '<div class="form-group"><span class="form-label">Số hồ sơ trên giấy</span><input type="text" class="form-control" id="hstSoGiay" maxlength="50" placeholder="Nhập số hồ sơ trên giấy"></div>'
+                + '<div class="form-group" id="hstWDvc" style="display:none"><span class="form-label">Mã hồ sơ DVC</span><input type="text" class="form-control" id="hstDvc" maxlength="50" placeholder="Nhập mã hồ sơ DVC (nếu có)"></div>';
+            ngRow.parentNode.insertBefore(rg, ngRow.nextSibling);
+        }
         // Nguồn hồ sơ: chọn được
         var ng = el('claimNguonHoSo');
         if (ng && !el('hstNguon')) {
@@ -354,6 +366,10 @@ var HST_VERSION = '20261119hst1';
         H.tab(!ph ? 1 : !bt ? 2 : (H._tab || 1));
         el('hstPhNhan').textContent = loai === 'honor' ? 'Trạng thái Giải quyết YCBT hiện tại' : 'Trạng thái Phục hồi danh dự hiện tại';
         H.vbccTieuDe(loai);
+        // 20/11: hồ sơ Chỉ PHDD -> Nơi thụ lý mặc định Thụ lý tại CQGQBT, không cho sửa
+        var ntl = el('hstNoiThuLy');
+        if (loai === 'honor') { ntl.value = 'Thụ lý tại CQGQBT'; ntl.disabled = true; ntl.classList.remove('is-invalid'); el('hstNoiThuLyErr').style.display = 'none'; ntl.dataset.auto = '1'; }
+        else if (ntl.disabled) { ntl.disabled = false; if (ntl.dataset.auto) { ntl.value = ''; delete ntl.dataset.auto; } }
         var cd = H.cd();
         var cur = el('hstPh').value;
         el('hstPh').innerHTML = PH_CHON.filter(function (x) { return !x.cdpd || cd; }).map(function (x) { return '<option value="' + x.v + '">' + x.t + '</option>'; }).join('');
@@ -373,7 +389,7 @@ var HST_VERSION = '20261119hst1';
         el('hstStNote').innerHTML = note;
         var h = '', n = 0;
         if (bt && s) {
-            if (done >= 1) h += blk(++n, 'Tiếp nhận hồ sơ bồi thường - Thụ lý', '<div class="hst-grid">' + fld('Ngày thụ lý', date(), true) + '</div>' + kn('Thông báo thụ lý hồ sơ (Mẫu 04/BTNN)'));
+            if (done >= 1) h += blk(++n, 'Tiếp nhận hồ sơ bồi thường - Thụ lý', '<div class="hst-grid">' + fld('Ngày thụ lý', dateId('hstNgayTl'), true) + '</div>' + kn('Thông báo thụ lý hồ sơ (Mẫu 04/BTNN)', { ngayId: 'hstNgayTbTl' }));
             if (done >= 2) h += blk(++n, 'Tiếp nhận hồ sơ bồi thường - Cử người giải quyết bồi thường', kn('Quyết định cử người giải quyết bồi thường (Mẫu 06/BTNN)')
                 + '<div style="margin-top:12px"><label class="form-label">Cán bộ được cử giải quyết' + R + '</label><table><thead><tr><th style="width:60px">STT</th><th>Cán bộ</th><th style="width:200px">Vai trò</th></tr></thead><tbody><tr><td>1</td><td><select class="form-control"><option>' + esc(H.me()) + '</option></select></td><td><select class="form-control"><option>Chủ trì</option><option>Phối hợp</option></select></td></tr></tbody></table>'
                 + '<button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px"><i class="fa-solid fa-plus"></i> Thêm cán bộ</button><div class="hst-note">Tài khoản cán bộ trên hệ thống thuộc Cơ quan giải quyết bồi thường; cán bộ Chủ trì nhận hồ sơ để xử lý tiếp.</div></div>');
@@ -421,7 +437,10 @@ var HST_VERSION = '20261119hst1';
         ensureUi();
         on = !!v;
         var show = function (id, s, d) { var x = el(id); if (x) x.style.display = s ? (d || '') : 'none'; };
-        show('hstTop', on); show('hstSteps', on); show('hstFormButtons', on, 'flex');
+        show('hstTop', on); show('hstSteps', on); show('hstFormButtons', on, 'flex'); show('hstRowGiay', on);
+        // 20/11: hồ sơ tồn không có trường Mã vụ việc (hệ thống cấp mã mới khi lưu)
+        var vv = el('claimVuViecBlock');
+        if (vv) { if (on) { if (vv.dataset.hstDisp == null) vv.dataset.hstDisp = vv.style.display || ''; vv.style.display = 'none'; } else if (vv.dataset.hstDisp != null) { vv.style.display = vv.dataset.hstDisp; delete vv.dataset.hstDisp; } }
         if (on) {
             ['defaultFormButtons', 'rejectFlowButtonsContainer', 'bosungFlowButtonsContainer', 'cdpdFormButtons', 'cdpdModeBlock'].forEach(function (id) { show(id, false); });
             var t = document.querySelector('#inlineClaimFormPanel .inline-form-title');
@@ -432,7 +451,7 @@ var HST_VERSION = '20261119hst1';
             if (ht && !Array.prototype.some.call(ht.options, function (o) { return o.value === HT_CD; })) { var o2 = document.createElement('option'); o2.value = HT_CD; o2.textContent = HT_CD; o2.dataset.hst = '1'; ht.appendChild(o2); }
             if (ht && !ht.dataset.hstNghe) { ht.dataset.hstNghe = '1'; ht.addEventListener('change', function () { if (on) H.render(); }); }
             if (ht) ht.value = 'Trực tiếp'; // mặc định Trực tiếp
-            el('hstSt').value = ''; el('hstNgayTn').value = ''; el('hstDvc').value = ''; el('hstNoiThuLy').value = ''; H._tab = 1;
+            el('hstSt').value = ''; el('hstNgayTn').value = ''; el('hstDvc').value = ''; el('hstSoGiay').value = ''; el('hstNoiThuLy').value = ''; el('hstNoiThuLy').disabled = false; H._tab = 1;
             ['hstStErr', 'hstNgayTnErr', 'hstNoiThuLyErr'].forEach(function (id) { show(id, false); }); ['hstSt', 'hstNgayTn', 'hstNoiThuLy'].forEach(function (id) { el(id).classList.remove('is-invalid'); });
             H.vbccLoi(false);
             H.nguonDoi();
@@ -536,6 +555,19 @@ var HST_VERSION = '20261119hst1';
     }
     document.addEventListener('input', boLoiKhiNhap, true);
     document.addEventListener('change', boLoiKhiNhap, true);
+    // 20/11: Ngày tiếp nhận <= Ngày thụ lý <= Ngày văn bản Thông báo thụ lý (kiểm tra khi các ô đã có giá trị)
+    function pd(v) { var m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(v || '').trim()); return m ? new Date(+m[3], +m[2] - 1, +m[1]).getTime() : null; }
+    function loiNgay(c, msg) {
+        c.classList.add('is-invalid');
+        var e = document.createElement('div'); e.className = 'hst-loi'; e.style.cssText = 'color:#dc2626;font-size:12px;margin-top:4px'; e.textContent = msg;
+        c.insertAdjacentElement('afterend', e); return c;
+    }
+    function kiemNgay() {
+        var tlE = el('hstNgayTl'), tbE = el('hstNgayTbTl'), tn = pd(el('hstNgayTn').value), tl = tlE ? pd(tlE.value) : null, tb = tbE ? pd(tbE.value) : null, f = null;
+        if (tlE && tn != null && tl != null && tl < tn) f = loiNgay(tlE, 'Ngày thụ lý không được nhỏ hơn Ngày tiếp nhận.');
+        if (tbE && tl != null && tb != null && tb < tl) { var f2 = loiNgay(tbE, 'Ngày văn bản Thông báo thụ lý không được nhỏ hơn Ngày thụ lý.'); f = f || f2; }
+        return f;
+    }
     // Lưu hồ sơ tồn: kiểm tra riêng -> kiểm tra & lưu chung của form (saveNewClaim) -> gán trạng thái đã chọn
     H.save = function () {
         var loai = H.loai(), first = null;
@@ -550,13 +582,18 @@ var HST_VERSION = '20261119hst1';
         if (badN) first = first || el('hstNoiThuLy');
         if (!H.vbccCoTep()) { H.vbccLoi(true); first = first || el('claimVanBanCanCuSection'); } else H.vbccLoi(false);
         var loiKhoi = kiemKhoi();
+        var loiN = kiemNgay();
+        loiKhoi = loiKhoi || loiN;
         if (!first && loiKhoi) { H.tab(loiKhoi.closest('#hstFPh') ? 2 : 1); first = loiKhoi; }
         if (first) { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); first.focus(); return; }
         hook = {
             loai: loai, st: el('hstSt').value, prev: +el('hstPrev').value, ph: el('hstPh').value, phB: el('hstPhB').value, ht: H.cd() ? 'CD' : 'YC',
-            ngay: el('hstNgayTn').value.trim(), noiThuLy: el('hstNoiThuLy').value, dvc: el('hstNguon').value === 'Dịch vụ công' ? el('hstDvc').value.trim() : '', nguon: el('hstNguon').value, httn: el('claimHinhThucTiepNhan').value
+            ngay: el('hstNgayTn').value.trim(), noiThuLy: el('hstNoiThuLy').value, dvc: el('hstNguon').value === 'Dịch vụ công' ? el('hstDvc').value.trim() : '', nguon: el('hstNguon').value, httn: el('claimHinhThucTiepNhan').value,
+            soGiay: el('hstSoGiay').value.trim()
         };
-        try { saveNewClaim(); } finally { /* hook còn: form không qua kiểm tra chung */ if (hook && !hook.used) hook = null; }
+        // Lưu hồ sơ tồn: không gửi Dịch vụ công tại thời điểm nhập (các bước làm tiếp sau đó gửi như hồ sơ thường)
+        window.BTNN_DVC_MUTE = true;
+        try { saveNewClaim(); } finally { window.BTNN_DVC_MUTE = false; /* hook còn: form không qua kiểm tra chung */ if (hook && !hook.used) hook = null; }
     };
     function afterSave(id) {
         var h = hook; hook = null; if (!h) return false;
@@ -570,7 +607,7 @@ var HST_VERSION = '20261119hst1';
         if (h.loai !== 'honor' && done >= 1 && s.v !== 'KT' && s.v !== 'CQ') { /* Thụ lý đã nhập */ }
         var me = H.me(), today = typeof gqToday === 'function' ? gqToday() : '';
         var patch = {
-            ton: true, hst: { st: h.st || '', ph: h.loai !== 'money' ? (h.ph === 'DG' ? h.phB : h.ph) : '', buoc: buoc, nhapLuc: today, nhapBoi: me, ver: HST_VERSION },
+            ton: true, hst: { st: h.st || '', ph: h.loai !== 'money' ? (h.ph === 'DG' ? h.phB : h.ph) : '', buoc: buoc, nhapLuc: today, nhapBoi: me, soGiay: h.soGiay || '', ver: HST_VERSION },
             status: status, date: h.ngay, noiThuLy: h.noiThuLy, nguonHoSo: h.nguon, hinhThucTiepNhan: h.httn, dvcCode: h.dvc || c.dvcCode || '',
             assignedOfficer: me, userCreated: true
         };
@@ -602,7 +639,7 @@ var HST_VERSION = '20261119hst1';
         var acc = el('accHead_thuly'); var host = acc ? acc.closest('.accordion-item') : null;
         if (sec && host && host.parentNode) {
             var n = document.createElement('div'); n.id = 'hstDetNote'; n.className = 'hst-det-note';
-            n.innerHTML = '<i class="fa-solid fa-box-archive" style="margin-top:3px;color:#475569"></i><div><b>Hồ sơ tồn</b>: hồ sơ đã giải quyết trên giấy, nhập vào hệ thống ngày ' + esc(c.hst && c.hst.nhapLuc || '') + ' bởi ' + esc(c.hst && c.hst.nhapBoi || '') + '. Các bước đã làm trên giấy được nhập khi tạo hồ sơ; bước hiện tại và các bước sau xử lý như hồ sơ thường.</div>';
+            n.innerHTML = '<i class="fa-solid fa-box-archive" style="margin-top:3px;color:#475569"></i><div><b>Hồ sơ tồn</b>: hồ sơ đã giải quyết trên giấy, nhập vào hệ thống ngày ' + esc(c.hst && c.hst.nhapLuc || '') + ' bởi ' + esc(c.hst && c.hst.nhapBoi || '') + (c.hst && c.hst.soGiay ? ', số hồ sơ trên giấy ' + esc(c.hst.soGiay) : '') + '. Các bước đã làm trên giấy được nhập khi tạo hồ sơ; bước hiện tại và các bước sau xử lý như hồ sơ thường.</div>';
             host.parentNode.insertBefore(n, host);
         }
     }

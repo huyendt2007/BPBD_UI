@@ -1114,7 +1114,8 @@
         const ycbtCode = list ? nextCodeIn('BT', list) : nextCode('BT');
         const at = nowText();
         const copy = JSON.parse(JSON.stringify(rec));
-        ['routes', 'approval', 'history', 'returned', 'transfer', 'transferTo', 'chuTri', 'status', 'currentUnitId', 'module', 'code', 'id', 'claimCode'].forEach(k => delete copy[k]);
+        // [xhst] hồ sơ GQBT tạo trên hệ thống không kế thừa thuộc tính Hồ sơ tồn của hồ sơ Xác định CQGQBT
+        ['routes', 'approval', 'history', 'returned', 'transfer', 'transferTo', 'chuTri', 'status', 'currentUnitId', 'module', 'code', 'id', 'claimCode', 'ton', 'hst'].forEach(k => delete copy[k]);
         const gq = Object.assign(copy, {
             id: uid('YC'), code: ycbtCode, module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, status: STATUS.CHO_PHAN_CONG,
             routes: [], chuTri: null, approval: null, history: [],
@@ -1163,6 +1164,8 @@
         // "Bị từ chối" cũ: không có lượt Lãnh đạo trả lại (nghĩa Không thụ lý) -> Không thụ lý; có lượt trả lại -> "Bị trả lại"
         if (r.status === LEGACY_BI_TU_CHOI && !r.returned) { r.status = STATUS.KHONG_THU_LY; ch = true; }
         if (r.status === LEGACY_BI_TU_CHOI) { r.status = STATUS.BI_TRA_LAI; ch = true; }
+        // [xhst] Hồ sơ tồn Xác định CQGQBT chọn "Không tạo" hồ sơ GQBT (CQGQBT đã thụ lý trên giấy): giữ Đã chuyển CQGQBT, không tự động chuyển
+        if (r.ton && r.status === STATUS.DA_CHUYEN && r.transfer && r.transfer.ton && r.transfer.auto === false) return ch;
         if (r.status === STATUS.CHO_CHUYEN || (r.status === STATUS.DA_CHUYEN && !hasClaimCode(r))) {
             ch = true;
             if (hasClaimCode(r)) { r.status = STATUS.DA_CHUYEN; return ch; }

@@ -555,6 +555,7 @@
                 </div>
                 <!-- [cqgq1] Cơ quan giải quyết bồi thường: chỉ hiển thị khi Loại hồ sơ = Giải quyết yêu cầu bồi thường.
                      Mặc định Đơn vị của tài khoản đang đăng nhập; danh sách = đơn vị đó và các đơn vị cấp trên trực tiếp tới đơn vị cấp cao nhất (không chọn ngang cấp).
+                     [cqgq3] Đơn vị của tài khoản là Phòng / Ban: mặc định và danh sách bắt đầu từ đơn vị cấp cha gần nhất.
                      Phiếu tiếp nhận được ban hành: hồ sơ chuyển Chờ phân công tại cơ quan đã chọn -->
                 <div id="formCqgqRow" class="grid-3" style="display: none; gap: 16px; margin-bottom: 14px;">
                     <div class="form-group" style="margin-bottom: 0; grid-column: span 2;">
@@ -1015,7 +1016,7 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261119cqgq1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261120xhst6"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261112vt2"></script>
     <script src="btnn_phan_cong_ky_duyet.js?v=20261113vt5"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
@@ -1675,8 +1676,14 @@
         }
         // [cqgq1] Cơ quan giải quyết bồi thường (Tiếp nhận mới, Loại hồ sơ Giải quyết YCBT): Đơn vị của tài khoản đang đăng nhập
         // và các đơn vị cấp trên trực tiếp tới đơn vị cấp cao nhất trên Cơ cấu tổ chức; không gồm đơn vị ngoài nhánh này
-        function cqgqChain() { return BTNN_WF.getAncestors(CURRENT_USER.unitId); }
-        function defaultCqgqUnit() { return CURRENT_USER.unitId; }
+        // [cqgq3] 20/11: Đơn vị của tài khoản có Loại cơ quan, đơn vị = Phòng / Ban -> bắt đầu từ đơn vị cấp cha gần nhất (không gồm Phòng / Ban đó);
+        // mặc định đơn vị cấp cha gần nhất, cho chọn lại từ đơn vị đó lên các đơn vị cấp trên
+        function cqgqIsPhongBan(id) { const u = BTNN_WF.getUnit(id); return !!u && /^phòng\s*\/\s*ban$/i.test(String(u.loaiCoQuan || "").trim()); }
+        function cqgqChain() {
+            const ids = BTNN_WF.getAncestors(CURRENT_USER.unitId);
+            return ids.length > 1 && ids[0] === CURRENT_USER.unitId && cqgqIsPhongBan(CURRENT_USER.unitId) ? ids.slice(1) : ids;
+        }
+        function defaultCqgqUnit() { return cqgqChain()[0] || CURRENT_USER.unitId; }
         // Cơ quan giải quyết bồi thường đã lưu của hồ sơ; hồ sơ cũ chưa có giá trị: đơn vị gốc (hồ sơ chờ phân công tại đơn vị gốc như trước)
         function cqgqOf(item) { return item ? (item.cqgqUnitId || item.rootUnitId || "") : ""; }
         function setCqgq(value, isReadOnly, textIfEmpty) {
