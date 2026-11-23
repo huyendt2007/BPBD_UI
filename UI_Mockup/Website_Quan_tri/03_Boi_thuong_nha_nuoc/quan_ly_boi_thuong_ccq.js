@@ -6,6 +6,7 @@
  *   -> Tiếp tục (Ký số) -> Bước 2: Thiết lập các cấp trình ký (cách đặt ô ký hiện có), Nội dung trình -> Trình Lãnh đạo
  * - Trình: vụ việc "Chờ duyệt", Loại trình "Chuyển CQGQBT"; cấp cuối Ký duyệt -> "Đã chuyển CQGQBT", tạo hồ sơ tại cơ quan tiếp nhận mới
  * - Ký ngoài: tải PDF đã ký -> xác nhận -> ban hành trực tiếp (Đã chuyển CQGQBT, tạo hồ sơ tại cơ quan tiếp nhận mới)
+ * - [ccq2] KH chốt 23/11/2026: đếm riêng số lần Chuyển CQGQBT (không gộp với Không thụ lý KTL_01); từ lần Chuyển CQGQBT thứ 2 khóa cây - quan_ly_boi_thuong_ktlc.js ktlcChain (nc).
  * - [ccqf] Chốt 16/11/2026: từ lần chuyển thứ 2 (Mã vụ việc đã có từ 01 lần chuyển do Không thụ lý KTL_01; thao tác Chuyển CQGQBT không tính lần),
  *   Cơ quan tiếp nhận mới bắt buộc Bộ Tư pháp (Cấp đơn vị Trung ương) / Sở Tư pháp cùng tỉnh, thành phố (Tỉnh, Xã), chọn sẵn, chỉ đọc;
  *   ban hành -> hệ thống tự tạo hồ sơ Xác định CQGQBT (XD-) tại Bộ Tư pháp / Sở Tư pháp thay cho hồ sơ BT-. Đếm lần theo quan_ly_boi_thuong_ktlc.js.
@@ -26,13 +27,13 @@ function ccqForcedRule(claim) {
     try { rec = gqRecord(claim); } catch (e) { rec = null; }
     var unitId = typeof ktlcUnitOf === 'function' ? ktlcUnitOf(claim, rec, true) : '';
     var rule = ktlcRule(claim, rec, unitId);
-    if (!rule || !rule.forced) return null;
+    if (!rule || !rule.forcedCcq) return null;
     var mode = rule.modes[0];
     var target = '';
     if (mode === 'BTP') target = ((W.getRootUnits ? W.getRootUnits() : []).find(function (x) { return /^BTP/.test(x.id); }) || {}).id || '';
     else target = rule.stpId || (W.stpOfUnit ? W.stpOfUnit(unitId) : '');
     return {
-        lan: rule.lan, mode: mode, tw: rule.tw, unitId: unitId, targetUnitId: target, loaiYeuCau: W.REQUEST_TYPE_XD,
+        lan: rule.lanCcq, lanKtl: rule.lan, mode: mode, tw: rule.tw, unitId: unitId, targetUnitId: target, loaiYeuCau: W.REQUEST_TYPE_XD,
         message: target ? '' : 'Không xác định được Sở Tư pháp quản lý ' + W.unitName(unitId) + '.'
     };
 }
@@ -51,7 +52,7 @@ function ccqApplyForced(claim) {
     box.innerHTML = '<input type="hidden" id="gqTransferUnit" value="' + gqE(f.targetUnitId) + '">'
         + '<div id="ccqForcedUnit" class="form-control" style="background:#f1f5f9; color:#0f172a; font-weight:600; cursor:not-allowed;" aria-readonly="true"><i class="fa-solid fa-lock" style="color:#94a3b8; margin-right:6px;"></i>' + gqE(label) + '</div>'
         + '<div class="ktlc-note" style="font-size:12.5px; color:#475569; background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:6px 10px; margin-top:8px;"><i class="fa-solid fa-circle-info"></i> '
-        + gqE('Hồ sơ đã được chuyển ' + f.lan + ' lần do không thuộc thẩm quyền. Bắt buộc chuyển ' + org + ' để xác định cơ quan giải quyết bồi thường; khi ban hành, hệ thống tự tạo hồ sơ Xác định cơ quan giải quyết bồi thường.') + '</div>';
+        + gqE('Hồ sơ đã được Chuyển CQGQBT ' + f.lan + ' lần. Bắt buộc chuyển ' + org + ' để xác định cơ quan giải quyết bồi thường; khi ban hành, hệ thống tự tạo hồ sơ Xác định cơ quan giải quyết bồi thường.') + '</div>';
     if (f.message) { var e = ccqEl('gqTransferUnitErr'); if (e) { if (!e.dataset.req) e.dataset.req = e.textContent; e.textContent = f.message; e.style.display = 'block'; } }
 }
 // Thông tin bổ sung cho hồ sơ Xác định CQGQBT tự tạo (khối Thông tin hồ sơ chuyển đến tại Xác định CQGQBT) + lịch sử người thực hiện Hệ thống
@@ -64,10 +65,11 @@ function ccqForcedAction(claim, content) {
     return {
         loaiYeuCau: f.loaiYeuCau,
         recExtra: {
-            ktlcLan: f.lan,
-            ktlcFrom: { code: code, maVuViec: (rec && rec.maVuViec) || '', unitId: f.unitId, mode: f.mode, lan: f.lan, auto: true, applies: true, via: 'Chuyển CQGQBT', reason: 'Chuyển CQGQBT (lần chuyển thứ 2 trở đi)', content: content || '', at: W.nowText() }
+            ktlcLan: f.lanKtl || 0,
+            ccqLan: f.lan + 1,
+            ktlcFrom: { code: code, maVuViec: (rec && rec.maVuViec) || '', unitId: f.unitId, mode: f.mode, lan: f.lan + 1, auto: true, applies: true, via: 'Chuyển CQGQBT', reason: 'Chuyển CQGQBT (lần Chuyển CQGQBT thứ ' + (f.lan + 1) + ')', content: content || '', at: W.nowText() }
         },
-        sysHistory: { action: 'Tự tạo hồ sơ Xác định CQGQBT', note: 'Hồ sơ ' + code + ' của ' + W.unitName(f.unitId) + ' Chuyển CQGQBT khi Mã vụ việc đã chuyển ' + f.lan + ' lần do không thuộc thẩm quyền; hệ thống tự tạo hồ sơ Xác định CQGQBT.' }
+        sysHistory: { action: 'Tự tạo hồ sơ Xác định CQGQBT', note: 'Hồ sơ ' + code + ' của ' + W.unitName(f.unitId) + ' Chuyển CQGQBT lần thứ ' + (f.lan + 1) + '; hệ thống tự tạo hồ sơ Xác định CQGQBT.' }
     };
 }
 

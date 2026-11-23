@@ -66,15 +66,18 @@ function ktlcPick(claim, rec, key) {
 // Chuỗi hồ sơ chuyển đến (Mã hồ sơ chuyển đến): số hồ sơ Giải quyết YCBT đã chuyển trước đó, nguồn hồ sơ đầu chuỗi, có hồ sơ Xác định CQGQBT trong chuỗi
 function ktlcChain(rec) {
     var W = ktlcW();
-    var res = { n: 0, goc: '', quaXd: false };
+    var res = { n: 0, nc: 0, goc: '', quaXd: false };
     if (!W || !rec || typeof W.getRecord !== 'function') return res;
     var seen = {}, r = rec;
     // Chốt 16/11/2026: đếm mọi lần chuyển do Không thụ lý KTL_01 (Bộ Tư pháp / Sở Tư pháp / Cơ quan khác) trong chuỗi hồ sơ cùng Mã vụ việc;
-    // không phân biệt nguồn, không dừng khi qua Xác định CQGQBT hoặc thao tác Chuyển CQGQBT (thao tác này không tính lần)
+    // không phân biệt nguồn, không dừng khi qua Xác định CQGQBT
+    // [ccq2] KH chốt 23/11/2026: đếm riêng 02 loại lần chuyển - n: Không thụ lý KTL_01; nc: thao tác Chuyển CQGQBT
+    // (hồ sơ nhận không có transferMode, hồ sơ trước là hồ sơ Giải quyết YCBT); hồ sơ do Xác định CQGQBT tạo (hồ sơ trước là hồ sơ Xác định CQGQBT) không tính
     while (r && r.transferFromCode && !seen[r.code]) {
         seen[r.code] = 1;
-        if (['BTP', 'STP', 'CQ'].indexOf(r.transferMode) >= 0) res.n++;
         var p = W.getRecord(r.transferFromCode);
+        if (['BTP', 'STP', 'CQ'].indexOf(r.transferMode) >= 0) res.n++;
+        else if (!r.transferMode && p && !(W.isXdRec && W.isXdRec(p))) res.nc++;
         if (!p) break;
         if (W.isXdRec && W.isXdRec(p)) res.quaXd = true;
         r = p;
@@ -94,11 +97,14 @@ function ktlcInfo(claim, rec) {
     if (ch.n > lan) lan = ch.n;
     // Hồ sơ nhận do đơn vị trước Không thụ lý KTL_01 - Chuyển trực tiếp (dữ liệu trước khi có ktlcLan): tính 01 lần
     if (!lan && rec && ['BTP', 'STP', 'CQ'].indexOf(rec.transferMode) >= 0) lan = 1;
+    // [ccq2] Số lần Chuyển CQGQBT (đếm riêng): theo chuỗi; hồ sơ nhận qua Chuyển CQGQBT mà hồ sơ trước không còn: tính 01 lần
+    var lanCcq = Math.max(Number(ktlcPick(claim, rec, 'ccqLan') || 0), ch.nc);
+    if (!lanCcq && rec && rec.transferFromCode && !rec.transferMode && !(W && W.getRecord && W.getRecord(rec.transferFromCode)) && norm(rec.nguonHoSo || '') === S.CHUYEN && !rec.xdCode) lanCcq = 1;
     var goc = norm(ktlcPick(claim, rec, 'ktlcNguonGoc') || '') || ch.goc || src;
     var quaXd = !!ktlcPick(claim, rec, 'ktlcQuaXd') || src === S.XDCQ || !!ktlcPick(claim, rec, 'xdCode') || ch.quaXd;
     // Chốt 16/11/2026: quy tắc áp dụng mọi hồ sơ, không phân biệt nguồn, kể cả đã qua Xác định CQGQBT
     var applies = true;
-    return { src: src, lan: lan, goc: goc || S.TIEP_NHAN, quaXd: quaXd, applies: applies };
+    return { src: src, lan: lan, lanCcq: lanCcq, goc: goc || S.TIEP_NHAN, quaXd: quaXd, applies: applies };
 }
 // Đơn vị xét cấp: đơn vị gốc của tài khoản đang đăng nhập (ô "Cán bộ đang đăng nhập" là tài khoản theo Cơ cấu tổ chức), ngược lại đơn vị gốc của hồ sơ
 function ktlcUnitOf(claim, rec, useActing) {
@@ -124,7 +130,8 @@ function ktlcRule(claim, rec, unitId) {
     // Lần chuyển thứ 1: 02 lựa chọn (Bộ / Sở Tư pháp, Cơ quan khác); từ lần thứ 2 (mọi nguồn): bắt buộc Bộ / Sở Tư pháp
     if (info.lan >= 1) modes = [tw ? 'BTP' : 'STP'];
     else modes = [tw ? 'BTP' : 'STP', 'CQ'];
-    return { applies: true, lan: info.lan, goc: info.goc, quaXd: info.quaXd, tw: tw, unitId: unitId, stpId: stp, modes: modes, forced: info.lan >= 1 };
+    // [ccq2] forced: popup Không thụ lý (đếm lần Không thụ lý KTL_01); forcedCcq: popup Chuyển CQGQBT (đếm lần Chuyển CQGQBT)
+    return { applies: true, lan: info.lan, lanCcq: info.lanCcq, goc: info.goc, quaXd: info.quaXd, tw: tw, unitId: unitId, stpId: stp, modes: modes, forced: info.lan >= 1, forcedCcq: info.lanCcq >= 1 };
 }
 // Chuyển cho chính đơn vị (Bộ Tư pháp / Sở Tư pháp): nhãn giữ nguyên, hồ sơ Xác định CQGQBT tạo tại chính đơn vị
 function ktlcModeLabel(mode, rule, unitIdForStp) {
@@ -589,7 +596,8 @@ function ktlcXdFromHtml(item) {
         + row('Nguồn hồ sơ', (f.auto ? 'Hệ thống tự tạo từ ' : 'Chuyển từ ') + (f.via || 'Không thụ lý - Không thuộc thẩm quyền'))
         + '<div style="min-width:0;"><div style="color:#64748b; font-weight:600; font-size:12px;">Mã hồ sơ chuyển</div><div><a href="' + gq + '" target="_blank" rel="noopener">' + ktlcE(f.code) + '</a></div></div>'
         + row('Cơ quan chuyển', W.unitName(f.unitId))
-        + row('Lần chuyển do không thuộc thẩm quyền', f.lan ? 'Lần thứ ' + f.lan : '')
+        // [ccq2] Đếm riêng: hồ sơ tạo từ Chuyển CQGQBT ghi số lần Chuyển CQGQBT
+        + row(f.via === 'Chuyển CQGQBT' ? 'Lần Chuyển CQGQBT' : 'Lần chuyển do không thuộc thẩm quyền', f.lan ? 'Lần thứ ' + f.lan : '')
         + row('Thời điểm chuyển', f.at)
         + row('Mã vụ việc', item.maVuViec || f.maVuViec)
         + '<div style="grid-column:1/-1;">' + row('Nội dung/Căn cứ chuyển', f.content) + '</div>'
