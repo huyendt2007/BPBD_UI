@@ -333,10 +333,19 @@
         }
         return headHtml(ctx.issuer || ctx.unit, so, ngay, k.mau)
             + '<div style="text-align:center; margin-bottom:14px;"><div style="font-weight:bold; font-size:15px;">QUYẾT ĐỊNH</div><div style="font-weight:bold; font-size:14px;">' + esc(k.title.replace('QUYẾT ĐỊNH ', '').replace(/^VỀ VIỆC/, 'Về việc').toLowerCase().replace(/^về việc/, 'Về việc')) + '</div></div>'
-            + '<p style="' + p + ' font-style:italic;">Căn cứ Luật Trách nhiệm bồi thường của Nhà nước; căn cứ Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả số ' + esc(/^\d/.test(activeDossier.hdDecision || '') ? activeDossier.hdDecision : '……') + '; xét Văn bản kiến nghị của Hội đồng (Mã hồ sơ: ' + esc(activeDossier.code) + '),</p>'
+            + '<p style="' + p + ' font-style:italic;">Căn cứ Luật Trách nhiệm bồi thường của Nhà nước; căn cứ Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả số ' + esc(/^\d/.test(activeDossier.hdDecision || '') ? activeDossier.hdDecision : '……') + canCuGqbt(kind) + '; xét Văn bản kiến nghị của Hội đồng (Mã hồ sơ: ' + esc(activeDossier.code) + '),</p>'
             + '<div style="text-align:center; font-weight:bold; margin:10px 0;">QUYẾT ĐỊNH:</div>' + body
             + '<p style="' + p + '"><strong>Điều 2.</strong> Quyết định này có hiệu lực kể từ ngày ký./.</p>'
             + '<div style="display:flex; justify-content:space-between; margin-top:30px;"><div style="width:44%; font-size:12px;"><strong><em>Nơi nhận:</em></strong><br>' + nnHtml(kind, ctx) + '</div><div id="ht3SignAnchor" style="text-align:center; width:52%;"><div style="font-weight:bold;">THỦ TRƯỞNG CƠ QUAN</div><div style="height:80px;"></div></div></div>';
+    }
+    // [hta] Dòng căn cứ Quyết định giải quyết bồi thường của Mẫu 37/BTNN, Mẫu 38/BTNN (##SoQDGiaiQuyetBoiThuong##, ##NgayQDGiaiQuyetBoiThuong##);
+    // hồ sơ Thụ lý tại Tòa án để trống hai biến (hiển thị "……"), không lấy số, ngày của Bản án/Quyết định (nhanhl2 chốt 23/11/2026, SRS MH11)
+    function canCuGqbt(kind) {
+        const b = baseKind(kind);
+        if (b !== 'GIAM' && b !== 'MIEN') return '';
+        const d = activeDossier || {};
+        if (window.HT_TOA_AN && HT_TOA_AN.laToaAn(d)) return '; căn cứ Quyết định giải quyết bồi thường số …… ngày ……';
+        return '; căn cứ Quyết định giải quyết bồi thường số ' + esc(d.gqbtQdNo || '……') + ' ngày ' + esc(d.claimDate || '……');
     }
     // [nn1] Nơi nhận mặc định của QĐ hoàn trả (Mẫu 36), giảm (Mẫu 37), miễn (Mẫu 38): dòng đầu theo mẫu; mỗi cơ quan trả lương 01 dòng (không lặp; bỏ cơ quan trùng
     // cơ quan quản lý nhà nước về công tác BTNN hoặc trùng đơn vị ban hành); cơ quan quản lý nhà nước về công tác BTNN; Lưu: VT, HSVV.

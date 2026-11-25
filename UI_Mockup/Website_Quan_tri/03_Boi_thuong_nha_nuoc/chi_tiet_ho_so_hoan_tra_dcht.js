@@ -301,7 +301,9 @@ function dchtNycName() { return typeof tlhdNycName === 'function' ? tlhdNycName(
 // (5) Tên cá nhân, tổ chức bị thiệt hại theo hồ sơ (Cá nhân: tiền tố Ông/Bà)
 function dchtVictim() {
     let n = '';
-    try {
+    // [hta] Hồ sơ Thụ lý tại Tòa án: người bị thiệt hại theo dòng vụ việc tại Tòa án (kế thừa khi khởi tạo)
+    if (activeDossier && window.HT_TOA_AN && HT_TOA_AN.laToaAn(activeDossier)) n = activeDossier.victimName || '';
+    else try {
         const W = window.BTNN_WF; const r = W && activeDossier ? W.getRecord(activeDossier.claimCode) : null;
         if (r) n = r.ntthName || r.nguoiBiThietHai || r.victimName || '';
     } catch (e) { n = ''; }
@@ -311,6 +313,8 @@ function dchtVictim() {
 }
 // (6) Văn bản làm căn cứ yêu cầu bồi thường theo hồ sơ (cho phép sửa trên popup)
 function dchtVbCanCuDefault() {
+    // [hta] SRS 23/11/2026 (MH10): hồ sơ Thụ lý tại Tòa án -> Tên văn bản căn cứ của bảng Văn bản làm căn cứ yêu cầu bồi thường của dòng vụ việc tại Tòa án, nối bằng "; "; bảng không có dòng thì để trống
+    if (activeDossier && window.HT_TOA_AN && HT_TOA_AN.laToaAn(activeDossier)) return (activeDossier.vanBanCanCuToaAn || []).join('; ');
     try {
         const W = window.BTNN_WF; const r = W && activeDossier ? W.getRecord(activeDossier.claimCode) : null;
         if (r) {

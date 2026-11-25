@@ -1018,8 +1018,12 @@
             // Mở từ phân hệ khác: ?id= (id vụ việc tại Tòa án, chính xác); ?code= (Mã vụ việc, đường dẫn cũ: vụ việc tại Tòa án đầu tiên cùng mã)
             const caseId = params.get("id"), code = params.get("code");
             if (caseId || code) {
-                const rec = (caseId && cases.find(c => c.id === caseId && !c.deleted)) || (code && cases.find(c => c.code === code && !c.deleted));
+                let rec = (caseId && cases.find(c => c.id === caseId && !c.deleted)) || (code && cases.find(c => c.code === code && !c.deleted));
+                // [hta] Mở từ Xem xét trách nhiệm hoàn trả (?id= dòng mẫu của ht_toa_an_mau.js): nạp tạm dòng để mở chi tiết, sau đó bỏ khỏi danh sách (không lưu lại)
+                const htTam = !rec && caseId && window.HT_TOA_AN ? HT_TOA_AN.banGhiToaAn(caseId) : null;
+                if (htTam) { cases.push(htTam); saveCases(); rec = htTam; }
                 if (rec) openCaseForm(rec.id, true);
+                if (htTam) { cases = cases.filter(c => c.id !== htTam.id); saveCases(); }
                 // Mở từ Tra cứu vụ việc (readonly=1): chỉ xem, ẩn Cập nhật / Xóa; Quay lại: đóng tab (newtab=1) hoặc về Tra cứu vụ việc
                 if (rec && params.get("readonly") === "1") {
                     const st = document.createElement("style");
@@ -2177,6 +2181,8 @@
     <script src="btnn_tim_kiem_vu_viec.js?v=20261030tab1"></script>
     <script src="tra_cuu_seed_tcvv.js?v=20261030s2"></script>
     <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261119lk1"></script>
+    <!-- [hta] Dòng vụ việc tại Tòa án mẫu của Xem xét trách nhiệm hoàn trả (chỉ dùng khi mở bằng ?id=) -->
+    <script src="ht_toa_an_mau.js?v=20261124hta3"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_grid_toolbar.js?v=20261030gt1"></script>
     <script src="btnn_tieu_de_man.js?v=20261103td2"></script>

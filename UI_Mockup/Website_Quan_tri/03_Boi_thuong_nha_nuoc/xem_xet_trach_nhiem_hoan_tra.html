@@ -131,6 +131,14 @@
             margin-bottom: 10px;
         }
 
+        /* [hta] Lưới MH01 thêm 02 cột Nơi thụ lý, Số bản án/Quyết định (SRS 23/11/2026): bảng rộng thì cuộn ngang thay vì ép cột;
+           mã và tiêu đề cột ngắn giữ trên một dòng; cột Thao tác cố định bên phải (quy tắc lưới của bộ mẫu) */
+        #refundTable { min-width: 1600px; }
+        #refundTable thead th:not(:nth-child(3)):not(:nth-child(4)) { white-space: nowrap !important; } /* style dùng chung đặt white-space: normal !important cho tiêu đề cột */
+        #refundTable tbody td:nth-child(2), #refundTable tbody td:nth-child(5), #refundTable tbody td:nth-child(7), #refundTable tbody td:nth-child(8) { white-space: nowrap; }
+        #refundTable thead th:last-child, #refundTable tbody td:last-child { position: sticky; right: 0; z-index: 1; box-shadow: -3px 0 5px rgba(15, 23, 42, 0.06); }
+        #refundTable tbody td:last-child { background: #fff; }
+
         .custom-table {
             width: 100%;
             border-collapse: collapse;
@@ -885,7 +893,8 @@
 
     <!-- FILTER SEARCH BOX -->
     <div class="card-section" style="padding: 12px 16px; background: white; margin-bottom: 12px; border-radius: var(--border-radius-md); border: 1px solid var(--border-color);">
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 8px;">
+        <!-- [loc4] Lưới 04 cột rộng bằng nhau, mỗi hàng tối đa 04 trường lọc (nhanhl2 yêu cầu 24/11/2026); nút ở hàng riêng, căn phải -->
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 8px;">
             <div>
                 <span class="form-label">Mã hồ sơ</span>
                 <input type="text" class="form-control" id="filterDossierCode" placeholder="Nhập mã hồ sơ (HT-...)">
@@ -899,11 +908,23 @@
                 <input type="text" class="form-control" id="filterGqbtCode" placeholder="Nhập mã hồ sơ GQBT (BT-...)">
             </div>
             <div>
+                <span class="form-label">Số bản án/Quyết định</span>
+                <!-- [hta2] Số Bản án/Quyết định của dòng vụ việc tại Tòa án (SRS 24/11/2026): tìm gần đúng; hồ sơ Thụ lý tại CQGQBT không khớp -->
+                <input type="text" class="form-control" id="filterSoBanAn" placeholder="Nhập số bản án/quyết định...">
+            </div>
+            <div>
+                <span class="form-label">Nơi thụ lý</span>
+                <!-- [hta] Nơi thụ lý của hồ sơ hoàn trả (SRS 23/11/2026, #ht-noi-thu-ly): lọc chính xác; Xóa bộ lọc và Chuyển tab đưa về Tất cả -->
+                <select class="form-control" id="filterNoiThuLyHt" style="height:34px;">
+                    <option value="">Tất cả</option>
+                    <option value="Thụ lý tại Tòa án">Thụ lý tại Tòa án</option>
+                    <option value="Thụ lý tại CQGQBT">Thụ lý tại CQGQBT</option>
+                </select>
+            </div>
+            <div>
                 <span class="form-label">Người thi hành công vụ gây thiệt hại</span>
                 <input type="text" class="form-control" id="filterOfficerName" placeholder="Nhập họ tên cán bộ...">
             </div>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 8px;">
             <div>
                 <span class="form-label">Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</span>
                 <select class="form-control" id="filterAgency" style="height:34px;">
@@ -982,7 +1003,9 @@
                         <th style="min-width: 210px; width: 20%; cursor:pointer;" onclick="sortRefundTable('officer')" title="Sắp xếp theo Cán bộ">Người thi hành công vụ gây thiệt hại <i class="fa-solid fa-sort" id="sortIcon_officer" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 135px; cursor:pointer;" onclick="sortRefundTable('agency')" title="Sắp xếp theo Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại">Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại <i class="fa-solid fa-sort" id="sortIcon_agency" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 170px; text-align:center; cursor:pointer;" onclick="sortRefundTable('maVuViec')" title="Sắp xếp theo Mã vụ việc">Mã vụ việc <i class="fa-solid fa-sort" id="sortIcon_maVuViec" style="font-size:11px; opacity:0.4;"></i></th>
+                        <th style="width: 150px; text-align:center; cursor:pointer; white-space:nowrap;" onclick="sortRefundTable('noiThuLy')" title="Sắp xếp theo Nơi thụ lý">Nơi thụ lý <i class="fa-solid fa-sort" id="sortIcon_noiThuLy" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 120px; text-align:center; cursor:pointer;" onclick="sortRefundTable('claimCode')" title="Sắp xếp theo Mã hồ sơ GQBT">Mã hồ sơ GQBT <i class="fa-solid fa-sort" id="sortIcon_claimCode" style="font-size:11px; opacity:0.4;"></i></th>
+                        <th style="width: 150px; text-align:center; cursor:pointer; white-space:nowrap;" onclick="sortRefundTable('soBanAn')" title="Sắp xếp theo Số bản án/Quyết định">Số bản án/Quyết định <i class="fa-solid fa-sort" id="sortIcon_soBanAn" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="text-align:right; width: 125px; cursor:pointer;" onclick="sortRefundTable('refundTotal')" title="Sắp xếp theo Số tiền phải hoàn trả">Tiền hoàn trả (đ) <i class="fa-solid fa-sort" id="sortIcon_refundTotal" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 145px; cursor:pointer;" onclick="sortRefundTable('progress')" title="Sắp xếp theo Tiến độ">Tiến độ thu tiền <i class="fa-solid fa-sort" id="sortIcon_progress" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 145px; text-align:center; cursor:pointer;" onclick="sortRefundTable('status')" title="Sắp xếp theo Trạng thái">Trạng thái <i class="fa-solid fa-sort" id="sortIcon_status" style="font-size:11px; opacity:0.4;"></i></th>
@@ -1467,19 +1490,67 @@
     <div class="modal" id="selectClaimToRefundModal">
         <!-- Nới rộng và giữ tiêu đề cột trên một dòng (quy tắc lưới của bộ mẫu) -->
         <style>#selectClaimToRefundModal .custom-table th { white-space: nowrap; }</style>
-        <div class="modal-content" style="max-width: 1000px;">
+        <div class="modal-content" style="max-width: 1240px;">
             <div class="modal-header">
                 <h3 class="modal-title"><i class="fa-solid fa-circle-plus"></i> Lập hồ sơ hoàn trả: Chọn vụ việc bồi thường</h3>
                 <button type="button" class="close-modal" onclick="closeRefundModal('selectClaimToRefundModal')">&times;</button>
             </div>
             <div class="modal-body" style="padding: 20px;">
-                <p style="font-size:13px; color:var(--text-muted); margin-bottom: 15px;">Dưới đây là danh sách các vụ việc bồi thường nhà nước đã chi trả xong, đủ điều kiện để khởi tạo hồ sơ xem xét trách nhiệm hoàn trả công quỹ:</p>
+                <p style="font-size:13px; color:var(--text-muted); margin-bottom: 15px;">Dưới đây là danh sách các vụ việc đã hoàn tất chi trả tiền bồi thường (vụ việc thụ lý tại cơ quan giải quyết bồi thường và vụ việc tại Tòa án), đủ điều kiện để khởi tạo hồ sơ xem xét trách nhiệm hoàn trả công quỹ:</p>
+                <!-- [hta2] Khối lọc của popup (SRS 24/11/2026): áp dụng khi bấm Tìm kiếm hoặc Enter; mở popup và Xóa bộ lọc đưa mọi ô về mặc định -->
+                <div id="claimFilterBox" style="border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:12px 14px; margin-bottom:12px; background:#fff;">
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:8px;">
+                        <div>
+                            <span class="form-label">Mã vụ việc</span>
+                            <input type="text" class="form-control" id="claimFilterMa" maxlength="50" placeholder="Nhập mã vụ việc hoặc mã hồ sơ GQBT (VVBT-..., BT-...)" onkeydown="if(event.key==='Enter')applyClaimFilters()">
+                        </div>
+                        <div>
+                            <span class="form-label">Nơi thụ lý</span>
+                            <select class="form-control" id="claimFilterNoiThuLy" style="height:34px;">
+                                <option value="">Tất cả</option>
+                                <option value="Thụ lý tại Tòa án">Thụ lý tại Tòa án</option>
+                                <option value="Thụ lý tại CQGQBT">Thụ lý tại CQGQBT</option>
+                            </select>
+                        </div>
+                        <div>
+                            <span class="form-label">Số bản án/Quyết định</span>
+                            <input type="text" class="form-control" id="claimFilterSoBanAn" maxlength="100" placeholder="Nhập số bản án/quyết định..." onkeydown="if(event.key==='Enter')applyClaimFilters()">
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px;">
+                        <div>
+                            <span class="form-label">Tên cá nhân/Tổ chức yêu cầu</span>
+                            <input type="text" class="form-control" id="claimFilterTen" maxlength="255" placeholder="Nhập tên cá nhân/tổ chức yêu cầu..." onkeydown="if(event.key==='Enter')applyClaimFilters()">
+                        </div>
+                        <div>
+                            <span class="form-label">Ngày hoàn tất chi từ ngày</span>
+                            <div class="date-input-wrapper">
+                                <input type="text" class="form-control" id="claimFilterTuNgay" placeholder="dd/mm/yyyy" onkeydown="if(event.key==='Enter')applyClaimFilters()">
+                                <i class="fa-regular fa-calendar-days"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="form-label">Ngày hoàn tất chi đến ngày</span>
+                            <div class="date-input-wrapper">
+                                <input type="text" class="form-control" id="claimFilterDenNgay" placeholder="dd/mm/yyyy" onkeydown="if(event.key==='Enter')applyClaimFilters()">
+                                <i class="fa-regular fa-calendar-days"></i>
+                            </div>
+                            <div id="claimFilterNgayLoi" style="display:none; color:var(--danger-color); font-size:12px; margin-top:4px;">Từ ngày không được lớn hơn Đến ngày</div>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:10px;">
+                        <button type="button" class="btn btn-clear-filter" onclick="resetClaimFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                        <button type="button" class="btn btn-primary" onclick="applyClaimFilters()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                    </div>
+                </div>
                 <div class="table-container">
                     <table class="custom-table" style="font-size:12.5px;">
                         <thead>
                             <tr>
                                 <th>Mã vụ việc</th>
+                                <th style="text-align:center;">Nơi thụ lý</th>
                                 <th>Mã hồ sơ GQBT</th>
+                                <th>Số bản án/Quyết định</th>
                                 <th>Tên cá nhân/Tổ chức yêu cầu</th>
                                 <th style="text-align:right;">Số tiền bồi thường (đ)</th>
                                 <th style="text-align:center;">Ngày hoàn tất chi</th>
@@ -1641,12 +1712,20 @@
         function ykhdNormalizeRefundStatus(d) { if (d && d.status === 'Đang ' + 'thi hành') d.status = 'Thu tiền hoàn trả'; return d; }
         function loadCreatedRefundDossiers() { try { const l = JSON.parse(localStorage.getItem(HT_CREATED_KEY) || '[]'); return Array.isArray(l) ? l.map(ykhdNormalizeRefundStatus).map(d => { try { return htStNormalize(d); } catch (e) { return d; } }) : []; } catch (e) { return []; } }
         function saveCreatedRefundDossiers(list) { try { localStorage.setItem(HT_CREATED_KEY, JSON.stringify(list)); } catch (e) { /* bỏ qua */ } }
-        function existingRefundCodeOf(maVuViec) {
-            if (!maVuViec) return '';
-            const inList = dossiersList.find(d => dossierVuViec(d) === maVuViec);
+        // [hta] SRS 23/11/2026: mỗi vụ việc 01 hồ sơ hoàn trả; dòng Thụ lý tại CQGQBT kiểm tra theo hồ sơ GQBT (không tính hồ sơ của dòng vụ việc tại Tòa án cùng Mã vụ việc)
+        function existingRefundCodeOf(maVuViec, claimCode) {
+            if (!maVuViec && !claimCode) return '';
+            const laToaAn = d => !!(d && (d.courtCaseId || d.noiThuLy === 'Thụ lý tại Tòa án'));
+            const inList = dossiersList.find(d => !laToaAn(d) && (claimCode ? d.claimCode === claimCode : dossierVuViec(d) === maVuViec));
             if (inList) return inList.code;
-            const vv = window.BTNN_WF ? BTNN_WF.listVuViec().find(v => v.code === maVuViec) : null;
-            return vv ? (vv.hoSo.find(h => /^HT-/.test(h)) || '') : '';
+            const courtCodes = new Set(dossiersList.filter(laToaAn).map(d => d.code));
+            const vv = (maVuViec && window.BTNN_WF) ? BTNN_WF.listVuViec().find(v => v.code === maVuViec) : null;
+            return vv ? (vv.hoSo.find(h => /^HT-/.test(h) && !courtCodes.has(h)) || '') : '';
+        }
+        // [hta] Hồ sơ hoàn trả đã có của dòng vụ việc tại Tòa án (kiểm tra theo dòng, không theo Mã vụ việc)
+        function existingCourtRefundCodeOf(courtCaseId) {
+            const d = dossiersList.find(x => x && x.courtCaseId === courtCaseId);
+            return d ? d.code : '';
         }
         // Bỏ liên kết Mã hồ sơ hoàn trả khỏi sổ đăng ký vụ việc khi xóa hồ sơ
         function unlinkRefundDossier(code) {
@@ -2501,7 +2580,7 @@
         }
 
         function updateSortIcons() {
-            const cols = ['stt', 'code', 'officer', 'agency', 'maVuViec', 'claimCode', 'claimAmt', 'refundTotal', 'progress', 'status'];
+            const cols = ['stt', 'code', 'officer', 'agency', 'maVuViec', 'noiThuLy', 'claimCode', 'soBanAn', 'claimAmt', 'refundTotal', 'progress', 'status'];
             cols.forEach(c => {
                 const icon = document.getElementById(`sortIcon_${c}`);
                 if (!icon) return;
@@ -2874,7 +2953,7 @@
                     <td style="text-align:center; font-weight:600;" title="${claimLabel(d.claimCode)}">${dossierVuViec(d) || '-'}</td>
                     <td style="text-align:center; font-weight:600;"><a href="quan_ly_boi_thuong.html?id=${d.claimCode}&from=hoan_tra&returnUrl=${encodeURIComponent('xem_xet_trach_nhiem_hoan_tra.html')}" onclick="event.stopPropagation(); openLinkedClaimDetail('${d.claimCode}'); return false;" style="color: var(--secondary-color); text-decoration: underline; font-weight: 700;" title="Mở chi tiết hồ sơ Giải quyết YCBT">${d.claimCode || '-'}</a></td>
                     <td style="text-align:right; font-weight:600;">${d.claimAmt.toLocaleString('vi-VN')}</td>
-                    <td style="text-align:right; font-weight:600; color:var(--danger-color);">${d.refundTotal > 0 ? d.refundTotal.toLocaleString('vi-VN') : '--'}</td>
+                    <td style="text-align:right; font-weight:600; color:var(--danger-color);">${d.refundTotal > 0 ? d.refundTotal.toLocaleString('vi-VN') : '-'}</td>
                     <td>
                         ${d.refundTotal > 0 ? `
                         <div style="font-size:11px; display:flex; justify-content:space-between; align-items:center; font-weight:600; line-height:1.2; margin-bottom:2px;">
@@ -2955,18 +3034,48 @@
             // Điều kiện (SRS MH02): đã hoàn tất chi trả; chưa có hồ sơ hoàn trả; thuộc phạm vi dữ liệu người dùng. Sắp xếp Ngày hoàn tất chi tăng dần
             const dmy = s => { const p = String(s || '').split('/'); return p.length === 3 ? p[2] + p[1] + p[0] : ''; };
             const srcCodes = (window.HT_SOURCE_CLAIMS || []).filter(s => typeof htSourceInScope !== 'function' || htSourceInScope(s)).map(s => s.claimCode);
-            const rows = PAID_CLAIM_CODES.concat(srcCodes).filter(c => !existingRefundCodeOf(vuViecOfClaim(c)))
-                .sort((a, b) => dmy(getClaimSeedData(a).paidDate).localeCompare(dmy(getClaimSeedData(b).paidDate))).map(c => {
+            const TA = window.HT_TOA_AN;
+            const badge = v => TA ? TA.badge(v) : v;
+            const btn = fn => `<button class="btn btn-primary btn-sm" onclick="${fn}" style="padding:4px 8px; font-size:11.5px; height:28px; white-space:nowrap;">Khởi tạo hồ sơ</button>`;
+            // [hta] Mỗi vụ việc 01 dòng: hồ sơ GQBT đã hoàn tất chi trả (Thụ lý tại CQGQBT) và dòng vụ việc tại Tòa án thuộc diện (Thụ lý tại Tòa án, #ht-nguon-toa-an)
+            const cq = PAID_CLAIM_CODES.concat(srcCodes).filter(c => !existingRefundCodeOf(vuViecOfClaim(c), c)).map(c => {
                 const seed = getClaimSeedData(c);
-                return `<tr>
+                return { ngay: seed.paidDate, vv: vuViecOfClaim(c), gq: c, ntl: 'Thụ lý tại CQGQBT', ba: '', ten: CLAIMANT_BY_CODE[c] || seed.claimant || '', html: `<tr>
                     <td><strong>${vuViecOfClaim(c)}</strong></td>
+                    <td style="text-align:center;">${badge('Thụ lý tại CQGQBT')}</td>
                     <td><a href="javascript:void(0)" onclick="openLinkedClaimDetail('${c}')" style="color:var(--secondary-color); text-decoration:underline; font-weight:700;">${c}</a></td>
+                    <td style="text-align:center;">-</td>
                     <td>${CLAIMANT_BY_CODE[c] || seed.claimant || ''}</td>
                     <td style="text-align:right; font-weight:600; color:var(--danger-color);">${seed.claimAmt.toLocaleString('vi-VN')}</td>
                     <td style="text-align:center;">${seed.paidDate}</td>
-                    <td style="text-align:center;"><button class="btn btn-primary btn-sm" onclick="selectClaimForRefund('${c}')" style="padding:4px 8px; font-size:11.5px; height:28px;">Khởi tạo hồ sơ</button></td>
-                </tr>`;
+                    <td style="text-align:center;">${btn(`selectClaimForRefund('${c}')`)}</td>
+                </tr>` };
             });
+            const ta = (TA ? TA.LINES : []).filter(l => TA.thuocDien(l) && (typeof htSourceInScope !== 'function' || htSourceInScope({ agency: l.court.agency })) && !existingCourtRefundCodeOf(l.court.id)).map(l => {
+                const c = l.court;
+                return { ngay: l.chiTra.ngayHoanTat, vv: c.code, gq: '', ntl: 'Thụ lý tại Tòa án', ba: c.verdictNo || '', ten: c.nyc.name || '', html: `<tr>
+                    <td><strong>${c.code}</strong></td>
+                    <td style="text-align:center;">${badge('Thụ lý tại Tòa án')}</td>
+                    <td style="text-align:center;">-</td>
+                    <td>${TA.soBanAnHtml(c.id, c.verdictNo, true)}</td>
+                    <td>${c.nyc.name}</td>
+                    <td style="text-align:right; font-weight:600; color:var(--danger-color);" title="${l.chiTra.motPhan ? 'Số tiền đã chi thực tế, không gồm ' + l.chiTra.traLai.toLocaleString('vi-VN') + ' đ trả lại ngân sách nhà nước' : 'Số tiền đã chi thực tế'}">${l.chiTra.daChi.toLocaleString('vi-VN')}</td>
+                    <td style="text-align:center;">${l.chiTra.ngayHoanTat}</td>
+                    <td style="text-align:center;">${btn(`selectCourtForRefund('${c.id}')`)}</td>
+                </tr>` };
+            });
+            // [hta2] Áp bộ lọc đã chốt khi bấm Tìm kiếm (claimFilter): mọi điều kiện kết hợp với nhau
+            const f = claimFilter, has = (v, q) => String(v || '').toLowerCase().includes(q);
+            const rows = cq.concat(ta).filter(x => {
+                if (f.ma && !(has(x.vv, f.ma) || has(x.gq, f.ma))) return false;
+                if (f.ntl && x.ntl !== f.ntl) return false;
+                if (f.ba && !has(x.ba, f.ba)) return false;
+                if (f.ten && !has(x.ten, f.ten)) return false;
+                const n = dmy(x.ngay);
+                if (f.tu && n < f.tu) return false;
+                if (f.den && n > f.den) return false;
+                return true;
+            }).sort((a, b) => dmy(a.ngay).localeCompare(dmy(b.ngay))).map(x => x.html);
             const tong = rows.length, soTrang = Math.ceil(tong / pageSizeClaim) || 1;
             currentPageClaim = Math.min(Math.max(1, currentPageClaim), soTrang);
             const dau = (currentPageClaim - 1) * pageSizeClaim, cuoi = Math.min(dau + pageSizeClaim, tong);
@@ -2979,10 +3088,41 @@
             ph += `<span class="page-item ${p === soTrang ? 'disabled' : ''}" onclick="${p === soTrang ? '' : 'setPageClaim(' + (p + 1) + ')'}" title="Trang sau">&gt;</span>`
                 + `<span class="page-item ${p === soTrang ? 'disabled' : ''}" onclick="${p === soTrang ? '' : 'setPageClaim(' + soTrang + ')'}" title="Trang cuối">&gt;&gt;&verbar;</span>`;
             document.getElementById('paginationPagesClaim').innerHTML = ph;
-            body.innerHTML = tong ? rows.slice(dau, cuoi).join('') : '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy dữ liệu phù hợp.</td></tr>';
+            body.innerHTML = tong ? rows.slice(dau, cuoi).join('') : '<tr><td colspan="8" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy dữ liệu phù hợp.</td></tr>';
+        }
+        // [hta2] Bộ lọc của popup chọn vụ việc (SRS 24/11/2026, MH02)
+        var claimFilter = {};
+        const CLAIM_FILTER_IDS = ['claimFilterMa', 'claimFilterNoiThuLy', 'claimFilterSoBanAn', 'claimFilterTen', 'claimFilterTuNgay', 'claimFilterDenNgay'];
+        function claimNgay(id) {
+            const m = String((document.getElementById(id) || {}).value || '').trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            return m ? m[3] + m[2].padStart(2, '0') + m[1].padStart(2, '0') : '';
+        }
+        function applyClaimFilters() {
+            const v = id => String((document.getElementById(id) || {}).value || '').trim();
+            const tu = claimNgay('claimFilterTuNgay'), den = claimNgay('claimFilterDenNgay');
+            const loi = document.getElementById('claimFilterNgayLoi');
+            const denEl = document.getElementById('claimFilterDenNgay');
+            // [BR-VAL-007] Từ ngày không lớn hơn Đến ngày: báo [MSG-ERR-VAL-007] dưới ô, không tìm kiếm
+            if (tu && den && tu > den) {
+                if (loi) loi.style.display = 'block';
+                if (denEl) denEl.style.borderColor = 'var(--danger-color)';
+                return;
+            }
+            if (loi) loi.style.display = 'none';
+            if (denEl) denEl.style.borderColor = '';
+            claimFilter = { ma: v('claimFilterMa').toLowerCase(), ntl: v('claimFilterNoiThuLy'), ba: v('claimFilterSoBanAn').toLowerCase(), ten: v('claimFilterTen').toLowerCase(), tu, den };
+            currentPageClaim = 1;
+            renderSelectClaimRows();
+        }
+        function resetClaimFilters(khongVe) {
+            CLAIM_FILTER_IDS.forEach(id => { const el = document.getElementById(id); if (el) { el.value = ''; el.style.borderColor = ''; } });
+            const loi = document.getElementById('claimFilterNgayLoi'); if (loi) loi.style.display = 'none';
+            claimFilter = {};
+            currentPageClaim = 1;
+            if (!khongVe) renderSelectClaimRows();
         }
         function openSelectClaimModal() {
-            currentPageClaim = 1;
+            resetClaimFilters(true);
             renderSelectClaimRows();
             document.getElementById('selectClaimToRefundModal').classList.add('visible');
         }
@@ -2990,15 +3130,39 @@
         function selectClaimForRefund(claimCode) {
             // 01 vụ việc chỉ có 01 hồ sơ hoàn trả
             const maVuViec = vuViecOfClaim(claimCode);
-            const existed = existingRefundCodeOf(maVuViec);
+            const existed = existingRefundCodeOf(maVuViec, claimCode);
             if (existed) {
-                showToast(`Vụ việc ${maVuViec} đã có hồ sơ xem xét trách nhiệm hoàn trả ${existed}. Vụ việc bồi thường không còn đủ điều kiện lập hồ sơ xem xét trách nhiệm hoàn trả.`, "danger");
+                // [MSG-ERR-BTNN-HT-009]
+                showToast(`Vụ việc ${maVuViec} (Hồ sơ GQBT ${claimCode}) đã có hồ sơ xem xét trách nhiệm hoàn trả ${existed}. Vụ việc này không còn đủ điều kiện lập hồ sơ xem xét trách nhiệm hoàn trả.`, "danger");
                 renderSelectClaimRows();
                 return;
             }
             const newDossier = createPendingRefundDossier(claimCode);
             newDossier.maVuViec = maVuViec;
             if (window.BTNN_WF) BTNN_WF.linkVuViec(newDossier.code, maVuViec);
+            dossiersList.unshift(newDossier);
+            saveCreatedRefundDossiers([newDossier].concat(loadCreatedRefundDossiers().filter(d => d.code !== newDossier.code)));
+            sessionStorage.setItem('newRefundDossier', JSON.stringify(newDossier));
+            closeRefundModal('selectClaimToRefundModal');
+            showToast(`Đã khởi tạo hồ sơ ${newDossier.code}. Đang chuyển sang Bước 1 để lập và trình/ban hành Quyết định thành lập Hội đồng...`, "success");
+            setTimeout(() => {
+                window.location.href = `chi_tiet_ho_so_hoan_tra.html?id=${newDossier.id}&mode=edit&focusStep=1`;
+            }, 350);
+        }
+
+        // [hta] Khởi tạo hồ sơ từ dòng vụ việc tại Tòa án (SRS 23/11/2026, MH02 chức năng 1): kiểm tra theo dòng; kế thừa từ dòng và bản ghi Chi trả tiền bồi thường;
+        // danh sách người thi hành công vụ gây thiệt hại trống (người dùng thêm tại MH06); không gắn Mã hồ sơ hoàn trả vào sổ đăng ký Mã vụ việc
+        function selectCourtForRefund(courtCaseId) {
+            const TA = window.HT_TOA_AN, l = TA && TA.line(courtCaseId);
+            if (!l) return;
+            const existed = existingCourtRefundCodeOf(courtCaseId);
+            if (existed) {
+                // [MSG-ERR-BTNN-HT-009]
+                showToast(`Vụ việc ${l.court.code} (Bản án/Quyết định số ${l.court.verdictNo}) đã có hồ sơ xem xét trách nhiệm hoàn trả ${existed}. Vụ việc này không còn đủ điều kiện lập hồ sơ xem xét trách nhiệm hoàn trả.`, "danger");
+                renderSelectClaimRows();
+                return;
+            }
+            const newDossier = Object.assign(createPendingRefundDossier(''), TA.keThua(l), { officerName: '', officerRole: '', refundOfficers: [] });
             dossiersList.unshift(newDossier);
             saveCreatedRefundDossiers([newDossier].concat(loadCreatedRefundDossiers().filter(d => d.code !== newDossier.code)));
             sessionStorage.setItem('newRefundDossier', JSON.stringify(newDossier));
@@ -3997,7 +4161,10 @@
     </script>
     <!-- Phạm vi dữ liệu theo đơn vị + trạng thái 02 tầng (chi tiết / chung) của màn danh sách -->
     <script src="ht_du_lieu_mau.js?v=20261118bd1"></script>
-    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261119hst2"></script>
+    <!-- [hta] Vụ việc tại Tòa án (SRS 23/11/2026): dữ liệu mẫu, Nơi thụ lý, liên kết Số bản án/Quyết định -->
+    <script src="btnn_noi_thu_ly.js?v=20261104ntl1"></script>
+    <script src="ht_toa_an_mau.js?v=20261124hta3"></script>
+    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261124hta3"></script>
     <!-- [hst] Nhập hồ sơ hoàn trả tồn (đặt sau pham_vi: bọc htInTab, renderRefundTable dùng HTT.row) -->
     <script src="xem_xet_hoan_tra_hst.js?v=20261119hst3"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>

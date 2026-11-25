@@ -291,6 +291,8 @@
         const prevTab = htTab;
         htTab = tab === 'done' ? 'done' : 'pending';
         if (prevTab !== htTab) setDefaultDateRange(); // [vt2] Từ ngày theo tab (chỉ khi đổi tab)
+        // [hta] Chuyển tab: Nơi thụ lý về Tất cả (SRS 23/11/2026)
+        if (prevTab !== htTab) { const ntl = document.getElementById('filterNoiThuLyHt'); if (ntl) ntl.value = ''; }
         document.querySelectorAll('.ht-tabs-card .ht-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === htTab));
         const sel = document.getElementById('filterStatusRefund');
         if (sel) {
@@ -334,7 +336,7 @@
     window.changeMockRole = function (v) {
         htScope = HT_SCOPES[v] ? v : 'don_vi_chu';
         ssSet(SCOPE_KEY, htScope);
-        ['filterDossierCode', 'filterClaimCode', 'filterGqbtCode', 'filterOfficerName', 'filterAgency', 'filterStatusRefund'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+        ['filterDossierCode', 'filterClaimCode', 'filterGqbtCode', 'filterSoBanAn', 'filterNoiThuLyHt', 'filterOfficerName', 'filterAgency', 'filterStatusRefund'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
         updateUIForRole();
         switchRefundTab('pending');
         showToast('Đang giả lập: ' + cur().label, 'info');
@@ -391,7 +393,21 @@
     };
 
     // Liên kết Mã hồ sơ GQBT: chỉ khi đơn vị người dùng là cơ quan giải quyết bồi thường của hồ sơ GQBT (giả lập: đơn vị tạo hội đồng)
+    // [hta] Nơi thụ lý của hồ sơ hoàn trả (SRS 23/11/2026, #ht-noi-thu-ly): hồ sơ của dòng vụ việc tại Tòa án -> Thụ lý tại Tòa án
+    const TA = () => window.HT_TOA_AN || null;
+    function laToaAn(d) { return TA() ? TA().laToaAn(d) : !!(d && d.courtCaseId); }
+    function ntlOf(d) { return laToaAn(d) ? 'Thụ lý tại Tòa án' : 'Thụ lý tại CQGQBT'; }
+    function ntlCell(d) { return TA() ? TA().badge(ntlOf(d)) : ntlOf(d); }
+    // Liên kết Số bản án/Quyết định: chỉ khi người dùng được xem vụ việc tại Tòa án (Cơ quan bị khởi kiện là đơn vị gốc của người dùng; giả lập: đơn vị tạo Hội đồng, Lãnh đạo)
+    function soBanAnCell(d) {
+        if (!laToaAn(d)) return '-';
+        const link = htScope === 'lanh_dao' || cur().unit === ownerOf(d);
+        return TA() ? TA().soBanAnHtml(d.courtCaseId, d.verdictNo, link) : (d.verdictNo || '-');
+    }
+    function vvLabel(d) { return laToaAn(d) ? (dossierVuViec(d) || '') + (d.claimant ? ' - ' + d.claimant : '') : claimLabel(d.claimCode); }
     function gqbtCell(d) {
+        // Hồ sơ Thụ lý tại Tòa án không có hồ sơ Giải quyết yêu cầu bồi thường: hiển thị "-", không có liên kết
+        if (laToaAn(d)) return '-';
         const link = htScope === 'lanh_dao' || cur().unit === ownerOf(d);
         if (!link) return '<span style="font-weight:600;">' + (d.claimCode || '-') + '</span>';
         return '<a href="quan_ly_boi_thuong.html?id=' + d.claimCode + '&from=hoan_tra&returnUrl=' + encodeURIComponent('xem_xet_trach_nhiem_hoan_tra.html') + '" onclick="event.stopPropagation(); openLinkedClaimDetail(\'' + d.claimCode + '\'); return false;" style="color: var(--secondary-color); text-decoration: underline; font-weight: 700;" title="Mở chi tiết hồ sơ Giải quyết YCBT">' + (d.claimCode || '-') + '</a>';
@@ -429,6 +445,8 @@
         if (btnTon) btnTon.style.setProperty('display', htTab === 'pending' && htScope === 'don_vi_chu' ? 'inline-flex' : 'none', 'important');
         const val = id => ((document.getElementById(id) || {}).value || '').trim().toLowerCase();
         const fCode = val('filterDossierCode'), fVv = val('filterClaimCode'), fGq = val('filterGqbtCode'), fCb = val('filterOfficerName');
+        const fNtl = (document.getElementById('filterNoiThuLyHt') || {}).value || '';
+        const fBa = val('filterSoBanAn');
         const fUnit = (document.getElementById('filterAgency') || {}).value || '';
         const fSt = (document.getElementById('filterStatusRefund') || {}).value || '';
         // Từ ngày / Đến ngày: lọc theo ngày khởi tạo hồ sơ (dateCreated, dd/mm/yyyy)
@@ -444,6 +462,9 @@
             if (fCode && !String(r.d.code || '').toLowerCase().includes(fCode)) return false;
             if (fVv && !String(dossierVuViec(r.d) || '').toLowerCase().includes(fVv)) return false;
             if (fGq && !String(r.d.claimCode || '').toLowerCase().includes(fGq)) return false;
+            if (fNtl && ntlOf(r.d) !== fNtl) return false;
+            // [hta2] Số bản án/Quyết định: chỉ hồ sơ Thụ lý tại Tòa án có giá trị
+            if (fBa && !(laToaAn(r.d) && String(r.d.verdictNo || '').toLowerCase().includes(fBa))) return false;
             if (fCb && !r.off.some(o => o.name.toLowerCase().includes(fCb))) return false;
             if (fUnit && !r.off.some(o => o.unit === fUnit)) return false;
             if (fSt && r.chung !== fSt) return false;
@@ -459,6 +480,7 @@
         const key = {
             stt: r => r.d.code, code: r => r.d.code, officer: r => (r.off[0] || {}).name || '', agency: r => (r.off[0] || {}).unit || '',
             maVuViec: r => dossierVuViec(r.d) || '', claimCode: r => r.d.claimCode || '', refundTotal: r => r.m.tong,
+            noiThuLy: r => ntlOf(r.d), soBanAn: r => (laToaAn(r.d) && r.d.verdictNo) || '',
             progress: r => r.m.tong ? r.m.paid / r.m.tong : 0, status: r => CHUNG_ORDER.indexOf(r.chung)
         }[currentSortColumn] || (r => r.d.code);
         rows.sort((a, b) => { const x = key(a), y = key(b); const c = typeof x === 'string' ? x.localeCompare(y, 'vi') : (x < y ? -1 : x > y ? 1 : 0); return currentSortDirection === 'asc' ? c : -c; });
@@ -475,7 +497,7 @@
         ph += '<span class="page-item ' + (currentPageRefund === pages ? 'disabled' : '') + '" onclick="setPageRefund(' + (currentPageRefund + 1) + ')" title="Trang sau">&gt;</span><span class="page-item ' + (currentPageRefund === pages ? 'disabled' : '') + '" onclick="setPageRefund(' + pages + ')" title="Trang cuối">&gt;&gt;&verbar;</span>';
         document.getElementById('paginationPagesRefund').innerHTML = ph;
         tbody.innerHTML = '';
-        if (!total) { tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; color:var(--text-muted); font-style:italic; padding: 30px;">Không tìm thấy hồ sơ xem xét trách nhiệm hoàn trả nào phù hợp.</td></tr>'; return; }
+        if (!total) { tbody.innerHTML = '<tr><td colspan="12" style="text-align:center; color:var(--text-muted); font-style:italic; padding: 30px;">Không tìm thấy hồ sơ xem xét trách nhiệm hoàn trả nào phù hợp.</td></tr>'; return; }
         rows.slice(start, end).forEach((r, i) => {
             const d = r.d, m = r.m;
             const tr = document.createElement('tr');
@@ -483,7 +505,7 @@
             tr.onclick = e => { if (!e.target.closest('.icon-btn') && !e.target.closest('a') && e.target.tagName !== 'BUTTON') { if (d.ton && window.HTT) { HTT.view(d.id); return; } window.location.href = detailUrl(d, 'view', focusStepOf(d, r.sc)); } };
             const pct = m.tong ? Math.min(100, Math.floor(m.paid / m.tong * 100)) : 0;
             const tip = ('Số tiền theo ý kiến Hội đồng: ' + fmt(m.hd) + ' đ\nTiền hoàn trả (sau giảm, trừ miễn, đình chỉ): ' + fmt(m.tong) + ' đ\nĐã thu: ' + fmt(m.paid) + ' đ\nCòn phải thu: ' + fmt(m.conLai) + ' đ');
-            const tien = m.anyIssued ? '<span title="' + tip + '">' + fmt(m.tong) + '</span>' : '--';
+            const tien = m.anyIssued ? '<span title="' + tip + '">' + fmt(m.tong) + '</span>' : '-'; // SRS MH01 dòng 334: chưa ban hành Quyết định hoàn trả hiển thị `-`
             const prog = m.anyIssued && !m.tong
                 ? '<div style="font-size:11px; color:#64748b;">' + m.ended + '/' + m.n + ' cán bộ đã kết thúc</div>'
                 : m.anyIssued
@@ -497,8 +519,10 @@
                 + '<td style="text-align:center; font-weight:700; color:var(--primary-color);">' + d.code + (window.HTT ? HTT.badge(d) : '') + '</td>'
                 + '<td>' + officerCell(r.off) + '</td>'
                 + '<td style="max-width:150px; white-space:normal;">' + unitCell(r.off) + '</td>'
-                + '<td style="text-align:center; font-weight:600;" title="' + claimLabel(d.claimCode) + '">' + (dossierVuViec(d) || '-') + '</td>'
+                + '<td style="text-align:center; font-weight:600;" title="' + vvLabel(d) + '">' + (dossierVuViec(d) || '-') + '</td>'
+                + '<td style="text-align:center;">' + ntlCell(d) + '</td>'
                 + '<td style="text-align:center;">' + gqbtCell(d) + '</td>'
+                + '<td style="text-align:center;">' + soBanAnCell(d) + '</td>'
                 + '<td style="text-align:right; font-weight:600; color:var(--danger-color);">' + tien + '</td>'
                 + '<td>' + prog + '</td>'
                 + '<td style="text-align:center; vertical-align:middle;">' + chungBadge(r.chung) + sub + '</td>'
@@ -516,7 +540,7 @@
     }
     setDefaultDateRange();
     window.resetRefundFilters = function () {
-        ['filterDossierCode', 'filterClaimCode', 'filterGqbtCode', 'filterOfficerName', 'filterAgency', 'filterStatusRefund'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+        ['filterDossierCode', 'filterClaimCode', 'filterGqbtCode', 'filterSoBanAn', 'filterNoiThuLyHt', 'filterOfficerName', 'filterAgency', 'filterStatusRefund'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
         setDefaultDateRange();
         currentPageRefund = 1;
         renderRefundTable();

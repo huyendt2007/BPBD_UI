@@ -399,13 +399,19 @@
             addMockDossier(Object.assign({ qdStatus: null, qdNo: '', qdDate: '', qdSigner: '', qdSummary: '', qdFileName: '', conclusionFile: '', timeline: [], payments: [] }, d));
         });
     } catch (e) { /* bỏ qua */ }
-    // Bước 1 - Tài liệu liên quan: Quyết định giải quyết bồi thường của vụ việc nguồn
+    // Bước 1 - Tài liệu ban hành kèm theo / không ban hành kèm theo của lượt trình Thành lập hội đồng (dữ liệu mẫu cho hồ sơ đã trình
+    // hoặc ban hành Quyết định thành lập Hội đồng mà chưa có lượt trình thật trên prototype). Thay dòng Quyết định giải quyết bồi thường
+    // của bảng «Văn bản liên quan» cũ. Từ 24/11/2026 Bước 1 gộp hai loại vào 01 bảng «Văn bản liên quan» có cột Loại tài liệu; Ký ngoài chỉ có tài liệu ban hành kèm theo.
     window.addEventListener('DOMContentLoaded', () => {
         try {
-            if (typeof activeDossier === 'undefined' || !activeDossier || !activeDossier.gqbtQdNo || typeof s1RelatedDocs === 'undefined') return;
-            const no = activeDossier.gqbtQdNo;
-            if (s1RelatedDocs.some(x => x.code === no)) return;
-            s1RelatedDocs.splice(0, s1RelatedDocs.length, { title: 'Quyết định giải quyết bồi thường số ' + no, code: no, date: activeDossier.claimDate || '', fileName: 'Quyet_dinh_giai_quyet_boi_thuong_' + no.replace(/\//g, '_') + '.pdf' });
+            if (typeof activeDossier === 'undefined' || !activeDossier || activeDossier.hdTlktMau) return;
+            if (activeDossier.tlhd && Array.isArray(activeDossier.tlhd.attachments)) return;
+            const st = activeDossier.status || '';
+            if (!st || st === 'Chờ thành lập hội đồng') return;
+            activeDossier.hdTlktMau = [
+                { name: 'Bảng kê số tiền Nhà nước đã bồi thường', file: { name: 'Bang_ke_so_tien_da_boi_thuong.pdf', size: 245760 }, scope: 'issued' },
+                { name: 'Tờ trình đề nghị thành lập Hội đồng xem xét trách nhiệm hoàn trả', file: { name: 'To_trinh_thanh_lap_hoi_dong.docx', size: 81920 }, scope: 'internal' }
+            ];
             if (typeof renderStep1 === 'function') renderStep1();
         } catch (e) { /* bỏ qua */ }
     });

@@ -257,20 +257,23 @@
         if (!cta) return;
         const btn = cta.querySelector('button');
         if (btn && !isOwnerScope()) btn.style.display = 'none';
-        // Ký ngoài: khối Quyết định thành lập chỉ hiển thị Hình thức ký và Tệp văn bản Quyết định (Xem file, Tải file)
+        // Ký ngoài: khối Quyết định thành lập hiển thị Hình thức ban hành, Số quyết định, Ngày quyết định, Tệp văn bản Quyết định (Xem file, Tải file)
+        // và khối Văn bản liên quan chỉ gồm tài liệu ban hành kèm theo (SRS MH03, nhanhl2 chốt 24/11/2026)
         const card = el('s1OfficialCard'), body = card && card.querySelector('.card-body');
         if (!body) return;
         const off = activeDossier.hdPublishType === 'offline' || (activeDossier.tlhd && activeDossier.tlhd.method === 'offline');
         const pt = el('s1OfficialPublishType'), fv = el('s1FileViewerContainer');
+        const soQd = el('s1OfficialNo'), ngayQd = el('s1OfficialSignDate');
         Array.from(body.children).forEach(ch => {
-            const keep = (pt && ch.contains(pt)) || (fv && ch.contains(fv)) || ch.id === 's1ResubmitContainer';
+            const keep = (pt && ch.contains(pt)) || (fv && ch.contains(fv)) || ch.id === 's1ResubmitContainer' || ch.id === 's1TlhdTlkt';
             if (off && !keep) { ch.dataset.ht2Hide = '1'; ch.style.display = 'none'; }
             else if (ch.dataset.ht2Hide) { delete ch.dataset.ht2Hide; ch.style.display = ''; }
         });
-        // Lưới 01 hàng (Hình thức ban hành ... Lãnh đạo ký): Ký ngoài chỉ giữ Hình thức ban hành
+        // Lưới 01 hàng (Hình thức ban hành ... Lãnh đạo ký): Ký ngoài giữ Hình thức ban hành, Số quyết định, Ngày quyết định
         const grid = el('s1OfficialGrid');
         if (grid) Array.from(grid.children).forEach(ch => {
-            if (off && !(pt && ch.contains(pt))) { ch.dataset.ht2Hide = '1'; ch.style.display = 'none'; }
+            const keepG = (pt && ch.contains(pt)) || (soQd && ch.contains(soQd)) || (ngayQd && ch.contains(ngayQd));
+            if (off && !keepG) { ch.dataset.ht2Hide = '1'; ch.style.display = 'none'; }
             else if (ch.dataset.ht2Hide) { delete ch.dataset.ht2Hide; ch.style.display = ''; }
         });
         const unit = el('s1OfficialIssuingUnit'), unitGroup = unit && unit.closest('.form-group');
@@ -279,10 +282,62 @@
         if (fv) fv.querySelectorAll('a').forEach(a => { if (/Tải xuống/.test(a.textContent)) a.innerHTML = '<i class="fa-solid fa-download"></i> Tải file'; });
         const audit = el('s1AuditCard');
         if (audit && off) audit.style.display = 'none';
-        // Tài liệu ban hành kèm theo / không ban hành kèm theo của Quyết định thành lập Hội đồng (khối rỗng / không có quyền xem thì không hiển thị)
+        // [vblq] Văn bản liên quan (SRS MH03, nhanhl2 chốt 24/11/2026, thay 02 khối của ngày 23/11/2026): 01 bảng gộp tài liệu ban hành kèm theo và
+        // không ban hành kèm theo của lượt trình Thành lập hội đồng gần nhất, cột Loại tài liệu; dòng Không ban hành kèm theo chỉ hiện với đơn vị trình
+        // và người ký (Phụ lục 5.9 mục 6); Ký ngoài chỉ có tài liệu ban hành kèm theo; không còn dòng nào người xem được xem thì ẩn khối
         let tl = el('s1TlhdTlkt');
         if (!tl) { tl = document.createElement('div'); tl.id = 's1TlhdTlkt'; tl.style.marginTop = '12px'; body.appendChild(tl); }
-        tl.innerHTML = typeof tlktViewHtml === 'function' && activeDossier.tlhd ? tlktViewHtml(activeDossier.tlhd.attachments || []) : '';
+        const that = activeDossier.tlhd && Array.isArray(activeDossier.tlhd.attachments);
+        const nguon = that ? activeDossier.tlhd.attachments : (activeDossier.hdTlktMau || []);
+        const ds = off ? nguon.filter(d => d && d.scope === 'issued') : nguon;
+        // Dữ liệu mẫu chưa có đơn vị trình: đơn vị tạo Hội đồng và Lãnh đạo (người ký) xem được tài liệu không ban hành kèm theo
+        const opt = that ? {} : ((isOwnerScope() || scope === 'lanh_dao') ? { showInternal: true } : { hideInternal: true });
+        const sp = typeof tlktSplit === 'function' ? tlktSplit(ds, opt) : { issued: ds, internal: [] };
+        const rows = sp.issued.map(d => ({ d, loai: 'issued' })).concat(sp.internal.map(d => ({ d, loai: 'internal' })));
+        tl.innerHTML = rows.length && typeof tlktViewHtml === 'function' ? tlktViewHtml(rows.map(r => r.d), { split: false, title: 'Văn bản liên quan' }) : '';
+        const box = tl.querySelector('.tlkt-view-box');
+        if (box) {
+            // Cột Loại tài liệu (Badge) đặt ngay sau Tên tài liệu, văn bản
+            const thName = box.querySelector('thead th:nth-child(2)');
+            if (thName) { const th = document.createElement('th'); th.className = 'tlkt-c'; th.style.width = '190px'; th.textContent = 'Loại tài liệu'; thName.after(th); }
+            const badge = l => l === 'issued'
+                ? '<span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;background:#ecfdf5;color:#047857;border:1px solid #a7f3d0;">Ban hành kèm theo</span>'
+                : '<span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;">Không ban hành kèm theo</span>';
+            box.querySelectorAll('tr[data-kdtc-tlkt-row]').forEach((tr, i) => {
+                const r = rows[i], tdName = tr.children[1];
+                if (!r || !tdName) return;
+                const td = document.createElement('td'); td.className = 'tlkt-c'; td.innerHTML = badge(r.loai); tdName.after(td);
+            });
+        }
+        // Hồ sơ Bị trả lại (Loại trình Thành lập hội đồng): cột Thao tác của bảng Văn bản liên quan có thêm Xóa văn bản (SRS MH04 chức năng 3)
+        const st1 = activeDossier.status;
+        const traLai = (st1 === 'Bị trả lại thành lập HĐ' || st1 === 'Từ chối duyệt QĐ thành lập')
+            && !(typeof isViewMode !== 'undefined' && isViewMode) && !(typeof currentPerspective !== 'undefined' && currentPerspective === 'leader');
+        if (traLai && box) {
+            // Cột Thao tác có 03 nút (Xem file, Tải file, Xóa văn bản): nới rộng để nút không tràn khỏi bảng
+            const thTt = box.querySelector('thead th:last-child');
+            if (thTt) thTt.style.width = '128px';
+            box.querySelectorAll('tr[data-kdtc-tlkt-row]').forEach((tr, i) => {
+                const d = rows[i] && rows[i].d, cell = tr.lastElementChild;
+                if (!d || !cell) return;
+                const wrap = cell.querySelector('.tlkt-acts') || cell;
+                const b = document.createElement('button');
+                b.type = 'button'; b.className = 'tlkt-ib'; b.title = 'Xóa văn bản'; b.setAttribute('aria-label', 'Xóa văn bản');
+                b.dataset.adminIconNormalized = '1'; b.style.color = 'var(--danger-color, #dc2626)';
+                b.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                b.onclick = () => {
+                    const go = () => {
+                        const k = nguon.indexOf(d);
+                        if (k >= 0) nguon.splice(k, 1);
+                        window.renderStep1();
+                        if (typeof showToast === 'function') showToast('Đã gỡ văn bản.', 'info');
+                    };
+                    const msg = 'Bạn có chắc chắn muốn xóa bản ghi ' + (d.name || (d.file && d.file.name) || '') + ' không?'; // [MSG-CFM-SYS-001]
+                    if (typeof showCustomConfirm === 'function') showCustomConfirm(msg, go); else if (window.confirm(msg)) go();
+                };
+                wrap.appendChild(b);
+            });
+        }
     };
 
     // ===== Popup cán bộ: Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương =====
