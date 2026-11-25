@@ -319,6 +319,11 @@
         // Ngày hoàn tất chi = Ngày trả lại ngân sách nhà nước
         S('BT-2023-063', 'Phùng Thị Xuân', U_CHU, 60000000, '22/10/2026', '63/QĐ-UBND', '20/06/2023', 'Quản lý hành chính đất đai', 'Thu hồi đất không đúng đối tượng',
             'Thu hồi đất ở của hộ gia đình không thuộc đối tượng thu hồi theo quy hoạch, gây thiệt hại tài sản trên đất.', [['Kiều Văn Tiến', U_CHU, 'Công chức địa chính - xây dựng']]),
+        // [ton] Hồ sơ tồn Giải quyết YCBT nhập ở trạng thái Hoàn thành (QDDA_042, BA lead chốt 25/11/2026; BT-2025-904 đã có hồ sơ hoàn trả tồn HT-2025-951 nên dùng mã riêng): không có bản ghi Chi trả tiền bồi thường;
+        // Số tiền bồi thường = «Số tiền đã chi trả» của khối Chi trả tại hồ sơ tồn (không cộng số đã tạm ứng); Ngày hoàn tất chi = «Ngày hoàn tất chi trả»;
+        // số, ngày QĐ GQBT (in vào căn cứ Mẫu 37, 38) = «Số văn bản», «Ngày văn bản» của khung Quyết định giải quyết bồi thường tại hồ sơ tồn
+        Object.assign(S('BT-2025-906', 'Mai Xuân Trường', U_CHU, 380000000, '15/09/2024', '106/QĐ-UBND', '20/08/2024', 'Quản lý hành chính đất đai', 'Thu hồi đất không đúng trình tự',
+            'Hồ sơ tồn: thu hồi đất không đúng trình tự, đã giải quyết và chi trả xong ngoài hệ thống.', [['Lã Văn Định', U_CHU, 'Phó Trưởng phòng Tài nguyên và Môi trường']]), { ton: true }),
         // Ngoài phạm vi dữ liệu của đơn vị giả lập (đơn vị chi trả khác): không hiển thị trong popup
         S('BT-2026-106', 'Tôn Văn Kiên', 'UBND phường Cầu Giấy', 77000000, '15/08/2026', '61/QĐ-UBND', '20/07/2026', 'Quản lý hành chính đất đai', 'Cấp giấy chứng nhận quyền sử dụng đất sai đối tượng',
             'Cấp giấy chứng nhận quyền sử dụng đất cho người không có quyền, gây thiệt hại cho chủ sử dụng hợp pháp.', [['Bạch Văn Hiếu', 'UBND phường Cầu Giấy', 'Chuyên viên phòng Tài nguyên và Môi trường']])

@@ -529,6 +529,11 @@
             + '</div>';
     }
     // Xem chi tiết hoàn trả của cán bộ (Bước 4): các lượt Quyết định giảm / miễn của cán bộ, mới nhất trên cùng
+    // Quyết định hoàn trả đã ban hành của cán bộ (dùng kiểm tra Ngày chết ở Bước 4)
+    window.htQdHtOf = function (idx) {
+        const o = activeDossier.refundOfficers[idx], u = activeDossier.htUnits.find(x => inUnit(o, x)) || {};
+        return u.qd || null;
+    };
     window.htQdRecs = function (idx) {
         const o = (activeDossier.refundOfficers || [])[idx]; if (!o) return [];
         const l = [];

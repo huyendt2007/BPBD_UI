@@ -1496,7 +1496,7 @@
                 <button type="button" class="close-modal" onclick="closeRefundModal('selectClaimToRefundModal')">&times;</button>
             </div>
             <div class="modal-body" style="padding: 20px;">
-                <p style="font-size:13px; color:var(--text-muted); margin-bottom: 15px;">Dưới đây là danh sách các vụ việc đã hoàn tất chi trả tiền bồi thường (vụ việc thụ lý tại cơ quan giải quyết bồi thường và vụ việc tại Tòa án), đủ điều kiện để khởi tạo hồ sơ xem xét trách nhiệm hoàn trả công quỹ:</p>
+                <p style="font-size:13px; color:var(--text-muted); margin-bottom: 15px;">Dưới đây là danh sách các vụ việc đã hoàn tất chi trả tiền bồi thường (vụ việc thụ lý tại cơ quan giải quyết bồi thường, kể cả hồ sơ tồn, và vụ việc tại Tòa án), đủ điều kiện để khởi tạo hồ sơ xem xét trách nhiệm hoàn trả công quỹ:</p>
                 <!-- [hta2] Khối lọc của popup (SRS 24/11/2026): áp dụng khi bấm Tìm kiếm hoặc Enter; mở popup và Xóa bộ lọc đưa mọi ô về mặc định -->
                 <div id="claimFilterBox" style="border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:12px 14px; margin-bottom:12px; background:#fff;">
                     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:8px;">
@@ -3038,12 +3038,15 @@
             const badge = v => TA ? TA.badge(v) : v;
             const btn = fn => `<button class="btn btn-primary btn-sm" onclick="${fn}" style="padding:4px 8px; font-size:11.5px; height:28px; white-space:nowrap;">Khởi tạo hồ sơ</button>`;
             // [hta] Mỗi vụ việc 01 dòng: hồ sơ GQBT đã hoàn tất chi trả (Thụ lý tại CQGQBT) và dòng vụ việc tại Tòa án thuộc diện (Thụ lý tại Tòa án, #ht-nguon-toa-an)
-            const cq = PAID_CLAIM_CODES.concat(srcCodes).filter(c => !existingRefundCodeOf(vuViecOfClaim(c), c)).map(c => {
+            const cq = PAID_CLAIM_CODES.concat(srcCodes).filter((c, i, a) => a.indexOf(c) === i && !existingRefundCodeOf(vuViecOfClaim(c), c)).map(c => {
                 const seed = getClaimSeedData(c);
+                // [ton] Hồ sơ tồn Giải quyết YCBT «Hoàn thành» (QDDA_042): dòng chữ nhỏ nền xám «Hồ sơ tồn» dưới Mã hồ sơ GQBT
+                const ton = ((window.HT_SOURCE_CLAIMS || []).find(s => s.claimCode === c) || {}).ton;
+                const tonTag = ton ? '<div><span style="display:inline-block; margin-top:3px; padding:0 6px; border-radius:4px; background:#e5e7eb; color:#4b5563; font-size:11px; font-weight:600;">Hồ sơ tồn</span></div>' : '';
                 return { ngay: seed.paidDate, vv: vuViecOfClaim(c), gq: c, ntl: 'Thụ lý tại CQGQBT', ba: '', ten: CLAIMANT_BY_CODE[c] || seed.claimant || '', html: `<tr>
                     <td><strong>${vuViecOfClaim(c)}</strong></td>
                     <td style="text-align:center;">${badge('Thụ lý tại CQGQBT')}</td>
-                    <td><a href="javascript:void(0)" onclick="openLinkedClaimDetail('${c}')" style="color:var(--secondary-color); text-decoration:underline; font-weight:700;">${c}</a></td>
+                    <td><a href="javascript:void(0)" onclick="openLinkedClaimDetail('${c}')" style="color:var(--secondary-color); text-decoration:underline; font-weight:700;">${c}</a>${tonTag}</td>
                     <td style="text-align:center;">-</td>
                     <td>${CLAIMANT_BY_CODE[c] || seed.claimant || ''}</td>
                     <td style="text-align:right; font-weight:600; color:var(--danger-color);">${seed.claimAmt.toLocaleString('vi-VN')}</td>
@@ -4160,7 +4163,7 @@
         });
     </script>
     <!-- Phạm vi dữ liệu theo đơn vị + trạng thái 02 tầng (chi tiết / chung) của màn danh sách -->
-    <script src="ht_du_lieu_mau.js?v=20261118bd1"></script>
+    <script src="ht_du_lieu_mau.js?v=20261125ton"></script>
     <!-- [hta] Vụ việc tại Tòa án (SRS 23/11/2026): dữ liệu mẫu, Nơi thụ lý, liên kết Số bản án/Quyết định -->
     <script src="btnn_noi_thu_ly.js?v=20261104ntl1"></script>
     <script src="ht_toa_an_mau.js?v=20261124hta3"></script>

@@ -121,8 +121,8 @@ var XHST_VERSION = '20261120xhst1';
         // Nguồn hồ sơ, Số hồ sơ trên giấy, Mã hồ sơ DVC: trong lưới THÔNG TIN CHUNG
         var ht = el('formHinhThucTiepNhan'), g = ht.closest('.form-group');
         var mk = function (id, html, before) { var d = document.createElement('div'); d.className = 'form-group'; d.id = id; d.style.display = 'none'; d.innerHTML = html; g.parentNode.insertBefore(d, before ? g : g.nextSibling); return d; };
-        mk('xhstWNguon', '<span class="form-label">Nguồn hồ sơ' + R + '</span><select class="form-control" id="xhstNguon" onchange="XHST.nguonDoi()">' + NGUON.map(function (v) { return '<option>' + v + '</option>'; }).join('') + '</select><div class="xhst-note">Nguồn gốc thật của hồ sơ giấy.</div>', true);
-        var dvc = mk('xhstWDvc', '<span class="form-label">Mã hồ sơ DVC</span><input type="text" class="form-control" id="xhstDvc" maxlength="50" placeholder="Nhập mã hồ sơ DVC (nếu có)">');
+        mk('xhstWNguon', '<span class="form-label">Nguồn hồ sơ' + R + '</span><select class="form-control" id="xhstNguon" onchange="XHST.nguonDoi()">' + NGUON.map(function (v) { return '<option>' + v + '</option>'; }).join('') + '</select>', true);
+        var dvc = mk('xhstWDvc', '<span class="form-label">Mã hồ sơ DVC</span><input type="text" class="form-control" id="xhstDvc" maxlength="100" placeholder="Nhập mã hồ sơ DVC (nếu có)">');
         var gy = document.createElement('div'); gy.className = 'form-group'; gy.id = 'xhstWGiay'; gy.style.display = 'none';
         gy.innerHTML = '<span class="form-label">Số hồ sơ trên giấy</span><input type="text" class="form-control" id="xhstSoGiay" maxlength="50" placeholder="Nhập số hồ sơ trên giấy">';
         g.parentNode.insertBefore(gy, dvc);

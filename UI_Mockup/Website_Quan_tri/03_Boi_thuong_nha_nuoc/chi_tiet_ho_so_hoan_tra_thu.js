@@ -47,6 +47,14 @@
         if (conLai(o) <= 0) return 'Không còn số tiền phải nộp';
         return '';
     }
+    // Ghi nhận người thi hành công vụ đã chết (vị trí 3): khóa mờ khi cán bộ có số tiền cần trả lại hoặc có QĐ miễn / giảm bổ sung chưa hoàn tất (QDDA_041)
+    function deathTip(o) {
+        if (['DONE', 'MIEN', 'DC', 'CHAMDUT'].includes(o.ct)) return payTip(o);
+        if (/^(CD|BTC)_(MIEN|GIAM)$/.test(o.trinh || '')) return 'Cán bộ đang có Quyết định miễn / giảm bổ sung chưa hoàn tất';
+        if ((o.refund || 0) > 0) return 'Cán bộ đang có số tiền cần trả lại';
+        return payTip(o);
+    }
+    const DEATH_ICON = 'fa-solid fa-heart-crack', DEATH_TITLE = 'Ghi nhận người thi hành công vụ đã chết', DEATH_COLOR = '#475569';
     function actions(o, idx) {
         const a = A(), s = a.scope(), B = window.htActBtn;
         const view = window.htViewOfficerBtn(idx, 'ht4OpenHistory');
@@ -55,9 +63,10 @@
             const vt2 = (o.refund || 0) > 0 ? B('fa-solid fa-hand-holding-dollar', 'Ghi nhận trả lại tiền', '', false, '', '#d97706')
                 : B('fa-solid fa-money-bill-transfer', 'Ghi nhận nộp tiền', '', false, '', '#16a34a');
             // Lượt trình 01 cán bộ (dữ liệu cũ); QĐ chung: Ký duyệt / Từ chối tại khối Quyết định miễn / giảm mức hoàn trả bổ sung
+            const vt3 = B(DEATH_ICON, DEATH_TITLE, '', false, '', DEATH_COLOR);
             return /^CD_(MIEN|GIAM)$/.test(o.trinh || '') && o.mgKey == null && o.qd3
-                ? view + ' ' + vt2 + ' ' + act('ht3Approve(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-file-signature', 'Ký duyệt', true) + ' ' + act('ht3Reject(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-ban', 'Từ chối', true)
-                : view + ' ' + vt2;
+                ? view + ' ' + vt2 + ' ' + vt3 + ' ' + act('ht3Approve(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-file-signature', 'Ký duyệt', true) + ' ' + act('ht3Reject(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-ban', 'Từ chối', true)
+                : view + ' ' + vt2 + ' ' + vt3;
         }
         const own = canPay(o), noOwn = 'Đơn vị của bạn không thực hiện thu tiền của cán bộ này';
         // Nút 2 đổi chế độ theo tình trạng: có số tiền cần trả lại -> Ghi nhận trả lại tiền; còn lại -> Ghi nhận nộp tiền
@@ -65,6 +74,7 @@
         let h = view + ' ';
         if ((o.refund || 0) > 0) h += B('fa-solid fa-hand-holding-dollar', 'Ghi nhận trả lại tiền', 'ht4OpenRefund(' + idx + ')', own, own ? '' : noOwn, '#d97706');
         else h += B('fa-solid fa-money-bill-transfer', 'Ghi nhận nộp tiền', 'ht4OpenPay(' + idx + ')', own && !payTip(o), own ? payTip(o) : noOwn, '#16a34a');
+        h += ' ' + B(DEATH_ICON, DEATH_TITLE, 'ht4OpenDeath(' + idx + ')', own && !deathTip(o), own ? deathTip(o) : noOwn, DEATH_COLOR);
         return h;
     }
     function methodCell(o) {
@@ -106,7 +116,7 @@
                 + '<div style="font-size:13px; margin-bottom:10px;">Cán bộ ở giai đoạn thu tiền: <strong>' + list.length + '</strong> • Tổng phải thu: <strong>' + a.money(tong) + ' đ</strong> • Đã thu: <strong>' + a.money(daThu) + ' đ</strong> • Còn phải thu: <strong>' + a.money(Math.max(0, list.reduce((s, x) => s + (x.o.ct === 'THU' ? conLai(x.o) : 0), 0))) + ' đ</strong></div>'
                 + a.mgToolbar(u, ui, list) + '<table class="dense-table" style="width:100%;"><thead><tr>' + a.mgHeadCell(u, ui, list) + '<th style="width:45px; text-align:center;">STT</th><th style="width:200px;">Họ và tên</th><th style="width:210px;">Mức độ lỗi</th><th style="width:100px;">Phương thức hoàn trả</th><th style="width:130px; text-align:right;">Số tiền phải hoàn trả (đ)</th><th style="width:120px; text-align:right;">Đã nộp (đ)</th><th style="width:130px; text-align:right; white-space:nowrap !important;">Còn phải thu (đ)</th><th style="width:220px;">Trạng thái</th><th style="min-width:160px; text-align:center; white-space:nowrap;">Thao tác</th></tr></thead><tbody>'
                 + list.map((x, k) => '<tr>' + a.mgCheckCell(x.o, x.idx, u, ui) + '<td style="text-align:center;">' + (k + 1) + '</td><td><strong>' + a.esc(x.o.name) + '</strong>' + (window.htDeadTag ? window.htDeadTag(x.o) : '') + '<div style="font-size:12px; color:var(--text-muted);">' + a.esc(x.o.role || '') + '</div></td><td>' + a.esc(x.o.loi === 'Khác' ? (x.o.ykhdLoiKhac || 'Khác') : (x.o.loi || '-')) + '</td>' + methodCell(x.o)
-                    + '<td style="text-align:right;">' + a.money(x.o.ct === 'MIEN' || x.o.ct === 'CHAMDUT' ? 0 : x.o.total) + '</td><td style="text-align:right;">' + a.money(x.o.paid) + '</td><td style="text-align:right; font-weight:700;">' + a.money(x.o.ct === 'THU' ? conLai(x.o) : 0) + '</td>'
+                    + '<td style="text-align:right;">' + a.money(x.o.ct === 'MIEN' ? 0 : x.o.total) + '</td><td style="text-align:right;">' + a.money(x.o.paid) + '</td><td style="text-align:right; font-weight:700;">' + a.money(x.o.ct === 'THU' ? conLai(x.o) : 0) + '</td>'
                     + '<td>' + statusCell(x.o) + '</td><td class="ht-act-cell">' + actions(x.o, x.idx) + '</td></tr>').join('')
                 + '</tbody></table>' + a.mgBlock(u) + a.dcBlock(u) + '</div></div>';
         });
@@ -160,6 +170,11 @@
                 + '<div id="ht4Tlkt"></div>';
             // Ghi nhận nộp tiền: hiển thị Quyết định giảm mức hoàn trả đã ban hành (03 số tiền, tệp Quyết định) để đối chiếu số phải thu
             if (typeof window.htQdBlockHtml === 'function') el('ht4Form').insertAdjacentHTML('beforeend', window.htQdBlockHtml(idx));
+        } else if (mode === 'death') {
+            // MH13: Ghi nhận người thi hành công vụ đã chết (ghi nhận trực tiếp, không trình ký)
+            el('ht4Title').innerHTML = '<i class="fa-solid fa-heart-crack"></i> Ghi nhận người thi hành công vụ đã chết';
+            el('ht4Form').innerHTML = '<div style="font-size:12.5px; color:var(--text-muted); margin:-4px 0 14px;">Sau khi lưu, cán bộ chuyển Chấm dứt hoàn trả. Số tiền đã nộp giữ nguyên, hệ thống ngừng thu phần còn lại.</div>'
+                + '<div class="grid-2-cols" style="gap:16px;">' + field('Ngày chết', 'ht4Ngay', 'dd/mm/yyyy', '') + '</div><div id="ht4Tlkt"></div>';
         } else if (mode === 'refund') {
             el('ht4Title').innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> Ghi nhận trả lại tiền';
             el('ht4Form').innerHTML = '<div class="grid-2-cols" style="gap:16px;">' + field('Số tiền trả lại (đ)', 'ht4Amt', 'Nhập số tiền trả lại', a.money(o.refund), 'style="text-align:right;" onchange="ht4Money(this)"') + field('Ngày trả lại', 'ht4Ngay', 'dd/mm/yyyy', a.today()) + '</div><div id="ht4Tlkt"></div>';
@@ -177,7 +192,7 @@
             // Khối Quyết định miễn / giảm mức hoàn trả (nếu có), như popup Xem chi tiết cán bộ tại Bước 3
             if (typeof window.htQdBlockHtml === 'function') el('ht4Form').insertAdjacentHTML('beforeend', window.htQdBlockHtml(idx));
         }
-        if (mode !== 'history' && typeof tlktMount === 'function') tlktMount('ht4', 'ht4Tlkt', { required: false, rows: [], noLeader: true });
+        if (mode !== 'history' && typeof tlktMount === 'function') tlktMount('ht4', 'ht4Tlkt', mode === 'death' ? { required: true, rows: [], noLeader: true, title: 'Tài liệu chứng minh' } : { required: false, rows: [], noLeader: true });
         // Xem chi tiết hoàn trả của cán bộ: Popup Modal kích thước lớn, thân popup cuộn trong; các thao tác khác giữ kích thước thường
         const mc = el('ht4Modal').querySelector('.modal-content'), mb = el('ht4Modal').querySelector('.modal-body');
         const big = mode === 'history' && !!window.htCtCanBoHtml;
@@ -210,6 +225,7 @@
         if (isMien) info.push(it('Số tiền được miễn', m(mienDuoc)));
         info.push(it('Số tiền đã nộp (lũy kế)', m(o.paid)), it('Số tiền còn phải thu', m(o.ct === 'THU' ? conLai(o) : 0)));
         if ((o.refund || 0) > 0) info.push(it('Số tiền cần trả lại', '<span style="color:#b91c1c;">' + m(o.refund) + '</span>'));
+        if (o.deathDate) info.push(it('Ngày chết', a.esc(o.deathDate)));
         info.push(it('Trạng thái', (window.htPill ? window.htPill(a.ctText(o.ct)) : a.esc(a.ctText(o.ct))) + (o.trinh && !/_DC$/.test(o.trinh) ? '<div style="font-size:12px; color:#6d28d9; font-weight:500;">' + a.esc(a.ctText(o.trinh, a.vtTrinh ? a.vtTrinh(o) : false)) + '</div>' : '')));
         let h = sec('fa-solid fa-user-tie', 'Thông tin hoàn trả', grid3(info));
         // Khối Quyết định giảm / miễn: chỉ hiển thị khi cán bộ có Quyết định tương ứng; nhiều lần: mỗi lần 01 khối, mới nhất trên cùng
@@ -219,6 +235,7 @@
         const rows = [];
         (o.payments || []).forEach((p, i) => rows.push({ t: p.at || p.ngay, k: pd(p.at || p.ngay), nd: 'Nộp tiền hoàn trả đợt ' + (i + 1) + ' (ngày nộp ' + a.esc(p.ngay) + ')', tien: m(p.amt), by: a.esc(p.by || '') + (p.unit && String(p.by || '').indexOf(p.unit) < 0 ? '<div style="font-size:12px; color:var(--text-muted);">' + a.esc(p.unit) + '</div>' : ''), f: (p.tlkt || []).filter(t => t.file && t.file.name).map(t => fileLinks(t.file.name)).join('<br>') }));
         if (o.refundDone) rows.push({ t: o.refundDone.at || o.refundDone.ngay, k: pd(o.refundDone.at || o.refundDone.ngay), nd: 'Trả lại tiền cho cán bộ (ngày ' + a.esc(o.refundDone.ngay) + ')', tien: 'Trả lại ' + m(o.refundDone.amt), by: a.esc(o.refundDone.by || '') + (o.refundDone.unit && String(o.refundDone.by || '').indexOf(o.refundDone.unit) < 0 ? '<div style="font-size:12px; color:var(--text-muted);">' + a.esc(o.refundDone.unit) + '</div>' : ''), f: (o.refundDone.tlkt || []).filter(t => t.file && t.file.name).map(t => fileLinks(t.file.name)).join('<br>') });
+        if (o.deathRec) rows.push({ t: o.deathRec.at || o.deathRec.ngay, k: pd(o.deathRec.at || o.deathRec.ngay), nd: 'Ghi nhận người thi hành công vụ đã chết (ngày chết ' + a.esc(o.deathRec.ngay) + ')', tien: '-', by: a.esc(o.deathRec.by || '') + (o.deathRec.unit && String(o.deathRec.by || '').indexOf(o.deathRec.unit) < 0 ? '<div style="font-size:12px; color:var(--text-muted);">' + a.esc(o.deathRec.unit) + '</div>' : ''), f: (o.deathRec.tlkt || []).filter(t => t.file && t.file.name).map(t => fileLinks(t.file.name)).join('<br>') });
         recs.filter(x => x.r.issuedAt).forEach(x => {
             const r = x.r, sp = r.supp || {}, ap = (r.hist || []).find(hh => hh.type === 'issue' || hh.type === 'approve');
             const tien = x.base === 'GIAM' ? 'Được giảm ' + m(sp.duocGiam != null ? sp.duocGiam : Math.max(0, (sp.phaiHT != null ? sp.phaiHT : hd) - (sp.giam || o.giam || 0))) : 'Được miễn ' + m(sp.mien != null ? sp.mien : mienDuoc);
@@ -232,27 +249,41 @@
     };
     window.ht4OpenPay = idx => open('pay', idx);
     window.ht4OpenRefund = idx => open('refund', idx);
+    window.ht4OpenDeath = idx => open('death', idx);
     window.ht4OpenHistory = idx => open('history', idx);
     window.ht4Close = () => { const m = el('ht4Modal'); if (m) m.classList.remove('visible'); P = null; };
     window.ht4Save = function () {
         if (!P) return;
         const a = A(), o = activeDossier.refundOfficers[P.idx];
-        const amtEl = el('ht4Amt'), ngayEl = el('ht4Ngay');
-        const amt = num(amtEl.value), ngay = ngayEl.value.trim(), d = parseD(ngay);
+        const death = P.mode === 'death';
+        const amtEl = death ? null : el('ht4Amt'), ngayEl = el('ht4Ngay');
+        const amt = death ? 0 : num(amtEl.value), ngay = ngayEl.value.trim(), d = parseD(ngay);
         let first = null;
         const bad = (input, msg) => { input.classList.add('is-invalid'); const e = el(input.id + 'Error'); e.innerText = msg || REQ; e.style.display = 'block'; if (!first) first = input; };
-        if (!amtEl.value.trim()) bad(amtEl);
+        if (!death && !amtEl.value.trim()) bad(amtEl);
         if (!ngay) bad(ngayEl);
         else if (!d) bad(ngayEl, 'Ngày không đúng định dạng dd/mm/yyyy.');
         else if (d > new Date()) bad(ngayEl, 'Ngày không được lớn hơn ngày hiện tại.');
+        else if (death) {
+            // Ngày chết không nhỏ hơn ngày Quyết định hoàn trả đã ban hành của cán bộ
+            const qd = typeof window.htQdHtOf === 'function' ? window.htQdHtOf(P.idx) : null, qdNgay = qd && qd.issuedAt ? String(qd.issuedAt).slice(0, 10) : '', qd0 = parseD(qdNgay);
+            if (qd0 && d < qd0) bad(ngayEl, 'Ngày chết không được nhỏ hơn ngày Quyết định hoàn trả (' + qdNgay + ').');
+        }
         if (P.mode === 'pay' && amtEl.value.trim() && !(amt > 0 && amt <= conLai(o))) bad(amtEl, 'Số tiền nộp phải lớn hơn 0 và không lớn hơn số còn phải thu.');
         if (P.mode === 'refund' && amtEl.value.trim() && amt !== o.refund) bad(amtEl, 'Số tiền trả lại phải bằng số tiền cần trả lại.');
-        if (!first && typeof tlktValidate === 'function' && !tlktValidate('ht4')) return;
+        // Kiểm tra cả bảng tài liệu để mọi ô lỗi cùng được tô đỏ; focus vào ô lỗi đầu tiên (ô ngày nằm trên bảng tài liệu)
+        const tlOk = typeof tlktValidate !== 'function' || tlktValidate('ht4');
         if (first) { first.focus(); return; }
+        if (!tlOk) return;
         const tl = typeof tlktGet === 'function' ? tlktGet('ht4') : [];
         const rec = { ngay, amt, tlkt: tl, by: userLabel(), unit: a.myUnit(), at: a.nowShort() };
         let msg;
-        if (P.mode === 'pay') {
+        if (death) {
+            // QDDA_041: ghi nhận trực tiếp; số đã nộp giữ nguyên, ngừng thu phần còn lại (Điều 72 Luật 10/2017)
+            o.deathDate = ngay; o.deathRec = rec;
+            o.total = o.paid || 0; o.ct = 'CHAMDUT';
+            msg = 'Ghi nhận người thi hành công vụ đã chết thành công. Cán bộ chuyển sang trạng thái Chấm dứt hoàn trả.'; // [MSG-SUC-BTNN-HT-033]
+        } else if (P.mode === 'pay') {
             o.payments = (o.payments || []).concat([rec]);
             o.paid = (o.paid || 0) + amt;
             if (conLai(o) === 0) o.ct = 'DONE';

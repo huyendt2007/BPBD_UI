@@ -37,8 +37,8 @@ var HST_VERSION = '20261119hst1';
         { v: 'TD', t: 'Tạm đình chỉ', prev: true, doc: 'Quyết định tạm đình chỉ giải quyết yêu cầu bồi thường' },
         { v: 'DC', t: 'Đình chỉ giải quyết', prev: true, doc: 'Quyết định đình chỉ giải quyết yêu cầu bồi thường (Mẫu 25/BTNN)' },
         { v: 'DG', t: 'Dừng giải quyết', prev: true, doc: 'Thông báo dừng giải quyết yêu cầu bồi thường (Mẫu 05/BTNN)' },
-        { v: 'KT', t: 'Không thụ lý', done: 0, doc: 'Thông báo không thụ lý hồ sơ (Mẫu 04/BTNN)' },
-        { v: 'CQ', t: 'Đã chuyển CQGQBT', done: 0, doc: 'Văn bản chuyển hồ sơ đến cơ quan giải quyết bồi thường', cq: true }
+        { v: 'KT', t: 'Không thụ lý', done: 0, doc: 'Thông báo không thụ lý hồ sơ (Mẫu 04/BTNN)' }
+        // 25/11: bỏ «Đã chuyển CQGQBT»: hồ sơ giấy đã chuyển do cơ quan nhận nhập với nguồn «Chuyển CQGQBT», tránh trùng vụ việc
     ];
     var PH_STEPS = ['Thông báo', 'Ý kiến phản hồi của người yêu cầu', 'Thực hiện', 'Hoàn thành'];
     var PH_CHON = [
@@ -246,6 +246,9 @@ var HST_VERSION = '20261119hst1';
     };
     window.el_ = function (id, show) { var x = el(id); if (x) x.style.display = show ? '' : 'none'; };
     H.tlPtDoi = function () { var ck = el('hstTlPt').value === 'Nhận qua chuyển khoản'; document.querySelectorAll('#hstTlNd .hstCk').forEach(function (e) { e.style.display = ck ? '' : 'none'; }); };
+    // 25/11: khối Tạm ứng hiện khi tích «Có đề nghị tạm ứng kinh phí bồi thường (Điều 44)»; ô «Số tiền đã tạm ứng» của khối Chi trả lấy từ khối Tạm ứng (0 khi không có khối)
+    H.coDeNghiTu = function () { var c = el('claimNeedAdvance'); return !!(c && c.checked); };
+    H.tuDoi = function () { var v = el('hstTuSo') ? el('hstTuSo').value.trim() : ''; ['hstHtTu', 'hstCtTu'].forEach(function (id) { if (el(id)) el(id).value = v || '0'; }); if (el('hstCtTb')) H.ctTinh(); };
     H.tuVe = function () { var co = el('hstTuCo').value === '1'; document.querySelectorAll('.hstTu1').forEach(function (e) { e.style.display = co ? '' : 'none'; }); };
 
     // ------------------------------------------------------------------ Nhánh Phục hồi danh dự
@@ -308,14 +311,24 @@ var HST_VERSION = '20261119hst1';
             + '<div><label class="form-label">Nơi thụ lý' + R + '</label><select class="form-control" id="hstNoiThuLy"><option value="">-- Chọn nơi thụ lý --</option><option>Thụ lý tại CQGQBT</option><option>Thụ lý tại Tòa án</option></select><div class="hst-err" id="hstNoiThuLyErr">Đây là trường bắt buộc</div></div>'
             + '</div>';
         if (initBox && initBox.parentNode === body) body.insertBefore(top, initBox.nextSibling); else body.insertBefore(top, body.firstChild);
-        // 20/11: Số hồ sơ trên giấy + Mã hồ sơ DVC (chỉ Nguồn Dịch vụ công): hàng riêng ngay dưới hàng Nguồn hồ sơ / Hình thức tiếp nhận
+        // 20/11: Số hồ sơ trên giấy + Mã hồ sơ DVC (25/11: Nguồn Dịch vụ công, Chuyển CQGQBT, Xác định CQGQBT): hàng riêng ngay dưới hàng Nguồn hồ sơ / Hình thức tiếp nhận
         var ngRow = el('claimNguonHoSo') ? el('claimNguonHoSo').closest('.grid-3-cols') : null;
         if (ngRow && !el('hstRowGiay')) {
             var rg = document.createElement('div');
             rg.id = 'hstRowGiay'; rg.className = 'grid-3-cols'; rg.style.cssText = 'margin-bottom:16px;display:none';
             rg.innerHTML = '<div class="form-group"><span class="form-label">Số hồ sơ trên giấy</span><input type="text" class="form-control" id="hstSoGiay" maxlength="50" placeholder="Nhập số hồ sơ trên giấy"></div>'
-                + '<div class="form-group" id="hstWDvc" style="display:none"><span class="form-label">Mã hồ sơ DVC</span><input type="text" class="form-control" id="hstDvc" maxlength="50" placeholder="Nhập mã hồ sơ DVC (nếu có)"></div>';
+                + '<div class="form-group" id="hstWDvc" style="display:none"><span class="form-label">Mã hồ sơ DVC</span><input type="text" class="form-control" id="hstDvc" maxlength="100" placeholder="Nhập mã hồ sơ DVC (nếu có)" oninput="HST.nguonDoi()"></div>';
             ngRow.parentNode.insertBefore(rg, ngRow.nextSibling);
+        }
+        // 25/11: Cơ quan giải quyết bồi thường của hồ sơ tồn: Combobox bắt buộc, mặc định Đơn vị của tài khoản (Phòng / Ban: đơn vị cấp cha gần nhất),
+        // danh sách = đơn vị đó và các đơn vị cấp trên trực tiếp tới đơn vị cấp cao nhất (như Tiếp nhận hồ sơ). Không đổi người nhận hồ sơ (người nhập vẫn chủ trì).
+        var cqGoc = el('claimCqNhan');
+        if (cqGoc && !el('hstCqgq')) {
+            var sc = document.createElement('select'); sc.id = 'hstCqgq'; sc.className = 'form-control'; sc.style.display = 'none';
+            cqGoc.parentNode.insertBefore(sc, cqGoc.nextSibling);
+            var ec = document.createElement('div'); ec.id = 'hstCqgqErr'; ec.className = 'hst-err'; ec.textContent = 'Đây là trường bắt buộc'; sc.parentNode.insertBefore(ec, sc.nextSibling);
+            var lbc = cqGoc.parentNode.querySelector('.form-label');
+            if (lbc) { var sao = document.createElement('span'); sao.id = 'hstCqgqSao'; sao.className = 'required'; sao.style.display = 'none'; sao.textContent = '*'; lbc.appendChild(sao); }
         }
         // Nguồn hồ sơ: chọn được
         var ng = el('claimNguonHoSo');
@@ -324,8 +337,7 @@ var HST_VERSION = '20261119hst1';
             s.id = 'hstNguon'; s.className = 'form-control'; s.style.display = 'none'; s.onchange = function () { H.render(); };
             s.innerHTML = ['Tiếp nhận mới', 'Dịch vụ công', 'Chuyển CQGQBT', 'Xác định CQGQBT'].map(function (v) { return '<option>' + v + '</option>'; }).join('');
             ng.parentNode.insertBefore(s, ng.nextSibling);
-            var note = document.createElement('div'); note.id = 'hstNguonNote'; note.className = 'hst-note'; note.style.display = 'none'; note.textContent = 'Nguồn gốc thật của hồ sơ giấy.';
-            s.parentNode.appendChild(note);
+            // 25/11: bỏ ghi chú «Nguồn gốc thật của hồ sơ giấy.» dưới ô Nguồn hồ sơ
         }
         // Các bước đã làm: cuối form
         var w = document.createElement('div');
@@ -345,6 +357,8 @@ var HST_VERSION = '20261119hst1';
         }
         el('hstSt').innerHTML = '<option value="">-- Chọn trạng thái --</option>' + ST.map(function (s) { return '<option value="' + s.v + '">' + s.t + '</option>'; }).join('');
         document.getElementsByName('claimRequestType').forEach(function (r) { r.addEventListener('change', function () { if (on) H.render(); }); });
+        // 25/11: khối Tạm ứng chỉ hiện khi tích «Có đề nghị tạm ứng kinh phí bồi thường (Điều 44)»
+        if (el('claimNeedAdvance')) el('claimNeedAdvance').addEventListener('change', function () { if (on) H.render(); });
         if (window.flatpickr) try { flatpickr(el('hstNgayTn'), { dateFormat: 'd/m/Y', allowInput: true, maxDate: 'today' }); } catch (e) { }
     }
     H.tab = function (i) {
@@ -357,7 +371,8 @@ var HST_VERSION = '20261119hst1';
         if (!on) return;
         H.nguonDoi();
         var loai = H.loai(), sv = el('hstSt').value, s = ST.filter(function (x) { return x.v === sv; })[0];
-        var bt = loai !== 'honor', ph = loai !== 'money';
+        // 25/11: Yêu cầu cả hai + «Cử người giải quyết bồi thường»: ẩn Trạng thái, Bước phục hồi danh dự và tab Phục hồi danh dự (nhánh PHDD bắt đầu sau bước Cử người)
+        var bt = loai !== 'honor', ph = loai !== 'money' && !(loai === 'both' && sv === 'CN');
         el('hstWSt').style.display = bt ? '' : 'none';
         el('hstWPh').style.display = ph ? '' : 'none';
         el('hstWPrev').style.display = bt && s && s.prev ? '' : 'none';
@@ -393,21 +408,24 @@ var HST_VERSION = '20261119hst1';
             if (done >= 2) h += blk(++n, 'Tiếp nhận hồ sơ bồi thường - Cử người giải quyết bồi thường', kn('Quyết định cử người giải quyết bồi thường (Mẫu 06/BTNN)')
                 + '<div style="margin-top:12px"><label class="form-label">Cán bộ được cử giải quyết' + R + '</label><table><thead><tr><th style="width:60px">STT</th><th>Cán bộ</th><th style="width:200px">Vai trò</th></tr></thead><tbody><tr><td>1</td><td><select class="form-control"><option>' + esc(H.me()) + '</option></select></td><td><select class="form-control"><option>Chủ trì</option><option>Phối hợp</option></select></td></tr></tbody></table>'
                 + '<button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px"><i class="fa-solid fa-plus"></i> Thêm cán bộ</button><div class="hst-note">Tài khoản cán bộ trên hệ thống thuộc Cơ quan giải quyết bồi thường; cán bộ Chủ trì nhận hồ sơ để xử lý tiếp.</div></div>');
-            if (done >= 1 && done <= 4 && ['KT', 'CQ'].indexOf(s.v) < 0) h += blk(++n, 'Tạm ứng kinh phí bồi thường (nếu có)', '<div class="hst-grid">'
-                + fld('Đã tạm ứng kinh phí', '<select class="form-control" id="hstTuCo" onchange="HST.tuVe()"><option value="0">Chưa tạm ứng</option><option value="1">Đã tạm ứng</option></select>', true)
-                + '<div class="hstTu1"><label class="form-label">Số tiền đã tạm ứng thực tế (VNĐ)' + R + '</label>' + inp('0', null, ' style="text-align:right"') + '</div>'
-                + '<div class="hstTu1"><label class="form-label">Ngày chi tạm ứng' + R + '</label>' + date() + '</div><div></div></div>'
-                + '<div class="hstTu1">' + kn('Quyết định tạm ứng kinh phí bồi thường', { them: ['Chứng từ chi tạm ứng kinh phí bồi thường'] })
-                + '<div class="hst-alert i" style="margin:12px 0 0"><i class="fa-solid fa-circle-info" style="margin-top:3px"></i><div>Khi lưu, hệ thống tạo bản ghi <b>Tạm ứng kinh phí bồi thường</b> «Hoàn thành» tại Kinh phí. Khi ban hành Quyết định giải quyết bồi thường trên hệ thống, số đã tạm ứng được trừ như vụ việc thường.</div></div></div>');
+            // 25/11: Tạm ứng chỉ có sau bước Cử người giải quyết bồi thường và khi tích «Có đề nghị tạm ứng kinh phí bồi thường (Điều 44)».
+            // Ẩn ở «Cử người giải quyết bồi thường», «Không thụ lý» và khi Bước đã thực hiện trước đó = Thụ lý. Không còn ô chọn Chưa / Đã tạm ứng: chỉ nhập khi đã tạm ứng xong.
+            if (done >= 2 && s.v !== 'KT' && H.coDeNghiTu()) h += blk(++n, 'Tạm ứng kinh phí bồi thường (nếu có)', '<div class="hst-grid">'
+                + '<div><label class="form-label">Số tiền đã tạm ứng thực tế (VNĐ)' + R + '</label>' + inp('0', null, ' id="hstTuSo" style="text-align:right" oninput="HST.tuDoi()"') + '</div>'
+                + '<div><label class="form-label">Ngày chi tạm ứng' + R + '</label>' + date() + '</div><div></div><div></div></div>'
+                + kn('Quyết định tạm ứng kinh phí bồi thường', { them: ['Chứng từ chi tạm ứng kinh phí bồi thường'] })
+                // 25/11: hồ sơ tồn không tạo bản ghi Tạm ứng ở mọi trạng thái; chỉ hồ sơ Hoàn thành có câu thông báo (BA chốt)
+                + (s.v === 'HT' ? '<div class="hst-alert i" style="margin:12px 0 0"><i class="fa-solid fa-circle-info" style="margin-top:3px"></i><div>Hồ sơ <b>Hoàn thành</b>: số tạm ứng chỉ ghi nhận tại hồ sơ, không tạo bản ghi tại Kinh phí.</div></div>' : ''));
             if (done >= 3) h += blk(++n, 'Xác minh thiệt hại thực tế', xmKhoi());
             if (done >= 4) h += blk(++n, 'Thương lượng giải quyết bồi thường', tlKhoi());
             if (done >= 5) h += blk(++n, 'Quyết định giải quyết bồi thường', '<div class="hst-grid">' + fld('Tổng số tiền bồi thường (VNĐ)', '<input class="form-control" id="hstQdTong" value="250.000.000" style="text-align:right" oninput="HST.ctTinh()">', true) + fld('Ngày có hiệu lực', date(), true) + '</div>' + kn('Quyết định giải quyết bồi thường (Mẫu 18/BTNN)', { unit: true }));
-            if (done >= 6) h += blk(++n, 'Chi trả tiền bồi thường', '<div class="hst-grid">' + fld('Số tiền đã tạm ứng (VNĐ)', inp('0', null, ' style="text-align:right"')) + fld('Số tiền đã chi trả (VNĐ)', inp('0', null, ' style="text-align:right"'), true) + fld('Ngày hoàn tất chi trả', date(), true) + '<div></div>'
+            if (done >= 6) h += blk(++n, 'Chi trả tiền bồi thường', '<div class="hst-grid">' + fld('Số tiền đã tạm ứng (VNĐ)', inp('0', '0', ' id="hstHtTu" readonly style="text-align:right"')) + fld('Số tiền đã chi trả (VNĐ)', inp('0', null, ' style="text-align:right"'), true) + fld('Ngày hoàn tất chi trả', date(), true) + '<div></div>'
                 + '<div class="hst-full">' + tlCoDinh(['Chứng từ chi trả tiền bồi thường']) + '</div></div>');
             if (s.v === 'CT') h += blk(++n, 'Chi trả tiền bồi thường - tình hình đến thời điểm nhập', '<div class="hst-grid">'
                 + fld('Thông báo chi trả tiền bồi thường', '<select class="form-control" id="hstCtTb" onchange="HST.ctTinh()"><option value="0">Chưa ban hành</option><option value="1">Đã ban hành</option></select>', true)
-                + fld('Số tiền đã tạm ứng (VNĐ)', '<input class="form-control" id="hstCtTu" value="50.000.000" oninput="HST.ctTinh()" style="text-align:right">')
+                + fld('Số tiền đã tạm ứng (VNĐ)', '<input class="form-control" id="hstCtTu" value="0" readonly style="text-align:right">')
                 + fld('Số tiền đã chi trả (VNĐ)', '<input class="form-control" id="hstCtDc" value="100.000.000" oninput="HST.ctTinh()" style="text-align:right">')
+                + '<div><label class="form-label" id="hstCtNgayNhan">Ngày chi trả</label>' + inp('dd/mm/yyyy', null, ' id="hstCtNgay"') + '</div>'
                 + fld('Số tiền còn phải chi trả (VNĐ)', '<input class="form-control" id="hstCtCl" readonly style="text-align:right;font-weight:600">', false, '= Tổng số tiền bồi thường - đã tạm ứng - đã chi trả.')
                 + '</div><div id="hstCtKn"></div><div style="margin-top:12px">' + tlBang([{ ten: 'Chứng từ chi trả tiền bồi thường' }]) + '</div>'
                 + '<div class="hst-alert i" style="margin:12px 0 0"><i class="fa-solid fa-circle-info" style="margin-top:3px"></i><div id="hstCtNote"></div></div>');
@@ -417,7 +435,7 @@ var HST_VERSION = '20261119hst1';
         var m = 0;
         el('hstPhBlocks').innerHTML = ph ? phBlocks(loai, cd, function () { return ++m; }) : '';
         if (!ph) { el('hstStepperPh').innerHTML = ''; el('hstPhNote').innerHTML = ''; }
-        if (el('hstTuCo')) H.tuVe();
+        H.tuDoi();
         if (el('hstTlNd')) H.tlDoi();
         if (el('hstCtTb')) H.ctTinh();
     };
@@ -427,9 +445,11 @@ var HST_VERSION = '20261119hst1';
         if (!el('hstCtTb')) return;
         var tong = el('hstQdTong') ? so(el('hstQdTong').value) : 0, con = Math.max(0, tong - so(el('hstCtTu').value) - so(el('hstCtDc').value));
         el('hstCtCl').value = tien(con);
+        // 25/11: Ngày chi trả bắt buộc khi Số tiền đã chi trả lớn hơn 0
+        if (el('hstCtNgayNhan')) el('hstCtNgayNhan').innerHTML = 'Ngày chi trả' + (so(el('hstCtDc').value) > 0 ? R : '');
         var da = el('hstCtTb').value === '1';
         el('hstCtKn').innerHTML = da ? kn('Thông báo chi trả tiền bồi thường (Mẫu 32/BTNN)') : '';
-        el('hstCtNote').innerHTML = 'Khi lưu, hệ thống tạo bản ghi <b>Chi trả tiền bồi thường</b> tại Kinh phí, trạng thái <b>' + (da ? 'Chờ chi trả' : 'Chờ thông báo chi trả') + '</b>, Số tiền còn phải chi trả <b>' + tien(con) + '</b> đ. Số tiền đã tạm ứng, đã chi trả ghi vào lịch sử chi trả của bản ghi với nhãn «Hồ sơ tồn». Phần còn lại cán bộ tiếp tục ' + (da ? 'Cập nhật chi trả' : 'Trình thông báo chi trả, Cập nhật chi trả') + ' hoặc Trả lại ngân sách nhà nước tại Kinh phí.';
+        el('hstCtNote').innerHTML = 'Khi lưu, hệ thống tạo bản ghi <b>Chi trả tiền bồi thường</b> tại Kinh phí, trạng thái <b>' + (da ? 'Chờ chi trả' : 'Chờ thông báo chi trả') + '</b>, Số tiền còn phải chi trả <b>' + tien(con) + '</b> đ. Số tiền đã chi trả ghi vào lịch sử chi trả của bản ghi với nhãn «Hồ sơ tồn». Phần còn lại cán bộ tiếp tục ' + (da ? 'Cập nhật chi trả' : 'Trình thông báo chi trả, Cập nhật chi trả') + ' hoặc Trả lại ngân sách nhà nước tại Kinh phí.';
     };
 
     // ------------------------------------------------------------------ Bật / tắt chế độ hồ sơ tồn trên form
@@ -445,6 +465,7 @@ var HST_VERSION = '20261119hst1';
             ['defaultFormButtons', 'rejectFlowButtonsContainer', 'bosungFlowButtonsContainer', 'cdpdFormButtons', 'cdpdModeBlock'].forEach(function (id) { show(id, false); });
             var t = document.querySelector('#inlineClaimFormPanel .inline-form-title');
             if (t) t.innerHTML = '<i class="fa-solid fa-box-archive"></i> NHẬP HỒ SƠ TỒN';
+            show('claimCqNhan', false); show('hstCqgq', true); show('hstCqgqSao', true, 'inline'); H.cqgqNap();
             show('claimNguonHoSo', false); show('hstNguon', true); show('hstNguonNote', true, 'block');
             var ht = el('claimHinhThucTiepNhan');
             if (ht && !Array.prototype.some.call(ht.options, function (o) { return o.value === 'Dịch vụ công'; })) { var o = document.createElement('option'); o.value = 'Dịch vụ công'; o.textContent = 'Dịch vụ công'; o.dataset.hst = '1'; ht.appendChild(o); }
@@ -458,22 +479,37 @@ var HST_VERSION = '20261119hst1';
             H.render();
         } else {
             H.vbccLoi(false); H.vbccTieuDe(null);
+            show('claimCqNhan', true); show('hstCqgq', false); show('hstCqgqSao', false); show('hstCqgqErr', false);
             show('claimNguonHoSo', true); show('hstNguon', false); show('hstNguonNote', false);
             var ht2 = el('claimHinhThucTiepNhan');
             if (ht2) { Array.prototype.slice.call(ht2.options).forEach(function (o) { if (o.dataset.hst) o.remove(); else { o.hidden = false; o.disabled = false; } }); ht2.disabled = false; if (ht2.value === HT_CD || ht2.value === HT_DVC || !ht2.value) ht2.value = 'Trực tiếp'; }
         }
     }
     // Hình thức tiếp nhận theo Nguồn hồ sơ và Loại yêu cầu (DM_25):
-    // - Nguồn Dịch vụ công: hiện Mã hồ sơ DVC; Hình thức = Dịch vụ công, khóa không cho sửa.
+    // - 25/11: Mã hồ sơ DVC hiện khi Nguồn là Dịch vụ công, Chuyển CQGQBT hoặc Xác định CQGQBT (hồ sơ chuyển cơ quan giữ mã DVC của hồ sơ gốc).
+    // - Hình thức = Dịch vụ công, khóa không cho sửa: Nguồn Dịch vụ công, hoặc Nguồn Chuyển / Xác định CQGQBT đã nhập Mã hồ sơ DVC.
     // - Nguồn Tiếp nhận mới + Chỉ yêu cầu phục hồi danh dự: thêm giá trị Cán bộ chủ động phục hồi danh dự.
     // - Còn lại: Trực tiếp / Qua dịch vụ bưu chính.
-    var HT_DVC = 'Dịch vụ công', HT_CD = 'Cán bộ chủ động phục hồi danh dự';
+    var HT_DVC = 'Dịch vụ công', HT_CD = 'Cán bộ chủ động phục hồi danh dự', NGUON_MA = ['Dịch vụ công', 'Chuyển CQGQBT', 'Xác định CQGQBT'];
+    H.cqgqChain = function () {
+        var W = window.BTNN_WF; if (!W || !W.getCurrentUser || !W.getAncestors) return [];
+        var u = W.getCurrentUser(); if (!u || !u.unitId) return [];
+        var ids = W.getAncestors(u.unitId), x = W.getUnit ? W.getUnit(ids[0]) : null;
+        var pb = !!x && /^phòng\s*\/\s*ban$/i.test(String(x.loaiCoQuan || '').trim());
+        return ids.length > 1 && pb ? ids.slice(1) : ids;
+    };
+    H.cqgqNap = function () {
+        var s = el('hstCqgq'), W = window.BTNN_WF; if (!s) return;
+        s.innerHTML = H.cqgqChain().map(function (id) { return '<option value="' + esc(id) + '">' + esc(W.unitName(id)) + '</option>'; }).join('') || '<option value="">---</option>';
+        s.selectedIndex = 0; s.classList.remove('is-invalid'); if (el('hstCqgqErr')) el('hstCqgqErr').style.display = 'none';
+    };
     H.cd = function () { var ht = el('claimHinhThucTiepNhan'); return H.loai() === 'honor' && !!ht && ht.value === HT_CD; };
     H.nguonDoi = function () {
         var nguon = el('hstNguon') ? el('hstNguon').value : '';
-        var dvc = nguon === HT_DVC, cdOk = nguon === 'Tiếp nhận mới' && H.loai() === 'honor';
-        if (el('hstWDvc')) el('hstWDvc').style.display = dvc ? '' : 'none';
-        if (!dvc && el('hstDvc')) el('hstDvc').value = '';
+        var coMa = NGUON_MA.indexOf(nguon) >= 0, cdOk = nguon === 'Tiếp nhận mới' && H.loai() === 'honor';
+        if (el('hstWDvc')) el('hstWDvc').style.display = coMa ? '' : 'none';
+        if (!coMa && el('hstDvc')) el('hstDvc').value = '';
+        var dvc = nguon === HT_DVC || (coMa && !!el('hstDvc') && !!el('hstDvc').value.trim());
         var ht = el('claimHinhThucTiepNhan');
         if (!ht) return;
         Array.prototype.forEach.call(ht.options, function (x) {
@@ -580,6 +616,9 @@ var HST_VERSION = '20261119hst1';
         var badN = !el('hstNoiThuLy').value;
         el('hstNoiThuLyErr').style.display = badN ? 'block' : 'none'; el('hstNoiThuLy').classList.toggle('is-invalid', badN);
         if (badN) first = first || el('hstNoiThuLy');
+        var cq = el('hstCqgq'), badC = !!cq && !cq.value;
+        if (cq) { cq.classList.toggle('is-invalid', badC); el('hstCqgqErr').style.display = badC ? 'block' : 'none'; if (badC) first = first || cq; }
+        if (cq && !badC) el('claimCqNhan').value = cq.options[cq.selectedIndex].text; // form chung lưu tên cơ quan vào hồ sơ
         if (!H.vbccCoTep()) { H.vbccLoi(true); first = first || el('claimVanBanCanCuSection'); } else H.vbccLoi(false);
         var loiKhoi = kiemKhoi();
         var loiN = kiemNgay();
@@ -587,9 +626,9 @@ var HST_VERSION = '20261119hst1';
         if (!first && loiKhoi) { H.tab(loiKhoi.closest('#hstFPh') ? 2 : 1); first = loiKhoi; }
         if (first) { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); first.focus(); return; }
         hook = {
-            loai: loai, st: el('hstSt').value, prev: +el('hstPrev').value, ph: el('hstPh').value, phB: el('hstPhB').value, ht: H.cd() ? 'CD' : 'YC',
-            ngay: el('hstNgayTn').value.trim(), noiThuLy: el('hstNoiThuLy').value, dvc: el('hstNguon').value === 'Dịch vụ công' ? el('hstDvc').value.trim() : '', nguon: el('hstNguon').value, httn: el('claimHinhThucTiepNhan').value,
-            soGiay: el('hstSoGiay').value.trim()
+            loai: loai, st: el('hstSt').value, prev: +el('hstPrev').value, ph: (loai === 'both' && el('hstSt').value === 'CN') ? '' : el('hstPh').value, phB: el('hstPhB').value, ht: H.cd() ? 'CD' : 'YC',
+            ngay: el('hstNgayTn').value.trim(), noiThuLy: el('hstNoiThuLy').value, dvc: NGUON_MA.indexOf(el('hstNguon').value) >= 0 ? el('hstDvc').value.trim() : '', nguon: el('hstNguon').value, httn: el('claimHinhThucTiepNhan').value,
+            soGiay: el('hstSoGiay').value.trim(), cqgq: el('hstCqgq') ? el('hstCqgq').value : '', cqTen: el('claimCqNhan').value
         };
         // Lưu hồ sơ tồn: không gửi Dịch vụ công tại thời điểm nhập (các bước làm tiếp sau đó gửi như hồ sơ thường)
         window.BTNN_DVC_MUTE = true;
@@ -609,10 +648,10 @@ var HST_VERSION = '20261119hst1';
         var patch = {
             ton: true, hst: { st: h.st || '', ph: h.loai !== 'money' ? (h.ph === 'DG' ? h.phB : h.ph) : '', buoc: buoc, nhapLuc: today, nhapBoi: me, soGiay: h.soGiay || '', ver: HST_VERSION },
             status: status, date: h.ngay, noiThuLy: h.noiThuLy, nguonHoSo: h.nguon, hinhThucTiepNhan: h.httn, dvcCode: h.dvc || c.dvcCode || '',
-            assignedOfficer: me, userCreated: true
+            assignedOfficer: me, userCreated: true, agency: h.cqTen || c.agency || '', cqgqUnitId: h.cqgq || ''
         };
         if (s && s.prev) patch.hgqPrevStatus = ST_CASE[['', 'CN', 'XM', 'TL', 'QD'][h.prev]] || '';
-        if (h.loai !== 'money') { patch.phddStarted = h.ph !== 'CN'; if (h.loai === 'honor' && h.ht === 'CD') { patch.cdpd = true; patch.hinhThucTiepNhan = 'Cán bộ chủ động phục hồi danh dự'; } }
+        if (h.loai !== 'money') { patch.phddStarted = !!h.ph && h.ph !== 'CN'; if (h.loai === 'honor' && h.ht === 'CD') { patch.cdpd = true; patch.hinhThucTiepNhan = 'Cán bộ chủ động phục hồi danh dự'; } }
         patch.timeline = [{ title: 'Nhập hồ sơ tồn', date: today, desc: 'Nhập hồ sơ đã giải quyết trên giấy (ngày tiếp nhận ' + h.ngay + '). Trạng thái hiện tại: [' + status + '].', status: 'completed', officer: me }];
         Object.assign(c, patch);
         try { if (typeof gqSaveData === 'function') gqSaveData(c, { ton: true, hst: patch.hst }); } catch (e) { }

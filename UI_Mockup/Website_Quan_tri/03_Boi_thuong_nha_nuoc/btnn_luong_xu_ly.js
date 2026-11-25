@@ -2146,6 +2146,9 @@
         const copy = JSON.parse(JSON.stringify(rec));
         ['routes', 'approval', 'history', 'returned', 'transfer', 'transferTo', 'chuTri', 'status', 'currentUnitId', 'code', 'id', 'appointedOfficers', 'thuLy', 'claimCode', 'seedKey', 'gqClaimId'].forEach(k => delete copy[k]);
         if (copy.gqData) ['ktlReasonCode', 'ktlReasonName', 'ktlDetail', 'ktlDraftDoc', 'transferRequest', 'rejectType', 'rejectReason', 'rejectOfficer', 'rejectDate', 'thongBaoThuLy'].forEach(k => delete copy.gqData[k]);
+        // [ccqtl] KH chốt 25/11/2026: Chuyển CQGQBT (không qua Không thụ lý) chỉ chuyển tài liệu hồ sơ ban đầu + văn bản chuyển, Tài liệu ban hành kèm theo;
+        // bỏ toàn bộ dữ liệu, tài liệu phát sinh tại cơ quan chuyển đi sau tiếp nhận (gqData: thụ lý, cử người, xác minh, thương lượng, hoãn, phục hồi danh dự...)
+        if (!action.mode) delete copy.gqData;
         stripInternalDocs(copy);
         // Tài liệu chuyển kèm: văn bản Thông báo không thụ lý (Mẫu 04/BTNN) + tài liệu đính kèm khi chuyển + tài liệu hồ sơ
         const files = [];

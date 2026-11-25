@@ -584,6 +584,15 @@
                 const yk = el('ht2YKienChung'); if (yk) yk.value = activeDossier.ht2YKienChung || '';
             }
             date.disabled = ro;
+            // Chế độ chỉ xem: «Ngày họp Hội đồng» là nhãn theo bản ghi (SRS MH03), không hiện ô nhập bị khóa.
+            // Dữ liệu mẫu cũ chưa có conclusionDate thì lấy ngày Quyết định thành lập Hội đồng.
+            let v = el('s2ConclusionDateView');
+            if (!v) { v = document.createElement('div'); v.id = 's2ConclusionDateView'; v.style.cssText = 'font-weight:700; padding:8px 0;'; date.insertAdjacentElement('afterend', v); }
+            date.style.display = ro ? 'none' : '';
+            v.style.display = ro ? 'block' : 'none';
+            v.innerText = activeDossier.conclusionDate || activeDossier.hdDate || '-';
+            const sao = date.parentElement && date.parentElement.querySelector('.form-label span');
+            if (sao) sao.style.display = ro ? 'none' : '';
         }
         const yk = el('ht2YKienChung'), ykv = el('ht2YKienChungView');
         if (yk) yk.style.display = ro ? 'none' : '';

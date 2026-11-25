@@ -73,6 +73,35 @@ function ccqForcedAction(claim, content) {
     };
 }
 
+// ---------- [ccqpv] KH chốt 25/11/2026: Phạm vi chuyển với vụ việc Yêu cầu cả hai ----------
+// Trạng thái Phục hồi danh dự Đang / Hoãn: chuyển cả 02 nhánh (hồ sơ mới Yêu cầu cả hai, PHDD làm lại từ đầu);
+// Hoàn thành / Từ chối phục hồi danh dự: chỉ chuyển phần tiền (hồ sơ mới Chỉ yêu cầu bồi thường thiệt hại bằng tiền).
+// Trả về null khi vụ việc không phải Yêu cầu cả hai.
+function ccqPhamVi(claim) {
+    if (!claim) return null;
+    var kind = typeof claimRequestKind === 'function' ? claimRequestKind(claim) : claim.requestType;
+    if (kind !== 'both') return null;
+    var st = String(claim.phddStatus || 'Đang phục hồi danh dự');
+    var xong = st === 'Hoàn thành' || /^Từ chối/.test(st);
+    return { ca2: !xong, requestKind: xong ? 'money' : 'both', phddStatus: st };
+}
+function ccqPhamViHtml(pv) {
+    if (!pv) return '';
+    var msg = pv.ca2
+        ? 'Chuyển cả phần bồi thường thiệt hại và phục hồi danh dự. Hồ sơ tại cơ quan tiếp nhận mới có Loại yêu cầu <strong>Yêu cầu cả hai</strong>; tiến trình phục hồi danh dự thực hiện lại từ đầu.'
+        : 'Chỉ chuyển phần bồi thường thiệt hại bằng tiền. Phục hồi danh dự đã <strong>' + gqE(pv.phddStatus) + '</strong> tại cơ quan hiện tại; hồ sơ tại cơ quan tiếp nhận mới có Loại yêu cầu <strong>Chỉ yêu cầu bồi thường thiệt hại bằng tiền</strong>.';
+    return '<div id="ccqPhamViAlert" style="display:flex; gap:8px; align-items:flex-start; background:#eff6ff; border:1px solid #bfdbfe; color:#1e3a8a; border-radius:8px; padding:10px 14px; margin-bottom:12px; font-size:13px; line-height:1.5;"><i class="fa-solid fa-circle-info" style="margin-top:3px;"></i><div><strong>Phạm vi chuyển:</strong> ' + msg + '</div></div>';
+}
+function ccqPhamViCode(claim) { var pv = ccqPhamVi(claim); return pv ? (pv.ca2 ? 'both' : 'money') : ''; }
+// Thông tin hành động chuyển: thêm Loại yêu cầu của hồ sơ mới (requestKind) theo Phạm vi chuyển
+function ccqAction(claim, unitId, tc, files) {
+    var a = Object.assign({ type: 'transfer', targetUnitId: unitId, content: tc, files: files }, ccqForcedAction(claim, tc));
+    var pv = ccqPhamVi(claim);
+    var kind = pv ? pv.requestKind : (typeof claimRequestKind === 'function' ? claimRequestKind(claim) : claim.requestType);
+    if (kind) a.recExtra = Object.assign({}, a.recExtra || {}, { requestKind: kind, ccqPhamVi: pv ? (pv.ca2 ? 'both' : 'money') : '' });
+    return a;
+}
+
 function ccqEl(id) { return document.getElementById(id); }
 function ccqIsOffline() { var r = ccqEl('ccqSigningMethodOffline'); return !!(r && r.checked); }
 function ccqClearErr(id) { var el = ccqEl(id); if (el) el.classList.remove('is-invalid'); var er = ccqEl(id + 'Err'); if (er) er.style.display = 'none'; }
@@ -159,7 +188,7 @@ function ccqOpen(claimId) {
     ccqEl('ccqClaimCode').innerText = ccqVvCode(claim) || '--';
     ccqEl('ccqClaimNYC').innerText = (typeof getClaimRequesterName === 'function' && getClaimRequesterName(claim)) || '--';
     ccqEl('ccqClaimAgency').innerText = claim.agency || '--';
-    ccqEl('ccqSummary').innerHTML = typeof gqSummaryHtml === 'function' ? gqSummaryHtml(claim) : '';
+    ccqEl('ccqSummary').innerHTML = (typeof gqSummaryHtml === 'function' ? gqSummaryHtml(claim) : '') + ccqPhamViHtml(ccqPhamVi(claim));
     ccqEl('gqTransferContent').value = act ? (act.content || '') : '';
     ['gqTransferUnit', 'gqTransferContent'].forEach(ccqClearErr);
     ccqEl('ccqFooterMsg').innerText = '';
@@ -334,9 +363,9 @@ function ccqSubmitOnline() {
     var draftDoc = { source: 'uploaded', formNo: '', docTitle: 'Văn bản chuyển cơ quan giải quyết bồi thường', generatedName: '', uploadedName: fileName, bodyHtml: '' };
     // [sn1] Số, ký hiệu / Ngày văn bản theo khối Thông tin ban hành văn bản (Bước 2)
     var signDoc = Object.assign({ method: 'Ký số', file: fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords, docNumber: sign.soKyHieu, docDate: sign.ngayVanBan }, tlktGqExtra('ccq', ccqS.online, 'upload', sign.content));
-    var res = gqSubmit(claim, CCQ_KIND, sign.content, files, { assignee: sign.assignees[0] || '', assignees: sign.assignees, draftDoc: draftDoc, signDoc: signDoc, action: Object.assign({ type: 'transfer', targetUnitId: unitId, content: tc, files: files }, ccqForcedAction(claim, tc)) });
+    var res = gqSubmit(claim, CCQ_KIND, sign.content, files, { assignee: sign.assignees[0] || '', assignees: sign.assignees, draftDoc: draftDoc, signDoc: signDoc, action: ccqAction(claim, unitId, tc, files) });
     if (!res || res.ok === false) { ccqEl('ccqFooterMsg').innerText = res ? res.message : 'Không trình được hồ sơ.'; return; }
-    gqSaveData(claim, { transferRequest: { via: CCQ_KIND, targetUnitId: unitId, targetName: W.unitName(unitId), content: tc, files: files, fileName: fileName, signingMethod: 'Ký số' } });
+    gqSaveData(claim, { transferRequest: { via: CCQ_KIND, targetUnitId: unitId, targetName: W.unitName(unitId), content: tc, files: files, fileName: fileName, signingMethod: 'Ký số', phamVi: ccqPhamViCode(claim) } });
     closeCcqModal();
     gqAfterSubmit(claim, CCQ_KIND);
 }
@@ -370,7 +399,7 @@ function ccqIssueOffline() {
     try {
         var rec = gqEnsureRecord(claim) || gqRecord(claim);
         if (rec && W) {
-            newCode = W.performTransfer(rec, Object.assign({ type: 'transfer', targetUnitId: unitId, content: tc, files: files }, ccqForcedAction(claim, tc))) || '';
+            newCode = W.performTransfer(rec, ccqAction(claim, unitId, tc, files)) || '';
             rec.status = CCQ_RESULT;
             W.addHistory(rec, 'Ban hành Chuyển CQGQBT (Ký ngoài)', 'Chuyển ' + W.unitName(unitId) + (newCode ? ' (hồ sơ ' + newCode + ')' : '') + '. Văn bản đã ký: ' + file + '.');
             W.upsertRecord(rec);
@@ -381,7 +410,7 @@ function ccqIssueOffline() {
     if (!Array.isArray(claim.timeline)) claim.timeline = [];
     claim.timeline.push({ title: 'Ban hành Chuyển CQGQBT (Ký ngoài)', date: gqToday(), desc: 'Văn bản chuyển cơ quan đã ký ngoài hệ thống (' + file + '). Chuyển ' + (W ? W.unitName(unitId) : unitId) + (newCode ? ', tạo hồ sơ ' + newCode : '') + '. Vụ việc chuyển sang trạng thái [' + CCQ_RESULT + '].', status: 'active' });
     var forced = ccqS.forced;
-    gqSaveData(claim, { status: CCQ_RESULT, transferRequest: { via: CCQ_KIND, targetUnitId: unitId, targetName: W ? W.unitName(unitId) : '', content: tc, files: files, fileName: file, signedFile: file, signingMethod: 'Ký ngoài', newCode: newCode, issuedAt: gqNow(), loaiYeuCau: forced ? forced.loaiYeuCau : '' } });
+    gqSaveData(claim, { status: CCQ_RESULT, transferRequest: { via: CCQ_KIND, targetUnitId: unitId, targetName: W ? W.unitName(unitId) : '', content: tc, files: files, fileName: file, signedFile: file, signingMethod: 'Ký ngoài', newCode: newCode, issuedAt: gqNow(), loaiYeuCau: forced ? forced.loaiYeuCau : '', phamVi: ccqPhamViCode(claim) } });
     closeCcqModal();
     saveClaimsToLocal();
     renderClaimsTable();
@@ -393,3 +422,27 @@ function ccqIssueOffline() {
 
 // Thay popup Chuyển CQGQBT cũ (quan_ly_boi_thuong.html) bằng popup 02 bước
 window.openGqTransferModal = function (claimId) { ccqOpen(claimId); };
+
+// [ccqpv] Tab Phục hồi danh dự của hồ sơ đã chuyển cả 02 nhánh: chỉ xem, có dòng thông tin; ẩn Cập nhật tiến trình phục hồi danh dự
+function ccqTab3Note() {
+    var box = document.getElementById('detailSubTabPhdd');
+    if (!box) return;
+    var old = document.getElementById('ccqTab3Note');
+    var claim = typeof selectedClaimId !== 'undefined' && selectedClaimId ? gqClaim(selectedClaimId) : null;
+    var tr = claim && claim.transferRequest;
+    var on = !!(claim && claim.status === CCQ_RESULT && tr && tr.phamVi === 'both');
+    var btn = document.getElementById('btnPhddUpdateProgress');
+    if (btn && on) btn.style.display = 'none';
+    if (!on) { if (old) old.remove(); return; }
+    var W = gqW();
+    var html = '<i class="fa-solid fa-circle-info" style="margin-top:3px;"></i><div>Tiến trình phục hồi danh dự đã chuyển cùng hồ sơ sang <strong>'
+        + gqE(tr.targetName || (W && tr.targetUnitId ? W.unitName(tr.targetUnitId) : '')) + '</strong> ngày ' + gqE(String(tr.issuedAt || gqToday()).split(' ').pop())
+        + '; cơ quan tiếp nhận mới thực hiện lại từ đầu.</div>';
+    if (!old) { old = document.createElement('div'); old.id = 'ccqTab3Note'; old.style.cssText = 'display:flex; gap:8px; align-items:flex-start; background:#eff6ff; border:1px solid #bfdbfe; color:#1e3a8a; border-radius:8px; padding:10px 14px; margin-bottom:12px; font-size:13px; line-height:1.5;'; box.insertBefore(old, box.firstChild); }
+    old.innerHTML = html;
+}
+(function () {
+    var o = window.switchDetailTab;
+    if (typeof o !== 'function') return;
+    window.switchDetailTab = function () { var r = o.apply(this, arguments); try { ccqTab3Note(); } catch (e) { /* mockup */ } return r; };
+})();
