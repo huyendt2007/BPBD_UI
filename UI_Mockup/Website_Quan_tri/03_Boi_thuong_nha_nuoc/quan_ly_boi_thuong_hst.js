@@ -1,7 +1,7 @@
 /*
  * Nhập hồ sơ tồn (prefix hst) - Giải quyết yêu cầu bồi thường. Chốt với BA 19/11/2026 (bản xem trước xem_truoc_nhap_ho_so_ton.html).
  * 1. Nút "Nhập hồ sơ tồn" trên lưới (cạnh "Tạo yêu cầu"): mở form Nhập liệu hồ sơ vụ việc ở chế độ hồ sơ tồn
- *    - Khối "Trạng thái hiện tại của hồ sơ" (sau Loại yêu cầu): Trạng thái Giải quyết YCBT / Bước đã thực hiện trước đó /
+ *    - Khối "Trạng thái hiện tại của hồ sơ" (sau Loại yêu cầu): Trạng thái Giải quyết YCBT / Trạng thái trước khi hoãn, tạm đình chỉ, đình chỉ, dừng giải quyết /
  *      Hình thức tạo hồ sơ (chỉ PHDD) / Trạng thái Phục hồi danh dự + Bước phục hồi danh dự hiện tại; Ngày tiếp nhận, Mã hồ sơ DVC.
  *    - Nguồn hồ sơ chọn được (nguồn gốc thật của hồ sơ giấy), Hình thức tiếp nhận đủ giá trị.
  *    - Cuối form: tab "Chi tiết giải quyết bồi thường" / "Phục hồi danh dự" gồm các khối của bước đã làm xong trên giấy (nhãn "Hồ sơ tồn").
@@ -25,7 +25,7 @@ var HST_VERSION = '20261119hst1';
 
     // ------------------------------------------------------------------ Danh mục trạng thái
     var STEPS = ['Thụ lý', 'Cử người giải quyết', 'Xác minh thiệt hại', 'Thương lượng', 'Quyết định GQBT', 'Chi trả'];
-    // done: số bước đã làm xong trên giấy (nhập tại form); prev: chọn "Bước đã thực hiện trước đó"; doc: văn bản kết thúc / tạm dừng
+    // done: số bước đã làm xong trên giấy (nhập tại form); prev: chọn «Trạng thái trước khi …» (TRUOC_OF); doc: văn bản kết thúc / tạm dừng
     var ST = [
         { v: 'CN', t: 'Cử người giải quyết bồi thường', done: 1 },
         { v: 'XM', t: 'Xác minh thiệt hại', done: 2 },
@@ -59,8 +59,13 @@ var HST_VERSION = '20261119hst1';
     var ST_CASE = { CN: 'Cử người giải quyết bồi thường', XM: 'Xác minh thiệt hại', TL: 'Thương lượng', QD: 'Chờ ban hành QĐ', CT: 'Chờ chi trả', HT: 'Hoàn thành', HO: 'Hoãn giải quyết', TD: 'Tạm đình chỉ', DC: 'Đình chỉ giải quyết', DG: 'Dừng giải quyết', KT: 'Không thụ lý', CQ: 'Đã chuyển CQGQBT' };
     // 26/11 (BA chốt): Hoãn giải quyết / Tạm đình chỉ chọn thẳng «Trạng thái trước khi hoãn / tạm đình chỉ» theo luồng chính;
     // số bước đã làm xong = các bước đứng trước trạng thái đó
-    var TRUOC_OF = { HO: ['XM', 'TL'], TD: ['XM', 'TL', 'QD'] };
-    var TRUOC_DONE = { XM: 2, TL: 3, QD: 4 };
+    // 26/11 (BA yêu cầu): Đình chỉ giải quyết / Dừng giải quyết cũng chọn «Trạng thái trước khi đình chỉ / dừng giải quyết»
+    // theo đúng các trạng thái luồng Giải quyết YCBT cho phép (thay ô «Bước đã thực hiện trước đó»)
+    var TRUOC_OF = { HO: ['XM', 'TL'], TD: ['XM', 'TL', 'QD'], DC: ['CN', 'XM', 'TL', 'QD', 'CT'], DG: ['CN', 'XM', 'TL', 'QD'] };
+    var TRUOC_DONE = { CN: 1, XM: 2, TL: 3, QD: 4, CT: 5 };
+    var TRUOC_NHAN = { HO: 'Trạng thái trước khi hoãn / tạm đình chỉ', TD: 'Trạng thái trước khi hoãn / tạm đình chỉ', DC: 'Trạng thái trước khi đình chỉ', DG: 'Trạng thái trước khi dừng giải quyết' };
+    // Dữ liệu cũ lưu «Bước đã thực hiện trước đó» (số bước đã xong) -> trạng thái trước tương ứng
+    var PREV_TRUOC = ['', 'CN', 'XM', 'TL', 'QD'];
     var PH_CASE = { CN: 'Cử người phục hồi danh dự', DG: 'Đang phục hồi danh dự', HO: 'Hoãn phục hồi danh dự', TU: 'Từ chối phục hồi danh dự', HT: 'Hoàn thành' };
     // Khối chi tiết (accHead_*) tương ứng bước đã nhập
     var ACC_OF_DONE = ['thuly', 'thuly', 'xacminh', 'thuongluong', 'quyetdinh', 'thucthi'];
@@ -322,8 +327,7 @@ var HST_VERSION = '20261119hst1';
             + '<div class="hst-alert i" style="margin-bottom:14px"><i class="fa-solid fa-circle-info" style="margin-top:3px"></i><div>Nhập hồ sơ đã giải quyết trên giấy. Chỉ nhập các bước đã làm xong; bước hiện tại và các bước sau xử lý trên hệ thống như hồ sơ thường. Hồ sơ tồn không trình, không ký duyệt; khi lưu, hồ sơ vào thẳng trạng thái đã chọn.</div></div>'
             + '<div class="hst-grid">'
             + '<div id="hstWSt"><label class="form-label">Trạng thái Giải quyết YCBT hiện tại' + R + '</label><select class="form-control" id="hstSt" onchange="HST.render()"></select><div class="hst-err" id="hstStErr">Đây là trường bắt buộc</div></div>'
-            + '<div id="hstWPrev" style="display:none"><label class="form-label">Bước đã thực hiện trước đó' + R + '</label><select class="form-control" id="hstPrev" onchange="HST.render()">' + STEPS.slice(0, 4).map(function (s, i) { return '<option value="' + (i + 1) + '"' + (i === 2 ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></div>'
-            + '<div id="hstWTruoc" style="display:none"><label class="form-label">Trạng thái trước khi hoãn / tạm đình chỉ' + R + '</label><select class="form-control" id="hstTruoc" onchange="HST.render()"></select></div>'
+            + '<div id="hstWTruoc" style="display:none"><label class="form-label"><span id="hstTruocNhan">Trạng thái trước khi hoãn / tạm đình chỉ</span>' + R + '</label><select class="form-control" id="hstTruoc" onchange="HST.render()"></select></div>'
             + '<div id="hstWPh" style="display:none"><label class="form-label"><span id="hstPhNhan">Trạng thái Phục hồi danh dự hiện tại</span>' + R + '</label><select class="form-control" id="hstPh" onchange="HST.render()"></select></div>'
             + '<div id="hstWPhB" style="display:none"><label class="form-label">Bước phục hồi danh dự hiện tại' + R + '</label><select class="form-control" id="hstPhB" onchange="HST.render()"><option value="TB">Bước 1: Thông báo</option><option value="PH" selected>Bước 2: Ý kiến phản hồi của người yêu cầu</option><option value="TC">Bước 3: Thực hiện</option></select></div>'
             + '<div><label class="form-label">Ngày tiếp nhận' + R + '</label><input class="form-control" id="hstNgayTn" placeholder="dd/mm/yyyy"><div class="hst-err" id="hstNgayTnErr">Đây là trường bắt buộc</div></div>'
@@ -388,22 +392,26 @@ var HST_VERSION = '20261119hst1';
         el('hstFBt').style.display = i === 1 ? '' : 'none';
         el('hstFPh').style.display = i === 2 ? '' : 'none';
     };
+    // Nhánh phục hồi danh dự chỉ bắt đầu sau bước Cử người giải quyết bồi thường (từ Xác minh thiệt hại trở đi)
+    function chuaToiPh(sv, truoc) { return sv === 'CN' || sv === 'KT' || truoc === 'CN'; }
     H.render = function () {
         if (!on) return;
         H.nguonDoi();
         var loai = H.loai(), sv = el('hstSt').value, s = ST.filter(function (x) { return x.v === sv; })[0];
-        // 25/11: Yêu cầu cả hai + «Cử người giải quyết bồi thường»: ẩn Trạng thái, Bước phục hồi danh dự và tab Phục hồi danh dự (nhánh PHDD bắt đầu sau bước Cử người)
-        var bt = loai !== 'honor', ph = loai !== 'money' && !(loai === 'both' && (sv === 'CN' || sv === 'KT')); // 26/11: Không thụ lý chưa tới nhánh phục hồi danh dự
+        var bt = loai !== 'honor';
         el('hstWSt').style.display = bt ? '' : 'none';
-        el('hstWPh').style.display = ph ? '' : 'none';
         var dsTruoc = bt && s ? TRUOC_OF[s.v] : null;
-        el('hstWPrev').style.display = bt && s && s.prev && !dsTruoc ? '' : 'none';
         el('hstWTruoc').style.display = dsTruoc ? '' : 'none';
         if (dsTruoc) {
             var tc = el('hstTruoc').value;
+            el('hstTruocNhan').textContent = TRUOC_NHAN[s.v];
             el('hstTruoc').innerHTML = dsTruoc.map(function (k) { return '<option value="' + k + '">' + ST_CASE[k] + '</option>'; }).join('');
             el('hstTruoc').value = dsTruoc.indexOf(tc) >= 0 ? tc : 'XM';
         }
+        // 25/11: Yêu cầu cả hai + «Cử người giải quyết bồi thường»: ẩn Trạng thái, Bước phục hồi danh dự và tab Phục hồi danh dự (nhánh PHDD bắt đầu sau bước Cử người)
+        // 26/11: Không thụ lý chưa tới nhánh phục hồi danh dự; Đình chỉ / Dừng có Trạng thái trước = Cử người giải quyết bồi thường cũng ẩn
+        var ph = loai !== 'money' && !(loai === 'both' && chuaToiPh(sv, dsTruoc ? el('hstTruoc').value : ''));
+        el('hstWPh').style.display = ph ? '' : 'none';
         el('hstTab1').style.display = bt ? '' : 'none';
         el('hstTab2').style.display = ph ? '' : 'none';
         H.tab(!ph ? 1 : !bt ? 2 : (H._tab || 1));
@@ -419,7 +427,7 @@ var HST_VERSION = '20261119hst1';
         el('hstPh').innerHTML = PH_CHON.filter(function (x) { return !x.cdpd || cd; }).map(function (x) { return '<option value="' + x.v + '">' + x.t + '</option>'; }).join('');
         el('hstPh').value = PH_CHON.some(function (x) { return x.v === cur && (!x.cdpd || cd); }) ? cur : 'DG';
         el('hstWPhB').style.display = ph && el('hstPh').value === 'DG' ? '' : 'none';
-        var done = !bt || !s ? 0 : (s.prev ? (dsTruoc ? TRUOC_DONE[el('hstTruoc').value] : +el('hstPrev').value) : s.done);
+        var done = !bt || !s ? 0 : (s.prev ? TRUOC_DONE[el('hstTruoc').value] : s.done);
         gon = !!(bt && s && ['HT', 'CT', 'DC', 'DG'].indexOf(s.v) >= 0);
         el('hstStepper').innerHTML = bt ? STEPS.map(function (t, i) { return '<div class="hst-st ' + (i < done ? 'done' : (i === done && s && !s.prev && !s.doc && done < 6 ? 'cur' : '')) + '" data-n="' + (i + 1) + '">' + t + '</div>'; }).join('') : '';
         var note = '';
@@ -438,7 +446,7 @@ var HST_VERSION = '20261119hst1';
                 + '<div style="margin-top:12px"><label class="form-label">Cán bộ được cử giải quyết' + R + '</label><table><thead><tr><th style="width:60px">STT</th><th>Cán bộ</th><th style="width:200px">Vai trò</th></tr></thead><tbody><tr><td>1</td><td><select class="form-control"><option>' + esc(H.me()) + '</option></select></td><td><select class="form-control"><option>Chủ trì</option><option>Phối hợp</option></select></td></tr></tbody></table>'
                 + '<button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px"><i class="fa-solid fa-plus"></i> Thêm cán bộ</button><div class="hst-note">Tài khoản cán bộ trên hệ thống thuộc Cơ quan giải quyết bồi thường; cán bộ Chủ trì nhận hồ sơ để xử lý tiếp.</div></div>');
             // 25/11: Tạm ứng chỉ có sau bước Cử người giải quyết bồi thường và khi tích «Có đề nghị tạm ứng kinh phí bồi thường (Điều 44)».
-            // Ẩn ở «Cử người giải quyết bồi thường», «Không thụ lý» và khi Bước đã thực hiện trước đó = Thụ lý. Không còn ô chọn Chưa / Đã tạm ứng: chỉ nhập khi đã tạm ứng xong.
+            // Ẩn ở «Cử người giải quyết bồi thường», «Không thụ lý» và khi Trạng thái trước khi đình chỉ / dừng giải quyết = Cử người giải quyết bồi thường. Không còn ô chọn Chưa / Đã tạm ứng: chỉ nhập khi đã tạm ứng xong.
             if (done >= 2 && s.v !== 'KT' && H.coDeNghiTu()) h += blk(++n, 'Tạm ứng kinh phí bồi thường (nếu có)', '<div class="hst-grid">'
                 + '<div><label class="form-label">Số tiền đã tạm ứng thực tế (VNĐ)' + R + '</label>' + inp('0', null, ' id="hstTuSo" style="text-align:right" oninput="HST.tuDoi()"') + '</div>'
                 + '<div><label class="form-label">Ngày chi tạm ứng' + R + '</label>' + date() + '</div><div></div><div></div></div>'
@@ -486,12 +494,33 @@ var HST_VERSION = '20261119hst1';
     function motDongTrong() {
         try { if (!document.querySelector('#claimDynamicDocsBody > tr') && typeof addNewDocRow === 'function') addNewDocRow(); } catch (e) { }
     }
+    // 26/11 (BA yêu cầu): khối Nguồn hồ sơ ... Pháp luật áp dụng của form hồ sơ tồn gọn còn 02 dòng:
+    // dòng 1 Nguồn hồ sơ / Hình thức tiếp nhận / Lĩnh vực; dòng 2 Số hồ sơ trên giấy / (Mã hồ sơ DVC) / Ngày văn bản yêu cầu bồi thường / Pháp luật áp dụng
+    function oCua(id) { var x = el(id); return x ? x.closest('.form-group') : null; }
+    function haiDong(v) {
+        var rg = el('hstRowGiay'), ngay = oCua('claimRequestDocDate'), luat = oCua('claimApplicableLaw');
+        if (!rg || !ngay || !luat) return;
+        if (v) {
+            if (!H._luoiGoc) H._luoiGoc = ngay.parentNode;
+            if (ngay.parentNode !== rg) { rg.appendChild(ngay); rg.appendChild(luat); }
+            H._luoiGoc.style.display = 'none';
+        } else if (H._luoiGoc && ngay.parentNode === rg) {
+            H._luoiGoc.appendChild(ngay); H._luoiGoc.appendChild(luat); H._luoiGoc.style.display = '';
+        }
+        cotDong2();
+    }
+    function cotDong2() {
+        var rg = el('hstRowGiay'); if (!rg) return;
+        var n = Array.prototype.filter.call(rg.children, function (x) { return x.style.display !== 'none'; }).length;
+        rg.style.gridTemplateColumns = 'repeat(' + Math.max(3, n) + ', minmax(0, 1fr))';
+    }
     function setMode(v) {
         ensureUi();
         on = !!v;
         if (el('inlineClaimFormPanel')) el('inlineClaimFormPanel').classList.toggle('hst-on', on);
         var show = function (id, s, d) { var x = el(id); if (x) x.style.display = s ? (d || '') : 'none'; };
         show('hstTop', on); show('hstSteps', on); show('hstFormButtons', on, 'flex'); show('hstRowGiay', on);
+        haiDong(on);
         // 20/11: hồ sơ tồn không có trường Mã vụ việc (hệ thống cấp mã mới khi lưu)
         var vv = el('claimVuViecBlock');
         if (vv) { if (on) { if (vv.dataset.hstDisp == null) vv.dataset.hstDisp = vv.style.display || ''; vv.style.display = 'none'; } else if (vv.dataset.hstDisp != null) { vv.style.display = vv.dataset.hstDisp; delete vv.dataset.hstDisp; } }
@@ -544,6 +573,7 @@ var HST_VERSION = '20261119hst1';
         var nguon = el('hstNguon') ? el('hstNguon').value : '';
         var coMa = NGUON_MA.indexOf(nguon) >= 0, cdOk = nguon === 'Tiếp nhận mới' && H.loai() === 'honor';
         if (el('hstWDvc')) el('hstWDvc').style.display = coMa ? '' : 'none';
+        cotDong2();
         if (!coMa && el('hstDvc')) el('hstDvc').value = '';
         var dvc = nguon === HT_DVC || (coMa && !!el('hstDvc') && !!el('hstDvc').value.trim());
         var ht = el('claimHinhThucTiepNhan');
@@ -561,7 +591,7 @@ var HST_VERSION = '20261119hst1';
     H.vbccTieuDe = function (loai) {
         var t = document.querySelector('#claimVanBanCanCuSection .info-group-title'); if (!t) return;
         if (vbccGoc == null) vbccGoc = t.innerHTML;
-        t.innerHTML = loai == null ? vbccGoc : (loai === 'honor' ? 'Văn bản làm căn cứ phục hồi danh dự' : 'Văn bản làm căn cứ yêu cầu bồi thường') + ' <span class="required">*</span>';
+        t.innerHTML = loai == null ? vbccGoc : (loai === 'honor' ? 'Văn bản làm căn cứ phục hồi danh dự' : 'Văn bản làm căn cứ yêu cầu bồi thường') + ' <span class="required" style="color:#dc2626">*</span>';
     };
     H.vbccCoTep = function () {
         var rows = typeof collectVanBanCanCuRows === 'function' ? collectVanBanCanCuRows() : [];
@@ -666,7 +696,7 @@ var HST_VERSION = '20261119hst1';
         if (!first && loiKhoi) { H.tab(loiKhoi.closest('#hstFPh') ? 2 : 1); first = loiKhoi; }
         if (first) { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); first.focus(); return; }
         hook = {
-            loai: loai, st: el('hstSt').value, prev: TRUOC_OF[el('hstSt').value] ? TRUOC_DONE[el('hstTruoc').value] : +el('hstPrev').value, truoc: TRUOC_OF[el('hstSt').value] ? el('hstTruoc').value : '', ktl: el('hstSt').value === 'KT' && el('hstKtlLyDo') ? { ma: el('hstKtlLyDo').value, dg: el('hstKtlDg').value.trim() } : null, ph:(loai === 'both' && (el('hstSt').value === 'CN' || el('hstSt').value === 'KT')) ? '' : el('hstPh').value, phB: el('hstPhB').value, ht: H.cd() ? 'CD' : 'YC',
+            loai: loai, st: el('hstSt').value, prev: TRUOC_OF[el('hstSt').value] ? TRUOC_DONE[el('hstTruoc').value] : 0, truoc: TRUOC_OF[el('hstSt').value] ? el('hstTruoc').value : '', ktl: el('hstSt').value === 'KT' && el('hstKtlLyDo') ? { ma: el('hstKtlLyDo').value, dg: el('hstKtlDg').value.trim() } : null, ph: (loai === 'both' && chuaToiPh(el('hstSt').value, TRUOC_OF[el('hstSt').value] ? el('hstTruoc').value : '')) ? '' : el('hstPh').value, phB: el('hstPhB').value, ht: H.cd() ? 'CD' : 'YC',
             ngay: el('hstNgayTn').value.trim(), noiThuLy: el('hstNoiThuLy').value, dvc: NGUON_MA.indexOf(el('hstNguon').value) >= 0 ? el('hstDvc').value.trim() : '', nguon: el('hstNguon').value, httn: el('claimHinhThucTiepNhan').value,
             soGiay: el('hstSoGiay').value.trim(), cqgq: el('hstCqgq') ? el('hstCqgq').value : '', cqTen: el('claimCqNhan').value,
             tkk: el('hstNoiThuLy').value === 'Thụ lý tại Tòa án' ? el('hstTkk').value : '', soLieu: soLieuKhoi(),
@@ -707,12 +737,12 @@ var HST_VERSION = '20261119hst1';
             status: status, date: h.ngay, noiThuLy: h.noiThuLy, lawsuitCase: h.tkk || '', tonSoLieu: h.soLieu || null, nguonHoSo: h.nguon, hinhThucTiepNhan: h.httn, dvcCode: h.dvc || c.dvcCode || '',
             assignedOfficer: me, userCreated: true, agency: h.cqTen || c.agency || '', cqgqUnitId: h.cqgq || ''
         };
-        // Hoãn / Tạm đình chỉ: lưu thẳng Trạng thái trước khi hoãn / tạm đình chỉ đã chọn; Đình chỉ / Dừng: bước kế tiếp của Bước đã thực hiện trước đó
+        // Hoãn / Tạm đình chỉ / Đình chỉ / Dừng: lưu thẳng Trạng thái trước khi hoãn / tạm đình chỉ / đình chỉ / dừng giải quyết đã chọn
         if (h.ktl && h.ktl.ma) {
             var lyDo = ktlLyDoDs().filter(function (r) { return r.code === h.ktl.ma; })[0] || { code: h.ktl.ma, name: h.ktl.ma };
             Object.assign(patch, { ktlReasonCode: lyDo.code, ktlReasonName: lyDo.name, ktlDetail: h.ktl.dg, rejectType: 'Không thụ lý', rejectReason: lyDo.name + (h.ktl.dg ? '. ' + h.ktl.dg : ''), rejectOfficer: me, rejectDate: today });
         }
-        if (s && s.prev) patch.hgqPrevStatus = h.truoc ? ST_CASE[h.truoc] : (ST_CASE[['', 'CN', 'XM', 'TL', 'QD'][h.prev]] || '');
+        if (s && s.prev) patch.hgqPrevStatus = h.truoc ? ST_CASE[h.truoc] : (ST_CASE[PREV_TRUOC[h.prev]] || '');
         if (h.loai !== 'money') { patch.phddStarted = !!h.ph && h.ph !== 'CN'; if (h.loai === 'honor' && h.ht === 'CD') { patch.cdpd = true; patch.hinhThucTiepNhan = 'Cán bộ chủ động phục hồi danh dự'; } }
         patch.timeline = cu
             ? (h.tlCu || c.timeline || []).concat([{ title: 'Cập nhật hồ sơ tồn', date: today, desc: 'Cập nhật thông tin hồ sơ tồn đã nhập. Trạng thái hiện tại: [' + status + '].', status: 'completed', officer: me }])
@@ -766,7 +796,7 @@ var HST_VERSION = '20261119hst1';
         if (el('hstTkk')) el('hstTkk').value = c.lawsuitCase || '';
         var ht = el('claimHinhThucTiepNhan'); if (ht && c.hinhThucTiepNhan && !ht.disabled) ht.value = c.hinhThucTiepNhan;
         H.render();
-        if (c.hst.truoc) el('hstTruoc').value = c.hst.truoc; else if (c.hst.prev) el('hstPrev').value = String(c.hst.prev);
+        if (c.hst.truoc || PREV_TRUOC[c.hst.prev]) el('hstTruoc').value = c.hst.truoc || PREV_TRUOC[c.hst.prev];
         if (c.hst.phChon) el('hstPh').value = c.hst.phChon;
         if (c.hst.phB) el('hstPhB').value = c.hst.phB;
         H.render();

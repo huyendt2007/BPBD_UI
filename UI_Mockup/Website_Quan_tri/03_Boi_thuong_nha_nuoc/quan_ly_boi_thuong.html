@@ -471,6 +471,10 @@
             gap: 16px;
         }
 
+        /* 26/11: biểu tượng lịch nằm trong ô ngày, bên phải (trước đây rơi xuống dưới ô) */
+        .date-input-wrapper { position: relative; }
+        .date-input-wrapper > i { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+        .date-input-wrapper > input { padding-right: 34px; }
         .grid-3-cols {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -2670,10 +2674,6 @@
                                     <input type="text" inputmode="numeric" class="form-control" id="claimAdvanceTinhThan" style="text-align: right;"
                                         placeholder="0" oninput="formatCurrencyInput(this); clearAdvanceError(this); sumClaimAdvance()">
                                     <div class="error-message" id="errClaimAdvanceTinhThan" style="display: none;">Số tiền tạm ứng thiệt hại tinh thần phải nhỏ hơn số tiền yêu cầu bồi thường thiệt hại tinh thần đã nhập</div>
-                                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-                                        (Validate: Chỉ cho phép nhập nếu chọn bồi thường tinh thần ở trên. Bị khóa
-                                        nếu thuộc khoản 5 Điều 27).
-                                    </p>
                                 </div>
                                 <div class="form-group">
                                     <span class="form-label">Tạm ứng Thiệt hại khác tính được ngay (đồng)</span>
@@ -9345,7 +9345,9 @@
                 return;
             }
             const afterThuLy = CLAIM_STATUSES_FROM_VERIFICATION.includes(s);
-            if (afterThuLy && !c.phddStatus) { c.phddStatus = phddDeriveStatus(c); c.phddStarted = true; phddSkipOpinionIfDead(c); }
+            // 26/11: vụ việc Hoãn / Đình chỉ ngay từ «Cử người giải quyết bồi thường» chưa tới nhánh Phục hồi danh dự (nhánh bắt đầu từ Xác minh thiệt hại)
+            const chuaToiPhdd = canonicalClaimStatus(c.hgqPrevStatus || '') === 'Cử người giải quyết bồi thường';
+            if (afterThuLy && !c.phddStatus && !chuaToiPhdd) { c.phddStatus = phddDeriveStatus(c); c.phddStarted = true; phddSkipOpinionIfDead(c); }
             // Đình chỉ / Hoãn / Tạm đình chỉ giải quyết bồi thường chỉ áp dụng nhánh Giải quyết bồi thường thiệt hại: nhánh Phục hồi danh dự giữ nguyên
         }
         // Cấp Mã hồ sơ BT-yyyy-xxx chưa dùng
@@ -15083,10 +15085,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             claim.phddStep2DelayReason = delayReason;
 
             // Change status based on opinion
-            if (opinion === 'Đồng ý thực hiện' || opinion === 'Ý kiến khác') {
+            // 26/11 (BA chốt phương án c): Không đồng ý, đề xuất điều chỉnh (Khoản 3 Điều 57) -> cơ quan coi như chấp nhận đề xuất, chuyển thẳng bước Tổ chức thực hiện
+            if (opinion === 'Đồng ý thực hiện' || opinion === 'Ý kiến khác' || opinion === 'Không đồng ý') {
                 setPhddStatus(claim, 'Chờ thực thi');
-            } else if (opinion === 'Không đồng ý') {
-                setPhddStatus(claim, 'Yêu cầu bổ sung');
             } else if (opinion === 'Đề nghị tạm hoãn') {
                 setPhddStatus(claim, 'Hoãn phục hồi danh dự');
             } else if (opinion === 'Từ chối') {
@@ -15491,10 +15492,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     desc: `Người bị hại phản hồi: ${opinion}${opinion === 'Ý kiến khác' && otherText ? ': ' + otherText : ''}.`
                 });
 
-                if (opinion === 'Đồng ý thực hiện' || opinion === 'Ý kiến khác') {
+                // 26/11 (BA chốt phương án c): Không đồng ý, đề xuất điều chỉnh (Khoản 3 Điều 57) -> cơ quan coi như chấp nhận đề xuất, chuyển thẳng bước Tổ chức thực hiện
+                if (opinion === 'Đồng ý thực hiện' || opinion === 'Ý kiến khác' || opinion === 'Không đồng ý') {
                     setPhddStatus(claim, 'Chờ thực thi');
-                } else if (opinion === 'Không đồng ý') {
-                    setPhddStatus(claim, 'Yêu cầu bổ sung');
                 } else if (opinion === 'Đề nghị tạm hoãn') {
                     setPhddStatus(claim, 'Hoãn phục hồi danh dự');
                 } else if (opinion === 'Từ chối') {
@@ -16158,6 +16158,11 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         btnUpdate2.style.background = '#f59e0b';
                     }
                     if (btnCancel2) btnCancel2.style.display = 'none';
+                    // 26/11 (BA chốt): đang Hoãn phục hồi danh dự - Khối 2 chỉ xem, không Cập nhật thông tin; muốn đổi ý kiến phải qua «Tiếp tục thực hiện phục hồi danh dự»
+                    if (claim.phddStatus === 'Hoãn phục hồi danh dự') {
+                        if (btnUpdate2) btnUpdate2.style.display = 'none';
+                        if (footers[2]) footers[2].style.display = 'none';
+                    }
                 } else {
                     const noticePublished = (claim.phddStatus !== 'Mới' && claim.phddStatus !== 'Đang thực hiện');
                     if (noticePublished) {
@@ -25094,7 +25099,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <!-- [gql] Hủy QĐ -> Đình chỉ hoặc Giải quyết lại: thao tác Giải quyết lại (Thao tác khác MH01 / thanh thao tác MH04), dòng phụ "QĐ đã bị hủy", lần thương lượng, khối Quyết định đã bị hủy; dữ liệu mẫu BT-2026-561, BT-2026-562 -->
     <script src="quan_ly_boi_thuong_gql.js?v=20261106gql16"></script>
     <!-- [hst] Nhập hồ sơ tồn: form Nhập liệu hồ sơ vụ việc chế độ hồ sơ tồn, nhãn Hồ sơ tồn ở lưới / chi tiết, dữ liệu mẫu BT-2025-901..904 (đặt sau gql, cdpd) -->
-    <script src="quan_ly_boi_thuong_hst.js?v=20261126ktl2"></script>
+    <script src="quan_ly_boi_thuong_hst.js?v=20261126sao1"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_tieu_de_man.js?v=20261103td2"></script>
