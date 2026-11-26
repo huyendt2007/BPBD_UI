@@ -35,6 +35,7 @@
 </div>
 <div class="cl-sticky-footer" id="footerBar"></div>
 
+<script src="bpbd_trinh_ky_cap.js?v=20261126"></script>
 <script src="chinh_ly_common.js"></script>
 <script>
 (function () {
@@ -221,22 +222,19 @@
         const bar = $('footerBar');
         bar.innerHTML = '<button type="button" class="cl-btn cl-btn-outline" id="btnDong"><i class="fa-solid fa-xmark"></i> Đóng</button>';
         $('btnDong').onclick = () => C.goList();
-        // Ký số/Trả lại hồ sơ: chỉ thực hiện tại màn Ký duyệt hồ sơ của Lãnh đạo
+        // Ký duyệt / Từ chối: chỉ thực hiện tại màn Ký duyệt hồ sơ, khi người dùng là người ký ở cấp hiện hành
         if (!p || readonly || p.trangThai !== 'Chờ ký số' || !C.fromKyDuyet()) return;
-        const traLai = document.createElement('button');
-        traLai.type = 'button'; traLai.className = 'cl-btn cl-btn-outline-danger';
-        traLai.innerHTML = '<i class="fa-solid fa-rotate-left"></i> Trả lại hồ sơ';
-        traLai.onclick = () => C.openTraLai(p, (cur, msg) => C.goList(msg));
-        const kySo = document.createElement('button');
-        kySo.type = 'button'; kySo.className = 'cl-btn cl-btn-primary';
-        kySo.innerHTML = '<i class="fa-solid fa-file-signature"></i> Ký số';
-        kySo.onclick = () => {
-            const cur = C.getProposal(p.id);
-            if (!cur || cur.trangThai !== 'Chờ ký số') { C.toast(C.MSG.ERR_DK_005, 'error'); return; }
-            C.openKySo(cur, (done, msg) => C.goList(msg));
-        };
-        bar.appendChild(traLai);
-        bar.appendChild(kySo);
+        if (window.BpbdKy && !window.BpbdKy.laNguoiKyHienHanh('cldk:' + p.id)) return;
+        const tuChoi = document.createElement('button');
+        tuChoi.type = 'button'; tuChoi.className = 'cl-btn cl-btn-outline-danger';
+        tuChoi.innerHTML = '<i class="fa-solid fa-ban"></i> Từ chối';
+        tuChoi.onclick = () => C.openKyDuyet(p, 'tuchoi', (cur, msg) => C.goList(msg));
+        const kyDuyet = document.createElement('button');
+        kyDuyet.type = 'button'; kyDuyet.className = 'cl-btn cl-btn-primary';
+        kyDuyet.innerHTML = '<i class="fa-solid fa-file-signature"></i> Ký duyệt';
+        kyDuyet.onclick = () => C.openKyDuyet(p, 'duyet', (cur, msg) => C.goList(msg));
+        bar.appendChild(tuChoi);
+        bar.appendChild(kyDuyet);
     }
     function card(title, icon, inner, o) {
         const opt = o || {};

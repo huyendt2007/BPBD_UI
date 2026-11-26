@@ -240,17 +240,13 @@
                         <div class="pdk-err" id="pdk-rj-reason-err">Đây là trường bắt buộc</div>
                     </div>
                     ${multi ? '' : `<div style="margin:-4px 0 14px"><button class="pdk-btn" data-act="draft-single"><i class="fa-solid fa-file-pdf" style="color:#dc2626"></i> Xem dự thảo từ chối</button><span class="pdk-viewed" id="pdk-rj-viewed-0"></span></div>`}
-                    <div class="pdk-field">
-                        <label>Lãnh đạo ký văn bản từ chối <span class="req">*</span></label>
-                        <select class="pdk-select" id="pdk-rj-leader">${leaderOptions()}</select>
-                        <div class="pdk-err" id="pdk-rj-leader-err">Đây là trường bắt buộc</div>
-                    </div>
+                    ${stepNote()}
                 </div>
-                <div class="pdk-foot"><button class="pdk-btn" data-act="cancel">Hủy</button><button class="pdk-btn danger" data-act="confirm"><i class="fa-solid fa-ban"></i> Xác nhận</button></div>
+                <div class="pdk-foot"><button class="pdk-btn" data-act="cancel">Hủy</button><button class="pdk-btn primary" data-act="confirm">Tiếp tục <i class="fa-solid fa-arrow-right"></i></button></div>
             </div>`;
         ov.classList.add('show');
         const reasonEl = document.getElementById('pdk-rj-reason');
-        const leaderEl = document.getElementById('pdk-rj-leader');
+        const leaderEl = null;
         // Nếu Cán bộ sửa Lý do từ chối, dự thảo đã xem không còn đúng -> yêu cầu xem lại
         reasonEl.addEventListener('input', () => {
             if (reasonEl.value.trim() !== lastReason) {
@@ -265,8 +261,7 @@
         };
         const draft = idx => {
             if (!requireReason()) return;
-            const leader = leaderEl.value !== '' ? LEADERS[+leaderEl.value] : null;
-            if (buildRejectDraft(records[idx], reasonEl.value, leader, rejectNoticeSeq++)) {
+            if (buildRejectDraft(records[idx], reasonEl.value, null, rejectNoticeSeq++)) {
                 viewed[idx] = true;
                 lastReason = reasonEl.value;
                 const v = document.getElementById('pdk-rj-viewed-' + idx);
@@ -286,17 +281,19 @@
                     toast('Vui lòng xem dự thảo Thông báo từ chối của tất cả hồ sơ trước khi xác nhận.', 'error');
                     return;
                 }
-                if (leaderEl.value === '') { markInvalid(leaderEl, 'pdk-rj-leader-err', true); return; }
-                markInvalid(leaderEl, 'pdk-rj-leader-err', false);
-                const leader = LEADERS[+leaderEl.value];
-                const at = nowText();
-                records.forEach(r => Object.assign(r, {
-                    status: 'Chờ ký', statusClass: 'badge-info', pendingAction: 'Từ chối',
-                    rejectReason: reasonEl.value, rejectLeader: leader.name, rejectedBy: 'Nguyễn Văn Cán Bộ', rejectedAt: at,
-                    rejectDraftFile: `ThongBaoTuChoi_${regNo(r)}.pdf`
-                }));
-                close();
-                if (typeof opts.onDone === 'function') opts.onDone(records, 'Đã từ chối hồ sơ thành công'); // [MSG-SUC-DK-KT-003]
+                // Bước 2 - Thiết lập các cấp trình ký Thông báo từ chối (dùng chung Ký duyệt hồ sơ)
+                const reason = reasonEl.value;
+                openLevels(records, 'Trình ký Thông báo từ chối Phiếu đăng ký', 'Thông báo từ chối', r => `ThongBaoTuChoi_${regNo(r)}.pdf`, 'Thông báo về việc từ chối đăng ký biện pháp bảo đảm', route => {
+                    const leader = route.levels[route.levels.length - 1].leader;
+                    const at = nowText();
+                    records.forEach(r => Object.assign(r, {
+                        status: 'Chờ ký', statusClass: 'badge-info', pendingAction: 'Từ chối',
+                        rejectReason: reason, rejectLeader: leader, rejectedBy: 'Nguyễn Văn Cán Bộ', rejectedAt: at,
+                        rejectDraftFile: `ThongBaoTuChoi_${regNo(r)}.pdf`
+                    }));
+                    close();
+                    if (typeof opts.onDone === 'function') opts.onDone(records, 'Đã từ chối hồ sơ thành công'); // [MSG-SUC-DK-KT-003]
+                });
             }
         };
     }
@@ -332,20 +329,14 @@
                             <div><span>Người yêu cầu</span><b>${esc(r0.requester)}</b></div>
                         </div>
                         <div style="margin:-4px 0 14px"><button class="pdk-btn" data-act="draft-single"><i class="fa-solid fa-file-pdf" style="color:#dc2626"></i> Xem dự thảo Văn bản chứng nhận</button><span class="pdk-viewed" id="pdk-sg-viewed-0"></span></div>`}
-                    <div class="pdk-field">
-                        <label>Lãnh đạo ký <span class="req">*</span></label>
-                        <select class="pdk-select" id="pdk-sg-leader">${leaderOptions()}</select>
-                        <div class="pdk-err" id="pdk-sg-leader-err">Đây là trường bắt buộc</div>
-                    </div>
-                    <div class="pdk-field" style="margin:0"><label>Thời điểm trình ký</label><span style="color:#64748b">Hệ thống ghi nhận khi Cán bộ xác nhận trình ký thành công</span></div>
+                    ${stepNote()}
+                    <div class="pdk-field" style="margin:0"><label>Thời điểm trình ký</label><span style="color:#64748b">Hệ thống ghi nhận khi Cán bộ trình Lãnh đạo thành công</span></div>
                 </div>
-                <div class="pdk-foot"><button class="pdk-btn" data-act="cancel">Hủy</button><button class="pdk-btn primary" data-act="confirm"><i class="fa-solid fa-paper-plane"></i> Xác nhận trình ký</button></div>
+                <div class="pdk-foot"><button class="pdk-btn" data-act="cancel">Hủy</button><button class="pdk-btn primary" data-act="confirm">Tiếp tục <i class="fa-solid fa-arrow-right"></i></button></div>
             </div>`;
         ov.classList.add('show');
-        const leaderEl = document.getElementById('pdk-sg-leader');
         const draft = idx => {
-            const leader = leaderEl.value !== '' ? LEADERS[+leaderEl.value] : null;
-            if (buildCertificateDraft(records[idx], leader)) {
+            if (buildCertificateDraft(records[idx], null)) {
                 viewed[idx] = true;
                 const v = document.getElementById('pdk-sg-viewed-' + idx);
                 if (v) v.innerHTML = '✔ Đã xem';
@@ -363,20 +354,37 @@
                     toast('Vui lòng xem dự thảo Văn bản chứng nhận của tất cả hồ sơ trước khi trình ký.', 'error');
                     return;
                 }
-                if (leaderEl.value === '') { markInvalid(leaderEl, 'pdk-sg-leader-err', true); return; }
-                markInvalid(leaderEl, 'pdk-sg-leader-err', false);
-                const leader = LEADERS[+leaderEl.value];
-                const at = nowText();
-                records.forEach(r => Object.assign(r, {
-                    status: 'Chờ ký', statusClass: 'badge-info', pendingAction: 'Trình ký',
-                    signLeader: leader.name, submittedBy: 'Nguyễn Văn Cán Bộ', submittedAt: at, draftLocked: true,
-                    certificateDraftFile: `DuThao_VanBanChungNhan_${regNo(r)}.pdf`
-                }));
-                close();
-                if (typeof opts.onDone === 'function') opts.onDone(records, 'Đã trình ký hồ sơ thành công'); // [MSG-SUC-DK-KT-002]
+                // Bước 2 - Thiết lập các cấp trình ký (dùng chung Ký duyệt hồ sơ)
+                openLevels(records, 'Trình ký Phiếu đăng ký', 'Văn bản chứng nhận', r => `DuThao_VanBanChungNhan_${regNo(r)}.pdf`, 'Văn bản chứng nhận đăng ký biện pháp bảo đảm', route => {
+                    const leader = route.levels[route.levels.length - 1].leader;
+                    const at = nowText();
+                    records.forEach(r => Object.assign(r, {
+                        status: 'Chờ ký', statusClass: 'badge-info', pendingAction: 'Trình ký',
+                        signLeader: leader, submittedBy: 'Nguyễn Văn Cán Bộ', submittedAt: at, draftLocked: true,
+                        certificateDraftFile: `DuThao_VanBanChungNhan_${regNo(r)}.pdf`
+                    }));
+                    close();
+                    if (typeof opts.onDone === 'function') opts.onDone(records, 'Đã trình ký hồ sơ thành công'); // [MSG-SUC-DK-KT-002]
+                });
             }
         };
     }
 
-    window.PdkPopups = { openReject, openSign, toast, close, SIGN_LIMIT, ensureOverlay, esc, LEADERS };
+    // Dòng hướng dẫn Bước 1: các cấp trình ký thiết lập tại Bước 2
+    function stepNote() {
+        return `<div style="display:flex;gap:8px;align-items:center;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:8px 12px;margin:4px 0 12px;font-size:12.5px;color:#1e3a8a"><i class="fa-solid fa-layer-group"></i> Bấm <b>Tiếp tục</b> để thiết lập các cấp trình ký (Lãnh đạo từng cấp, Ký nháy, Ký số, vị trí chữ ký) tại Bước 2.</div>`;
+    }
+
+    // Mở Bước 2 - Thiết lập các cấp trình ký cho danh sách hồ sơ (cùng thiết lập cho mọi hồ sơ trong lần trình)
+    function openLevels(records, title, loaiTrinh, fileOf, docTitle, onTrinh) {
+        if (!window.BpbdKy) { toast('Chưa nạp được thành phần trình ký nhiều cấp.', 'error'); return; }
+        BpbdKy.moThietLap({
+            tieuDe: title + (records.length === 1 ? ': ' + regNo(records[0]) : ''),
+            keys: records.map(r => 'pdk:' + r.id), loaiTrinh, tenTep: fileOf(records[0]),
+            tieuDeVanBan: docTitle, dongPhu: 'Số đăng ký: ' + regNo(records[0]),
+            onTrinh
+        });
+    }
+
+    window.PdkPopups = { openReject, openSign, toast, close, SIGN_LIMIT, ensureOverlay, esc, LEADERS, stepNote };
 })();

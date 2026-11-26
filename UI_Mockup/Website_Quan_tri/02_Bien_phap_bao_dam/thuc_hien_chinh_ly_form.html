@@ -54,6 +54,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="bpbd_trinh_ky_cap.js?v=20261126"></script>
 <script src="chinh_ly_common.js"></script>
 <script>
 (function () {
@@ -98,7 +99,7 @@
         const items = p.traLai.slice().reverse().map((t, i) => `<div class="cl-history-item">
             <div class="cl-info-grid">${C.infoItem('Người trả lại', t.nguoi)}${C.infoItem('Thời điểm trả lại', t.thoiDiem)}${t.thoiDiemTrinhLai ? C.infoItem('Thời điểm trình ký lại', t.thoiDiemTrinhLai) : ''}
             ${C.infoItem('Lý do trả lại', t.lyDo, { span: true, danger: true })}</div></div>`).join('');
-        parts.push(card('Thông tin trả lại hồ sơ', 'fa-rotate-left', items, { id: 'cardTraLai', danger: true, collapsed: p.trangThai !== 'Bị trả lại' }));
+        parts.push(card('Lý do bị trả lại', 'fa-rotate-left', items, { id: 'cardTraLai', danger: true, collapsed: p.trangThai !== 'Bị trả lại' }));
     }
 
     // ===================== NỘI DUNG THEO LOẠI ĐỀ NGHỊ =====================

@@ -434,7 +434,7 @@
             const items = p.traLai.slice().reverse().map((t, i) => `<div class="cl-history-item">
                 <div class="cl-info-grid">${C.infoItem('Người trả lại', t.nguoi)}${C.infoItem('Thời điểm trả lại', t.thoiDiem)}${t.thoiDiemTrinhLai ? C.infoItem('Thời điểm trình ký lại', t.thoiDiemTrinhLai) : ''}
                 ${C.infoItem('Lý do trả lại', t.lyDo, { span: true, danger: true })}</div></div>`).join('');
-            parts.push(card('Thông tin trả lại hồ sơ', 'fa-rotate-left', items, { danger: true, id: 'cardTraLai', collapsed: p.trangThai !== 'Bị trả lại' }));
+            parts.push(card('Lý do bị trả lại', 'fa-rotate-left', items, { danger: true, id: 'cardTraLai', collapsed: p.trangThai !== 'Bị trả lại' }));
         }
         // Khối Thông tin phê duyệt và phân công
         if (p.pheDuyet && ['Chờ thực hiện', 'Chờ ký số', 'Bị trả lại', 'Hoàn thành'].includes(p.trangThai)) {

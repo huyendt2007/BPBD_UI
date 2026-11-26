@@ -28,6 +28,9 @@
         DK_SUC_003: 'Đã từ chối hồ sơ thành công',
         DK_SUC_005: 'Ký số hồ sơ thành công',
         DK_SUC_006: 'Đã trả lại hồ sơ cho Cán bộ xử lý lại',
+        DK_SUC_008: nguoi => `Ký duyệt hồ sơ thành công. Hồ sơ đã chuyển đến ${nguoi}.`, // [MSG-SUC-DK-KT-008]
+        DK_SUC_009: 'Ký duyệt các hồ sơ đã chọn thành công.', // [MSG-SUC-DK-KT-009]
+        DK_CFM_017: 'Bạn có chắc chắn muốn ký duyệt các hồ sơ đã chọn không?', // [MSG-CFM-DK-018]
         // Yêu cầu cung cấp thông tin
         CCTT_008: 'Chưa chọn hồ sơ hợp lệ để ký số.',
         CCTT_009: 'Không tìm thấy file PDF hợp lệ để thực hiện thao tác.',
@@ -484,6 +487,7 @@
         const txn = val('cb-loaihinh');
         const list = getPdkStore().filter(p => {
             if (p.status !== 'Chờ ký' || PDK_SERVICE_TYPES.includes(p.type)) return false;
+            if (!isMine('pdk', p.id)) return false;
             if (low('ld-pdk-sdk') && !String(pdkRegNo(p)).toLowerCase().includes(low('ld-pdk-sdk'))) return false;
             if (low('ld-pdk-bbd') && !(p.customer || '').toLowerCase().includes(low('ld-pdk-bbd'))) return false;
             if (low('ld-pdk-bnbd') && !(p.mortgagee || '').toLowerCase().includes(low('ld-pdk-bnbd'))) return false;
@@ -516,8 +520,7 @@
 
     function renderPdkTable() {
         setListChrome('Danh sách Phiếu đăng ký chờ ký', `
-            <button class="btn btn-success" onclick="LeaderUI.pdkApproveBatch()"><i class="fa-solid fa-file-signature"></i> Ký số</button>
-            <button class="btn btn-danger" onclick="LeaderUI.pdkRejectBatch()"><i class="fa-solid fa-ban"></i> Từ chối</button>`);
+            <button class="btn btn-success" onclick="LeaderUI.pdkApproveBatch()"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button>`);
         const dyn = dynamicColumns();
         const s = LD.pdkSort;
         document.getElementById('table-headers-container').innerHTML = `<tr>
@@ -556,9 +559,8 @@
                 <td><span class="badge ${badgeClassOf(p.status)}">${esc(p.status)}</span></td>
                 <td>${esc(p.requestor || p.customer)}</td><td>${pdkSource(p)}</td><td>${esc(p.handlingOfficer || '-')}</td>
                 <td style="text-align:center;white-space:nowrap" onclick="event.stopPropagation()">
-                    ${rowAction('sign', 'Ký số', 'fa-solid fa-file-signature', `LeaderUI.pdkApprove(['${p.id}'])`, true)}
-                    ${rowAction('reject', 'Từ chối', 'fa-solid fa-ban', `LeaderUI.pdkReject(['${p.id}'])`, true)}
-                    ${rowAction('edit', 'Trả lại', 'fa-solid fa-reply', `LeaderUI.pdkReturn('${p.id}')`, isDirect)}
+                    ${rowAction('sign', 'Ký duyệt', 'fa-solid fa-file-signature', `LeaderUI.pdkKyDuyet('${p.id}')`, true)}
+                    ${rowAction('reject', 'Từ chối', 'fa-solid fa-ban', `LeaderUI.pdkTuChoi('${p.id}')`, true)}
                 </td></tr>`;
         }).join('');
         const ca = document.getElementById('checkAll'); if (ca) ca.checked = false;
@@ -569,13 +571,75 @@
     // Kiểm tra các hồ sơ còn ở trạng thái Chờ ký
     function pdkValid(ids) { return ids.map(pdkById).filter(Boolean).every(p => p.status === 'Chờ ký'); }
 
-    // MH03 - Popup Ký số Phiếu đăng ký
+    // ============================ Trình ký nhiều cấp (dùng chung bpbd_trinh_ky_cap.js) ============================
+    const KY = () => window.BpbdKy;
+    // Hồ sơ hiển thị khi người dùng đăng nhập là người ký ở cấp hiện hành của lượt trình
+    function isMine(kind, id) { return !KY() || KY().laNguoiKyHienHanh(kind + ':' + id); }
+    const capOf = (kind, id) => (KY() ? KY().capHienHanh(kind + ':' + id) : { laCuoi: true, kySo: true });
+    const signer = () => (KY() ? KY().nguoiDung() : LEADER_NAME);
+    // Kết quả khi người ký ở cấp cuối Ký duyệt Phiếu đăng ký (Văn bản chứng nhận: Hoàn thành; Thông báo từ chối: Bị từ chối)
+    function pdkFinal(r, method) {
+        const isReject = pdkFileKind(r) === 'Thông báo từ chối';
+        savePdk(r.id, isReject
+            ? { status: 'Bị từ chối', statusClass: 'badge-danger', rejectedAt: r.rejectedAt || nowText(), rejectLeader: signer(), signedAt: nowText(), signMethod: method }
+            : { status: 'Hoàn thành', statusClass: 'badge-success', signedBy: signer(), signedAt: nowText(), signMethod: method });
+    }
+    // Người ký Từ chối: hồ sơ Bị trả lại về Cán bộ trình (mọi Nguồn tiếp nhận)
+    function returnPatch(cur, info) {
+        const history = [...(cur.returnHistory || []), { reason: info.lyDo, by: info.nguoi, at: info.thoiDiem }];
+        return { status: 'Bị trả lại', statusClass: 'badge-danger', returnReason: info.lyDo, returnedBy: info.nguoi, returnedAt: info.thoiDiem, returnHistory: history };
+    }
+    function afterKyDuyet(kq, sucFinal) {
+        const msg = kq.laCuoi ? sucFinal : MSG.DK_SUC_008(kq.nguoiTiep);
+        if (LD.detailOpen) closeServiceView();
+        LD.returnToPdkDetail = false;
+        toast(msg, 'success');
+        renderTable(true);
+    }
+    function afterTuChoi() {
+        if (LD.detailOpen) closeServiceView();
+        LD.returnToPdkDetail = false;
+        toast(MSG.DK_SUC_006, 'success');
+        renderTable(true);
+    }
+    function backToPdkDetail() {
+        if (!LD.returnToPdkDetail) return;
+        const back = sessionStorage.getItem('ldPdkDetailUrl');
+        LD.returnToPdkDetail = false;
+        if (back) window.location.href = back;
+    }
+
+    // MH03 - Màn hình Ký duyệt / Từ chối Phiếu đăng ký (01 hồ sơ)
+    function pdkScreen(id, cheDo) {
+        const p = pdkById(id);
+        if (!p || p.status !== 'Chờ ký') { toast(MSG.DK_005, 'error'); return; }
+        KY().moKyDuyet({
+            key: 'pdk:' + id, cheDo, maHoSo: pdkRegNo(p),
+            meta: { loaiTrinh: pdkFileKind(p), tenTep: pdkFileName(p), nguoiTrinh: p.submittedBy || p.handlingOfficer, thoiDiemTrinh: p.submittedAt },
+            tieuDeVanBan: pdkFileKind(p) === 'Thông báo từ chối' ? 'Thông báo về việc từ chối đăng ký biện pháp bảo đảm' : 'Văn bản chứng nhận đăng ký biện pháp bảo đảm',
+            dongPhu: 'Số đăng ký: ' + pdkRegNo(p),
+            thongTin: [['Số đăng ký', `<b>${esc(pdkRegNo(p))}</b>`], ['Loại đăng ký', esc(typeLabel(p.type))], ['Người yêu cầu', esc(p.requestor || p.customer)], ['Nguồn tiếp nhận', pdkSource(p)]],
+            onXemFile: () => LeaderSign.viewFile(pdkFileName(p)),
+            conHopLe: () => { const c = pdkById(id); return !!c && c.status === 'Chờ ký'; },
+            onHuy: backToPdkDetail, onLoi: () => renderTable(true),
+            onKyDuyet: kq => { if (kq.laCuoi) pdkFinal(pdkById(id), kq.hinhThucKySo); afterKyDuyet(kq, MSG.DK_SUC_005); },
+            onTuChoi: info => { savePdk(id, returnPatch(pdkById(id), info)); afterTuChoi(); }
+        });
+    }
+    const pdkKyDuyet = id => pdkScreen(id, 'duyet');
+    const pdkTuChoi = id => pdkScreen(id, 'tuchoi');
+
+    // MH04 - Popup Ký duyệt đồng thời nhiều Phiếu đăng ký (thanh công cụ)
     function pdkApprove(ids) {
         if (!ids.length) { toast(MSG.DK_008, 'error'); return; }
         if (!pdkValid(ids)) { toast(MSG.DK_005, 'error'); return; }
+        if (ids.length === 1) { pdkKyDuyet(ids[0]); return; }
+        if (ids.some(id => !isMine('pdk', id))) { toast(MSG.DK_005, 'error'); return; }
         const recs = ids.map(pdkById);
         LD.popupKind = 'pdk';
         resetSignState();
+        // Khối Thông tin ký số chỉ hiển thị khi có hồ sơ mà cấp hiện hành bật Ký số
+        const needKySo = ids.some(id => capOf('pdk', id).kySo);
         const single = recs.length === 1;
         const p = recs[0];
         const info = single ? `
@@ -586,36 +650,35 @@
             <div style="overflow-x:auto"><table class="table" style="width:100%"><thead><tr><th>STT</th><th>Số đăng ký</th><th>Loại đăng ký</th><th>Người yêu cầu</th><th>Loại file chờ ký</th><th>File PDF chờ ký</th><th>Trạng thái ký số</th></tr></thead>
             <tbody>${recs.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(pdkRegNo(r))}</td><td>${esc(typeLabel(r.type))}</td><td>${esc(r.requestor || r.customer)}</td><td>${pdkFileKind(r)}</td><td>${fileLink(pdkFileName(r))}</td><td data-sign-status="${esc(r.id)}"><span class="badge badge-muted">Chưa ký</span></td></tr>`).join('')}</tbody></table></div>`;
         const box = openModal(`
-            <div class="modal-header"><span><i class="fa-solid fa-file-signature"></i> Ký số Phiếu đăng ký</span><span style="cursor:pointer;font-size:20px" onclick="LeaderUI.cancelPopup()">&times;</span></div>
+            <div class="modal-header"><span><i class="fa-solid fa-file-signature"></i> Ký duyệt Phiếu đăng ký</span><span style="cursor:pointer;font-size:20px" onclick="LeaderUI.cancelPopup()">&times;</span></div>
             ${info}
-            <div id="ldSignSection">${renderSignSection()}</div>
+            <div id="ldSignSection">${needKySo ? renderSignSection() : ''}</div>
             <div id="ldBusy" style="display:none;align-items:center;gap:8px;margin-top:12px;color:var(--primary-color)"><i class="fa-solid fa-spinner fa-spin"></i> Đang thực hiện ký số, vui lòng chờ...</div>
             <div class="modal-footer" style="display:flex;justify-content:flex-end;gap:8px">
                 <button class="btn btn-outline-secondary" onclick="LeaderUI.cancelPopup()">Hủy</button>
                 <button class="btn btn-primary" id="ldSignBtn"><i class="fa-solid fa-signature"></i> Ký số</button>
             </div>`);
         let pending = recs.map(r => r.id);
+        // Ghi kết quả Ký duyệt của cấp hiện hành; cấp cuối thì xử lý sau ký theo Loại file chờ ký
+        const applyOne = r => { const kq = KY() ? KY().ghiKyDuyet('pdk:' + r.id, '') : { laCuoi: true }; if (kq.laCuoi) pdkFinal(r, needKySo ? signState.method : ''); };
+        box.querySelector('#ldSignBtn').innerHTML = '<i class="fa-solid fa-file-signature"></i> Ký duyệt';
         box.querySelector('#ldSignBtn').onclick = () => {
-            if (signState.certStatus !== 'Chứng thư số hợp lệ') { toast(MSG.DK_011, 'error'); return; }
+            if (needKySo && signState.certStatus !== 'Chứng thư số hợp lệ') { toast(MSG.DK_011, 'error'); return; }
             const targets = pending.map(pdkById).filter(r => {
-                if (!r || r.status !== 'Chờ ký') { toast(MSG.DK_005, 'error'); return false; }
+                if (!r || r.status !== 'Chờ ký' || !isMine('pdk', r.id)) { toast(MSG.DK_005, 'error'); return false; }
                 return true;
             });
             if (!targets.length) return;
-            confirmBox(MSG.DK_CFM_013, () => askAuth(code => {
-                runSigning(targets, code, r => {
-                    const isReject = pdkFileKind(r) === 'Thông báo từ chối';
-                    savePdk(r.id, isReject
-                        ? { status: 'Bị từ chối', statusClass: 'badge-danger', rejectedAt: r.rejectedAt || nowText(), rejectLeader: LEADER_NAME, signedAt: nowText(), signMethod: signState.method }
-                        : { status: 'Hoàn thành', statusClass: 'badge-success', signedBy: LEADER_NAME, signedAt: nowText(), signMethod: signState.method });
-                }, results => {
+            if (!needKySo) { confirmBox(MSG.DK_CFM_017, () => { targets.forEach(applyOne); finishPopup(MSG.DK_SUC_009); }); return; }
+            confirmBox(MSG.DK_CFM_017, () => askAuth(code => {
+                runSigning(targets, code, applyOne, results => {
                     const failed = Object.keys(results).filter(k => results[k] === 'Ký lỗi');
                     if (single) {
                         if (failed.length) { toast(MSG.DK_013, 'error'); return; }
-                        finishPopup(MSG.DK_SUC_005);
+                        finishPopup(MSG.DK_SUC_009);
                         return;
                     }
-                    if (!failed.length) { finishPopup(MSG.DK_SUC_005); return; }
+                    if (!failed.length) { finishPopup(MSG.DK_SUC_009); return; }
                     pending = failed;
                     toast(MSG.DK_WRN_003(targets.length - failed.length, targets.length), 'warning');
                 });
@@ -746,7 +809,7 @@
 
     function filterCctt() {
         const list = ccttList().filter(r => {
-            if (r.status !== 'Chờ ký') return false;
+            if (r.status !== 'Chờ ký' || !isMine('cctt', r.id)) return false;
             if (low('ld-cc-id') && !r.id.toLowerCase().includes(low('ld-cc-id'))) return false;
             if (low('ld-cc-req') && !(r.requester || '').toLowerCase().includes(low('ld-cc-req'))) return false;
             if (low('ld-cc-makh') && !(r.customerId || '').toLowerCase().includes(low('ld-cc-makh'))) return false;
@@ -770,7 +833,7 @@
     }
 
     function renderCcttTable() {
-        setListChrome('Danh sách yêu cầu cung cấp thông tin chờ ký', `<button class="btn btn-primary" onclick="LeaderUI.ccttSignBatch()"><i class="fa-solid fa-file-signature"></i> Ký số</button>`);
+        setListChrome('Danh sách yêu cầu cung cấp thông tin chờ ký', `<button class="btn btn-primary" onclick="LeaderUI.ccttSignBatch()"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button>`);
         const s = LD.svcSort;
         document.getElementById('table-headers-container').innerHTML = `<tr>
             <th style="width:40px;text-align:center"><input type="checkbox" id="checkAll" onclick="LeaderUI.checkAll(this)"></th><th style="width:50px">STT</th><th style="width:170px">Mã hồ sơ</th>
@@ -791,9 +854,8 @@
                 <td>${esc(r.registeredAt)}</td><td><code>${esc(r.customerId || '-')}</code></td><td>${esc(r.requester)}</td><td>${esc(ccttAddress(r))}</td><td>${esc(r.criteria)}</td><td>${esc(r.inputData)}</td>
                 <td>${ccttSource(r)}</td><td>${esc(r.officer || '-')}</td><td>${esc(r.submittedAt || '-')}</td><td><span class="badge ${badgeClassOf(r.status)}">${esc(r.status)}</span></td>
                 <td style="text-align:center;white-space:nowrap" onclick="event.stopPropagation()">
-                    ${rowAction('sign', 'Ký số', 'fa-solid fa-file-signature', `LeaderUI.ccttSign(['${r.id}'])`, true)}
-                    ${rowAction('reject', 'Từ chối', 'fa-solid fa-ban', `LeaderUI.ccttReject('${r.id}')`, direct)}
-                    ${rowAction('edit', 'Trả lại', 'fa-solid fa-reply', `LeaderUI.ccttReturn('${r.id}')`, direct)}
+                    ${rowAction('sign', 'Ký duyệt', 'fa-solid fa-file-signature', `LeaderUI.ccttKyDuyet('${r.id}')`, hasPdf(r), 'Hồ sơ chưa có file PDF chờ ký hợp lệ')}
+                    ${rowAction('reject', 'Từ chối', 'fa-solid fa-ban', `LeaderUI.ccttTuChoi('${r.id}')`, true)}
                 </td></tr>`;
         }).join('');
         const ca = document.getElementById('checkAll'); if (ca) ca.checked = false;
@@ -816,9 +878,9 @@
         if (!list.length) return '';
         const isReturned = r.status === 'Bị trả lại';
         return `<details class="block-return-info" ${isReturned ? 'open' : ''} style="border:1px solid #FCA5A5;border-left:4px solid #DC2626;border-radius:8px;margin:12px 0;background:#fff">
-            <summary style="cursor:pointer;padding:10px 14px;font-weight:700;color:#B91C1C;background:#FEF2F2;list-style:none;display:flex;align-items:center;gap:8px"><i class="fa-solid fa-rotate-left"></i> Thông tin trả lại <span class="badge badge-danger" style="margin-left:6px">${list.length} lần</span></summary>
+            <summary style="cursor:pointer;padding:10px 14px;font-weight:700;color:#B91C1C;background:#FEF2F2;list-style:none;display:flex;align-items:center;gap:8px"><i class="fa-solid fa-rotate-left"></i> Lý do bị trả lại <span class="badge badge-danger" style="margin-left:6px">${list.length} lần</span></summary>
             ${list.map((h, i) => `<div class="info-grid" style="padding:10px 14px;${i ? 'border-top:1px dashed #FCA5A5' : ''}">
-                ${kvHtml('Lý do trả lại', `<span style="color:#B91C1C;font-weight:700">${esc(h.reason)}</span>`)}${kvHtml('Lãnh đạo trả lại', esc(h.by))}${kvHtml('Thời điểm trả lại', esc(h.at))}${h.resubmittedAt ? kvHtml('Thời điểm trình ký lại', esc(h.resubmittedAt)) : ''}
+                ${kvHtml('Lý do trả lại', `<span style="color:#B91C1C;font-weight:700">${esc(h.reason)}</span>`)}${kvHtml('Người trả lại', esc(h.by))}${kvHtml('Thời điểm trả lại', esc(h.at))}${h.resubmittedAt ? kvHtml('Thời điểm trình ký lại', esc(h.resubmittedAt)) : ''}
             </div>`).join('')}</details>`;
     }
 
@@ -865,17 +927,35 @@
                 <div class="info-grid">${kvHtml('File PDF kết quả cung cấp thông tin', hasPdf(r) ? fileLink(ccttPdf(r)) : '-')}</div>
             </div>
             ${stickyBar(`<button class="btn btn-outline-secondary" onclick="LeaderUI.closeDetail()">Đóng</button>
-                ${pending && direct ? `<button class="btn btn-outline-primary" onclick="LeaderUI.ccttReturn('${r.id}')"><i class="fa-solid fa-reply"></i> Trả lại</button>
-                <button class="btn btn-danger" onclick="LeaderUI.ccttReject('${r.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>` : ''}
-                ${pending ? `<button class="btn btn-primary" onclick="LeaderUI.ccttSign(['${r.id}'])"><i class="fa-solid fa-file-signature"></i> Ký số</button>` : ''}`)}`);
+                ${pending ? `<button class="btn btn-danger" onclick="LeaderUI.ccttTuChoi('${r.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>
+                <button class="btn btn-primary" onclick="LeaderUI.ccttKyDuyet('${r.id}')"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button>` : ''}`)}`);
     }
 
-    // MH03 - Popup Ký số yêu cầu cung cấp thông tin
+    // MH03 - Màn hình Ký duyệt / Từ chối yêu cầu cung cấp thông tin (01 hồ sơ)
+    function ccttScreen(id, cheDo) {
+        const r = ccttById(id);
+        if (!r || r.status !== 'Chờ ký') { toast(MSG.CCTT_013, 'error'); return; }
+        if (cheDo === 'duyet' && !hasPdf(r)) { toast(MSG.CCTT_009, 'error'); return; }
+        KY().moKyDuyet({
+            key: 'cctt:' + id, cheDo, maHoSo: r.id, msgKhongHopLe: MSG.CCTT_013, msgChungThu: MSG.CCTT_010, msgKyLoi: MSG.CCTT_011,
+            meta: { loaiTrinh: 'Kết quả cung cấp thông tin', tenTep: ccttPdf(r), nguoiTrinh: r.officer, thoiDiemTrinh: r.submittedAt },
+            tieuDeVanBan: 'Văn bản cung cấp thông tin về biện pháp bảo đảm', dongPhu: 'Mã hồ sơ: ' + r.id,
+            thongTin: [['Mã hồ sơ', `<b>${esc(r.id)}</b>`], ['Người yêu cầu', esc(r.requester)], ['Tiêu chí yêu cầu', esc(r.criteria)], ['Dữ liệu tra cứu', esc(r.inputData)], ['Nguồn tiếp nhận', ccttSource(r)]],
+            onXemFile: () => LeaderSign.viewFile(ccttPdf(r)),
+            conHopLe: () => { const c = ccttById(id); return !!c && c.status === 'Chờ ký'; },
+            onLoi: () => renderTable(true),
+            onKyDuyet: kq => { if (kq.laCuoi) Object.assign(ccttById(id), { status: 'Hoàn thành', signedBy: signer(), signedAt: nowText(), signMethod: kq.hinhThucKySo }); afterKyDuyet(kq, MSG.CCTT_SUC_007); },
+            onTuChoi: info => { const c = ccttById(id); Object.assign(c, returnPatch(c, info)); afterTuChoi(); }
+        });
+    }
+
+    // MH04 - Popup Ký duyệt đồng thời nhiều yêu cầu cung cấp thông tin (thanh công cụ)
     function ccttSign(ids) {
         if (!ids.length) { toast(MSG.CCTT_008, 'error'); return; }
         const recs = ids.map(ccttById);
-        if (recs.some(r => !r || r.status !== 'Chờ ký')) { toast(MSG.CCTT_013, 'error'); return; }
+        if (recs.some(r => !r || r.status !== 'Chờ ký' || !isMine('cctt', r.id))) { toast(MSG.CCTT_013, 'error'); return; }
         if (recs.some(r => !hasPdf(r))) { toast(MSG.CCTT_009, 'error'); return; }
+        if (ids.length === 1) { ccttScreen(ids[0], 'duyet'); return; }
         LD.popupKind = 'cctt';
         resetSignState();
         const single = recs.length === 1, r0 = recs[0];
@@ -884,29 +964,33 @@
             : `<h4 class="section-title" style="font-size:15px;margin-top:0">Danh sách hồ sơ ký số</h4><div style="margin-bottom:6px">Tổng số hồ sơ: <b>${recs.length}</b></div>
             <div style="overflow-x:auto"><table class="table" style="width:100%"><thead><tr><th>STT</th><th>Mã hồ sơ</th><th>Người yêu cầu</th><th>Tiêu chí yêu cầu</th><th>Dữ liệu tra cứu</th><th>Nguồn tiếp nhận</th><th>File PDF chờ ký</th><th>Trạng thái ký số</th></tr></thead>
             <tbody>${recs.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r.id)}</td><td>${esc(r.requester)}</td><td>${esc(r.criteria)}</td><td>${esc(r.inputData)}</td><td>${ccttSource(r)}</td><td>${fileLink(ccttPdf(r))}</td><td data-sign-status="${esc(r.id)}"><span class="badge badge-muted">Chưa ký</span></td></tr>`).join('')}</tbody></table></div>`;
-        signPopup('Ký số yêu cầu cung cấp thông tin', info, recs, {
-            errCert: MSG.CCTT_010, errStatus: MSG.CCTT_013, errSign: MSG.CCTT_011, cfm: MSG.CCTT_CFM_002, suc: MSG.CCTT_SUC_007, wrn: MSG.CCTT_WRN_002,
-            byId: ccttById,
-            apply: r => { Object.assign(r, { status: 'Hoàn thành', signedBy: LEADER_NAME, signedAt: nowText(), signMethod: signState.method }); }
+        signPopup('Ký duyệt yêu cầu cung cấp thông tin', info, recs, {
+            errCert: MSG.CCTT_010, errStatus: MSG.CCTT_013, errSign: MSG.CCTT_011, cfm: MSG.DK_CFM_017, suc: MSG.DK_SUC_009, wrn: MSG.CCTT_WRN_002,
+            byId: ccttById, kind: 'cctt',
+            apply: r => { Object.assign(r, { status: 'Hoàn thành', signedBy: signer(), signedAt: nowText(), signMethod: signState.method }); }
         });
     }
 
     // Popup ký số dùng chung CCTT / bản sao điện tử
     function signPopup(title, infoHtml, recs, o) {
+        const needKySo = recs.some(r => capOf(o.kind, r.id).kySo);
         const box = openModal(`
             <div class="modal-header"><span><i class="fa-solid fa-file-signature"></i> ${title}</span><span style="cursor:pointer;font-size:20px" onclick="LeaderUI.cancelPopup()">&times;</span></div>
             ${infoHtml}
-            <div id="ldSignSection">${renderSignSection()}</div>
+            <div id="ldSignSection">${needKySo ? renderSignSection() : ''}</div>
             <div id="ldBusy" style="display:none;align-items:center;gap:8px;margin-top:12px;color:var(--primary-color)"><i class="fa-solid fa-spinner fa-spin"></i> Đang thực hiện ký số, vui lòng chờ...</div>
-            <div class="modal-footer" style="display:flex;justify-content:flex-end;gap:8px"><button class="btn btn-outline-secondary" onclick="LeaderUI.cancelPopup()">Hủy</button><button class="btn btn-primary" id="ldSignBtn"><i class="fa-solid fa-signature"></i> Ký số</button></div>`);
+            <div class="modal-footer" style="display:flex;justify-content:flex-end;gap:8px"><button class="btn btn-outline-secondary" onclick="LeaderUI.cancelPopup()">Hủy</button><button class="btn btn-primary" id="ldSignBtn"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button></div>`);
         const single = recs.length === 1;
         let pending = recs.map(r => r.id);
+        // Ghi kết quả Ký duyệt của cấp hiện hành; cấp cuối thì xử lý sau ký của nghiệp vụ
+        const applyOne = r => { const kq = KY() ? KY().ghiKyDuyet(o.kind + ':' + r.id, '') : { laCuoi: true }; if (kq.laCuoi) o.apply(r); };
         box.querySelector('#ldSignBtn').onclick = () => {
-            if (signState.certStatus !== 'Chứng thư số hợp lệ') { toast(o.errCert, 'error'); return; }
+            if (needKySo && signState.certStatus !== 'Chứng thư số hợp lệ') { toast(o.errCert, 'error'); return; }
             const targets = pending.map(o.byId);
-            if (targets.some(r => !r || r.status !== 'Chờ ký')) { toast(o.errStatus, 'error'); return; }
+            if (targets.some(r => !r || r.status !== 'Chờ ký' || !isMine(o.kind, r.id))) { toast(o.errStatus, 'error'); return; }
+            if (!needKySo) { confirmBox(o.cfm, () => { targets.forEach(applyOne); finishPopup(o.suc); }); return; }
             confirmBox(o.cfm, () => askAuth(code => {
-                runSigning(targets, code, o.apply, results => {
+                runSigning(targets, code, applyOne, results => {
                     const failed = Object.keys(results).filter(k => results[k] === 'Ký lỗi');
                     if (single) { if (failed.length) { toast(o.errSign, 'error'); return; } finishPopup(o.suc); return; }
                     if (!failed.length) { finishPopup(o.suc); return; }
@@ -980,7 +1064,7 @@
     }
     function filterCopy() {
         const list = copyList().filter(r => {
-            if (r.status !== 'Chờ ký') return false;
+            if (r.status !== 'Chờ ký' || !isMine('bs', r.id)) return false;
             if (low('ld-bs-id') && !r.id.toLowerCase().includes(low('ld-bs-id'))) return false;
             if (low('ld-bs-req') && !(r.requester || '').toLowerCase().includes(low('ld-bs-req'))) return false;
             if (low('ld-bs-sdk') && !(r.registrationNo || '').toLowerCase().includes(low('ld-bs-sdk'))) return false;
@@ -993,7 +1077,7 @@
         return sortSvc(list);
     }
     function renderCopyTable() {
-        setListChrome('Danh sách yêu cầu cung cấp bản sao chờ ký', `<button class="btn btn-primary" onclick="LeaderUI.copySignBatch()"><i class="fa-solid fa-file-signature"></i> Ký số</button>`);
+        setListChrome('Danh sách yêu cầu cung cấp bản sao chờ ký', `<button class="btn btn-primary" onclick="LeaderUI.copySignBatch()"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button>`);
         const s = LD.svcSort;
         document.getElementById('table-headers-container').innerHTML = `<tr>
             <th style="width:40px;text-align:center"><input type="checkbox" id="checkAll" onclick="LeaderUI.checkAll(this)"></th><th style="width:50px">STT</th><th style="width:170px">Mã hồ sơ</th>
@@ -1015,10 +1099,8 @@
                 <td><span class="badge ${paper ? 'badge-muted' : 'badge-info'}">${esc(r.copyType)}</span></td><td>${copyQty(r)}</td><td>${copySource(r)}</td><td>${esc(r.officer || '-')}</td>
                 <td>${esc(r.submittedAt || '-')}</td><td><span class="badge ${badgeClassOf(r.status)}">${esc(r.status)}</span></td>
                 <td style="text-align:center;white-space:nowrap" onclick="event.stopPropagation()">
-                    ${paper ? rowAction('approve', 'Ký duyệt', 'fa-solid fa-check-double', `LeaderUI.copyApprovePaper('${r.id}')`, true)
-                            : rowAction('sign', 'Ký số', 'fa-solid fa-file-signature', `LeaderUI.copySign(['${r.id}'])`, true)}
-                    ${rowAction('reject', 'Từ chối', 'fa-solid fa-ban', `LeaderUI.copyReject('${r.id}')`, direct)}
-                    ${rowAction('edit', 'Trả lại', 'fa-solid fa-reply', `LeaderUI.copyReturn('${r.id}')`, direct)}
+                    ${rowAction('sign', 'Ký duyệt', 'fa-solid fa-file-signature', `LeaderUI.copyKyDuyet('${r.id}')`, true)}
+                    ${rowAction('reject', 'Từ chối', 'fa-solid fa-ban', `LeaderUI.copyTuChoi('${r.id}')`, true)}
                 </td></tr>`;
         }).join('');
         const ca = document.getElementById('checkAll'); if (ca) ca.checked = false;
@@ -1039,18 +1121,42 @@
                 ${paper ? '' : `<h3 class="section-title" style="font-size:15px;margin-top:18px">File bản sao điện tử chờ ký</h3><div class="info-grid">${kvHtml('File bản sao điện tử', copyFile(r) ? fileLink(copyFile(r)) : '-')}</div>`}
             </div>
             ${stickyBar(`<button class="btn btn-outline-secondary" onclick="LeaderUI.closeDetail()">Đóng</button>
-                ${pending && direct ? `<button class="btn btn-outline-primary" onclick="LeaderUI.copyReturn('${r.id}')"><i class="fa-solid fa-reply"></i> Trả lại</button>
-                <button class="btn btn-danger" onclick="LeaderUI.copyReject('${r.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>` : ''}
-                ${pending ? (paper ? `<button class="btn btn-success" onclick="LeaderUI.copyApprovePaper('${r.id}')"><i class="fa-solid fa-check-double"></i> Ký duyệt</button>`
-                                   : `<button class="btn btn-primary" onclick="LeaderUI.copySign(['${r.id}'])"><i class="fa-solid fa-file-signature"></i> Ký số</button>`) : ''}`)}`);
+                ${pending ? `<button class="btn btn-danger" onclick="LeaderUI.copyTuChoi('${r.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>
+                <button class="btn btn-primary" onclick="LeaderUI.copyKyDuyet('${r.id}')"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button>` : ''}`)}`);
     }
 
-    // MH03 - Popup Ký số yêu cầu cung cấp bản sao (Bản sao điện tử)
+    // MH03 - Màn hình Ký duyệt / Từ chối yêu cầu cung cấp bản sao (01 hồ sơ; bản sao giấy không có văn bản điện tử, không ký số)
+    function copyScreen(id, cheDo) {
+        const r = copyById(id);
+        if (!r || r.status !== 'Chờ ký') { toast(MSG.BS_002, 'error'); return; }
+        const paper = isPaperCopy(r);
+        if (cheDo === 'duyet' && !paper && !copyFile(r)) { toast(MSG.BS_003, 'error'); return; }
+        if (cheDo === 'duyet' && paper && window.BsPopups && !BsPopups.lookup(r.registrationNo)) { toast(MSG.BS_013, 'error'); return; } // [MSG-ERR-BS-013]
+        KY().moKyDuyet({
+            key: 'bs:' + id, cheDo, maHoSo: r.id, msgKhongHopLe: MSG.BS_002, msgChungThu: MSG.BS_006, msgKyLoi: MSG.BS_007,
+            meta: { loaiTrinh: r.copyType, tenTep: copyFile(r), coVanBan: !paper, nguoiTrinh: r.officer, thoiDiemTrinh: r.submittedAt },
+            tieuDeVanBan: 'Bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm', dongPhu: 'Số đăng ký hồ sơ gốc: ' + (r.registrationNo || ''),
+            ghiChuGiay: 'Bản sao giấy: người ký Ký duyệt trên hệ thống, không ký số; cấp cuối Ký duyệt thì hồ sơ chuyển Đã duyệt - chờ trả kết quả.',
+            thongTin: [['Mã hồ sơ', `<b>${esc(r.id)}</b>`], ['Người yêu cầu', esc(r.requester)], ['Số đăng ký', esc(r.registrationNo || '-')], ['Loại cung cấp bản sao', esc(r.copyType)]].concat(paper ? [['Số lượng bản sao', copyQty(r)]] : []).concat([['Nguồn tiếp nhận', copySource(r)]]),
+            onXemFile: paper ? null : () => LeaderSign.viewFile(copyFile(r)),
+            conHopLe: () => { const c = copyById(id); return !!c && c.status === 'Chờ ký'; },
+            onLoi: () => renderTable(true),
+            onKyDuyet: kq => {
+                const c = copyById(id);
+                if (kq.laCuoi) Object.assign(c, paper ? { status: 'Đã duyệt - chờ trả kết quả', approvedBy: signer(), approvedAt: nowText() } : { status: 'Hoàn thành', signedBy: signer(), signedAt: nowText(), signMethod: kq.hinhThucKySo });
+                afterKyDuyet(kq, paper ? MSG.BS_SUC_001 : MSG.BS_SUC_003);
+            },
+            onTuChoi: info => { const c = copyById(id); Object.assign(c, returnPatch(c, info)); afterTuChoi(); }
+        });
+    }
+
+    // MH04 - Popup Ký duyệt đồng thời nhiều yêu cầu cung cấp bản sao điện tử (thanh công cụ)
     function copySign(ids) {
         if (!ids.length) { toast(MSG.BS_005, 'error'); return; }
         const recs = ids.map(copyById);
-        if (recs.some(r => !r || r.status !== 'Chờ ký' || isPaperCopy(r))) { toast(MSG.BS_002, 'error'); return; }
+        if (recs.some(r => !r || r.status !== 'Chờ ký' || isPaperCopy(r) || !isMine('bs', r.id))) { toast(MSG.BS_002, 'error'); return; }
         if (recs.some(r => !copyFile(r))) { toast(MSG.BS_003, 'error'); return; }
+        if (ids.length === 1) { copyScreen(ids[0], 'duyet'); return; }
         LD.popupKind = 'copy';
         resetSignState();
         const single = recs.length === 1, r0 = recs[0];
@@ -1059,10 +1165,10 @@
             : `<h4 class="section-title" style="font-size:15px;margin-top:0">Danh sách hồ sơ ký số</h4><div style="margin-bottom:6px">Tổng số hồ sơ: <b>${recs.length}</b></div>
             <div style="overflow-x:auto"><table class="table" style="width:100%"><thead><tr><th>STT</th><th>Mã hồ sơ</th><th>Người yêu cầu</th><th>Số đăng ký</th><th>Nguồn tiếp nhận</th><th>File bản sao điện tử chờ ký</th><th>Trạng thái ký số</th></tr></thead>
             <tbody>${recs.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r.id)}</td><td>${esc(r.requester)}</td><td>${esc(r.registrationNo)}</td><td>${copySource(r)}</td><td>${fileLink(copyFile(r))}</td><td data-sign-status="${esc(r.id)}"><span class="badge badge-muted">Chưa ký</span></td></tr>`).join('')}</tbody></table></div>`;
-        signPopup('Ký số yêu cầu cung cấp bản sao', info, recs, {
-            errCert: MSG.BS_006, errStatus: MSG.BS_002, errSign: MSG.BS_007, cfm: MSG.BS_CFM_003, suc: MSG.BS_SUC_003, wrn: MSG.BS_WRN_001,
-            byId: copyById,
-            apply: r => { Object.assign(r, { status: 'Hoàn thành', signedBy: LEADER_NAME, signedAt: nowText(), signMethod: signState.method }); }
+        signPopup('Ký duyệt yêu cầu cung cấp bản sao', info, recs, {
+            errCert: MSG.BS_006, errStatus: MSG.BS_002, errSign: MSG.BS_007, cfm: MSG.DK_CFM_017, suc: MSG.DK_SUC_009, wrn: MSG.BS_WRN_001,
+            byId: copyById, kind: 'bs',
+            apply: r => { Object.assign(r, { status: 'Hoàn thành', signedBy: signer(), signedAt: nowText(), signMethod: signState.method }); }
         });
     }
     // Ký duyệt bản sao giấy: xác nhận đồng ý cấp bản sao giấy, không ký số
@@ -1145,12 +1251,17 @@
             if (p) localStorage.setItem('leader_detail_profile', JSON.stringify(p));
             if (typeof openDetail === 'function') openDetail(id);
         },
-        pdkApprove, pdkReject, pdkReturn,
+        pdkApprove, pdkKyDuyet, pdkTuChoi,
+        // Thao tác cũ (Từ chối ký Thông báo từ chối, Trả lại) chuyển sang Từ chối theo luồng trình ký nhiều cấp
+        pdkReject(ids) { pdkTuChoi(Array.isArray(ids) ? ids[0] : ids); }, pdkReturn(id) { pdkTuChoi(id); },
         pdkApproveBatch() { pdkApprove(selectedIds()); },
-        pdkRejectBatch() { pdkReject(selectedIds()); },
-        ccttDetail, ccttSign, ccttReject, ccttReturn,
+        ccttDetail, ccttSign,
+        ccttKyDuyet(id) { ccttScreen(id, 'duyet'); }, ccttTuChoi(id) { ccttScreen(id, 'tuchoi'); },
+        ccttReject(id) { ccttScreen(id, 'tuchoi'); }, ccttReturn(id) { ccttScreen(id, 'tuchoi'); },
         ccttSignBatch() { ccttSign(selectedIds()); },
-        copyDetail, copySign, copyApprovePaper, copyReject, copyReturn,
+        copyDetail, copySign,
+        copyKyDuyet(id) { copyScreen(id, 'duyet'); }, copyTuChoi(id) { copyScreen(id, 'tuchoi'); },
+        copyApprovePaper(id) { copyScreen(id, 'duyet'); }, copyReject(id) { copyScreen(id, 'tuchoi'); }, copyReturn(id) { copyScreen(id, 'tuchoi'); },
         copySignBatch() { copySign(selectedIds()); },
         closeDetail() { closeServiceView(); },
         cancelPopup
@@ -1184,9 +1295,9 @@
     // Badge số lượng hồ sơ "Chờ ký" của từng Tab nghiệp vụ (không phụ thuộc bộ lọc; ẩn khi bằng 0; lớn hơn 99 hiển thị "99+")
     function updateLeaderBadges() {
         const setBadge = (id, n) => { const el = document.getElementById(id); if (el) { el.innerText = n > 99 ? '99+' : n; el.style.display = n ? '' : 'none'; } };
-        setBadge('badge-reg-leader', getPdkStore().filter(p => p.status === 'Chờ ký' && !PDK_SERVICE_TYPES.includes(p.type)).length);
-        setBadge('badge-cctt-leader', ccttList().filter(r => r.status === 'Chờ ký').length);
-        setBadge('badge-copy-leader', copyList().filter(r => r.status === 'Chờ ký').length);
+        setBadge('badge-reg-leader', getPdkStore().filter(p => p.status === 'Chờ ký' && !PDK_SERVICE_TYPES.includes(p.type) && isMine('pdk', p.id)).length);
+        setBadge('badge-cctt-leader', ccttList().filter(r => r.status === 'Chờ ký' && isMine('cctt', r.id)).length);
+        setBadge('badge-copy-leader', copyList().filter(r => r.status === 'Chờ ký' && isMine('bs', r.id)).length);
     }
 
     // Đưa dữ liệu giả lập CCTT / bản sao về khoảng thời gian mặc định của bộ lọc (từ ngày 01 của tháng hiện tại)
@@ -1214,6 +1325,9 @@
         if (ps) { if (!Array.from(ps.options).some(o => o.value === '20')) ps.insertAdjacentHTML('beforeend', '<option value="20">20</option>'); ps.value = '20'; ps.onchange = () => { currentPage = 1; renderTable(); }; }
         BASE_INIT();
         const h1 = document.querySelector('h1'); if (h1) h1.innerText = 'HỆ THỐNG QUẢN TRỊ - LÃNH ĐẠO KÝ DUYỆT HỒ SƠ';
+        // Giả lập người dùng đăng nhập để thử luồng trình ký nhiều cấp (mỗi người ký thấy hồ sơ đang chờ mình ở cấp hiện hành)
+        const host = document.getElementById('view-list');
+        if (KY() && host) KY().ganChonNguoiDung(host, () => { currentPage = 1; renderFilterPanel(); renderTable(true); if (typeof window.LeaderCLDK === 'object' && window.LeaderCLDK.refresh) window.LeaderCLDK.refresh(); });
         renderFilterPanel();
         renderTable(true);
         handleIncomingAction();
@@ -1228,8 +1342,7 @@
         if (!action || !id) return;
         if (history.replaceState) history.replaceState(null, '', window.location.pathname);
         LD.returnToPdkDetail = true;
-        if (action === 'approve') pdkApprove([id]);
-        else if (action === 'reject') pdkReject([id]);
-        else if (action === 'return') pdkReturn(id);
+        if (action === 'approve') pdkKyDuyet(id);
+        else if (action === 'reject' || action === 'return') pdkTuChoi(id);
     }
 })();

@@ -1308,16 +1308,14 @@
         <!-- MH01: MÀN HÌNH DANH SÁCH -->
         <!-- ========================================== -->
         <div id="view-list" class="view-section active">
-            <div class="nav-tabs">
-                <div class="nav-tab" onclick="switchListTab('chonhaplieu', this)">Hồ sơ chờ nhập liệu <span class="tab-badge warning" id="badge-chonhaplieu">0</span></div>
-                <div class="nav-tab active" onclick="switchListTab('choduyet', this)">Hồ sơ chờ duyệt <span class="tab-badge info" id="badge-choduyet">0</span></div>
-                <div class="nav-tab" onclick="switchListTab('duyet-choky', this)">Hồ sơ duyệt chờ ký <span class="tab-badge info" id="badge-duyet-choky">0</span></div>
-                <div class="nav-tab" onclick="switchListTab('bitralai', this)">Hồ sơ Bị trả lại <span class="tab-badge danger" id="badge-bitralai">0</span></div>
-            </div>
-            <div class="nav-tabs" id="work-type-tabs" style="display:none; margin-top: 10px;">
-                <div class="nav-tab active" data-work-type="registration" onclick="switchOfficerWorkType('registration', this)">Phiếu đăng ký <span class="tab-badge info" id="badge-reg-officer">0</span></div>
-                <div class="nav-tab" data-work-type="cctt" onclick="switchOfficerWorkType('cctt', this)">Yêu cầu cung cấp thông tin <span class="tab-badge info" id="badge-cctt-officer">0</span></div>
-                <div class="nav-tab" data-work-type="copy" onclick="switchOfficerWorkType('copy', this)">Yêu cầu cung cấp bản sao <span class="tab-badge info" id="badge-copy-officer">0</span></div>
+            <!-- 05 Tab trạng thái của menu con đang mở (Phiếu đăng ký / Yêu cầu cung cấp thông tin / Yêu cầu cung cấp bản sao).
+                 Loại hồ sơ lấy theo menu con (tham số menu trên URL), không còn Tab nhóm nghiệp vụ. -->
+            <div class="nav-tabs" id="status-tabs">
+                <div class="nav-tab" data-tab="chonhaplieu" onclick="switchListTab('chonhaplieu', this)">Hồ sơ chờ nhập liệu <span class="tab-badge warning" id="badge-chonhaplieu">0</span></div>
+                <div class="nav-tab active" data-tab="choduyet" onclick="switchListTab('choduyet', this)">Hồ sơ chờ duyệt <span class="tab-badge info" id="badge-choduyet">0</span></div>
+                <div class="nav-tab" data-tab="duyet-choky" onclick="switchListTab('duyet-choky', this)">Hồ sơ duyệt chờ ký <span class="tab-badge info" id="badge-duyet-choky">0</span></div>
+                <div class="nav-tab" data-tab="dang_xu_ly" onclick="switchListTab('dang_xu_ly', this)">Hồ sơ đang chờ ký <span class="tab-badge warning" id="badge-dang_xu_ly">0</span></div>
+                <div class="nav-tab" data-tab="da_xu_ly" onclick="switchListTab('da_xu_ly', this)">Hồ sơ đã xử lý</div>
             </div>
 
             <!-- Bộ lọc tìm kiếm -->
@@ -1569,6 +1567,7 @@
     <div class="popover-history" id="hover-popover-msg"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="bpbd_trinh_ky_cap.js?v=20261126"></script>
     <script src="pdk_xu_ly_popups.js"></script>
     <script src="bs_xu_ly_popups.js"></script>
     <script src="cctt_xu_ly_popups.js"></script>
@@ -1578,7 +1577,7 @@
     <script src="bpbd_filter_toggle.js"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
-    <script src="bpbd_dong_bo_giao_dien.js?v=20261113f"></script>
+    <script src="bpbd_dong_bo_giao_dien.js?v=20261126kt"></script>
 </body>
 
 </html>

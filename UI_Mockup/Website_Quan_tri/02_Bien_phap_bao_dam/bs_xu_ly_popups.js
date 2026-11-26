@@ -358,17 +358,23 @@
                             <div><span>Người yêu cầu</span><b>${esc(item.requester)}</b></div>
                             <div><span>Số lượng bản sao</span><b>${qtyText(item)}</b></div>
                         </div>
-                        <div class="pdk-field"><label>Lãnh đạo ký duyệt <span class="req">*</span></label>${leaderSelect('bs-sg-leader')}<div class="pdk-err" id="bs-sg-leader-err">Đây là trường bắt buộc</div></div>
+                        ${PdkPopups.stepNote ? PdkPopups.stepNote() : ''}
                     </div>
-                    <div class="pdk-foot"><button class="pdk-btn" data-act="cancel">Hủy</button><button class="pdk-btn primary" data-act="confirm"><i class="fa-solid fa-paper-plane"></i> Xác nhận trình ký</button></div>
+                    <div class="pdk-foot"><button class="pdk-btn" data-act="cancel">Hủy</button><button class="pdk-btn primary" data-act="confirm">Tiếp tục <i class="fa-solid fa-arrow-right"></i></button></div>
                 </div>`, 650);
             ov.onclick = e => {
                 const act = e.target.closest('[data-act]')?.dataset.act;
                 if (act === 'cancel') PdkPopups.close();
-                if (act === 'confirm' && requireLeader('bs-sg-leader', 'bs-sg-leader-err')) {
-                    Object.assign(item, { status: 'Chờ ký', assignedLeader: document.getElementById('bs-sg-leader').value, submittedBy: 'Nguyễn Văn Cán Bộ', submittedAt: now() });
-                    PdkPopups.close();
-                    onDone(item, 'Trình yêu cầu cung cấp bản sao thành công.'); // [MSG-SUC-BS-002]
+                if (act === 'confirm') {
+                    // Bước 2 - Thiết lập các cấp trình ký; bản sao giấy không có văn bản điện tử nên không có Ký nháy, Ký số, ô ký
+                    BpbdKy.moThietLap({
+                        tieuDe: `Trình ký yêu cầu cung cấp bản sao giấy: ${item.id}`, keys: ['bs:' + item.id], loaiTrinh: 'Bản sao giấy', coVanBan: false,
+                        onTrinh: route => {
+                            Object.assign(item, { status: 'Chờ ký', assignedLeader: route.levels[route.levels.length - 1].leader, submittedBy: 'Nguyễn Văn Cán Bộ', submittedAt: now() });
+                            PdkPopups.close();
+                            onDone(item, 'Trình yêu cầu cung cấp bản sao thành công.'); // [MSG-SUC-BS-002]
+                        }
+                    });
                 }
             };
             return;
@@ -384,7 +390,7 @@
                         <div><span>Số đăng ký hồ sơ gốc</span><b>${esc(item.registrationNo)}</b></div>
                         <div style="grid-column:1/-1"><span>Người yêu cầu</span><b>${esc(item.requester)}</b></div>
                     </div>
-                    <div class="pdk-field"><label>Lãnh đạo ký <span class="req">*</span></label>${leaderSelect('bs-se-leader')}<div class="pdk-err" id="bs-se-leader-err">Đây là trường bắt buộc</div></div>
+                    ${PdkPopups.stepNote ? PdkPopups.stepNote() : ''}
                     <div style="display:flex;justify-content:space-between;align-items:center;margin:6px 0">
                         <div style="font-weight:700;color:#1e3a8a">II. KHỐI DỰ THẢO BẢN SAO ĐIỆN TỬ</div>
                         <div style="display:flex;gap:6px;align-items:center">
@@ -395,7 +401,7 @@
                     </div>
                     <div style="max-height:55vh;overflow:auto;border:1px solid #e2e8f0;border-radius:6px;background:#e2e8f0;padding:12px"><div id="bs-draft-sheet">${buildDraftSheet(item)}</div></div>
                 </div>
-                <div class="pdk-foot"><button class="pdk-btn" data-act="cancel">Hủy</button><button class="pdk-btn primary" data-act="confirm"><i class="fa-solid fa-paper-plane"></i> Xác nhận trình ký</button></div>
+                <div class="pdk-foot"><button class="pdk-btn" data-act="cancel">Hủy</button><button class="pdk-btn primary" data-act="confirm">Tiếp tục <i class="fa-solid fa-arrow-right"></i></button></div>
             </div>`, 800);
         ov.onclick = e => {
             const act = e.target.closest('[data-act]')?.dataset.act;
@@ -411,10 +417,17 @@
                 if (tab) { tab.document.title = `Du_thao_Ban_sao_dien_tu_${item.id}.pdf`; tab.document.body.style.cssText = 'background:#e2e8f0;padding:20px'; tab.document.body.innerHTML = `<div style="max-width:850px;margin:0 auto">${buildDraftSheet(item)}</div>`; }
             }
             if (act === 'download') PdkPopups.toast(`Đang tải xuống file PDF dự thảo: Du_thao_Ban_sao_dien_tu_${esc(item.id)}.pdf`, 'info');
-            if (act === 'confirm' && requireLeader('bs-se-leader', 'bs-se-leader-err')) {
-                Object.assign(item, { status: 'Chờ ký', assignedLeader: document.getElementById('bs-se-leader').value, submittedBy: 'Nguyễn Văn Cán Bộ', submittedAt: now(), draftFile: `Du_thao_Ban_sao_dien_tu_${item.id}.pdf`, draftLocked: true });
-                PdkPopups.close();
-                onDone(item, 'Trình yêu cầu cung cấp bản sao thành công.'); // [MSG-SUC-BS-002]
+            if (act === 'confirm') {
+                // Bước 2 - Thiết lập các cấp trình ký (dùng chung Ký duyệt hồ sơ)
+                BpbdKy.moThietLap({
+                    tieuDe: `Trình ký yêu cầu cung cấp bản sao điện tử: ${item.id}`, keys: ['bs:' + item.id], loaiTrinh: 'Bản sao điện tử',
+                    tenTep: `Du_thao_Ban_sao_dien_tu_${item.id}.pdf`, tieuDeVanBan: 'Bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm', dongPhu: 'Số đăng ký hồ sơ gốc: ' + (item.registrationNo || ''),
+                    onTrinh: route => {
+                        Object.assign(item, { status: 'Chờ ký', assignedLeader: route.levels[route.levels.length - 1].leader, submittedBy: 'Nguyễn Văn Cán Bộ', submittedAt: now(), draftFile: `Du_thao_Ban_sao_dien_tu_${item.id}.pdf`, draftLocked: true });
+                        PdkPopups.close();
+                        onDone(item, 'Trình yêu cầu cung cấp bản sao thành công.'); // [MSG-SUC-BS-002]
+                    }
+                });
             }
         };
     }

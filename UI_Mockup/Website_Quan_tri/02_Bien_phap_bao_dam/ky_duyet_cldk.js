@@ -30,7 +30,8 @@
     // Phạm vi Tab: Chờ duyệt đề nghị thuộc đơn vị + Chờ ký số được trình tới đúng Lãnh đạo đăng nhập
     function inScope(p) {
         if (p.trangThai === 'Chờ duyệt đề nghị') return true;
-        if (p.trangThai === 'Chờ ký số') return !!(p.trinhKy && p.trinhKy.lanhDao === LEADER);
+        // Chờ ký số: chỉ người ký ở cấp hiện hành của lượt trình (trình ký nhiều cấp - bpbd_trinh_ky_cap.js)
+        if (p.trangThai === 'Chờ ký số') return window.BpbdKy ? window.BpbdKy.laNguoiKyHienHanh('cldk:' + p.id) : !!(p.trinhKy && p.trinhKy.lanhDao === LEADER);
         return false;
     }
     function scopeList() { return C.proposals().filter(inScope); }
@@ -108,7 +109,7 @@
     function actions(p) {
         const btn = (cls, icon, title, act) => `<button type="button" class="icon-btn ${cls}" data-admin-icon-normalized="1" title="${title}" onclick="event.stopPropagation(); LeaderCLDK.act('${act}', ${p.id})"><i class="fa-solid ${icon}"></i></button>`;
         if (p.trangThai === 'Chờ duyệt đề nghị') return btn('approve', 'fa-check-to-slot', 'Duyệt đề nghị', 'duyet') + btn('reject', 'fa-ban', 'Từ chối đề nghị', 'tuchoi');
-        if (p.trangThai === 'Chờ ký số') return btn('sign', 'fa-file-signature', 'Ký số hồ sơ', 'kyso') + btn('cancel', 'fa-rotate-left', 'Trả lại hồ sơ', 'tralai');
+        if (p.trangThai === 'Chờ ký số') return btn('sign', 'fa-file-signature', 'Ký duyệt', 'kyduyet') + btn('reject', 'fa-ban', 'Từ chối', 'tuchoiky');
         return '';
     }
 
@@ -228,13 +229,15 @@
             const p = C.getProposal(id);
             if (!p) return;
             const need = act === 'duyet' || act === 'tuchoi' ? 'Chờ duyệt đề nghị' : 'Chờ ký số';
+            if (need === 'Chờ ký số' && !inScope(p)) { C.toast(C.MSG.ERR_DK_005, 'error'); updateBadge(); renderList(); return; }
             if (p.trangThai !== need) { C.toast(C.MSG.ERR_DK_005, 'error'); updateBadge(); renderList(); return; }
             if (act === 'duyet') C.openDuyet(p, afterAction);
             if (act === 'tuchoi') C.openTuChoi(p, afterAction);
-            if (act === 'tralai') C.openTraLai(p, afterAction);
-            // Ký số hồ sơ trên lưới: mở trực tiếp Popup Ký số hồ sơ
-            if (act === 'kyso') C.openKySo(p, afterAction);
-        }
+            // Ký duyệt / Từ chối hồ sơ trình ký: Màn hình Ký duyệt / Từ chối dùng chung (trình ký nhiều cấp)
+            if (act === 'kyduyet' || act === 'kyso') C.openKyDuyet(p, 'duyet', afterAction);
+            if (act === 'tuchoiky' || act === 'tralai') C.openKyDuyet(p, 'tuchoi', afterAction);
+        },
+        refresh() { updateBadge(); if (isCldk()) renderList(true); }
     };
 
     // ============================ GẮN VÀO MÀN KÝ DUYỆT HỒ SƠ ============================

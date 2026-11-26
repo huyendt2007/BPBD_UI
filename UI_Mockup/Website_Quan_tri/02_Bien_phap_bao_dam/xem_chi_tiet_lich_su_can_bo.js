@@ -1337,9 +1337,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 .sort((a, b) => toTime(b.at) - toTime(a.at));
             // Mặc định mở rộng khi hồ sơ đang Bị trả lại; mặc định thu gọn khi hồ sơ đã được trình ký lại
             html = `<details class="detail-section" id="sectionListStatusInfo" ${listProfile.status === 'Bị trả lại' ? 'open' : ''} style="${box}">
-                <summary style="cursor:pointer;font-weight:700;color:var(--danger-dark);list-style:none"><i class="fa-solid fa-rotate-left"></i> Thông tin trả lại (${list.length} lần)</summary>
+                <summary style="cursor:pointer;font-weight:700;color:var(--danger-dark);list-style:none"><i class="fa-solid fa-rotate-left"></i> Lý do bị trả lại (${list.length} lần)</summary>
                 ${list.map((r, i) => `<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px 20px;font-size:13.5px;padding-top:12px;${i ? 'border-top:1px dashed #FEB2B2;margin-top:12px' : ''}">
-                    ${f('Lý do trả lại', esc(r.reason), true)}${f('Lãnh đạo trả lại', esc(r.by))}${f('Thời điểm trả lại', esc(r.at))}${f('Thời điểm trình ký lại', esc(r.resubmittedAt))}</div>`).join('')}
+                    ${f('Lý do trả lại', esc(r.reason), true)}${f('Người trả lại', esc(r.by))}${f('Thời điểm trả lại', esc(r.at))}${f('Thời điểm trình ký lại', esc(r.resubmittedAt))}</div>`).join('')}
             </details>`;
         } else {
             const doc = listProfile.rejectDraftFile ? `<a href="javascript:void(0)" onclick="window.open('about:blank','_blank')" style="color:#2563eb;font-weight:600;text-decoration:none"><i class="fa-solid fa-file-pdf"></i> Xem file</a>` : '';
@@ -3307,14 +3307,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa-solid fa-xmark"></i> Đóng</button>
                 `;
             } else if (status === 'Chờ ký' && isLeaderView && listProfile) {
-                // Màn Xem chi tiết Phiếu đăng ký chờ ký của Lãnh đạo: Đóng, Trả lại (chỉ hồ sơ Trực tiếp), Từ chối, Ký số
-                const isDirect = getListSourceLabel(listProfile.source || listProfile.channel) === 'Trực tiếp';
+                // Màn Xem chi tiết Phiếu đăng ký chờ ký: Đóng; Từ chối, Ký duyệt chỉ khi người dùng là người ký ở cấp hiện hành (trình ký nhiều cấp)
+                const laNguoiKy = !window.BpbdKy || window.BpbdKy.laNguoiKyHienHanh('pdk:' + listProfile.id);
                 const go = act => `sessionStorage.setItem('ldPdkDetailUrl', window.location.href); window.location.href='ky_duyet_ho_so.html?leaderAction=${act}&id=' + encodeURIComponent('${listProfile.id}')`;
                 buttonsHtml = `
                     <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa-solid fa-xmark"></i> Đóng</button>
-                    ${isDirect ? `<button class="btn-back" style="background-color: var(--accent-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="${go('return')}"><i class="fa-solid fa-reply"></i> Trả lại</button>` : ''}
-                    <button class="btn-back" style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="${go('reject')}"><i class="fa fa-ban"></i> Từ chối</button>
-                    <button class="btn-back" style="background-color: var(--success-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="${go('approve')}"><i class="fa-solid fa-file-signature"></i> Ký số</button>
+                    ${laNguoiKy ? `<button class="btn-back" style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="${go('reject')}"><i class="fa fa-ban"></i> Từ chối</button>
+                    <button class="btn-back" style="background-color: var(--success-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="${go('approve')}"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button>` : ''}
                 `;
             } else if (status === 'Chờ ký') {
                 if (currentRole === 'lanhdao') {

@@ -188,9 +188,9 @@
                         <span><button class="pdk-btn link" data-act="view"><i class="fa-solid fa-arrow-up-right-from-square"></i> Xem file</button><button class="pdk-btn link" data-act="download"><i class="fa-solid fa-download"></i> Tải tệp</button></span>
                     </div>
                     <div style="max-height:48vh;overflow:auto;border:1px solid #e2e8f0;border-radius:6px;background:#e2e8f0;padding:12px;margin-bottom:14px">${buildDraft(item, result)}</div>
-                    <div class="pdk-field"><label>Lãnh đạo ký <span class="req">*</span></label><select class="pdk-select" id="cctt-sg-leader"><option value="">-- Chọn Lãnh đạo --</option>${LEADERS.map(l => `<option value="${esc(l)}">${esc(l)}</option>`).join('')}</select><div class="pdk-err" id="cctt-sg-leader-err">Đây là trường bắt buộc</div></div>
+                    ${PdkPopups.stepNote ? PdkPopups.stepNote() : ''}
                 </div>
-                <div class="pdk-foot"><button class="pdk-btn" data-act="cancel">Hủy</button><button class="pdk-btn primary" data-act="confirm"><i class="fa-solid fa-paper-plane"></i> Xác nhận</button></div>
+                <div class="pdk-foot"><button class="pdk-btn" data-act="cancel">Hủy</button><button class="pdk-btn primary" data-act="confirm">Tiếp tục <i class="fa-solid fa-arrow-right"></i></button></div>
             </div>`, 820);
         ov.onclick = e => {
             const act = e.target.closest('[data-act]')?.dataset.act;
@@ -198,16 +198,21 @@
             if (act === 'cancel') PdkPopups.close(); // không lưu file PDF dự thảo vừa sinh
             if (act === 'view') {
                 const tab = window.open('', '_blank');
-                if (tab) { tab.document.title = `KetQuaCCTT_${item.id}.pdf`; tab.document.body.style.cssText = 'background:#e2e8f0;padding:20px'; tab.document.body.innerHTML = `<div style="max-width:850px;margin:0 auto">${buildDraft(item, result, document.getElementById('cctt-sg-leader').value)}</div>`; }
+                if (tab) { tab.document.title = `KetQuaCCTT_${item.id}.pdf`; tab.document.body.style.cssText = 'background:#e2e8f0;padding:20px'; tab.document.body.innerHTML = `<div style="max-width:850px;margin:0 auto">${buildDraft(item, result, '')}</div>`; }
             }
             if (act === 'download') PdkPopups.toast(`Đang tải xuống file PDF dự thảo: KetQuaCCTT_${esc(item.id)}.pdf`, 'info');
             if (act !== 'confirm') return;
             if (item.status !== 'Chờ duyệt' && item.status !== 'Duyệt chờ ký') { PdkPopups.toast(MSG_ERR_STATUS, 'error'); return; } // TH1
-            const sel = document.getElementById('cctt-sg-leader');
-            if (!sel.value) { sel.classList.add('pdk-invalid'); document.getElementById('cctt-sg-leader-err').classList.add('show'); sel.focus(); return; } // TH3
-            Object.assign(item, { status: 'Chờ ký', signLeader: sel.value, submittedBy: 'Nguyễn Văn Cán Bộ', submittedAt: result.at, lookupResult: result, draftLocked: true });
-            PdkPopups.close();
-            onDone(item, 'Trình duyệt yêu cầu cung cấp thông tin thành công.'); // [MSG-SUC-CCTT-003]
+            // Bước 2 - Thiết lập các cấp trình ký (dùng chung Ký duyệt hồ sơ)
+            BpbdKy.moThietLap({
+                tieuDe: `Trình ký kết quả cung cấp thông tin: ${item.id}`, keys: ['cctt:' + item.id], loaiTrinh: 'Kết quả cung cấp thông tin',
+                tenTep: `KetQuaCCTT_${item.id}.pdf`, tieuDeVanBan: 'Văn bản cung cấp thông tin về biện pháp bảo đảm', dongPhu: 'Mã hồ sơ: ' + item.id,
+                onTrinh: route => {
+                    Object.assign(item, { status: 'Chờ ký', signLeader: route.levels[route.levels.length - 1].leader, submittedBy: 'Nguyễn Văn Cán Bộ', submittedAt: result.at, lookupResult: result, draftLocked: true });
+                    PdkPopups.close();
+                    onDone(item, 'Trình duyệt yêu cầu cung cấp thông tin thành công.'); // [MSG-SUC-CCTT-003]
+                }
+            });
         };
     }
 

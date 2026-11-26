@@ -1742,7 +1742,8 @@ function renderTable(resetPage = false) {
 
     // 2. Determine target status based on current active tab
     let targetStatuses = ['Chờ duyệt'];
-    if (currentListTab === 'chonhaplieu') targetStatuses = ['Chờ giải quyết'];
+    // Tab Hồ sơ chờ nhập liệu: hồ sơ giấy "Chờ giải quyết" và hồ sơ giấy "Bị trả lại" (Lãnh đạo trả lại để cập nhật, trình ký lại)
+    if (currentListTab === 'chonhaplieu') targetStatuses = ['Chờ giải quyết', 'Bị trả lại'];
     else if (currentListTab === 'duyet-choky') targetStatuses = ['Duyệt chờ ký'];
     else if (currentListTab === 'bitralai') targetStatuses = ['Bị trả lại'];
     else if (currentListTab === 'dang_xu_ly') targetStatuses = ['Chờ ký'];
@@ -1790,6 +1791,7 @@ function renderTable(resetPage = false) {
         const filterNguoiNop = document.getElementById('filter-nguoi-nop')?.value.toLowerCase().trim() || '';
         const filterLoaiYeuCau = document.getElementById('filter-loai-yeu-cau')?.value || '';
         const filterTrangThaiPhi = document.getElementById('filter-trang-thai-phi')?.value || '';
+        const filterTrangThaiHoSo = document.getElementById('filter-trang-thai-ho-so')?.value || '';
         const filterCanBoTiepNhan = document.getElementById('filter-can-bo-tiep-nhan')?.value.toLowerCase().trim() || '';
         const filterTungay = document.getElementById('filter-tungay')?.value || '';
         const filterDenngay = document.getElementById('filter-denngay')?.value || '';
@@ -1797,6 +1799,7 @@ function renderTable(resetPage = false) {
         filteredProfiles = allProfiles.filter(p => {
             if (p.handlingOfficer && p.handlingOfficer !== "Nguyễn Văn Cán Bộ") return false;
             if (!targetStatuses.includes(p.status)) return false;
+            if (filterTrangThaiHoSo && p.status !== filterTrangThaiHoSo) return false;
             // Tab Hồ sơ Bị trả lại - nhóm Phiếu đăng ký: không gồm hồ sơ Yêu cầu cung cấp thông tin/bản sao
             // Danh sách chờ nhập liệu / bị trả lại nhóm Phiếu đăng ký: không gồm hồ sơ Yêu cầu cung cấp thông tin/bản sao
             if (REG_SERVICE_TYPES.includes(p.type) || (p.type || '').includes('Yêu cầu cung cấp')) return false;
@@ -2000,7 +2003,8 @@ function executeRender() {
 
     pageData.forEach((row, index) => {
         if (isRegInputLayout()) {
-            const isReturnedTab = currentListTab === 'bitralai';
+            // Tab Hồ sơ chờ nhập liệu gồm cả hồ sơ "Bị trả lại": nút trên dòng và hành vi Click dòng theo trạng thái của từng hồ sơ
+            const isReturnedTab = row.status === 'Bị trả lại';
             const feeText = row.paymentMethod === 'mien_phi' || Number(row.amount || 0) === 0 ? 'Miễn phí' : Number(row.amount || 0).toLocaleString('vi-VN') + ' VND';
             const feeStatus = row.paymentStatus || (row.paymentMethod === 'mien_phi' ? 'Miễn phí' : 'Đã thu');
             const feeBadge = feeStatus === 'Miễn phí' ? 'badge-info' : 'badge-success';
@@ -2152,10 +2156,11 @@ function changePageSize(size) {
 
 // Chuyển đổi tab danh sách chính MH01
 function switchListTab(tab, element) {
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    if (element) element.classList.add('active');
+    document.querySelectorAll('#status-tabs .nav-tab').forEach(t => t.classList.toggle('active', element ? t === element : t.dataset.tab === tab));
     currentListTab = tab;
     sessionStorage.setItem('activeListTab', tab);
+    // Tab Hồ sơ đang chờ ký / Hồ sơ đã xử lý: chỉ xem, không cố định cột Thao tác bên phải bảng
+    document.body.classList.toggle('no-sticky-actions', tab === 'dang_xu_ly' || tab === 'da_xu_ly');
 
     // Quản lý hiển thị các toolbar và checkbox cột
     document.getElementById('toolbar-choduyet').style.display = 'none';
@@ -2227,6 +2232,14 @@ function renderFilterPanel() {
                         <option value="">Tất cả</option>
                         <option value="Đã thu">Đã thu</option>
                         <option value="Miễn phí">Miễn phí</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Trạng thái hồ sơ</label>
+                    <select class="form-select" id="filter-trang-thai-ho-so">
+                        <option value="">Tất cả</option>
+                        <option value="Chờ giải quyết">Chờ giải quyết</option>
+                        <option value="Bị trả lại">Bị trả lại</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -2359,35 +2372,26 @@ function updateTabBadges() {
         allProfiles = [...customList, ...allProfiles];
     }
 
-    // Badge Tab trạng thái = tổng số hồ sơ của 03 Tab nhóm nghiệp vụ ở trạng thái tương ứng
-    // Badge Tab nhóm nghiệp vụ = số hồ sơ của nhóm trong Tab trạng thái đang chọn (không phụ thuộc bộ lọc)
-    const perType = tab => ({
-        registration: countBadgeRegistration(allProfiles, tab),
-        cctt: countBadgeCctt(tab),
-        copy: countBadgeCopy(tab)
-    });
-    Object.keys(counts).forEach(tab => {
-        const c = perType(tab);
-        counts[tab] = c.registration + c.cctt + c.copy;
-    });
-
-    setBadgeValue(document.getElementById('badge-chonhaplieu'), counts.chonhaplieu);
-    setBadgeValue(document.getElementById('badge-choduyet'), counts.choduyet);
-    setBadgeValue(document.getElementById('badge-duyet-choky'), counts['duyet-choky']);
-    setBadgeValue(document.getElementById('badge-bitralai'), counts.bitralai);
-
-    // Badge Tab nhóm nghiệp vụ: chỉ hiển thị tại Hồ sơ chờ xử lý và Hồ sơ đang chờ ký
-    const showWorkBadge = currentListTab !== 'da_xu_ly';
-    const workCounts = showWorkBadge ? perType(currentListTab) : null;
-    [['badge-reg-officer', 'registration'], ['badge-cctt-officer', 'cctt'], ['badge-copy-officer', 'copy']].forEach(([id, key]) => {
-        setBadgeValue(document.getElementById(id), showWorkBadge ? workCounts[key] : 0);
+    // Số hồ sơ theo loại hồ sơ (menu con) và Tab trạng thái, không phụ thuộc bộ lọc.
+    // Tab Hồ sơ chờ nhập liệu đếm cả hồ sơ "Chờ giải quyết" và hồ sơ "Bị trả lại".
+    const countOf = (type, tab) => {
+        const one = t => type === 'cctt' ? countBadgeCctt(t) : (type === 'copy' ? countBadgeCopy(t) : countBadgeRegistration(allProfiles, t));
+        return tab === 'chonhaplieu' ? one('chonhaplieu') + one('bitralai') : one(tab);
+    };
+    const workType = kthsCurrentWorkType();
+    // Badge Tab trạng thái của menu con đang mở; Tab Hồ sơ đã xử lý không có badge
+    ['chonhaplieu', 'choduyet', 'duyet-choky', 'dang_xu_ly'].forEach(tab => {
+        counts[tab] = countOf(workType, tab);
+        setBadgeValue(document.getElementById('badge-' + tab), counts[tab]);
     });
 
-    // Badge Left Menu: "Hồ sơ chờ xử lý" = tổng 04 Tab trạng thái; "Hồ sơ đang chờ ký" = tổng hồ sơ "Chờ ký" của 03 nhóm nghiệp vụ
-    const signing = perType('dang_xu_ly');
+    // Badge Left Menu: mỗi menu con = số hồ sơ chờ người dùng xử lý của loại hồ sơ đó
+    // (Tab Hồ sơ chờ nhập liệu + Hồ sơ chờ duyệt + Hồ sơ duyệt chờ ký); menu cha không có badge
+    const pending = type => countOf(type, 'chonhaplieu') + countOf(type, 'choduyet') + countOf(type, 'duyet-choky');
     const menuCounts = {
-        kths_pending: counts.chonhaplieu + counts.choduyet + counts['duyet-choky'] + counts.bitralai,
-        kths_signing: signing.registration + signing.cctt + signing.copy
+        kths_pdk: pending('registration'),
+        kths_cctt: pending('cctt'),
+        kths_bansao: pending('copy')
     };
     try { localStorage.setItem('kths_menu_badges', JSON.stringify(menuCounts)); } catch (err) { }
     try { if (window.parent && window.parent !== window) window.parent.postMessage({ type: 'admin:menuBadges', counts: menuCounts }, '*'); } catch (err) { }
@@ -2564,7 +2568,7 @@ function resetFilters() {
         'filter-loai-chu-the', 'filter-phuong-thuc', 'filter-hinh-thuc-tra',
         'filter-status-xu-ly', 'filter-ma-ho-so', 'filter-so-don-giay',
         'filter-nguoi-yeu-cau', 'filter-nguoi-nop', 'filter-loai-yeu-cau',
-        'filter-trang-thai-phi', 'filter-can-bo-tiep-nhan', 'filter-reg-sdk', 'filter-reg-bbd', 'filter-reg-bnbd', 'filter-reg-receipt', 'filter-trung-lap'
+        'filter-trang-thai-phi', 'filter-trang-thai-ho-so', 'filter-can-bo-tiep-nhan', 'filter-reg-sdk', 'filter-reg-bbd', 'filter-reg-bnbd', 'filter-reg-receipt', 'filter-trung-lap'
     ];
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -3586,12 +3590,9 @@ function closeDetail() {
     document.getElementById('view-detail').classList.remove('active');
     document.getElementById('view-list').classList.add('active');
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const viewMode = urlParams.get('view');
-    const navTabs = document.querySelector('.nav-tabs');
-    if (navTabs && viewMode !== 'dang_xu_ly' && viewMode !== 'da_xu_ly') {
-        navTabs.style.display = 'flex';
-    }
+    // 05 Tab trạng thái luôn hiển thị lại khi quay về danh sách
+    const navTabs = document.getElementById('status-tabs');
+    if (navTabs) navTabs.style.display = 'flex';
 
     // Khôi phục layout 2 pane ban đầu
     const sidebar = document.querySelector('.sidebar-pane');
@@ -3698,77 +3699,43 @@ function initViewMode() {
 
     localStorage.setItem('custom_mock_profiles', JSON.stringify(mockProfiles));
     const urlParams = new URLSearchParams(window.location.search);
-    const viewMode = urlParams.get('view');
 
-    const navTabs = document.querySelector('.nav-tabs');
-    const headerTitle = document.querySelector('h1');
-    const tableTitle = document.getElementById('list-table-title');
-    // Màn Hồ sơ đang chờ ký / Hồ sơ đã xử lý: không cố định cột Thao tác bên phải bảng
-    document.body.classList.toggle('no-sticky-actions', viewMode === 'dang_xu_ly' || viewMode === 'da_xu_ly');
+    // Menu con theo loại hồ sơ (tham số menu): Phiếu đăng ký / Yêu cầu cung cấp thông tin / Yêu cầu cung cấp bản sao.
+    // Không có tham số menu (quay về từ màn Nhập liệu, Xem chi tiết) thì giữ loại hồ sơ đang mở trước đó.
+    officerWorkType = getKthsWorkType();
+    sessionStorage.setItem('uc028OfficerWorkType', officerWorkType);
 
-    if (viewMode === 'dang_xu_ly') {
-        if (navTabs) navTabs.style.display = 'none';
-        if (headerTitle) headerTitle.innerText = 'HỆ THỐNG QUẢN TRỊ - HỒ SƠ ĐANG CHỜ KÝ';
-        if (tableTitle) tableTitle.innerText = 'Danh sách hồ sơ đang chờ ký';
-        currentListTab = 'dang_xu_ly';
-        document.getElementById('toolbar-choduyet').style.display = 'none';
-        document.getElementById('toolbar-duyet-choky').style.display = 'none';
-        document.getElementById('toolbar-choky').style.display = 'none';
-    } else if (viewMode === 'da_xu_ly') {
-        if (navTabs) navTabs.style.display = 'none';
-        if (headerTitle) headerTitle.innerText = 'HỆ THỐNG QUẢN TRỊ - HỒ SƠ ĐÃ XỬ LÝ';
-        if (tableTitle) tableTitle.innerText = 'Danh sách hồ sơ đã xử lý';
-        currentListTab = 'da_xu_ly';
-        document.getElementById('toolbar-choduyet').style.display = 'none';
-        document.getElementById('toolbar-duyet-choky').style.display = 'none';
-        document.getElementById('toolbar-choky').style.display = 'none';
-    } else if (viewMode === 'chonhaplieu') {
-        if (navTabs) navTabs.style.display = 'flex';
-        if (headerTitle) headerTitle.innerText = 'HỆ THỐNG QUẢN TRỊ - HỒ SƠ CHỜ NHẬP LIỆU';
-        if (tableTitle) tableTitle.innerText = 'Danh sách hồ sơ chờ nhập liệu';
-        currentListTab = 'chonhaplieu';
-        document.getElementById('toolbar-choduyet').style.display = 'none';
-        document.getElementById('toolbar-duyet-choky').style.display = 'none';
-        document.getElementById('toolbar-choky').style.display = 'none';
-        if (navTabs) {
-            navTabs.querySelectorAll('.nav-tab').forEach(t => {
-                t.classList.toggle('active', (t.getAttribute('onclick') || '').includes('chonhaplieu'));
-            });
-        }
-    } else {
-        if (navTabs) navTabs.style.display = 'flex';
-        if (headerTitle) headerTitle.innerText = 'HỆ THỐNG QUẢN TRỊ - HỒ SƠ CHỜ XỬ LÝ';
-        
-        const savedTab = sessionStorage.getItem('activeListTab');
-        if (savedTab && ['chonhaplieu', 'choduyet', 'duyet-choky', 'bitralai'].includes(savedTab)) {
-            currentListTab = savedTab;
-            if (navTabs) {
-                navTabs.querySelectorAll('.nav-tab').forEach(t => {
-                    const onclickAttr = t.getAttribute('onclick') || '';
-                    if (onclickAttr.includes(`'${savedTab}'`) || onclickAttr.includes(`"${savedTab}"`)) {
-                        navTabs.querySelectorAll('.nav-tab').forEach(x => x.classList.remove('active'));
-                        t.classList.add('active');
-                    }
-                });
+    // Tab trạng thái mở ra: theo tham số view; mở từ Menu thì Tab "Hồ sơ chờ duyệt"; còn lại giữ Tab đã chọn trước đó.
+    // Tab "Hồ sơ Bị trả lại" cũ được gộp vào Tab "Hồ sơ chờ nhập liệu".
+    const KTHS_TABS = ['chonhaplieu', 'choduyet', 'duyet-choky', 'dang_xu_ly', 'da_xu_ly'];
+    const toTab = v => (v === 'bitralai' ? 'chonhaplieu' : v);
+    const viewTab = toTab(urlParams.get('view'));
+    const savedTab = toTab(sessionStorage.getItem('activeListTab'));
+    if (KTHS_TABS.includes(viewTab)) currentListTab = viewTab;
+    else if (!urlParams.get('menu') && KTHS_TABS.includes(savedTab)) currentListTab = savedTab;
+    else currentListTab = 'choduyet';
+    sessionStorage.setItem('activeListTab', currentListTab);
+
+    const navTabs = document.getElementById('status-tabs');
+    if (navTabs) {
+        navTabs.style.display = 'flex';
+        navTabs.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === currentListTab));
+    }
+    // Tab Hồ sơ đang chờ ký / Hồ sơ đã xử lý: chỉ xem, không cố định cột Thao tác bên phải bảng
+    document.body.classList.toggle('no-sticky-actions', currentListTab === 'dang_xu_ly' || currentListTab === 'da_xu_ly');
+    ['toolbar-choduyet', 'toolbar-duyet-choky', 'toolbar-choky'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+
+    // Đánh dấu menu con đang mở trên Left Menu (khi trang tự quay về từ màn Nhập liệu / Xem chi tiết)
+    if (urlParams.get('from') !== 'tra_cuu') {
+        const menuKey = { registration: 'phieu-dang-ky', cctt: 'cung-cap-thong-tin', copy: 'cung-cap-ban-sao' }[officerWorkType];
+        try {
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({ type: 'admin:activeMenu', activeUrl: '../02_Bien_phap_bao_dam/kiem_tra_ho_so.html?menu=' + menuKey }, '*');
             }
-        } else {
-            currentListTab = 'choduyet';
-        }
-        if (tableTitle) {
-            tableTitle.innerText = currentListTab === 'chonhaplieu' ? 'Danh sách hồ sơ chờ nhập liệu' : 'Bảng danh sách kết quả đối soát';
-        }
-        
-        document.getElementById('toolbar-choduyet').style.display = 'none';
-        document.getElementById('toolbar-duyet-choky').style.display = 'none';
-        document.getElementById('toolbar-choky').style.display = 'none';
-        
-        if (currentListTab === 'choduyet') {
-            document.getElementById('toolbar-choduyet').style.display = 'flex';
-        } else if (currentListTab === 'duyet-choky') {
-            document.getElementById('toolbar-duyet-choky').style.display = 'flex';
-        } else if (currentListTab === 'choky' || currentListTab === 'bitralai') {
-            document.getElementById('toolbar-choky').style.display = 'block';
-        }
+        } catch (err) { }
     }
 
     renderFilterPanel();
@@ -4274,7 +4241,23 @@ const UC028_BASE = {
     closeDetail
 };
 
-let officerWorkType = sessionStorage.getItem('uc028OfficerWorkType') || 'registration';
+// Loại hồ sơ theo menu con của «Kiểm tra và xử lý hồ sơ» (tham số menu trên URL, khớp menuData của HomePageAdmin.html):
+// phieu-dang-ky = Phiếu đăng ký, cung-cap-thong-tin = Yêu cầu cung cấp thông tin, cung-cap-ban-sao = Yêu cầu cung cấp bản sao.
+// Không có tham số menu: mở từ màn Tra cứu hồ sơ thì theo loại hồ sơ cần xem; còn lại giữ loại hồ sơ đã mở trước đó.
+function getKthsWorkType() {
+    const qs = new URLSearchParams(window.location.search);
+    const byMenu = { 'phieu-dang-ky': 'registration', 'cung-cap-thong-tin': 'cctt', 'cung-cap-ban-sao': 'copy' }[qs.get('menu') || ''];
+    if (byMenu) return byMenu;
+    if (qs.get('openCctt')) return 'cctt';
+    if (qs.get('openCopy')) return 'copy';
+    const saved = sessionStorage.getItem('uc028OfficerWorkType');
+    return ['registration', 'cctt', 'copy'].includes(saved) ? saved : 'registration';
+}
+// Loại hồ sơ đang mở; dùng được cả trước khi biến officerWorkType được khởi tạo
+function kthsCurrentWorkType() {
+    try { return officerWorkType; } catch (err) { return getKthsWorkType(); }
+}
+let officerWorkType = getKthsWorkType();
 let selectedCcttOfficerId = null;
 let selectedOfficerCopyId = null;
 
@@ -4355,8 +4338,8 @@ function shouldShowOfficerWorkTabs() {
 }
 
 function getOfficerCcttTargetStatuses() {
-    // Tab Hồ sơ chờ nhập liệu chỉ hiển thị hồ sơ ở trạng thái "Chờ giải quyết" (hồ sơ "Bị trả lại" hiển thị tại Tab Hồ sơ Bị trả lại)
-    if (currentListTab === 'chonhaplieu') return ['Chờ giải quyết'];
+    // Tab Hồ sơ chờ nhập liệu hiển thị hồ sơ giấy "Chờ giải quyết" và hồ sơ giấy "Bị trả lại"
+    if (currentListTab === 'chonhaplieu') return ['Chờ giải quyết', 'Bị trả lại'];
     if (currentListTab === 'duyet-choky') return ['Duyệt chờ ký'];
     if (currentListTab === 'bitralai') return ['Bị trả lại'];
     if (currentListTab === 'dang_xu_ly') return ['Chờ ký'];
@@ -4374,17 +4357,10 @@ function getOfficerCcttListTitle() {
 }
 
 function syncOfficerWorkTabs() {
+    // Loại hồ sơ chọn ở Left Menu (menu con), không còn Tab nhóm nghiệp vụ trên màn hình
     const tabs = document.getElementById('work-type-tabs');
-    if (!tabs) return;
-    const visible = shouldShowOfficerWorkTabs();
-    tabs.style.display = visible ? 'flex' : 'none';
-    if (!visible) {
-        officerWorkType = 'registration';
-        sessionStorage.setItem('uc028OfficerWorkType', officerWorkType);
-    }
-    tabs.querySelectorAll('.nav-tab').forEach(tab => {
-        tab.classList.toggle('active', tab.dataset.workType === officerWorkType);
-    });
+    if (tabs) tabs.style.display = 'none';
+    officerWorkType = getKthsWorkType();
     updateTabBadges();
 }
 
@@ -4504,6 +4480,10 @@ renderFilterPanel = function () {
                 <div class="form-group">
                     <label class="form-label">Trạng thái lệ phí</label>
                     <select class="form-select" id="ccttin-filter-fee"><option value="">Tất cả</option><option value="Đã thu">Đã thu</option><option value="Miễn phí">Miễn phí</option></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Trạng thái hồ sơ</label>
+                    <select class="form-select" id="ccttin-filter-status"><option value="">Tất cả</option><option value="Chờ giải quyết">Chờ giải quyết</option><option value="Bị trả lại">Bị trả lại</option></select>
                 </div>
                 <div class="form-group"><label class="form-label">Cán bộ tiếp nhận</label><input type="text" class="form-control" id="ccttin-filter-officer" placeholder="Nhập tên cán bộ tiếp nhận..."></div>
                 <div class="form-group">
@@ -4729,7 +4709,7 @@ function startCcttInputDigitize(id) {
 }
 
 function renderCcttInputList(thead, tbody) {
-    const isReturned = currentListTab === 'bitralai';
+    // Tab Hồ sơ chờ nhập liệu: hồ sơ giấy "Chờ giải quyết" và "Bị trả lại"; nút trên dòng theo trạng thái của từng hồ sơ
     thead.innerHTML = `
         <tr>
             <th style="width:50px;text-align:center">STT</th>
@@ -4751,9 +4731,10 @@ function renderCcttInputList(thead, tbody) {
     const from = parseDateString(document.getElementById('ccttin-filter-fromdate')?.value || '');
     const to = parseDateString(document.getElementById('ccttin-filter-todate')?.value || '');
     if (to) to.setHours(23, 59, 59, 999);
-    const status = isReturned ? 'Bị trả lại' : 'Chờ giải quyết';
+    const fStatus = document.getElementById('ccttin-filter-status')?.value || '';
     const rows = getPaperCcttRows().filter(x => {
-        if (x.status !== status) return false;
+        if (!['Chờ giải quyết', 'Bị trả lại'].includes(x.status)) return false;
+        if (fStatus && x.status !== fStatus) return false;
         if (!['Đã thu', 'Miễn phí'].includes(x.paymentStatus || 'Đã thu')) return false;
         if (fId && !x.id.toLowerCase().includes(fId)) return false;
         if (fPaper && !(x.paper || '').toLowerCase().includes(fPaper)) return false;
@@ -4774,6 +4755,7 @@ function renderCcttInputList(thead, tbody) {
     }
     tbody.innerHTML = pageRows.map((row, idx) => {
         const free = row.paymentStatus === 'Miễn phí';
+        const isReturned = row.status === 'Bị trả lại';
         const action = isReturned
             ? `<button class="icon-btn edit" title="Cập nhật" onclick="event.stopPropagation(); localStorage.setItem('selected_dossier_id','${row.id}'); window.location.href='nhap_lieu_ho_so_giay.html?id=${row.id}&type=cctt&returned=1'"><i class="fa-solid fa-pen-to-square"></i></button>`
             : `<button class="icon-btn edit" title="Tạo hồ sơ" onclick="event.stopPropagation(); startCcttInputDigitize('${row.id}')"><i class="fa-solid fa-file-circle-plus"></i></button>`;
@@ -4911,8 +4893,8 @@ function resetPaperCcttFilters() {
 }
 
 function getOfficerCopyTargetStatuses() {
-    // Tab Hồ sơ chờ nhập liệu chỉ hiển thị hồ sơ ở trạng thái "Chờ giải quyết" (hồ sơ "Bị trả lại" hiển thị tại Tab Hồ sơ Bị trả lại)
-    if (currentListTab === 'chonhaplieu') return ['Chờ giải quyết'];
+    // Tab Hồ sơ chờ nhập liệu hiển thị hồ sơ giấy "Chờ giải quyết" và hồ sơ giấy "Bị trả lại"
+    if (currentListTab === 'chonhaplieu') return ['Chờ giải quyết', 'Bị trả lại'];
     if (currentListTab === 'duyet-choky') return ['Duyệt chờ ký'];
     if (currentListTab === 'bitralai') return ['Bị trả lại'];
     if (currentListTab === 'dang_xu_ly') return ['Chờ ký'];
@@ -4986,6 +4968,14 @@ function renderCopyFilterFields(defFromDate, defToDate) {
                 <div class="form-group"><label class="form-label">Số đơn giấy</label><input type="text" class="form-control" id="copy-filter-paperno" placeholder="Nhập số đơn giấy..."></div>
                 <div class="form-group"><label class="form-label">Người yêu cầu</label><input type="text" class="form-control" id="copy-filter-requester" placeholder="Nhập tên người yêu cầu..."></div>
                 ${typeField}
+                <div class="form-group">
+                    <label class="form-label">Trạng thái hồ sơ</label>
+                    <select class="form-select" id="copy-filter-status">
+                        <option value="">Tất cả</option>
+                        <option value="Chờ giải quyết">Chờ giải quyết</option>
+                        <option value="Bị trả lại">Bị trả lại</option>
+                    </select>
+                </div>
                 <div class="form-group"><label class="form-label">Cán bộ tiếp nhận</label><input type="text" class="form-control" id="copy-filter-officer" placeholder="Nhập tên cán bộ tiếp nhận..."></div>
                 ${dateFields('Từ ngày tiếp nhận', 'Đến ngày tiếp nhận')}
             </div>`;
@@ -5110,7 +5100,8 @@ function openCopyRejectModal(id) {
     }
     // Hồ sơ giấy (Tab Hồ sơ chờ nhập liệu / Hồ sơ Bị trả lại): Từ chối theo Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao
     // TH1: Hồ sơ không còn đủ điều kiện xử lý -> [MSG-ERR-DK-005] dạng Toast, không mở popup
-    if (item.status !== (currentListTab === 'bitralai' ? 'Bị trả lại' : 'Chờ giải quyết')) {
+    // Tab Hồ sơ chờ nhập liệu gồm cả hồ sơ "Bị trả lại" nên kiểm tra theo trạng thái của hồ sơ
+    if (!['Chờ giải quyết', 'Bị trả lại'].includes(item.status)) {
         showListToast(COPY_MSG_ERR_DK_005, 'error');
         return;
     }
@@ -5310,12 +5301,13 @@ function renderCopyOfficerTable() {
                 // Rule 3: Fixed-slot action column alignment (always 2 slots)
                 const btnCreate = `<button class="icon-btn edit" title="Tạo hồ sơ" onclick="event.stopPropagation(); startCopyDigitize('${row.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
                 const btnReject = `<button class="icon-btn reject" title="Từ chối" onclick="event.stopPropagation(); openCopyRejectModal('${row.id}')"><i class="fa-solid fa-ban"></i></button>`;
-                // Tab Hồ sơ Bị trả lại: Cột Thao tác gồm Cập nhật (mở màn Nhập liệu kèm Khối Thông tin trả lại)
+                // Hồ sơ "Bị trả lại" (trong Tab Hồ sơ chờ nhập liệu): Cột Thao tác gồm Cập nhật (mở màn Nhập liệu kèm Khối Thông tin trả lại)
                 const btnUpdate = `<button class="icon-btn edit" title="Cập nhật" onclick="event.stopPropagation(); saveCopyItemForNavigation(officerCopyRequests.find(x => x.id === '${row.id}')); startDigitize('${row.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                const actions = currentListTab === 'bitralai' ? btnUpdate : btnCreate + btnReject;
+                const isReturnedRow = row.status === 'Bị trả lại';
+                const actions = isReturnedRow ? btnUpdate : btnCreate + btnReject;
 
                 return `
-                    <tr style="cursor:pointer" onclick="${currentListTab === 'bitralai' ? `openCopyProcess('${row.id}')` : `openCopyReadonly('${row.id}')`}">
+                    <tr style="cursor:pointer" onclick="${isReturnedRow ? `openCopyProcess('${row.id}')` : `openCopyReadonly('${row.id}')`}">
                         <td style="text-align:center">${paginationStartIndex + idx + 1}</td>
                         <td><span class="action-link"><b>${row.id}</b></span></td>
                         <td><code>${row.paperNo || '-'}</code></td>
@@ -5985,10 +5977,10 @@ function renderReturnRejectBlocks(item) {
         return `
             <details class="block-return-info" ${item.status === 'Bị trả lại' ? 'open' : ''} style="border:1px solid #FCA5A5;border-left:4px solid #DC2626;border-radius:8px;margin:12px 0 20px 0;background:#fff;box-shadow:0 1px 3px rgba(220,38,38,0.06)">
                 <summary style="cursor:pointer;padding:12px 16px;font-weight:700;color:#B91C1C;background:#FEF2F2;list-style:none;display:flex;align-items:center;gap:8px;border-top-left-radius:7px;border-top-right-radius:7px">
-                    <i class="fa-solid fa-rotate-left"></i> Thông tin trả lại <span class="badge badge-danger" style="margin-left:6px">${list.length} lần</span>
+                    <i class="fa-solid fa-rotate-left"></i> Lý do bị trả lại <span class="badge badge-danger" style="margin-left:6px">${list.length} lần</span>
                 </summary>
                 ${list.map((r, i) => `<div class="info-grid" style="padding:14px 16px;${i ? 'border-top:1px dashed #FCA5A5' : ''}">
-                    ${kv('Lý do trả lại', esc(r.reason), true)}${kv('Lãnh đạo trả lại', esc(r.by))}${kv('Thời điểm trả lại', esc(r.at))}${kv('Thời điểm trình ký lại', esc(r.resubmittedAt))}
+                    ${kv('Lý do trả lại', esc(r.reason), true)}${kv('Người trả lại', esc(r.by))}${kv('Thời điểm trả lại', esc(r.at))}${kv('Thời điểm trình ký lại', esc(r.resubmittedAt))}
                 </div>`).join('')}
             </details>`;
     }
@@ -6164,8 +6156,8 @@ function openCcttReject(id) {
     CcttPopups.openReject(item, (it, msg) => finishCcttAction(it, msg), { allowed });
 }
 switchListTab = function (tab, element) {
-    const targetShowsWorkTabs = ['choduyet', 'duyet-choky', 'bitralai', 'dang_xu_ly', 'da_xu_ly'].includes(tab);
-    officerWorkType = targetShowsWorkTabs ? (sessionStorage.getItem('uc028OfficerWorkType') || 'registration') : 'registration';
+    // Chuyển Tab trạng thái trong menu con đang mở: loại hồ sơ giữ theo menu con
+    officerWorkType = getKthsWorkType();
     sessionStorage.setItem('uc028OfficerWorkType', officerWorkType);
     UC028_BASE.switchListTab(tab, element);
     syncOfficerWorkTabs();

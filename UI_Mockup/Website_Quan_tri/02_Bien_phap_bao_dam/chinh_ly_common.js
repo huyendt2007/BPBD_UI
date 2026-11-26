@@ -1125,22 +1125,57 @@
     function openTrinhKy(p, getDraft, done) {
         const el = ensureModal('clMH09', modalShell('clMH09', '', '<i class="fa-solid fa-paper-plane" style="color:#1E3A8A;"></i>',
             `<div data-ro></div>
-            <div class="cl-form-group"><label class="cl-label">Lãnh đạo ký duyệt <span class="cl-req">*</span></label><div id="clMH09Combo"></div>
-                <div class="cl-error" id="clMH09ComboErr">${esc(MSG.VAL_001)}</div></div>
             <div class="cl-form-group"><label class="cl-label">Dự thảo văn bản</label>
-                <div><button type="button" class="cl-btn cl-btn-outline-primary" data-draft><i class="fa-solid fa-file-pdf"></i> Xem dự thảo</button></div></div>`,
-            '<button type="button" class="cl-btn cl-btn-outline" data-close>Hủy bỏ</button><button type="button" class="cl-btn cl-btn-primary" data-ok><i class="fa-solid fa-paper-plane"></i> Xác nhận trình ký</button>', 600));
+                <div><button type="button" class="cl-btn cl-btn-outline-primary" data-draft><i class="fa-solid fa-file-pdf"></i> Xem dự thảo</button></div></div>
+            <div style="display:flex;gap:8px;align-items:center;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:8px 12px;font-size:12.5px;color:#1e3a8a"><i class="fa-solid fa-layer-group"></i> Bấm <b>Tiếp tục</b> để thiết lập các cấp trình ký (Lãnh đạo từng cấp, Ký nháy, Ký số, vị trí chữ ký) tại Bước 2.</div>`,
+            '<button type="button" class="cl-btn cl-btn-outline" data-close>Hủy bỏ</button><button type="button" class="cl-btn cl-btn-primary" data-ok>Tiếp tục <i class="fa-solid fa-arrow-right"></i></button>', 600));
         el.querySelector('[data-title]').textContent = `Trình ký hồ sơ: ${p.maDeNghi}`;
         el.querySelector('[data-ro]').innerHTML = readonlyBox([infoItem('Mã đề nghị', p.maDeNghi), infoItem('Loại đề nghị', loaiLabel(p))]);
-        trinhKyCombo = combo(byId('clMH09Combo'), { options: peopleOptions(LANH_DAO), value: p.trinhKy ? p.trinhKy.lanhDao : '', placeholder: 'Tìm theo Họ và tên hoặc Tên đăng nhập...', errorEl: byId('clMH09ComboErr') });
+        trinhKyCombo = null;
         el.querySelector('[data-draft]').onclick = () => openDraft(p, getDraft ? getDraft() : null);
         el.querySelector('[data-ok]').onclick = () => {
-            const ld = trinhKyCombo.get();
-            if (!ld) { trinhKyCombo.setInvalid(true); trinhKyCombo.focus(); return; }
-            closeModal('clMH09');
-            if (done) done(ld);
+            // Bước 2 - Thiết lập các cấp trình ký (dùng chung Ký duyệt hồ sơ); Quay lại giữ nguyên Bước 1
+            window.BpbdKy.moThietLap({
+                tieuDe: `Trình ký hồ sơ: ${p.maDeNghi}`, keys: ['cldk:' + p.id], loaiTrinh: loaiFileChoKy(p),
+                tenTep: `DuThao_${p.maDeNghi}.pdf`, tieuDeVanBan: loaiFileChoKy(p), dongPhu: 'Mã đề nghị: ' + p.maDeNghi + (p.soDangKy ? ' - Số đăng ký: ' + p.soDangKy : ''),
+                onTrinh: route => { closeModal('clMH09'); if (done) done(route.levels[route.levels.length - 1].leader); }
+            });
         };
         openModal('clMH09');
+    }
+
+    // MH03 (Ký duyệt Chỉnh lý/Hủy/Khôi phục) - Màn hình Ký duyệt / Từ chối hồ sơ trình ký (dùng chung bpbd_trinh_ky_cap.js)
+    function openKyDuyet(p, cheDo, done) {
+        const K = window.BpbdKy;
+        if (!K) { toast('Chưa nạp được thành phần trình ký nhiều cấp.', 'error'); return; }
+        const cur0 = getProposal(p.id);
+        if (!cur0 || cur0.trangThai !== 'Chờ ký số') { toast(MSG.ERR_DK_005, 'error'); return; }
+        K.moKyDuyet({
+            key: 'cldk:' + p.id, cheDo, maHoSo: p.maDeNghi,
+            meta: { loaiTrinh: loaiFileChoKy(p), tenTep: `DuThao_${p.maDeNghi}.pdf`, nguoiTrinh: p.trinhKy ? p.trinhKy.nguoi : '', thoiDiemTrinh: p.trinhKy ? p.trinhKy.thoiDiem : '' },
+            tieuDeVanBan: loaiFileChoKy(p), dongPhu: 'Mã đề nghị: ' + p.maDeNghi + (p.soDangKy ? ' - Số đăng ký: ' + p.soDangKy : ''),
+            thongTin: [['Mã đề nghị', `<b>${esc(p.maDeNghi)}</b>`], ['Loại đề nghị', esc(loaiLabel(p))], ['Số đăng ký', esc(p.soDangKy || '-')]],
+            onXemFile: () => window.open(`du_thao_chinh_ly.html?id=${p.id}`, '_blank'),
+            conHopLe: () => { const c = getProposal(p.id); return !!c && c.trangThai === 'Chờ ký số'; },
+            onKyDuyet: kq => {
+                const cur = getProposal(p.id);
+                if (kq.laCuoi) {
+                    cur.trangThai = 'Hoàn thành';
+                    cur.kySo = { nguoi: K.nguoiDung(), thoiDiem: fmtDateTime(new Date()), hinhThuc: kq.hinhThucKySo };
+                    if (cur.loai === 'HUY' && !cur.soDKHuyMoi) cur.soDKHuyMoi = 'H' + String(new Date().getFullYear()).slice(2) + String(Date.now()).slice(-6);
+                }
+                updateProposal(cur);
+                if (done) done(cur, kq.laCuoi ? MSG.SUC_CLDK_005(cur.maDeNghi) : `Ký duyệt hồ sơ thành công. Hồ sơ đã chuyển đến ${kq.nguoiTiep}.`); // [MSG-SUC-DK-KT-008]
+            },
+            onTuChoi: info => {
+                const cur = getProposal(p.id);
+                cur.trangThai = 'Bị trả lại';
+                cur.traLai = cur.traLai || [];
+                cur.traLai.push({ nguoi: info.nguoi, thoiDiem: info.thoiDiem, lyDo: info.lyDo });
+                updateProposal(cur);
+                if (done) done(cur, MSG.SUC_CLDK_006(cur.maDeNghi));
+            }
+        });
     }
 
     // MH07 (Ký duyệt Chỉnh lý/Hủy/Khôi phục) - Popup Ký số hồ sơ
@@ -1287,6 +1322,6 @@
         // hiển thị
         renderHoSo, renderGiaoDichHuy, diffRows, TAG, histIcon, countChanges,
         // popup
-        openModal, closeModal, confirmBox, openDuyet, openTuChoi, openTraLai, openTrinhKy, openKySo, openDraft, readDraft
+        openModal, closeModal, confirmBox, openDuyet, openTuChoi, openTraLai, openTrinhKy, openKySo, openKyDuyet, openDraft, readDraft
     };
 })(window);

@@ -789,7 +789,7 @@
 
     <!-- MAIN IFRAME CONTENT LOADER -->
         <div class="content-frame-container">
-            <iframe id="mainContentIframe" class="main-iframe" src="../02_Bien_phap_bao_dam/kiem_tra_ho_so.html"
+            <iframe id="mainContentIframe" class="main-iframe" src="../02_Bien_phap_bao_dam/kiem_tra_ho_so.html?menu=phieu-dang-ky"
                 title="Nội dung chức năng"></iframe>
         </div>
     </div>
@@ -815,10 +815,11 @@
                     {
                         title: "Kiểm tra và xử lý hồ sơ",
                         children: [
-                            // Badge tính động theo dữ liệu màn Kiểm tra và xử lý hồ sơ (chỉ hiển thị khi > 0)
-                            { title: "Hồ sơ chờ xử lý", url: "../02_Bien_phap_bao_dam/kiem_tra_ho_so.html", badgeKey: "kths_pending", badgeType: "danger" },
-                            { title: "Hồ sơ đang chờ ký", url: "../02_Bien_phap_bao_dam/kiem_tra_ho_so.html?view=dang_xu_ly", badgeKey: "kths_signing", badgeType: "warning" },
-                            { title: "Hồ sơ đã xử lý", url: "../02_Bien_phap_bao_dam/kiem_tra_ho_so.html?view=da_xu_ly" }
+                            // 03 menu con theo loại hồ sơ, mỗi menu con có 05 Tab trạng thái (tham số menu).
+                            // Badge tính động theo dữ liệu màn Kiểm tra và xử lý hồ sơ = số hồ sơ chờ xử lý của loại hồ sơ (chỉ hiển thị khi > 0)
+                            { title: "Phiếu đăng ký", url: "../02_Bien_phap_bao_dam/kiem_tra_ho_so.html?menu=phieu-dang-ky", badgeKey: "kths_pdk", badgeType: "danger" },
+                            { title: "Yêu cầu cung cấp thông tin", url: "../02_Bien_phap_bao_dam/kiem_tra_ho_so.html?menu=cung-cap-thong-tin", badgeKey: "kths_cctt", badgeType: "danger" },
+                            { title: "Yêu cầu cung cấp bản sao", url: "../02_Bien_phap_bao_dam/kiem_tra_ho_so.html?menu=cung-cap-ban-sao", badgeKey: "kths_bansao", badgeType: "danger" }
                         ]
                     },
                     { title: "Chỉnh lý thông tin/Hủy/Khôi phục đăng ký", url: "../03_Boi_thuong_nha_nuoc/theo_doi_xu_ly_de_nghi.html", badge: 6, badgeType: "danger" },
@@ -1576,7 +1577,7 @@
         function selectDefaultLeaf() {
             toggleRootItem(0);
             toggleSubGroup(0, 2); // Kiểm tra và xử lý hồ sơ (index shifted from 1 to 2)
-            const firstLeaf = menuData[0].children[2].children[0]; // Hồ sơ chờ xử lý
+            const firstLeaf = menuData[0].children[2].children[0]; // Phiếu đăng ký
             selectLeaf(firstLeaf, [menuData[0].title, menuData[0].children[2].title, firstLeaf.title], 'leaf-0-2-0');
         }
 

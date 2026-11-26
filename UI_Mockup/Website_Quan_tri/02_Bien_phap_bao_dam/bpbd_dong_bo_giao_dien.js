@@ -38,7 +38,14 @@
         quan_ly_tu_lieu_vbqppl: 'Quản lý thông tin tư liệu VBQPPL',
         quan_ly_cau_hoi_faq: 'Quản lý câu hỏi và trả lời thường gặp',
         tiep_nhan_ho_so: 'Tiếp nhận hồ sơ',
-        kiem_tra_ho_so: VIEW === 'dang_xu_ly' ? 'Hồ sơ đang chờ ký' : (VIEW === 'da_xu_ly' ? 'Hồ sơ đã xử lý' : 'Hồ sơ chờ xử lý'),
+        // Kiểm tra và xử lý hồ sơ: tiêu đề = tên menu con theo loại hồ sơ (tham số menu; không có thì theo loại hồ sơ đang mở)
+        kiem_tra_ho_so: (function () {
+            var ten = { registration: 'Phiếu đăng ký', cctt: 'Yêu cầu cung cấp thông tin', copy: 'Yêu cầu cung cấp bản sao' };
+            var theoMenu = { 'phieu-dang-ky': 'registration', 'cung-cap-thong-tin': 'cctt', 'cung-cap-ban-sao': 'copy' }[QS.get('menu') || ''];
+            var loai = theoMenu || (QS.get('openCctt') ? 'cctt' : (QS.get('openCopy') ? 'copy' : ''));
+            if (!loai) { try { loai = sessionStorage.getItem('uc028OfficerWorkType') || ''; } catch (e) { loai = ''; } }
+            return ten[loai] || ten.registration;
+        })(),
         ky_duyet_ho_so: 'Ký duyệt hồ sơ',
         loc_phieu_trung_lap: 'Lọc phiếu trùng lặp',
         tra_cuu_thong_tin: 'Tra cứu hồ sơ',
