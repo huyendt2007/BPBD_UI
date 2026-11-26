@@ -11498,7 +11498,7 @@
             document.getElementById('claimAdvanceTotalText').innerText = `${total.toLocaleString('vi-VN')} đồng (Viết bằng chữ: ${numberToVietnameseWords(total)})`;
         }
 
-        // Danh mục tài liệu gửi kèm khi tạo mới: bảng không có dòng; người dùng bấm "Thêm tài liệu" để thêm (bỏ các dòng mặc định theo tư cách người yêu cầu)
+        // Danh mục tài liệu gửi kèm khi tạo mới: 01 dòng trống để tải tệp ngay (26/11: bảng nhập liệu mặc định 01 dòng trống); người dùng bấm "Thêm tài liệu" để thêm dòng (bỏ các dòng mặc định theo tư cách người yêu cầu)
         function initDocsList(role = "Người bị thiệt hại") {
             currentDocsList = [];
         }
@@ -11587,6 +11587,9 @@
             const tbody = document.getElementById('claimDynamicDocsBody');
             if (!tbody) return;
             tbody.innerHTML = '';
+            // 26/11: bảng chưa có dòng nào (Thêm mới, Cập nhật hồ sơ chưa có tài liệu, xóa hết dòng) -> 01 dòng trống
+            if (!Array.isArray(currentDocsList)) currentDocsList = [];
+            if (!currentDocsList.length) currentDocsList.push({ name: "", required: false, file: null, isCustom: true });
 
             currentDocsList.forEach((doc, idx) => {
                 const tr = document.createElement('tr');
@@ -11627,6 +11630,8 @@
                 const fileName = input.files[0].name;
                 if (currentDocsList[idx]) {
                     currentDocsList[idx].file = fileName;
+                    // Quy chuẩn bảng Tài liệu đính kèm: ô Tên tài liệu, văn bản đang trống -> lấy tên tệp (bỏ phần mở rộng)
+                    if (!String(currentDocsList[idx].name || '').trim()) currentDocsList[idx].name = fileName.replace(/\.[^.]+$/, '');
                     renderDocsTable();
                     showToast("Đã đính kèm tệp tin: " + fileName + " thành công!", "success");
                 }
@@ -25052,7 +25057,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <!-- [ttgq] Popup Trình ký Quyết định tiếp tục giải quyết bồi thường (Mẫu số 23/BTNN) -->
     <script src="quan_ly_boi_thuong_ttgq.js?v=20261126hst"></script>
     <!-- [ycbs] Tiếp nhận hồ sơ bổ sung: nhãn Hồ sơ gốc / Bổ sung, Đã cập nhật bổ sung (bọc hàm màn Nhập liệu hồ sơ vụ việc) -->
-    <script src="quan_ly_boi_thuong_ycbs.js?v=20261030s2"></script>
+    <script src="quan_ly_boi_thuong_ycbs.js?v=20261126tl1"></script>
     <!-- [phdx] Tab Phục hồi danh dự: bấm Step -> khối tương ứng; thu gọn / mở rộng khối; khối Hoãn phục hồi danh dự + Tiếp tục thực hiện -->
     <script src="quan_ly_boi_thuong_phdd.js?v=20261109pd1"></script>
     <script src="quan_ly_boi_thuong_phddxa.js?v=20261029tldk"></script>
@@ -25089,7 +25094,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <!-- [gql] Hủy QĐ -> Đình chỉ hoặc Giải quyết lại: thao tác Giải quyết lại (Thao tác khác MH01 / thanh thao tác MH04), dòng phụ "QĐ đã bị hủy", lần thương lượng, khối Quyết định đã bị hủy; dữ liệu mẫu BT-2026-561, BT-2026-562 -->
     <script src="quan_ly_boi_thuong_gql.js?v=20261106gql16"></script>
     <!-- [hst] Nhập hồ sơ tồn: form Nhập liệu hồ sơ vụ việc chế độ hồ sơ tồn, nhãn Hồ sơ tồn ở lưới / chi tiết, dữ liệu mẫu BT-2025-901..904 (đặt sau gql, cdpd) -->
-    <script src="quan_ly_boi_thuong_hst.js?v=20261126sua2"></script>
+    <script src="quan_ly_boi_thuong_hst.js?v=20261126ktl2"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_tieu_de_man.js?v=20261103td2"></script>

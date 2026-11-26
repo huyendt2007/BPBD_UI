@@ -67,7 +67,8 @@ function ycbsEnsureBaseline(c) {
     YCBS_FIELDS.forEach(function (f) { fields[f.id] = ycbsFieldVal(f.id); });
     c.ycbsBaseline = {
         key: key, at: ycbsNow(), fields: fields,
-        docs: (currentDocsList || []).map(ycbsDocKey),
+        // 26/11: bỏ dòng trống mặc định (chưa có tên, chưa có tệp) khỏi bản gốc, để dòng đó nhận nhãn Bổ sung như Văn bản làm căn cứ
+        docs: (currentDocsList || []).filter(function (d) { return d && (d.file || String(d.name || '').trim()); }).map(ycbsDocKey),
         vbcc: (vanBanCanCuRows || []).filter(function (r) { return r.name || r.file; }).map(ycbsVbKey)
     };
     return c.ycbsBaseline;

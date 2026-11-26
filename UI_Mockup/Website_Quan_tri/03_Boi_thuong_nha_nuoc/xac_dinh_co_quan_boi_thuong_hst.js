@@ -36,6 +36,8 @@ var XHST_VERSION = '20261120xhst1';
         var s = document.createElement('style'); s.id = 'xhstCss';
         s.textContent = [
             '.xhst-top{background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:8px;padding:14px 16px;margin-bottom:20px}',
+            // 26/11 (BA yêu cầu): form Nhập / Cập nhật hồ sơ tồn - thanh nút cuối form luôn cố định dưới màn hình
+            '#screenForm.xhst-on .form-footer{position:sticky;bottom:0;z-index:30;background:#fff;margin-top:20px;padding:12px 0;box-shadow:0 -6px 12px -6px rgba(15,23,42,.18)}',
             '.xhst-h{font-size:13px;font-weight:700;color:#1e3a8a;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}',
             '.xhst-alert{border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:12px;display:flex;gap:8px;line-height:1.5;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a}',
             '.xhst-alert.o{background:#f0fdf4;border-color:#bbf7d0;color:#166534}',
@@ -169,6 +171,7 @@ var XHST_VERSION = '20261120xhst1';
     function setMode(v) {
         ensureUi();
         on = !!v;
+        if (el('screenForm')) el('screenForm').classList.toggle('xhst-on', on);
         var show = function (id, s, d) { var x = el(id); if (x) x.style.display = s ? (d || '') : 'none'; };
         ['xhstTop', 'xhstSteps', 'xhstWNguon', 'xhstWGiay'].forEach(function (id) { show(id, on); });
         show('xhstButtons', on, 'flex'); show('btnFormSubmit', !on);
@@ -180,6 +183,7 @@ var XHST_VERSION = '20261120xhst1';
             el('xhstNguon').value = NGUON[0];
             X.nguonDoi(); X.render(); xoaLoi();
         } else {
+            X._sua = null;
             show('xhstWDvc', false);
             var ht = el('formHinhThucTiepNhan'); if (ht) { ht.disabled = false; Array.prototype.slice.call(ht.options).forEach(function (o) { if (o.dataset.xhst) o.remove(); }); }
         }
@@ -188,6 +192,7 @@ var XHST_VERSION = '20261120xhst1';
 
     // Mở form: dùng lại MH02 Tiếp nhận với 01 hồ sơ nháp trong bộ nhớ (không ghi kho)
     X.open = function () {
+        X._sua = null;
         requestList = requestList.filter(function (r) { return r.id !== DRAFT; });
         requestList.push({ id: DRAFT, code: '', module: 'XD', status: '', hinhThucTiepNhan: 'Trực tiếp', linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', history: [] });
         showFormScreen(DRAFT, 'accept');
@@ -266,26 +271,31 @@ var XHST_VERSION = '20261120xhst1';
     }
     function luu(draft) {
         var W = BTNN_WF, me = getMe(), u = W.getCurrentUser() || {}, s = stOf(el('xhstSt').value);
-        var code = W.nextCode('XD'), vv = W.nextVuViecCode ? W.nextVuViecCode() : '';
+        // 26/11 (BA chọn): Cập nhật hồ sơ tồn - giữ Mã hồ sơ, Mã vụ việc, ngày nhập, người nhập và lịch sử cũ
+        var cu = X._sua ? requestList.filter(function (r) { return r.id === X._sua; })[0] : null;
+        var code = cu ? cu.code : W.nextCode('XD'), vv = cu ? (cu.maVuViec || '') : (W.nextVuViecCode ? W.nextVuViecCode() : '');
         var nguon = el('xhstNguon').value, dvc = nguon === HT_DVC ? el('xhstDvc').value.trim() : '';
         var rec = JSON.parse(JSON.stringify(draft));
         ['history', 'supplementDiff', 'supplementReceived'].forEach(function (k) { delete rec[k]; });
+        // Cập nhật: bỏ dữ liệu của trạng thái cũ trước khi ghi lại theo trạng thái mới
+        if (cu) ['procBasis', 'procTargetUnitId', 'procTargetAgency', 'procReason', 'procDecisionFile', 'offlineDoc', 'transfer', 'ktlReason', 'supplementReason', 'supplementHistory', 'routes', 'approval', 'returned'].forEach(function (k) { delete rec[k]; });
         var at = W.nowText(), today = W.dateText ? W.dateText() : '';
         Object.assign(rec, {
-            id: 'XD' + Date.now(), code: code, module: 'XD', loaiYeuCau: REQUEST_TYPE_XDCQ, maVuViec: vv,
+            id: cu ? cu.id : 'XD' + Date.now(), code: code, module: 'XD', loaiYeuCau: REQUEST_TYPE_XDCQ, maVuViec: vv,
             rootUnitId: W.getRootId(u.unitId) || u.unitId, currentUnitId: u.unitId, chuTri: me, createdBy: me,
             routes: [], approval: null, returned: null, history: [],
             status: W.STATUS.XAC_MINH, nguonHoSo: nguon, hinhThucTiepNhan: nguon === HT_DVC ? HT_DVC : el('formHinhThucTiepNhan').value,
             dvcDossierCode: dvc, date: el('xhstNgayTn').value.trim(), receivedAt: at,
             ton: true, hst: { st: s.v, soGiay: el('xhstSoGiay').value.trim(), nhapLuc: today, nhapBoi: W.userName(me), ver: XHST_VERSION }
         });
+        if (cu) { rec.receivedAt = cu.receivedAt || at; rec.createdBy = cu.createdBy || me; rec.hst.nhapLuc = (cu.hst || {}).nhapLuc || today; rec.hst.nhapBoi = (cu.hst || {}).nhapBoi || W.userName(me); }
         W.addHistory(rec, 'Nhập hồ sơ tồn', 'Nhập hồ sơ đã giải quyết trên giấy (ngày tiếp nhận ' + rec.date + '). Trạng thái hiện tại: [' + s.t + '].');
         if (s.v === 'DC') {
             var cq = el('xhstCq').value;
             Object.assign(rec, { procBasis: el('xhstCanCu').value.trim(), procTargetUnitId: cq, procTargetAgency: W.unitName(cq), procReason: el('xhstNd').value.trim() });
         }
         W.upsertRecord(rec);
-        if (vv && W.linkVuViec) W.linkVuViec(code, vv);
+        if (vv && W.linkVuViec && !cu) W.linkVuViec(code, vv);
         var ycbt = '';
         if (s.kind) {
             var docs = tepCuaBang(), file = docs[0].file;
@@ -307,12 +317,74 @@ var XHST_VERSION = '20261120xhst1';
             rec.hst.vb = vbInfo;
             W.upsertRecord(rec);
         }
+        // Dữ liệu để mở lại khi Cập nhật hồ sơ tồn và điều kiện được Cập nhật / Xóa (lịch sử không thêm dòng nào sau khi lưu)
+        rec.hst.nd = el('xhstNd') ? el('xhstNd').value.trim() : '';
+        rec.hst.docs = s.kind ? tepCuaBang() : [];
+        if (cu) {
+            rec.history = (cu.history || []).slice();
+            W.addHistory(rec, 'Cập nhật hồ sơ tồn', 'Cập nhật thông tin hồ sơ tồn đã nhập. Trạng thái hiện tại: [' + rec.status + '].');
+            rec.hst.capNhatLuc = today;
+        }
+        rec.hst.trangThai = rec.status; rec.hst.soLs = (rec.history || []).length;
+        W.upsertRecord(rec);
+        requestList = requestList.filter(function (r) { return r.id !== rec.id; }).concat([rec]);
         setMode(false);
         requestList = requestList.filter(function (r) { return r.id !== DRAFT; });
-        showToast('Đã lưu hồ sơ tồn ' + code + '. Trạng thái: ' + rec.status + '.', 'success'); // [MSG-SUC-BTNN-HST-001]
+        showToast((cu ? 'Đã cập nhật hồ sơ tồn ' : 'Đã lưu hồ sơ tồn ') + code + '. Trạng thái: ' + rec.status + '.', 'success'); // [MSG-SUC-BTNN-HST-001]
         showListScreen();
         if (typeof switchXdTab === 'function') switchXdTab(rec.status === W.STATUS.XAC_MINH || rec.status === W.STATUS.YC_BO_SUNG ? 'pending' : 'done');
     }
+
+    // ------------------------------------------------------------------ 26/11 (BA chọn cách A): Cập nhật / Xóa hồ sơ tồn
+    // Chỉ khi hồ sơ chưa có thao tác nào sau khi nhập (lịch sử không thêm dòng, trạng thái giữ như lúc lưu) và người dùng là người đã nhập; áp dụng mọi trạng thái, kể cả Đã chuyển CQGQBT
+    X.duocSua = function (r) {
+        if (!r || !r.ton || !r.hst || r.hst.soLs == null) return false;
+        var me = ''; try { me = getMe(); } catch (e) { }
+        return (r.history || []).length === r.hst.soLs && r.status === r.hst.trangThai && r.createdBy === me;
+    };
+    X.edit = function (id) {
+        var r = requestList.filter(function (x) { return x.id === id; })[0];
+        if (!X.duocSua(r)) { showToast('Hồ sơ tồn đã có thao tác xử lý tiếp, không cập nhật được.', 'error'); return; }
+        var d = JSON.parse(JSON.stringify(r)); d.id = DRAFT; d.status = ''; d.history = [];
+        requestList = requestList.filter(function (x) { return x.id !== DRAFT; }); requestList.push(d);
+        showFormScreen(DRAFT, 'accept');
+        setMode(true);
+        X._sua = id;
+        var h = r.hst || {};
+        el('xhstSt').value = h.st || ''; el('xhstNgayTn').value = r.date || ''; el('xhstSoGiay').value = h.soGiay || '';
+        el('xhstNguon').value = r.nguonHoSo || NGUON[0]; X.nguonDoi(); el('xhstDvc').value = r.dvcDossierCode || '';
+        X.render();
+        if (el('xhstNd')) el('xhstNd').value = h.nd || '';
+        if (el('xhstCanCu')) el('xhstCanCu').value = r.procBasis || '';
+        if (el('xhstCqTree') && r.procTargetUnitId && BTNN_WF.mountUnitTree) BTNN_WF.mountUnitTree(el('xhstCqTree'), { inputId: 'xhstCq', value: r.procTargetUnitId, placeholder: '-- Chọn cơ quan giải quyết bồi thường --', onChange: function (v) { if (v) boLoi(el('xhstCqTree')); } });
+        var vb = h.vb || {};
+        if (el('xhstSo')) { el('xhstSo').value = vb.so || ''; el('xhstNgayVb').value = vb.ngay || ''; el('xhstNguoiKy').value = vb.nguoiKy || ''; }
+        var tb = document.querySelector('#xhstBlocks .xhst-tl tbody');
+        (h.docs || []).forEach(function (dc, i) {
+            if (!tb) return;
+            if (i > 0 && i >= tb.rows.length) tb.insertAdjacentHTML('beforeend', tlDong({}, tb.rows.length));
+            var tr = tb.rows[i]; if (!tr) return;
+            var o = tr.querySelector('input'); if (o && !tr.dataset.bb) o.value = dc.name || '';
+            tr.dataset.file = dc.file; var fn = tr.querySelector('.xhst-fname'); if (fn) fn.textContent = dc.file;
+            var eye = tr.querySelector('.xhst-ic.eye'); if (eye) eye.style.color = '#1e3a8a';
+        });
+        el('formScreenTitle').innerHTML = '<i class="fa-solid fa-box-archive"></i> CẬP NHẬT HỒ SƠ TỒN XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG';
+        window.scrollTo(0, 0);
+    };
+    X.xoa = function (id) {
+        var r = requestList.filter(function (x) { return x.id === id; })[0];
+        if (!X.duocSua(r)) { showToast('Hồ sơ tồn đã có thao tác xử lý tiếp, không xóa được.', 'error'); return; }
+        var lam = function () {
+            BTNN_WF.removeRecord(r.code);
+            requestList = requestList.filter(function (x) { return x.id !== id; });
+            try { if (typeof reloadRequestList === 'function') reloadRequestList(); } catch (e) { }
+            try { showListScreen(); } catch (e) { }
+            try { filterData(); } catch (e) { try { renderTable(); } catch (e2) { } }
+            showToast('Đã xóa hồ sơ tồn ' + r.code + '.', 'success');
+        };
+        var msg = 'Bạn có chắc chắn muốn xóa hồ sơ tồn ' + r.code + '? Hồ sơ đã xóa không khôi phục được.';
+        if (typeof showConfirmModal === 'function') showConfirmModal(msg, lam); else if (confirm(msg)) lam();
+    };
 
     // ------------------------------------------------------------------ Danh sách: nút, nhãn, ô lọc
     function canNhap() { try { return canCreateXd() && !isLeaderMe() && !isXdViewOnly(); } catch (e) { return false; } }
@@ -342,6 +414,7 @@ var XHST_VERSION = '20261120xhst1';
                 return r;
             };
         });
+        // 26/11 (BA chốt): Cập nhật hồ sơ tồn, Xóa hồ sơ tồn chỉ có ở thanh nút màn chi tiết, không có trên lưới danh sách
         wrap('resetFilters', function (o) { return function () { if (el('filterHoSoTon')) el('filterHoSoTon').value = ''; return o.apply(this, arguments); }; });
         wrap('renderTable', function (o) {
             return function () {
@@ -377,6 +450,14 @@ var XHST_VERSION = '20261120xhst1';
                         n.innerHTML = '<i class="fa-solid fa-box-archive" style="margin-top:3px;color:#475569"></i><div><b>Hồ sơ tồn</b>: hồ sơ đã giải quyết trên giấy, nhập vào hệ thống ngày ' + esc(h.nhapLuc || '') + ' bởi ' + esc(h.nhapBoi || '') + (h.soGiay ? ', số hồ sơ trên giấy ' + esc(h.soGiay) : '') + '. Các bước đã làm trên giấy được nhập khi tạo hồ sơ; bước hiện tại và các bước sau xử lý như hồ sơ thường.</div>';
                         if (t && t.parentNode) t.parentNode.insertBefore(n, t.nextSibling);
                     }
+                    // Thanh nút màn chi tiết: Xóa hồ sơ tồn, Cập nhật hồ sơ tồn (ngay sau nút Đóng) khi đủ điều kiện
+                    var ft = el('detailWorkflowActions');
+                    if (ft && X.duocSua(c)) {
+                        var dong = ft.querySelector('button');
+                        var html = '<button class="btn btn-secondary" id="xhstBtnXoa" style="color:#dc2626;border-color:#fca5a5;background:#fff" onclick="XHST.xoa(\'' + c.id + '\')"><i class="fa-solid fa-trash"></i> Xóa hồ sơ tồn</button>'
+                            + '<button class="btn btn-primary" id="xhstBtnSua" onclick="XHST.edit(\'' + c.id + '\')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật hồ sơ tồn</button>';
+                        if (dong) dong.insertAdjacentHTML('afterend', html); else ft.insertAdjacentHTML('beforeend', html);
+                    }
                 } catch (e) { console.warn('xhst', e); }
                 return r;
             };
@@ -391,7 +472,39 @@ var XHST_VERSION = '20261120xhst1';
         setTimeout(function () { if (getCleanBasisRows().some(function (r) { return r.file; })) el('xhstVbccErr').remove(); }, 50);
     }, true);
 
+    // 26/11: hồ sơ tồn mẫu vừa nhập (Không thụ lý), chưa có thao tác nào sau khi nhập -> màn chi tiết có «Cập nhật hồ sơ tồn», «Xóa hồ sơ tồn».
+    // Tạo 01 lần (khóa localStorage), người nhập là người dùng giả lập khi tạo; xóa rồi thì không tạo lại.
+    var SEED_KEY = 'xhstSeed_20261126';
+    function seedTon() {
+        try {
+            if (localStorage.getItem(SEED_KEY)) return;
+            var W = BTNN_WF, me = W.getCurrentUserId(), all = W.loadRecords();
+            if (all.some(function (r) { return r.code === 'XD-2025-901'; })) { localStorage.setItem(SEED_KEY, '1'); return; }
+            var mau = all.filter(function (r) { return r.module === 'XD' && r.chuTri === me; })[0] || all.filter(function (r) { return r.module === 'XD'; })[0];
+            if (!mau || !me) return;
+            var u = W.getUser ? (W.getUser(me) || {}) : {};
+            var rec = JSON.parse(JSON.stringify(mau));
+            ['routes', 'approval', 'returned', 'procBasis', 'procTargetUnitId', 'procTargetAgency', 'procReason', 'procDecisionFile', 'offlineDoc', 'transfer', 'supplementReason', 'supplementHistory', 'supplementDiff', 'supplementReceived', 'ktlReason', 'history'].forEach(function (k) { delete rec[k]; });
+            var file = 'Thong_bao_khong_thu_ly_ho_so_XD-2025-901.pdf';
+            Object.assign(rec, {
+                id: 'WF-XD-2025-901', code: 'XD-2025-901', maVuViec: 'VVBT-2025-901', status: W.STATUS.KHONG_THU_LY, date: '15/09/2025', receivedAt: '09:00 15/09/2025',
+                chuTri: me, createdBy: me, currentUnitId: u.unitId || rec.currentUnitId, rootUnitId: (u.unitId && W.getRootId(u.unitId)) || rec.rootUnitId,
+                nguonHoSo: 'Tiếp nhận mới', hinhThucTiepNhan: 'Trực tiếp', dvcDossierCode: '',
+                ktlReason: 'Yêu cầu bồi thường không thuộc phạm vi trách nhiệm bồi thường của Nhà nước (hồ sơ tồn - dữ liệu mẫu).',
+                procDecisionFile: file, offlineDoc: { kind: 'Không thụ lý', method: 'Ký ngoài', file: file, reason: '', at: '10:00 20/09/2025', by: me, attachments: [] },
+                ton: true, history: []
+            });
+            W.addHistory(rec, 'Nhập hồ sơ tồn', 'Nhập hồ sơ đã giải quyết trên giấy (ngày tiếp nhận 15/09/2025). Trạng thái hiện tại: [Không thụ lý].');
+            rec.hst = { st: 'KT', soGiay: '125/HS-2025', nhapLuc: '26/11/2026', nhapBoi: W.userName(me), ver: XHST_VERSION, nd: rec.ktlReason,
+                docs: [{ name: 'Thông báo không thụ lý hồ sơ', file: file }], vb: { so: '45/TB-STP', ngay: '20/09/2025', nguoiKy: 'Phó Giám đốc Sở Tư pháp' },
+                trangThai: W.STATUS.KHONG_THU_LY, soLs: rec.history.length };
+            W.upsertRecord(rec);
+            localStorage.setItem(SEED_KEY, '1');
+            if (typeof reloadRequestList === 'function') reloadRequestList();
+        } catch (e) { console.warn('xhst seed', e); }
+    }
+
     gan();
-    document.addEventListener('DOMContentLoaded', function () { setTimeout(function () { listUi(); try { renderTable(); } catch (e) { } }, 0); });
-    if (document.readyState !== 'loading') setTimeout(function () { listUi(); try { renderTable(); } catch (e) { } }, 0);
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(function () { seedTon(); listUi(); try { renderTable(); } catch (e) { } }, 0); });
+    if (document.readyState !== 'loading') setTimeout(function () { seedTon(); listUi(); try { renderTable(); } catch (e) { } }, 0);
 })();

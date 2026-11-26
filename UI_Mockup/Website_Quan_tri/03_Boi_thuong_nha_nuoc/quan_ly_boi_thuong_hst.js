@@ -72,6 +72,8 @@ var HST_VERSION = '20261119hst1';
         s.id = 'hstCss';
         s.textContent = [
             '.hst-top{background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:8px;padding:14px 16px;margin-bottom:20px}',
+            // 26/11 (BA yêu cầu): form Nhập / Cập nhật hồ sơ tồn - thanh nút cuối form luôn cố định dưới màn hình
+            '#inlineClaimFormPanel.hst-on .inline-form-footer{position:sticky;bottom:0;z-index:30;box-shadow:0 -6px 12px -6px rgba(15,23,42,.18)}',
             '.hst-top .hst-h{font-size:13px;font-weight:700;color:#1e3a8a;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}',
             '.hst-note{font-size:12px;color:#64748b;margin-top:4px}',
             '.hst-wrap .hst-grid,.hst-top .hst-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 16px}',
@@ -391,7 +393,7 @@ var HST_VERSION = '20261119hst1';
         H.nguonDoi();
         var loai = H.loai(), sv = el('hstSt').value, s = ST.filter(function (x) { return x.v === sv; })[0];
         // 25/11: Yêu cầu cả hai + «Cử người giải quyết bồi thường»: ẩn Trạng thái, Bước phục hồi danh dự và tab Phục hồi danh dự (nhánh PHDD bắt đầu sau bước Cử người)
-        var bt = loai !== 'honor', ph = loai !== 'money' && !(loai === 'both' && sv === 'CN');
+        var bt = loai !== 'honor', ph = loai !== 'money' && !(loai === 'both' && (sv === 'CN' || sv === 'KT')); // 26/11: Không thụ lý chưa tới nhánh phục hồi danh dự
         el('hstWSt').style.display = bt ? '' : 'none';
         el('hstWPh').style.display = ph ? '' : 'none';
         var dsTruoc = bt && s ? TRUOC_OF[s.v] : null;
@@ -480,9 +482,14 @@ var HST_VERSION = '20261119hst1';
     };
 
     // ------------------------------------------------------------------ Bật / tắt chế độ hồ sơ tồn trên form
+    // 26/11 (BA yêu cầu): bảng Tài liệu đính kèm chung của form Nhập / Cập nhật hồ sơ tồn mặc định 01 dòng trống
+    function motDongTrong() {
+        try { if (!document.querySelector('#claimDynamicDocsBody > tr') && typeof addNewDocRow === 'function') addNewDocRow(); } catch (e) { }
+    }
     function setMode(v) {
         ensureUi();
         on = !!v;
+        if (el('inlineClaimFormPanel')) el('inlineClaimFormPanel').classList.toggle('hst-on', on);
         var show = function (id, s, d) { var x = el(id); if (x) x.style.display = s ? (d || '') : 'none'; };
         show('hstTop', on); show('hstSteps', on); show('hstFormButtons', on, 'flex'); show('hstRowGiay', on);
         // 20/11: hồ sơ tồn không có trường Mã vụ việc (hệ thống cấp mã mới khi lưu)
@@ -504,6 +511,7 @@ var HST_VERSION = '20261119hst1';
             H.vbccLoi(false);
             H.nguonDoi();
             H.render();
+            motDongTrong();
         } else {
             H._sua = null;
             H.vbccLoi(false); H.vbccTieuDe(null);
@@ -658,7 +666,7 @@ var HST_VERSION = '20261119hst1';
         if (!first && loiKhoi) { H.tab(loiKhoi.closest('#hstFPh') ? 2 : 1); first = loiKhoi; }
         if (first) { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); first.focus(); return; }
         hook = {
-            loai: loai, st: el('hstSt').value, prev: TRUOC_OF[el('hstSt').value] ? TRUOC_DONE[el('hstTruoc').value] : +el('hstPrev').value, truoc: TRUOC_OF[el('hstSt').value] ? el('hstTruoc').value : '', ktl: el('hstSt').value === 'KT' && el('hstKtlLyDo') ? { ma: el('hstKtlLyDo').value, dg: el('hstKtlDg').value.trim() } : null, ph:(loai === 'both' && el('hstSt').value === 'CN') ? '' : el('hstPh').value, phB: el('hstPhB').value, ht: H.cd() ? 'CD' : 'YC',
+            loai: loai, st: el('hstSt').value, prev: TRUOC_OF[el('hstSt').value] ? TRUOC_DONE[el('hstTruoc').value] : +el('hstPrev').value, truoc: TRUOC_OF[el('hstSt').value] ? el('hstTruoc').value : '', ktl: el('hstSt').value === 'KT' && el('hstKtlLyDo') ? { ma: el('hstKtlLyDo').value, dg: el('hstKtlDg').value.trim() } : null, ph:(loai === 'both' && (el('hstSt').value === 'CN' || el('hstSt').value === 'KT')) ? '' : el('hstPh').value, phB: el('hstPhB').value, ht: H.cd() ? 'CD' : 'YC',
             ngay: el('hstNgayTn').value.trim(), noiThuLy: el('hstNoiThuLy').value, dvc: NGUON_MA.indexOf(el('hstNguon').value) >= 0 ? el('hstDvc').value.trim() : '', nguon: el('hstNguon').value, httn: el('claimHinhThucTiepNhan').value,
             soGiay: el('hstSoGiay').value.trim(), cqgq: el('hstCqgq') ? el('hstCqgq').value : '', cqTen: el('claimCqNhan').value,
             tkk: el('hstNoiThuLy').value === 'Thụ lý tại Tòa án' ? el('hstTkk').value : '', soLieu: soLieuKhoi(),
@@ -764,6 +772,7 @@ var HST_VERSION = '20261119hst1';
         H.render();
         if (el('hstKtlLyDo')) { el('hstKtlLyDo').value = c.ktlReasonCode || ''; el('hstKtlDg').value = c.ktlDetail || ''; }
         traKhoi(c.hst.snap);
+        motDongTrong();
         var t = document.querySelector('#inlineClaimFormPanel .inline-form-title');
         if (t) t.innerHTML = '<i class="fa-solid fa-box-archive"></i> CẬP NHẬT HỒ SƠ TỒN';
     };
@@ -774,6 +783,7 @@ var HST_VERSION = '20261119hst1';
             var i = claimsList.findIndex(function (x) { return x.id === id; }); if (i < 0) return;
             claimsList.splice(i, 1);
             try { saveClaimsToLocal(); } catch (e) { }
+            try { if (typeof closeCaseDetail === 'function') closeCaseDetail(); } catch (e) { }
             try { renderClaimsTable(); } catch (e) { }
             try { showToast('Đã xóa hồ sơ tồn ' + c.code + '.', 'success'); } catch (e) { }
         };
@@ -834,6 +844,14 @@ var HST_VERSION = '20261119hst1';
         var ht = sxmBuild({ id: 'HST_HT', code: 'BT-2025-904', who: 'p8', stage: 'cho-thuc-thi', k: [500, 480, 450, 420, 400], docBase: DOC, hanhVi: HV, nhanQua: NQ, th: TH });
         ht.status = 'Hoàn thành'; ht.slaText = 'Đã hoàn thành chi trả tiền bồi thường';
         add(ht, 'HT', ['thuly', 'xacminh', 'thuongluong', 'quyetdinh', 'thucthi']);
+        // 26/11: hồ sơ tồn mẫu vừa nhập, chưa có thao tác nào sau khi nhập -> màn chi tiết có «Cập nhật hồ sơ tồn», «Xóa hồ sơ tồn»
+        // (người nhập Nguyễn Văn Chuyên Viên; trạng thái Hoãn giải quyết, trước khi hoãn: Xác minh thiệt hại)
+        var ho = sxmBuild({ id: 'HST_HO', code: 'BT-2025-905', who: 'p6', stage: 'xac-minh', k: [300, 280], docBase: DOC, hanhVi: HV, nhanQua: NQ, th: TH });
+        ho.status = 'Hoãn giải quyết'; ho.hgqPrevStatus = 'Xác minh thiệt hại'; ho.requestType = 'money';
+        ho.assignedOfficer = 'Nguyễn Văn Chuyên Viên';
+        add(ho, 'HO', ['thuly']);
+        ho.timeline = ho.timeline.slice(0, 1);
+        Object.assign(ho.hst, { truoc: 'XM', prev: 2, loai: 'money', trangThai: 'Hoãn giải quyết', snap: [] });
         return L;
     }
     if (typeof sxmClaims === 'function') {
@@ -842,7 +860,7 @@ var HST_VERSION = '20261119hst1';
     }
 
     // Ngày tiếp nhận trên giấy của dữ liệu mẫu (trang dời ngày dữ liệu mẫu khi khởi tạo -> đặt lại sau khởi tạo)
-    var NGAY_MAU = { HST_XM: '12/03/2025', HST_TL: '05/02/2025', HST_CT: '18/11/2024', HST_HT: '20/08/2024' };
+    var NGAY_MAU = { HST_XM: '12/03/2025', HST_TL: '05/02/2025', HST_CT: '18/11/2024', HST_HT: '20/08/2024', HST_HO: '10/04/2025' };
     document.addEventListener('DOMContentLoaded', function () {
         setTimeout(function () {
             try {
@@ -865,14 +883,18 @@ var HST_VERSION = '20261119hst1';
         try { showToast('Đã lưu hồ sơ tồn ' + c.code + '. Trạng thái: ' + c.status + '.', 'success'); } catch (e) { }
         return true;
     }
-    // Thao tác khác của dòng hồ sơ tồn: Cập nhật hồ sơ tồn, Xóa hồ sơ tồn (chỉ hiện khi H.duocSua)
-    wrap('gqldMoreItems', function (o) {
-        return function (item) {
-            var ds = o.apply(this, arguments) || [];
-            if (H.duocSua(item)) ds = ds.concat([
-                { key: 'hstEdit', label: 'Cập nhật hồ sơ tồn', icon: 'fa-solid fa-pen-to-square', allowed: true, fn: "HST.edit('" + item.id + "');" },
-                { key: 'hstDel', label: 'Xóa hồ sơ tồn', icon: 'fa-solid fa-trash', allowed: true, fn: "HST.xoa('" + item.id + "');" }]);
-            return ds;
+    // 26/11 (BA chốt): Cập nhật hồ sơ tồn, Xóa hồ sơ tồn chỉ có ở thanh nút màn Xem chi tiết hồ sơ tồn (không có trên lưới danh sách)
+    wrap('renderDetailActionBar', function (o) {
+        return function (claim) {
+            var r = o.apply(this, arguments);
+            try {
+                var sua = false; try { sua = !!isDetailEditMode; } catch (e) { }
+                var bar = el('detailActionBar');
+                if (bar && !sua && H.duocSua(claim) && !el('hstBtnSua')) bar.insertAdjacentHTML('afterbegin',
+                    '<button class="btn btn-outline-danger detail-secondary-action" id="hstBtnXoa" onclick="HST.xoa(\'' + claim.id + '\')"><i class="fa-solid fa-trash"></i> Xóa hồ sơ tồn</button>'
+                    + '<button class="btn btn-outline-primary detail-secondary-action" id="hstBtnSua" onclick="HST.edit(\'' + claim.id + '\')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật hồ sơ tồn</button>');
+            } catch (e) { console.warn('hst bar', e); }
+            return r;
         };
     });
     wrap('openTndModal', function (o) { return function (id) { if (hook && done(id)) return; return o.apply(this, arguments); }; });

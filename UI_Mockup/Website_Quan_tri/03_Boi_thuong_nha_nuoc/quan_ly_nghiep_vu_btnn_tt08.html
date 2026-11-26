@@ -1607,7 +1607,8 @@
             enhanceControls();
             document.getElementById('mainContentLabel').innerHTML = `${currentConfig.mainContentLabel}<span class="required">*</span>`;
             document.getElementById('resultLabel').innerText = currentConfig.resultLabel;
-            documentRows = [
+            // 26/11: Thêm mới chỉ có 01 dòng trống (không có dòng tài liệu mặc định); Sửa / Xem: tài liệu mẫu của bản ghi
+            documentRows = isNew ? [{ name: '', file: '' }] : [
                 { name: 'Tài liệu đầu vào', file: 'tai_lieu_dau_vao.pdf' },
                 { name: 'Tài liệu xử lý', file: '' }
             ];
