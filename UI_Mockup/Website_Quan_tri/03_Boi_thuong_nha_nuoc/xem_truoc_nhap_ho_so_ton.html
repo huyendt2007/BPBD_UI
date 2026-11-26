@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xem trước - Nhập hồ sơ tồn</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- BẢN XEM TRƯỚC ĐỂ DUYỆT (19/11/2026): Nhập hồ sơ tồn - Giải quyết YCBT + Xem xét hoàn trả. Chưa gắn vào mockup thật, chưa có SRS. -->
+<style>
+:root{--primary:#1e3a8a;--primary-d:#0b1528;--sec:#2563EB;--text:#1E293B;--muted:#64748B;--border:#E2E8F0;--th:#F8FAFC;--bg:#F3F4F6;--r:6px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;font-size:14px;color:var(--text);background:var(--bg);padding:16px}
+.review-bar{background:#fff7ed;border:1px dashed #f59e0b;border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.review-bar b{color:#b45309;margin-right:6px}
+.rv-btn{border:1px solid #fcd34d;background:#fff;border-radius:16px;padding:5px 12px;font-size:12.5px;cursor:pointer;color:#92400e}
+.rv-btn.on{background:#f59e0b;color:#fff;border-color:#f59e0b}
+.screen{display:none}.screen.on{display:block}
+.page-title{font-size:20px;font-weight:700;color:var(--primary);margin-bottom:12px}
+.card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.tab{padding:10px 16px;cursor:pointer;color:var(--muted);font-weight:500;border-bottom:2px solid transparent}
+.tab.on{color:var(--primary);border-color:var(--primary)}
+.cnt{background:#e2e8f0;border-radius:10px;padding:1px 7px;font-size:11px;margin-left:4px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 16px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 16px}
+.full{grid-column:1/-1}
+/* Căn thẳng ô nhập trên cùng một hàng: nhãn xuống dòng hoặc có ghi chú thì phần trên giãn ra, ô nhập luôn thẳng hàng;
+   lỗi bắt buộc hiện nổi dưới ô, không đẩy lệch hàng */
+.grid,.grid2,.grid3{row-gap:20px}
+.grid>div,.grid2>div,.grid3>div{display:flex;flex-direction:column;position:relative}
+.grid>div.placeholder{display:block}
+.grid>div>*,.grid2>div>*,.grid3>div>*{order:2}
+.grid>div>.form-label,.grid2>div>.form-label,.grid3>div>.form-label{order:0;margin-top:auto}
+.grid>div>.note,.grid2>div>.note,.grid3>div>.note{order:1;margin:-2px 0 6px}
+.grid>div>.err,.grid2>div>.err,.grid3>div>.err{order:3;position:absolute;top:100%;left:0}
+.form-label{display:block;font-weight:500;margin-bottom:6px;font-size:13px;color:#334155}
+.req{color:#ef4444;margin-left:2px}
+.form-control{width:100%;height:36px;padding:7px 10px;font-size:13px;border:1px solid #CBD5E1;border-radius:4px;background:#fff;color:var(--text);font-family:inherit}
+textarea.form-control{height:auto;min-height:60px}
+.form-control:disabled,.form-control[readonly]{background:#f1f5f9;color:#475569}
+.is-invalid{border-color:#ef4444!important}
+.err{display:none;color:#ef4444;font-size:12px;margin-top:4px}
+.new-tag{display:inline-block;background:#dcfce7;color:#166534;font-size:10px;font-weight:700;border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid transparent;border-radius:4px;padding:8px 14px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-outline{background:#fff;border-color:#cbd5e1;color:#334155}
+.btn-success{background:#16a34a;color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-new{outline:2px dashed #16a34a;outline-offset:2px}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid #cbd5e1;border-radius:16px;padding:4px 12px;font-size:12px;background:#fff;color:#334155}
+.chip.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--th);text-align:left;padding:9px 10px;border-bottom:1px solid var(--border);font-weight:600;color:#334155;white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+tr.hl td{background:#f8fafc}
+.badge{display:inline-block;padding:3px 8px;font-size:11px;font-weight:600;border-radius:12px;white-space:nowrap}
+td.nw{white-space:nowrap}
+#htCb td .form-control{min-width:140px}
+#htCb td select.form-control{min-width:130px}
+.b-ton{white-space:nowrap;background:#e5e7eb;color:#374151;border-radius:4px;padding:2px 6px;font-size:10.5px;font-weight:600;margin-top:4px;display:inline-block}
+.b-src{background:#eff6ff;color:#1d4ed8}
+.b-st1{background:#fef3c7;color:#92400e}.b-st2{background:#dbeafe;color:#1e40af}.b-st3{background:#dcfce7;color:#166534}.b-st4{background:#fee2e2;color:#991b1b}
+.link{color:var(--sec);font-weight:600}
+.sub{color:var(--muted);font-size:12px}
+.alert{border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:12px;display:flex;gap:8px}
+.alert-info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a}
+.alert-warn{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
+.alert-ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
+.sec-title{font-size:13px;font-weight:700;color:var(--primary);text-transform:uppercase;margin:4px 0 12px;display:flex;align-items:center;gap:8px}
+.blk{border:1px solid var(--border);border-radius:8px;margin-bottom:12px;background:#fff}
+.blk-h{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f8fafc;border-bottom:1px solid var(--border);border-radius:8px 8px 0 0;font-weight:600;color:#1e293b}
+.blk-b{padding:14px}
+.paper{display:inline-flex;align-items:center;gap:5px;background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600}
+.kn{border:1px dashed #cbd5e1;border-radius:6px;padding:12px;margin-top:6px;background:#fcfcfd}
+.kn-h{font-size:12.5px;font-weight:600;color:#334155;margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.kn-tag{background:#fef3c7;color:#b45309;border-radius:4px;padding:1px 6px;font-size:10.5px}
+.drop{border:1.5px dashed #94a3b8;border-radius:6px;padding:10px;text-align:center;color:#64748b;font-size:12.5px;background:#fff}
+.drop i{color:#2563eb}
+.placeholder{background:repeating-linear-gradient(45deg,#f8fafc,#f8fafc 8px,#f1f5f9 8px,#f1f5f9 16px);border:1px solid var(--border);border-radius:6px;padding:14px;color:#475569;font-size:12.5px}
+.stepper{display:flex;gap:0;margin:6px 0 4px;flex-wrap:wrap}
+.st{flex:1;min-width:110px;text-align:center;font-size:11.5px;color:#94a3b8;position:relative;padding-top:26px}
+.st::before{content:attr(data-n);position:absolute;top:0;left:50%;transform:translateX(-50%);width:22px;height:22px;border-radius:50%;background:#e2e8f0;color:#64748b;font-weight:700;line-height:22px;font-size:11px}
+.st.done{color:#475569}.st.done::before{background:#64748b;color:#fff;content:'✓'}
+.st.cur{color:#1e3a8a;font-weight:700}.st.cur::before{background:#1e3a8a;color:#fff}
+.footer{display:flex;justify-content:flex-end;gap:8px;position:sticky;bottom:0;background:#fff;border-top:1px solid var(--border);padding:12px 16px;margin:0 -16px -16px;border-radius:0 0 8px 8px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:50;align-items:flex-start;justify-content:center;padding:30px 12px;overflow:auto}
+.modal-bg.on{display:flex}
+.modal{background:#fff;border-radius:10px;width:min(980px,100%);box-shadow:0 20px 40px rgba(0,0,0,.25)}
+.modal-h{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-h h3{font-size:16px;color:var(--primary)}
+.modal-b{padding:16px 18px}
+.modal-f{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.x{cursor:pointer;color:#64748b;font-size:18px}
+.toast{position:fixed;right:20px;bottom:20px;background:#166534;color:#fff;padding:10px 14px;border-radius:6px;display:none;z-index:99}
+.det-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 18px;font-size:13px}
+.kv div span{display:block;color:var(--muted);font-size:12px;margin-bottom:2px}
+.kv div span.kn-tag{display:inline-block;color:#b45309;font-size:10.5px;margin:0 0 0 4px}
+.note{font-size:12px;color:var(--muted);margin-top:4px}
+.radios{display:flex;flex-direction:column;gap:7px;font-size:13px}
+.radios label,.checks label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.checks{display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px}
+.sub-h{font-size:12.5px;font-weight:700;color:#334155;margin:14px 0 8px;text-transform:uppercase}
+.sub-g{font-size:13px;font-weight:600;color:#166534;margin:16px 0 8px}
+/* Bảng Tài liệu đính kèm dùng chung (giống bảng tại Cập nhật kết quả xử lý hồ sơ): STT, Tên tài liệu, văn bản, File đính kèm, Thao tác */
+.tl-wrap{border:1px solid var(--border);border-radius:8px;padding:12px;background:#fff}
+.tl-wrap>.form-label{display:flex;align-items:center;gap:6px}
+.tl{border:1px solid var(--border);border-radius:6px;border-collapse:separate;border-spacing:0;overflow:hidden;margin-bottom:10px}
+.tl th{background:#f8fafc;text-align:center}.tl th:nth-child(2){text-align:left}
+.tl td{vertical-align:middle}.tl td:first-child,.tl td:nth-child(3),.tl td:nth-child(4){text-align:center}
+.btn-tai{background:#1e3a8a;color:#fff;padding:7px 14px;font-weight:600}
+.ic{width:32px;height:32px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #e2e8f0;background:#fff;margin:0 2px}
+.ic.eye{color:#cbd5e1}.ic.del{color:#dc2626;background:#fef2f2;border-color:#fecaca}
+.bb-tag{background:#fee2e2;color:#b91c1c;font-size:10.5px;font-weight:600;border-radius:10px;padding:1px 7px;margin-left:6px}
+.tl-ten{display:flex;align-items:center}
+/* Bảng Kết quả thương lượng theo từng thiệt hại */
+.kq th{white-space:nowrap}.kq td{vertical-align:middle}
+.kq th:first-child,.kq td:first-child{min-width:330px}
+.kq tr.grp td{background:#f8fafc;font-weight:600}
+.kq td.num{text-align:right;white-space:nowrap}
+.kq tr.tong td{font-weight:700;border-top:2px solid #cbd5e1}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.grid3,.kv{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.grid,.grid2,.grid3,.kv{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="review-bar">
+    <b><i class="fa-solid fa-eye"></i> BẢN XEM TRƯỚC ĐỂ DUYỆT - Nhập hồ sơ tồn</b>
+    <button class="rv-btn on" data-s="s1" onclick="go('s1')">1. Danh sách Giải quyết YCBT</button>
+    <button class="rv-btn" data-s="s2" onclick="go('s2')">2. Form Nhập hồ sơ tồn</button>
+    <button class="rv-btn" data-s="s3" onclick="go('s3')">3. Chi tiết hồ sơ tồn</button>
+    <button class="rv-btn" data-s="s4" onclick="go('s4')">4. Xem xét hoàn trả - Nhập hồ sơ hoàn trả tồn</button>
+    <button class="rv-btn" data-s="s5" onclick="go('s5')">5. Kinh phí - Chi trả của hồ sơ tồn Chờ chi trả</button>
+    <span class="sub">Phần mới đánh dấu <span class="new-tag">MỚI</span> / viền xanh đứt nét.</span>
+</div>
+
+<!-- ======================= MÀN 1: DANH SÁCH GIẢI QUYẾT YCBT ======================= -->
+<div class="screen on" id="s1">
+    <div class="page-title">Giải quyết yêu cầu bồi thường</div>
+    <div class="card">
+        <div class="tabs"><div class="tab on">Chờ xử lý <span class="cnt">5</span></div><div class="tab">Đã xử lý</div></div>
+        <div class="grid">
+            <div><label class="form-label">Mã vụ việc</label><input class="form-control" placeholder="Nhập mã vụ việc..."></div>
+            <div><label class="form-label">Mã hồ sơ</label><input class="form-control" placeholder="Nhập mã hồ sơ..."></div>
+            <div><label class="form-label">Mã hồ sơ DVC</label><input class="form-control" placeholder="Nhập mã hồ sơ DVC..."></div>
+            <div><label class="form-label">Tên cá nhân/Tổ chức yêu cầu</label><input class="form-control" placeholder="Nhập tên cá nhân/tổ chức yêu cầu..."></div>
+            <div><label class="form-label">Lĩnh vực phát sinh thiệt hại</label><select class="form-control"><option>Tất cả</option></select></div>
+            <div><label class="form-label">Trạng thái</label><select class="form-control"><option>Tất cả</option></select></div>
+            <div><label class="form-label">Nguồn hồ sơ</label><select class="form-control"><option>Tất cả</option><option>Tiếp nhận mới</option><option>Dịch vụ công</option><option>Chuyển CQGQBT</option><option>Xác định CQGQBT</option></select></div>
+            <div><label class="form-label">Hồ sơ tồn<span class="new-tag">MỚI</span></label>
+                <select class="form-control" id="fTon" onchange="renderList()" style="border-color:#16a34a"><option value="">Tất cả</option><option value="1">Có</option><option value="0">Không</option></select></div>
+            <div><label class="form-label">Hình thức tiếp nhận</label><select class="form-control"><option>Tất cả</option></select></div>
+            <div><label class="form-label">Loại yêu cầu</label><select class="form-control"><option>Tất cả</option></select></div>
+            <div><label class="form-label">Tiếp nhận: Từ ngày</label><input class="form-control" placeholder="dd/mm/yyyy"></div>
+            <div><label class="form-label">Tiếp nhận: Đến ngày</label><input class="form-control" placeholder="dd/mm/yyyy"></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+            <button class="btn btn-outline" onclick="document.getElementById('fTon').value='';renderList()"><i class="fa-solid fa-eraser"></i> Xóa bộ lọc</button>
+            <button class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="toolbar">
+            <div class="chips"><span class="chip on">Tất cả</span><span class="chip">Bồi thường thiệt hại</span><span class="chip">Phục hồi danh dự</span><span class="chip">Cả hai</span></div>
+            <div style="display:flex;gap:8px">
+                <button class="btn btn-outline btn-new" onclick="go('s2')" style="color:#166534;border-color:#16a34a"><i class="fa-solid fa-box-archive"></i> Nhập hồ sơ tồn</button>
+                <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Tạo yêu cầu</button>
+                <button class="btn btn-outline"><i class="fa-solid fa-file-excel" style="color:#16a34a"></i> Kết xuất Excel</button>
+            </div>
+        </div>
+        <div class="tbl-wrap"><table>
+            <thead><tr><th>STT</th><th>Mã vụ việc</th><th>Mã hồ sơ</th><th>Tên cá nhân/Tổ chức yêu cầu</th><th>Cơ quan giải quyết</th><th>Cán bộ xử lý</th><th>Ngày tiếp nhận</th><th>Nguồn hồ sơ</th><th>Trạng thái</th></tr></thead>
+            <tbody id="listBody"></tbody>
+        </table></div>
+        <div class="note"><i class="fa-solid fa-circle-info"></i> Hồ sơ tồn: badge xám <span class="b-ton">Hồ sơ tồn</span> dưới Mã hồ sơ; cột Nguồn hồ sơ giữ nguồn gốc thật. Kết xuất Excel thêm cột «Hồ sơ tồn» (Có/Không).</div>
+    </div>
+</div>
+
+<!-- ======================= MÀN 2: FORM NHẬP HỒ SƠ TỒN ======================= -->
+<div class="screen" id="s2">
+    <div class="card">
+        <div class="page-title" style="margin-bottom:6px"><i class="fa-solid fa-box-archive"></i> NHẬP HỒ SƠ TỒN</div>
+        <div class="alert alert-info"><i class="fa-solid fa-circle-info"></i><div>Nhập bù hồ sơ đã xử lý trên giấy. Các bước đã làm nhập theo ngày thực tế; văn bản nhập theo kiểu <b>Ký ngoài</b> (Số, Ngày, Người ký, tệp PDF đã ký), không trình ký. Bước chưa làm xử lý tiếp trên hệ thống như hồ sơ thường.</div></div>
+
+        <div class="sec-title"><i class="fa-solid fa-flag"></i> Trạng thái hiện tại của hồ sơ</div>
+        <div class="grid3">
+            <div><label class="form-label">Loại yêu cầu giải quyết bồi thường<span class="req">*</span></label>
+                <select class="form-control" id="tLoai" onchange="renderForm()"><option value="BT">Chỉ yêu cầu bồi thường thiệt hại bằng tiền</option><option value="CH">Yêu cầu cả hai (Bồi thường thiệt hại &amp; Phục hồi danh dự)</option><option value="PH">Chỉ yêu cầu phục hồi danh dự</option></select></div>
+            <div id="wSt"><label class="form-label">Trạng thái Giải quyết YCBT hiện tại<span class="req">*</span></label>
+                <select class="form-control" id="tSt" onchange="renderForm()"></select><div class="err" id="tStErr">Đây là trường bắt buộc</div></div>
+            <div id="wPrev" style="display:none"><label class="form-label">Bước đã thực hiện trước đó<span class="req">*</span></label>
+                <select class="form-control" id="tPrev" onchange="renderForm()"></select>
+                <div class="note">Để mở các bước đã làm trước khi hoãn / tạm đình chỉ / đình chỉ / dừng.</div></div>
+            <div id="wHt" style="display:none"><label class="form-label">Hình thức tạo hồ sơ<span class="req">*</span></label>
+                <select class="form-control" id="tHt" onchange="renderForm()"><option value="YC">Người yêu cầu nộp hồ sơ</option><option value="CD">Cán bộ chủ động phục hồi danh dự</option></select></div>
+            <div id="wPh" style="display:none"><label class="form-label"><span id="tPhNhan">Trạng thái Phục hồi danh dự hiện tại</span><span class="req">*</span></label>
+                <select class="form-control" id="tPh" onchange="renderForm()"></select></div>
+            <div id="wPhB" style="display:none"><label class="form-label">Bước phục hồi danh dự hiện tại<span class="req">*</span></label>
+                <select class="form-control" id="tPhB" onchange="renderForm()"><option value="TB">Bước 1: Thông báo</option><option value="PH" selected>Bước 2: Ý kiến phản hồi của người yêu cầu</option><option value="TC">Bước 3: Thực hiện</option></select></div>
+        </div>
+
+        <div class="sec-title" style="margin-top:18px"><i class="fa-solid fa-folder-open"></i> Thông tin hồ sơ vụ việc</div>
+        <div class="grid">
+            <div><label class="form-label">Nguồn hồ sơ<span class="req">*</span></label><select class="form-control"><option>Tiếp nhận mới</option><option>Dịch vụ công</option><option>Chuyển CQGQBT</option><option>Xác định CQGQBT</option></select></div>
+            <div><label class="form-label">Hình thức tiếp nhận<span class="req">*</span></label><select class="form-control"><option>Trực tiếp</option><option>Bưu chính</option><option>Dịch vụ công trực tuyến</option></select></div>
+            <div><label class="form-label">Ngày tiếp nhận<span class="req">*</span></label><input class="form-control" value="12/03/2025"></div>
+            <div><label class="form-label">Mã hồ sơ DVC</label><input class="form-control" placeholder="Nhập mã hồ sơ DVC (nếu có)"></div>
+            <div class="full placeholder"><i class="fa-solid fa-clone"></i> Các khối còn lại giữ nguyên như màn <b>Nhập liệu hồ sơ vụ việc</b>: Cơ quan giải quyết bồi thường, Người yêu cầu, Người bị thiệt hại, Lĩnh vực phát sinh thiệt hại, Thiệt hại yêu cầu bồi thường, Tài liệu đính kèm...</div>
+        </div>
+
+        <div class="tabs" id="fTabs" style="margin-top:18px"><div class="tab on" id="fTab1" onclick="fTab(1)">Chi tiết giải quyết bồi thường</div><div class="tab" id="fTab2" onclick="fTab(2)">Phục hồi danh dự</div></div>
+        <div id="fBt"><div id="stBt"><div class="stepper" id="stepper"></div><div id="stNote"></div></div><div id="stepBlocks"></div></div>
+        <div id="fPh" style="display:none"><div id="stPh"><div class="stepper" id="stepperPh"></div><div id="phNote"></div></div><div id="phBlocksW"></div></div>
+
+        <div class="footer">
+            <button class="btn btn-outline" onclick="go('s1')">Hủy bỏ</button>
+            <button class="btn btn-primary" onclick="saveTon()"><i class="fa-solid fa-floppy-disk"></i> Lưu hồ sơ tồn</button>
+        </div>
+    </div>
+</div>
+
+<!-- ======================= MÀN 3: CHI TIẾT HỒ SƠ TỒN ======================= -->
+<div class="screen" id="s3">
+    <div class="card">
+        <div class="det-head">
+            <div class="page-title" style="margin:0">CHI TIẾT VỤ VIỆC: VVBT-2026-120 - Nguyễn Văn An</div>
+            <span class="b-ton" style="margin:0;font-size:11.5px">Hồ sơ tồn</span>
+            <span class="badge b-st2">Thương lượng</span>
+        </div>
+        <div class="sub" style="margin-top:4px">Mã hồ sơ: BT-2026-120 • Nguồn hồ sơ: Tiếp nhận mới • Cơ quan giải quyết: UBND phường Cầu Giấy, Thành phố Hà Nội</div>
+        <div class="tabs" style="margin-top:12px" id="s3Tabs"><div class="tab">Thông tin hồ sơ vụ việc</div><div class="tab on" onclick="s3Tab(1)" style="cursor:pointer">Chi tiết giải quyết bồi thường</div><div class="tab" onclick="s3Tab(2)" style="cursor:pointer">Phục hồi danh dự</div></div>
+
+        <!-- Tab Phục hồi danh dự của hồ sơ tồn (vụ việc Yêu cầu cả hai): bước nhập bù có nhãn, bước hiện tại xử lý trên hệ thống -->
+        <div id="s3Ph" style="display:none">
+            <div class="stepper" style="margin-bottom:12px"><div class="st done" data-n="1">Thông báo</div><div class="st done" data-n="2">Ý kiến phản hồi của người yêu cầu</div><div class="st cur" data-n="3">Thực hiện</div><div class="st" data-n="4">Hoàn thành</div></div>
+            <div class="blk"><div class="blk-h"><span>1. Thông báo tổ chức phục hồi danh dự</span><span class="paper"><i class="fa-solid fa-box-archive"></i> Hồ sơ tồn</span></div>
+                <div class="blk-b"><div class="kv">
+                    <div><span>Thông báo tổ chức thực hiện phục hồi danh dự</span>Số 30/TB-UBND ngày 05/06/2025 <span class="kn-tag">Ký ngoài</span></div>
+                    <div><span>Cơ quan thực hiện việc phục hồi danh dự</span>UBND phường Cầu Giấy</div>
+                    <div><span>Hình thức phục hồi danh dự</span>Trực tiếp xin lỗi và cải chính công khai (Điều 58)</div>
+                </div></div></div>
+            <div class="blk"><div class="blk-h"><span>2. Ý kiến phản hồi của người yêu cầu</span><span class="paper"><i class="fa-solid fa-box-archive"></i> Hồ sơ tồn</span></div>
+                <div class="blk-b"><div class="kv">
+                    <div><span>Ý kiến của người bị thiệt hại</span>Đồng ý thực hiện phục hồi danh dự (Khoản 2 Điều 57)</div>
+                    <div><span>Ngày nhận được ý kiến phản hồi</span>20/06/2025</div>
+                    <div><span>Hình thức gửi phản hồi</span>Bằng văn bản</div>
+                </div></div></div>
+            <div class="blk" style="border-color:#93c5fd"><div class="blk-h" style="background:#eff6ff"><span>3. Tổ chức thực hiện phục hồi danh dự</span><span class="sub">Bước hiện tại - xử lý trên hệ thống</span></div>
+                <div class="blk-b placeholder">Khối Tổ chức thực hiện phục hồi danh dự xử lý như hồ sơ thường (không có nhãn «Hồ sơ tồn»).</div></div>
+        </div>
+        <div id="s3Bt">
+
+        <div class="blk"><div class="blk-h"><span>1. Tiếp nhận hồ sơ bồi thường</span><span class="paper"><i class="fa-solid fa-box-archive"></i> Hồ sơ tồn</span></div>
+            <div class="blk-b"><div class="kv">
+                <div><span>Ngày tiếp nhận</span>12/03/2025</div><div><span>Ngày thụ lý</span>20/03/2025</div><div><span>Thông báo thụ lý</span>Số 15/TB-UBND ngày 20/03/2025 <span class="kn-tag">Ký ngoài</span></div>
+                <div><span>Quyết định cử người giải quyết bồi thường</span>Số 22/QĐ-UBND ngày 25/03/2025 <span class="kn-tag">Ký ngoài</span></div><div><span>Cán bộ được cử giải quyết</span>Nguyễn Văn Chuyên Viên (Chủ trì)</div><div><span>File</span><a class="link">QD_cu_nguoi_22.pdf</a></div>
+            </div></div></div>
+        <div class="blk"><div class="blk-h"><span>2. Xác minh thiệt hại thực tế</span><span class="paper"><i class="fa-solid fa-box-archive"></i> Hồ sơ tồn</span></div>
+            <div class="blk-b"><div class="kv"><div><span>Ngày lập biên bản xác minh</span>15/05/2025</div><div><span>Tổng mức xác minh (đ)</span>173.000.000</div><div><span>Biên bản xác minh</span><a class="link">BB_xac_minh.pdf</a></div></div></div></div>
+        <div class="blk" style="border-color:#93c5fd"><div class="blk-h" style="background:#eff6ff"><span>3. Thương lượng giải quyết bồi thường</span><span class="sub">Bước hiện tại - xử lý trên hệ thống</span></div>
+            <div class="blk-b placeholder">Khối Thương lượng xử lý như hồ sơ thường (không có nhãn «Hồ sơ tồn»).</div></div>
+        </div>
+
+        <div class="sec-title" style="margin-top:16px"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử xử lý</div>
+        <div class="tbl-wrap"><table>
+            <thead><tr><th>Thời gian</th><th>Người thực hiện</th><th>Nội dung thực hiện</th></tr></thead>
+            <tbody>
+                <tr class="hl"><td>14:20 19/11/2026</td><td>Nguyễn Văn Chuyên Viên</td><td><b>Nhập hồ sơ tồn</b> <span class="b-ton" style="margin:0 0 0 4px">Hồ sơ tồn</span><br><span class="sub">Trạng thái khi nhập: Thương lượng; Phục hồi danh dự: Bước 3 Tổ chức thực hiện. Các bước nhập bù: Tiếp nhận hồ sơ bồi thường (thụ lý 20/03/2025, cử người 25/03/2025), Xác minh thiệt hại thực tế (15/05/2025), Thông báo tổ chức phục hồi danh dự (05/06/2025), Ý kiến phản hồi (20/06/2025).</span></td></tr>
+                <tr><td>09:05 21/11/2026</td><td>Nguyễn Văn Chuyên Viên</td><td>Lưu kết quả thương lượng</td></tr>
+            </tbody>
+        </table></div>
+        <div class="note">Thời gian ở dòng «Nhập hồ sơ tồn» là thời điểm nhập thật trên hệ thống; ngày thực tế của từng bước nằm trong nội dung và trong các khối.</div>
+    </div>
+</div>
+
+<!-- ======================= MÀN 4: XEM XÉT HOÀN TRẢ ======================= -->
+<div class="screen" id="s4">
+    <div class="page-title">Xem xét trách nhiệm hoàn trả</div>
+    <div class="card">
+        <div class="grid">
+            <div><label class="form-label">Mã hồ sơ hoàn trả</label><input class="form-control" placeholder="Nhập mã hồ sơ..."></div>
+            <div><label class="form-label">Mã hồ sơ GQBT</label><input class="form-control" placeholder="Nhập mã hồ sơ GQBT..."></div>
+            <div><label class="form-label">Trạng thái</label><select class="form-control"><option>Tất cả</option></select></div>
+            <div><label class="form-label">Hồ sơ tồn<span class="new-tag">MỚI</span></label>
+                <select class="form-control" id="fTonHt" onchange="renderHt()" style="border-color:#16a34a"><option value="">Tất cả</option><option value="1">Có</option><option value="0">Không</option></select></div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="toolbar"><div></div>
+            <div style="display:flex;gap:8px">
+                <button class="btn btn-outline btn-new" onclick="openHt()" style="color:#166534;border-color:#16a34a"><i class="fa-solid fa-box-archive"></i> Nhập hồ sơ hoàn trả tồn</button>
+                <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Lập hồ sơ hoàn trả mới</button>
+            </div></div>
+        <div class="tbl-wrap"><table>
+            <thead><tr><th>STT</th><th>Mã hồ sơ</th><th>Mã hồ sơ GQBT</th><th>Đơn vị lập hồ sơ</th><th>Số tiền phải hoàn trả (đ)</th><th>Số tiền đã nộp (đ)</th><th>Trạng thái</th></tr></thead>
+            <tbody id="htBody"></tbody>
+        </table></div>
+        <div class="note"><i class="fa-solid fa-circle-info"></i> Hồ sơ hoàn trả tồn: chỉ đơn vị lập hồ sơ và đơn vị giám sát xem được.</div>
+    </div>
+</div>
+
+<!-- ======================= MÀN 5: KINH PHÍ - CHI TRẢ CỦA HỒ SƠ TỒN ======================= -->
+<div class="screen" id="s5">
+    <div class="page-title">Chi trả tiền bồi thường</div>
+    <div class="card">
+        <div class="tabs"><div class="tab on">Chờ xử lý <span class="cnt">2</span></div><div class="tab">Đã xử lý</div></div>
+        <div class="tbl-wrap"><table>
+            <thead><tr><th>STT</th><th>Mã vụ việc</th><th>Mã hồ sơ GQBT</th><th>Người nhận</th><th style="text-align:right">Số tiền theo QĐ (đ)</th><th style="text-align:right">Tổng đã chi (đ)</th><th style="text-align:right">Còn phải chi (đ)</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <tbody>
+                <tr class="hl"><td>1</td><td class="nw">VVBT-2026-121</td><td class="nw"><span class="link">BT-2026-121</span><br><span class="b-ton">Hồ sơ tồn</span></td><td>Công ty TNHH Hải Phát</td><td style="text-align:right">250.000.000</td><td style="text-align:right">150.000.000</td><td style="text-align:right;font-weight:600">100.000.000</td><td><span class="badge b-st1">Chờ chi trả</span></td>
+                    <td class="nw"><button class="btn btn-outline btn-sm" title="Cập nhật chi trả"><i class="fa-solid fa-money-bill-wave"></i></button> <button class="btn btn-outline btn-sm" title="Trả lại ngân sách nhà nước"><i class="fa-solid fa-building-columns"></i></button></td></tr>
+                <tr><td>2</td><td class="nw">VVBT-2026-104</td><td class="nw"><span class="link">BT-2026-104</span></td><td>Trần Văn Long</td><td style="text-align:right">80.000.000</td><td style="text-align:right">0</td><td style="text-align:right;font-weight:600">80.000.000</td><td><span class="badge b-st1">Chờ thông báo chi trả</span></td>
+                    <td class="nw"><button class="btn btn-outline btn-sm" title="Trình thông báo chi trả"><i class="fa-solid fa-paper-plane"></i></button></td></tr>
+            </tbody>
+        </table></div>
+        <div class="note"><i class="fa-solid fa-circle-info"></i> Bản ghi tạo từ hồ sơ tồn «Chờ chi trả» hiện cùng danh sách, có badge «Hồ sơ tồn» dưới Mã hồ sơ GQBT, thao tác như bản ghi thường.</div>
+    </div>
+    <div class="card">
+        <div class="det-head"><div class="sec-title" style="margin:0">Chi tiết bản ghi chi trả - BT-2026-121</div><span class="b-ton" style="margin:0">Hồ sơ tồn</span><span class="badge b-st1">Chờ chi trả</span></div>
+        <div class="kv" style="margin-top:12px">
+            <div><span>Quyết định giải quyết bồi thường</span>Số 45/QĐ-UBND ngày 10/09/2024 <span class="kn-tag">Ký ngoài</span></div>
+            <div><span>Thông báo chi trả tiền bồi thường</span>Số 12/TB-UBND ngày 20/09/2024 <span class="kn-tag">Ký ngoài</span></div>
+            <div><span>Số tiền theo QĐ / Tổng đã chi / Còn phải chi</span>250.000.000 / 150.000.000 / <b>100.000.000</b></div>
+        </div>
+        <div class="sec-title" style="margin-top:16px"><i class="fa-solid fa-list"></i> Lịch sử chi trả</div>
+        <div class="tbl-wrap"><table>
+            <thead><tr><th>STT</th><th>Ngày chi</th><th>Nội dung</th><th style="text-align:right">Số tiền (đ)</th><th>Người cập nhật</th></tr></thead>
+            <tbody>
+                <tr><td>1</td><td>-</td><td>Tạm ứng kinh phí bồi thường (đã chi trước khi nhập) <span class="paper"><i class="fa-solid fa-box-archive"></i> Hồ sơ tồn</span></td><td style="text-align:right">50.000.000</td><td>Nguyễn Văn Chuyên Viên</td></tr>
+                <tr><td>2</td><td>-</td><td>Chi trả tiền bồi thường (đã chi trước khi nhập) <span class="paper"><i class="fa-solid fa-box-archive"></i> Hồ sơ tồn</span></td><td style="text-align:right">100.000.000</td><td>Nguyễn Văn Chuyên Viên</td></tr>
+                <tr><td colspan="5" class="sub">Các lần chi tiếp theo cập nhật trên hệ thống như bản ghi thường.</td></tr>
+            </tbody>
+        </table></div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+            <button class="btn btn-outline"><i class="fa-solid fa-building-columns"></i> Trả lại ngân sách nhà nước</button>
+            <button class="btn btn-primary"><i class="fa-solid fa-money-bill-wave"></i> Cập nhật chi trả</button>
+        </div>
+    </div>
+</div>
+
+<!-- Popup Nhập hồ sơ hoàn trả tồn -->
+<div class="modal-bg" id="htModal"><div class="modal">
+    <div class="modal-h"><h3><i class="fa-solid fa-box-archive"></i> Nhập hồ sơ hoàn trả tồn</h3><span class="x" onclick="closeHt()">×</span></div>
+    <div class="modal-b">
+        <div class="alert alert-info"><i class="fa-solid fa-circle-info"></i><div>Ghi nhận kết quả cuối của hồ sơ xem xét hoàn trả đã làm ngoài hệ thống. Không lập Hội đồng, không trình ký, không ghi nhận nộp tiền tiếp sau khi lưu.</div></div>
+        <div class="grid2">
+            <div><label class="form-label">Vụ việc bồi thường gốc<span class="req">*</span></label>
+                <select class="form-control"><option>VVBT-2026-131 - BT-2026-131 - Trần Thị Bình (Hồ sơ tồn - Hoàn thành)</option><option>VVBT-2026-087 - BT-2026-087 - Lê Văn Cường (Hoàn thành)</option></select>
+                <div class="note">Vụ việc đã hoàn tất chi trả, kể cả hồ sơ tồn «Hoàn thành»; chưa có hồ sơ hoàn trả.</div></div>
+            <div><label class="form-label">Kết quả xem xét hoàn trả<span class="req">*</span></label>
+                <select class="form-control" id="htSt" onchange="renderHtForm()"><option value="HT">Hoàn thành</option><option value="MH">Miễn hoàn trả</option><option value="DC">Đình chỉ xem xét hoàn trả</option><option value="CD">Chấm dứt hoàn trả</option></select></div>
+        </div>
+        <div class="kn" id="htQd"></div>
+        <div id="htCb"></div>
+        <div id="htTl" style="margin-top:12px"></div>
+    </div>
+    <div class="modal-f"><button class="btn btn-outline" onclick="closeHt()">Hủy bỏ</button><button class="btn btn-primary" onclick="saveHt()"><i class="fa-solid fa-floppy-disk"></i> Lưu hồ sơ hoàn trả tồn</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+function go(s) { document.querySelectorAll('.screen').forEach(e => e.classList.toggle('on', e.id === s)); document.querySelectorAll('.rv-btn').forEach(b => b.classList.toggle('on', b.dataset.s === s)); window.scrollTo(0, 0); }
+function s3Tab(i) { document.querySelectorAll('#s3Tabs .tab').forEach((t, k) => t.classList.toggle('on', k === i)); $('s3Bt').style.display = i === 1 ? '' : 'none'; $('s3Ph').style.display = i === 2 ? '' : 'none'; }
+function toast(t) { const e = $('toast'); e.textContent = t; e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 2600); }
+
+// ---------- Màn 1 ----------
+const ROWS = [
+    { vv: 'VVBT-2026-120', hs: 'BT-2026-120', ten: 'Nguyễn Văn An', cq: 'UBND phường Cầu Giấy, Thành phố Hà Nội', cb: 'Nguyễn Văn Chuyên Viên', ngay: '12/03/2025', nguon: 'Tiếp nhận mới', st: 'Thương lượng', c: 'b-st2', ton: 1 },
+    { vv: 'VVBT-2026-118', hs: 'BT-2026-118', ten: 'Trần Thị Bích', cq: 'UBND phường Cầu Giấy, Thành phố Hà Nội', cb: 'Phạm Thu Hà', ngay: '05/11/2026', nguon: 'Dịch vụ công', st: 'Xác minh thiệt hại', c: 'b-st2', ton: 0 },
+    { vv: 'VVBT-2026-121', hs: 'BT-2026-121', ten: 'Công ty TNHH Hải Phát', cq: 'Sở Tư pháp Thành phố Hà Nội', cb: 'Nguyễn Văn Chuyên Viên', ngay: '02/08/2024', nguon: 'Dịch vụ công', st: 'Chờ chi trả', c: 'b-st1', ton: 1 },
+    { vv: 'VVBT-2026-119', hs: 'BT-2026-119', ten: 'Lê Minh Quân', cq: 'UBND phường Cầu Giấy, Thành phố Hà Nội', cb: '-', ngay: '10/11/2026', nguon: 'Tiếp nhận mới', st: 'Cử người giải quyết bồi thường', c: 'b-st1', ton: 0 },
+    { vv: 'VVBT-2026-124', hs: 'BT-2026-124', ten: 'Đặng Quốc Bảo', cq: 'UBND phường Cầu Giấy, Thành phố Hà Nội', cb: 'Phạm Thu Hà', ngay: '08/04/2025', nguon: 'Tiếp nhận mới', st: 'Đang phục hồi danh dự', c: 'b-st2', ton: 1 },
+    { vv: 'VVBT-2026-122', hs: 'BT-2026-122', ten: 'Hoàng Thị Mai', cq: 'UBND phường Cầu Giấy, Thành phố Hà Nội', cb: 'Phạm Thu Hà', ngay: '17/01/2025', nguon: 'Chuyển CQGQBT', st: 'Hoãn giải quyết', c: 'b-st4', ton: 1 },
+];
+function renderList() {
+    const f = $('fTon').value;
+    const rows = ROWS.filter(r => f === '' || String(r.ton) === f);
+    $('listBody').innerHTML = rows.map((r, i) => `<tr><td>${i + 1}</td><td class="nw">${r.vv}</td><td class="nw"><a class="link" onclick="go('s3')" style="cursor:pointer">${r.hs}</a>${r.ton ? '<br><span class="b-ton">Hồ sơ tồn</span>' : ''}</td><td>${r.ten}</td><td>${r.cq}</td><td>${r.cb}</td><td>${r.ngay}</td><td><span class="badge b-src">${r.nguon}</span></td><td><span class="badge ${r.c}">${r.st}</span></td></tr>`).join('') || '<tr><td colspan="9" style="text-align:center;color:#64748b">Không có dữ liệu</td></tr>';
+}
+
+// ---------- Màn 2 ----------
+// Bước của nhánh Giải quyết bồi thường thiệt hại (theo thứ tự khối của Tab Chi tiết giải quyết bồi thường)
+const STEPS = ['Thụ lý', 'Cử người giải quyết', 'Xác minh thiệt hại', 'Thương lượng', 'Quyết định GQBT', 'Chi trả'];
+// Trạng thái chọn được -> số bước đã làm (mở để nhập bù); kết thúc sớm có văn bản riêng
+const ST = [
+    { v: 'CN', t: 'Cử người giải quyết bồi thường', done: 1 },
+    { v: 'XM', t: 'Xác minh thiệt hại', done: 2 },
+    { v: 'TL', t: 'Thương lượng', done: 3 },
+    { v: 'QD', t: 'Chờ ban hành QĐ', done: 4 },
+    { v: 'CT', t: 'Chờ chi trả', done: 5 },
+    { v: 'HT', t: 'Hoàn thành', done: 6 },
+    { v: 'HO', t: 'Hoãn giải quyết', prev: true, doc: 'Thông báo hoãn giải quyết bồi thường' },
+    { v: 'TD', t: 'Tạm đình chỉ', prev: true, doc: 'Quyết định tạm đình chỉ giải quyết yêu cầu bồi thường' },
+    { v: 'DC', t: 'Đình chỉ giải quyết', prev: true, doc: 'Quyết định đình chỉ giải quyết yêu cầu bồi thường' },
+    { v: 'DG', t: 'Dừng giải quyết', prev: true, doc: 'Thông báo dừng giải quyết yêu cầu bồi thường' },
+    { v: 'KT', t: 'Không thụ lý', done: 0, doc: 'Văn bản không thụ lý hồ sơ' },
+    { v: 'CQ', t: 'Đã chuyển CQGQBT', done: 0, doc: 'Văn bản chuyển hồ sơ đến cơ quan giải quyết bồi thường', cq: true },
+];
+function initForm() {
+    $('tSt').innerHTML = '<option value="">-- Chọn trạng thái --</option>' + ST.map(s => `<option value="${s.v}">${s.t}</option>`).join('');
+    $('tSt').value = 'TL';
+    $('tPrev').innerHTML = STEPS.slice(0, 4).map((s, i) => `<option value="${i + 1}">${s}</option>`).join('');
+    $('tPrev').value = '3';
+    renderForm();
+}
+function kn(title, opts = {}) {
+    const ten = title.replace(/ \(Mẫu [^)]*\)$/, '');
+    // opts.soKhongBb: Số, Ngày, Người ký không bắt buộc (chỉ bắt buộc tệp ở bảng Tài liệu đính kèm)
+    const rq = opts.soKhongBb ? '' : '<span class="req">*</span>';
+    const unit = opts.unit ? `<div><label class="form-label">Đơn vị ban hành<span class="req">*</span></label><select class="form-control"><option>UBND phường Cầu Giấy, Thành phố Hà Nội</option><option>UBND Thành phố Hà Nội</option></select></div>` : '';
+    return `<div class="kn"><div class="kn-h"><i class="fa-solid fa-file-signature"></i> ${title} <span class="kn-tag">Ký ngoài</span></div>
+        <div class="grid">
+            <div><label class="form-label">Số văn bản${rq}</label><input class="form-control" placeholder="Nhập số, ký hiệu văn bản"></div>
+            <div><label class="form-label">Ngày văn bản${rq}</label><input class="form-control" placeholder="dd/mm/yyyy"></div>
+            <div><label class="form-label">Người ký${rq}</label><input class="form-control" placeholder="Nhập họ tên, chức vụ người ký"></div>
+            ${unit || '<div></div>'}
+            <div class="full">${tlCoDinh([ten, ...(opts.them || [])])}</div>
+        </div></div>`;
+}
+function blk(no, title, body) {
+    return `<div class="blk"><div class="blk-h"><span>${no}. ${title}</span><span class="paper"><i class="fa-solid fa-box-archive"></i> Hồ sơ tồn</span></div><div class="blk-b">${body}</div></div>`;
+}
+// ---------- Nhánh Phục hồi danh dự (Tab Phục hồi danh dự: 04 bước Thông báo, Ý kiến phản hồi, Thực hiện, Hoàn thành) ----------
+const PH_STEPS = ['Thông báo', 'Ý kiến phản hồi của người yêu cầu', 'Thực hiện', 'Hoàn thành'];
+// Trạng thái chọn được (ô Trạng thái); «Đang phục hồi danh dự» chọn thêm Bước hiện tại (TB/PH/TC)
+const PH_CHON = [
+    { v: 'CN', t: 'Cử người phục hồi danh dự', cdpd: true },
+    { v: 'DG', t: 'Đang phục hồi danh dự' },
+    { v: 'HO', t: 'Hoãn phục hồi danh dự' },
+    { v: 'TU', t: 'Từ chối phục hồi danh dự' },
+    { v: 'HT', t: 'Hoàn thành' },
+];
+const phMa = () => $('tPh').value === 'DG' ? $('tPhB').value : $('tPh').value;
+const PHS = [
+    { v: 'CN', t: 'Cử người phục hồi danh dự', done: 0, cdpd: true },
+    { v: 'TB', t: 'Đang phục hồi danh dự - Bước 1: Thông báo', done: 0 },
+    { v: 'PH', t: 'Đang phục hồi danh dự - Bước 2: Ý kiến phản hồi của người yêu cầu', done: 1 },
+    { v: 'TC', t: 'Đang phục hồi danh dự - Bước 3: Thực hiện', done: 2 },
+    { v: 'HO', t: 'Hoãn phục hồi danh dự', done: 2, yk: 2 },
+    { v: 'TU', t: 'Từ chối phục hồi danh dự', done: 2, yk: 3 },
+    { v: 'HT', t: 'Hoàn thành', done: 3 },
+];
+const YK = ['Đồng ý thực hiện phục hồi danh dự (Khoản 2 Điều 57)', 'Không đồng ý, đề xuất điều chỉnh (Khoản 3 Điều 57)', 'Đề nghị chưa thực hiện (Khoản 4 Điều 57)', 'Từ chối quyền được phục hồi danh dự (Khoản 5 Điều 57)'];
+// Bảng Tài liệu đính kèm dùng chung. rows: [{ ten, co_dinh (tên cố định + nhãn Bắt buộc) }]; o.bb: bắt buộc tối thiểu 01 dòng; o.nhan: tiêu đề; o.goiY: thêm câu gợi ý
+function tlDong(r, i) {
+    const ten = r.co_dinh ? `<div class="tl-ten">${r.ten}<span class="bb-tag">Bắt buộc</span></div>` : `<input class="form-control" placeholder="Nhập tên tài liệu, văn bản" value="${r.ten || ''}">`;
+    return `<tr><td>${i + 1}</td><td>${ten}</td><td><button type="button" class="btn btn-tai btn-sm"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button></td><td class="nw"><span class="ic eye" title="Xem file"><i class="fa-solid fa-eye"></i></span>${r.co_dinh ? '' : '<span class="ic del" title="Xóa" onclick="tlXoa(this)"><i class="fa-solid fa-trash"></i></span>'}</td></tr>`;
+}
+function tlBang(rows, o = {}) {
+    return `<div class="tl-wrap"><label class="form-label"><i class="fa-solid fa-paperclip"></i> ${o.nhan || 'Tài liệu đính kèm'}${o.bb ? '<span class="req">*</span>' : ''}</label>
+        <div class="tbl-wrap"><table class="tl"><thead><tr><th style="width:56px">STT</th><th>Tên tài liệu, văn bản</th><th style="width:190px">File đính kèm</th><th style="width:100px">Thao tác</th></tr></thead>
+        <tbody>${(rows && rows.length ? rows : [{}]).map(tlDong).join('')}</tbody></table></div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="tlThem(this)"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
+        <div class="note"><i class="fa-solid fa-circle-info"></i> Chấp nhận tệp .pdf, .doc, .docx, .jpg, .jpeg, .png (tối đa 50MB/tệp)${o.goiY ? '; ' + o.goiY : ''}.</div></div>`;
+}
+function tlSoLai(tb) { [...tb.rows].forEach((r, i) => r.cells[0].textContent = i + 1); }
+function tlThem(btn) { const tb = btn.closest('.tl-wrap').querySelector('tbody'); tb.insertAdjacentHTML('beforeend', tlDong({}, tb.rows.length)); }
+function tlXoa(el) { const tb = el.closest('tbody'); el.closest('tr').remove(); tlSoLai(tb); }
+// Hồ sơ tồn: bảng Tài liệu đính kèm luôn có dòng cố định ghi sẵn tên tài liệu của bước, nhãn Bắt buộc
+function tlCoDinh(tens, goiY) {
+    return tlBang([...tens.map(t => ({ ten: t, co_dinh: true })), {}], { bb: true, goiY: goiY || (tens.length > 1 ? `các dòng ${tens.join(', ')}: mỗi dòng 01 tệp .pdf` : `dòng ${tens[0]}: 01 tệp .pdf`) });
+}
+function phBlocks(loai, cd, nx) {
+    const p = PHS.find(x => x.v === phMa()) || PHS[2];
+    const shown = p.v === 'HT' ? 4 : p.done;
+    $('stepperPh').innerHTML = PH_STEPS.map((t, i) => `<div class="st ${i < shown ? 'done' : (i === p.done && !p.yk && p.v !== 'CN' ? 'cur' : '')}" data-n="${i + 1}">${t}</div>`).join('');
+    const nt = {
+        CN: 'Hồ sơ cán bộ chủ động đã được phê duyệt, chờ Lãnh đạo phân công trên hệ thống.',
+        TB: 'Thông báo tổ chức thực hiện phục hồi danh dự lập và trình ký trên hệ thống như hồ sơ thường.',
+        PH: 'Thông báo đã ban hành trên giấy; tiếp nhận ý kiến phản hồi trên hệ thống.',
+        TC: 'Người bị thiệt hại đã đồng ý; ghi nhận kết quả tổ chức thực hiện trên hệ thống.',
+        HO: 'Khi lưu, hệ thống ghi 01 lần hoãn (Bước trước khi hoãn: Chờ ý kiến phản hồi). Cán bộ «Tiếp tục thực hiện phục hồi danh dự» trên hệ thống khi có căn cứ.',
+        TU: 'Trạng thái Phục hồi danh dự kết thúc ở «Từ chối phục hồi danh dự».',
+        HT: 'Đã tổ chức thực hiện xong; Trạng thái Phục hồi danh dự «Hoàn thành».',
+    }[p.v];
+    $('phNote').innerHTML = `<div class="alert alert-info"><i class="fa-solid fa-circle-info"></i><div>${nt} Người bị thiệt hại «Đã chết» (theo Trạng thái người bị thiệt hại tại Thông tin hồ sơ vụ việc) thì không có bước Ý kiến phản hồi.</div></div>`;
+    let h = '';
+    const pre = '';
+    if (loai === 'PH') {
+        const canBo = p.v === 'CN' ? '' : `<div class="grid" style="margin-top:12px"><div><label class="form-label">Cán bộ phục hồi danh dự<span class="req">*</span></label><select class="form-control"><option>Nguyễn Văn Chuyên Viên</option></select><div class="note">Tài khoản trên hệ thống, nhận hồ sơ để xử lý tiếp.</div></div></div>`;
+        h += cd ? blk(nx(), pre + 'Phê duyệt chủ động phục hồi danh dự', kn('Văn bản phê duyệt chủ động phục hồi danh dự') + canBo)
+                : blk(nx(), 'Tiếp nhận hồ sơ - Thụ lý', `<div class="grid"><div><label class="form-label">Ngày thụ lý<span class="req">*</span></label><input class="form-control" placeholder="dd/mm/yyyy"></div></div>` + kn('Thông báo thụ lý hồ sơ (Mẫu 04/BTNN)') + canBo);
+    }
+    if (p.done >= 1) h += blk(nx(), pre + 'Thông báo tổ chức phục hồi danh dự', `<div class="grid">
+            <div class="full"><label class="form-label">Cơ quan thực hiện việc phục hồi danh dự<span class="req">*</span></label><input class="form-control" placeholder="Nhập tên cơ quan thực hiện việc phục hồi danh dự"></div>
+            <div class="full"><label class="form-label">Hình thức phục hồi danh dự (Điều 56)<span class="req">*</span></label><div class="checks">
+                <label><input type="checkbox" checked> Trực tiếp xin lỗi và cải chính công khai tại nơi cư trú / trụ sở (Điều 58)</label>
+                <label><input type="checkbox"> Đăng báo xin lỗi và cải chính công khai (Điều 59)</label></div></div>
+            <div class="full"><label class="form-label">Nội dung tổ chức thực hiện phục hồi danh dự</label><textarea class="form-control" rows="2" placeholder="Dự kiến thời gian, địa điểm... theo văn bản đã ban hành"></textarea></div>
+        </div>` + kn('Thông báo tổ chức thực hiện phục hồi danh dự', { soKhongBb: true }));
+    if (p.done >= 2) {
+        const sel = p.yk !== undefined ? p.yk : 0;
+        h += blk(nx(), pre + 'Ý kiến phản hồi của người yêu cầu', `<div class="grid">
+            <div class="full"><label class="form-label">Ý kiến của người bị thiệt hại<span class="req">*</span></label><div class="radios">${YK.map((t, i) => `<label><input type="radio" name="yk" ${i === sel ? 'checked' : ''}> ${t}</label>`).join('')}</div></div>
+            <div><label class="form-label">Ngày nhận được ý kiến phản hồi<span class="req">*</span></label><input class="form-control" placeholder="dd/mm/yyyy"></div>
+            <div><label class="form-label">Hình thức gửi phản hồi<span class="req">*</span></label><select class="form-control"><option>Bằng văn bản</option><option>Trực tiếp tại trụ sở</option><option>Khác</option></select></div><div></div><div></div>
+            ${p.v === 'HO' ? '<div class="full"><label class="form-label">Lý do đề nghị chưa thực hiện<span class="req">*</span></label><textarea class="form-control" rows="2" placeholder="Ghi rõ lý do đề nghị chưa thực hiện phục hồi danh dự..."></textarea></div>' : ''}
+            <div class="full"><label class="form-label">Nội dung ý kiến chi tiết / Yêu cầu điều chỉnh</label><textarea class="form-control" rows="2"></textarea></div>
+            <div class="full">${tlCoDinh(['Văn bản ý kiến phản hồi của người bị thiệt hại'])}</div>
+        </div>`);
+    }
+    if (p.done >= 3) h += blk(nx(), pre + 'Tổ chức thực hiện phục hồi danh dự', `<div class="grid">
+            <div><label class="form-label">Cơ quan tổ chức<span class="req">*</span></label><input class="form-control" placeholder="Nhập tên cơ quan tổ chức"></div>
+            <div><label class="form-label">Ngày tổ chức thực tế<span class="req">*</span></label><input class="form-control" placeholder="dd/mm/yyyy"></div>
+            <div style="grid-column:span 2"><label class="form-label">Địa điểm tổ chức<span class="req">*</span></label><input class="form-control" placeholder="Nhập địa điểm tổ chức"></div>
+            <div class="full placeholder"><i class="fa-solid fa-clone"></i> Giữ nguyên các trường còn lại của khối <b>Tổ chức thực hiện phục hồi danh dự</b> theo Hình thức phục hồi danh dự (không nhập Thành phần tham gia): Thông tin đăng báo xin lỗi cải chính (Điều 59); Gửi cho UBND cấp xã nơi người bị thiệt hại cư trú.</div>
+            <div class="full">${tlCoDinh(['Biên bản tổ chức thực hiện phục hồi danh dự'])}</div>
+        </div>`);
+    return h;
+}
+// ---------- Khối Thương lượng giải quyết bồi thường (giống Cập nhật kết quả thương lượng, bỏ Thành phần tham gia thương lượng) ----------
+const TT_TL = ['Người yêu cầu bồi thường từ chối thương lượng', 'Người yêu cầu bồi thường hai lần từ chối nhận giấy mời tham gia thương lượng', 'Người yêu cầu bồi thường hai lần không đến địa điểm thương lượng khi đã nhận giấy mời mà không có lý do chính đáng', 'Đồng ý thương lượng'];
+const TL_TEN = ['Văn bản từ chối thương lượng của người yêu cầu bồi thường', 'Biên bản giao giấy mời có xác nhận của bưu tá/chính quyền địa phương', 'Biên bản xác nhận vắng mặt 02 lần'];
+const fld = (nhan, ctl, bb) => `<div><label class="form-label">${nhan}${bb ? '<span class="req">*</span>' : ''}</label>${ctl}</div>`;
+const ta = (ph) => `<textarea class="form-control" rows="2" placeholder="${ph}"></textarea>`;
+// ---------- Khối Xác minh thiệt hại thực tế (giống Cập nhật kết quả xác minh, bỏ Thành phần tham gia xác minh) ----------
+// Hồ sơ đã kết thúc (window._gon): chỉ Tài liệu đính kèm
+function xmKhoi() {
+    const tl = `<div style="margin-top:12px">${tlCoDinh(['Báo cáo xác minh thiệt hại'])}</div>`;
+    if (window._gon) return tl;
+    const coPh = $('tLoai').value !== 'BT';
+    const ct = `<tr class="ctxm"><td colspan="5" style="background:#fbfdff"><div class="grid" style="padding:4px 0 4px 34px">
+            ${fld('Ngày tiến hành', '<input class="form-control" placeholder="dd/mm/yyyy">', true)}${fld('Địa điểm', '<input class="form-control" placeholder="Nhập địa điểm...">', true)}
+            ${fld('Cách thức xác minh', '<input class="form-control" placeholder="Nhập cách thức...">', true)}${fld('Cách tính', '<input class="form-control" placeholder="Nhập cách tính...">', true)}</div></td></tr>`;
+    const it = (ten, de, chon, mo) => `<tr><td style="padding-left:34px"><label style="display:flex;gap:8px"><input type="checkbox" ${chon ? 'checked' : ''}> ${ten}</label></td><td class="num">${de}</td>
+        <td>${chon ? `<input class="form-control" value="150.000.000" style="text-align:right;min-width:130px">` : ''}</td>
+        <td>${chon ? '<input class="form-control" placeholder="Nhập nội dung diễn giải..." style="min-width:160px">' : ''}</td>
+        <td class="nw">${chon ? `<button type="button" class="btn btn-outline btn-sm"><i class="fa-solid fa-chevron-${mo ? 'up' : 'down'}"></i> Chi tiết</button>` : ''}</td></tr>${mo ? ct : ''}`;
+    const grp = (ten, dem, de, xm, mo) => `<tr class="grp"><td><i class="fa-solid fa-chevron-${mo ? 'down' : 'right'}" style="font-size:10px;margin-right:6px"></i>${ten} <span class="sub">(${dem})</span></td><td class="num">${de}</td><td class="num">${xm}</td><td></td><td></td></tr>`;
+    return `<div class="sub-g" style="margin-top:0">Tổng số tiền theo từng hạng mục</div>
+        <div class="note" style="margin:-4px 0 8px">Giống khối Xác minh thiệt hại thực tế hiện tại: tích mục thiệt hại, nhập Mức xác minh, Nội dung diễn giải và Chi tiết quá trình xác minh từng mục. Kết quả dùng cho bước Thương lượng và Quyết định giải quyết bồi thường trên hệ thống.</div>
+        <div class="tbl-wrap"><table class="kq"><thead><tr><th>Thiệt hại yêu cầu bồi thường</th><th style="text-align:right">Mức đề xuất (đ)</th><th>Mức xác minh (đ)<span class="req">*</span></th><th>Nội dung diễn giải</th><th>Chi tiết</th></tr></thead><tbody>
+            ${grp('I. Thiệt hại do tài sản bị xâm phạm (Điều 23)', '0/8', '0 đ', '0 đ')}
+            ${grp('II. Thiệt hại do thu nhập thực tế bị mất hoặc bị giảm sút (Điều 24)', '1/4', '160.000.000 đ', '150.000.000 đ', true)}
+            ${it('1. Thu nhập ổn định từ tiền lương, tiền công bị mất hoặc bị giảm sút của cá nhân', '160.000.000 đ', true, true)}
+            ${it('2. Thu nhập không ổn định từ tiền lương, tiền công bị mất hoặc bị giảm sút của cá nhân', '-')}
+            ${grp('III. Thiệt hại về vật chất do người bị thiệt hại chết (Điều 25)', '0/5', '0 đ', '0 đ')}
+            ${grp('IV. Thiệt hại về vật chất do sức khỏe bị xâm phạm (Điều 26)', '0/5', '0 đ', '0 đ')}
+            ${grp('V. Thiệt hại về tinh thần (Điều 27)', '0/10', '0 đ', '0 đ')}
+            ${grp('VI. Các chi phí khác được bồi thường (Điều 28)', '0/4', '0 đ', '0 đ')}
+            ${grp('VII. Các thiệt hại khác', '0 dòng', '0 đ', '0 đ')}
+            <tr><td colspan="5" style="padding-left:34px"><button type="button" class="btn btn-outline btn-sm"><i class="fa-solid fa-plus"></i> Thêm thiệt hại khác</button></td></tr>
+            <tr class="tong"><td style="text-align:right">TỔNG CỘNG:</td><td class="num">160.000.000 đ</td><td class="num">150.000.000 đ</td><td></td><td></td></tr>
+        </tbody></table></div>
+        <div style="margin-top:12px"><label style="display:flex;gap:8px;font-size:13px"><input type="checkbox" ${coPh ? 'checked disabled' : ''}> Yêu cầu phục hồi danh dự</label></div>
+        <div class="radios" style="margin-top:8px"><label><input type="checkbox" onchange="this.closest('.blk-b').querySelector('.xmKd').style.display=this.checked?'':'none'"> Thỏa thuận việc kéo dài thời gian xác minh</label></div>
+        <div class="grid xmKd" style="display:none;margin:8px 0 0 24px">${fld('Từ ngày', '<input class="form-control" placeholder="dd/mm/yyyy">', true)}${fld('Đến ngày', '<input class="form-control" placeholder="dd/mm/yyyy">')}</div>
+        <div class="grid" style="margin-top:12px"><div class="full"><label class="form-label">Các nội dung khác liên quan đến quá trình xác minh thiệt hại</label>${ta('Nhập các nội dung khác liên quan đến quá trình xác minh thiệt hại (nếu có)...')}</div></div>
+        ${tl}`;
+}
+function tlKhoi() {
+    return `<label class="form-label">Tình trạng tham gia thương lượng<span class="req">*</span></label>
+        <div class="radios">${TT_TL.map((t, i) => `<label><input type="radio" name="ttl" value="${i}" ${i === 3 ? 'checked' : ''} onchange="tlDoi()"> ${i + 1}. ${t}</label>`).join('')}</div>
+        <div id="tlNd" style="margin-top:12px"></div>`;
+}
+function tlDoi() {
+    const v = +document.querySelector('input[name=ttl]:checked').value;
+    // Hồ sơ đã có yêu cầu phục hồi danh dự: tích sẵn, không bỏ tích; hồ sơ chưa có: cho tích bổ sung
+    const coPh = $('tLoai').value !== 'BT';
+    const phdd = `<div style="margin-top:12px"><label style="display:flex;gap:8px;font-size:13px"><input type="checkbox" ${coPh ? 'checked disabled' : ''}> Yêu cầu phục hồi danh dự</label></div>`;
+    if (v < 3) { $('tlNd').innerHTML = `<div class="grid"><div class="full"><label class="form-label">Lý do / Diễn giải chi tiết</label>${ta('Nhập lý do, diễn giải chi tiết (nếu có)...')}</div></div><div style="margin-top:12px">${tlCoDinh([TL_TEN[v]])}</div>${phdd}`; return; }
+    const it = (ten, de, xm, chon, tt) => `<tr><td style="padding-left:34px"><label style="display:flex;gap:8px"><input type="checkbox" ${chon ? 'checked' : ''}> ${ten}</label></td><td class="num">${de}</td><td class="num">${xm}</td>
+        <td>${chon ? `<input class="form-control" value="${xm.replace(' đ', '')}" style="text-align:right;min-width:120px">` : '<span class="sub">-</span>'}</td>
+        <td>${chon ? `<select class="form-control" style="min-width:150px"><option>-- Chọn --</option><option ${tt === 'TC' ? 'selected' : ''}>Thành công</option><option>Không thành công</option><option>Không tiếp tục thương lượng</option></select>` : ''}</td>
+        <td>${chon ? '<textarea class="form-control" rows="1" placeholder="Nhập lý do diễn giải..." style="min-width:150px"></textarea>' : ''}</td></tr>`;
+    const grp = (ten, dem, de, xm, mo) => `<tr class="grp"><td><i class="fa-solid fa-chevron-${mo ? 'down' : 'right'}" style="font-size:10px;margin-right:6px"></i>${ten} <span class="sub">(${dem})</span></td><td class="num">${de}</td><td class="num">${xm}</td><td class="num">${mo ? '150.000.000 đ' : '0 đ'}</td><td></td><td></td></tr>`;
+    $('tlNd').innerHTML = `<div class="grid2">${fld('Ngày thương lượng', '<input class="form-control" placeholder="dd/mm/yyyy">', true)}${fld('Địa điểm thương lượng', '<input class="form-control" placeholder="Nhập địa điểm thương lượng...">', true)}</div>
+        ${window._gon ? '' : `<div class="sub-g">Kết quả thương lượng theo từng thiệt hại yêu cầu bồi thường</div>
+        <div class="note" style="margin:-4px 0 8px">Danh sách thiệt hại lấy theo Kết quả xác minh thiệt hại. Trạng thái thương lượng bắt buộc trên từng dòng được tích; chỉ mục Thành công nhập Mức tiền bồi thường và được tính vào tổng; Lý do diễn giải bắt buộc khi Không thành công hoặc Không tiếp tục thương lượng.</div>
+        <div class="tbl-wrap"><table class="kq"><thead><tr><th>Thiệt hại yêu cầu bồi thường</th><th style="text-align:right">Mức đề xuất</th><th style="text-align:right">Mức xác minh</th><th>Mức tiền bồi thường<span class="req">*</span></th><th>Trạng thái thương lượng<span class="req">*</span></th><th>Lý do diễn giải</th></tr></thead><tbody>
+            ${grp('I. Thiệt hại do tài sản bị xâm phạm (Điều 23)', '0/8', '0 đ', '0 đ')}
+            ${grp('II. Thiệt hại do thu nhập thực tế bị mất hoặc bị giảm sút (Điều 24)', '1/4', '160.000.000 đ', '150.000.000 đ', true)}
+            ${it('1. Thu nhập ổn định từ tiền lương, tiền công bị mất hoặc bị giảm sút của cá nhân', '160.000.000 đ', '150.000.000 đ', true, 'TC')}
+            ${it('2. Thu nhập không ổn định từ tiền lương, tiền công bị mất hoặc bị giảm sút của cá nhân', '-', '-')}
+            ${grp('III. Thiệt hại về vật chất do người bị thiệt hại chết (Điều 25)', '0/5', '0 đ', '0 đ')}
+            ${grp('IV. Thiệt hại về vật chất do sức khỏe bị xâm phạm (Điều 26)', '0/5', '0 đ', '0 đ')}
+            ${grp('V. Thiệt hại về tinh thần (Điều 27)', '0/10', '0 đ', '0 đ')}
+            ${grp('VI. Các chi phí khác được bồi thường (Điều 28)', '0/4', '0 đ', '0 đ')}
+            ${grp('VII. Các thiệt hại khác', '0 dòng', '0 đ', '0 đ')}
+            <tr class="tong"><td style="text-align:right">TỔNG CỘNG:</td><td class="num">160.000.000 đ</td><td class="num">150.000.000 đ</td><td class="num">150.000.000 đ</td><td></td><td></td></tr>
+        </tbody></table></div>`}
+        ${phdd}
+        <div class="sub-g">Phương thức chi trả tiền bồi thường</div>
+        <div class="grid">${fld('Phương thức chi trả tiền bồi thường', '<select class="form-control" id="tlPt" onchange="tlPtDoi()"><option>Nhận tiền mặt</option><option>Nhận qua chuyển khoản</option></select>', true)}${fld('Họ và tên người nhận tiền', '<input class="form-control" value="Nguyễn Văn An">', true)}${fld('Số giấy tờ thân nhân người nhận', '<input class="form-control" value="001190005562">', true)}<div></div>
+            <div class="full"><label class="form-label">Địa chỉ chi tiết người nhận<span class="req">*</span></label><input class="form-control" value="Phường Cầu Giấy, Thành phố Hà Nội"></div>
+            <div class="ck" style="display:none"><label class="form-label">Chủ tài khoản<span class="req">*</span></label><input class="form-control" placeholder="Nhập tên chủ tài khoản..."></div>
+            <div class="ck" style="display:none"><label class="form-label">Số tài khoản<span class="req">*</span></label><input class="form-control" placeholder="Nhập số tài khoản..."></div>
+            <div class="ck" style="display:none"><label class="form-label">Tên ngân hàng<span class="req">*</span></label><input class="form-control" placeholder="Nhập tên ngân hàng..."></div>
+            <div class="ck" style="display:none"><label class="form-label">Chi nhánh ngân hàng</label><input class="form-control" placeholder="Nhập chi nhánh ngân hàng (nếu có)..."></div></div>
+        <div class="sub-g">Thông tin thỏa thuận khác</div>
+        <div class="radios"><label><input type="checkbox" onchange="document.getElementById('tlKd').style.display=this.checked?'':'none'"> Thỏa thuận kéo dài thương lượng</label></div>
+        <div class="grid" id="tlKd" style="display:none;margin:8px 0 0 24px">${fld('Từ ngày', '<input class="form-control" placeholder="dd/mm/yyyy">', true)}${fld('Đến ngày', '<input class="form-control" placeholder="dd/mm/yyyy">')}</div>
+        <div class="radios" style="margin-top:8px"><label><input type="checkbox" onchange="document.getElementById('tlHl').style.display=this.checked?'':'none'"> Thỏa thuận hiệu lực sớm hơn của Quyết định giải quyết bồi thường</label></div>
+        <div id="tlHl" style="display:none;margin:8px 0 0 24px">${ta('Nhập nội dung thỏa thuận hiệu lực sớm hơn của Quyết định giải quyết bồi thường...')}</div>
+        <div class="grid" style="margin-top:12px"><div class="full"><label class="form-label">Khôi phục quyền, lợi ích hợp pháp khác (nếu có)</label>${ta('Nhập nội dung khôi phục quyền, lợi ích hợp pháp khác (nếu có)...')}</div>
+            <div class="full"><label class="form-label">Các nội dung khác</label>${ta('Nhập các nội dung khác (nếu có)...')}</div></div>
+        <div style="margin-top:12px">${tlBang([{ ten: 'Biên bản kết quả thương lượng việc giải quyết bồi thường', co_dinh: true }, {}], { bb: true, goiY: 'dòng Biên bản kết quả thương lượng việc giải quyết bồi thường: chỉ nhận 01 tệp .pdf' })}</div>`;
+}
+function tlPtDoi() { const ck = $('tlPt').value === 'Nhận qua chuyển khoản'; document.querySelectorAll('#tlNd .ck').forEach(e => e.style.display = ck ? '' : 'none'); }
+function tuVe() { const co = $('tuCo').value === '1'; document.querySelectorAll('.tu1').forEach(e => e.style.display = co ? '' : 'none'); }
+function fTab(i) { window._fTab = i; [1, 2].forEach(k => $('fTab' + k).classList.toggle('on', k === i)); $('fBt').style.display = i === 1 ? '' : 'none'; $('fPh').style.display = i === 2 ? '' : 'none'; }
+function renderForm() {
+    const loai = $('tLoai').value, sv = $('tSt').value, s = ST.find(x => x.v === sv);
+    const bt = loai !== 'PH', ph = loai !== 'BT';
+    $('wSt').style.display = bt ? '' : 'none';
+    $('wPh').style.display = ph ? '' : 'none';
+    $('wHt').style.display = loai === 'PH' ? '' : 'none';
+    $('wPrev').style.display = bt && s && s.prev ? '' : 'none';
+    // Tab: Chỉ BT -> 1 tab; Yêu cầu cả hai -> 2 tab; Chỉ PHDD -> tab Phục hồi danh dự
+    $('fTab1').style.display = bt ? '' : 'none';
+    $('fTab2').style.display = ph ? '' : 'none';
+    fTab(!ph ? 1 : !bt ? 2 : (window._fTab || 1));
+    // Hồ sơ chỉ yêu cầu PHDD: Trạng thái Giải quyết YCBT chính là trạng thái nhánh PHDD
+    $('tPhNhan').textContent = loai === 'PH' ? 'Trạng thái Giải quyết YCBT hiện tại' : 'Trạng thái Phục hồi danh dự hiện tại';
+    // «Cử người phục hồi danh dự» chỉ có ở hồ sơ Cán bộ chủ động phục hồi danh dự
+    const cd = loai === 'PH' && $('tHt').value === 'CD';
+    const curPh = $('tPh').value;
+    $('tPh').innerHTML = PH_CHON.filter(x => !x.cdpd || cd).map(x => `<option value="${x.v}">${x.t}</option>`).join('');
+    $('tPh').value = PH_CHON.some(x => x.v === curPh && (!x.cdpd || cd)) ? curPh : 'DG';
+    $('wPhB').style.display = ph && $('tPh').value === 'DG' ? '' : 'none';
+    let done = !bt || !s ? 0 : (s.prev ? +$('tPrev').value : s.done);
+    // Khối Xác minh, Thương lượng nhập đủ như khối thật khi bước tiếp theo trên hệ thống dùng số liệu (Thương lượng, Chờ ban hành QĐ, Hoãn, Tạm đình chỉ).
+    // Chờ chi trả và hồ sơ đã kết thúc (Hoàn thành, Đình chỉ, Dừng): nhập gọn, thông tin chung + tài liệu; Giải quyết lại sau Hủy QĐ thì cán bộ tự nhập lại.
+    window._gon = bt && s && ['HT', 'CT', 'DC', 'DG'].includes(s.v);
+    // Stepper
+    $('stepper').innerHTML = bt ? STEPS.map((t, i) => `<div class="st ${i < done ? 'done' : (i === done && s && !s.prev && !s.doc && done < 6 ? 'cur' : '')}" data-n="${i + 1}">${t}</div>`).join('') : '';
+    // Ghi chú theo trạng thái
+    let note = '';
+    if (bt && s) {
+        if (s.v === 'HT') note = '<div class="alert alert-warn"><i class="fa-solid fa-triangle-exclamation"></i><div>Hồ sơ <b>Hoàn thành</b>: Quyết định và Chi trả chỉ ghi nhận tại hồ sơ, <b>không tạo bản ghi</b> tại phân hệ Quyết định giải quyết bồi thường và Kinh phí. Số tiền, ngày hoàn tất chi trả dùng làm căn cứ lập hồ sơ hoàn trả.</div></div>';
+        else if (s.v === 'CT') note = '<div class="alert alert-ok"><i class="fa-solid fa-circle-check"></i><div>Hồ sơ <b>Chờ chi trả</b>: khi lưu, hệ thống tạo bản ghi Quyết định giải quyết bồi thường «Có hiệu lực» và bản ghi Chi trả tiền bồi thường tại <b>Kinh phí</b>. Cán bộ tiếp tục theo dõi chi trả tại Kinh phí như bản ghi thường: Trình thông báo chi trả, Cập nhật chi trả, Trả lại ngân sách nhà nước.</div></div>';
+        else if (s.doc) note = `<div class="alert alert-info"><i class="fa-solid fa-circle-info"></i><div>Trạng thái <b>${s.t}</b>: nhập các bước đã làm${s.prev ? ' trước đó' : ''} và văn bản «${s.doc}».</div></div>`;
+        else note = `<div class="alert alert-info"><i class="fa-solid fa-circle-info"></i><div>Nhập bù ${done} bước đã làm. Bước «${STEPS[done]}» và các bước sau xử lý tiếp trên hệ thống.</div></div>`;
+    }
+    $('stNote').innerHTML = note;
+    // Khối các bước
+    let h = '', n = 0;
+    if (bt && s) {
+        if (done >= 1) h += blk(++n, 'Tiếp nhận hồ sơ bồi thường - Thụ lý', `<div class="grid"><div><label class="form-label">Ngày thụ lý<span class="req">*</span></label><input class="form-control" placeholder="dd/mm/yyyy"></div></div>` + kn('Thông báo thụ lý hồ sơ (Mẫu 04/BTNN)'));
+        if (done >= 2) h += blk(++n, 'Tiếp nhận hồ sơ bồi thường - Cử người giải quyết bồi thường', kn('Quyết định cử người giải quyết bồi thường') + `<div style="margin-top:12px"><label class="form-label">Cán bộ được cử giải quyết<span class="req">*</span></label>
+            <table><thead><tr><th>STT</th><th>Cán bộ</th><th>Vai trò</th></tr></thead><tbody><tr><td>1</td><td><select class="form-control"><option>Nguyễn Văn Chuyên Viên</option></select></td><td><select class="form-control"><option>Chủ trì</option><option>Phối hợp</option></select></td></tr></tbody></table>
+            <div class="note">Tài khoản cán bộ trên hệ thống; cán bộ Chủ trì nhận hồ sơ để xử lý tiếp.</div></div>`);
+        // Tạm ứng kinh phí đã chi trên giấy (vụ việc chưa tới Chờ chi trả): tạo bản ghi Tạm ứng để Quyết định sau này trừ số đã tạm ứng
+        if (done >= 1 && done <= 4 && !['KT', 'CQ'].includes(s.v)) h += blk(++n, 'Tạm ứng kinh phí bồi thường (nếu có)', `<div class="grid">
+                <div><label class="form-label">Đã tạm ứng kinh phí<span class="req">*</span></label><select class="form-control" id="tuCo" onchange="tuVe()"><option value="0">Chưa tạm ứng</option><option value="1">Đã tạm ứng</option></select></div>
+                <div class="tu1"><label class="form-label">Số tiền đã tạm ứng thực tế (VNĐ)<span class="req">*</span></label><input class="form-control" value="50.000.000" style="text-align:right"></div>
+                <div class="tu1"><label class="form-label">Ngày chi tạm ứng<span class="req">*</span></label><input class="form-control" placeholder="dd/mm/yyyy"></div><div></div>
+            </div><div class="tu1">${kn('Quyết định tạm ứng kinh phí bồi thường', { them: ['Chứng từ chi tạm ứng kinh phí bồi thường'] })}
+            <div class="alert alert-info" style="margin:12px 0 0"><i class="fa-solid fa-circle-info"></i><div>Khi lưu, hệ thống tạo bản ghi <b>Tạm ứng kinh phí</b> «Hoàn thành» tại Kinh phí. Khi ban hành Quyết định giải quyết bồi thường trên hệ thống, số đã tạm ứng được trừ như vụ việc thường.</div></div></div>`);
+        if (done >= 3) h += blk(++n, 'Xác minh thiệt hại thực tế', xmKhoi());
+        if (done >= 4) h += blk(++n, 'Thương lượng giải quyết bồi thường', tlKhoi());
+        if (done >= 5) h += blk(++n, 'Quyết định giải quyết bồi thường', `<div class="grid"><div><label class="form-label">Tổng số tiền bồi thường (VNĐ)<span class="req">*</span></label><input class="form-control" placeholder="0"></div><div><label class="form-label">Ngày có hiệu lực<span class="req">*</span></label><input class="form-control" placeholder="dd/mm/yyyy"></div></div>` + kn('Quyết định giải quyết bồi thường (Mẫu 18/BTNN)', { unit: true }));
+        if (done >= 6) h += blk(++n, 'Chi trả tiền bồi thường', `<div class="grid"><div><label class="form-label">Số tiền đã tạm ứng (VNĐ)</label><input class="form-control" placeholder="0"></div><div><label class="form-label">Số tiền đã chi trả (VNĐ)<span class="req">*</span></label><input class="form-control" placeholder="0"></div><div><label class="form-label">Ngày hoàn tất chi trả<span class="req">*</span></label><input class="form-control" placeholder="dd/mm/yyyy"></div><div></div>
+            <div class="full">${tlCoDinh(['Chứng từ chi trả tiền bồi thường'])}</div></div>`);
+        if (s.v === 'CT') h += blk(++n, 'Chi trả tiền bồi thường - tình hình đến thời điểm nhập', `<div class="grid">
+                <div><label class="form-label">Thông báo chi trả tiền bồi thường<span class="req">*</span></label><select class="form-control" id="ctTb" onchange="ctTinh()"><option value="0">Chưa ban hành</option><option value="1">Đã ban hành</option></select></div>
+                <div><label class="form-label">Số tiền đã tạm ứng (VNĐ)</label><input class="form-control" id="ctTu" value="50.000.000" oninput="ctTinh()" style="text-align:right"></div>
+                <div><label class="form-label">Số tiền đã chi trả (VNĐ)</label><input class="form-control" id="ctDc" value="100.000.000" oninput="ctTinh()" style="text-align:right"></div>
+                <div><label class="form-label">Số tiền còn phải chi trả (VNĐ)</label><input class="form-control" id="ctCl" readonly style="text-align:right;font-weight:600"><div class="note">= Tổng số tiền bồi thường - đã tạm ứng - đã chi trả.</div></div>
+            </div><div id="ctKn"></div>
+            <div style="margin-top:12px">${tlBang([{ ten: 'Chứng từ chi trả tiền bồi thường' }])}</div>
+            <div class="alert alert-info" style="margin:12px 0 0"><i class="fa-solid fa-circle-info"></i><div id="ctNote"></div></div>`);
+        if (s.doc) h += blk(++n, s.t, (s.cq ? '<div class="grid" style="margin-bottom:8px"><div class="full"><label class="form-label">Cơ quan nhận hồ sơ<span class="req">*</span></label><input class="form-control" placeholder="Nhập tên cơ quan giải quyết bồi thường nhận hồ sơ"></div></div>' : '') + kn(s.doc));
+    }
+    $('stepBlocks').innerHTML = h;
+    let m = 0;
+    $('phBlocksW').innerHTML = ph ? phBlocks(loai, cd, () => ++m) : '';
+    if ($('tuCo')) tuVe();
+    if ($('tlNd')) tlDoi();
+    // Ô Tổng số tiền bồi thường của khối Quyết định: dữ liệu mẫu, đổi số thì tính lại số còn phải chi
+    const q = [...document.querySelectorAll('#stepBlocks .blk')].find(b => /^\d+\. Quyết định giải quyết bồi thường$/.test(b.querySelector('.blk-h span').textContent));
+    if (q) { const i = q.querySelector('.grid input'); i.id = 'qdTong'; i.value = '250.000.000'; i.style.textAlign = 'right'; i.oninput = () => { if ($('ctTb')) ctTinh(); }; }
+    if ($('ctTb')) ctTinh();
+}
+const soTien = v => +String(v || '').replace(/\D/g, '') || 0;
+const fmt = n => n.toLocaleString('vi-VN');
+// Hồ sơ Chờ chi trả: tính số còn phải chi, hiện Thông báo chi trả (Ký ngoài) khi đã ban hành, ghi rõ bản ghi Kinh phí sẽ tạo
+function ctTinh() {
+    const tong = $('qdTong') ? soTien($('qdTong').value) : 0, con = Math.max(0, tong - soTien($('ctTu').value) - soTien($('ctDc').value));
+    $('ctCl').value = fmt(con);
+    const da = $('ctTb').value === '1';
+    $('ctKn').innerHTML = da ? kn('Thông báo chi trả tiền bồi thường (Mẫu 32/BTNN)') : '';
+    $('ctNote').innerHTML = `Khi lưu, hệ thống tạo bản ghi <b>Chi trả tiền bồi thường</b> tại Kinh phí, trạng thái <b>${da ? 'Chờ chi trả' : 'Chờ thông báo chi trả'}</b>, Số tiền còn phải chi trả <b>${fmt(con)}</b> đ. Số tiền đã tạm ứng, đã chi trả ghi vào lịch sử chi trả của bản ghi với nhãn «Hồ sơ tồn». Phần còn lại cán bộ tiếp tục ${da ? 'Cập nhật chi trả' : 'Trình thông báo chi trả, Cập nhật chi trả'} hoặc Trả lại ngân sách nhà nước tại Kinh phí.`;
+}
+function saveTon() {
+    const loai = $('tLoai').value;
+    const bad = loai !== 'PH' && !$('tSt').value;
+    $('tStErr').style.display = bad ? 'block' : 'none'; $('tSt').classList.toggle('is-invalid', bad);
+    if (bad) { $('tSt').focus(); return; }
+    toast('Đã lưu hồ sơ tồn BT-2026-123.');
+    setTimeout(() => go('s3'), 700);
+}
+
+// ---------- Màn 4 ----------
+const HT = [
+    { ma: 'HT-2026-031', gq: 'BT-2026-131', dv: 'UBND phường Cầu Giấy, Thành phố Hà Nội', p: '45.000.000', n: '45.000.000', st: 'Hoàn thành', c: 'b-st3', ton: 1 },
+    { ma: 'HT-2026-029', gq: 'BT-2026-087', dv: 'UBND phường Cầu Giấy, Thành phố Hà Nội', p: '30.000.000', n: '10.000.000', st: 'Thu tiền hoàn trả', c: 'b-st2', ton: 0 },
+    { ma: 'HT-2026-030', gq: 'BT-2026-090', dv: 'UBND phường Cầu Giấy, Thành phố Hà Nội', p: '-', n: '-', st: 'Đình chỉ xem xét hoàn trả', c: 'b-st4', ton: 1 },
+];
+function renderHt() {
+    const f = $('fTonHt').value;
+    $('htBody').innerHTML = HT.filter(r => f === '' || String(r.ton) === f).map((r, i) => `<tr><td>${i + 1}</td><td class="nw"><span class="link">${r.ma}</span>${r.ton ? '<br><span class="b-ton">Hồ sơ tồn</span>' : ''}</td><td>${r.gq}</td><td>${r.dv}</td><td style="text-align:right">${r.p}</td><td style="text-align:right">${r.n}</td><td><span class="badge ${r.c}">${r.st}</span></td></tr>`).join('');
+}
+function openHt() { $('htSt').value = 'HT'; renderHtForm(); $('htModal').classList.add('on'); }
+function closeHt() { $('htModal').classList.remove('on'); }
+function renderHtForm() {
+    const v = $('htSt').value;
+    const doc = { HT: 'Quyết định hoàn trả', MH: 'Quyết định hoàn trả (miễn hoàn trả)', DC: 'Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả', CD: 'Quyết định chấm dứt việc xem xét trách nhiệm hoàn trả' }[v];
+    const tmp = document.createElement('div'); tmp.innerHTML = kn(doc, { unit: true });
+    $('htQd').outerHTML = '<div id="htQd">' + tmp.innerHTML + '</div>';
+    const money = v === 'HT' || v === 'MH';
+    $('htTl').innerHTML = v === 'HT' ? tlCoDinh(['Chứng từ nộp tiền hoàn trả']) : '';
+    $('htCb').innerHTML = `<div style="margin-top:14px"><label class="form-label">Người thi hành công vụ gây thiệt hại<span class="req">*</span></label>
+        <div class="tbl-wrap"><table><thead><tr><th>STT</th><th>Họ và tên</th><th>Chức vụ</th><th>Cơ quan trực tiếp quản lý</th>${money ? '<th>Số tiền phải hoàn trả (đ)</th><th>Số tiền thực tế đã nộp (đ)</th><th>Kết quả</th>' : ''}<th></th></tr></thead>
+        <tbody><tr><td>1</td><td><input class="form-control" value="Đỗ Văn Hùng"></td><td><input class="form-control" value="Cán bộ địa chính"></td><td><input class="form-control" value="UBND phường Cầu Giấy"></td>${money ? `<td><input class="form-control" value="${v === 'MH' ? '0' : '45.000.000'}" style="text-align:right"></td><td><input class="form-control" value="${v === 'MH' ? '0' : '45.000.000'}" style="text-align:right"></td><td><select class="form-control"><option ${v === 'HT' ? 'selected' : ''}>Hoàn thành</option><option ${v === 'MH' ? 'selected' : ''}>Miễn hoàn trả</option></select></td>` : ''}<td><i class="fa-solid fa-trash" style="color:#ef4444"></i></td></tr></tbody></table></div>
+        <button class="btn btn-outline btn-sm" style="margin-top:8px"><i class="fa-solid fa-plus"></i> Thêm người thi hành công vụ</button></div>`;
+}
+function saveHt() { closeHt(); toast('Đã lưu hồ sơ hoàn trả tồn HT-2026-032.'); }
+
+renderList(); initForm(); renderHt();
+</script>
+</body>
+</html>
