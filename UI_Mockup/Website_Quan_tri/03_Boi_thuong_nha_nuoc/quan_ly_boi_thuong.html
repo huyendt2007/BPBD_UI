@@ -2692,6 +2692,10 @@
                                     đồng (Không đồng)</span>
                             </div>
 
+                            <!-- 26/11/2026: bảng «Tài liệu đính kèm» của khối Đề nghị tạm ứng (thay 02 ô chọn tệp rời kèm tạm ứng tinh thần / thiệt hại khác);
+                                 bảng chuẩn btnn_tai_lieu_kem_theo.js, dựng bởi claimAdvDocsMount(), lưu claim.advanceDocs -->
+                            <div id="claimAdvanceDocsHost"></div>
+
                         </div>
                     </div>
                 </div>
@@ -10986,6 +10990,7 @@
                 document.getElementById('claimAdvanceTinhThan').value = needAdv ? formatMoneyValue(claim.advanceTinhThan !== undefined ? claim.advanceTinhThan : claim.advanceNum) : '';
                 document.getElementById('claimAdvanceKhacVal').value = (needAdv && claim.advanceKhac) ? formatMoneyValue(claim.advanceKhac) : '';
                 sumClaimAdvance();
+                claimAdvDocsMount(needAdv ? claim.advanceDocs : []);
 
                 // Section IV Recipient fields
                 document.getElementById('claimRecName').value = claim.advanceRecName || '';
@@ -11109,6 +11114,7 @@
                 document.getElementById('claimAdvancePanel').style.display = 'none';
                 document.getElementById('claimAdvanceTinhThan').value = '';
                 document.getElementById('claimAdvanceKhacVal').value = '';
+                claimAdvDocsMount([]);
 
                 document.getElementById('claimRecName').value = '';
                 document.getElementById('claimRecCard').value = '';
@@ -11433,6 +11439,13 @@
             if (recAddress && !recAddress.value) recAddress.value = address;
 
             sumClaimAdvance();
+        }
+
+        // 26/11/2026: khối Đề nghị tạm ứng kinh phí dùng 01 bảng «Tài liệu đính kèm» chuẩn (STT | Tên tài liệu, văn bản | File đính kèm | Thao tác + Thêm tài liệu),
+        // thay 02 ô chọn tệp rời; không bắt buộc, không ghi chú định dạng; dữ liệu lưu claim.advanceDocs [{ name, file }]
+        function claimAdvDocsMount(rows) {
+            if (typeof tlktMount !== 'function' || !document.getElementById('claimAdvanceDocsHost')) return;
+            tlktMount('claimAdv', 'claimAdvanceDocsHost', { split: false, noLeader: true, noHint: true, required: false, title: 'Tài liệu đính kèm', secClass: '', rows: Array.isArray(rows) ? rows : [] });
         }
 
         function toggleClaimAdvancePanel(checked) {
@@ -12112,6 +12125,7 @@
             let tinhThan = 0;
             let khac = 0;
             let advKhacName = "";
+            let advDocs = []; // 26/11/2026: bảng Tài liệu đính kèm của khối Đề nghị tạm ứng kinh phí
             const needAdvance = document.getElementById('claimNeedAdvance').checked;
             if (requestType !== 'honor' && needAdvance) {
                 tinhThan = parseMoneyValue(document.getElementById('claimAdvanceTinhThan').value);
@@ -12144,6 +12158,15 @@
                         return;
                     }
                 }
+
+                // Bảng Tài liệu đính kèm của khối: dòng đã nhập phải đủ Tên tài liệu, văn bản và tệp; dòng trống không lưu (bảng không bắt buộc)
+                if (typeof tlktValidate === 'function' && !tlktValidate('claimAdv')) {
+                    const host = document.getElementById('claimAdvanceDocsHost');
+                    const bad = host && host.querySelector('.is-invalid');
+                    if (bad) bad.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+                advDocs = typeof tlktGet === 'function' ? tlktGet('claimAdv') : [];
 
                 if (adv > total) {
                     gqFormNotice('Tổng tiền đề nghị tạm ứng không được lớn hơn tổng tiền yêu cầu bồi thường.');
@@ -12285,6 +12308,7 @@
                     claim.advanceTinhThan = tinhThan;
                     claim.advanceKhac = khac;
                     claim.advanceKhacName = advKhacName;
+                    claim.advanceDocs = advDocs;
                     claim.advanceRecName = recName;
                     claim.advanceRecCard = recCard;
                     claim.advanceRecAddress = recAddress;
@@ -12410,6 +12434,7 @@
                 advanceTinhThan: tinhThan,
                 advanceKhac: khac,
                 advanceKhacName: advKhacName,
+                advanceDocs: advDocs,
                 advanceRecName: recName,
                 advanceRecCard: recCard,
                 advanceRecAddress: recAddress,
@@ -12965,7 +12990,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                             <div><strong>Tổng số tiền tạm ứng đề nghị:</strong> <span style="font-weight:700; color:var(--secondary-color);">${claim.advanceNum.toLocaleString('vi-VN')} đ</span></div>
                         </div>
                         <div style="font-size:11.5px; font-style:italic; margin-top:4px; color:var(--text-muted);">Viết bằng chữ: ${numberToVietnameseWords(claim.advanceNum)}</div>
-                        
+                        ${(typeof tlktViewHtml === 'function' && Array.isArray(claim.advanceDocs) && claim.advanceDocs.length) ? '<div style="margin-top:12px;">' + tlktViewHtml(claim.advanceDocs, { split: false, title: 'Tài liệu đính kèm' }) + '</div>' : ''}
+
                         <div style="font-weight:700; color:var(--primary-color); font-size:12.5px; margin-top:12px;">THÔNG TIN NGƯỜI NHẬN & PHƯƠNG THỨC CHI TRẢ:</div>
                         <div class="grid-4-cols" style="gap: 10px; font-size: 13px; margin-top:4px;">
                             <div><strong>Họ và tên người nhận:</strong> ${claim.advanceRecName || claim.nyc}</div>
@@ -25024,7 +25050,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <!-- [ctvv] Chi tiết vụ việc: khối các bước đã qua, tên 03 tab, Trình ký Mẫu 26/BTNN, bảng Tài liệu đính kèm đồng nhất (đặt sau các script chính để bọc hàm) -->
     <script src="quan_ly_boi_thuong_ctvv.js?v=20261112sn1"></script>
     <!-- [ttgq] Popup Trình ký Quyết định tiếp tục giải quyết bồi thường (Mẫu số 23/BTNN) -->
-    <script src="quan_ly_boi_thuong_ttgq.js?v=20261112sn1"></script>
+    <script src="quan_ly_boi_thuong_ttgq.js?v=20261126hst"></script>
     <!-- [ycbs] Tiếp nhận hồ sơ bổ sung: nhãn Hồ sơ gốc / Bổ sung, Đã cập nhật bổ sung (bọc hàm màn Nhập liệu hồ sơ vụ việc) -->
     <script src="quan_ly_boi_thuong_ycbs.js?v=20261030s2"></script>
     <!-- [phdx] Tab Phục hồi danh dự: bấm Step -> khối tương ứng; thu gọn / mở rộng khối; khối Hoãn phục hồi danh dự + Tiếp tục thực hiện -->
@@ -25063,7 +25089,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <!-- [gql] Hủy QĐ -> Đình chỉ hoặc Giải quyết lại: thao tác Giải quyết lại (Thao tác khác MH01 / thanh thao tác MH04), dòng phụ "QĐ đã bị hủy", lần thương lượng, khối Quyết định đã bị hủy; dữ liệu mẫu BT-2026-561, BT-2026-562 -->
     <script src="quan_ly_boi_thuong_gql.js?v=20261106gql16"></script>
     <!-- [hst] Nhập hồ sơ tồn: form Nhập liệu hồ sơ vụ việc chế độ hồ sơ tồn, nhãn Hồ sơ tồn ở lưới / chi tiết, dữ liệu mẫu BT-2025-901..904 (đặt sau gql, cdpd) -->
-    <script src="quan_ly_boi_thuong_hst.js?v=20261125hst22"></script>
+    <script src="quan_ly_boi_thuong_hst.js?v=20261126sua2"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="btnn_tieu_de_man.js?v=20261103td2"></script>

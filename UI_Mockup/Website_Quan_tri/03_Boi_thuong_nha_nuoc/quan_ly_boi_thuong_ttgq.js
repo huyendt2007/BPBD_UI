@@ -42,8 +42,9 @@ function ttgqPrevDecision(claim, loai) {
     return { docNo: ttgqCleanNo(src.no), docDate: hgqParse(dt) ? dt : '' };
 }
 // Trạng thái khôi phục khi tiếp tục giải quyết = trạng thái trước khi Hoãn / Tạm đình chỉ
+// Hồ sơ tồn: hgqPrevStatus = trạng thái của bước kế tiếp «Bước đã thực hiện trước đó» (lưu khi nhập hồ sơ tồn)
 function ttgqRestoreStatus(claim) {
-    return claim.specialStatusPreviousStatus || ([].concat(claim.specialStatusLogs || []).reverse().filter(function (l) { return l && l.previousStatus; })[0] || {}).previousStatus || 'Xác minh thiệt hại';
+    return claim.specialStatusPreviousStatus || ([].concat(claim.specialStatusLogs || []).reverse().filter(function (l) { return l && l.previousStatus; })[0] || {}).previousStatus || claim.hgqPrevStatus || 'Xác minh thiệt hại';
 }
 
 // ---------- Văn bản Mẫu 23/BTNN ----------
