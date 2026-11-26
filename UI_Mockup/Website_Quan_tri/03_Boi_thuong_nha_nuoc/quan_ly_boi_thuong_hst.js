@@ -61,8 +61,8 @@ var HST_VERSION = '20261119hst1';
     // số bước đã làm xong = các bước đứng trước trạng thái đó
     // 26/11 (BA yêu cầu): Đình chỉ giải quyết / Dừng giải quyết cũng chọn «Trạng thái trước khi đình chỉ / dừng giải quyết»
     // theo đúng các trạng thái luồng Giải quyết YCBT cho phép (thay ô «Bước đã thực hiện trước đó»)
-    var TRUOC_OF = { HO: ['XM', 'TL'], TD: ['XM', 'TL', 'QD'], DC: ['CN', 'XM', 'TL', 'QD', 'CT'], DG: ['CN', 'XM', 'TL', 'QD'] };
-    var TRUOC_DONE = { CN: 1, XM: 2, TL: 3, QD: 4, CT: 5 };
+    var TRUOC_OF = { HO: ['XM', 'TL'], TD: ['XM', 'TL', 'QD'], DC: ['CN', 'XM', 'TL', 'QD', 'CT', 'HT'], DG: ['CN', 'XM', 'TL', 'QD'] };
+    var TRUOC_DONE = { CN: 1, XM: 2, TL: 3, QD: 4, CT: 5, HT: 6 };
     var TRUOC_NHAN = { HO: 'Trạng thái trước khi hoãn / tạm đình chỉ', TD: 'Trạng thái trước khi hoãn / tạm đình chỉ', DC: 'Trạng thái trước khi đình chỉ', DG: 'Trạng thái trước khi dừng giải quyết' };
     // Dữ liệu cũ lưu «Bước đã thực hiện trước đó» (số bước đã xong) -> trạng thái trước tương ứng
     var PREV_TRUOC = ['', 'CN', 'XM', 'TL', 'QD'];
