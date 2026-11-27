@@ -920,9 +920,10 @@ var HST_VERSION = '20261119hst1';
             try {
                 var sua = false; try { sua = !!isDetailEditMode; } catch (e) { }
                 var bar = el('detailActionBar');
+                // 27/11 (BA yêu cầu): thứ tự Cập nhật hồ sơ tồn | Xóa hồ sơ tồn, đặt đầu thanh nút
                 if (bar && !sua && H.duocSua(claim) && !el('hstBtnSua')) bar.insertAdjacentHTML('afterbegin',
-                    '<button class="btn btn-outline-danger detail-secondary-action" id="hstBtnXoa" onclick="HST.xoa(\'' + claim.id + '\')"><i class="fa-solid fa-trash"></i> Xóa hồ sơ tồn</button>'
-                    + '<button class="btn btn-outline-primary detail-secondary-action" id="hstBtnSua" onclick="HST.edit(\'' + claim.id + '\')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật hồ sơ tồn</button>');
+                    '<button class="btn btn-outline-primary detail-secondary-action" id="hstBtnSua" onclick="HST.edit(\'' + claim.id + '\')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật hồ sơ tồn</button>'
+                    + '<button class="btn btn-outline-danger detail-secondary-action" id="hstBtnXoa" onclick="HST.xoa(\'' + claim.id + '\')"><i class="fa-solid fa-trash"></i> Xóa hồ sơ tồn</button>');
             } catch (e) { console.warn('hst bar', e); }
             return r;
         };

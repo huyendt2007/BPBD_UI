@@ -450,13 +450,13 @@ var XHST_VERSION = '20261120xhst1';
                         n.innerHTML = '<i class="fa-solid fa-box-archive" style="margin-top:3px;color:#475569"></i><div><b>Hồ sơ tồn</b>: hồ sơ đã giải quyết trên giấy, nhập vào hệ thống ngày ' + esc(h.nhapLuc || '') + ' bởi ' + esc(h.nhapBoi || '') + (h.soGiay ? ', số hồ sơ trên giấy ' + esc(h.soGiay) : '') + '. Các bước đã làm trên giấy được nhập khi tạo hồ sơ; bước hiện tại và các bước sau xử lý như hồ sơ thường.</div>';
                         if (t && t.parentNode) t.parentNode.insertBefore(n, t.nextSibling);
                     }
-                    // Thanh nút màn chi tiết: Xóa hồ sơ tồn, Cập nhật hồ sơ tồn (ngay sau nút Đóng) khi đủ điều kiện
+                    // 27/11 (BA yêu cầu): thứ tự nút màn chi tiết Cập nhật hồ sơ tồn | Xóa hồ sơ tồn | Đóng (đặt ngay trước nút Đóng) khi đủ điều kiện
                     var ft = el('detailWorkflowActions');
                     if (ft && X.duocSua(c)) {
                         var dong = ft.querySelector('button');
-                        var html = '<button class="btn btn-secondary" id="xhstBtnXoa" style="color:#dc2626;border-color:#fca5a5;background:#fff" onclick="XHST.xoa(\'' + c.id + '\')"><i class="fa-solid fa-trash"></i> Xóa hồ sơ tồn</button>'
-                            + '<button class="btn btn-primary" id="xhstBtnSua" onclick="XHST.edit(\'' + c.id + '\')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật hồ sơ tồn</button>';
-                        if (dong) dong.insertAdjacentHTML('afterend', html); else ft.insertAdjacentHTML('beforeend', html);
+                        var html = '<button class="btn btn-primary" id="xhstBtnSua" onclick="XHST.edit(\'' + c.id + '\')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật hồ sơ tồn</button>'
+                            + '<button class="btn btn-secondary" id="xhstBtnXoa" style="color:#dc2626;border-color:#fca5a5;background:#fff" onclick="XHST.xoa(\'' + c.id + '\')"><i class="fa-solid fa-trash"></i> Xóa hồ sơ tồn</button>';
+                        if (dong) dong.insertAdjacentHTML('beforebegin', html); else ft.insertAdjacentHTML('beforeend', html);
                     }
                 } catch (e) { console.warn('xhst', e); }
                 return r;
