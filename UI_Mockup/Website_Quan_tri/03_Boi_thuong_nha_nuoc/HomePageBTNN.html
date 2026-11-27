@@ -718,6 +718,41 @@
         .notif-item:hover {
             background-color: #f8fafc;
         }
+    
+        /* 27/11 (BA yêu cầu): ô Tìm nhanh chức năng nghiệp vụ nằm trong menu trái, ngay dưới khối tên hệ thống */
+        .sidebar-search {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+        }
+
+        .sidebar-search .search-box {
+            width: 100%;
+        }
+
+        .sidebar-search .search-box input {
+            padding: 7px 12px 7px 32px;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 6px;
+            color: #fff;
+        }
+
+        .sidebar-search .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.55);
+        }
+
+        .sidebar-search .search-box input:focus {
+            background-color: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.45);
+            box-shadow: none;
+        }
+
+        .sidebar-search .search-box i {
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+        }
     </style>
 </head>
 
@@ -730,6 +765,15 @@
             <div class="sidebar-brand-title">
                 <h1>Bồi thường nhà nước<br>& Quản lý nhà nước</h1>
                 <p>Cổng Quản trị Nghiệp vụ</p>
+            </div>
+        </div>
+
+        <!-- 27/11 (BA yêu cầu): ô Tìm nhanh chức năng nghiệp vụ chuyển từ thanh trên cùng vào menu trái -->
+        <div class="sidebar-search">
+            <div class="search-box">
+                <i class="fa fa-search"></i>
+                <input type="text" id="actionSearch" placeholder="Tìm nhanh chức năng nghiệp vụ..."
+                    oninput="filterMenu()">
             </div>
         </div>
 
@@ -753,11 +797,6 @@
             </div>
 
             <div class="header-controls">
-                <div class="search-box">
-                    <i class="fa fa-search"></i>
-                    <input type="text" id="actionSearch" placeholder="Tìm nhanh chức năng nghiệp vụ..."
-                        oninput="filterMenu()">
-                </div>
 
                 <div class="notification-container"
                     style="position: relative; display: flex; align-items: center; justify-content: center;">
