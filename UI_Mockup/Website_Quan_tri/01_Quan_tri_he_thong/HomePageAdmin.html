@@ -754,6 +754,9 @@
                     </div>
                 </div>
 
+                <!-- 27/11 (BA chọn): giữ chuông thông báo; thêm biểu tượng Đổi ngôn ngữ ngay sau chuông (dựng bởi ../tro_giup_hdsd.js) -->
+                <div class="lang-container" id="langContainer"></div>
+
                 <div class="user-profile" id="userProfileDropdown" onclick="toggleDropdown(event)">
                     <div class="avatar">CB</div>
                     <div class="user-info">
@@ -1862,6 +1865,9 @@
     </script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
+    <!-- 27/11 (BA chọn): icon «Trợ giúp» trước chuông thông báo, biểu tượng Đổi ngôn ngữ sau chuông; danh sách HDSD theo phân hệ được phân quyền -->
+    <script>window.HDSD_DS = [{ ten: 'Bồi thường nhà nước', tep: '../../../H%C6%B0%E1%BB%9Bng%20d%E1%BA%ABn%20s%E1%BB%AD%20d%E1%BB%A5ng/BTNN/HDSD_BTNN.docx', tai: 'HDSD_BTNN.docx' }, { ten: 'Biện pháp bảo đảm' }, { ten: 'Quản trị hệ thống' }];</script>
+    <script src="../tro_giup_hdsd.js?v=20261127lang3"></script>
 </body>
 
 </html>
