@@ -370,6 +370,15 @@
             box-shadow: var(--box-shadow);
             padding: 30px;
         }
+        /* Thanh nút chức năng màn Xem chi tiết: luôn cố định ở cuối màn hình (kể cả khi nội dung ngắn), như xem_chi_tiet_lich_su_can_bo */
+        .details-panel { display: flex; flex-direction: column; min-height: calc(100vh - 140px); }
+        .details-panel > .panel-actions-card {
+            position: sticky; bottom: 0; z-index: 40; margin-top: auto; padding: 15px 20px;
+            display: flex; justify-content: flex-end; gap: 12px; background-color: #fff;
+            border-top: 1px solid var(--border-color); border-radius: var(--border-radius-lg);
+            box-shadow: 0 -4px 12px rgba(15, 23, 42, .08);
+        }
+        .details-panel > .panel-actions-card > #action-buttons-container { display: flex; justify-content: flex-end; gap: 12px; align-items: center; width: 100%; }
 
         .panel-header {
             display: flex;
@@ -859,15 +868,12 @@
             <span>Xem chi tiết lịch sử Hồ sơ</span>
         </div>
 
-        <!-- Page Header -->
+        <!-- Page Header (nút Đóng nằm ở thanh nút cố định dưới đáy khung chi tiết) -->
         <div class="page-header">
             <h1 class="page-title">
                 <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-color);"></i>
                 Xem chi tiết lịch sử Hồ sơ
             </h1>
-            <button class="btn-back" id="btnBackToSearch">
-                <i class="fa-solid fa-xmark"></i> Đóng
-            </button>
         </div>
 
         <!-- Warning banner if any -->
@@ -1371,6 +1377,14 @@
                     </div>
                 </section>
 
+                <!-- Thanh nút chức năng: luôn cố định dưới đáy màn hình (giống các màn Xem chi tiết khác) -->
+                <div class="panel-actions-card">
+                    <div id="action-buttons-container">
+                        <button class="btn-back" id="btnBackToSearch">
+                            <i class="fa-solid fa-xmark"></i> Đóng
+                        </button>
+                    </div>
+                </div>
             </main>
         </div>
     </div>
@@ -1394,6 +1408,7 @@
     <script src="xem_chi_tiet_thay_doi.js"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
+    <script src="bpbd_bo_cuc_co_dinh.js?v=20261127bc5"></script>
 </body>
 
 </html>

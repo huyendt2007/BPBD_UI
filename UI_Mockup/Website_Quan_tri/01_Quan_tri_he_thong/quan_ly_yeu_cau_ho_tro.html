@@ -885,9 +885,10 @@
                 <div class="detail-label">Nội dung chi tiết:</div>
                 <div class="detail-value" id="dt-content" style="white-space: pre-line; line-height: 1.6; background-color: #F8FAFC; border: 1px solid var(--border-color); padding: 10px; width: 100%; border-radius: 4px;"></div>
             </div>
-            <div class="detail-row">
-                <div class="detail-label">File đính kèm gốc</div>
-                <div class="detail-value" id="dt-attachments"></div>
+            <!-- 26/11/2026: Tài liệu đính kèm của khách hàng - bảng chuẩn chỉ đọc (bpbd_tai_lieu_dinh_kem.js, bố trí giống BTNN); không có tài liệu thì ẩn -->
+            <div class="detail-row" id="dt-attachments-row" style="flex-direction: column; align-items: stretch; gap: 6px;">
+                <div class="detail-label">Tài liệu đính kèm</div>
+                <div class="detail-value" id="dt-attachments" style="width: 100%;"></div>
             </div>
 
             <!-- Response History Log -->
@@ -974,20 +975,9 @@
                 <div class="error-message" id="error-reply-content">Vui lòng nhập nội dung phản hồi.</div>
             </div>
             <div class="form-group">
-                <label class="form-label">Tài liệu / Hình ảnh đính kèm phản hồi (Tối đa 3 tệp)</label>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="triggerReplyUpload()" style="font-size: 12px;"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp tải lên</button>
-                    <span id="reply-upload-count" style="font-size: 12px; color: var(--text-muted);">Đã chọn 0/3 tệp</span>
-                </div>
-                <input type="file" id="reply-files-input" style="display: none;" multiple accept=".pdf,.png,.jpg,.jpeg,.gif" onchange="handleReplyFiles(this)">
-                
-                <!-- Files List Container -->
-                <div id="reply-files-list" style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;"></div>
-                
-                <small style="color: var(--text-muted); display: block; margin-top: 6px; font-size: 11px; line-height: 1.4;">
-                    Hỗ trợ các định dạng tệp: Tài liệu PDF (<strong>.pdf</strong>) và các định dạng hình ảnh (<strong>.png, .jpg, .jpeg, .gif</strong>). <span style="color: var(--danger-color); font-weight: 500;">Không hỗ trợ tệp tài liệu Word (.docx).</span>
-                </small>
-                <div class="error-message" id="error-reply-upload" style="margin-top: 4px; display: none;">Chỉ cho phép tải lên tối đa 3 tệp và định dạng được hỗ trợ.</div>
+                <!-- 26/11/2026: bảng «Tài liệu đính kèm» chuẩn (bpbd_tai_lieu_dinh_kem.js, bố trí giống BTNN): STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file, Xóa), nút Thêm tài liệu, mặc định 01 dòng trống;
+                     .pdf, .jpg, .jpeg, .png; tối đa 20MB/tệp, 03 tệp [BR-FILE-011] -->
+                <div id="reply-docs-host"></div>
             </div>
         </div>
         <div class="modal-footer">
@@ -1012,20 +1002,9 @@
                 <div class="error-message" id="error-clarify-content">Vui lòng nhập nội dung đề nghị làm rõ.</div>
             </div>
             <div class="form-group">
-                <label class="form-label">Tài liệu / Hình ảnh đính kèm yêu cầu (Tối đa 3 tệp)</label>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="triggerClarifyUpload()" style="font-size: 12px;"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp tải lên</button>
-                    <span id="clarify-upload-count" style="font-size: 12px; color: var(--text-muted);">Đã chọn 0/3 tệp</span>
-                </div>
-                <input type="file" id="clarify-files-input" style="display: none;" multiple accept=".pdf,.png,.jpg,.jpeg,.gif" onchange="handleClarifyFiles(this)">
-                
-                <!-- Files List Container -->
-                <div id="clarify-files-list" style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;"></div>
-                
-                <small style="color: var(--text-muted); display: block; margin-top: 6px; font-size: 11px; line-height: 1.4;">
-                    Hỗ trợ các định dạng tệp: Tài liệu PDF (<strong>.pdf</strong>) và các định dạng hình ảnh (<strong>.png, .jpg, .jpeg, .gif</strong>). <span style="color: var(--danger-color); font-weight: 500;">Không hỗ trợ tệp tài liệu Word (.docx).</span>
-                </small>
-                <div class="error-message" id="error-clarify-upload" style="margin-top: 4px; display: none;">Chỉ cho phép tải lên tối đa 3 tệp và định dạng được hỗ trợ.</div>
+                <!-- 26/11/2026: bảng «Tài liệu đính kèm» chuẩn (bpbd_tai_lieu_dinh_kem.js, bố trí giống BTNN): STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file, Xóa), nút Thêm tài liệu, mặc định 01 dòng trống;
+                     .pdf, .jpg, .jpeg, .png; tối đa 20MB/tệp, 03 tệp [BR-FILE-011] -->
+                <div id="clarify-docs-host"></div>
             </div>
         </div>
         <div class="modal-footer">
@@ -2370,92 +2349,44 @@
             uploadedReplyFiles = []; // Reset uploaded files
             renderReplyUploadedFiles();
             document.getElementById('error-reply-content').style.display = "none";
-            document.getElementById('error-reply-upload').style.display = "none";
             openModal('modal-reply');
         }
     }
 
-    // Custom Reply upload file handlers
-    function triggerReplyUpload() {
-        document.getElementById('reply-files-input').click();
-    }
-
-    function handleReplyFiles(input) {
-        const files = input.files;
-        const errorDiv = document.getElementById('error-reply-upload');
-        errorDiv.style.display = "none";
-
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const ext = file.name.split('.').pop().toLowerCase();
-            const allowed = ['pdf', 'png', 'jpg', 'jpeg', 'gif'];
-            
-            if (!allowed.includes(ext)) {
-                errorDiv.innerHTML = `Tệp "<strong>${file.name}</strong>" không đúng định dạng. Hệ thống hỗ trợ định dạng PDF, ảnh và <span style="color: var(--danger-color); font-weight: bold;">không hỗ trợ tệp Word (.docx)</span>.`;
-                errorDiv.style.display = "block";
-                continue;
-            }
-
-            if (uploadedReplyFiles.length >= 3) {
-                errorDiv.innerText = "Bạn chỉ được đính kèm tối đa 3 tệp.";
-                errorDiv.style.display = "block";
-                break;
-            }
-
-            if (!uploadedReplyFiles.some(f => f.name === file.name)) {
-                uploadedReplyFiles.push({ name: file.name });
-            }
-        }
-        renderReplyUploadedFiles();
-        input.value = "";
-    }
-
-    function renderReplyUploadedFiles() {
-        const listDiv = document.getElementById('reply-files-list');
-        const countSpan = document.getElementById('reply-upload-count');
-        listDiv.innerHTML = "";
-        countSpan.innerText = `Đã chọn ${uploadedReplyFiles.length}/3 tệp`;
-
-        uploadedReplyFiles.forEach((file, index) => {
-            listDiv.innerHTML += `
-                <div style="display: flex; align-items: center; justify-content: space-between; background: transparent; padding: 6px 0; font-size: 12px; border: none; gap: 10px;">
-                    <span style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-main); font-weight: 500; min-width: 0; flex: 1;">
-                        <i class="fa-solid fa-file" style="color: ${file.name.endsWith('.pdf') ? 'red' : 'blue'}; flex-shrink: 0;"></i>
-                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%;" title="${file.name}">${file.name}</span>
-                    </span>
-                    <div style="display: flex; gap: 8px; flex-shrink: 0; white-space: nowrap;">
-                        <a href="#" style="color: var(--secondary-color); text-decoration: none; font-weight: 600;" onclick="event.preventDefault(); openFilePreview('${file.name}')">Xem file</a>
-                        <span style="color: var(--border-color);">|</span>
-                        <a href="#" style="color: var(--danger-color); text-decoration: none; font-weight: 600;" onclick="event.preventDefault(); removeReplyFile(${index})">Xóa</a>
-                    </div>
-                </div>
-            `;
+    // 26/11/2026: Tài liệu đính kèm của popup Trả lời / Đề nghị làm rõ dùng bảng chuẩn bpbd_tai_lieu_dinh_kem.js (bố trí giống BTNN) theo [BR-FILE-011]
+    function mountSupportDocs(key, hostId) {
+        BPTL.mount(key, hostId, {
+            exts: ['.pdf', '.jpg', '.jpeg', '.png'], maxBytes: 20 * 1024 * 1024, maxRows: 3,
+            fmtMsg: 'Chỉ hỗ trợ đính kèm tệp tin pdf hoặc các định dạng ảnh. Không hỗ trợ tệp tin định dạng khác.', // thông báo theo SRS (TH2 Sai định dạng file)
+            sizeMsg: name => `Dung lượng tệp tin ${name} vượt quá 20MB. Vui lòng kiểm tra lại.`, // [MSG-ERR-FILE-004]
+            maxMsg: 'Chỉ cho phép đính kèm tối đa 3 tệp tin.', // thông báo theo SRS (TH3 Vượt quá số lượng file)
+            onView: r => openFilePreview(r.file.name)
         });
     }
-
-    function removeReplyFile(index) {
-        uploadedReplyFiles.splice(index, 1);
-        renderReplyUploadedFiles();
-    }
+    function renderReplyUploadedFiles() { mountSupportDocs('replyDocs', 'reply-docs-host'); }
 
     // Confirm Reply
     function confirmReply() {
         const contentVal = document.getElementById('reply-content-text').value.trim();
+        const docsOk = BPTL.validate('replyDocs');
         if (!contentVal) {
             document.getElementById('error-reply-content').style.display = "block";
             return;
         }
+        if (!docsOk) return;
 
         const ticket = supportTickets.find(t => t.id === activeTicketId);
         if (ticket) {
             const officerName = specialists[currentSpecialistUsername].name;
-            const files = uploadedReplyFiles.map(f => f.name);
+            const docs = BPTL.get('replyDocs');
+            const files = docs.map(d => d.file.name);
 
             ticket.replies.push({
                 reply_user: `${officerName} (${specialists[currentSpecialistUsername].role})`,
                 reply_date: getCurrentDateTimeString(),
                 reply_content: contentVal,
-                reply_files: files
+                reply_files: files,
+                reply_docs: docs.map(d => ({ name: d.name, file: d.file.name }))
             });
 
             ticket.status = "Hoàn thành";
@@ -2475,91 +2406,33 @@
         uploadedClarifyFiles = []; // Reset uploaded files
         renderClarifyUploadedFiles();
         document.getElementById('error-clarify-content').style.display = "none";
-        document.getElementById('error-clarify-upload').style.display = "none";
         openModal('modal-clarify');
     }
 
-    // Custom Clarify upload file handlers
-    function triggerClarifyUpload() {
-        document.getElementById('clarify-files-input').click();
-    }
-
-    function handleClarifyFiles(input) {
-        const files = input.files;
-        const errorDiv = document.getElementById('error-clarify-upload');
-        errorDiv.style.display = "none";
-
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const ext = file.name.split('.').pop().toLowerCase();
-            const allowed = ['pdf', 'png', 'jpg', 'jpeg', 'gif'];
-            
-            if (!allowed.includes(ext)) {
-                errorDiv.innerHTML = `Tệp "<strong>${file.name}</strong>" không đúng định dạng. Hệ thống hỗ trợ định dạng PDF, ảnh và <span style="color: var(--danger-color); font-weight: bold;">không hỗ trợ tệp Word (.docx)</span>.`;
-                errorDiv.style.display = "block";
-                continue;
-            }
-
-            if (uploadedClarifyFiles.length >= 3) {
-                errorDiv.innerText = "Bạn chỉ được đính kèm tối đa 3 tệp.";
-                errorDiv.style.display = "block";
-                break;
-            }
-
-            if (!uploadedClarifyFiles.some(f => f.name === file.name)) {
-                uploadedClarifyFiles.push({ name: file.name });
-            }
-        }
-        renderClarifyUploadedFiles();
-        input.value = "";
-    }
-
-    function renderClarifyUploadedFiles() {
-        const listDiv = document.getElementById('clarify-files-list');
-        const countSpan = document.getElementById('clarify-upload-count');
-        listDiv.innerHTML = "";
-        countSpan.innerText = `Đã chọn ${uploadedClarifyFiles.length}/3 tệp`;
-
-        uploadedClarifyFiles.forEach((file, index) => {
-            listDiv.innerHTML += `
-                <div style="display: flex; align-items: center; justify-content: space-between; background: transparent; padding: 6px 0; font-size: 12px; border: none; gap: 10px;">
-                    <span style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-main); font-weight: 500; min-width: 0; flex: 1;">
-                        <i class="fa-solid fa-file" style="color: ${file.name.endsWith('.pdf') ? 'red' : 'blue'}; flex-shrink: 0;"></i>
-                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%;" title="${file.name}">${file.name}</span>
-                    </span>
-                    <div style="display: flex; gap: 8px; flex-shrink: 0; white-space: nowrap;">
-                        <a href="#" style="color: var(--secondary-color); text-decoration: none; font-weight: 600;" onclick="event.preventDefault(); openFilePreview('${file.name}')">Xem file</a>
-                        <span style="color: var(--border-color);">|</span>
-                        <a href="#" style="color: var(--danger-color); text-decoration: none; font-weight: 600;" onclick="event.preventDefault(); removeClarifyFile(${index})">Xóa</a>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    function removeClarifyFile(index) {
-        uploadedClarifyFiles.splice(index, 1);
-        renderClarifyUploadedFiles();
-    }
+    function renderClarifyUploadedFiles() { mountSupportDocs('clarifyDocs', 'clarify-docs-host'); }
 
     // Confirm Clarify
     function confirmClarify() {
         const contentVal = document.getElementById('clarify-content-text').value.trim();
+        const docsOk = BPTL.validate('clarifyDocs');
         if (!contentVal) {
             document.getElementById('error-clarify-content').style.display = "block";
             return;
         }
+        if (!docsOk) return;
 
         const ticket = supportTickets.find(t => t.id === activeTicketId);
         if (ticket) {
             const officerName = specialists[currentSpecialistUsername].name;
-            const files = uploadedClarifyFiles.map(f => f.name);
+            const docs = BPTL.get('clarifyDocs');
+            const files = docs.map(d => d.file.name);
 
             ticket.replies.push({
                 reply_user: `${officerName} (${specialists[currentSpecialistUsername].role})`,
                 reply_date: getCurrentDateTimeString(),
                 reply_content: `Yêu cầu làm rõ bổ sung thông tin:\n"${contentVal}"`,
-                reply_files: files
+                reply_files: files,
+                reply_docs: docs.map(d => ({ name: d.name, file: d.file.name }))
             });
 
             ticket.status = "Yêu cầu làm rõ";
@@ -2625,24 +2498,9 @@
 
         // Attachments (Allow preview file in nested modal)
         const attsDiv = document.getElementById('dt-attachments');
-        attsDiv.innerHTML = "";
-        if (ticket.files && ticket.files.length > 0) {
-            ticket.files.forEach(f => {
-                attsDiv.innerHTML += `
-                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: 13px; gap: 10px; border: none; background: transparent;">
-                        <span style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-main); font-weight: 500; min-width: 0; flex: 1;">
-                            <i class="fa-solid fa-paperclip" style="color: var(--secondary-color); flex-shrink: 0;"></i> 
-                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%;" title="${f}">${f}</span>
-                        </span>
-                        <div style="flex-shrink: 0; white-space: nowrap;">
-                            <a href="#" style="color: var(--secondary-color); text-decoration: none; font-weight: 600;" onclick="event.preventDefault(); openFilePreview('${f}')">Xem file</a>
-                        </div>
-                    </div>
-                `;
-            });
-        } else {
-            attsDiv.innerText = "Không có file đính kèm";
-        }
+        const attsHtml = BPTL.viewHtml(ticket.files || [], { title: '', onView: r => openFilePreview(r.file.name), onDownload: r => showToast(`Đang tải xuống tệp ${r.file.name}`, 'success') });
+        attsDiv.innerHTML = attsHtml;
+        document.getElementById('dt-attachments-row').style.display = attsHtml ? '' : 'none';
 
         // Replies history log list (Filter out Leader/System logs, only Q&A)
         const logDiv = document.getElementById('detail-replies-list');
@@ -2654,12 +2512,13 @@
             qaReplies.forEach((r, rIdx) => {
                 let repFilesHtml = "";
                 if (r.reply_files && r.reply_files.length > 0) {
-                    r.reply_files.forEach(rf => {
+                    r.reply_files.forEach((rf, fi) => {
+                        const rd = r.reply_docs && r.reply_docs[fi];
                         repFilesHtml += `
                             <div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 0; font-size: 11px; gap: 10px; border: none; background: transparent;">
                                 <span style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-main); font-weight: 500; min-width: 0; flex: 1;">
                                     <i class="fa-solid fa-file-pdf" style="color: red; flex-shrink: 0;"></i>
-                                    <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%;" title="${rf}">${rf}</span>
+                                    <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%;" title="${rf}">${rd && rd.name ? rd.name + ' (' + rf + ')' : rf}</span>
                                 </span>
                                 <div style="flex-shrink: 0; white-space: nowrap;">
                                     <a href="#" style="color: var(--secondary-color); text-decoration: none; font-weight: 500;" onclick="event.preventDefault(); openFilePreview('${rf}')">Xem file</a>
@@ -2814,6 +2673,7 @@
         tooltip.style.display = 'none';
     }
 </script>
+    <script src="../02_Bien_phap_bao_dam/bpbd_tai_lieu_dinh_kem.js?v=20261127tl2"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>

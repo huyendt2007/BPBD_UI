@@ -1199,13 +1199,13 @@ function renderSecuringList() {
         }
 
         tr.innerHTML = `
-            <td style="text-align: center;">${actionsHtml}</td>
             <td ${typeTdAttr}>${party.typeLabel || party.paperType || ''} ${typeHistory}</td>
             <td ${paperTdAttr}>${party.paperNo || ''} ${paperHistory}</td>
             <td ${birthDateTdAttr}>${party.type === 'cd_vn' ? (party.birthDate || '-') : '-'} ${party.type === 'cd_vn' ? birthDateHistory : ''}</td>
             <td ${nameTdAttr}>${party.name || ''} ${nameHistory}</td>
             <td ${addressTdAttr}>${partyAddress} ${addressHistory}</td>
             <td>${statusTag}</td>
+            <td style="text-align: center;">${actionsHtml}</td>
         `;
 
         listContainer.appendChild(tr);
@@ -1620,10 +1620,10 @@ function renderSecuredList() {
         }
 
         tr.innerHTML = `
-            <td style="text-align: center;">${actionsHtml}</td>
             <td ${nameTdAttr}>${party.name || ''} ${nameHistory}</td>
             <td ${addressTdAttr}>${partyAddress} ${addressHistory}</td>
             <td>${statusTag}</td>
+            <td style="text-align: center;">${actionsHtml}</td>
         `;
 
         listContainer.appendChild(tr);

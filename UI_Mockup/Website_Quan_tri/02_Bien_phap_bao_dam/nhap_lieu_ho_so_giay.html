@@ -2197,21 +2197,8 @@
                     <div class="section-title">Thông tin tiếp nhận và thu phí</div>
                     <div class="summary-grid" id="readonlyInfoView"></div>
                     <div class="section-title">Tài liệu tiếp nhận</div>
-                    <div class="table-wrap">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Tên tài liệu</th>
-                                    <th>Tên tệp</th>
-                                    <th>Dung lượng</th>
-                                    <th>Người tải</th>
-                                    <th>Thời điểm tải</th>
-                                    <th>Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody id="attachmentReadonly"></tbody>
-                        </table>
-                    </div>
+                    <!-- 26/11/2026: bảng chuẩn chỉ đọc (bpbd_tai_lieu_dinh_kem.js, bố trí giống BTNN): STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file, Tải file) -->
+                    <div id="attachmentReadonly"></div>
                     <div style="border-top:1px solid var(--line);margin-top:18px;padding-top:14px" class="toolbar" id="regReadonlyToolbar">
                         <button class="btn" onclick="goBack()">Quay lại</button>
                         <button class="btn danger" onclick="openRejectModal()"><i class="fa-solid fa-xmark"></i> Từ
@@ -2245,21 +2232,8 @@
                         <div style="font-weight:700;font-size:13px;color:var(--primary);margin-bottom:8px">
                             <i class="fa-solid fa-paperclip"></i> Tài liệu tiếp nhận kèm theo
                         </div>
-                        <div class="table-wrap">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Tên tài liệu</th>
-                                        <th>Tên tệp</th>
-                                        <th>Dung lượng</th>
-                                        <th>Người tải</th>
-                                        <th>Thời điểm tải</th>
-                                        <th style="width:160px;text-align:center">Thao tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="attachmentEdit"></tbody>
-                            </table>
-                        </div>
+                        <!-- 26/11/2026: bảng chuẩn chỉ đọc (bpbd_tai_lieu_dinh_kem.js, bố trí giống BTNN) -->
+                        <div id="attachmentEdit"></div>
                     </div>
                 </div>
             </div>
@@ -2615,6 +2589,7 @@
 
 
     <script src="../../Common/dia_ban_vn.js"></script>
+    <script src="bpbd_tai_lieu_dinh_kem.js?v=20261127tl2"></script>
     <script>
         // Thông báo hiển thị ngay trong trang, không dùng hộp thoại alert của trình duyệt.
         function notify(message, type = 'info', timeout = 4200) {
@@ -3033,33 +3008,30 @@ const qs = new URLSearchParams(location.search);
             if (elPreview) elPreview.innerHTML = compactHtml;
         }
 
+        // 26/11/2026: Tài liệu tiếp nhận hiển thị bằng bảng chuẩn chỉ đọc (bpbd_tai_lieu_dinh_kem.js, bố trí giống BTNN):
+        // STT | Tên tài liệu, văn bản | File đính kèm (loại tệp, tên tệp, dung lượng) | Thao tác (Xem file, Tải file)
+        function attachmentsViewHtml(list) {
+            return BPTL.viewHtml((list || []).map(a => ({ name: a.name, fileName: a.fileName || '', fileSize: a.fileSize || a.size || '' })), {
+                title: '', onView: r => viewFile(r.file.name), onDownload: r => downloadFile(r.file.name)
+            });
+        }
         function renderAttachments() {
-            const rows = attachments().map(a => {
-                const size = a.fileSize ? (a.fileSize / 1048576).toFixed(1) + ' MB' : '-';
-                const actions = `<button type="button" class="btn small" onclick="viewFile('${e(a.fileName)}')"><i class="fa-solid fa-eye"></i> Xem file</button> <button type="button" class="btn small" onclick="downloadFile('${e(a.fileName)}')"><i class="fa-solid fa-download"></i> Tải xuống</button>`;
-                return `<tr><td>${e(a.name)}</td><td><i class="fa-solid fa-file-pdf" style="color:#dc2626"></i> ${e(a.fileName)}</td><td>${size}</td><td>${e(p.officer || 'Nguyễn Thị Tiếp Nhận')}</td><td>${e(p.date)}</td><td style="text-align:center">${actions}</td></tr>`;
-            }).join('');
+            const html = attachmentsViewHtml(attachments());
             const elReadonly = document.getElementById('attachmentReadonly');
-            if (elReadonly) elReadonly.innerHTML = rows;
+            if (elReadonly) elReadonly.innerHTML = html;
             const elEdit = document.getElementById('attachmentEdit');
-            if (elEdit) elEdit.innerHTML = rows;
-            // Yêu cầu cung cấp bản sao: Tài liệu tiếp nhận hiển thị dạng Accordion (mặc định thu gọn) gồm danh sách link file kèm biểu tượng Tải xuống
+            if (elEdit) elEdit.innerHTML = html;
+            // Yêu cầu cung cấp bản sao: Tài liệu tiếp nhận hiển thị dạng Accordion (mặc định thu gọn), bên trong là bảng chuẩn chỉ đọc
             if (isCopyRequest() && elEdit) {
-                const holder = elEdit.closest('.table-wrap')?.parentElement;
+                const holder = elEdit.parentElement;
                 if (holder) {
-                    const links = attachments().map(a => `
-                        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line)">
-                            <i class="fa-solid fa-file-pdf" style="color:#dc2626"></i>
-                            <a href="javascript:void(0)" onclick="viewFile('${e(a.fileName)}')" style="color:#2563eb;text-decoration:none;font-weight:600">${e(a.name)} - ${e(a.fileName)}</a>
-                            <a href="javascript:void(0)" onclick="downloadFile('${e(a.fileName)}')" title="Tải xuống" style="color:#059669;margin-left:auto"><i class="fa-solid fa-download"></i></a>
-                        </div>`).join('');
                     holder.innerHTML = `
                         <div class="copy-accordion" style="margin:0">
                             <div class="copy-accordion-head" id="copyRecDocs-head" onclick="toggleCopyAccordion('copyRecDocs')">
                                 <div class="copy-accordion-title"><i class="fa-solid fa-paperclip"></i><span>Tài liệu tiếp nhận</span></div>
                                 <i class="fa-solid fa-chevron-down" id="copyRecDocs-chevron" style="transition:transform 0.2s"></i>
                             </div>
-                            <div class="copy-accordion-body" id="copyRecDocs-body">${links}</div>
+                            <div class="copy-accordion-body" id="copyRecDocs-body">${html}</div>
                         </div>`;
                 }
             }
@@ -3282,8 +3254,14 @@ const qs = new URLSearchParams(location.search);
                 </div>
             `;
 
-            // Card 5: Khối Tài liệu đính kèm (Bảng 4 cột: STT, Tên tài liệu, File đính kèm, Thao tác)
-            const blockTaiLieu = `
+            // Card 5: Khối Tài liệu đính kèm - 26/11/2026: bảng chuẩn chỉ đọc (bpbd_tai_lieu_dinh_kem.js, bố trí giống BTNN):
+            // STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file, Tải file); dòng chưa có tệp hiển thị "--"; không có tài liệu thì ẩn khối
+            const taiLieuHtml = attachmentsViewHtml([
+                { name: 'Đơn yêu cầu cung cấp thông tin (Mẫu đơn giấy)', fileName: 'Don_yeu_cau_cung_cap_thong_tin_' + p.id + '.pdf', fileSize: '1.2 MB' },
+                { name: 'Văn bản ủy quyền / Giấy tờ pháp lý kèm theo', fileName: 'Giay_to_phap_ly_kem_theo_' + p.id + '.pdf', fileSize: '2.0 MB' },
+                { name: 'Tài liệu chứng minh thuộc đối tượng miễn phí', fileName: '' }
+            ]);
+            const blockTaiLieu = taiLieuHtml ? `
                 <div class="card" style="margin-bottom:16px">
                     <div class="card-h">
                         <div style="display:flex;align-items:center;gap:8px">
@@ -3291,59 +3269,9 @@ const qs = new URLSearchParams(location.search);
                             <h2 style="font-size:15px;margin:0">5. Tài liệu đính kèm</h2>
                         </div>
                     </div>
-                    <div class="card-b">
-                        <div class="table-wrap">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th style="width:50px;text-align:center">STT</th>
-                                        <th style="width:300px">Tên tài liệu</th>
-                                        <th>File đính kèm</th>
-                                        <th style="width:160px;text-align:center">Thao tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style="text-align:center">1</td>
-                                        <td><b>Đơn yêu cầu cung cấp thông tin (Mẫu đơn giấy)</b></td>
-                                        <td>
-                                            <i class="fa-solid fa-file-pdf" style="color:#dc2626;margin-right:6px"></i>
-                                            <span>Don_yeu_cau_cung_cap_thong_tin_${p.id}.pdf</span>
-                                            <span style="color:var(--muted);font-size:12px;margin-left:8px">(1.2 MB)</span>
-                                        </td>
-                                        <td style="text-align:center;white-space:nowrap">
-                                            <a href="javascript:void(0)" onclick="viewFile('Don_yeu_cau_cung_cap_thong_tin_${p.id}.pdf')" style="color:#2563eb;text-decoration:none;font-weight:600;margin-right:12px">
-                                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Xem file
-                                            </a>
-                                            <a href="javascript:void(0)" onclick="downloadFile('Don_yeu_cau_cung_cap_thong_tin_${p.id}.pdf')" style="color:#059669;text-decoration:none;font-weight:600">
-                                                <i class="fa-solid fa-download"></i> Tải tệp
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">2</td>
-                                        <td><b>Văn bản ủy quyền / Giấy tờ pháp lý kèm theo</b></td>
-                                        <td>
-                                            <i class="fa-solid fa-file-pdf" style="color:#dc2626;margin-right:6px"></i>
-                                            <span>Giay_to_phap_ly_kem_theo_${p.id}.pdf</span>
-                                            <span style="color:var(--muted);font-size:12px;margin-left:8px">(2.0 MB)</span>
-                                        </td>
-                                        <td style="text-align:center;white-space:nowrap">
-                                            <a href="javascript:void(0)" onclick="viewFile('Giay_to_phap_ly_kem_theo_${p.id}.pdf')" style="color:#2563eb;text-decoration:none;font-weight:600;margin-right:12px">
-                                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Xem file
-                                            </a>
-                                            <a href="javascript:void(0)" onclick="downloadFile('Giay_to_phap_ly_kem_theo_${p.id}.pdf')" style="color:#059669;text-decoration:none;font-weight:600">
-                                                <i class="fa-solid fa-download"></i> Tải tệp
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr><td style="text-align:center">3</td><td><b>Tài liệu chứng minh thuộc đối tượng miễn phí</b></td><td>-</td><td></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <div class="card-b">${taiLieuHtml}</div>
                 </div>
-            `;
+            ` : '';
 
             // Card 6: Khối Lịch sử trạng thái
             const historyRows = (p.history || [
@@ -3924,12 +3852,12 @@ const qs = new URLSearchParams(location.search);
         <div class="table-wrap" id="regTableWrapTC" style="margin-top:14px">
             <table class="table">
                 <thead><tr>
-                    <th style="width:120px;text-align:center">Thao tác</th>
                     <th>Loại chủ thể</th>
                     <th>Số giấy tờ chứng minh tư cách pháp lý</th>
                     <th>Ngày tháng năm sinh</th>
                     <th>Tên</th>
                     <th>Địa chỉ</th>
+                    <th style="width:120px;text-align:center">Thao tác</th>
                 </tr></thead>
                 <tbody id="regTbodyTC"></tbody>
             </table>
@@ -3985,9 +3913,9 @@ const qs = new URLSearchParams(location.search);
         <div class="table-wrap" id="regTableWrapNTC" style="margin-top:14px">
             <table class="table">
                 <thead><tr>
-                    <th style="width:120px;text-align:center">Thao tác</th>
                     <th>Tên</th>
                     <th>Địa chỉ</th>
+                    <th style="width:120px;text-align:center">Thao tác</th>
                 </tr></thead>
                 <tbody id="regTbodyNTC"></tbody>
             </table>
@@ -4523,8 +4451,8 @@ const qs = new URLSearchParams(location.search);
                 // Một cột Địa chỉ: "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" (ghép tại thời điểm hiển thị)
                 const diaChi = fullAddress(r.diaChiRaw, r.ward, r.tinhThanh, r.quocGia) || r.diaChi || '';
                 return side === 'tc'
-                    ? `<tr><td style="text-align:center">${actions}</td><td>${e(r.loai)}</td><td>${e(r.soGiayTo)}</td><td>${e(r.ngaySinh)}</td><td><b>${e(r.ten)}</b></td><td>${e(diaChi)}</td></tr>`
-                    : `<tr><td style="text-align:center">${actions}</td><td><b>${e(r.ten)}</b></td><td>${e(diaChi)}</td></tr>`;
+                    ? `<tr><td>${e(r.loai)}</td><td>${e(r.soGiayTo)}</td><td>${e(r.ngaySinh)}</td><td><b>${e(r.ten)}</b></td><td>${e(diaChi)}</td><td style="text-align:center">${actions}</td></tr>`
+                    : `<tr><td><b>${e(r.ten)}</b></td><td>${e(diaChi)}</td><td style="text-align:center">${actions}</td></tr>`;
             }).join('');
         }
 
@@ -5117,13 +5045,13 @@ const qs = new URLSearchParams(location.search);
 
                 return `
                     <tr class="${rowClass}">
-                        <td style="text-align:center;min-width:130px">${actionsHtml}</td>
                         <td>${e(party.typeLabel || party.type)}</td>
                         <td><b>${e(party.paperNo || '-')}</b> (${e(party.paperType || 'CCCD')})</td>
                         <td>${e(party.birthDate || '-')}</td>
                         <td><b>${e(party.name || '-')}</b></td>
                         <td>${e(chgPartyAddress(party) || '-')}</td>
                         <td style="text-align:center">${statusBadge}</td>
+                        <td style="text-align:center;min-width:130px">${actionsHtml}</td>
                     </tr>
                 `;
             }).join('');
@@ -5379,10 +5307,10 @@ const qs = new URLSearchParams(location.search);
 
                 return `
                     <tr class="${rowClass}">
-                        <td style="text-align:center;min-width:130px">${actionsHtml}</td>
                         <td><b>${e(party.name || '-')}</b></td>
                         <td>${e(chgPartyAddress(party) || '-')}</td>
                         <td style="text-align:center">${statusBadge}</td>
+                        <td style="text-align:center;min-width:130px">${actionsHtml}</td>
                     </tr>
                 `;
             }).join('');
@@ -6356,13 +6284,13 @@ function changeRegistrationForm() {
                 <table class="table" id="tableSecuring">
                     <thead>
                         <tr>
-                            <th style="width:130px;text-align:center">THAO TÁC</th>
                             <th>LOẠI CHỦ THỂ</th>
                             <th>SỐ GIẤY TỜ PHÁP LÝ</th>
                             <th>NGÀY SINH</th>
                             <th>TÊN</th>
                             <th>ĐỊA CHỈ</th>
                             <th style="width:180px;text-align:center">TRẠNG THÁI BIẾN ĐỘNG CHỦ THỂ</th>
+                            <th style="width:130px;text-align:center">THAO TÁC</th>
                         </tr>
                     </thead>
                     <tbody id="securingList">
@@ -6427,10 +6355,10 @@ function changeRegistrationForm() {
                 <table class="table" id="tableSecured">
                     <thead>
                         <tr>
-                            <th style="width:130px;text-align:center">THAO TÁC</th>
                             <th>TÊN</th>
                             <th>ĐỊA CHỈ</th>
                             <th style="width:200px;text-align:center">TRẠNG THÁI BIẾN ĐỘNG CHỦ THỂ</th>
+                            <th style="width:130px;text-align:center">THAO TÁC</th>
                         </tr>
                     </thead>
                     <tbody id="securedList">
@@ -10745,16 +10673,6 @@ function openRegistrationSignModal() {
                 { name: 'Giấy tờ ủy quyền / Giấy giới thiệu', fileName: 'Giay_uy_quyen_' + p.id + '.pdf', size: '2.1 MB' },
                 { name: 'Tài liệu chứng minh thuộc đối tượng miễn phí', fileName: '' }
             ];
-            const copyAttachmentRows = copyDocs.map((d, i) => `
-                <tr>
-                    <td style="text-align:center">${i + 1}</td>
-                    <td><b>${e(d.name)}</b></td>
-                    <td>${d.fileName ? `<i class="fa-solid fa-file-pdf" style="color:#dc2626;margin-right:6px"></i><span>${e(d.fileName)}</span><span style="color:var(--muted);font-size:12px;margin-left:8px">(${e(d.size || '')})</span>` : '-'}</td>
-                    <td style="text-align:center;white-space:nowrap">${d.fileName ? `
-                        <a href="javascript:void(0)" onclick="viewFile('${e(d.fileName)}')" style="color:#2563eb;text-decoration:none;font-weight:600;margin-right:12px"><i class="fa-solid fa-arrow-up-right-from-square"></i> Xem file</a>
-                        <a href="javascript:void(0)" onclick="downloadFile('${e(d.fileName)}')" style="color:#059669;text-decoration:none;font-weight:600"><i class="fa-solid fa-download"></i> Tải tệp</a>` : ''}</td>
-                </tr>
-            `).join('');
             const isPaperCopy = isCopyPaper();
             const copyTypeBadge = `<span class="badge ${isPaperCopy ? 'b-wait' : 'b-info'}">${p.copyType || (isPaperCopy ? 'Bản sao giấy' : 'Bản sao điện tử')}</span>`;
             const feeStatusBadge = `<span class="badge ${p.paymentStatus === 'Miễn phí' ? 'b-info' : 'b-done'}">${p.paymentStatus || 'Đã thu'}</span>`;
@@ -10871,8 +10789,10 @@ function openRegistrationSignModal() {
                 </div>
             `;
 
-            // Card 5: Khối Tài liệu đính kèm (Bảng 4 cột: STT, Tên tài liệu, File đính kèm, Thao tác)
-            const blockTaiLieu = `
+            // Card 5: Khối Tài liệu đính kèm - 26/11/2026: bảng chuẩn chỉ đọc (bpbd_tai_lieu_dinh_kem.js, bố trí giống BTNN):
+            // STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file, Tải file); dòng chưa có tệp hiển thị "--"; không có tài liệu thì ẩn khối
+            const taiLieuHtml = attachmentsViewHtml(copyDocs.map(d => ({ name: d.name, fileName: d.fileName || '', fileSize: d.size || '' })));
+            const blockTaiLieu = taiLieuHtml ? `
                 <div class="card" style="margin-bottom:16px">
                     <div class="card-h">
                         <div style="display:flex;align-items:center;gap:8px">
@@ -10880,25 +10800,9 @@ function openRegistrationSignModal() {
                             <h2 style="font-size:15px;margin:0">5. Tài liệu đính kèm</h2>
                         </div>
                     </div>
-                    <div class="card-b">
-                        <div class="table-wrap">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th style="width:50px;text-align:center">STT</th>
-                                        <th style="width:300px">Tên tài liệu</th>
-                                        <th>File đính kèm</th>
-                                        <th style="width:160px;text-align:center">Thao tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${copyAttachmentRows}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <div class="card-b">${taiLieuHtml}</div>
                 </div>
-            `;
+            ` : '';
 
             // Card 6: Khối Lịch sử trạng thái
             const historyRows = (p.history || [
@@ -11943,6 +11847,7 @@ function openRegistrationSignModal() {
     <script src="admin-ui-standardizer.js"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="bpbd_dong_bo_giao_dien.js?v=20261113f"></script>
+    <script src="bpbd_bo_cuc_co_dinh.js?v=20261127bc5"></script>
 </body>
 
 </html>

@@ -3541,6 +3541,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (left < margin) {
                 left = margin;
             }
+            // Thanh nút cố định dưới đáy màn hình: không đủ chỗ phía dưới thì mở menu lên trên nút
+            const dayNhin = typeof window.__khDayNhin === 'function' ? window.__khDayNhin() : window.innerHeight;
+            if (top + menuRect.height > dayNhin - margin) {
+                top = Math.max(margin, buttonRect.top - menuRect.height - 8);
+            }
 
             menu.style.left = `${left}px`;
             menu.style.top = `${top}px`;

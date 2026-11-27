@@ -774,7 +774,7 @@ const initApp = () => {
     });
 
     // Lưới Bên bảo đảm (dùng chung cho thêm mới, khôi phục từ reviewData và dữ liệu hồ sơ giả lập):
-    // Thao tác | Loại chủ thể | Số giấy tờ | Ngày tháng năm sinh | Tên | Địa chỉ (một cột, ghép bằng composeAddress)
+    // Loại chủ thể | Số giấy tờ | Ngày tháng năm sinh | Tên | Địa chỉ (một cột, ghép bằng composeAddress) | Thao tác (cột cuối, cố định bên phải)
     const EMPTY_ROW_TC = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
     const getLoaiChuTheText = (val) => {
         const opt = Array.from(loaiChuTheTC.options).find(o => o.value === val);
@@ -788,7 +788,7 @@ const initApp = () => {
             tr.dataset.ngaySinh || '-',
             tr.dataset.ten || '',
             composeAddress(tr.dataset.diachi, tr.dataset.ward, tr.dataset.tinhthanh, tr.dataset.quocgia)
-        ].forEach((v, i) => { tr.children[i + 1].textContent = v; });
+        ].forEach((v, i) => { tr.children[i].textContent = v; });
     };
     // Mở form ở chế độ sửa: CẬP NHẬT sẽ cập nhật đúng dòng này (editingRowTC)
     const startEditTC = (tr) => {
@@ -838,13 +838,13 @@ const initApp = () => {
         tr.dataset.quocgia = d.quocgia || '';
 
         tr.innerHTML = `
+                <td></td><td></td><td></td><td></td><td></td>
                 <td style="text-align: center;">
                     <div class="grid-row-actions">
                         <button type="button" class="grid-action-btn edit btn-sua-tc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
                         <button type="button" class="grid-action-btn delete btn-xoa-tc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
                     </div>
                 </td>
-                <td></td><td></td><td></td><td></td><td></td>
             `;
         renderRowTC(tr);
 
@@ -1007,11 +1007,11 @@ const initApp = () => {
     };
 
     // Lưới Bên nhận bảo đảm (dùng chung cho thêm mới, khôi phục từ reviewData và dữ liệu hồ sơ giả lập):
-    // Thao tác | Tên | Địa chỉ (một cột, ghép bằng composeAddress)
+    // Tên | Địa chỉ (một cột, ghép bằng composeAddress) | Thao tác (cột cuối, cố định bên phải)
     const EMPTY_ROW_NTC = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
     const renderRowNTC = (tr) => {
-        tr.children[1].textContent = tr.dataset.ten || '';
-        tr.children[2].textContent = composeAddress(tr.dataset.diachi, tr.dataset.ward, tr.dataset.tinhthanh, tr.dataset.quocgia);
+        tr.children[0].textContent = tr.dataset.ten || '';
+        tr.children[1].textContent = composeAddress(tr.dataset.diachi, tr.dataset.ward, tr.dataset.tinhthanh, tr.dataset.quocgia);
     };
     // Mở form ở chế độ sửa: CẬP NHẬT sẽ cập nhật đúng dòng này (editingRowNTC)
     const startEditNTC = (tr) => {
@@ -1048,13 +1048,13 @@ const initApp = () => {
         tr.dataset.quocgia = d.quocgia || '';
 
         tr.innerHTML = `
+                <td></td><td></td>
                 <td style="text-align: center;">
                     <div class="grid-row-actions">
                         <button type="button" class="grid-action-btn edit btn-sua-ntc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
                         <button type="button" class="grid-action-btn delete btn-xoa-ntc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
                     </div>
                 </td>
-                <td></td><td></td>
             `;
         renderRowNTC(tr);
 
@@ -2088,11 +2088,11 @@ const initApp = () => {
         const rowsTC = Array.from(tbodyTC.querySelectorAll('tr'))
             .filter(tr => tr.dataset.ten)
             .map(tr => ({
-                loai: tr.children[1].innerText,
+                loai: tr.children[0].innerText,
                 giayTo: tr.dataset.giayTo,
                 ngaySinh: tr.dataset.ngaySinh || '',
                 ten: tr.dataset.ten,
-                diaChi: tr.children[5].innerText,
+                diaChi: tr.children[4].innerText,
                 diaChiChiTiet: tr.dataset.diachi || '',
                 loaiVal: tr.dataset.loai,
                 ward: tr.dataset.ward || '',
@@ -2104,7 +2104,7 @@ const initApp = () => {
             .filter(tr => tr.dataset.ten)
             .map(tr => ({
                 ten: tr.dataset.ten,
-                diaChi: tr.children[2].innerText,
+                diaChi: tr.children[1].innerText,
                 diaChiChiTiet: tr.dataset.diachi || '',
                 ward: tr.dataset.ward || '',
                 tinhThanh: tr.dataset.tinhthanh,

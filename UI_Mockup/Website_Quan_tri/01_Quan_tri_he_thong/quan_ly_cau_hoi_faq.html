@@ -1178,9 +1178,10 @@
         <span id="toastMessage"></span>
     </div>
 
-    <!-- Menu BTNN (?system=btnn): Tài liệu đính kèm dùng bảng chuẩn btnn_tai_lieu_kem_theo.js (như Văn bản quy phạm pháp luật); BPBD giữ vùng tải tệp cũ -->
+    <!-- Menu BTNN (?system=btnn): Tài liệu đính kèm dùng bảng chuẩn btnn_tai_lieu_kem_theo.js (như Văn bản quy phạm pháp luật);
+         26/11/2026: menu BPBĐ (?system=bpbd) dùng cùng bảng chuẩn cho File tài liệu đính kèm (File hướng dẫn media giữ vùng tải tệp) -->
     <script>
-        if ((new URLSearchParams(window.location.search).get('system') || '').toLowerCase() === 'btnn') {
+        if (['btnn', 'bpbd'].indexOf((new URLSearchParams(window.location.search).get('system') || '').toLowerCase()) >= 0) {
             document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_tai_lieu_kem_theo.js?v=20261109tl1"><\/script>');
         }
     </script>
@@ -1202,7 +1203,10 @@
         }
         // BTNN (?system=btnn): khối Tài liệu đính kèm dùng bảng chuẩn (STT | Tên tài liệu, văn bản | File đính kèm | Thao tác, nút Thêm tài liệu),
         // thay vùng kéo thả tệp; không hiển thị dòng ghi chú định dạng/dung lượng; kiểm tra tệp giữ theo [BR-BTNN-FAQ-001] (.pdf, .jpg, .jpeg, .png; 10MB/tệp; tối đa 5 tệp)
-        const FAQ_TLKT_ON = (urlParams.get('system') || '').toLowerCase() === 'btnn';
+        // 26/11/2026: BPBĐ (?system=bpbd) dùng cùng bảng chuẩn cho File tài liệu đính kèm (.pdf, .jpg, .jpeg, .png; 10MB/tệp; tối đa 5 tệp);
+        // File hướng dẫn media (MP4, MP3) vẫn dùng vùng tải tệp trong khối "Tài liệu hướng dẫn đi kèm"
+        const FAQ_TLKT_ON = ['btnn', 'bpbd'].indexOf((urlParams.get('system') || '').toLowerCase()) >= 0;
+        const FAQ_TLKT_BPBD = (urlParams.get('system') || '').toLowerCase() === 'bpbd';
         const FAQ_TLKT = 'faqTl', FAQ_TLKT_MAX = 5;
         const FAQ_TLKT_EXTS = ['.pdf', '.jpg', '.jpeg', '.png'];
         // Dữ liệu cũ chỉ có tên tệp: 01 dòng/tệp, Tên tài liệu, văn bản là tên tệp bỏ phần mở rộng
@@ -1212,8 +1216,13 @@
         function renderFaqTlkt(viewMode) {
             const sec = document.getElementById('uploadSection');
             let host = document.getElementById('faqTlktHost');
-            if (!host && sec) { host = document.createElement('div'); host.id = 'faqTlktHost'; sec.parentNode.insertBefore(host, sec.nextSibling); }
-            if (sec) sec.style.display = 'none';
+            if (!host && sec) { host = document.createElement('div'); host.id = 'faqTlktHost'; sec.parentNode.insertBefore(host, FAQ_TLKT_BPBD ? sec : sec.nextSibling); }
+            if (sec && FAQ_TLKT_BPBD) {
+                // BPBĐ: ẩn ô File tài liệu đính kèm cũ, giữ ô File hướng dẫn media
+                const grid = document.getElementById('uploadGrid');
+                const docCol = grid && grid.firstElementChild; if (docCol && docCol.id !== 'mediaUploadBlock') docCol.style.display = 'none';
+                if (grid) grid.style.gridTemplateColumns = 'minmax(0, 1fr)';
+            } else if (sec) sec.style.display = 'none';
             if (!host) return;
             if (viewMode) {
                 host.innerHTML = typeof tlktViewHtml === 'function'
@@ -2032,12 +2041,12 @@
 
         function renderUploadedFiles() {
             const isViewOnly = document.getElementById('faqQuestion').disabled;
-            if (FAQ_TLKT_ON && typeof tlktMount === 'function') { renderFaqTlkt(isViewOnly); return; }
+            if (FAQ_TLKT_ON && typeof tlktMount === 'function') { renderFaqTlkt(isViewOnly); if (!FAQ_TLKT_BPBD) return; }
             
             // Render Docs List
             const docsContainer = document.getElementById('docFilesList');
             docsContainer.innerHTML = '';
-            tempDocFiles.forEach((file, index) => {
+            (FAQ_TLKT_ON ? [] : tempDocFiles).forEach((file, index) => {
                 const item = document.createElement('div');
                 item.className = "attachment-item";
                 item.style.display = "flex";
@@ -2386,10 +2395,24 @@
                 }
             }
 
+            // 26/11/2026 - BPBĐ: Tài liệu đính kèm (bảng chuẩn) - dòng đã nhập phải đủ Tên tài liệu, văn bản và tệp; tối đa 5 tệp
+            let tlktFilesBp = null;
+            if (FAQ_TLKT_ON && typeof tlktValidate === 'function') {
+                if (!tlktValidate(FAQ_TLKT)) isValid = false;
+                else {
+                    tlktFilesBp = tlktGet(FAQ_TLKT);
+                    if (tlktFilesBp.length > FAQ_TLKT_MAX) {
+                        const e = document.getElementById('tlkt_' + FAQ_TLKT + '_err');
+                        if (e) { e.textContent = 'Hệ thống chỉ hỗ trợ tối đa 5 tệp tài liệu FAQ.'; e.classList.add('on'); }
+                        isValid = false;
+                    }
+                }
+            }
             if (!isValid) {
                 showToast("Vui lòng nhập đầy đủ các trường bắt buộc", "error");
                 return;
             }
+            if (tlktFilesBp) tempDocFiles = tlktFilesBp;
 
             const id = document.getElementById('faqId').value;
             if (id) {

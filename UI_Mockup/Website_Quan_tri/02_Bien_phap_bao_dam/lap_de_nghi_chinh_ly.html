@@ -107,14 +107,8 @@
             <div class="cl-card">
                 <div class="cl-card-header"><span class="cl-card-title"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm <span class="cl-req" style="color:#EF4444;">*</span></span></div>
                 <div class="cl-card-body">
-                    <div class="cl-upload" id="uploadBox" tabindex="0">
-                        <i class="fa-solid fa-cloud-arrow-up" style="font-size:28px;color:#3B82F6;"></i>
-                        <div style="font-weight:600;margin-top:6px;">Bấm để chọn tệp tin đính kèm</div>
-                        <div class="cl-muted" style="font-size:12px;margin-top:2px;">Định dạng hỗ trợ: .pdf, .doc, .docx, .png, .jpg (Dung lượng tối đa 20MB/file). Cho phép đính kèm nhiều file.</div>
-                        <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.png,.jpg" class="cl-hidden">
-                    </div>
-                    <div class="cl-error" id="errFile">Đây là trường bắt buộc</div>
-                    <div class="cl-file-list" id="fileList"></div>
+                    <!-- 26/11/2026: bảng «Tài liệu đính kèm» chuẩn (bpbd_tai_lieu_dinh_kem.js, bố trí giống BTNN): STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file, Xóa), nút Thêm tài liệu, mặc định 01 dòng trống -->
+                    <div id="docTlHost"></div>
                 </div>
             </div>
 
@@ -146,6 +140,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="chinh_ly_common.js"></script>
+<script src="bpbd_tai_lieu_dinh_kem.js?v=20261127tl2"></script>
 <script src="trung_lap_common.js"></script>
 <script>
 (function () {
@@ -306,33 +301,26 @@
         if (ids.length) $('errTaiSan').classList.remove('show');
     }
 
-    // ---------------- Tệp tin đính kèm ----------------
-    $('uploadBox').addEventListener('click', () => $('fileInput').click());
-    $('uploadBox').addEventListener('keydown', e => { if (e.key === 'Enter') $('fileInput').click(); });
-    $('fileInput').addEventListener('change', e => {
-        const fileErr = [];
-        Array.from(e.target.files).forEach(f => {
-            if (!/\.(pdf|doc|docx|png|jpg)$/i.test(f.name)) { fileErr.push(C.MSG.ERR_CLDK_003(f.name)); return; }
-            if (f.size > 20 * 1024 * 1024) { fileErr.push(C.MSG.ERR_FILE_004(f.name)); return; }
-            files.push({ ten: f.name, size: (f.size / 1024 / 1024).toFixed(2) + ' MB' });
-        });
-        e.target.value = '';
-        renderFiles();
-        if (fileErr.length) { $('errFile').textContent = fileErr.join(' '); $('errFile').classList.add('show'); $('uploadBox').classList.add('is-invalid'); }
-    });
+    // ---------------- Tài liệu đính kèm ----------------
+    // 26/11/2026: bảng chuẩn bpbd_tai_lieu_dinh_kem.js (bố trí giống BTNN); bắt buộc tối thiểu 01 dòng đủ Tên tài liệu, văn bản và tệp;
+    // định dạng .pdf, .doc, .docx, .png, .jpg; tối đa 20MB/tệp; dữ liệu lưu files [{ ten: tên tệp, size, tenTaiLieu: Tên tài liệu, văn bản }]
+    const DOC_TL = 'cldkDocs';
+    const filesToRows = list => (list || []).map(f => ({ title: f.tenTaiLieu || '', ten: f.ten, size: f.size }));
+    const rowsToFiles = rows => rows.filter(r => r.file).map(r => ({
+        ten: r.file.name,
+        size: typeof r.file.size === 'number' ? (r.file.size / 1024 / 1024).toFixed(2) + ' MB' : (r.file.size || ''),
+        tenTaiLieu: r.name
+    }));
     function renderFiles() {
-        $('fileList').innerHTML = files.map((f, i) => `<div class="cl-file-item">
-            <span class="cl-file-name"><i class="fa-solid fa-file-lines" style="color:#3B82F6;"></i>${C.esc(f.ten)} <span class="cl-muted" style="font-size:11px;">(${C.esc(f.size)})</span></span>
-            <span class="cl-file-actions"><a class="cl-link" data-view="${i}"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>
-            <button type="button" class="cl-link cl-link-danger" data-del="${i}"><i class="fa-solid fa-trash-can"></i> Xóa</button></span></div>`).join('');
-        $('fileList').querySelectorAll('[data-view]').forEach(a => a.onclick = () => C.viewFile(files[+a.dataset.view].ten));
-        $('fileList').querySelectorAll('[data-del]').forEach(b => b.onclick = async () => {
-            const f = files[+b.dataset.del];
-            if (await C.confirmBox(C.MSG.CFM_SYS_001(f.ten), 'Đồng ý')) { files.splice(+b.dataset.del, 1); renderFiles(); }
+        BPTL.mount(DOC_TL, 'docTlHost', {
+            title: '', required: true, rows: filesToRows(files),
+            exts: ['.pdf', '.doc', '.docx', '.png', '.jpg'], maxBytes: 20 * 1024 * 1024,
+            fmtMsg: name => C.MSG.ERR_CLDK_003(name), sizeMsg: name => C.MSG.ERR_FILE_004(name),
+            onChange: rows => { files = rowsToFiles(rows); },
+            onView: r => C.viewFile(r.file.name)
         });
-        if (files.length) { $('errFile').classList.remove('show'); $('uploadBox').classList.remove('is-invalid'); }
-        $('errFile').textContent = C.MSG.VAL_001;
     }
+    renderFiles();
 
     // ---------------- Gửi đề nghị ----------------
     function clearInvalid(el) { el.classList.remove('is-invalid'); const fb = el.parentElement.querySelector('.cl-error'); if (fb) fb.classList.remove('show'); }
@@ -354,8 +342,10 @@
             }
         }
         if (loai === 'KHOI_PHUC') need('txtLyDoKhoiPhuc');
-        if (!files.length) { $('errFile').classList.add('show'); $('uploadBox').classList.add('is-invalid'); first = first || $('uploadBox'); }
         if (first) { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); if (first.focus) first.focus(); return; }
+        // Tài liệu đính kèm: dòng thiếu Tên tài liệu, văn bản hoặc tệp, hoặc chưa có dòng đủ dữ liệu -> [MSG-ERR-VAL-001] dưới ô, focus ô lỗi đầu tiên
+        if (!BPTL.validate(DOC_TL)) { const bad = document.querySelector('#docTlHost .is-invalid'); if (bad) bad.scrollIntoView({ behavior: 'smooth', block: 'center' }); else $('docTlHost').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+        files = rowsToFiles(BPTL.get(DOC_TL));
 
         const noiDung = loai === 'CHINH_LY'
             ? { saiSot: $('txtSaiSot').value.trim(), deNghi: $('txtDeNghi').value.trim(), lyDo: $('txtLyDoSaiSot').value.trim() }
@@ -459,9 +449,9 @@
         parts.push(card('Căn cứ và nội dung đề xuất', 'fa-pen-to-square', cc));
 
         // Tệp tin đính kèm
-        const fl = (p.files || []).length ? `<div class="cl-file-list cl-mt-0">${p.files.map(f => `<div class="cl-file-item">${C.fileLinks(f.ten, true)}</div>`).join('')}</div>`
-            : `<div class="cl-muted">-</div>`;
-        parts.push(card('Tài liệu đính kèm', 'fa-paperclip', fl));
+        // 26/11/2026: bảng chuẩn chỉ đọc (Xem file, Tải file); không có tài liệu thì không hiển thị khối
+        const fl = BPTL.viewHtml((p.files || []).map(f => ({ title: f.tenTaiLieu || '', ten: f.ten, size: f.size })), { title: '', onView: r => C.viewFile(r.file.name), onDownload: r => C.downloadFile(r.file.name) });
+        if (fl) parts.push(card('Tài liệu đính kèm', 'fa-paperclip', fl));
 
         // Khôi phục hủy đăng ký: Khối Thông tin giao dịch hủy đã thực hiện trước đây đặt sau Tệp tin đính kèm (mặc định thu gọn)
         if (huy) parts.push(card('Khối Thông tin giao dịch hủy đã thực hiện trước đây', 'fa-clock-rotate-left', '<div id="viewGdHuyHost"></div>', { id: 'cardGdHuyView', collapsed: true }));
@@ -524,5 +514,6 @@
 </script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="bpbd_dong_bo_giao_dien.js?v=20261113f"></script>
+    <script src="bpbd_bo_cuc_co_dinh.js?v=20261127bc5"></script>
 </body>
 </html>

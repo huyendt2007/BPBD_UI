@@ -2159,8 +2159,8 @@ function switchListTab(tab, element) {
     document.querySelectorAll('#status-tabs .nav-tab').forEach(t => t.classList.toggle('active', element ? t === element : t.dataset.tab === tab));
     currentListTab = tab;
     sessionStorage.setItem('activeListTab', tab);
-    // Tab Hồ sơ đang chờ ký / Hồ sơ đã xử lý: chỉ xem, không cố định cột Thao tác bên phải bảng
-    document.body.classList.toggle('no-sticky-actions', tab === 'dang_xu_ly' || tab === 'da_xu_ly');
+    // Cột Thao tác luôn cố định bên phải bảng ở mọi Tab, kể cả Tab chỉ xem Hồ sơ đang chờ ký / Hồ sơ đã xử lý (27/11/2026)
+    document.body.classList.remove('no-sticky-actions');
 
     // Quản lý hiển thị các toolbar và checkbox cột
     document.getElementById('toolbar-choduyet').style.display = 'none';
@@ -3721,8 +3721,8 @@ function initViewMode() {
         navTabs.style.display = 'flex';
         navTabs.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === currentListTab));
     }
-    // Tab Hồ sơ đang chờ ký / Hồ sơ đã xử lý: chỉ xem, không cố định cột Thao tác bên phải bảng
-    document.body.classList.toggle('no-sticky-actions', currentListTab === 'dang_xu_ly' || currentListTab === 'da_xu_ly');
+    // Cột Thao tác luôn cố định bên phải bảng ở mọi Tab, kể cả Tab chỉ xem Hồ sơ đang chờ ký / Hồ sơ đã xử lý (27/11/2026)
+    document.body.classList.remove('no-sticky-actions');
     ['toolbar-choduyet', 'toolbar-duyet-choky', 'toolbar-choky'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = 'none';

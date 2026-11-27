@@ -1068,6 +1068,9 @@
             document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_luong_xu_ly.js?v=20261120xhst6"><\/script>');
             document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_pham_vi_don_vi.js?v=20261030dvth2"><\/script>');
             document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_tai_lieu_kem_theo.js?v=20261109tl1"><\/script>');
+        } else {
+            // 26/11/2026: menu BPBĐ dùng cùng bảng Tài liệu đính kèm chuẩn (STT | Tên tài liệu, văn bản | File đính kèm | Thao tác, nút Thêm tài liệu)
+            document.write('<script src="../03_Boi_thuong_nha_nuoc/btnn_tai_lieu_kem_theo.js?v=20261109tl1"><\/script>');
         }
     </script>
     <!-- Danh mục Tình trạng hiệu lực [DM_61] dùng chung VBQPPL và Văn bản chỉ đạo, điều hành -->
@@ -1086,6 +1089,9 @@
         function vbNoRight() { showToast('Đơn vị của bạn chỉ được xem văn bản quy phạm pháp luật.', 'error'); }
         const EDIT_LABEL = VBQPPL_SYSTEM === 'btnn' ? 'Sửa' : 'Chỉnh sửa';
         const IS_BTNN = VBQPPL_SYSTEM === 'btnn';
+        // 26/11/2026: khối Tài liệu đính kèm dùng bảng chuẩn cho cả menu BTNN và menu BPBĐ (thay vùng kéo thả tệp)
+        const VB_TLKT = true;
+        document.addEventListener('DOMContentLoaded', () => { const up = document.getElementById('uploadSection'); if (up) up.style.display = 'none'; });
         // Người dùng hiện tại: BTNN lấy theo người dùng đăng nhập (BTNN_WF); BPBĐ giữ tên mặc định
         function vbUserName() {
             const u = IS_BTNN && window.BTNN_WF && BTNN_WF.getCurrentUser ? BTNN_WF.getCurrentUser() : null;
@@ -1904,9 +1910,14 @@
                     ? tlktViewHtml(tlktRows, { split: false, title: 'Tài liệu đính kèm', boxClass: 'form-section', titleClass: 'form-section-title' }) : '';
                 return;
             }
-            if (typeof tlktMount === 'function') tlktMount(TLKT_KEY, 'docTlktHost', {
+            if (typeof tlktMount === 'function') tlktMount(TLKT_KEY, 'docTlktHost', IS_BTNN ? {
                 // 09/11/2026: Văn bản QPPL (menu BTNN) chỉ nhận tệp .pdf; ghi chú chỉ nêu định dạng (không nêu dung lượng, số lượng tối đa); sai định dạng: [MSG-ERR-FILE-007]
                 split: false, noLeader: true, required: true, rows: tlktRows, exts: ['.pdf'], hintText: 'Chỉ nhận tệp .pdf.', maxBytes: Number.MAX_SAFE_INTEGER,
+                title: 'Tài liệu đính kèm', secClass: 'form-section', titleClass: 'form-section-title'
+            } : {
+                // 26/11/2026 - menu BPBĐ: cùng bảng chuẩn; giữ quy định riêng .pdf, tối đa 10MB/tệp, tối đa 10 tệp (kiểm tra số tệp khi lưu)
+                split: false, noLeader: true, required: true, rows: tlktRows, exts: ['.pdf'], hintText: 'Chỉ nhận tệp .pdf.', maxBytes: 10 * 1024 * 1024,
+                fmtMsg: 'Định dạng tệp không hợp lệ. Văn bản QPPL chỉ nhận tệp .pdf.', sizeMsg: 'Dung lượng tệp không được vượt quá 10MB.',
                 title: 'Tài liệu đính kèm', secClass: 'form-section', titleClass: 'form-section-title'
             });
         }
@@ -2039,7 +2050,8 @@
                 btnEditInView.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${EDIT_LABEL}`;
             }
             renderUploadedFiles(); // vẽ lại danh sách tệp theo chế độ xem/sửa
-            if (IS_BTNN) { renderAttachmentsBtnn(viewMode); renderHistoryBtnn(viewMode); }
+            if (VB_TLKT) renderAttachmentsBtnn(viewMode);
+            if (IS_BTNN) renderHistoryBtnn(viewMode);
             if (IS_BTNN) {
                 const info = document.getElementById('docCreatorInfo');
                 const cur = documents.find(d => String(d.id) === String(document.getElementById('docId').value));
@@ -2187,10 +2199,10 @@
                 else if (issueDate && effectDate < issueDate) markErr('docEffectDate', 'error_docEffectDate', 'Ngày có hiệu lực phải lớn hơn hoặc bằng ngày ban hành');
             }
             if (!tinhTrang) markErr('docStatus', 'error_docStatus');
-            if (!IS_BTNN && tempDocFiles.length === 0) markErr('docFileInput', 'error_docFiles', 'Đây là trường bắt buộc');
+            if (!VB_TLKT && tempDocFiles.length === 0) markErr('docFileInput', 'error_docFiles', 'Đây là trường bắt buộc');
 
             if (firstInvalid) {
-                if (IS_BTNN && typeof tlktValidate === 'function') tlktValidate(TLKT_KEY); // hiển thị lỗi bảng tài liệu cùng lúc
+                if (VB_TLKT && typeof tlktValidate === 'function') tlktValidate(TLKT_KEY); // hiển thị lỗi bảng tài liệu cùng lúc
                 // Ô lỗi đầu tiên theo thứ tự hiển thị trên form (không theo thứ tự kiểm tra)
                 const domFirst = document.querySelector('#docModal .is-invalid') || firstInvalid;
                 const focusEl = domFirst.id === 'docFileInput' ? document.getElementById('error_docFiles') : domFirst;
@@ -2201,13 +2213,19 @@
 
             // BTNN - Tài liệu đính kèm: bắt buộc tối thiểu 01 dòng đủ Tên + Tệp; dòng có dữ liệu phải đủ Tên + Tệp; chỉ nhận .pdf, không giới hạn số tài liệu (user chốt 09/11/2026)
             let docFiles = null;
-            if (IS_BTNN) {
+            if (VB_TLKT) {
                 if (typeof tlktValidate === 'function' && !tlktValidate(TLKT_KEY)) {
                     const tlktErr = document.querySelector('#docTlktHost .is-invalid, #docTlktHost .tlkt-err.on');
                     if (tlktErr && tlktErr.scrollIntoView) tlktErr.scrollIntoView({ block: 'center' });
                     return;
                 }
                 docFiles = typeof tlktGet === 'function' ? tlktGet(TLKT_KEY) : [];
+                // Menu BPBĐ: tối đa 10 tệp Văn bản QPPL
+                if (!IS_BTNN && docFiles.length > 10) {
+                    const e = document.getElementById('tlkt_' + TLKT_KEY + '_err');
+                    if (e) { e.textContent = 'Hệ thống chỉ hỗ trợ tối đa 10 tệp Văn bản QPPL.'; e.classList.add('on'); if (e.scrollIntoView) e.scrollIntoView({ block: 'center' }); }
+                    return;
+                }
             }
 
             const persist = () => {
@@ -2222,7 +2240,7 @@
                     tinhTrangMa: tinhTrang,
                     tinhTrang: DM_TTHL.name(tinhTrang),
                     tomTat: document.getElementById('docSummary').value.trim(),
-                    files: IS_BTNN ? docFiles : [...tempDocFiles]
+                    files: VB_TLKT ? docFiles : [...tempDocFiles]
                 };
 
                 let savedId = null;

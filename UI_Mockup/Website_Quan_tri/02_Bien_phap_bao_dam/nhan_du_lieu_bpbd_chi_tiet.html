@@ -42,6 +42,7 @@
 
 <script src="nhan_du_lieu_bpbd_spec.js?v=20261007g"></script>
 <script src="nhan_du_lieu_bpbd_common.js?v=20261007g"></script>
+<script src="bpbd_tai_lieu_dinh_kem.js?v=20261127tl2"></script>
 <script>
 const TYPE = NDL.typeFromUrl();
 const T = NDL.TYPES[TYPE];
@@ -110,13 +111,14 @@ function render() {
         <thead><tr><th>STT</th>${tCols.map(c => `<th>${e(c.h)}</th>`).join('')}<th>Tình trạng tài sản</th></tr></thead>
         <tbody>${rec.ts.length ? rec.ts.map((o, i) => `<tr><td>${i + 1}</td>${tCols.map(c => `<td>${e(o[c.k]) || '-'}</td>`).join('')}<td>${cancelled ? '-' : NDL.statusBadge(NDL.assetStatus(st, rec, o))}</td></tr>`).join('') : `<tr class="empty-row"><td colspan="${tCols.length + 2}">Không có dữ liệu${loai === LDK.XOA ? ' (toàn bộ tài sản của hồ sơ chuyển Đã giải chấp)' : ''}.</td></tr>`}</tbody></table></div></div></div>`;
 
-    // Tài liệu đính kèm: chỉ xem; không có tệp thì ẩn khối
+    // Tài liệu đính kèm: chỉ xem; không có tệp thì ẩn khối.
+    // 26/11/2026: bảng chuẩn (bpbd_tai_lieu_dinh_kem.js, bố trí giống BTNN) STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file, Tải file);
+    // tệp chưa có Tên tài liệu, văn bản (tệp nén, công văn của lô) hiển thị tên tệp bỏ phần mở rộng
     const lot = st.lots.find(l => l.id === rec.loId);
-    const lotFiles = lot ? lot.congVan.map(x => ({ name: x, nguon: 'Công văn, tài liệu của lô ' + lot.id })) : [];
-    const allFiles = rec.files.concat(lotFiles);
-    if (allFiles.length) h += `<div class="card-block"><div class="card-block-header"><h3><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</h3><span class="muted-sm">${allFiles.length} tệp</span></div><div class="card-block-body"><div class="table-container"><table class="custom-table">
-        <thead><tr><th>STT</th><th>Tên tệp</th><th>Nguồn</th><th>Người đính kèm</th><th>Thời điểm</th></tr></thead>
-        <tbody>${allFiles.map((f, i) => `<tr><td>${i + 1}</td><td><a class="link-code" onclick="NDL.toast('Mở tệp ${e(f.name)} (giả lập).','info')"><i class="fa-solid fa-file-lines"></i> ${e(f.name)}</a></td><td>${e(f.nguon)}</td><td>${e(f.user || (lot && f.nguon.indexOf('lô') >= 0 ? lot.nguoiNhan : rec.nguoiNhan))}</td><td>${e(f.t || (lot && f.nguon.indexOf('lô') >= 0 ? lot.thoiDiem : rec.ngayNhan))}</td></tr>`).join('')}</tbody></table></div></div></div>`;
+    const lotFiles = lot ? lot.congVan.map(x => ({ name: x })) : [];
+    const allFiles = rec.files.map(f => ({ title: f.title || '', name: f.name, size: f.size })).concat(lotFiles);
+    const docView = BPTL.viewHtml(allFiles, { title: '', onView: r => NDL.toast(`Mở tệp ${r.file.name} (giả lập).`, 'info'), onDownload: r => NDL.toast(`Tải tệp ${r.file.name} (giả lập).`, 'info') });
+    if (docView) h += `<div class="card-block"><div class="card-block-header"><h3><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</h3></div><div class="card-block-body">${docView}</div></div>`;
 
     // Thông tin nhận dữ liệu: Mã lô, Tệp dữ liệu chỉ hiển thị khi Nguồn nhận là Nhận từ file
     const fromFile = rec.nguon === 'Nhận từ file';
@@ -228,5 +230,6 @@ render();
 
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="bpbd_dong_bo_giao_dien.js?v=20261113f"></script>
+    <script src="bpbd_bo_cuc_co_dinh.js?v=20261127bc5"></script>
 </body>
 </html>

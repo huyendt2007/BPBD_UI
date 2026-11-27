@@ -484,6 +484,17 @@
             box-shadow: var(--box-shadow);
             padding: 30px;
         }
+        /* Thanh nút chức năng màn Xem chi tiết: luôn cố định ở cuối màn hình khi cuộn, nút Đóng ở cuối thanh.
+           Không đặt min-height theo 100vh: trang chủ khách hàng nới cao khung (iframe) theo nội dung, 100vh sẽ làm khung cao mãi */
+        .details-panel { display: flex; flex-direction: column; }
+        .details-panel > .panel-actions-card {
+            position: sticky; bottom: 0; z-index: 40; margin-top: auto; padding: 14px 20px;
+            display: flex; justify-content: flex-end; align-items: center; gap: 12px; flex-wrap: wrap; background-color: #fff;
+            border: 1px solid var(--border-color); border-radius: var(--border-radius-lg);
+            box-shadow: 0 -4px 12px rgba(15, 23, 42, .08);
+        }
+        .details-panel > .panel-actions-card > #action-buttons-container { display: flex; justify-content: flex-end; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .details-panel > .panel-actions-card > #action-buttons-container:empty { display: none; }
 
         .panel-header {
             display: flex;
@@ -1163,9 +1174,6 @@
                 <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-color);"></i>
                 <span id="pageTitleText">Xem chi tiết lịch sử Hồ sơ</span>
             </h1>
-            <button class="btn-back detail-close-btn" id="btnBackToSearch">
-                <i class="fa-solid fa-xmark"></i> Đóng
-            </button>
         </div>
 
         <!-- Warning banner if any -->
@@ -1282,14 +1290,6 @@
                         </div>
                     </div>
                 </header>
-
-                <div class="panel-actions-card"
-                    style="margin: 0 0 18px; padding: 12px 16px; display: flex; justify-content: flex-end; gap: 12px; background-color: #F8FAFC; border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); box-shadow: 0 1px 2px rgba(15,23,42,.04);">
-                    <div id="action-buttons-container"
-                        style="display: flex; justify-content: flex-end; gap: 12px; align-items: center; width: 100%; flex-wrap: wrap;">
-                        <!-- Dynamic buttons go here -->
-                    </div>
-                </div>
 
                 <!-- SECTION: THÔNG TIN BỔ SUNG ĐỐI VỚI PHIÊN BẢN BỊ TỪ CHỐI (Chỉ hiển thị khi phiên bản chọn bị từ chối) -->
                 <section class="detail-section" id="sectionRejectionInfo"
@@ -1698,6 +1698,16 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Thanh nút chức năng: luôn cố định dưới đáy màn hình; nút Đóng ở cuối thanh -->
+                <div class="panel-actions-card">
+                    <div id="action-buttons-container">
+                        <!-- Dynamic buttons go here -->
+                    </div>
+                    <button class="btn-back detail-close-btn" id="btnBackToSearch">
+                        <i class="fa-solid fa-xmark"></i> Đóng
+                    </button>
+                </div>
             </main>
         </div>
     </div>
@@ -1712,8 +1722,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="xem_chi_tiet_lich_su_can_bo.js?v=20261002d"></script>
+    <script src="xem_chi_tiet_lich_su_can_bo.js?v=20261127kh1"></script>
     <script src="../Common/grid_align.js?v=20261030s2"></script>
+    <script src="kh_bo_cuc_co_dinh.js?v=20261127kh3"></script>
 </body>
 
 </html>

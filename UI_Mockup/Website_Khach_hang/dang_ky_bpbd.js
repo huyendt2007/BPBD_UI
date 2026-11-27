@@ -870,11 +870,11 @@ const initApp = () => {
             editingRowTC.dataset.tinhthanh = valTinhThanh;
             editingRowTC.dataset.quocgia = valQuocGia;
 
-            editingRowTC.children[1].innerText = loaiChuTheTC.options[loaiChuTheTC.selectedIndex].text;
-            editingRowTC.children[2].innerText = valGiayTo;
-            editingRowTC.children[3].innerText = valNgaySinh || '-';
-            editingRowTC.children[4].innerText = valTen;
-            editingRowTC.children[5].innerText = fullAddr;
+            editingRowTC.children[0].innerText = loaiChuTheTC.options[loaiChuTheTC.selectedIndex].text;
+            editingRowTC.children[1].innerText = valGiayTo;
+            editingRowTC.children[2].innerText = valNgaySinh || '-';
+            editingRowTC.children[3].innerText = valTen;
+            editingRowTC.children[4].innerText = fullAddr;
             
             btnLuuTC.innerText = 'LƯU';
             editingRowTC = null;
@@ -895,17 +895,17 @@ const initApp = () => {
             tr.dataset.quocgia = valQuocGia;
 
             tr.innerHTML = `
+                <td>${loaiChuTheTC.options[loaiChuTheTC.selectedIndex].text}</td>
+                <td>${valGiayTo}</td>
+                <td>${valNgaySinh || '-'}</td>
+                <td>${valTen}</td>
+                <td>${fullAddr}</td>
                 <td style="text-align: center;">
                     <div class="grid-row-actions">
                         <button type="button" class="grid-action-btn edit btn-sua-tc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
                         <button type="button" class="grid-action-btn delete btn-xoa-tc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
                     </div>
                 </td>
-                <td>${loaiChuTheTC.options[loaiChuTheTC.selectedIndex].text}</td>
-                <td>${valGiayTo}</td>
-                <td>${valNgaySinh || '-'}</td>
-                <td>${valTen}</td>
-                <td>${fullAddr}</td>
             `;
 
             tr.querySelector('.btn-xoa-tc').addEventListener('click', () => {
@@ -1042,8 +1042,8 @@ const initApp = () => {
             editingRowNTC.dataset.tinhthanh = valTinhThanh;
             editingRowNTC.dataset.quocgia = valQuocGia;
 
-            editingRowNTC.children[1].innerText = valTen;
-            editingRowNTC.children[2].innerText = fullAddr;
+            editingRowNTC.children[0].innerText = valTen;
+            editingRowNTC.children[1].innerText = fullAddr;
 
             btnLuuNTC.innerText = 'LƯU';
             editingRowNTC = null;
@@ -1060,14 +1060,14 @@ const initApp = () => {
             tr.dataset.quocgia = valQuocGia;
 
             tr.innerHTML = `
+                <td>${valTen}</td>
+                <td>${fullAddr}</td>
                 <td style="text-align: center;">
                     <div class="grid-row-actions">
                         <button type="button" class="grid-action-btn edit btn-sua-ntc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
                         <button type="button" class="grid-action-btn delete btn-xoa-ntc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
                     </div>
                 </td>
-                <td>${valTen}</td>
-                <td>${fullAddr}</td>
             `;
 
             tr.querySelector('.btn-xoa-ntc').addEventListener('click', () => {
@@ -2037,11 +2037,11 @@ const initApp = () => {
         const rowsTC = Array.from(tbodyTC.querySelectorAll('tr'))
             .filter(tr => tr.dataset.ten)
             .map(tr => ({
-                loai: tr.children[1].innerText,
+                loai: tr.children[0].innerText,
                 giayTo: tr.dataset.giayTo,
                 ngaySinh: tr.dataset.ngaySinh || '',
                 ten: tr.dataset.ten,
-                diaChi: tr.children[5].innerText,
+                diaChi: tr.children[4].innerText,
                 diaChiChiTiet: tr.dataset.diachi || '',
                 ward: tr.dataset.ward || '',
                 loaiVal: tr.dataset.loai,
@@ -2053,7 +2053,7 @@ const initApp = () => {
             .filter(tr => tr.dataset.ten)
             .map(tr => ({
                 ten: tr.dataset.ten,
-                diaChi: tr.children[2].innerText,
+                diaChi: tr.children[1].innerText,
                 diaChiChiTiet: tr.dataset.diachi || '',
                 ward: tr.dataset.ward || '',
                 tinhThanh: tr.dataset.tinhthanh,
@@ -2272,17 +2272,17 @@ const initApp = () => {
                     const diaChiHienThi = r.diaChiChiTiet != null ? ghepDiaChiChuThe(r.diaChiChiTiet, r.ward, r.tinhThanh, r.quocGia) : (r.diaChi || '');
 
                     tr.innerHTML = `
+                        <td>${r.loai}</td>
+                        <td>${r.giayTo}</td>
+                        <td>${r.ngaySinh || '-'}</td>
+                        <td>${r.ten}</td>
+                        <td>${diaChiHienThi}</td>
                         <td style="text-align: center;">
                             <div class="grid-row-actions">
                                 <button type="button" class="grid-action-btn edit btn-sua-tc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
                                 <button type="button" class="grid-action-btn delete btn-xoa-tc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
                             </div>
                         </td>
-                        <td>${r.loai}</td>
-                        <td>${r.giayTo}</td>
-                        <td>${r.ngaySinh || '-'}</td>
-                        <td>${r.ten}</td>
-                        <td>${diaChiHienThi}</td>
                     `;
 
                     // wire buttons
@@ -2343,14 +2343,14 @@ const initApp = () => {
                     const diaChiHienThi = r.diaChiChiTiet != null ? ghepDiaChiChuThe(r.diaChiChiTiet, r.ward, r.tinhThanh, r.quocGia) : (r.diaChi || '');
 
                     tr.innerHTML = `
+                        <td>${r.ten}</td>
+                        <td>${diaChiHienThi}</td>
                         <td style="text-align: center;">
                             <div class="grid-row-actions">
                                 <button type="button" class="grid-action-btn edit btn-sua-ntc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
                                 <button type="button" class="grid-action-btn delete btn-xoa-ntc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
                             </div>
                         </td>
-                        <td>${r.ten}</td>
-                        <td>${diaChiHienThi}</td>
                     `;
 
                     tr.querySelector('.btn-xoa-ntc').addEventListener('click', () => {

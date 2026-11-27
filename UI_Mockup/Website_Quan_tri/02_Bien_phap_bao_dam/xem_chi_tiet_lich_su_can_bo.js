@@ -1295,15 +1295,14 @@ document.addEventListener('DOMContentLoaded', function () {
             { name: 'Hợp đồng bảo đảm.pdf' },
             { name: 'Giấy tờ chứng minh tư cách pháp lý.pdf' }
         ];
+        // 26/11/2026: bảng chuẩn chỉ đọc (bpbd_tai_lieu_dinh_kem.js, bố trí giống BTNN): STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file, Tải file);
+        // không có tài liệu thì không hiển thị khối
+        const docsHtml = window.BPTL ? BPTL.viewHtml(docs, { title: '' }) : '';
+        if (!docsHtml) return;
         anchor.insertAdjacentHTML('beforebegin', `
             <section class="detail-section" id="sectionOfficerAttachments">
                 <h3 class="detail-section-title"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</h3>
-                <div style="font-size:13.5px">
-                    ${docs.map(d => `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed var(--border-color)">
-                        <i class="fa-solid fa-file-pdf" style="color:#dc2626"></i><span style="flex:1">${d.name}</span>
-                        <a href="javascript:void(0)" onclick="window.open('about:blank','_blank')" style="color:#2563eb;font-weight:600;text-decoration:none"><i class="fa-solid fa-arrow-up-right-from-square"></i> Xem file</a>
-                    </div>`).join('')}
-                </div>
+                ${docsHtml}
             </section>`);
     }
     renderListProfileExtraBlocks();

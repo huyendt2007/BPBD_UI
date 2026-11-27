@@ -25,10 +25,8 @@
     <div class="card-block">
         <div class="card-block-header"><h3><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</h3></div>
         <div class="card-block-body">
-            <div id="fileList" class="attach-list"></div>
-            <div id="fileEmpty" class="attach-empty">Chưa có tệp đính kèm.</div>
-            <button class="btn btn-outline btn-sm" onclick="document.getElementById('fileInp').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp</button>
-            <input type="file" id="fileInp" accept=".pdf,.jpg,.jpeg,.png" multiple hidden onchange="onFiles(this)">
+            <!-- 26/11/2026: bảng «Tài liệu đính kèm» chuẩn (bpbd_tai_lieu_dinh_kem.js, bố trí giống BTNN): STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file, Xóa), nút Thêm tài liệu, mặc định 01 dòng trống -->
+            <div id="docTlHost"></div>
         </div>
     </div>
     <div class="card-block" id="reasonBlock" style="display:none">
@@ -51,6 +49,7 @@
 
 <script src="nhan_du_lieu_bpbd_spec.js?v=20261007g"></script>
 <script src="nhan_du_lieu_bpbd_common.js?v=20261007g"></script>
+<script src="bpbd_tai_lieu_dinh_kem.js?v=20261127tl2"></script>
 <script>
 const TYPE = NDL.typeFromUrl();
 const T = NDL.TYPES[TYPE];
@@ -219,32 +218,26 @@ function setAsset(i, k, v) {
 function addRow(k) { const g = GRIDS.find(x => x.key === k); data[k].push(blank(g.cols)); dirty = true; renderGrids(); }
 function delRow(k, i) { data[k].splice(i, 1); dirty = true; renderGrids(); }
 function setCell(k, ri, ck, v) { data[k][ri][ck] = v.trim(); dirty = true; }
-function onFiles(inp) {
-    for (const f of Array.from(inp.files)) {
-        if (!/\.(pdf|jpe?g|png)$/i.test(f.name)) { NDL.toast(`Định dạng tệp tin ${f.name} không hợp lệ. Chỉ chấp nhận các định dạng .pdf, .jpg, .jpeg, .png.`, 'error'); continue; }
-        if (f.size > 20 * 1024 * 1024) { NDL.toast(`Dung lượng tệp tin ${f.name} vượt quá 20MB. Vui lòng kiểm tra lại.`, 'error'); continue; }
-        if (!data.files.some(x => x.name === f.name)) data.files.push({ name: f.name, size: (f.size / 1048576).toFixed(1).replace('.', ',') + ' MB', nguon: 'Đính kèm khi ' + (MODE === 'edit' ? 'sửa' : 'thêm mới'), user: NDL.USER, t: NDL.nowStr(), isNew: true });
-        blobs[f.name] = f;
-        dirty = true;
-    }
-    inp.value = ''; renderFiles();
+// 26/11/2026: Tài liệu đính kèm dùng bảng chuẩn bpbd_tai_lieu_dinh_kem.js (bố trí giống BTNN); định dạng .pdf, .jpg, .jpeg, .png, tối đa 20MB/tệp [BR-NDL-008].
+// Dữ liệu tệp giữ dạng cũ { name: tên tệp, size, nguon, user, t } và thêm title (Tên tài liệu, văn bản); tệp từ tệp nén chưa có title thì lấy tên tệp bỏ phần mở rộng.
+const DOC_TL = 'ndlDocs';
+const fileSize = n => typeof n === 'number' ? (n / 1048576).toFixed(1).replace('.', ',') + ' MB' : (n || '');
+function rowsToFiles(rows) {
+    return rows.filter(r => r.file).map(r => {
+        const old = data.files.find(x => x.name === r.file.name);
+        return old ? Object.assign({}, old, { title: r.name })
+            : { name: r.file.name, title: r.name, size: fileSize(r.file.size), nguon: 'Đính kèm khi ' + (MODE === 'edit' ? 'sửa' : 'thêm mới'), user: NDL.USER, t: NDL.nowStr(), isNew: true };
+    });
 }
 function renderFiles() {
-    document.getElementById('fileList').innerHTML = data.files.map((f, i) => {
-        const img = /\.(jpe?g|png)$/i.test(f.name);
-        return `<div class="attach-item"><i class="fi ${img ? 'img fa-solid fa-file-image' : 'fa-solid fa-file-pdf'}"></i><span class="nm">${e(f.name)}</span>${f.size && f.size !== '-' ? `<span class="sz">(${e(f.size)})</span>` : ''}
-        <span class="acts"><button class="link-act" onclick="viewFile(${i})"><i class="fa-solid fa-eye"></i> Xem file</button><span class="sep">|</span><button class="link-act danger" onclick="removeFile(${i})"><i class="fa-solid fa-trash-can"></i> Xóa</button></span></div>`;
-    }).join('');
-    document.getElementById('fileEmpty').style.display = data.files.length ? 'none' : '';
-}
-function viewFile(i) {
-    const f = data.files[i], b = blobs[f.name];
-    if (b) window.open(URL.createObjectURL(b), '_blank');
-    else NDL.toast(`Mở tệp ${f.name} (giả lập).`, 'info');
-}
-function removeFile(i) {
-    const f = data.files[i];
-    confirmBox('Xóa tệp đính kèm', `Bạn có chắc chắn muốn xóa tệp <b>${e(f.name)}</b>?`, () => { data.files.splice(i, 1); delete blobs[f.name]; dirty = true; renderFiles(); });
+    BPTL.mount(DOC_TL, 'docTlHost', {
+        title: '', rows: data.files.map(f => ({ title: f.title || '', name: f.name, size: f.size })),
+        exts: ['.pdf', '.jpg', '.jpeg', '.png'], maxBytes: 20 * 1024 * 1024,
+        fmtMsg: name => `Định dạng tệp tin ${name} không hợp lệ. Chỉ chấp nhận các định dạng .pdf, .jpg, .jpeg, .png.`, // [MSG-ERR-FILE-003]
+        sizeMsg: name => `Dung lượng tệp tin ${name} vượt quá 20MB. Vui lòng kiểm tra lại.`, // [MSG-ERR-FILE-004]
+        onChange: rows => { data.files = rowsToFiles(rows); dirty = true; },
+        onView: r => NDL.toast(`Mở tệp ${r.file.name} (giả lập).`, 'info')
+    });
 }
 
 function closeConfirm() { document.getElementById('confirmModal').classList.remove('active'); }
@@ -312,6 +305,9 @@ function saveForm() {
     showErrors(errors);
     if (data.coQuan && cqEl) cqEl.classList.remove('is-invalid');
     if (errors.length) return;
+    // Tài liệu đính kèm: dòng đã nhập phải đủ Tên tài liệu, văn bản và tệp [MSG-ERR-VAL-001]
+    if (!BPTL.validate(DOC_TL)) { const bad = document.querySelector('#docTlHost .is-invalid'); if (bad) bad.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    data.files = rowsToFiles(BPTL.get(DOC_TL));
     const go = () => commit(pack, reason);
     if (v.warnings.length) confirmBox('Hồ sơ có cảnh báo', `<ul class="msg-list">${v.warnings.map(w => `<li class="w">${e(w)}</li>`).join('')}</ul><p>Cảnh báo không chặn việc lưu. Bạn có muốn tiếp tục lưu hồ sơ?</p>`, go);
     else go();
@@ -356,5 +352,6 @@ renderHs(); renderGrids(); renderFiles();
 
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="bpbd_dong_bo_giao_dien.js?v=20261113f"></script>
+    <script src="bpbd_bo_cuc_co_dinh.js?v=20261127bc5"></script>
 </body>
 </html>

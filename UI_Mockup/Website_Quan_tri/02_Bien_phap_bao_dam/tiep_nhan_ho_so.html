@@ -873,24 +873,8 @@
 
                     <section class="form-block">
                         <div class="block-head"><h3>05. Tài liệu đính kèm</h3></div>
-                        <div class="table-container">
-                            <table class="custom-table attachment-table">
-                                <thead>
-                                    <tr>
-                                        <th>STT</th>
-                                        <th>Tên tài liệu</th>
-                                        <th>File đính kèm</th>
-                                        <th>Thao tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="docRows"></tbody>
-                            </table>
-                        </div>
-                        <button type="button" class="btn btn-secondary add-doc-btn" onclick="addDocumentRow()">
-                            <i class="fa-solid fa-plus"></i> Thêm thành phần hồ sơ mới
-                        </button>
-                        <p class="doc-help">Tối đa 10 file/hồ sơ, dung lượng 20MB/file. Hỗ trợ: PDF, DOC, DOCX, ZIP, RAR, XLS, XLSX.</p>
-                        <input id="hiddenFileInput" class="is-hidden" type="file" accept=".pdf,.doc,.docx,.zip,.rar,.xls,.xlsx" onchange="handleFileSelected(event)">
+                        <!-- 26/11/2026: bảng «Tài liệu đính kèm» chuẩn (bpbd_tai_lieu_dinh_kem.js, bố trí giống BTNN): STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file, Xóa), nút Thêm tài liệu, mặc định 01 dòng trống -->
+                        <div id="docTlHost"></div>
                     </section>
                 </div>
                 <div class="filter-actions form-sticky-actions" style="margin-top:20px;">
@@ -1062,21 +1046,10 @@
                     </section>
 
                     <!-- 05. Tài liệu đính kèm -->
-                    <section class="form-block">
+                    <section class="form-block" id="dtlDocBlock">
                         <div class="block-head"><h3>05. Tài liệu đính kèm</h3></div>
-                        <div class="table-container">
-                            <table class="custom-table attachment-table">
-                                <thead>
-                                    <tr>
-                                        <th style="width:50px; text-align:center;">STT</th>
-                                        <th>Tên tài liệu</th>
-                                        <th>File đính kèm</th>
-                                        <th style="width:230px; min-width:230px; text-align:center;">Thao tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dtlDocRows"></tbody>
-                            </table>
-                        </div>
+                        <!-- Chế độ xem: bảng chuẩn chỉ đọc (Xem file, Tải file); không có tài liệu thì ẩn khối -->
+                        <div id="dtlDocHost"></div>
                     </section>
 
                     <!-- 06. Lịch sử trạng thái -->
@@ -1286,6 +1259,7 @@
     </div>
 
     <script src="../../Common/dia_ban_vn.js"></script>
+    <script src="bpbd_tai_lieu_dinh_kem.js?v=20261127tl2"></script>
     <script>
         // Danh sách tài khoản trực tuyến mẫu dùng cho tra cứu & tìm kiếm nâng cao (Section 4.3.2.16.4.4)
         const onlineCustomersMock = [
@@ -1345,112 +1319,33 @@
             return null;
         }
 
-        function newDoc(name = '', required = false) {
-            return { id: 'doc-' + Date.now() + '-' + Math.random().toString(16).slice(2), name, required, fileName: '', fileSize: 0 };
-        }
-
+        // 26/11/2026: Khối 05. Tài liệu đính kèm dùng bảng chuẩn bpbd_tai_lieu_dinh_kem.js (bố trí giống BTNN):
+        // STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file, Xóa); nút Thêm tài liệu; mặc định 01 dòng trống;
+        // định dạng .pdf, .doc, .docx, .zip, .rar, .xls, .xlsx; tối đa 20MB/tệp, 10 tệp/hồ sơ; không hiển thị ghi chú định dạng dưới bảng
+        const DOC_TL = 'tnDocs';
         function fileIcon(name) {
             const ext = String(name).split('.').pop().toLowerCase();
             return ext === 'pdf' ? 'fa-file-pdf' : (['doc', 'docx'].includes(ext) ? 'fa-file-word' : (['xls', 'xlsx'].includes(ext) ? 'fa-file-excel' : 'fa-file-zipper'));
         }
 
         function renderDocumentRows() {
-            const rows = el('docRows');
-            if (!rows) return;
-            if (documents.length === 0) {
-                rows.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:22px; color:var(--text-muted); font-style:italic;"><i class="fa-regular fa-folder-open" style="font-size:22px; display:block; margin-bottom:6px; color:#94a3b8;"></i>Chưa có thành phần hồ sơ nào. Bấm nút "Thêm thành phần hồ sơ mới" bên dưới để đính kèm tài liệu.</td></tr>';
-                return;
-            }
-            rows.innerHTML = documents.map((doc, i) => {
-                const id = jsArg(doc.id);
-                const nameCell = `<input class="doc-name-input" value="${esc(doc.name)}" placeholder="Nhập tên thành phần hồ sơ..." oninput="updateDocumentName('${id}', this.value)">`;
-                const fileCell = doc.fileName
-                    ? `<div class="file-pill"><i class="fa-solid ${fileIcon(doc.fileName)}"></i><span>${esc(doc.fileName)}</span></div>`
-                    : `<button type="button" class="btn btn-secondary file-picker" onclick="chooseFile('${id}')"><i class="fa-solid fa-folder-open"></i> Chọn file</button>`;
-                const viewBtn = doc.fileName ? `<button type="button" class="link-action" onclick="viewDocument('${id}')"><i class="fa-regular fa-eye"></i> Xem file</button>` : '';
-                const delFileBtn = doc.fileName ? `<button type="button" class="link-action danger" onclick="removeDocumentFile('${id}')"><i class="fa-solid fa-file-circle-xmark"></i> Gỡ file</button>` : '';
-                const removeRowBtn = `<button type="button" class="link-action danger" onclick="removeDocumentRow('${id}')" title="Xóa dòng này"><i class="fa-solid fa-trash-can"></i> Xóa dòng</button>`;
-                return `<tr><td style="text-align:center;">${i + 1}</td><td>${nameCell}</td><td>${fileCell}</td><td style="text-align:center;"><div class="doc-actions">${viewBtn}${delFileBtn}${removeRowBtn}</div></td></tr>`;
-            }).join('');
-        }
-
-        function updateDocumentName(id, value) {
-            const doc = documents.find(x => x.id === id);
-            if (doc) doc.name = value;
-        }
-
-        function addDocumentRow() {
-            if (documents.length >= 10) {
-                alert('Mỗi hồ sơ chỉ được đính kèm tối đa 10 file.');
-                return;
-            }
-            documents.push(newDoc('', false));
-            renderDocumentRows();
-        }
-
-        function removeDocumentRow(id) {
-            const doc = documents.find(x => x.id === id);
-            if (!doc) return;
-            if (confirm('Bạn có chắc chắn muốn xóa thành phần hồ sơ này khỏi danh sách?')) {
-                if (doc.objectUrl) URL.revokeObjectURL(doc.objectUrl);
-                documents = documents.filter(x => x.id !== id);
-                renderDocumentRows();
-            }
-        }
-
-        function chooseFile(id) {
-            const input = el('hiddenFileInput');
-            if (!input) return;
-            selectingDocId = id;
-            input.value = '';
-            input.click();
-        }
-
-        function handleFileSelected(e) {
-            const file = e.target.files[0], doc = documents.find(x => x.id === selectingDocId);
-            if (!file || !doc) return;
-            const ext = file.name.split('.').pop().toLowerCase();
-            if (!allowedDocExts.includes(ext)) {
-                alert('Định dạng file không được hỗ trợ. Vui lòng chọn PDF, DOC, DOCX, ZIP, RAR, XLS hoặc XLSX.');
-                return;
-            }
-            if (file.size > 20 * 1024 * 1024) {
-                alert('Dung lượng file không được vượt quá 20MB.');
-                return;
-            }
-            doc.fileName = file.name;
-            doc.fileSize = file.size;
-            doc.objectUrl = URL.createObjectURL(file);
-            renderDocumentRows();
-        }
-
-        function viewDocument(id) {
-            const doc = documents.find(x => x.id === id);
-            if (!doc || !doc.fileName) return;
-            if (doc.objectUrl) {
-                window.open(doc.objectUrl, '_blank');
-                return;
-            }
-            viewStoredDocument(encodeURIComponent(doc.fileName));
-        }
-
-        function removeDocumentFile(id) {
-            const doc = documents.find(x => x.id === id);
-            if (!doc || !doc.fileName) return;
-            if (confirm('Gỡ file đính kèm khỏi thành phần hồ sơ này?')) {
-                if (doc.objectUrl) URL.revokeObjectURL(doc.objectUrl);
-                doc.fileName = '';
-                doc.fileSize = 0;
-                doc.objectUrl = '';
-                renderDocumentRows();
-            }
+            if (!window.BPTL || !el('docTlHost')) return;
+            BPTL.mount(DOC_TL, 'docTlHost', {
+                title: '', rows: documents, nameMax: 255, maxRows: 10,
+                exts: allowedDocExts.map(x => '.' + x), maxBytes: 20 * 1024 * 1024,
+                fmtMsg: 'Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .pdf, .doc, .docx, .zip, .rar, .xls, .xlsx.', // [MSG-ERR-FILE-001]
+                sizeMsg: 'Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại.', // [MSG-ERR-FILE-002]
+                maxMsg: 'Mỗi hồ sơ chỉ được đính kèm tối đa 10 tệp.',
+                onChange: rows => { documents = rows; }
+            });
         }
 
         function documentsForSave() {
-            return documents.filter(x => x.name.trim() || x.fileName).map(x => ({
-                name: x.name.trim() || 'Tài liệu gửi kèm',
-                fileName: x.fileName || '',
-                fileSize: x.fileSize || 0,
+            const rows = window.BPTL ? BPTL.get(DOC_TL) : [];
+            return rows.filter(x => x.name || x.file).map(x => ({
+                name: x.name,
+                fileName: x.file ? x.file.name : '',
+                fileSize: x.file ? (Number(x.file.size) || 0) : 0,
                 required: false
             }));
         }
@@ -2185,6 +2080,8 @@
                 firstErrorField.focus();
                 return;
             }
+            // Khối 05. Tài liệu đính kèm: dòng đã nhập phải đủ Tên tài liệu, văn bản và tệp [MSG-ERR-VAL-001]
+            if (window.BPTL && !BPTL.validate(DOC_TL)) return;
 
             const data = load();
             const feeAmountEl = el('feeAmount');
@@ -2271,23 +2168,6 @@
                 attachments: normalizeAttachments(x.attachments),
                 history: x.history && x.history.length ? x.history : [[x.date, x.status, 'Tiếp nhận hồ sơ giấy.']]
             };
-        }
-
-        function fileRows(files) {
-            const list = normalizeAttachments(files);
-            if (!list.length) {
-                return '<tr><td colspan="4" style="text-align:center; padding:18px; color:var(--text-muted); font-style:italic;">Không có tài liệu đính kèm.</td></tr>';
-            }
-            return list.map((doc, i) => {
-                const fileName = doc.fileName || '';
-                const encoded = jsArg(encodeURIComponent(fileName));
-                const nameCell = '<div class="doc-name">' + esc(doc.name || 'Tài liệu gửi kèm') + '</div>';
-                const fileCell = fileName ? '<div class="file-pill"><i class="fa-solid ' + fileIcon(fileName) + '"></i><span>' + esc(fileName) + '</span></div>' : '-';
-                const disabled = fileName ? '' : ' disabled';
-                const viewBtn = '<button type="button" class="link-action"' + disabled + ' onclick="viewStoredDocument(\'' + encoded + '\')"><i class="fa-regular fa-eye"></i> Xem file</button>';
-                const downBtn = '<button type="button" class="link-action"' + disabled + ' onclick="alert(\'Mô phỏng tải tệp ' + jsArg(fileName) + '\')"><i class="fa-solid fa-download"></i> Tải tệp</button>';
-                return '<tr><td style="text-align:center;">' + (i + 1) + '</td><td>' + nameCell + '</td><td>' + fileCell + '</td><td style="text-align:center;"><div class="doc-actions">' + viewBtn + downBtn + '</div></td></tr>';
-            }).join('');
         }
 
         function openDetail(code) {
@@ -2380,9 +2260,11 @@
             const statusBadgeEl = el('dtlStatusBadge');
             if (statusBadgeEl) statusBadgeEl.innerHTML = badgeStatus(x.status);
 
-            // 05. Tài liệu đính kèm
-            const docTbody = el('dtlDocRows');
-            if (docTbody) docTbody.innerHTML = fileRows(x.attachments);
+            // 05. Tài liệu đính kèm: bảng chuẩn chỉ đọc (Xem file, Tải file); không có tài liệu thì ẩn khối
+            const docHost = el('dtlDocHost'), docBlock = el('dtlDocBlock');
+            const docHtml = window.BPTL ? BPTL.viewHtml(normalizeAttachments(x.attachments), { title: '' }) : '';
+            if (docHost) docHost.innerHTML = docHtml;
+            if (docBlock) docBlock.style.display = docHtml ? '' : 'none';
 
             // 06. Lịch sử trạng thái
             const historyTbody = el('dtlHistoryRows');
@@ -2471,6 +2353,7 @@
     <script src="admin-ui-standardizer.js"></script>
     <script src="../../Common/grid_align.js?v=20261030s2"></script>
     <script src="bpbd_dong_bo_giao_dien.js?v=20261113f"></script>
+    <script src="bpbd_bo_cuc_co_dinh.js?v=20261127bc5"></script>
 </body>
 
 </html>
